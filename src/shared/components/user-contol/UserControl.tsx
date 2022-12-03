@@ -7,7 +7,7 @@ import { sharedActions } from 'shared/state/shared.reducer'
 import { useDispatch } from 'react-redux'
 import { User } from 'shared/models/User'
 import './UserControl.scss'
-import { authActions } from 'user/state/auth.reducer'
+import { userActions } from 'user/state/user.reducer'
 
 const componentId = 'UserControl'
 const bem = cn(componentId)
@@ -25,7 +25,7 @@ export const UserControl: React.FC<{ user: User }> = ({ user }) => {
     setAnchorEl(event.currentTarget)
   }
   const handleLogout = () => {
-    dispatch(authActions.clearUser())
+    dispatch(userActions.clearUser())
   }
 
   return (

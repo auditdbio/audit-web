@@ -6,7 +6,7 @@ import {
   passwordChange,
   registration,
   userDelit,
-} from 'user/api/auth.api'
+} from 'user/api/user.api'
 import { combineEpics, Epic } from 'redux-observable'
 import {
   catchError,
@@ -18,83 +18,83 @@ import {
   Observable,
   withLatestFrom,
 } from 'rxjs'
-import { authActions, AuthState } from './auth.reducer'
+import { userActions, UserState } from './user.reducer'
 import { User } from 'shared/models/User'
 
 type Actions = Observable<PayloadAction>
-type States = Observable<AuthState>
+type States = Observable<UserState>
 
 const registerUser: Epic = (action$: Actions, state$: States) =>
   action$.pipe(
-    filter(authActions.registration.match),
+    filter(userActions.registration.match),
     switchMap(({ payload }) =>
       from(registration(payload)).pipe(
-        map((user) => authActions.registrationSuccess(user)),
-        catchError((error) => of(authActions.registrationError(error))),
+        map((user) => userActions.registrationSuccess(user)),
+        catchError((error) => of(userActions.registrationError(error))),
       ),
     ),
   )
 
 const loginUser: Epic = (action$: Actions, state$: States) =>
   action$.pipe(
-    filter(authActions.login.match),
+    filter(userActions.login.match),
     switchMap(({ payload }) =>
       from(login(payload)).pipe(
-        map((user) => authActions.loginSuccess(user)),
-        catchError((error) => of(authActions.loginError(error))),
+        map((user) => userActions.loginSuccess(user)),
+        catchError((error) => of(userActions.loginError(error))),
       ),
     ),
   )
 
 export const changeUserEmail: Epic = (action$: Actions, state$: States) =>
   action$.pipe(
-    filter(authActions.setUserEmail.match),
+    filter(userActions.setUserEmail.match),
     withLatestFrom(state$.pipe(map((state) => state.user as User))),
     switchMap(([{ payload }, user]) =>
       from(emailChange(payload, user?._id)).pipe(
-        map((user) => authActions.setUserEmailSuccess(user)),
-        catchError((error) => of(authActions.setUserEmailError(error))),
+        map((user) => userActions.setUserEmailSuccess(user)),
+        catchError((error) => of(userActions.setUserEmailError(error))),
       ),
     ),
   )
 
 export const changeUserName: Epic = (action$: Actions, state$: States) =>
   action$.pipe(
-    filter(authActions.setUserName.match),
+    filter(userActions.setUserName.match),
     withLatestFrom(state$.pipe(map((state) => state.user as User))),
     switchMap(([{ payload }, user]) =>
       from(nameChange(payload, user?._id)).pipe(
-        map((user) => authActions.setUserNameSuccess(user)),
-        catchError((error) => of(authActions.setUserNameError(error))),
+        map((user) => userActions.setUserNameSuccess(user)),
+        catchError((error) => of(userActions.setUserNameError(error))),
       ),
     ),
   )
 
 export const changeUserPassword: Epic = (action$: Actions, state$: States) =>
   action$.pipe(
-    filter(authActions.setUserPassword.match),
+    filter(userActions.setUserPassword.match),
     withLatestFrom(state$.pipe(map((state) => state.user as User))),
     switchMap(([{ payload }, user]) =>
       from(passwordChange(payload, user?._id)).pipe(
-        map((user) => authActions.setUserPasswordSuccess(user)),
-        catchError((error) => of(authActions.setUserPasswordError(error))),
+        map((user) => userActions.setUserPasswordSuccess(user)),
+        catchError((error) => of(userActions.setUserPasswordError(error))),
       ),
     ),
   )
 
 export const deleteUser: Epic = (action$: Actions, state$: States) =>
   action$.pipe(
-    filter(authActions.deleteUser.match),
+    filter(userActions.deleteUser.match),
     withLatestFrom(state$.pipe(map((state) => state.user as User))),
     switchMap(([, user]) =>
       from(userDelit(user?._id)).pipe(
-        map(() => authActions.deleteUserSuccess()),
-        catchError((error) => of(authActions.deleteUserError(error))),
+        map(() => userActions.deleteUserSuccess()),
+        catchError((error) => of(userActions.deleteUserError(error))),
       ),
     ),
   )
 
-export const authEpics = combineEpics(
+export const userEpics = combineEpics(
   registerUser,
   loginUser,
   changeUserEmail,

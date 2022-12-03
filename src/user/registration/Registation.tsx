@@ -23,14 +23,13 @@ import {
 import { motion } from 'framer-motion'
 import React, { useEffect } from 'react'
 import { cn } from '@bem-react/classname'
-import { useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 
 import { RegistrationData, userDataValidation } from 'user/helpers/RegistrationDataCheck'
 import { onlySpaces } from 'shared/helpers/dataValodation'
-import { authActions } from 'user/state/auth.reducer'
+import { userActions } from 'user/state/user.reducer'
 import './Registration.scss'
-import { selectRegistration } from 'user/state/auth.selectors'
+import { selectRegistration } from 'user/state/user.selectors'
 import { UserRole } from 'shared/models/User'
 
 const componentId = 'Registration'
@@ -81,7 +80,7 @@ export const Registation: React.FC = () => {
       ...old,
       errorMessage: '',
     }))
-  }, [userData.email, userData.password, password2])
+  }, [userData.userName, userData.email, userData.password, password2])
 
   const hidePassword1 = (): void => {
     setState((prevState) => ({
@@ -149,7 +148,7 @@ export const Registation: React.FC = () => {
       let resp = userDataValidation(userData)
 
       if (resp.status) {
-        dispatch(authActions.registration(userData))
+        dispatch(userActions.registration(userData))
       } else if (!resp.status && resp.emailError) {
         console.log(resp.message)
         setState((old) => ({
@@ -214,35 +213,38 @@ export const Registation: React.FC = () => {
           >
             Choose who you want to be
           </Typography>
-          <ToggleButtonGroup
-            color="primary"
-            value={alignment}
-            exclusive
-            onChange={handleChange}
-            aria-label="Platform"
-          >
-            <ToggleButton
-              className={bem('Roles')}
-              data-testid={bem('Roles-null')}
-              value="undefined"
+
+          <div className={bem('RolesContainer')}>
+            <ToggleButtonGroup
+              color="primary"
+              value={alignment}
+              exclusive
+              onChange={handleChange}
+              aria-label="Platform"
             >
-              I dont know
-            </ToggleButton>
-            <ToggleButton
-              className={bem('Roles')}
-              data-testid={bem('Roles-auditor')}
-              value="auditor"
-            >
-              Auditor
-            </ToggleButton>
-            <ToggleButton
-              className={bem('Roles')}
-              data-testid={bem('Roles-project')}
-              value="project"
-            >
-              Project
-            </ToggleButton>
-          </ToggleButtonGroup>
+              <ToggleButton
+                className={bem('Roles')}
+                data-testid={bem('Roles-null')}
+                value="undefined"
+              >
+                I dont know
+              </ToggleButton>
+              <ToggleButton
+                className={bem('Roles')}
+                data-testid={bem('Roles-auditor')}
+                value="auditor"
+              >
+                Auditor
+              </ToggleButton>
+              <ToggleButton
+                className={bem('Roles')}
+                data-testid={bem('Roles-project')}
+                value="project"
+              >
+                Project
+              </ToggleButton>
+            </ToggleButtonGroup>
+          </div>
 
           <Box
             className={bem('Container-userName')}

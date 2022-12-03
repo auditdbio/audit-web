@@ -1,16 +1,16 @@
 import { createSelector } from '@reduxjs/toolkit'
 import { AppState } from 'app.store'
 
-export const selectAuthSlice = (state: AppState) => state.auth
+export const selectUserSlice = (state: AppState) => state.user
 
 export const selectLogin = createSelector(
-  selectAuthSlice,
+  selectUserSlice,
   (state) => state.spinners.login,
 )
 
 export const selectRegistration = createSelector(
-  selectAuthSlice,
+  selectUserSlice,
   (state) => state.spinners.registration,
 )
 
-export const selectUser = createSelector(selectAuthSlice, (state) => state.user)
+export const selectUser = createSelector(selectUserSlice, (state) => state.user)

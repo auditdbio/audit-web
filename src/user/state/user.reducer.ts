@@ -3,7 +3,7 @@ import { LoginData } from 'user/helpers/LoginDataCheck'
 import { RegistrationData } from 'user/helpers/RegistrationDataCheck'
 import { User } from 'shared/models/User'
 
-export type AuthState = {
+export type UserState = {
   user: User | null
   spinners: {
     login: boolean
@@ -15,7 +15,7 @@ export type AuthState = {
   }
 }
 
-export const initialAuthState: AuthState = {
+export const initialUserState: UserState = {
   user: null,
   spinners: {
     login: false,
@@ -27,11 +27,11 @@ export const initialAuthState: AuthState = {
   },
 }
 
-export const authSlice = createSlice({
-  name: 'auth',
-  initialState: initialAuthState,
+export const userSlice = createSlice({
+  name: 'user',
+  initialState: initialUserState,
   reducers: {
-    resetAuth: (state, action: PayloadAction<string>) => initialAuthState,
+    resetAuth: (state, action: PayloadAction<string>) => initialUserState,
 
     setUser: (state, action: PayloadAction<User>) => {
       state.user = action.payload
@@ -119,5 +119,5 @@ export const authSlice = createSlice({
   },
 })
 
-export const authReducer = authSlice.reducer
-export const authActions = authSlice.actions
+export const userReducer = userSlice.reducer
+export const userActions = userSlice.actions

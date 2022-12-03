@@ -6,15 +6,16 @@ import { Registation } from 'user/registration/Registation'
 import { AuthGuard, UnAuthGuard } from 'shared/guards'
 import { useDispatch } from 'react-redux'
 import { useEffect } from 'react'
+import 'App.scss'
 
-import { authActions } from 'user/state/auth.reducer'
+import { userActions } from 'user/state/user.reducer'
 
 function App() {
   const location = useLocation()
   const dispatch = useDispatch()
   useEffect(() => {
     if (localStorage.getItem('token')) {
-      dispatch(authActions.fetchUserInfo())
+      dispatch(userActions.fetchUserInfo())
     }
   }, [])
 
@@ -25,7 +26,6 @@ function App() {
         <Route path="/sign-in" element={<UnAuthGuard comp={<Login />} />} />
         <Route path="/sign-up" element={<UnAuthGuard comp={<Registation />} />} />
         <Route path="/cabinet" element={<AuthGuard comp={<Cabinet />} />} />
-        {/* <Route path="/cabinet" element={<Cabinet />} /> */}
         <Route path="/*" element={<Navigate to="/main" />} />
       </Routes>
     </main>

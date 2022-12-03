@@ -1,8 +1,8 @@
 import { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { User } from 'shared/models/User'
-import { authActions } from 'user/state/auth.reducer'
-import { selectUser } from 'user/state/auth.selectors'
+import { userActions } from 'user/state/user.reducer'
+import { selectUser } from 'user/state/user.selectors'
 
 export const Cabinet: React.FC = () => {
   const user = useSelector(selectUser) as User
@@ -17,19 +17,19 @@ export const Cabinet: React.FC = () => {
   const handleEditEmail = (): void => {
     setEmailEdit((prev) => !prev)
     if (emailEdit) {
-      dispatch(authActions.setUserEmail(email))
+      dispatch(userActions.setUserEmail(email))
     }
   }
 
   const handleEditUsername = (): void => {
     setPasswordEdit((prev) => !prev)
     if (passwordEdit) {
-      dispatch(authActions.setUserName(name))
+      dispatch(userActions.setUserName(name))
     }
   }
 
   const handleDelete = (): void => {
-    dispatch(authActions.deleteUser())
+    dispatch(userActions.deleteUser())
   }
 
   const emailChange = (event: React.ChangeEvent<HTMLInputElement>): void => {

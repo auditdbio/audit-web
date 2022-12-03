@@ -3,28 +3,28 @@ import { combineEpics, createEpicMiddleware } from 'redux-observable'
 import { configureStore } from '@reduxjs/toolkit'
 import { combineReducers } from 'redux'
 
-import { authEpics } from 'user/state/auth.epic'
+import { userEpics } from 'user/state/user.epic'
 import { sharedEpics } from 'shared/state/shared.epics'
 import { auditorsEpics } from 'auditors/state/auditors.epics'
 import { projectsEpics } from 'projects/state/projects.epics'
-import { authReducer, AuthState } from 'user/state/auth.reducer'
+import { userReducer, UserState } from 'user/state/user.reducer'
 import { sharedReducer, SharedState } from 'shared/state/shared.reducer'
 import { auditorsReducer, AuditorsState } from 'auditors/state/auditors.reducer'
 import { projectsReducer, ProjectsState } from 'projects/state/projects.reducer'
 
 export type AppState = {
-  auth: AuthState
+  user: UserState
   shared: SharedState
   projects: ProjectsState
   auditors: AuditorsState
 }
 
 const epicMiddleware = createEpicMiddleware()
-const epics = combineEpics(authEpics, sharedEpics, projectsEpics, auditorsEpics)
+const epics = combineEpics(userEpics, sharedEpics, projectsEpics, auditorsEpics)
 
 export const createRootReducer = () =>
   combineReducers({
-    auth: authReducer,
+    user: userReducer,
     shared: sharedReducer,
     projects: projectsReducer,
     auditors: auditorsReducer,

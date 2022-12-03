@@ -3,7 +3,6 @@ import React, { useEffect } from 'react'
 import {
   TextField,
   Box,
-  Link,
   Button,
   InputAdornment,
   IconButton,
@@ -21,13 +20,12 @@ import {
 } from '@mui/icons-material'
 import { cn } from '@bem-react/classname'
 import { useDispatch, useSelector } from 'react-redux'
-import { useNavigate } from 'react-router-dom'
 import './Login.scss'
 
 import { onlySpaces } from 'shared/helpers/dataValodation'
-import { authActions } from 'user/state/auth.reducer'
+import { userActions } from 'user/state/user.reducer'
 import { loginDataValidation } from 'user/helpers/LoginDataCheck'
-import { selectLogin } from 'user/state/auth.selectors'
+import { selectLogin } from 'user/state/user.selectors'
 
 const componentId = 'Login'
 const bem = cn(componentId)
@@ -93,7 +91,7 @@ export const Login: React.FC = () => {
     let resp = loginDataValidation(userData)
 
     if (resp.status) {
-      dispatch(authActions.login(userData))
+      dispatch(userActions.login(userData))
     } else if (!resp.status && resp.emailError) {
       console.log(resp.message)
       setState((old) => ({

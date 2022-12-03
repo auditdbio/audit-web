@@ -1,7 +1,7 @@
 import React, { ReactNode, useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
-import { selectUser } from 'user/state/auth.selectors'
+import { selectUser } from 'user/state/user.selectors'
 
 export const AuthGuard = ({ comp }: { comp: ReactNode }) => {
   const user = useSelector(selectUser)

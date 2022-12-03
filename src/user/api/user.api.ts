@@ -5,11 +5,6 @@ import { RegistrationData } from 'user/helpers/RegistrationDataCheck'
 import { LoginData } from 'user/helpers/LoginDataCheck'
 import { User } from 'shared/models/User'
 
-// API mock
-import { useSelector } from 'react-redux'
-import { selectUser } from 'user/state/auth.selectors'
-// ----------------
-
 export const axiosNoAuth = axios.create({
   baseURL: SERVER + ':' + PORT_USERS + '/api',
 })
@@ -68,7 +63,7 @@ export const login = (data: LoginData): Promise<User> =>
           })
         }, 1000)
       })
-    : axiosNoAuth.post('/auth/login', data).then((response) => response.data)
+    : axiosNoAuth.post('/user/login', data).then((response) => response.data)
 
 export const emailChange = (email: string, id: number): Promise<User> =>
   MOCK_API
