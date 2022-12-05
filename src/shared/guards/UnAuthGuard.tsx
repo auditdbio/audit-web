@@ -1,6 +1,7 @@
 import React, { ReactNode, useEffect } from 'react'
-import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
+import { useSelector } from 'react-redux'
+
 import { selectUser } from 'user/state/user.selectors'
 
 export const UnAuthGuard = ({ comp }: { comp: ReactNode }) => {
@@ -11,7 +12,7 @@ export const UnAuthGuard = ({ comp }: { comp: ReactNode }) => {
     checkUser()
   }, [comp, user])
 
-  const checkUser = () => {
+  const checkUser = (): void => {
     if (user) {
       navigate(`/cabinet`)
     }

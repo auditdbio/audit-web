@@ -93,27 +93,24 @@ export const Login: React.FC = () => {
     if (resp.status) {
       dispatch(userActions.login(userData))
     } else if (!resp.status && resp.emailError) {
-      console.log(resp.message)
       setState((old) => ({
         ...old,
         emailError: resp.emailError,
         errorMessage: resp.message,
       }))
     } else if (!resp.status && resp.passwordError) {
-      console.log(resp.message)
       setState((old) => ({
         ...old,
         passwordError: resp.passwordError,
         errorMessage: resp.message,
       }))
     } else {
-      console.log('Something went wrong')
+      console.error('Something went wrong')
     }
   }
 
   const submitForm = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-    console.log('submit')
   }
 
   return (
@@ -125,15 +122,15 @@ export const Login: React.FC = () => {
       exit={{ opacity: 0 }}
     >
       <div className={bem('Container')} data-testid={bem('Container')}>
-        <div className={bem('Container-Header')}>
+        <div className={bem('Header')}>
           <LoginIcon sx={{ m: 'auto', pr: 1, fontSize: 30 }} />{' '}
-          <div className={bem('Container-Header-text')}>Autorization</div>
+          <div className={bem('Header-text')}>Autorization</div>
         </div>
 
         <form autoComplete="off" onSubmit={submitForm}>
           <Box
-            className={bem('Container-email')}
-            data-testid={bem('Container-email')}
+            className={bem('email')}
+            data-testid={bem('email')}
             sx={{ display: 'flex', alignItems: 'flex-end', mt: 1 }}
           >
             <MailOutline sx={{ color: 'action.active', mr: 1.5, my: 0.5 }} />
@@ -148,7 +145,7 @@ export const Login: React.FC = () => {
           </Box>
 
           <Box
-            className={bem('Container-password')}
+            className={bem('password')}
             sx={{ display: 'flex', alignItems: 'flex-end', mt: 1 }}
           >
             <VpnKey sx={{ color: 'action.active', mr: 1.5, my: 0.5 }} />
@@ -182,8 +179,8 @@ export const Login: React.FC = () => {
           </Box>
 
           <Button
-            className={bem('Container-button')}
-            data-testid={bem('Container-button')}
+            className={bem('button')}
+            data-testid={bem('button')}
             type="submit"
             variant="contained"
             color={'primary'}
@@ -197,7 +194,7 @@ export const Login: React.FC = () => {
 
         {state.emailError || state.passwordError ? (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-            <Alert className={bem('Container-Error')} severity="error">
+            <Alert className={bem('Error')} severity="error">
               {state.errorMessage}
             </Alert>
           </motion.div>

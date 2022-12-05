@@ -1,14 +1,13 @@
 import { Navigate, Route, Routes, useLocation } from 'react-router-dom'
+import { useDispatch } from 'react-redux'
+import { useEffect } from 'react'
 
+import 'App.scss'
 import { Login } from 'user/login/Login'
 import { Cabinet } from 'user/cabinet/Cabinet'
 import { Registation } from 'user/registration/Registation'
-import { AuthGuard, UnAuthGuard } from 'shared/guards'
-import { useDispatch } from 'react-redux'
-import { useEffect } from 'react'
-import 'App.scss'
-
 import { userActions } from 'user/state/user.reducer'
+import { AuthGuard, UnAuthGuard } from 'shared/guards'
 
 function App() {
   const location = useLocation()

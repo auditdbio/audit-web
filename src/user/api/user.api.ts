@@ -20,7 +20,6 @@ axiosForUsers.interceptors.request.use(
     if (!config.headers['Authorization']) {
       const token = localStorage.getItem('token')
       config.headers['Authorization'] = `Bearer ${token}`
-      console.log('Token added to request')
     }
     return config
   },
@@ -44,8 +43,6 @@ export const registration = async (user: RegistrationData): Promise<User> => {
   }
 
   const response = await axios.post('/users', user)
-  debugger
-  localStorage.setItem('token', response.data.token)
 
   return response.data.user
 }
@@ -65,22 +62,7 @@ export const login = (data: LoginData): Promise<User> =>
       })
     : axiosNoAuth.post('/user/login', data).then((response) => response.data)
 
-export const emailChange = (email: string, id: number): Promise<User> =>
-  MOCK_API
-    ? new Promise<User>((resolve, reject) => {
-        setTimeout(() => {
-          resolve({
-            _id: 1,
-            name: 'test',
-            email: email,
-            created: '2021-01-01',
-            updated: '2021-01-01',
-          })
-        }, 1000)
-      })
-    : axiosForUsers.put('/users/email', { email }).then((response) => response.data)
-
-export const nameChange = (name: string, id: number): Promise<User> =>
+export const changeName = (name: string, email: string): Promise<User> =>
   MOCK_API
     ? new Promise<User>((resolve, reject) => {
         setTimeout(() => {
@@ -95,7 +77,7 @@ export const nameChange = (name: string, id: number): Promise<User> =>
       })
     : axiosForUsers.put('/users/name', { name }).then((response) => response.data)
 
-export const passwordChange = (password: string, id: number): Promise<User> =>
+export const changePassword = (password: string, id: number): Promise<User> =>
   MOCK_API
     ? new Promise<User>((resolve, reject) => {
         setTimeout(() => {
@@ -111,7 +93,7 @@ export const passwordChange = (password: string, id: number): Promise<User> =>
       })
     : axiosForUsers.put('/users/password', { password }).then((response) => response.data)
 
-export const userDelit = (id: number): Promise<User> =>
+export const userDelete = (email: string): Promise<User> =>
   MOCK_API
     ? new Promise<null>((resolve, reject) => {
         setTimeout(() => {

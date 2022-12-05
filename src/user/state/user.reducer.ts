@@ -1,29 +1,28 @@
 import { Action, createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { LoginData } from 'user/helpers/LoginDataCheck'
+
 import { RegistrationData } from 'user/helpers/RegistrationDataCheck'
+import { LoginData } from 'user/helpers/LoginDataCheck'
 import { User } from 'shared/models/User'
 
 export type UserState = {
   user: User | null
-  spinners: {
+  progress: {
     login: boolean
     registration: boolean
-    emailEdit: boolean
-    userNameEdit: boolean
-    passwordEdit: boolean
-    userDelit: boolean
+    changName: boolean
+    changPassword: boolean
+    userDelete: boolean
   }
 }
 
 export const initialUserState: UserState = {
   user: null,
-  spinners: {
+  progress: {
     login: false,
     registration: false,
-    emailEdit: false,
-    userNameEdit: false,
-    passwordEdit: false,
-    userDelit: false,
+    changName: false,
+    changPassword: false,
+    userDelete: false,
   },
 }
 
@@ -42,79 +41,66 @@ export const userSlice = createSlice({
     },
 
     login: (state, action: PayloadAction<LoginData>) => {
-      state.spinners.login = true
+      state.progress.login = true
     },
 
     loginSuccess: (state, action: PayloadAction<User>) => {
       state.user = action.payload
-      state.spinners.login = false
+      state.progress.login = false
     },
     loginError: (state, action: PayloadAction<string>) => {
-      state.spinners.login = false
+      state.progress.login = false
     },
 
     registration: (state, action: PayloadAction<RegistrationData>) => {
-      state.spinners.registration = true
+      state.progress.registration = true
     },
     registrationSuccess: (state, action: PayloadAction<User>) => {
       state.user = action.payload
-      state.spinners.registration = false
+      state.progress.registration = false
     },
     registrationError: (state, action: PayloadAction<string>) => {
-      state.spinners.registration = false
+      state.progress.registration = false
     },
     fetchUserInfo: (state, action: Action) => {},
 
-    setUserEmail: (state, action: PayloadAction<string>) => {
-      state.spinners.emailEdit = true
-    },
-
-    setUserEmailSuccess: (state, action: PayloadAction<User>) => {
-      state.user!.email = action.payload.email // TODO: fix this
-      state.spinners.emailEdit = false
-    },
-
-    setUserEmailError: (state, action: PayloadAction<string>) => {
-      state.spinners.emailEdit = false
-    },
-
     setUserName: (state, action: PayloadAction<string>) => {
-      state.spinners.userNameEdit = true
+      state.progress.changName = true
     },
 
     setUserNameSuccess: (state, action: PayloadAction<User>) => {
       state.user!.name = action.payload.name // TODO: fix this line
-      state.spinners.userNameEdit = false
+      state.progress.changName = false
     },
 
     setUserNameError: (state, action: PayloadAction<string>) => {
-      state.spinners.userNameEdit = false
+      state.progress.changName = false
     },
 
     setUserPassword: (state, action: PayloadAction<string>) => {
-      state.spinners.passwordEdit = true
+      state.progress.changPassword = true
     },
 
     setUserPasswordSuccess: (state, action: PayloadAction<User>) => {
       state.user = action.payload
-      state.spinners.passwordEdit = false
+      state.progress.changPassword = false
     },
 
     setUserPasswordError: (state, action: PayloadAction<string>) => {
-      state.spinners.passwordEdit = false
+      state.progress.changPassword = false
     },
 
-    deleteUser: (state, action: PayloadAction) => {
-      state.spinners.userDelit = true
+    userDelete: (state, action: PayloadAction) => {
+      state.progress.userDelete = true
     },
 
-    deleteUserSuccess: (state, action: PayloadAction) => {
+    userDeleteSuccess: (state, action: PayloadAction) => {
       state.user = null
-      state.spinners.userDelit = false
+      state.progress.userDelete = false
     },
 
-    deleteUserError: (state, action: PayloadAction<string>) => {
-      state.spinners.userDelit = false
+    userDeleteError: (state, action: PayloadAction<string>) => {
+      state.progress.userDelete = false
     },
   },
 })
