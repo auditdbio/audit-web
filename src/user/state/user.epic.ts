@@ -29,8 +29,8 @@ const registerUser: Epic = (action$: Actions, state$: States) =>
     filter(userActions.registration.match),
     switchMap(({ payload }) =>
       from(registration(payload)).pipe(
-        map((user) => userActions.registrationSuccess(user)),
-        catchError((error) => of(userActions.registrationError(error))),
+        map(() => userActions.registrationSuccess()),
+        catchError((error) => of(userActions.registrationError(error.message))),
       ),
     ),
   )
@@ -41,7 +41,7 @@ const loginUser: Epic = (action$: Actions, state$: States) =>
     switchMap(({ payload }) =>
       from(login(payload)).pipe(
         map((user) => userActions.loginSuccess(user)),
-        catchError((error) => of(userActions.loginError(error))),
+        catchError((error) => of(userActions.loginError(error.message))),
       ),
     ),
   )
@@ -63,7 +63,7 @@ export const changeUserPassword: Epic = (action$: Actions, state$: States) =>
     filter(userActions.setUserPassword.match),
     withLatestFrom(state$.pipe(map((state) => state.user as User))),
     switchMap(([{ payload }, user]) =>
-      from(changePassword(payload, user?._id)).pipe(
+      from(changePassword(payload, user?.email)).pipe(
         map((user) => userActions.setUserPasswordSuccess(user)),
         catchError((error) => of(userActions.setUserPasswordError(error))),
       ),
@@ -75,7 +75,7 @@ export const deleteCurrentUser: Epic = (action$: Actions, state$: States) =>
     filter(userActions.userDelete.match),
     withLatestFrom(state$.pipe(map((state) => state.user as User))),
     switchMap(([, user]) =>
-      from(userDelete(user?.email)).pipe(
+      from(userDelete()).pipe(
         map(() => userActions.userDeleteSuccess()),
         catchError((error) => of(userActions.userDeleteError(error))),
       ),

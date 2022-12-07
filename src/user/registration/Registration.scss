@@ -45,12 +45,11 @@
       width: -webkit-fill-available;
       margin: auto;
     }
-
-    &-Error {
-      margin: 4% 0 -2% !important;
-      background-color: #fcdfdf !important;
-      padding-top: 2px !important;
-      padding-bottom: 2px !important;
-    }
+  }
+  &-Error {
+    margin: 4% 0 -2% !important;
+    background-color: #fcdfdf !important;
+    padding-top: 2px !important;
+    padding-bottom: 2px !important;
   }
 }

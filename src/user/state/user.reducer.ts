@@ -13,6 +13,8 @@ export type UserState = {
     changPassword: boolean
     userDelete: boolean
   }
+  loginError: string | null
+  registrationError: string | null
 }
 
 export const initialUserState: UserState = {
@@ -24,13 +26,18 @@ export const initialUserState: UserState = {
     changPassword: false,
     userDelete: false,
   },
+  loginError: null,
+  registrationError: null,
 }
 
 export const userSlice = createSlice({
   name: 'user',
   initialState: initialUserState,
   reducers: {
-    resetAuth: (state, action: PayloadAction<string>) => initialUserState,
+    resetErrors: (state, action: Action) => {
+      state.loginError = null
+      state.registrationError = null
+    },
 
     setUser: (state, action: PayloadAction<User>) => {
       state.user = action.payload
@@ -42,6 +49,7 @@ export const userSlice = createSlice({
 
     login: (state, action: PayloadAction<LoginData>) => {
       state.progress.login = true
+      state.loginError = null
     },
 
     loginSuccess: (state, action: PayloadAction<User>) => {
@@ -50,17 +58,18 @@ export const userSlice = createSlice({
     },
     loginError: (state, action: PayloadAction<string>) => {
       state.progress.login = false
+      state.loginError = action.payload
     },
 
     registration: (state, action: PayloadAction<RegistrationData>) => {
       state.progress.registration = true
     },
-    registrationSuccess: (state, action: PayloadAction<User>) => {
-      state.user = action.payload
+    registrationSuccess: (state, action: Action) => {
       state.progress.registration = false
     },
     registrationError: (state, action: PayloadAction<string>) => {
       state.progress.registration = false
+      state.registrationError = action.payload
     },
     fetchUserInfo: (state, action: Action) => {},
 

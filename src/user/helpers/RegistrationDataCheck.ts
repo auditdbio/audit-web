@@ -1,4 +1,4 @@
-import { UserRole } from 'shared/models/User'
+import { AccountType, UserRole } from 'shared/models/User'
 import {
   inputValidator,
   onlySpaces,
@@ -9,6 +9,7 @@ export type RegistrationData = {
   role?: UserRole
   name: string
   email: string
+  requestedAccountType: AccountType
   password: string
 }
 export type RegistrationDataStatus = {

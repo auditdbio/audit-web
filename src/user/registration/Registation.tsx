@@ -26,10 +26,10 @@ import { motion } from 'framer-motion'
 import { cn } from '@bem-react/classname'
 
 import './Registration.scss'
-import { UserRole } from 'shared/models/User'
+import { AccountType, UserRole } from 'shared/models/User'
 import { userActions } from 'user/state/user.reducer'
 import { onlySpaces } from 'shared/helpers/dataValodation'
-import { selectRegistration } from 'user/state/user.selectors'
+import { selectRegistration, selectRegistrationError } from 'user/state/user.selectors'
 import { RegistrationData, userDataValidation } from 'user/helpers/RegistrationDataCheck'
 
 const componentId = 'Registration'
@@ -37,10 +37,22 @@ const bem = cn(componentId)
 
 export const Registation: React.FC = () => {
   const registrating = useSelector(selectRegistration)
-  const [alignment, setAlignment] = React.useState('undefined')
+  const [alignment, setAlignment] = React.useState<AccountType>('client')
+
+  const registerError = useSelector(selectRegistrationError)
+  useEffect(() => {
+    if (registerError !== null) {
+      setState((old) => ({
+        ...old,
+        registationError: true,
+        errorMessage: registerError,
+      }))
+    }
+  }, [registerError])
 
   const dispatch = useDispatch()
   const [state, setState] = React.useState({
+    registationError: false,
     userNameError: false,
     emailError: false,
     passwordError1: false,
@@ -53,7 +65,7 @@ export const Registation: React.FC = () => {
   })
 
   const [userData, setUserData] = React.useState<RegistrationData>({
-    role: undefined,
+    requestedAccountType: alignment,
     name: '',
     email: '',
     password: '',
@@ -79,6 +91,7 @@ export const Registation: React.FC = () => {
     setState((old) => ({
       ...old,
       errorMessage: '',
+      registationError: false,
     }))
   }, [userData.name, userData.email, userData.password, password2])
 
@@ -148,6 +161,7 @@ export const Registation: React.FC = () => {
       let resp = userDataValidation(userData)
 
       if (resp.status) {
+        dispatch(userActions.resetErrors())
         dispatch(userActions.registration(userData))
       } else if (!resp.status && resp.emailError) {
         setState((old) => ({
@@ -173,14 +187,15 @@ export const Registation: React.FC = () => {
     }
   }
 
-  const handleChange = (event: React.MouseEvent<HTMLElement>, newAlignment: string) => {
-    setAlignment(newAlignment)
-    if (newAlignment !== 'undefined') {
-      setUserData((prevState) => ({
-        ...prevState,
-        role: 'user' as UserRole, //todo: path user account request
-      }))
-    }
+  const handleChange = (
+    event: React.MouseEvent<HTMLElement>,
+    accountType: AccountType,
+  ) => {
+    setAlignment(accountType)
+    setUserData((prevState) => ({
+      ...prevState,
+      requestedAccountType: accountType,
+    }))
   }
 
   const submitForm = (event: React.FormEvent<HTMLFormElement>) => {
@@ -219,24 +234,17 @@ export const Registation: React.FC = () => {
           >
             <ToggleButton
               className={bem('Role')}
-              data-testid={bem('Role', ['Undefined'])}
-              value="undefined"
-            >
-              I dont know
-            </ToggleButton>
-            <ToggleButton
-              className={bem('Role')}
               data-testid={bem('Role', ['Auditor'])}
               value="auditor"
             >
-              Auditor
+              auditor
             </ToggleButton>
             <ToggleButton
               className={bem('Role')}
               data-testid={bem('Role', ['Project'])}
-              value="project"
+              value="client"
             >
-              Project
+              client
             </ToggleButton>
           </ToggleButtonGroup>
         </div>
@@ -356,7 +364,8 @@ export const Registation: React.FC = () => {
       {state.userNameError ||
       state.emailError ||
       state.passwordError2 ||
-      state.passwordError1 ? (
+      state.passwordError1 ||
+      state.registationError ? (
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
           <Alert className={bem('Error')} severity="error">
             {state.errorMessage}

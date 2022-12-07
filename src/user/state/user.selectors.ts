@@ -13,4 +13,14 @@ export const selectRegistration = createSelector(
   (state) => state.progress.registration,
 )
 
+export const selectLoginError = createSelector(
+  selectUserSlice,
+  (state) => state.loginError,
+)
+
+export const selectRegistrationError = createSelector(
+  selectUserSlice,
+  (state) => state.registrationError,
+)
+
 export const selectUser = createSelector(selectUserSlice, (state) => state.user)

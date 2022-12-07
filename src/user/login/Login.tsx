@@ -25,17 +25,28 @@ import './Login.scss'
 import { onlySpaces } from 'shared/helpers/dataValodation'
 import { userActions } from 'user/state/user.reducer'
 import { loginDataValidation } from 'user/helpers/LoginDataCheck'
-import { selectLogin } from 'user/state/user.selectors'
+import { selectLogin, selectLoginError } from 'user/state/user.selectors'
 
 const componentId = 'Login'
 const bem = cn(componentId)
 
 export const Login: React.FC = () => {
   const loging = useSelector(selectLogin)
-
+  const loginError = useSelector(selectLoginError)
   const dispatch = useDispatch()
 
+  useEffect(() => {
+    if (loginError !== null) {
+      setState((old) => ({
+        ...old,
+        loginError: true,
+        errorMessage: loginError,
+      }))
+    }
+  }, [loginError])
+
   const [state, setState] = React.useState({
+    loginError: false,
     emailError: false,
     passwordError: false,
     showPassword: false,
@@ -48,6 +59,9 @@ export const Login: React.FC = () => {
   })
 
   useEffect(() => {
+    dispatch(userActions.resetErrors())
+  }, [])
+  useEffect(() => {
     if (
       userData.email.length > 0 &&
       userData.password.length > 0 &&
@@ -58,6 +72,7 @@ export const Login: React.FC = () => {
     } else {
       setState((old) => ({ ...old, canLog: false }))
     }
+    setState((old) => ({ ...old, loginError: false }))
   }, [userData])
 
   const hidePassword = (): void => {
@@ -91,6 +106,7 @@ export const Login: React.FC = () => {
     let resp = loginDataValidation(userData)
 
     if (resp.status) {
+      dispatch(userActions.resetErrors())
       dispatch(userActions.login(userData))
     } else if (!resp.status && resp.emailError) {
       setState((old) => ({
@@ -188,7 +204,7 @@ export const Login: React.FC = () => {
         </Button>
       </form>
 
-      {state.emailError || state.passwordError ? (
+      {state.emailError || state.passwordError || state.loginError ? (
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
           <Alert className={bem('Error')} severity="error">
             {state.errorMessage}
