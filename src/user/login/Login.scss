@@ -27,10 +27,16 @@
     width: -webkit-fill-available;
   }
 
-  &-Error {
+  &-Alert {
     margin: 4% 0 -2% !important;
-    background-color: #fcdfdf !important;
     padding-top: 2px !important;
     padding-bottom: 2px !important;
+
+    &_success {
+      background-color: rgb(212, 245, 212) !important;
+    }
+    &_error {
+      background-color: #fcdfdf !important;
+    }
   }
 }

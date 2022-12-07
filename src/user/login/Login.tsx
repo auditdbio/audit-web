@@ -25,7 +25,11 @@ import './Login.scss'
 import { onlySpaces } from 'shared/helpers/dataValodation'
 import { userActions } from 'user/state/user.reducer'
 import { loginDataValidation } from 'user/helpers/LoginDataCheck'
-import { selectLogin, selectLoginError } from 'user/state/user.selectors'
+import {
+  selectLogin,
+  selectLoginError,
+  selectRegistrationSuccess,
+} from 'user/state/user.selectors'
 
 const componentId = 'Login'
 const bem = cn(componentId)
@@ -33,6 +37,7 @@ const bem = cn(componentId)
 export const Login: React.FC = () => {
   const loging = useSelector(selectLogin)
   const loginError = useSelector(selectLoginError)
+  const registrationSuccess = useSelector(selectRegistrationSuccess)
   const dispatch = useDispatch()
 
   useEffect(() => {
@@ -206,8 +211,16 @@ export const Login: React.FC = () => {
 
       {state.emailError || state.passwordError || state.loginError ? (
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-          <Alert className={bem('Error')} severity="error">
+          <Alert className={bem('Alert', { error: true })} severity="error">
             {state.errorMessage}
+          </Alert>
+        </motion.div>
+      ) : null}
+
+      {registrationSuccess ? (
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+          <Alert className={bem('Alert', { success: true })} severity="success">
+            You have successfully registered! Now log in your account.
           </Alert>
         </motion.div>
       ) : null}

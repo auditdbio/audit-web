@@ -15,6 +15,7 @@ export type UserState = {
   }
   loginError: string | null
   registrationError: string | null
+  registrationSuccess: boolean
 }
 
 export const initialUserState: UserState = {
@@ -28,6 +29,7 @@ export const initialUserState: UserState = {
   },
   loginError: null,
   registrationError: null,
+  registrationSuccess: false,
 }
 
 export const userSlice = createSlice({
@@ -66,6 +68,7 @@ export const userSlice = createSlice({
     },
     registrationSuccess: (state, action: Action) => {
       state.progress.registration = false
+      state.registrationSuccess = true
     },
     registrationError: (state, action: PayloadAction<string>) => {
       state.progress.registration = false

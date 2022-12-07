@@ -29,13 +29,20 @@ import './Registration.scss'
 import { AccountType, UserRole } from 'shared/models/User'
 import { userActions } from 'user/state/user.reducer'
 import { onlySpaces } from 'shared/helpers/dataValodation'
-import { selectRegistration, selectRegistrationError } from 'user/state/user.selectors'
+import {
+  selectRegistration,
+  selectRegistrationError,
+  selectRegistrationSuccess,
+} from 'user/state/user.selectors'
 import { RegistrationData, userDataValidation } from 'user/helpers/RegistrationDataCheck'
+import { useNavigate } from 'react-router-dom'
 
 const componentId = 'Registration'
 const bem = cn(componentId)
 
 export const Registation: React.FC = () => {
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
   const registrating = useSelector(selectRegistration)
   const [alignment, setAlignment] = React.useState<AccountType>('client')
 
@@ -49,8 +56,10 @@ export const Registation: React.FC = () => {
       }))
     }
   }, [registerError])
-
-  const dispatch = useDispatch()
+  const registrationSuccess = useSelector(selectRegistrationSuccess)
+  if (registrationSuccess) {
+    navigate('/sign-in')
+  }
   const [state, setState] = React.useState({
     registationError: false,
     userNameError: false,
