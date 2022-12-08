@@ -37,7 +37,7 @@ export const registration = async (user: RegistrationData): Promise<User> => {
           name: user.name,
           role: user.role,
           email: user.email,
-          requestedAccountType: user.requestedAccountType,
+          accountType: user.requestedAccountType,
           created: '2021-01-01',
           updated: '2021-01-01',
         })
@@ -59,7 +59,7 @@ export const login = async (data: LoginData): Promise<User> => {
         resolve({
           name: data.email,
           email: 'maksim.peg@gmail.com',
-          requestedAccountType: 'auditor',
+          accountType: 'auditor',
           created: '2021-01-01',
           updated: '2021-01-01',
         })
@@ -86,7 +86,7 @@ export const changeName = (name: string, email: string): Promise<User> =>
           resolve({
             name: name,
             email: 'test@gmail.com',
-            requestedAccountType: 'auditor',
+            accountType: 'auditor',
             created: '2021-01-01',
             updated: '2021-01-01',
           })
@@ -101,7 +101,7 @@ export const changePassword = (password: string, email: string): Promise<User> =
           resolve({
             name: 'test',
             email: 'test@gmail.com',
-            requestedAccountType: 'auditor',
+            accountType: 'auditor',
             created: '2021-01-01',
             updated: '2021-01-01',
           })

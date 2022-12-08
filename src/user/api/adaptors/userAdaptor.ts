@@ -13,7 +13,7 @@ export const userAdaptor = (user: ServerUser): User => ({
   name: user.name,
   email: user.email,
   role: user.role,
-  requestedAccountType: user.requestedAccountType,
+  accountType: user.requestedAccountType,
   created: user.createdAt,
   updated: user.updatedAt,
 })

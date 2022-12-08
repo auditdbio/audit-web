@@ -13,24 +13,22 @@ import { AppHeader } from 'shared/containers/app-header/AppHeader'
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement)
 root.render(
-  <React.StrictMode>
-    <Provider store={store}>
-      <SnackbarProvider
-        anchorOrigin={{
-          vertical: 'top',
-          horizontal: 'right',
-        }}
-        TransitionComponent={Slide}
-        maxSnack={3}
-      >
-        <BrowserRouter>
-          <AppHeader />
+  <Provider store={store}>
+    <SnackbarProvider
+      anchorOrigin={{
+        vertical: 'top',
+        horizontal: 'right',
+      }}
+      TransitionComponent={Slide}
+      maxSnack={3}
+    >
+      <BrowserRouter>
+        <AppHeader />
 
-          <AnimatePresence>
-            <App />
-          </AnimatePresence>
-        </BrowserRouter>
-      </SnackbarProvider>
-    </Provider>
-  </React.StrictMode>,
+        <AnimatePresence>
+          <App />
+        </AnimatePresence>
+      </BrowserRouter>
+    </SnackbarProvider>
+  </Provider>,
 )

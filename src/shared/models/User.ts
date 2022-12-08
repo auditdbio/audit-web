@@ -2,7 +2,7 @@ export type User = {
   name: string
   email: string
   role?: UserRole
-  requestedAccountType: AccountType
+  accountType: AccountType
   created: string
   updated: string
 }

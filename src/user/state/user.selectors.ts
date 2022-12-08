@@ -28,4 +28,9 @@ export const selectRegistrationSuccess = createSelector(
   (state) => state.registrationSuccess,
 )
 
+export const selectSuccessMessage = createSelector(
+  selectUserSlice,
+  (state) => state.registrationSuccessMessage,
+)
+
 export const selectUser = createSelector(selectUserSlice, (state) => state.user)

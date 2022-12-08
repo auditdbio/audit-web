@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion'
-import React, { useEffect } from 'react'
+import React, { useEffect, useLayoutEffect, useRef } from 'react'
 import {
   TextField,
   Box,
@@ -29,6 +29,7 @@ import {
   selectLogin,
   selectLoginError,
   selectRegistrationSuccess,
+  selectSuccessMessage,
 } from 'user/state/user.selectors'
 
 const componentId = 'Login'
@@ -38,6 +39,7 @@ export const Login: React.FC = () => {
   const loging = useSelector(selectLogin)
   const loginError = useSelector(selectLoginError)
   const registrationSuccess = useSelector(selectRegistrationSuccess)
+  const successMessage = useSelector(selectSuccessMessage)
   const dispatch = useDispatch()
 
   useEffect(() => {
@@ -49,6 +51,13 @@ export const Login: React.FC = () => {
       }))
     }
   }, [loginError])
+
+  useEffect(() => {
+    dispatch(userActions.resetRegistrationSuccess())
+    return () => {
+      dispatch(userActions.resetSuccessMessage())
+    }
+  }, [])
 
   const [state, setState] = React.useState({
     loginError: false,
@@ -217,10 +226,10 @@ export const Login: React.FC = () => {
         </motion.div>
       ) : null}
 
-      {registrationSuccess ? (
+      {successMessage !== null ? (
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
           <Alert className={bem('Alert', { success: true })} severity="success">
-            You have successfully registered! Now log in your account.
+            {successMessage}
           </Alert>
         </motion.div>
       ) : null}

@@ -16,6 +16,7 @@ export type UserState = {
   loginError: string | null
   registrationError: string | null
   registrationSuccess: boolean
+  registrationSuccessMessage: string | null
 }
 
 export const initialUserState: UserState = {
@@ -30,6 +31,7 @@ export const initialUserState: UserState = {
   loginError: null,
   registrationError: null,
   registrationSuccess: false,
+  registrationSuccessMessage: null,
 }
 
 export const userSlice = createSlice({
@@ -70,10 +72,21 @@ export const userSlice = createSlice({
       state.progress.registration = false
       state.registrationSuccess = true
     },
+    resetRegistrationSuccess: (state, action: Action) => {
+      state.registrationSuccess = false
+    },
+    setSuccessMessage: (state, action: Action) => {
+      state.registrationSuccessMessage =
+        'Congrats, you have successfully registered! Now log in to your account.'
+    },
+    resetSuccessMessage: (state, action: Action) => {
+      state.registrationSuccessMessage = null
+    },
     registrationError: (state, action: PayloadAction<string>) => {
       state.progress.registration = false
       state.registrationError = action.payload
     },
+
     fetchUserInfo: (state, action: Action) => {},
 
     setUserName: (state, action: PayloadAction<string>) => {

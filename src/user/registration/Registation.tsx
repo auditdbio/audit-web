@@ -35,7 +35,7 @@ import {
   selectRegistrationSuccess,
 } from 'user/state/user.selectors'
 import { RegistrationData, userDataValidation } from 'user/helpers/RegistrationDataCheck'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 
 const componentId = 'Registration'
 const bem = cn(componentId)
@@ -56,10 +56,15 @@ export const Registation: React.FC = () => {
       }))
     }
   }, [registerError])
-  const registrationSuccess = useSelector(selectRegistrationSuccess)
-  if (registrationSuccess) {
-    navigate('/sign-in')
-  }
+
+  let registrationSuccess = useSelector(selectRegistrationSuccess)
+  useEffect(() => {
+    if (registrationSuccess) {
+      navigate('/sign-in')
+      dispatch(userActions.setSuccessMessage())
+    }
+  }, [registrationSuccess])
+
   const [state, setState] = React.useState({
     registationError: false,
     userNameError: false,
@@ -265,7 +270,6 @@ export const Registation: React.FC = () => {
         >
           <Person sx={{ color: 'action.active', mr: 1.5, my: 0.5 }} />
           <TextField
-            id="standard-basic"
             label="Your user name"
             error={state.userNameError}
             variant="standard"
@@ -337,7 +341,6 @@ export const Registation: React.FC = () => {
               Repeat password
             </InputLabel>
             <Input
-              id="standard-adornment-password"
               type={state.showPassword2 ? 'text' : 'password'}
               error={state.passwordError2}
               onChange={hadnlePasswordChange2}

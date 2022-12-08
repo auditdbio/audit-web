@@ -6,7 +6,7 @@ describe('UserControl', () => {
   const user: User = {
     name: 'Makism',
     email: 'maksim.peg@gmail.com',
-    requestedAccountType: 'auditor',
+    accountType: 'auditor',
     role: 'user',
     created: '234234',
     updated: '234234',
