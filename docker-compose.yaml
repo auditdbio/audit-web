@@ -1,0 +1,11 @@
+version: '3'
+
+services:
+  frontend:
+    container_name: audit-web
+    restart: always
+    image: maksimpegov/audit-web:latest
+    environment:
+      - REACT_APP_API_URL=http://104.248.166.249
+    ports:
+      - '80:80'
