@@ -109,7 +109,7 @@ export const changePassword = (password: string, email: string): Promise<User> =
       })
     : axiosForUsers.put('/users/password', { password }).then((response) => response.data)
 
-export const userDelete = async (): Promise<string> => {
+export const userDelete = async (): Promise<any> => {
   if (MOCK_API) {
     new Promise<null>((resolve, reject) => {
       setTimeout(() => {
@@ -118,8 +118,15 @@ export const userDelete = async (): Promise<string> => {
     })
   }
   try {
-    return await axiosForUsers.delete('/users').then((response) => response.data)
+    // return await axiosForUsers.delete('/users').then((response) => response.data)
+    return fetch(SERVER + ':' + PORT_USERS + '/api/users', {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
+      },
+    })
   } catch (e: any) {
-    throw new Error(e.response.data.message)
+    throw new Error(e.response?.data?.message || `Can't delete user`)
   }
 }
