@@ -165,6 +165,7 @@ export const Login: React.FC = () => {
           <MailOutline sx={{ color: 'action.active', mr: 1.5, my: 0.5 }} />
           <TextField
             id="standard-basic"
+            type="email"
             label="E-mail"
             error={state.emailError}
             variant="standard"

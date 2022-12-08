@@ -79,20 +79,40 @@ export const login = async (data: LoginData): Promise<User> => {
   }
 }
 
-export const changeName = (name: string, email: string): Promise<User> =>
-  MOCK_API
-    ? new Promise<User>((resolve, reject) => {
-        setTimeout(() => {
-          resolve({
-            name: name,
-            email: 'test@gmail.com',
-            accountType: 'auditor',
-            created: '2021-01-01',
-            updated: '2021-01-01',
-          })
-        }, 1000)
-      })
-    : axiosForUsers.put('/users/name', { name }).then((response) => response.data)
+export const changeName = async (name: string, email: string): Promise<any> => {
+  if (MOCK_API) {
+    return new Promise<User>((resolve, reject) => {
+      setTimeout(() => {
+        resolve({
+          name: name,
+          email: 'test@gmail.com',
+          accountType: 'auditor',
+          created: '2021-01-01',
+          updated: '2021-01-01',
+        })
+      }, 1000)
+    })
+  }
+  // return axiosForUsers.put('/users/name', { name }).then((response) => response.data)
+  return await fetch(SERVER + ':' + PORT_USERS + '/api/users', {
+    method: 'PATCH',
+    body: JSON.stringify({ name }),
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${localStorage.getItem('token')}`,
+    },
+  })
+    .then((response) => {
+      if (response.ok) {
+        return response.json()
+      } else {
+        return Promise.reject(response.statusText)
+      }
+    })
+    .catch((e) => {
+      return Promise.reject(e.response?.data?.message || `Can't change user name`)
+    })
+}
 
 export const changePassword = (password: string, email: string): Promise<User> =>
   MOCK_API
