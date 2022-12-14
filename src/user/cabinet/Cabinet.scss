@@ -12,7 +12,6 @@
   }
 
   &-Body {
-    // min-width: 315px !important;
     display: flex;
     margin-top: 35px;
     flex-direction: column;
@@ -20,7 +19,6 @@
     padding: 25px 25px;
     inline-size: -moz-fit-content;
     box-shadow: 1px 1px 6px -2px grey;
-    // width: 40%;
   }
 
   &-AvatarContainer {

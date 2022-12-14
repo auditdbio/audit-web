@@ -1,5 +1,3 @@
-import { motion } from 'framer-motion'
-import { cn } from '@bem-react/classname'
 import {
   Avatar,
   Button,
@@ -7,18 +5,20 @@ import {
   InputAdornment,
   InputBase,
   InputLabel,
-  TextField,
   Tooltip,
   Typography,
 } from '@mui/material'
+import Grid from '@mui/material/Unstable_Grid2'
+import { cn } from '@bem-react/classname'
+import { User } from 'shared/models/User'
+import { motion } from 'framer-motion'
 import { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { User } from 'shared/models/User'
+import { CheckCircleOutline, ModeEdit } from '@mui/icons-material'
+
 import { userActions } from 'user/state/user.reducer'
 import { selectUser } from 'user/state/user.selectors'
 import './Cabinet.scss'
-import Grid from '@mui/material/Unstable_Grid2'
-import { CheckCircleOutline, Edit, ModeEdit } from '@mui/icons-material'
 
 const componentId = 'Cabinet'
 const bem = cn(componentId)
@@ -67,7 +67,7 @@ export const Cabinet: React.FC = () => {
                 className={bem('EditAvatar')}
                 variant="caption"
                 onClick={() => {
-                  console.log('hello')
+                  console.log('avatar change')
                 }}
               >
                 Edit
