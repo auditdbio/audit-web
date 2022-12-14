@@ -1,21 +1,32 @@
 .Cabinet {
+  margin: auto;
   display: flex;
   flex-direction: column;
+  margin-top: 2% !important;
+  width: 50%;
+  max-width: 550px;
+  min-width: 435px;
+
+  &-Title {
+    color: dimgray;
+  }
 
   &-Body {
+    // min-width: 315px !important;
     display: flex;
-    margin: 35px auto;
+    margin-top: 35px;
     flex-direction: column;
     background-color: white;
     padding: 25px 25px;
     inline-size: -moz-fit-content;
-    border-radius: 10px;
     box-shadow: 1px 1px 6px -2px grey;
-    width: 40%;
+    // width: 40%;
   }
 
   &-AvatarContainer {
     display: flex;
+    flex-direction: column;
+    margin: auto;
   }
 
   &-Avatar {
@@ -25,13 +36,27 @@
     height: 70px !important;
     font-size: xxx-large !important;
   }
+  &-EditAvatar {
+    margin: auto;
+  }
 
   &-Input {
     width: -webkit-fill-available;
-    border-radius: 0px !important;
+    border: 1.5px solid gray;
+  }
+
+  &-Button {
+    margin: auto !important;
+
+    &_password {
+      background-color: orange !important;
+    }
+    &_delete {
+      background-color: purple !important;
+    }
   }
 }
 
 input {
-  padding: 7px 10px !important;
+  padding: 5px 10px !important;
 }

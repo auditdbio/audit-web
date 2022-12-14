@@ -1,5 +1,16 @@
+import { motion } from 'framer-motion'
 import { cn } from '@bem-react/classname'
-import { Avatar, InputBase, TextField } from '@mui/material'
+import {
+  Avatar,
+  Button,
+  IconButton,
+  InputAdornment,
+  InputBase,
+  InputLabel,
+  TextField,
+  Tooltip,
+  Typography,
+} from '@mui/material'
 import { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { User } from 'shared/models/User'
@@ -7,7 +18,7 @@ import { userActions } from 'user/state/user.reducer'
 import { selectUser } from 'user/state/user.selectors'
 import './Cabinet.scss'
 import Grid from '@mui/material/Unstable_Grid2'
-import { Edit } from '@mui/icons-material'
+import { CheckCircleOutline, Edit, ModeEdit } from '@mui/icons-material'
 
 const componentId = 'Cabinet'
 const bem = cn(componentId)
@@ -20,9 +31,10 @@ export const Cabinet: React.FC = () => {
 
   const dispatch = useDispatch()
 
-  const handleEditUsername = (): void => {
+  const editUsername = (): void => {
     setChangeName((prev) => !prev)
-    if (changName) {
+
+    if (changName && name !== user.name) {
       dispatch(userActions.setUserName(name))
     }
   }
@@ -31,46 +43,99 @@ export const Cabinet: React.FC = () => {
     dispatch(userActions.userDelete())
   }
 
-  const changeName = (event: React.ChangeEvent<HTMLInputElement>): void => {
+  const nameEditHandler = (event: React.ChangeEvent<HTMLInputElement>): void => {
     setName(event.target.value)
   }
 
   return (
-    <div className={bem()}>
-      <p className={bem('Title')}>User page</p>
+    <motion.div
+      className={bem()}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+    >
+      <Typography variant="h5" className={bem('Title')}>
+        User page
+      </Typography>
       <div className={bem('Body')}>
         <Grid container spacing={2}>
-          <Grid className={bem('AvatarContainer')} xs={3}>
-            <Avatar className={bem('Avatar')}>{user.name.substring(0, 1)}</Avatar>
+          <Grid xs={3} style={{ display: 'flex' }}>
+            <div className={bem('AvatarContainer')}>
+              <Avatar className={bem('Avatar')}>{user.name.substring(0, 1)}</Avatar>
+
+              {/* <Typography
+                className={bem('EditAvatar')}
+                variant="caption"
+                onClick={() => {
+                  console.log('hello')
+                }}
+              >
+                Edit
+              </Typography> */}
+            </div>
           </Grid>
 
           <Grid xs={9}>
             <Grid container spacing={2}>
               <Grid xs={12}>
-                <TextField
+                <InputLabel htmlFor="username-input" className="InputLable">
+                  User name
+                </InputLabel>
+
+                <InputBase
+                  id="username-input"
                   className={bem('Input')}
-                  disabled
-                  id="outlined-disabled"
-                  label="User name"
+                  onChange={nameEditHandler}
                   defaultValue={user.name}
+                  disabled={!changName}
+                  endAdornment={
+                    <InputAdornment position="end">
+                      <Tooltip title={changName ? 'save' : 'edit'}>
+                        <IconButton
+                          tabIndex={-1}
+                          aria-label="toggle password visibility"
+                          onClick={editUsername}
+                        >
+                          {!changName ? <ModeEdit /> : <CheckCircleOutline />}
+                        </IconButton>
+                      </Tooltip>
+                    </InputAdornment>
+                  }
                 />
               </Grid>
             </Grid>
+
             <Grid xs={12}>
-              <TextField
+              <InputLabel htmlFor="email-input" className="InputLable">
+                E-mail
+              </InputLabel>
+
+              <InputBase
+                id="email-input"
                 className={bem('Input')}
+                defaultValue={user.email}
                 disabled
-                id="outlined-disabled"
-                label="E-mail"
-                defaultValue={'user.emailsdfsdfsdfsdfsdfsd'}
               />
             </Grid>
           </Grid>
-          {/* <Grid xs={12}>
-            <InputBase disabled />
-          </Grid> */}
+
+          <Grid xs={6} style={{ display: 'flex' }}>
+            <Button className={bem('Button', { password: true })} variant="contained">
+              change password
+            </Button>
+          </Grid>
+
+          <Grid xs={6} style={{ display: 'flex' }}>
+            <Button
+              className={bem('Button', { delete: true })}
+              variant="contained"
+              onClick={handleDelete}
+            >
+              delete account
+            </Button>
+          </Grid>
         </Grid>
       </div>
-    </div>
+    </motion.div>
   )
 }
