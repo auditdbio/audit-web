@@ -1,0 +1,37 @@
+.Cabinet {
+  display: flex;
+  flex-direction: column;
+
+  &-Body {
+    display: flex;
+    margin: 35px auto;
+    flex-direction: column;
+    background-color: white;
+    padding: 25px 25px;
+    inline-size: -moz-fit-content;
+    border-radius: 10px;
+    box-shadow: 1px 1px 6px -2px grey;
+    width: 40%;
+  }
+
+  &-AvatarContainer {
+    display: flex;
+  }
+
+  &-Avatar {
+    margin: auto;
+    color: gray;
+    width: 70px !important;
+    height: 70px !important;
+    font-size: xxx-large !important;
+  }
+
+  &-Input {
+    width: -webkit-fill-available;
+    border-radius: 0px !important;
+  }
+}
+
+input {
+  padding: 7px 10px !important;
+}
