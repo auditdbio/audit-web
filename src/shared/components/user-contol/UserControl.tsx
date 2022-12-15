@@ -26,7 +26,7 @@ export const UserControl: React.FC<{ user: User }> = ({ user }) => {
     setAnchorEl(event.currentTarget)
   }
   const handleLogout = () => {
-    dispatch(userActions.clearUser())
+    dispatch(userActions.logout())
   }
 
   return (

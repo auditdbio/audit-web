@@ -75,6 +75,10 @@ export const login = async (data: LoginData): Promise<User> => {
   }
 }
 
+export const logout = (): void => {
+  localStorage.removeItem('token')
+}
+
 export const changeName = async (name: string): Promise<any> => {
   if (MOCK_API) {
     return new Promise<User>((resolve, reject) => {

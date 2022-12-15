@@ -49,7 +49,7 @@ export const userSlice = createSlice({
       state.user = action.payload
     },
 
-    clearUser: (state, action: PayloadAction) => {
+    logout: (state, action: PayloadAction) => {
       state.user = null
     },
 
