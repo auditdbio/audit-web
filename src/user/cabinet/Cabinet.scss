@@ -1,30 +1,17 @@
 .Cabinet {
-  margin: auto;
-  display: flex;
-  flex-direction: column;
-  margin-top: 2% !important;
+  background-color: white;
+  box-shadow: 1px 1px 6px -2px grey;
+  margin-top: 100px !important;
+  min-width: 400px !important;
+  max-width: 550px !important;
+  padding: 25px 25px;
   width: 50%;
-  max-width: 550px;
-  min-width: 435px;
 
   &-Title {
-    color: dimgray;
-  }
-
-  &-Body {
-    display: flex;
-    margin-top: 35px;
-    flex-direction: column;
-    background-color: white;
-    padding: 25px 25px;
-    inline-size: -moz-fit-content;
-    box-shadow: 1px 1px 6px -2px grey;
-  }
-
-  &-AvatarContainer {
-    display: flex;
-    flex-direction: column;
-    margin: auto;
+    color: #434242 !important;
+    position: absolute;
+    top: 50px;
+    left: 5vw;
   }
 
   &-Avatar {
@@ -40,18 +27,29 @@
 
   &-Input {
     width: -webkit-fill-available;
-    border: 1.5px solid gray;
+    border: 1px solid #e5e5e5;
+  }
+
+  &-InputLabel {
+    color: #434242 !important;
+    font-size: 12px !important;
+    margin-bottom: 12px;
   }
 
   &-Button {
-    margin: auto !important;
+    height: 40px;
+    min-width: 200px !important;
 
-    &_password {
+    &_Password {
       background-color: orange !important;
     }
-    &_delete {
+    &_Delete {
       background-color: purple !important;
     }
+  }
+
+  &-IconButton {
+    color: #bdbdbd !important;
   }
 }
 

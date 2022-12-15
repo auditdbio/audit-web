@@ -43,99 +43,106 @@ export const Cabinet: React.FC = () => {
     dispatch(userActions.userDelete())
   }
 
+  const handleChangePassword = (): void => {
+    console.log('TODO: change password')
+  }
+
   const nameEditHandler = (event: React.ChangeEvent<HTMLInputElement>): void => {
     setName(event.target.value)
   }
 
   return (
     <motion.div
-      className={bem()}
+      className="motion-container"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
     >
-      <Typography variant="h5" className={bem('Title')}>
-        User page
-      </Typography>
-      <div className={bem('Body')}>
-        <Grid container spacing={2}>
-          <Grid xs={3} style={{ display: 'flex' }}>
-            <div className={bem('AvatarContainer')}>
-              <Avatar className={bem('Avatar')}>{user.name.substring(0, 1)}</Avatar>
+      <Grid container spacing={2} className={bem()}>
+        <Typography variant="h5" className={bem('Title')}>
+          User profile
+        </Typography>
 
-              {/* <Typography
-                className={bem('EditAvatar')}
-                variant="caption"
-                onClick={() => {
-                  console.log('avatar change')
-                }}
-              >
-                Edit
-              </Typography> */}
-            </div>
-          </Grid>
+        <Grid xs={12} md={3}>
+          <Avatar className={bem('Avatar')}>{user.name.substring(0, 1)}</Avatar>
+          {/* <Typography
+              className={bem('EditAvatar')}
+              variant="caption"
+              onClick={() => {
+                console.log('avatar change')
+              }}
+            >
+              Edit
+            </Typography> */}
+        </Grid>
 
-          <Grid xs={9}>
-            <Grid container spacing={2}>
-              <Grid xs={12}>
-                <InputLabel htmlFor="username-input" className="InputLable">
-                  User name
-                </InputLabel>
-
-                <InputBase
-                  id="username-input"
-                  className={bem('Input')}
-                  onChange={nameEditHandler}
-                  defaultValue={user.name}
-                  disabled={!changName}
-                  endAdornment={
-                    <InputAdornment position="end">
-                      <Tooltip title={changName ? 'save' : 'edit'}>
-                        <IconButton
-                          tabIndex={-1}
-                          aria-label="toggle password visibility"
-                          onClick={editUsername}
-                        >
-                          {!changName ? <ModeEdit /> : <CheckCircleOutline />}
-                        </IconButton>
-                      </Tooltip>
-                    </InputAdornment>
-                  }
-                />
-              </Grid>
-            </Grid>
-
+        <Grid xs={12} md={9}>
+          <Grid container spacing={2}>
             <Grid xs={12}>
-              <InputLabel htmlFor="email-input" className="InputLable">
-                E-mail
+              <InputLabel htmlFor="username-input" classes={{ root: bem('InputLabel') }}>
+                User name
               </InputLabel>
 
               <InputBase
-                id="email-input"
+                id="username-input"
                 className={bem('Input')}
-                defaultValue={user.email}
-                disabled
+                onChange={nameEditHandler}
+                defaultValue={user.name}
+                disabled={!changName}
+                endAdornment={
+                  <InputAdornment position="end">
+                    <Tooltip title={changName ? 'save' : 'edit'}>
+                      <IconButton
+                        classes={{ root: bem('IconButton') }}
+                        tabIndex={-1}
+                        aria-label="toggle password visibility"
+                        onClick={editUsername}
+                      >
+                        {!changName ? <ModeEdit /> : <CheckCircleOutline />}
+                      </IconButton>
+                    </Tooltip>
+                  </InputAdornment>
+                }
               />
             </Grid>
           </Grid>
 
-          <Grid xs={6} style={{ display: 'flex' }}>
-            <Button className={bem('Button', { password: true })} variant="contained">
-              change password
-            </Button>
-          </Grid>
+          <Grid xs={12}>
+            <InputLabel htmlFor="email-input" classes={{ root: bem('InputLabel') }}>
+              E-mail
+            </InputLabel>
 
-          <Grid xs={6} style={{ display: 'flex' }}>
-            <Button
-              className={bem('Button', { delete: true })}
-              variant="contained"
-              onClick={handleDelete}
-            >
-              delete account
-            </Button>
+            <InputBase
+              id="email-input"
+              className={bem('Input')}
+              defaultValue={user.email}
+              disabled
+            />
           </Grid>
         </Grid>
-      </div>
+
+        <Grid xs={12}></Grid>
+
+        <Grid xs={12} md={6} display="flex" justifyContent="center">
+          <Button
+            className={bem('Button', { Password: true })}
+            variant="contained"
+            onClick={handleChangePassword}
+          >
+            change password
+          </Button>
+        </Grid>
+
+        <Grid xs={12} md={6} display="flex" justifyContent="center">
+          <Button
+            className={bem('Button', { Delete: true })}
+            variant="contained"
+            onClick={handleDelete}
+          >
+            delete account
+          </Button>
+        </Grid>
+      </Grid>
     </motion.div>
   )
 }
