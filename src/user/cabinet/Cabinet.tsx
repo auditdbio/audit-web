@@ -1,8 +1,27 @@
+import {
+  Avatar,
+  Button,
+  IconButton,
+  InputAdornment,
+  InputBase,
+  InputLabel,
+  Tooltip,
+  Typography,
+} from '@mui/material'
+import Grid from '@mui/material/Unstable_Grid2'
+import { cn } from '@bem-react/classname'
+import { User } from 'shared/models/User'
+import { motion } from 'framer-motion'
 import { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { User } from 'shared/models/User'
+import { CheckCircleOutline, ModeEdit } from '@mui/icons-material'
+
 import { userActions } from 'user/state/user.reducer'
 import { selectUser } from 'user/state/user.selectors'
+import './Cabinet.scss'
+
+const componentId = 'Cabinet'
+const bem = cn(componentId)
 
 export const Cabinet: React.FC = () => {
   const user = useSelector(selectUser) as User
@@ -12,9 +31,10 @@ export const Cabinet: React.FC = () => {
 
   const dispatch = useDispatch()
 
-  const handleEditUsername = (): void => {
+  const editUsername = (): void => {
     setChangeName((prev) => !prev)
-    if (changName) {
+
+    if (changName && name !== user.name) {
       dispatch(userActions.setUserName(name))
     }
   }
@@ -23,24 +43,106 @@ export const Cabinet: React.FC = () => {
     dispatch(userActions.userDelete())
   }
 
-  const changeName = (event: React.ChangeEvent<HTMLInputElement>): void => {
+  const handleChangePassword = (): void => {
+    console.log('TODO: change password')
+  }
+
+  const nameEditHandler = (event: React.ChangeEvent<HTMLInputElement>): void => {
     setName(event.target.value)
   }
 
   return (
-    <div>
-      <h1>User Profile</h1>
-      <p>
-        Your name:{' '}
-        {!changName ? (
-          user.name
-        ) : (
-          <input type={'changName'} defaultValue={user.name} onChange={changeName} />
-        )}{' '}
-        <button onClick={handleEditUsername}>edit</button>
-      </p>
+    <motion.div
+      className="motion-container"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+    >
+      <Grid container spacing={2} className={bem()}>
+        <Typography variant="h5" className={bem('Title')}>
+          User profile
+        </Typography>
 
-      <button onClick={handleDelete}>DELETE ACCOUNT</button>
-    </div>
+        <Grid xs={12} md={3}>
+          <Avatar className={bem('Avatar')}>{user.name.substring(0, 1)}</Avatar>
+          {/* <Typography
+              className={bem('EditAvatar')}
+              variant="caption"
+              onClick={() => {
+                console.log('avatar change')
+              }}
+            >
+              Edit
+            </Typography> */}
+        </Grid>
+
+        <Grid xs={12} md={9}>
+          <Grid container spacing={2}>
+            <Grid xs={12}>
+              <InputLabel htmlFor="username-input" classes={{ root: bem('InputLabel') }}>
+                User name
+              </InputLabel>
+
+              <InputBase
+                id="username-input"
+                className={bem('Input')}
+                onChange={nameEditHandler}
+                defaultValue={user.name}
+                disabled={!changName}
+                endAdornment={
+                  <InputAdornment position="end">
+                    <Tooltip title={changName ? 'save' : 'edit'}>
+                      <IconButton
+                        classes={{ root: bem('IconButton') }}
+                        tabIndex={-1}
+                        aria-label="toggle password visibility"
+                        onClick={editUsername}
+                      >
+                        {!changName ? <ModeEdit /> : <CheckCircleOutline />}
+                      </IconButton>
+                    </Tooltip>
+                  </InputAdornment>
+                }
+              />
+            </Grid>
+          </Grid>
+
+          <Grid xs={12}>
+            <InputLabel htmlFor="email-input" classes={{ root: bem('InputLabel') }}>
+              E-mail
+            </InputLabel>
+
+            <InputBase
+              id="email-input"
+              className={bem('Input')}
+              defaultValue={user.email}
+              disabled
+            />
+          </Grid>
+        </Grid>
+
+        <Grid xs={12}></Grid>
+
+        <Grid xs={12} md={6} display="flex" justifyContent="center">
+          <Button
+            className={bem('Button', { Password: true })}
+            variant="contained"
+            onClick={handleChangePassword}
+          >
+            change password
+          </Button>
+        </Grid>
+
+        <Grid xs={12} md={6} display="flex" justifyContent="center">
+          <Button
+            className={bem('Button', { Delete: true })}
+            variant="contained"
+            onClick={handleDelete}
+          >
+            delete account
+          </Button>
+        </Grid>
+      </Grid>
+    </motion.div>
   )
 }

@@ -1,0 +1,58 @@
+.Cabinet {
+  background-color: white;
+  box-shadow: 1px 1px 6px -2px grey;
+  margin-top: 100px !important;
+  min-width: 400px !important;
+  max-width: 550px !important;
+  padding: 25px 25px;
+  width: 50%;
+
+  &-Title {
+    color: #434242 !important;
+    position: absolute;
+    top: 50px;
+    left: 5vw;
+  }
+
+  &-Avatar {
+    margin: auto;
+    color: gray;
+    width: 70px !important;
+    height: 70px !important;
+    font-size: xxx-large !important;
+  }
+  &-EditAvatar {
+    margin: auto;
+  }
+
+  &-Input {
+    width: -webkit-fill-available;
+    border: 1px solid #e5e5e5;
+  }
+
+  &-InputLabel {
+    color: #434242 !important;
+    font-size: 12px !important;
+    margin-bottom: 12px;
+  }
+
+  &-Button {
+    height: 40px;
+    min-width: 200px !important;
+
+    &_Password {
+      background-color: orange !important;
+    }
+    &_Delete {
+      background-color: purple !important;
+    }
+  }
+
+  &-IconButton {
+    color: #bdbdbd !important;
+  }
+}
+
+input {
+  padding: 5px 10px !important;
+}
