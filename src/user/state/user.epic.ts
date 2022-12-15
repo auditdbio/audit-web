@@ -9,12 +9,14 @@ import {
   from,
   map,
   of,
+  ignoreElements,
+  tap,
 } from 'rxjs'
 
 import * as api from 'user/api/user.api'
 import { User } from 'shared/models/User'
-import { userActions, UserState } from 'user/state/user.reducer'
 import { sharedActions } from 'shared/state/shared.reducer'
+import { userActions, UserState } from 'user/state/user.reducer'
 
 type Actions = Observable<PayloadAction>
 type States = Observable<UserState>
@@ -41,7 +43,14 @@ const loginUser: Epic = (action$: Actions, state$: States) =>
     ),
   )
 
-export const changeUserName: Epic = (action$: Actions, state$: States) =>
+const logoutUser: Epic = (action$: Actions, state$: States) =>
+  action$.pipe(
+    filter(userActions.logout.match),
+    tap(() => api.logout()),
+    ignoreElements(),
+  )
+
+const changeUserName: Epic = (action$: Actions, state$: States) =>
   action$.pipe(
     filter(userActions.setUserName.match),
     withLatestFrom(state$.pipe(map((state) => state.user as User))),
@@ -53,7 +62,7 @@ export const changeUserName: Epic = (action$: Actions, state$: States) =>
     ),
   )
 
-export const changeUserPassword: Epic = (action$: Actions, state$: States) =>
+const changeUserPassword: Epic = (action$: Actions, state$: States) =>
   action$.pipe(
     filter(userActions.setUserPassword.match),
     withLatestFrom(state$.pipe(map((state) => state.user as User))),
@@ -65,7 +74,7 @@ export const changeUserPassword: Epic = (action$: Actions, state$: States) =>
     ),
   )
 
-export const deleteCurrentUser: Epic = (action$: Actions, state$: States) =>
+const deleteCurrentUser: Epic = (action$: Actions, state$: States) =>
   action$.pipe(
     filter(userActions.userDelete.match),
     withLatestFrom(state$.pipe(map((state) => state.user as User))),
@@ -77,13 +86,13 @@ export const deleteCurrentUser: Epic = (action$: Actions, state$: States) =>
     ),
   )
 
-export const setAccountTypePreferences: Epic = (action$: Actions, state$: States) =>
+const setAccountTypePreferences: Epic = (action$: Actions, state$: States) =>
   action$.pipe(
     filter(sharedActions.setUserPreferences.match),
     map(({ payload }) => userActions.setAccountTypePreferences(payload)),
   )
 
-export const restoreUserInfo: Epic = (action$: Actions, state$: States) =>
+const restoreUserInfo: Epic = (action$: Actions, state$: States) =>
   action$.pipe(
     filter(userActions.restoreUserInfo.match),
     switchMap(() =>
@@ -96,6 +105,7 @@ export const restoreUserInfo: Epic = (action$: Actions, state$: States) =>
 
 export const userEpics = combineEpics(
   loginUser,
+  logoutUser,
   registerUser,
   changeUserName,
   restoreUserInfo,
