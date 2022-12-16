@@ -1,0 +1,7 @@
+@mixin avatar($size) {
+  margin: auto;
+  color: $gray;
+  width: $size !important;
+  height: $size !important;
+  font-size: xxx-large !important;
+}
