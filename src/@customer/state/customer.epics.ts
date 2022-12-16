@@ -1,3 +1,3 @@
 import { combineEpics } from 'redux-observable'
 
-export const projectsEpics = combineEpics()
+export const customerEpics = combineEpics()

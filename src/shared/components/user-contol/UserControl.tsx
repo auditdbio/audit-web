@@ -104,19 +104,27 @@ export const UserControl: React.FC<{ user: User }> = ({ user }) => {
         }}
       >
         <MenuItem
-          className={bem('Alerts')}
-          data-testid={bem('Alerts')}
-          onClick={handleClose}
-        >
-          Alerts
-        </MenuItem>
-        <MenuItem
           className={bem('Messages')}
           data-testid={bem('Messages')}
-          onClick={handleClose}
+          onClick={() => {
+            navigate('/auditor-page')
+            handleClose()
+          }}
         >
-          Messages
+          Auditor
         </MenuItem>
+
+        <MenuItem
+          className={bem('Alerts')}
+          data-testid={bem('Alerts')}
+          onClick={() => {
+            navigate('/customer-page')
+            handleClose()
+          }}
+        >
+          Customer
+        </MenuItem>
+
         <MenuItem
           className={bem('MyAccount')}
           data-testid={bem('MyAccount')}
@@ -125,8 +133,9 @@ export const UserControl: React.FC<{ user: User }> = ({ user }) => {
             handleClose()
           }}
         >
-          My account
+          User profile
         </MenuItem>
+
         <MenuItem
           className={bem('Logout')}
           data-testid={bem('Logout')}

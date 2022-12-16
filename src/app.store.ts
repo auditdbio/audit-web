@@ -6,27 +6,27 @@ import { combineReducers } from 'redux'
 import { userEpics } from 'user/state/user.epic'
 import { sharedEpics } from 'shared/state/shared.epics'
 import { auditorsEpics } from 'auditors/state/auditors.epics'
-import { projectsEpics } from 'projects/state/projects.epics'
+import { customerEpics } from '@customer/state/customer.epics'
 import { userReducer, UserState } from 'user/state/user.reducer'
 import { sharedReducer, SharedState } from 'shared/state/shared.reducer'
 import { auditorsReducer, AuditorsState } from 'auditors/state/auditors.reducer'
-import { projectsReducer, ProjectsState } from 'projects/state/projects.reducer'
+import { customerReducer, CustomerState } from '@customer/state/customer.reducer'
 
 export type AppState = {
   user: UserState
   shared: SharedState
-  projects: ProjectsState
+  customer: CustomerState
   auditors: AuditorsState
 }
 
 const epicMiddleware = createEpicMiddleware()
-const epics = combineEpics(userEpics, sharedEpics, projectsEpics, auditorsEpics)
+const epics = combineEpics(userEpics, sharedEpics, customerEpics, auditorsEpics)
 
 export const createRootReducer = () =>
   combineReducers({
     user: userReducer,
     shared: sharedReducer,
-    projects: projectsReducer,
+    customer: customerReducer,
     auditors: auditorsReducer,
   })
 
