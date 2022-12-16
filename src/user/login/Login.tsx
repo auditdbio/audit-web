@@ -1,6 +1,3 @@
-import { motion } from 'framer-motion'
-import React, { useEffect } from 'react'
-import Grid from '@mui/material/Unstable_Grid2'
 import {
   Button,
   InputAdornment,
@@ -10,14 +7,17 @@ import {
   Typography,
   InputBase,
 } from '@mui/material'
-import { VisibilityOff, Visibility } from '@mui/icons-material'
-import { useDispatch, useSelector } from 'react-redux'
+import Grid from '@mui/material/Unstable_Grid2'
 import { cn } from '@bem-react/classname'
+import { motion } from 'framer-motion'
+import React, { useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { VisibilityOff, Visibility } from '@mui/icons-material'
 
-import { loginDataValidation } from 'user/helpers/LoginDataCheck'
-import { onlySpaces } from 'shared/helpers/dataValodation'
-import { userActions } from 'user/state/user.reducer'
 import { selectLoginError, selectSuccessMessage } from 'user/state/user.selectors'
+import { loginDataValidation } from 'user/helpers/LoginDataCheck'
+import { userActions } from 'user/state/user.reducer'
+import { onlySpaces } from 'shared/helpers/dataValodation'
 import './Login.scss'
 
 const componentId = 'Login'
@@ -144,7 +144,7 @@ export const Login: React.FC = () => {
         <form autoComplete="off" onSubmit={submitForm}>
           <Grid container spacing={3}>
             <Grid xs={12} className="Email">
-              <InputLabel htmlFor="email-input" className={bem('InputLable')}>
+              <InputLabel htmlFor="email-input" className={bem('InputLabel')}>
                 E-mail
               </InputLabel>
 
@@ -158,7 +158,7 @@ export const Login: React.FC = () => {
             </Grid>
 
             <Grid xs={12} className={bem('Password')}>
-              <InputLabel htmlFor="password-input" className={bem('InputLable')}>
+              <InputLabel htmlFor="password-input" className={bem('InputLabel')}>
                 Password
               </InputLabel>
 

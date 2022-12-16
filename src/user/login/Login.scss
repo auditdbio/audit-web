@@ -8,11 +8,11 @@
   }
 
   &-Input {
-    @include input();
+    @include page-input();
   }
 
-  &-InputLable {
-    @include input-lable();
+  &-InputLabel {
+    @include page-input-label();
   }
 
   &-Button {
