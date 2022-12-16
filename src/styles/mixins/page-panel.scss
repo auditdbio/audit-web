@@ -1,0 +1,15 @@
+@mixin page-panel($padding: $padding-normal, $margin: $margin-normal) {
+  background-color: white;
+  box-shadow: 1px 1px 6px -2px grey;
+  margin-top: 100px !important;
+  min-width: 350px !important;
+  max-width: 550px !important;
+  padding: $padding;
+  position: relative;
+  width: 50%;
+
+  @media (max-width: $screen-xs-width) {
+    margin-top: 40px !important;
+    padding: calc($padding / 2);
+  }
+}

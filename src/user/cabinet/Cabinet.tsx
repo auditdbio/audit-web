@@ -63,7 +63,7 @@ export const Cabinet: React.FC = () => {
           User profile
         </Typography>
 
-        <Grid xs={12} md={3}>
+        <Grid xs={12} md={3} display="flex">
           <Avatar className={bem('Avatar')}>{user.name.substring(0, 1)}</Avatar>
           {/* <Typography
               className={bem('EditAvatar')}

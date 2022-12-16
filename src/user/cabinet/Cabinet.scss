@@ -1,25 +1,14 @@
+@import '../../styles/styles.scss';
+
 .Cabinet {
-  background-color: white;
-  box-shadow: 1px 1px 6px -2px grey;
-  margin-top: 100px !important;
-  min-width: 400px !important;
-  max-width: 550px !important;
-  padding: 25px 25px;
-  width: 50%;
+  @include page-panel();
 
   &-Title {
-    color: #434242 !important;
-    position: absolute;
-    top: 50px;
-    left: 5vw;
+    @include page-title();
   }
 
   &-Avatar {
-    margin: auto;
-    color: gray;
-    width: 70px !important;
-    height: 70px !important;
-    font-size: xxx-large !important;
+    @include avatar(70px);
   }
   &-EditAvatar {
     margin: auto;
@@ -27,29 +16,28 @@
 
   &-Input {
     width: -webkit-fill-available;
-    border: 1px solid #e5e5e5;
+    border: 1px solid $super-light-gray;
   }
 
   &-InputLabel {
-    color: #434242 !important;
-    font-size: 12px !important;
+    color: $text-color !important;
+    font-size: $xs-font-size !important;
     margin-bottom: 12px;
   }
 
   &-Button {
-    height: 40px;
-    min-width: 200px !important;
+    @include page-button();
 
     &_Password {
-      background-color: orange !important;
+      background-color: $primary !important;
     }
     &_Delete {
-      background-color: purple !important;
+      background-color: $secondary !important;
     }
   }
 
   &-IconButton {
-    color: #bdbdbd !important;
+    color: $light-gray !important;
   }
 }
 

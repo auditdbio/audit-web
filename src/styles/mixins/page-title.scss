@@ -1,0 +1,10 @@
+@mixin page-title() {
+  color: $text-color !important;
+  position: absolute;
+  top: -65px;
+  left: 0;
+
+  @media (max-width: $screen-xs-width) {
+    top: -40px;
+  }
+}
