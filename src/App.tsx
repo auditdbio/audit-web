@@ -3,9 +3,9 @@ import { useDispatch } from 'react-redux'
 import { useEffect } from 'react'
 
 import 'App.scss'
-import { Login } from 'user/login/Login'
-import { Cabinet } from 'user/cabinet/Cabinet'
-import { Registation } from 'user/registration/Registation'
+import { Login } from 'user/containers/login/Login'
+import { Profile } from 'user/containers/profile/Profile'
+import { Registation } from 'user/containers/registration/Registation'
 import { userActions } from 'user/state/user.reducer'
 import { AuthGuard, UnAuthGuard } from 'shared/guards'
 import { MainPage } from 'shared/containers/main/MainPage'
@@ -33,7 +33,7 @@ function App() {
         />
         <Route path="/sign-in" element={<UnAuthGuard comp={<Login />} />} />
         <Route path="/sign-up" element={<UnAuthGuard comp={<Registation />} />} />
-        <Route path="/cabinet" element={<AuthGuard comp={<Cabinet />} />} />
+        <Route path="/profile" element={<AuthGuard comp={<Profile />} />} />
         <Route path="/*" element={<Navigate to="/main" />} />
       </Routes>
     </main>

@@ -121,7 +121,7 @@ export const UserControl: React.FC<{ user: User }> = ({ user }) => {
           className={bem('MyAccount')}
           data-testid={bem('MyAccount')}
           onClick={() => {
-            navigate('/cabinet')
+            navigate('/profile')
             handleClose()
           }}
         >

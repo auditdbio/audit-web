@@ -14,7 +14,7 @@ export const UnAuthGuard = ({ comp }: { comp: ReactNode }) => {
 
   const checkUser = (): void => {
     if (user) {
-      navigate(`/cabinet`)
+      navigate(`/profile`)
     }
   }
 

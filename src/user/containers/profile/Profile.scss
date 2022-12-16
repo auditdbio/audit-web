@@ -1,6 +1,6 @@
-@import '../../styles/styles.scss';
+@import 'styles/styles.scss';
 
-.Cabinet {
+.Profile {
   @include page-panel();
 
   &-Title {
@@ -15,14 +15,11 @@
   }
 
   &-Input {
-    width: -webkit-fill-available;
-    border: 1px solid $super-light-gray;
+    @include page-input();
   }
 
   &-InputLabel {
-    color: $text-color !important;
-    font-size: $xs-font-size !important;
-    margin-bottom: 12px;
+    @include page-input-label();
   }
 
   &-Button {

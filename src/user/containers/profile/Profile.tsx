@@ -18,12 +18,12 @@ import { CheckCircleOutline, ModeEdit } from '@mui/icons-material'
 
 import { userActions } from 'user/state/user.reducer'
 import { selectUser } from 'user/state/user.selectors'
-import './Cabinet.scss'
+import './Profile.scss'
 
-const componentId = 'Cabinet'
+const componentId = 'Profile'
 const bem = cn(componentId)
 
-export const Cabinet: React.FC = () => {
+export const Profile: React.FC = () => {
   const user = useSelector(selectUser) as User
 
   const [name, setName] = useState(user.name)
@@ -85,7 +85,7 @@ export const Cabinet: React.FC = () => {
 
               <InputBase
                 id="username-input"
-                className={bem('Input')}
+                className={bem('Input', { disabled: !changName })}
                 onChange={nameEditHandler}
                 defaultValue={user.name}
                 disabled={!changName}
@@ -114,7 +114,7 @@ export const Cabinet: React.FC = () => {
 
             <InputBase
               id="email-input"
-              className={bem('Input')}
+              className={bem('Input', { disabled: true })}
               defaultValue={user.email}
               disabled
             />
