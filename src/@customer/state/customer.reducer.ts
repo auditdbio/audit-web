@@ -43,6 +43,14 @@ const customerSlice = createSlice({
     loadCustomerDataFail(state, action: Action) {
       state.customerPage.loaders.customer = false
     },
+
+    createCustomer(state, action: PayloadAction<Customer>) {},
+    createCustomerSuccess(state, action: PayloadAction<Customer>) {},
+    createCustomerFail(state, action: PayloadAction<string>) {},
+
+    updateCustomer(state, action: PayloadAction<Customer>) {},
+    updateCustomerSuccess(state, action: PayloadAction<Customer>) {},
+    updateCustomerFail(state, action: PayloadAction<string>) {},
   },
 })
 

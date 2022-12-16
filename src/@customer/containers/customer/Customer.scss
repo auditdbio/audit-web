@@ -1,3 +1,19 @@
+@import 'styles/styles.scss';
+
 .Customer {
   display: flex;
+
+  &-Input {
+    @include page-input();
+  }
+
+  &-InputLabel {
+    @include page-input-label();
+  }
+
+  &-Button {
+    @include page-button();
+    background-color: $secondary !important;
+    margin: $margin-top-normal auto !important;
+  }
 }

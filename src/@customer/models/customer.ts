@@ -4,10 +4,10 @@ export type CustomerContacts = {
 }
 
 export type Customer = {
-  _id: string
+  _id?: string
+  about: string
+  company: string
+  contacts: CustomerContacts
   fname: string
   lname: string
-  contacts: CustomerContacts
-  createdAt: string
-  updatedAt: string
 }
