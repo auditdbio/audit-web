@@ -1,44 +1,27 @@
+@import '../../styles/styles.scss';
+
 .Login {
-  margin-top: 5% !important;
-  display: flex;
-  margin: 35px auto;
-  flex-direction: column;
-  width: 90%;
-  max-width: 450px;
+  @include page-panel();
 
-  &-Header {
-    color: dimgray;
-  }
-
-  &-Body {
-    display: flex;
-    margin-top: 35px;
-    flex-direction: column;
-    background-color: white;
-    padding: 45px;
-    inline-size: -moz-fit-content;
-    box-shadow: 1px 1px 6px -2px grey;
-    border-radius: 5px;
+  &-Title {
+    @include page-title();
   }
 
   &-Input {
-    width: -webkit-fill-available;
-    border: 1.5px solid gray;
+    @include input();
+  }
 
-    &_error {
-      border: 1.5px solid red;
-    }
+  &-InputLable {
+    @include input-lable();
   }
 
   &-Button {
-    width: -webkit-fill-available;
-    background-color: purple !important;
-    margin-top: 7px !important;
-    color: white !important;
+    @include page-button();
+    background-color: $secondary !important;
+    margin: $margin-top-normal auto !important;
   }
 
   &-Alert {
-    margin: 30px 0 -2% !important;
     padding-top: 2px !important;
     padding-bottom: 2px !important;
 

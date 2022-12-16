@@ -1,8 +1,12 @@
 @mixin input {
   width: -webkit-fill-available;
-  border: 1px solid $super-light-gray;
+  border: 1px solid $light-gray;
 
   &_error {
     border: 1px solid $red !important;
+  }
+
+  &_disabled {
+    background-color: $super-light-gray !important;
   }
 }

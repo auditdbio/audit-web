@@ -131,21 +131,20 @@ export const Login: React.FC = () => {
 
   return (
     <motion.div
-      className={bem()}
-      data-testid={bem()}
+      className="motion-container"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
     >
-      <Typography variant="h5" className={bem('Header')}>
-        Sign in
-      </Typography>
+      <Grid container spacing={2} className={bem()}>
+        <Typography variant="h5" className={bem('Title')}>
+          Sign in
+        </Typography>
 
-      <div className={bem('Body')}>
         <form autoComplete="off" onSubmit={submitForm}>
           <Grid container spacing={3}>
             <Grid xs={12} className="Email">
-              <InputLabel htmlFor="email-input" className="InputLable">
+              <InputLabel htmlFor="email-input" className={bem('InputLable')}>
                 E-mail
               </InputLabel>
 
@@ -159,7 +158,7 @@ export const Login: React.FC = () => {
             </Grid>
 
             <Grid xs={12} className={bem('Password')}>
-              <InputLabel htmlFor="password-input" className="PasswordLable">
+              <InputLabel htmlFor="password-input" className={bem('InputLable')}>
                 Password
               </InputLabel>
 
@@ -182,7 +181,7 @@ export const Login: React.FC = () => {
               />
             </Grid>
 
-            <Grid xs={12}>
+            <Grid xs={12} display={'flex'}>
               <Button
                 className={bem('Button')}
                 data-testid={bem('Button')}
@@ -213,7 +212,7 @@ export const Login: React.FC = () => {
             </motion.div>
           ) : null}
         </form>
-      </div>
+      </Grid>
     </motion.div>
   )
 }
