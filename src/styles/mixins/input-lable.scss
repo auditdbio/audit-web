@@ -1,0 +1,5 @@
+@mixin input-lable() {
+  color: $text-color !important;
+  font-size: $xs-font-size !important;
+  margin-bottom: 12px;
+}
