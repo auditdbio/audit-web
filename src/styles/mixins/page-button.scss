@@ -1,4 +1,9 @@
 @mixin page-button() {
   height: 35px !important;
   min-width: 200px !important;
+
+  &_disabled {
+    background-color: $super-light-gray !important;
+    color: $light-gray !important;
+  }
 }

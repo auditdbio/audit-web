@@ -14,7 +14,11 @@ import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { VisibilityOff, Visibility } from '@mui/icons-material'
 
-import { selectLoginError, selectSuccessMessage } from 'user/state/user.selectors'
+import {
+  selectLoginError,
+  selectSuccessMessage,
+  selectLogin,
+} from 'user/state/user.selectors'
 import { loginDataValidation } from 'user/helpers/LoginDataCheck'
 import { userActions } from 'user/state/user.reducer'
 import { onlySpaces } from 'shared/helpers/dataValodation'
@@ -26,6 +30,7 @@ const bem = cn(componentId)
 export const Login: React.FC = () => {
   const loginError = useSelector(selectLoginError)
   const successMessage = useSelector(selectSuccessMessage)
+  const loginProcces = useSelector(selectLogin)
   const dispatch = useDispatch()
 
   useEffect(() => {
@@ -184,11 +189,11 @@ export const Login: React.FC = () => {
 
               <Grid xs={12} display={'flex'}>
                 <Button
-                  className={bem('Button')}
+                  className={bem('Button', { disabled: !state.canLog || loginProcces })}
                   data-testid={bem('Button')}
                   type="submit"
                   variant="contained"
-                  // disabled={!state.canLog || loging}
+                  disabled={!state.canLog || loginProcces}
                   sx={{ mt: 4 }}
                   onClick={handleLogin}
                 >
