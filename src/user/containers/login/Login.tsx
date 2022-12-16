@@ -142,57 +142,59 @@ export const Login: React.FC = () => {
         </Typography>
 
         <form autoComplete="off" onSubmit={submitForm}>
-          <Grid container spacing={3}>
-            <Grid xs={12} className="Email">
-              <InputLabel htmlFor="email-input" className={bem('InputLabel')}>
-                E-mail
-              </InputLabel>
+          <Grid xs={12}>
+            <Grid container spacing={3}>
+              <Grid xs={12} className="Email">
+                <InputLabel htmlFor="email-input" className={bem('InputLabel')}>
+                  E-mail
+                </InputLabel>
 
-              <InputBase
-                id="email-input"
-                className={bem('Input', { error: state.emailError })}
-                type="email"
-                error={state.emailError}
-                onChange={hadnleEmailChange}
-              />
-            </Grid>
+                <InputBase
+                  id="email-input"
+                  className={bem('Input', { error: state.emailError })}
+                  type="email"
+                  error={state.emailError}
+                  onChange={hadnleEmailChange}
+                />
+              </Grid>
 
-            <Grid xs={12} className={bem('Password')}>
-              <InputLabel htmlFor="password-input" className={bem('InputLabel')}>
-                Password
-              </InputLabel>
+              <Grid xs={12} className={bem('Password')}>
+                <InputLabel htmlFor="password-input" className={bem('InputLabel')}>
+                  Password
+                </InputLabel>
 
-              <InputBase
-                id="password-input"
-                className={bem('Input', { error: state.passwordError })}
-                onChange={hadnlePasswordChange}
-                type={state.showPassword ? 'text' : 'password'}
-                endAdornment={
-                  <InputAdornment position="end">
-                    <IconButton
-                      tabIndex={-1}
-                      aria-label="toggle password visibility"
-                      onClick={hidePassword}
-                    >
-                      {state.showPassword ? <Visibility /> : <VisibilityOff />}
-                    </IconButton>
-                  </InputAdornment>
-                }
-              />
-            </Grid>
+                <InputBase
+                  id="password-input"
+                  className={bem('Input', { error: state.passwordError })}
+                  onChange={hadnlePasswordChange}
+                  type={state.showPassword ? 'text' : 'password'}
+                  endAdornment={
+                    <InputAdornment position="end">
+                      <IconButton
+                        tabIndex={-1}
+                        aria-label="toggle password visibility"
+                        onClick={hidePassword}
+                      >
+                        {state.showPassword ? <Visibility /> : <VisibilityOff />}
+                      </IconButton>
+                    </InputAdornment>
+                  }
+                />
+              </Grid>
 
-            <Grid xs={12} display={'flex'}>
-              <Button
-                className={bem('Button')}
-                data-testid={bem('Button')}
-                type="submit"
-                variant="contained"
-                // disabled={!state.canLog || loging}
-                sx={{ mt: 4 }}
-                onClick={handleLogin}
-              >
-                Sign in
-              </Button>
+              <Grid xs={12} display={'flex'}>
+                <Button
+                  className={bem('Button')}
+                  data-testid={bem('Button')}
+                  type="submit"
+                  variant="contained"
+                  // disabled={!state.canLog || loging}
+                  sx={{ mt: 4 }}
+                  onClick={handleLogin}
+                >
+                  Sign in
+                </Button>
+              </Grid>
             </Grid>
           </Grid>
 

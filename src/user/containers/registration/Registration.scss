@@ -1,54 +1,42 @@
-.Registration {
-  display: flex;
-  flex-direction: column;
-  background-color: #f5f5f5;
-  padding: 25px 35px;
-  margin: 20px auto;
-  inline-size: -moz-fit-content;
-  border-radius: 10px;
-  box-shadow: 1px 1px 10px -2px grey;
-  width: 70%;
-  max-width: 340px;
+@import 'styles/styles.scss';
 
-  &-Form {
-    display: contents;
+.Registration {
+  @include page-panel;
+
+  &-Title {
+    @include page-title;
+  }
+
+  &-Input {
+    @include page-input;
+  }
+
+  &-InputLabel {
+    @include page-input-label;
+  }
+
+  &-Button {
+    @include page-button;
+    background-color: $secondary !important;
+    margin: 0 auto !important;
   }
 
   &-RolesTitle {
-    color: #504e4e;
-    text-align: center;
+    @include page-input-label;
   }
   &-Role {
     padding: 8px !important;
-  }
 
-  &-Roles {
-    display: flex;
-    justify-content: center;
-  }
-
-  &-Header {
-    display: flex;
-    flex-direction: row;
-    margin: auto;
-    padding: 10px 0;
-    font-size: x-large;
-    font-weight: bold;
-    color: #504e4e;
-    margin-bottom: 10px;
-
-    &-Text {
-      margin: auto;
+    &_auditor {
+      color: $secondary !important;
     }
-
-    &-Button {
-      width: -webkit-fill-available;
-      margin: auto;
-      background-color: #ff9902 !important;
+    &_project {
+      color: $primary !important;
     }
   }
+
   &-Error {
-    margin: 4% 0 -2% !important;
+    margin: $margin-top-normal 0 0 !important;
     background-color: #fcdfdf !important;
     padding-top: 2px !important;
     padding-bottom: 2px !important;
