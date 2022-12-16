@@ -49,7 +49,7 @@ export const Registation: React.FC = () => {
   const navigate = useNavigate()
   const registrating = useSelector(selectRegistration)
   const selectedAccountType = useSelector(selectAccountTypePreferences)
-  const [alignment, setAlignment] = React.useState<AccountType>(selectedAccountType)
+  const [role, setRole] = React.useState<AccountType>(selectedAccountType)
 
   const registerError = useSelector(selectRegistrationError)
   useEffect(() => {
@@ -84,7 +84,7 @@ export const Registation: React.FC = () => {
   })
 
   const [userData, setUserData] = React.useState<RegistrationData>({
-    requestedAccountType: alignment,
+    requestedAccountType: role,
     name: '',
     email: '',
     password: '',
@@ -210,7 +210,7 @@ export const Registation: React.FC = () => {
     event: React.MouseEvent<HTMLElement>,
     accountType: AccountType,
   ) => {
-    setAlignment(accountType)
+    setRole(accountType)
     setUserData((prevState) => ({
       ...prevState,
       requestedAccountType: accountType,
@@ -254,7 +254,7 @@ export const Registation: React.FC = () => {
 
                 <ToggleButtonGroup
                   color="primary"
-                  value={alignment}
+                  value={role}
                   exclusive
                   onChange={handleChange}
                   aria-label="Platform"
@@ -277,19 +277,6 @@ export const Registation: React.FC = () => {
               </Grid>
 
               <Grid xs={12}>
-                {/* <Box
-                  className={bem('UserName')}
-                  data-testid={bem('UserName')}
-                  sx={{ display: 'flex', alignItems: 'flex-end', mt: 1 }}
-                >
-                  <TextField
-                    label="Your user name"
-                    error={state.userNameError}
-                    variant="standard"
-                    sx={{ width: '100%' }}
-                    onChange={handleUserNameChange}
-                  />
-                </Box> */}
                 <InputLabel htmlFor="name-input" className={bem('InputLabel')}>
                   Your user name
                 </InputLabel>
@@ -304,19 +291,6 @@ export const Registation: React.FC = () => {
               </Grid>
 
               <Grid xs={12}>
-                {/* <Box
-                className={bem('Email')}
-                data-testid={bem('Email')}
-                sx={{ display: 'flex', alignItems: 'flex-end', mt: 1 }}
-              >
-                <TextField
-                  id="standard-basic"
-                  label="Your e-mail"
-                  error={state.emailError}
-                  variant="standard"
-                  sx={{ width: '100%' }}
-                />
-              </Box> */}
                 <InputLabel htmlFor="email-input" className={bem('InputLabel')}>
                   Your e-mail
                 </InputLabel>
@@ -330,38 +304,6 @@ export const Registation: React.FC = () => {
               </Grid>
 
               <Grid xs={12}>
-                {/* <Box
-                className={bem('Password')}
-                data-testid={bem('Password')}
-                sx={{ display: 'flex', alignItems: 'flex-end', mt: 1 }}
-              >
-                <FormControl sx={{ width: '100%' }} variant="standard">
-                  <InputLabel
-                    htmlFor="standard-adornment-password"
-                    error={state.passwordError1}
-                  >
-                    Your password
-                  </InputLabel>
-                  <Input
-                    id="standard-adornment-password"
-                    type={state.showPassword1 ? 'text' : 'password'}
-                    error={state.passwordError1}
-                    onChange={hadnlePasswordChange1}
-                    endAdornment={
-                      <InputAdornment position="end">
-                        <IconButton
-                          tabIndex={-1}
-                          aria-label="toggle password visibility"
-                          onClick={hidePassword1}
-                        >
-                          {state.showPassword1 ? <Visibility /> : <VisibilityOff />}
-                        </IconButton>
-                      </InputAdornment>
-                    }
-                  />
-                </FormControl>
-              </Box> */}
-
                 <InputLabel htmlFor="password-input" className={bem('InputLabel')}>
                   Your password
                 </InputLabel>
@@ -387,36 +329,6 @@ export const Registation: React.FC = () => {
               </Grid>
 
               <Grid xs={12}>
-                {/* <Box
-                className={bem('Password')}
-                data-testid={bem('password2')}
-                sx={{ display: 'flex', alignItems: 'flex-end', mt: 1 }}
-              >
-                <FormControl sx={{ width: '100%' }} variant="standard">
-                  <InputLabel
-                    htmlFor="standard-adornment-password"
-                    error={state.passwordError2}
-                  >
-                    Repeat password
-                  </InputLabel>
-                  <Input
-                    type={state.showPassword2 ? 'text' : 'password'}
-                    error={state.passwordError2}
-                    onChange={hadnlePasswordChange2}
-                    endAdornment={
-                      <InputAdornment position="end">
-                        <IconButton
-                          tabIndex={-1}
-                          aria-label="toggle password visibility"
-                          onClick={hidePassword2}
-                        >
-                          {state.showPassword2 ? <Visibility /> : <VisibilityOff />}
-                        </IconButton>
-                      </InputAdornment>
-                    }
-                  />
-                </FormControl>
-              </Box> */}
                 <InputLabel htmlFor="password2-input" className={bem('InputLabel')}>
                   Repeat password
                 </InputLabel>
