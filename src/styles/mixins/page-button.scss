@@ -1,9 +1,17 @@
-@mixin page-button() {
+@mixin page-button($bg: $secondary) {
+  background-color: $bg !important;
   height: 35px !important;
   min-width: 200px !important;
+  margin: 35px auto 0 !important;
 
   &_disabled {
     background-color: $super-light-gray !important;
     color: $light-gray !important;
+  }
+
+  &_second {
+    @media screen and (max-width: $screen-lg-width) {
+      margin: 0 auto !important;
+    }
   }
 }

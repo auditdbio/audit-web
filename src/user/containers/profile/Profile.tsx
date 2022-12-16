@@ -63,7 +63,7 @@ export const Profile: React.FC = () => {
           User profile
         </Typography>
 
-        <Grid xs={12} md={3} display="flex">
+        <Grid xs={12} md={12} lg={3} display="flex">
           <Avatar className={bem('Avatar')}>{user.name.substring(0, 1)}</Avatar>
           {/* <Typography
               className={bem('EditAvatar')}
@@ -76,7 +76,7 @@ export const Profile: React.FC = () => {
             </Typography> */}
         </Grid>
 
-        <Grid xs={12} md={9}>
+        <Grid xs={12} md={12} lg={9}>
           <Grid container spacing={2}>
             <Grid xs={12}>
               <InputLabel htmlFor="username-input" classes={{ root: bem('InputLabel') }}>
@@ -121,9 +121,7 @@ export const Profile: React.FC = () => {
           </Grid>
         </Grid>
 
-        <Grid xs={12}></Grid>
-
-        <Grid xs={12} md={6} display="flex" justifyContent="center">
+        <Grid xs={12} md={12} lg={6} display="flex" justifyContent="center">
           <Button
             className={bem('Button', { Password: true })}
             variant="contained"
@@ -133,9 +131,9 @@ export const Profile: React.FC = () => {
           </Button>
         </Grid>
 
-        <Grid xs={12} md={6} display="flex" justifyContent="center">
+        <Grid xs={12} md={12} lg={6} display="flex" justifyContent="center">
           <Button
-            className={bem('Button', { Delete: true })}
+            className={bem('Button', { Delete: true, second: true })}
             variant="contained"
             onClick={handleDelete}
           >

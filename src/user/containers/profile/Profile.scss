@@ -1,10 +1,10 @@
 @import 'styles/styles.scss';
 
 .Profile {
-  @include page-panel();
+  @include page-panel($page-width-md);
 
   &-Title {
-    @include page-title();
+    @include page-title;
   }
 
   &-Avatar {
@@ -15,15 +15,15 @@
   }
 
   &-Input {
-    @include page-input();
+    @include page-input;
   }
 
   &-InputLabel {
-    @include page-input-label();
+    @include page-input-label;
   }
 
   &-Button {
-    @include page-button();
+    @include page-button;
 
     &_Password {
       background-color: $primary !important;

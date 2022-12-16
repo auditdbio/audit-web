@@ -1,3 +1,15 @@
+// lg > 1200px, md > 992px, sm > 768px, xs > 576px
+$screen-xs-width: 576px;
+$screen-sm-width: 768px;
+$screen-md-width: 992px;
+$screen-lg-width: 1200px;
+
+$page-width-sm: 450px;
+$page-width-md: 600px;
+$page-width-lg: 800px;
+$page-padding: 80px;
+$page-margin: 40px;
+
 $margin-normal: 20px;
 $margin-bottom-normal: 20px;
 $margin-top-normal: 20px;
@@ -7,12 +19,6 @@ $padding-bottom-normal: 25px;
 $padding-top-normal: 25px;
 
 $page-title-font-size: 20px;
-
-$screen-xs-width: 600px;
-$screen-xs-heigh: 800px;
-
-$screen-sm-width: 1000px;
-$screen-sm-heigh: 1300px;
 
 $xs-font-size: 12px;
 $sm-font-size: 14px;

@@ -17,8 +17,6 @@
 
   &-Button {
     @include page-button();
-    background-color: $secondary !important;
-    margin: $margin-top-normal auto !important;
   }
 
   &-Alert {

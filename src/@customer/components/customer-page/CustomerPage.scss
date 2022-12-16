@@ -1,9 +1,9 @@
 @import '../../../styles/styles.scss';
 
 .CustomerPage {
-  @include page-panel();
+  @include page-panel;
 
   &-Title {
-    @include page-title();
+    @include page-title;
   }
 }
