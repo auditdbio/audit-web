@@ -41,19 +41,16 @@ export const Registation: React.FC = () => {
 
   const [switchSelection, setSwitchSelection] = React.useState({
     auditor: false,
-    project: false,
+    customer: false,
   })
 
   useEffect(() => {
     switch (currentAccountType) {
       case 'auditor':
-        setSwitchSelection({ auditor: true, project: false })
+        setSwitchSelection({ auditor: true, customer: false })
         break
       case 'client':
-        setSwitchSelection({ auditor: false, project: true })
-        break
-      default:
-        setSwitchSelection({ auditor: false, project: false })
+        setSwitchSelection({ auditor: false, customer: true })
         break
     }
   }, [currentAccountType])
@@ -173,7 +170,7 @@ export const Registation: React.FC = () => {
   const handleSwitchChange = (event: React.MouseEvent<HTMLDivElement>): void => {
     if ((event.target as HTMLInputElement).id === 'auditor') {
       setCurrentAccountType('auditor')
-    } else if ((event.target as HTMLInputElement).id === 'project') {
+    } else if ((event.target as HTMLInputElement).id === 'customer') {
       setCurrentAccountType('client')
     }
   }
@@ -275,14 +272,14 @@ export const Registation: React.FC = () => {
                       </Grid>
                       <Grid xs={6}>
                         <div
-                          id="project"
+                          id="customer"
                           className={bem('Switches', {
-                            project: true,
-                            disable: !switchSelection.project,
+                            customer: true,
+                            disable: !switchSelection.customer,
                           })}
                           onClick={handleSwitchChange}
                         >
-                          Project
+                          Customer
                         </div>
                       </Grid>
                     </Grid>
