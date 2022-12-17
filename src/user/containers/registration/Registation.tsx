@@ -91,7 +91,7 @@ export const Registation: React.FC = () => {
   })
 
   const [userData, setUserData] = React.useState<RegistrationData>({
-    requestedAccountType: preferedAccountType,
+    requestedAccountType: currentAccountType,
     name: '',
     email: '',
     password: '',
@@ -268,7 +268,11 @@ export const Registation: React.FC = () => {
                           disable: !switchSelection.auditor,
                         })}
                       >
-                        <div id="auditor" onClick={handleSwitchChange}>
+                        <div
+                          id="auditor"
+                          className={bem('SwitchesButton')}
+                          onClick={handleSwitchChange}
+                        >
                           Auditor
                         </div>
                       </Grid>
@@ -279,7 +283,11 @@ export const Registation: React.FC = () => {
                           disable: !switchSelection.project,
                         })}
                       >
-                        <div id="project" onClick={handleSwitchChange}>
+                        <div
+                          id="project"
+                          className={bem('SwitchesButton')}
+                          onClick={handleSwitchChange}
+                        >
                           Project
                         </div>
                       </Grid>

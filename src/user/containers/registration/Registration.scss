@@ -27,9 +27,6 @@
   }
 
   &-Switches {
-    display: flex !important;
-    justify-content: center !important;
-    padding: 10px !important;
     color: $white !important;
     cursor: pointer;
 
@@ -43,6 +40,12 @@
       background-color: #d9d9d9 !important;
       color: $text-color !important;
     }
+  }
+
+  &-SwitchesButton {
+    padding: 10px !important;
+    display: flex !important;
+    justify-content: center !important;
   }
 
   &-Error {
