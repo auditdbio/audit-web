@@ -261,31 +261,25 @@ export const Registation: React.FC = () => {
 
                   <Grid xs={12}>
                     <Grid container spacing={0} className={bem('Switch')}>
-                      <Grid
-                        xs={6}
-                        className={bem('Switches', {
-                          auditor: true,
-                          disable: !switchSelection.auditor,
-                        })}
-                      >
+                      <Grid xs={6}>
                         <div
                           id="auditor"
-                          className={bem('SwitchesButton')}
+                          className={bem('Switches', {
+                            auditor: true,
+                            disable: !switchSelection.auditor,
+                          })}
                           onClick={handleSwitchChange}
                         >
                           Auditor
                         </div>
                       </Grid>
-                      <Grid
-                        xs={6}
-                        className={bem('Switches', {
-                          project: true,
-                          disable: !switchSelection.project,
-                        })}
-                      >
+                      <Grid xs={6}>
                         <div
                           id="project"
-                          className={bem('SwitchesButton')}
+                          className={bem('Switches', {
+                            project: true,
+                            disable: !switchSelection.project,
+                          })}
                           onClick={handleSwitchChange}
                         >
                           Project
