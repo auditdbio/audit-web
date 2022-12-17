@@ -21,17 +21,27 @@
     margin: 0 auto !important;
   }
 
-  &-RolesTitle {
-    @include page-input-label;
+  &-Switch {
+    width: 250px !important;
+    margin: auto !important;
   }
-  &-Role {
-    padding: 8px !important;
+
+  &-Switches {
+    display: flex !important;
+    justify-content: center !important;
+    padding: 10px !important;
+    color: $white !important;
+    cursor: pointer;
 
     &_auditor {
-      color: $secondary !important;
+      background-color: $primary !important;
     }
     &_project {
-      color: $primary !important;
+      background-color: $secondary !important;
+    }
+    &_disable {
+      background-color: #d9d9d9 !important;
+      color: $text-color !important;
     }
   }
 

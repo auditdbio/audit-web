@@ -1,28 +1,15 @@
-import {
-  MailOutline,
-  PersonAdd,
-  Visibility,
-  VisibilityOff,
-  VpnKey,
-  Person,
-} from '@mui/icons-material'
+import { Visibility, VisibilityOff } from '@mui/icons-material'
 import {
   Alert,
-  Box,
   Button,
-  FormControl,
   IconButton,
-  Input,
   InputAdornment,
   InputBase,
   InputLabel,
-  TextField,
-  ToggleButton,
-  ToggleButtonGroup,
   Typography,
 } from '@mui/material'
 import { useDispatch, useSelector } from 'react-redux'
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { cn } from '@bem-react/classname'
@@ -48,8 +35,28 @@ export const Registation: React.FC = () => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
   const registrating = useSelector(selectRegistration)
-  const selectedAccountType = useSelector(selectAccountTypePreferences)
-  const [role, setRole] = React.useState<AccountType>(selectedAccountType)
+  const preferedAccountType = useSelector(selectAccountTypePreferences)
+  const [currentAccountType, setCurrentAccountType] =
+    useState<AccountType>(preferedAccountType)
+
+  const [switchSelection, setSwitchSelection] = React.useState({
+    auditor: false,
+    project: false,
+  })
+
+  useEffect(() => {
+    switch (currentAccountType) {
+      case 'auditor':
+        setSwitchSelection({ auditor: true, project: false })
+        break
+      case 'client':
+        setSwitchSelection({ auditor: false, project: true })
+        break
+      default:
+        setSwitchSelection({ auditor: false, project: false })
+        break
+    }
+  }, [currentAccountType])
 
   const registerError = useSelector(selectRegistrationError)
   useEffect(() => {
@@ -84,7 +91,7 @@ export const Registation: React.FC = () => {
   })
 
   const [userData, setUserData] = React.useState<RegistrationData>({
-    requestedAccountType: role,
+    requestedAccountType: preferedAccountType,
     name: '',
     email: '',
     password: '',
@@ -163,6 +170,14 @@ export const Registation: React.FC = () => {
     }))
   }
 
+  const handleSwitchChange = (event: React.MouseEvent<HTMLDivElement>): void => {
+    if ((event.target as HTMLInputElement).id === 'auditor') {
+      setCurrentAccountType('auditor')
+    } else if ((event.target as HTMLInputElement).id === 'project') {
+      setCurrentAccountType('client')
+    }
+  }
+
   const handleLogin = (): void => {
     if (userData.password !== password2) {
       setState((prevState) => ({
@@ -206,17 +221,6 @@ export const Registation: React.FC = () => {
     }
   }
 
-  const handleChange = (
-    event: React.MouseEvent<HTMLElement>,
-    accountType: AccountType,
-  ) => {
-    setRole(accountType)
-    setUserData((prevState) => ({
-      ...prevState,
-      requestedAccountType: accountType,
-    }))
-  }
-
   const submitForm = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     console.log('submit')
@@ -237,43 +241,51 @@ export const Registation: React.FC = () => {
         <form className={bem('Form')} autoComplete="off" onSubmit={submitForm}>
           <Grid xs={12}>
             <Grid container spacing={2.5}>
-              <Grid
-                xs={12}
-                display={'flex'}
-                flexDirection={'column'}
-                alignItems={'center'}
-              >
-                <Typography
-                  className={bem('RolesTitle')}
-                  variant="caption"
-                  display="block"
-                  gutterBottom
-                >
-                  Choose who you want to be
-                </Typography>
+              <Grid xs={12}>
+                <Grid container spacing={0}>
+                  <Grid
+                    xs={12}
+                    display={'flex'}
+                    flexDirection={'column'}
+                    alignItems={'center'}
+                  >
+                    <Typography
+                      className={bem('RolesTitle')}
+                      variant="caption"
+                      display="block"
+                      gutterBottom
+                    >
+                      Choose who you want to be
+                    </Typography>
+                  </Grid>
 
-                <ToggleButtonGroup
-                  color="primary"
-                  value={role}
-                  exclusive
-                  onChange={handleChange}
-                  aria-label="Platform"
-                >
-                  <ToggleButton
-                    data-testid={bem('role-auditor')}
-                    className={bem('Role', { auditor: true })}
-                    value="auditor"
-                  >
-                    auditor
-                  </ToggleButton>
-                  <ToggleButton
-                    data-testid={bem('role-project')}
-                    className={bem('Role', { project: true })}
-                    value="client"
-                  >
-                    client
-                  </ToggleButton>
-                </ToggleButtonGroup>
+                  <Grid xs={12}>
+                    <Grid container spacing={0} className={bem('Switch')}>
+                      <Grid
+                        xs={6}
+                        className={bem('Switches', {
+                          auditor: true,
+                          disable: !switchSelection.auditor,
+                        })}
+                      >
+                        <div id="auditor" onClick={handleSwitchChange}>
+                          Auditor
+                        </div>
+                      </Grid>
+                      <Grid
+                        xs={6}
+                        className={bem('Switches', {
+                          project: true,
+                          disable: !switchSelection.project,
+                        })}
+                      >
+                        <div id="project" onClick={handleSwitchChange}>
+                          Project
+                        </div>
+                      </Grid>
+                    </Grid>
+                  </Grid>
+                </Grid>
               </Grid>
 
               <Grid xs={12}>
