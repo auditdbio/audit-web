@@ -1,33 +1,12 @@
-import axios, { Axios, AxiosError, AxiosResponse } from 'axios'
-
-import { SERVER, PORT_USERS, MOCK_API } from 'app.constants'
+import { SERVER, PORT_FOR_USERS, MOCK_API } from 'app.constants'
+import { ServerUser, userAdaptor } from 'user/api/adaptors/userAdaptor'
 import { RegistrationData } from 'user/helpers/RegistrationDataCheck'
-import { LoginData } from 'user/helpers/LoginDataCheck'
 import { mockedUser, User } from 'shared/models/User'
-import { ServerUser, userAdaptor } from './adaptors/userAdaptor'
+import { LoginData } from 'user/helpers/LoginDataCheck'
+import api from 'app.api'
 
-export const axiosNoAuth = axios.create({
-  baseURL: SERVER + ':' + PORT_USERS + '/api',
-})
-
-export const axiosForUsers = axios.create({
-  baseURL: SERVER + ':' + PORT_USERS + '/api',
-  headers: {
-    'Content-Type': 'application/json',
-  },
-  // withCredentials: true,
-})
-
-axiosForUsers.interceptors.request.use(
-  (config: any) => {
-    if (!config.headers['Authorization']) {
-      const token = localStorage.getItem('token')
-      config.headers['Authorization'] = `Bearer ${token}`
-    }
-    return config
-  },
-  (error: any) => Promise.reject(error),
-)
+const http = api(PORT_FOR_USERS)
+const httpNoAuth = api(PORT_FOR_USERS, false)
 
 export const create = async (user: RegistrationData): Promise<User> => {
   if (MOCK_API) {
@@ -44,7 +23,7 @@ export const create = async (user: RegistrationData): Promise<User> => {
     })
   }
   try {
-    const response = await axiosNoAuth.post('/users', user)
+    const response = await httpNoAuth.post('/users', user)
     return response.data
   } catch (e: any) {
     throw new Error(e.response.data.message)
@@ -63,7 +42,7 @@ export const login = async (data: LoginData): Promise<User> => {
     })
   }
   try {
-    const response = await axiosNoAuth.post<{ token: string; user: ServerUser }>(
+    const response = await httpNoAuth.post<{ token: string; user: ServerUser }>(
       '/auth/login',
       data,
     )
@@ -91,7 +70,7 @@ export const changeName = async (name: string): Promise<any> => {
     })
   }
   // return axiosForUsers.put('/users/name', { name }).then((response) => response.data)
-  return await fetch(SERVER + ':' + PORT_USERS + '/api/users', {
+  return await fetch(SERVER + ':' + PORT_FOR_USERS + '/api/users', {
     method: 'PATCH',
     body: JSON.stringify({ name }),
     headers: {
@@ -118,7 +97,7 @@ export const changePassword = (password: string, email: string): Promise<User> =
           resolve(mockedUser)
         }, 1000)
       })
-    : axiosForUsers.put('/users/password', { password }).then((response) => response.data)
+    : http.put('/users/password', { password }).then((response) => response.data)
 
 export const remove = async (): Promise<any> => {
   if (MOCK_API) {
@@ -130,7 +109,7 @@ export const remove = async (): Promise<any> => {
   }
   try {
     // return await axiosForUsers.delete('/users').then((response) => response.data)
-    return fetch(SERVER + ':' + PORT_USERS + '/api/users', {
+    return fetch(SERVER + ':' + PORT_FOR_USERS + '/api/users', {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',
@@ -156,7 +135,7 @@ export const restore = async (): Promise<User> => {
 
     if (!token) throw new Error('No token in the storage')
 
-    return await axiosForUsers.post('/auth/restore').then((response) => {
+    return await http.post('/auth/restore').then((response) => {
       localStorage.setItem('token', response.data.token)
 
       return response.data.user

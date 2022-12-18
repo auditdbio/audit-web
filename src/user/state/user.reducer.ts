@@ -33,7 +33,7 @@ export const initialUserState: UserState = {
   registrationError: null,
   registrationSuccess: false,
   registrationSuccessMessage: null,
-  accountTypePreferences: 'client',
+  accountTypePreferences: 'customer',
 }
 
 export const userSlice = createSlice({

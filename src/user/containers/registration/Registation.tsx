@@ -34,7 +34,7 @@ const bem = cn(componentId)
 export const Registation: React.FC = () => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
-  const registrating = useSelector(selectRegistration)
+  const registering = useSelector(selectRegistration)
   const preferedAccountType = useSelector(selectAccountTypePreferences)
   const [currentAccountType, setCurrentAccountType] =
     useState<AccountType>(preferedAccountType)
@@ -49,7 +49,7 @@ export const Registation: React.FC = () => {
       case 'auditor':
         setSwitchSelection({ auditor: true, customer: false })
         break
-      case 'client':
+      case 'customer':
         setSwitchSelection({ auditor: false, customer: true })
         break
     }
@@ -58,8 +58,8 @@ export const Registation: React.FC = () => {
   const registerError = useSelector(selectRegistrationError)
   useEffect(() => {
     if (registerError !== null) {
-      setState((old) => ({
-        ...old,
+      setState((state) => ({
+        ...state,
         registationError: true,
         errorMessage: registerError,
       }))
@@ -83,7 +83,7 @@ export const Registation: React.FC = () => {
     showPassword1: false,
     showPassword2: false,
     passwordConfirm: false,
-    canLog: false,
+    noErrors: false,
     errorMessage: '',
   })
 
@@ -106,13 +106,13 @@ export const Registation: React.FC = () => {
       !onlySpaces(password2) &&
       password2.length > 0
     ) {
-      setState((old) => ({ ...old, canLog: true }))
+      setState((state) => ({ ...state, noErrors: true }))
     } else {
-      setState((old) => ({ ...old, canLog: false }))
+      setState((state) => ({ ...state, noErrors: false }))
     }
 
-    setState((old) => ({
-      ...old,
+    setState((state) => ({
+      ...state,
       errorMessage: '',
       registationError: false,
     }))
@@ -171,7 +171,7 @@ export const Registation: React.FC = () => {
     if ((event.target as HTMLInputElement).id === 'auditor') {
       setCurrentAccountType('auditor')
     } else if ((event.target as HTMLInputElement).id === 'customer') {
-      setCurrentAccountType('client')
+      setCurrentAccountType('customer')
     }
   }
 
@@ -195,20 +195,20 @@ export const Registation: React.FC = () => {
         dispatch(userActions.resetErrors())
         dispatch(userActions.registration(userData))
       } else if (!resp.status && resp.emailError) {
-        setState((old) => ({
-          ...old,
+        setState((state) => ({
+          ...state,
           emailError: resp.emailError,
           errorMessage: resp.message,
         }))
       } else if (!resp.status && resp.passwordError) {
-        setState((old) => ({
-          ...old,
+        setState((state) => ({
+          ...state,
           passwordError: resp.passwordError,
           errorMessage: resp.message,
         }))
       } else if (!resp.status && resp.userNameError) {
-        setState((old) => ({
-          ...old,
+        setState((state) => ({
+          ...state,
           userNameError: resp.userNameError,
           errorMessage: resp.message,
         }))
@@ -366,11 +366,11 @@ export const Registation: React.FC = () => {
 
               <Grid xs={12} display={'flex'}>
                 <Button
-                  className={bem('Button', { disabled: !state.canLog || registrating })}
+                  className={bem('Button', { disabled: !state.noErrors || registering })}
                   data-testid={bem('Button')}
                   type="submit"
                   variant="contained"
-                  disabled={!state.canLog || registrating}
+                  disabled={!state.noErrors || registering}
                   sx={{ mt: 4 }}
                   onClick={handleLogin}
                 >

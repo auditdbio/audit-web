@@ -187,7 +187,7 @@ export const Login: React.FC = () => {
                 />
               </Grid>
 
-              <Grid xs={12} display={'flex'}>
+              <Grid xs={12} display="flex">
                 <Button
                   className={bem('Button', { disabled: !state.canLog || loginProcces })}
                   data-testid={bem('Button')}

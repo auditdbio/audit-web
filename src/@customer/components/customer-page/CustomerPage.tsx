@@ -1,27 +1,53 @@
-import { Box, Grid, Typography } from '@mui/material'
-import { useSelector } from 'react-redux'
-import { useParams } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux'
+import React, { useEffect } from 'react'
+import { Box, Typography } from '@mui/material'
 import { motion } from 'framer-motion'
 import TabContext from '@mui/lab/TabContext'
 import TabPanel from '@mui/lab/TabPanel'
 import TabList from '@mui/lab/TabList'
 import { cn } from '@bem-react/classname'
-import React from 'react'
 import Tab from '@mui/material/Tab'
 
 import './CustomerPage.scss'
-
-import { Customer } from '@customer/containers/customer/Customer'
+import {
+  selectCustomer,
+  selectCustomerErrorMessage,
+  selectCustomerSuccessMessage,
+  selectLoadingCustomer,
+  selectProcessingCustomer,
+} from '@customer/state/customer.selectors'
+import { CustomerPanel } from '@customer/containers/customer/CustomerPanel'
+import { customerActions } from '@customer/state/customer.reducer'
 
 const componentId = 'CustomerPage'
 const bem = cn(componentId)
 
 export const CustomerPage: React.FC = () => {
+  const dispatch = useDispatch()
+
+  const customer = useSelector(selectCustomer)
+  const customerErrorMessage = useSelector(selectCustomerErrorMessage)
+  const customerSuccessMessage = useSelector(selectCustomerSuccessMessage)
+  const loadingCustomer = useSelector(selectLoadingCustomer)
+  const processingCustomer = useSelector(selectProcessingCustomer)
+
   const [value, setValue] = React.useState('3')
 
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
     setValue(newValue)
   }
+
+  const submitCustomer = (customerData: any) =>
+    customerData._id
+      ? dispatch(customerActions.updateCustomer(customerData))
+      : dispatch(customerActions.createCustomer(customerData))
+
+  const deleteCustomer = (id: string) => dispatch(customerActions.deleteCustomer(id))
+
+  // Load customer data
+  useEffect(() => {
+    if (value === '3') dispatch(customerActions.loadCustomerData())
+  }, [value])
 
   return (
     <motion.div
@@ -46,7 +72,15 @@ export const CustomerPage: React.FC = () => {
           <TabPanel value="1">Audits</TabPanel>
           <TabPanel value="2">Projects</TabPanel>
           <TabPanel value="3">
-            <Customer />
+            <CustomerPanel
+              customer={customer}
+              errorMessage={customerErrorMessage}
+              loading={loadingCustomer}
+              processing={processingCustomer}
+              successMessage={customerSuccessMessage}
+              remove={deleteCustomer}
+              submit={submitCustomer}
+            />
           </TabPanel>
         </TabContext>
       </Box>

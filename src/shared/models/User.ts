@@ -9,7 +9,7 @@ export type User = {
 
 export type UserRole = 'admin' | 'user'
 
-export type AccountType = 'auditor' | 'client'
+export type AccountType = 'auditor' | 'customer'
 
 export const mockedUser: User = {
   name: 'Jon Doe',

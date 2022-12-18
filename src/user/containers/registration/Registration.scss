@@ -21,7 +21,7 @@
 
   &-Switch {
     width: 250px !important;
-    margin: auto !important;
+    margin: 0 auto 20px !important;
   }
 
   &-Switches {
@@ -44,7 +44,7 @@
   }
 
   &-Error {
-    margin: $margin-top-normal 0 0 !important;
+    margin: $margin-normal 0 0 !important;
     background-color: #fcdfdf !important;
     padding-top: 2px !important;
     padding-bottom: 2px !important;

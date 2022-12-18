@@ -36,8 +36,8 @@ export const Welcome: React.FC<WelcomeProps> = ({ onSelect }) => {
 
         <Button
           variant="contained"
-          className={bem('Button', { client: true })}
-          onClick={() => onSelect('client')}
+          className={bem('Button', { customer: true })}
+          onClick={() => onSelect('customer')}
         >
           Show your project
         </Button>

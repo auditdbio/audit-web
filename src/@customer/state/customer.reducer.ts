@@ -13,6 +13,11 @@ export type CustomerState = {
       projects: boolean
       customer: boolean
     }
+    processing: {
+      customer: boolean
+      customerError: string
+      customerSuccess: string
+    }
   }
 }
 
@@ -26,6 +31,11 @@ const initialCustomerState: CustomerState = {
       customer: false,
       projects: false,
     },
+    processing: {
+      customer: false,
+      customerError: '',
+      customerSuccess: '',
+    },
   },
 }
 
@@ -35,22 +45,60 @@ const customerSlice = createSlice({
   reducers: {
     loadCustomerData(state, action: Action) {
       state.customerPage.loaders.customer = true
+      state.customerPage.processing.customerError = ''
+      state.customerPage.processing.customerSuccess = ''
     },
-    loadCustomerDataSuccess(state, action: PayloadAction<Customer>) {
+    loadCustomerDataSuccess(state, action: PayloadAction<Customer | null>) {
       state.customerPage.customer = action.payload
       state.customerPage.loaders.customer = false
     },
-    loadCustomerDataFail(state, action: Action) {
+    loadCustomerDataFail(state, action: PayloadAction<string>) {
       state.customerPage.loaders.customer = false
     },
 
-    createCustomer(state, action: PayloadAction<Customer>) {},
-    createCustomerSuccess(state, action: PayloadAction<Customer>) {},
-    createCustomerFail(state, action: PayloadAction<string>) {},
+    createCustomer(state, action: PayloadAction<Customer>) {
+      state.customerPage.processing.customer = true
+      state.customerPage.processing.customerError = ''
+      state.customerPage.processing.customerSuccess = ''
+    },
+    createCustomerSuccess(state, action: PayloadAction<Customer>) {
+      state.customerPage.customer = action.payload
+      state.customerPage.processing.customer = false
+      state.customerPage.processing.customerSuccess = 'Customer created successfully'
+    },
+    createCustomerFail(state, action: PayloadAction<string>) {
+      state.customerPage.processing.customer = false
+      state.customerPage.processing.customerError = action.payload
+    },
 
-    updateCustomer(state, action: PayloadAction<Customer>) {},
-    updateCustomerSuccess(state, action: PayloadAction<Customer>) {},
-    updateCustomerFail(state, action: PayloadAction<string>) {},
+    updateCustomer(state, action: PayloadAction<Customer>) {
+      state.customerPage.processing.customer = true
+      state.customerPage.processing.customerError = ''
+      state.customerPage.processing.customerSuccess = ''
+    },
+    updateCustomerSuccess(state, action: PayloadAction<Customer>) {
+      state.customerPage.customer = action.payload
+      state.customerPage.processing.customer = false
+      state.customerPage.processing.customerSuccess = 'Customer updated successfully'
+    },
+    updateCustomerFail(state, action: PayloadAction<string>) {
+      state.customerPage.processing.customer = false
+      state.customerPage.processing.customerError = action.payload
+    },
+
+    deleteCustomer(state, action: PayloadAction<string>) {
+      state.customerPage.processing.customer = true
+      state.customerPage.processing.customerError = ''
+      state.customerPage.processing.customerSuccess = ''
+    },
+    deleteCustomerSuccess(state, action: PayloadAction<string>) {
+      state.customerPage.processing.customer = false
+      state.customerPage.processing.customerSuccess = 'Customer deleted successfully'
+    },
+    deleteCustomerFail(state, action: PayloadAction<string>) {
+      state.customerPage.processing.customer = false
+      state.customerPage.processing.customerError = action.payload
+    },
   },
 })
 

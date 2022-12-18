@@ -1,6 +1,6 @@
 @import 'styles/styles.scss';
 
-.Customer {
+.CustomerPanel {
   display: flex;
 
   &-Input {
@@ -13,5 +13,10 @@
 
   &-Button {
     @include page-button;
+    margin-bottom: $margin-normal !important;
+  }
+
+  &-Alert {
+    @include page-alert;
   }
 }

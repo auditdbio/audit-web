@@ -1,50 +1,50 @@
-import { Button, Grid, InputBase, InputLabel } from '@mui/material'
-import { useDispatch, useSelector } from 'react-redux'
+import { Alert, Button, Grid, InputBase, InputLabel } from '@mui/material'
 import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import { cn } from '@bem-react/classname'
 
-import './Customer.scss'
-import { customerActions } from '@customer/state/customer.reducer'
-import { selectCustomer, selectLoadingCustomer } from '@customer/state/customer.selectors'
+import './CustomerPanel.scss'
+import { Customer } from '@customer/models/customer'
+import { onlySpaces } from 'shared/helpers/dataValodation'
 
-const componentId = 'Customer'
+const componentId = 'CustomerPanel'
 const bem = cn(componentId)
 
-export const Customer: React.FC = () => {
-  const customer = useSelector(selectCustomer)
-  const loading = useSelector(selectLoadingCustomer)
-  const dispatch = useDispatch()
+const initialCustomerData: Customer = {
+  _id: undefined,
+  fname: '',
+  lname: '',
+  about: '',
+  company: '',
+  contacts: {
+    email: '',
+    telegram: '',
+  },
+}
 
-  useEffect(() => {
-    customerActions.loadCustomerData()
-  }, [])
+type CustomerPanelProps = {
+  customer: Customer | null
+  remove: (id: string) => void
+  errorMessage: string
+  loading: boolean
+  processing: boolean
+  submit: (c: Customer) => void
+  successMessage: string
+}
 
-  const handleSubmit = (): void => {
-    if (customerData._id) {
-      dispatch(customerActions.createCustomer(customerData))
-    } else {
-      dispatch(customerActions.updateCustomer(customerData))
-    }
-  }
+export const CustomerPanel: React.FC<CustomerPanelProps> = ({
+  customer,
+  remove,
+  errorMessage,
+  loading,
+  processing,
+  successMessage,
+  submit,
+}) => {
+  const submitForm = (event: React.FormEvent<HTMLFormElement>) => event.preventDefault()
+  const [customerData, setCustomerData] = useState<Customer>(initialCustomerData)
 
-  const submitForm = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
-  }
-
-  const [customerData, setCustomerData] = useState({
-    _id: undefined,
-    fname: '',
-    lname: '',
-    about: '',
-    company: '',
-    contacts: {
-      email: '',
-      telegram: '',
-    },
-  })
-
-  const [errors, setErrorsState] = useState({
+  const [errors, setErrors] = useState({
     fname: false,
     lname: false,
     about: false,
@@ -53,6 +53,7 @@ export const Customer: React.FC = () => {
       email: false,
       telegram: false,
     },
+    noErrors: true,
     errorMessage: '',
   })
 
@@ -65,13 +66,13 @@ export const Customer: React.FC = () => {
       [field]: event.target.value.trim(),
     }))
 
-    setErrorsState((prevState) => ({
+    setErrors((prevState) => ({
       ...prevState,
       [field]: false,
     }))
   }
 
-  const handleContactChange = (
+  const handleContactsChange = (
     event: React.ChangeEvent<HTMLInputElement>,
     contact: string,
   ): void => {
@@ -83,7 +84,7 @@ export const Customer: React.FC = () => {
       },
     }))
 
-    setErrorsState((prevState) => ({
+    setErrors((prevState) => ({
       ...prevState,
       contacts: {
         ...prevState.contacts,
@@ -91,6 +92,51 @@ export const Customer: React.FC = () => {
       },
     }))
   }
+
+  // Check for errors in form
+  useEffect(() => {
+    if (
+      !onlySpaces(customerData.fname) &&
+      customerData.fname.length > 0 &&
+      !onlySpaces(customerData.fname) &&
+      customerData.lname.length > 0 &&
+      !onlySpaces(customerData.about) &&
+      customerData.about.length > 0 &&
+      !onlySpaces(customerData.contacts.email) &&
+      customerData.contacts.email.length > 0
+    ) {
+      setErrors((state) => ({ ...state, noErrors: true }))
+    } else {
+      setErrors((state) => ({ ...state, noErrors: false }))
+    }
+
+    setErrors((state) => ({ ...state, errorMessage: '' }))
+  }, [
+    customerData.fname,
+    customerData.lname,
+    customerData.about,
+    customerData.contacts.email,
+  ])
+
+  // Handle customer loaded from server
+  useEffect(() => {
+    if (customer) {
+      setCustomerData(customer)
+    } else {
+      setCustomerData(initialCustomerData)
+    }
+  }, [customer])
+
+  // Handle server error
+  useEffect(() => {
+    if (errorMessage) {
+      setErrors((state) => ({
+        ...state,
+        noErrors: false,
+        errorMessage,
+      }))
+    }
+  }, [errorMessage])
 
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
@@ -108,6 +154,7 @@ export const Customer: React.FC = () => {
                 id="fname-input"
                 className={bem('Input', { error: errors.fname })}
                 type="text"
+                value={customerData.fname}
                 error={errors.fname}
                 onChange={(e) =>
                   handleFieldChange(e as React.ChangeEvent<HTMLInputElement>, 'fname')
@@ -124,6 +171,7 @@ export const Customer: React.FC = () => {
                 id="lname-input"
                 className={bem('Input', { error: errors.lname })}
                 type="text"
+                value={customerData.lname}
                 error={errors.fname}
                 onChange={(e) =>
                   handleFieldChange(e as React.ChangeEvent<HTMLInputElement>, 'lname')
@@ -140,6 +188,7 @@ export const Customer: React.FC = () => {
                 id="about-input"
                 className={bem('Input', { error: errors.about })}
                 type="text"
+                value={customerData.about}
                 error={errors.fname}
                 onChange={(e) =>
                   handleFieldChange(e as React.ChangeEvent<HTMLInputElement>, 'about')
@@ -156,6 +205,7 @@ export const Customer: React.FC = () => {
                 id="company-input"
                 className={bem('Input', { error: errors.company })}
                 type="text"
+                value={customerData.company}
                 error={errors.fname}
                 onChange={(e) =>
                   handleFieldChange(e as React.ChangeEvent<HTMLInputElement>, 'company')
@@ -172,9 +222,10 @@ export const Customer: React.FC = () => {
                 id="email-input"
                 className={bem('Input', { error: errors.contacts.email })}
                 type="text"
+                value={customerData.contacts.email}
                 error={errors.contacts.email}
                 onChange={(e) =>
-                  handleContactChange(e as React.ChangeEvent<HTMLInputElement>, 'email')
+                  handleContactsChange(e as React.ChangeEvent<HTMLInputElement>, 'email')
                 }
               />
             </Grid>
@@ -188,9 +239,10 @@ export const Customer: React.FC = () => {
                 id="telegram-input"
                 className={bem('Input', { error: errors.contacts.telegram })}
                 type="text"
+                value={customerData.contacts.telegram}
                 error={errors.fname}
                 onChange={(e) =>
-                  handleContactChange(
+                  handleContactsChange(
                     e as React.ChangeEvent<HTMLInputElement>,
                     'telegram',
                   )
@@ -200,18 +252,34 @@ export const Customer: React.FC = () => {
 
             <Grid item xs={12} display="flex">
               <Button
-                className={bem('Button')}
+                className={bem('Button', { disabled: !errors.noErrors || processing })}
                 data-testid={bem('Button')}
                 type="submit"
                 variant="contained"
-                // disabled={!state.canLog || loging}
+                disabled={!errors.noErrors || processing}
                 sx={{ mt: 4 }}
-                onClick={handleSubmit}
+                onClick={() => submit(customerData)}
               >
-                Save
+                {customerData._id ? 'Save' : 'Create'}
               </Button>
             </Grid>
           </Grid>
+
+          {errors.errorMessage ? (
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+              <Alert className={bem('Alert', { error: true })} severity="error">
+                {errors.errorMessage}
+              </Alert>
+            </motion.div>
+          ) : null}
+
+          {successMessage ? (
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+              <Alert className={bem('Alert', { success: true })} severity="success">
+                {successMessage}
+              </Alert>
+            </motion.div>
+          ) : null}
         </form>
       )}
     </motion.div>

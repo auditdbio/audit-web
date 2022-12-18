@@ -2,7 +2,6 @@ import { Navigate, Route, Routes, useLocation } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
 import { useEffect } from 'react'
 
-import 'App.scss'
 import { Login } from 'user/containers/login/Login'
 import { Profile } from 'user/containers/profile/Profile'
 import { MainPage } from 'shared/containers/main/MainPage'
@@ -21,7 +20,7 @@ function App() {
   }, [])
 
   return (
-    <main className="App" style={{ width: '100vh' }}>
+    <main className="App" style={{ width: '100%' }}>
       <Routes location={location} key={location.pathname}>
         <Route path="/main" element={<MainPage />} />
         <Route

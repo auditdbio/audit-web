@@ -3,16 +3,17 @@
   border: 1px solid $light-gray;
   width: -webkit-fill-available;
 
-  input:-webkit-autofill,
-  input:-webkit-autofill:focus {
+  > input:-webkit-autofill,
+  > input:-webkit-autofill:focus {
     transition: background-color 600000s 0s, color 600000s 0s;
   }
-  input[data-autocompleted] {
+  > input[data-autocompleted] {
     background-color: transparent !important;
   }
 
-  input {
+  > input {
     color: $text-color;
+    padding: 5px 10px !important;
   }
 
   &_error {

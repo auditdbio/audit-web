@@ -1,37 +1,25 @@
 @import 'styles/styles.scss';
 
 .Login {
-  @include page-panel();
+  @include page-panel;
 
   &-Title {
-    @include page-title();
+    @include page-title;
   }
 
   &-Input {
-    @include page-input();
+    @include page-input;
   }
 
   &-InputLabel {
-    @include page-input-label();
+    @include page-input-label;
   }
 
   &-Button {
-    @include page-button();
+    @include page-button;
   }
 
   &-Alert {
-    padding-top: 2px !important;
-    padding-bottom: 2px !important;
-
-    &_success {
-      background-color: rgb(212, 245, 212) !important;
-    }
-    &_error {
-      background-color: #fcdfdf !important;
-    }
+    @include page-alert;
   }
-}
-
-input {
-  padding: 5px 10px !important;
 }

@@ -1,0 +1,11 @@
+@mixin page-alert {
+  padding-top: 2px !important;
+  padding-bottom: 2px !important;
+
+  &_success {
+    background-color: $success-bg-color !important;
+  }
+  &_error {
+    background-color: $error-bg-color !important;
+  }
+}
