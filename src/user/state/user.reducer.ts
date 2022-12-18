@@ -1,8 +1,8 @@
 import { Action, createSlice, PayloadAction } from '@reduxjs/toolkit'
 
+import { AccountType, User } from 'shared/models/User'
 import { RegistrationData } from 'user/helpers/RegistrationDataCheck'
 import { LoginData } from 'user/helpers/LoginDataCheck'
-import { AccountType, mockedUser, User } from 'shared/models/User'
 
 export type UserState = {
   user: User | null
@@ -21,7 +21,7 @@ export type UserState = {
 }
 
 export const initialUserState: UserState = {
-  user: null, //mockedUser
+  user: null,
   progress: {
     login: false,
     registration: false,
@@ -79,7 +79,7 @@ export const userSlice = createSlice({
     },
     setSuccessMessage: (state, action: Action) => {
       state.registrationSuccessMessage =
-        'Congrats, you have successfully registered! Now please log in to your account.'
+        'You have successfully registered! Now please log in to your account.'
     },
     resetSuccessMessage: (state, action: Action) => {
       state.registrationSuccessMessage = null

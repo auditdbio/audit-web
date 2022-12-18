@@ -54,6 +54,7 @@ const customerSlice = createSlice({
     },
     loadCustomerDataFail(state, action: PayloadAction<string>) {
       state.customerPage.loaders.customer = false
+      state.customerPage.processing.customerError = action.payload
     },
 
     createCustomer(state, action: PayloadAction<Customer>) {
@@ -91,7 +92,7 @@ const customerSlice = createSlice({
       state.customerPage.processing.customerError = ''
       state.customerPage.processing.customerSuccess = ''
     },
-    deleteCustomerSuccess(state, action: PayloadAction<string>) {
+    deleteCustomerSuccess(state, action: Action) {
       state.customerPage.processing.customer = false
       state.customerPage.processing.customerSuccess = 'Customer deleted successfully'
     },

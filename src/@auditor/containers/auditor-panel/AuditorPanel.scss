@@ -1,0 +1,22 @@
+@import 'styles/styles.scss';
+
+.AuditorPanel {
+  display: flex;
+
+  &-Input {
+    @include page-input;
+  }
+
+  &-InputLabel {
+    @include page-input-label;
+  }
+
+  &-Button {
+    @include page-button;
+    margin-bottom: $margin-normal !important;
+  }
+
+  &-Alert {
+    @include page-alert;
+  }
+}

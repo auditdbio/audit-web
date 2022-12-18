@@ -1,33 +1,33 @@
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux'
 import { combineEpics, createEpicMiddleware } from 'redux-observable'
-import { configureStore } from '@reduxjs/toolkit'
 import { combineReducers } from 'redux'
+import { configureStore } from '@reduxjs/toolkit'
 
 import { userEpics } from 'user/state/user.epic'
 import { sharedEpics } from 'shared/state/shared.epics'
-import { auditorsEpics } from 'auditors/state/auditors.epics'
+import { auditorEpics } from '@auditor/state/auditor.epics'
 import { customerEpics } from '@customer/state/customer.epics'
 import { userReducer, UserState } from 'user/state/user.reducer'
 import { sharedReducer, SharedState } from 'shared/state/shared.reducer'
-import { auditorsReducer, AuditorsState } from 'auditors/state/auditors.reducer'
+import { auditorReducer, AuditorState } from '@auditor/state/auditor.reducer'
 import { customerReducer, CustomerState } from '@customer/state/customer.reducer'
 
 export type AppState = {
   user: UserState
   shared: SharedState
   customer: CustomerState
-  auditors: AuditorsState
+  auditor: AuditorState
 }
 
 const epicMiddleware = createEpicMiddleware()
-const epics = combineEpics(userEpics, sharedEpics, customerEpics, auditorsEpics)
+const epics = combineEpics(userEpics, sharedEpics, customerEpics, auditorEpics)
 
 export const createRootReducer = () =>
   combineReducers({
     user: userReducer,
     shared: sharedReducer,
     customer: customerReducer,
-    auditors: auditorsReducer,
+    auditor: auditorReducer,
   })
 
 export const store = configureStore({

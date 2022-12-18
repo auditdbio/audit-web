@@ -1,0 +1,9 @@
+@import '../../../styles/styles.scss';
+
+.AuditorPage {
+  @include page-panel;
+
+  &-Title {
+    @include page-title;
+  }
+}

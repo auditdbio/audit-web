@@ -1,10 +1,14 @@
+import { AxiosInstance } from 'axios'
+
 import { MOCK_API, PORT_FOR_CUSTOMERS } from 'app.constants'
 import { Customer, mockedCustomer } from '@customer/models/customer'
 import api from 'app.api'
 
-const http = api(PORT_FOR_CUSTOMERS)
+let http: AxiosInstance
+const buildApi = () => (http = api(PORT_FOR_CUSTOMERS))
 
 export const create = async (customer: Customer): Promise<Customer> => {
+  if (!http) buildApi()
   if (MOCK_API) {
     return new Promise<Customer>((resolve, reject) => {
       setTimeout(() => {
@@ -30,6 +34,7 @@ export const create = async (customer: Customer): Promise<Customer> => {
 }
 
 export const get = async (): Promise<Customer | null> => {
+  if (!http) buildApi()
   if (MOCK_API) {
     return new Promise<Customer>((resolve, reject) => {
       setTimeout(() => {
@@ -52,6 +57,7 @@ export const get = async (): Promise<Customer | null> => {
 }
 
 export const update = async (customer: Customer): Promise<Customer> => {
+  if (!http) buildApi()
   if (MOCK_API) {
     return new Promise<Customer>((resolve, reject) => {
       setTimeout(() => {

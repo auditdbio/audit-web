@@ -1,5 +1,5 @@
 import { SERVER, PORT_FOR_USERS, MOCK_API } from 'app.constants'
-import { ServerUser, userAdaptor } from 'user/api/adaptors/userAdaptor'
+import { ServerUser, userAdaptor } from 'user/api/user.adaptor'
 import { RegistrationData } from 'user/helpers/RegistrationDataCheck'
 import { mockedUser, User } from 'shared/models/User'
 import { LoginData } from 'user/helpers/LoginDataCheck'

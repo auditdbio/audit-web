@@ -9,6 +9,7 @@ import { Registation } from 'user/containers/registration/Registation'
 import { userActions } from 'user/state/user.reducer'
 import { CustomerPage } from '@customer/components/customer-page/CustomerPage'
 import { AuthGuard, UnAuthGuard } from 'shared/guards'
+import { AuditorPage } from '@auditor/components/auditor-page/AuditorPage'
 
 function App() {
   const location = useLocation()
@@ -23,10 +24,7 @@ function App() {
     <main className="App" style={{ width: '100%' }}>
       <Routes location={location} key={location.pathname}>
         <Route path="/main" element={<MainPage />} />
-        <Route
-          path="/auditor-page"
-          element={<AuthGuard comp={<div>Here will be your auditor profile</div>} />}
-        />
+        <Route path="/auditor-page" element={<AuthGuard comp={<AuditorPage />} />} />
         <Route path="/customer-page" element={<AuthGuard comp={<CustomerPage />} />} />
         <Route path="/sign-in" element={<UnAuthGuard comp={<Login />} />} />
         <Route path="/sign-up" element={<UnAuthGuard comp={<Registation />} />} />
