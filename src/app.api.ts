@@ -1,10 +1,6 @@
 import axios from 'axios'
 
-import { SERVER, PORT_FOR_USERS } from 'app.constants'
-
-// export const axiNoAuth = axios.create({
-//   baseURL: SERVER + ':' + PORT_FOR_USERS + '/api',
-// })
+import { SERVER } from 'app.constants'
 
 const axi = (port: string, auth = true) => {
   const headers: Record<string, string> = {

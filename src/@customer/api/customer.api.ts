@@ -1,25 +1,27 @@
-import { PORT_FOR_CUSTOMERS } from 'app.constants'
-import { Customer } from '@customer/models/customer'
+import { MOCK_API, PORT_FOR_CUSTOMERS } from 'app.constants'
+import { Customer, mockedCustomer } from '@customer/models/customer'
 import api from 'app.api'
 
 const http = api(PORT_FOR_CUSTOMERS)
 
 export const create = async (customer: Customer): Promise<Customer> => {
-  //   if (MOCK_API) {
-  //     return new Promise<Customer>((resolve, reject) => {
-  //       setTimeout(() => {
-  //         resolve({
-  //           ...mockedCustomer,
-  //           fname: customer.fname,
-  //           lname: customer.lname,
-  //           company: customer.company,
-  //           about: customer.about,
-  //           contacts: customer.contacts,
-  //         })
-  //       }, 1000)
-  //     })
-  //   }
+  if (MOCK_API) {
+    return new Promise<Customer>((resolve, reject) => {
+      setTimeout(() => {
+        resolve({
+          ...mockedCustomer,
+          fname: customer.fname,
+          lname: customer.lname,
+          company: customer.company,
+          about: customer.about,
+          contacts: customer.contacts,
+        })
+      }, 1000)
+    })
+  }
+
   try {
+    debugger
     const response = await http.post('/customers', customer)
     return response.data
   } catch (e: any) {
@@ -28,13 +30,14 @@ export const create = async (customer: Customer): Promise<Customer> => {
 }
 
 export const get = async (): Promise<Customer | null> => {
-  //   if (MOCK_API) {
-  //     return new Promise<Customer>((resolve, reject) => {
-  //       setTimeout(() => {
-  //         resolve(mockedCustomer)
-  //       }, 1000)
-  //     })
-  //   }
+  if (MOCK_API) {
+    return new Promise<Customer>((resolve, reject) => {
+      setTimeout(() => {
+        resolve(mockedCustomer)
+      }, 1000)
+    })
+  }
+
   try {
     const response = await http.get('/customers')
 
@@ -49,20 +52,21 @@ export const get = async (): Promise<Customer | null> => {
 }
 
 export const update = async (customer: Customer): Promise<Customer> => {
-  //   if (MOCK_API) {
-  //     return new Promise<Customer>((resolve, reject) => {
-  //       setTimeout(() => {
-  //         resolve({
-  //           ...mockedCustomer,
-  //           fname: customer.fname,
-  //           lname: customer.lname,
-  //           company: customer.company,
-  //           about: customer.about,
-  //           contacts: customer.contacts,
-  //         })
-  //       }, 1000)
-  //     })
-  //   }
+  if (MOCK_API) {
+    return new Promise<Customer>((resolve, reject) => {
+      setTimeout(() => {
+        resolve({
+          ...mockedCustomer,
+          fname: customer.fname,
+          lname: customer.lname,
+          company: customer.company,
+          about: customer.about,
+          contacts: customer.contacts,
+        })
+      }, 1000)
+    })
+  }
+
   try {
     const response = await http.patch('/customers', customer)
 

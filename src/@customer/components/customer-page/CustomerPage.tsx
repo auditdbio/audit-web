@@ -16,7 +16,7 @@ import {
   selectLoadingCustomer,
   selectProcessingCustomer,
 } from '@customer/state/customer.selectors'
-import { CustomerPanel } from '@customer/containers/customer/CustomerPanel'
+import { CustomerPanel } from '@customer/containers/customer-panel/CustomerPanel'
 import { customerActions } from '@customer/state/customer.reducer'
 
 const componentId = 'CustomerPage'
