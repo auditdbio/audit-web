@@ -21,8 +21,8 @@ export const create = async (customer: Customer): Promise<Customer> => {
   }
 
   try {
-    debugger
     const response = await http.post('/customers', customer)
+
     return response.data
   } catch (e: any) {
     throw new Error(e.response.data.message)

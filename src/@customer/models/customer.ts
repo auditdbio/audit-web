@@ -22,6 +22,7 @@ export const mockedCustomer: Customer = {
   lname: 'Doe',
   contacts: {
     email: 'jon.doe@gmail.com',
+    telegram: '@jon_doe',
   },
   created: '2020-01-01',
   updated: '2020-01-01',

@@ -21,7 +21,7 @@
 
   &-Switch {
     width: 250px !important;
-    margin: 0 auto 20px !important;
+    margin: 0 auto $margin-normal !important;
   }
 
   &-Switches {
@@ -38,14 +38,14 @@
       background-color: $secondary !important;
     }
     &_disable {
-      background-color: #d9d9d9 !important;
+      background-color: $disabled-bg-color !important;
       color: $text-color !important;
     }
   }
 
   &-Error {
     margin: $margin-normal 0 0 !important;
-    background-color: #fcdfdf !important;
+    background-color: $error-bg-color !important;
     padding-top: 2px !important;
     padding-bottom: 2px !important;
   }
