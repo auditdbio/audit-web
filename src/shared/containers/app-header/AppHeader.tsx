@@ -31,7 +31,7 @@ export const AppHeader: React.FC = () => {
         {user === null ? <HeaderLinks navigator={navigate} /> : null}
       </Grid>
 
-      <Grid xs={8.5} md={4} display="flex">
+      <Grid xs={8} md={4} display="flex">
         {user === null ? (
           <motion.div
             className={bem('Buttons')}
