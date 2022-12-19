@@ -1,3 +1,5 @@
+@import 'styles/styles.scss';
+
 .UserControl {
   display: flex;
   flex-direction: row;
@@ -12,5 +14,17 @@
   &-UserName {
     margin: auto !important;
     color: black;
+  }
+
+  &-Auditor {
+    @media screen and (min-width: $screen-xs-width) {
+      display: none !important;
+    }
+  }
+
+  &-Customer {
+    @media screen and (min-width: $screen-xs-width) {
+      display: none !important;
+    }
   }
 }

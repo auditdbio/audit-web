@@ -12,15 +12,10 @@ import { useNavigate } from 'react-router-dom'
 const componentId = 'UserControl'
 const bem = cn(componentId)
 
-export const UserControl: React.FC<{ user: User; smallDisplay: boolean }> = ({
-  user,
-  smallDisplay,
-}) => {
+export const UserControl: React.FC<{ user: User }> = ({ user }) => {
   const dispatch = useDispatch()
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
   const navigate = useNavigate()
-
-  // const open = Boolean(anchorEl)
 
   const handleClose = () => {
     setAnchorEl(null)
@@ -104,8 +99,8 @@ export const UserControl: React.FC<{ user: User; smallDisplay: boolean }> = ({
         }}
       >
         <MenuItem
-          className={bem('Messages')}
-          data-testid={bem('Messages')}
+          className={bem('Auditor')}
+          data-testid={bem('Auditor')}
           onClick={() => {
             navigate('/auditor-page')
             handleClose()
@@ -115,8 +110,8 @@ export const UserControl: React.FC<{ user: User; smallDisplay: boolean }> = ({
         </MenuItem>
 
         <MenuItem
-          className={bem('Alerts')}
-          data-testid={bem('Alerts')}
+          className={bem('Customer')}
+          data-testid={bem('Customer')}
           onClick={() => {
             navigate('/customer-page')
             handleClose()

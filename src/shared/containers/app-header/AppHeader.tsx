@@ -18,11 +18,6 @@ const bem = cn(componentId)
 export const AppHeader: React.FC = () => {
   const user = useSelector(selectUser)
   const navigate = useNavigate()
-  const displayIsSmall = useRef(false)
-
-  useEffect(() => {
-    displayIsSmall.current = window.innerWidth < 650
-  }, [])
 
   return (
     <Grid container spacing={2} className={bem()} data-testid={bem()}>
@@ -32,11 +27,11 @@ export const AppHeader: React.FC = () => {
           <form className={bem('DB')}>DB</form>
         </Box>
       </Grid>
-      <Grid xs={0} md={5} display="flex">
+      <Grid xs={0} md={4.5} display="flex">
         {user === null ? <HeaderLinks navigator={navigate} /> : null}
       </Grid>
 
-      <Grid xs={8} md={4} display="flex">
+      <Grid xs={8.5} md={4.5} display="flex">
         {user === null ? (
           <motion.div
             className={bem('Buttons')}
@@ -70,8 +65,8 @@ export const AppHeader: React.FC = () => {
             exit={{ opacity: 0 }}
             className={bem('UserPanel')}
           >
-            {!displayIsSmall.current ? <UserNavigate navigator={navigate} /> : null}
-            <UserControl user={user} smallDisplay={displayIsSmall.current} />
+            <UserNavigate navigator={navigate} />
+            <UserControl user={user} />
           </motion.div>
         )}
       </Grid>
