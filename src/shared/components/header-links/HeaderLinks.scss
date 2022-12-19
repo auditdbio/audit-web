@@ -1,0 +1,24 @@
+@import 'styles/styles.scss';
+
+.HeaderLinks {
+  display: flex;
+  flex-direction: row;
+  margin: auto !important;
+  @media screen and (max-width: ($page-width-sm * 2)) {
+    display: none;
+  }
+
+  &-Links {
+    display: flex !important;
+    flex-direction: row;
+    justify-content: center;
+    cursor: pointer;
+    margin: 0 $margin-normal;
+    min-width: fit-content;
+    color: $text-color !important;
+  }
+
+  &-Icon {
+    margin: auto;
+  }
+}

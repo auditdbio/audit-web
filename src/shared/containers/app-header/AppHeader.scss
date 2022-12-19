@@ -1,3 +1,5 @@
+@import 'styles/styles.scss';
+
 .AppHeader {
   display: flex;
   flex-direction: row;
@@ -6,55 +8,51 @@
   &-Logo {
     color: white;
     cursor: pointer;
-    margin-left: 3%;
+    margin: 0 10px;
     display: inline-flex;
-  }
-  &-Audit {
-    color: #53176d;
-  }
-  &-DB {
-    color: #ff9902;
-  }
-
-  &-Panel {
-    color: white;
-    display: flex;
-    flex: 1;
-    justify-content: center;
-    margin-left: 3%;
-
-    @media screen and (max-width: 700px) {
-      width: 0;
-      opacity: 0 !important;
-      height: 0;
+    margin: auto 0;
+    padding: $padding-normal/2 $padding-normal;
+    font-size: $page-title-font-size * 1.5;
+    font-weight: bold !important;
+    @media screen and (max-width: $screen-xs-width) {
+      //sisez will be fix in future ( font need to me implemented)
+      font-size: $page-title-font-size * 1.2;
     }
   }
 
-  &-Links {
-    display: flex;
-    justify-content: right;
-    margin-right: 2%;
-    margin-left: auto;
+  &-Audit {
+    color: $secondary;
+  }
+  &-DB {
+    color: $primary;
   }
 
-  &-Link {
-    align-self: center;
-    margin: 1.5% !important;
-    color: black !important;
-    cursor: pointer;
+  &-Buttons {
+    margin: auto;
+    display: flex !important;
+    flex-direction: row;
+    margin: auto 0 auto auto;
   }
 
   &-Sign {
-    min-width: fit-content !important;
-    box-shadow: 0 0 !important;
-    margin: 5% !important;
+    @include page-button($primary);
+    min-width: 100px !important;
+    margin: 0 10px !important;
+    box-shadow: 0 0 0 0 !important;
 
     &_in {
-      background-color: #ff9902 !important;
+      margin-left: auto !important;
     }
     &_up {
       color: #53176d !important;
+      background: none !important;
       border: 1.5px solid #53176d !important;
     }
+  }
+
+  &-UserPanel {
+    display: flex;
+    flex-direction: row;
+    margin: auto 0 auto auto;
   }
 }
