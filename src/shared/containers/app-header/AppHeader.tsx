@@ -1,5 +1,5 @@
 import Grid from '@mui/material/Unstable_Grid2'
-import React from 'react'
+import React, { useEffect, useRef } from 'react'
 import { cn } from '@bem-react/classname'
 import { motion } from 'framer-motion'
 import { Box, Button } from '@mui/material'
@@ -18,6 +18,11 @@ const bem = cn(componentId)
 export const AppHeader: React.FC = () => {
   const user = useSelector(selectUser)
   const navigate = useNavigate()
+  const displayIsSmall = useRef(false)
+
+  useEffect(() => {
+    displayIsSmall.current = window.innerWidth < 650
+  }, [])
 
   return (
     <Grid container spacing={2} className={bem()} data-testid={bem()}>
@@ -65,8 +70,8 @@ export const AppHeader: React.FC = () => {
             exit={{ opacity: 0 }}
             className={bem('UserPanel')}
           >
-            <UserNavigate navigator={navigate} />
-            <UserControl user={user} />
+            {!displayIsSmall.current ? <UserNavigate navigator={navigate} /> : null}
+            <UserControl user={user} smallDisplay={displayIsSmall.current} />
           </motion.div>
         )}
       </Grid>

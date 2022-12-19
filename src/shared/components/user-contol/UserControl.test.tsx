@@ -12,12 +12,12 @@ describe('UserControl', () => {
     updated: '234234',
   }
   it('should render', () => {
-    const { getByTestId } = render(<UserControl user={user} />)
+    const { getByTestId } = render(<UserControl user={user} smallDisplay={true} />)
     expect(getByTestId('UserControl')).toBeInTheDocument()
   })
 
   it('should render with user name', () => {
-    const { getByTestId } = render(<UserControl user={user} />)
+    const { getByTestId } = render(<UserControl user={user} smallDisplay={true} />)
     expect(getByTestId('UserControl-UserName')).toHaveTextContent(user.name)
   })
 })

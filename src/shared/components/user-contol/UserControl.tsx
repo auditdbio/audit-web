@@ -12,7 +12,10 @@ import { useNavigate } from 'react-router-dom'
 const componentId = 'UserControl'
 const bem = cn(componentId)
 
-export const UserControl: React.FC<{ user: User }> = ({ user }) => {
+export const UserControl: React.FC<{ user: User; smallDisplay: boolean }> = ({
+  user,
+  smallDisplay,
+}) => {
   const dispatch = useDispatch()
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
   const navigate = useNavigate()
@@ -53,9 +56,6 @@ export const UserControl: React.FC<{ user: User }> = ({ user }) => {
           data-testid={bem('IconButton')}
           onClick={handleIconClick}
           size="small"
-          // aria-controls={open ? 'account-menu' : undefined}
-          // aria-haspopup="true"
-          // aria-expanded={open ? 'true' : undefined}
         >
           <Avatar>{user.name.substring(0, 1)}</Avatar>
         </IconButton>

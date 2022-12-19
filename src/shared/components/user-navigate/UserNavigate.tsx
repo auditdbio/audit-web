@@ -75,7 +75,7 @@ export const UserNavigate: React.FC<{ navigator: (location: string) => void }> =
         <MenuItem>View audits</MenuItem>
       </Menu>
 
-      {/* <div
+      <div
         className={bem('Links', { projects: true })}
         aria-controls={openPr ? 'basic-menu' : undefined}
         aria-haspopup="true"
@@ -84,7 +84,7 @@ export const UserNavigate: React.FC<{ navigator: (location: string) => void }> =
       >
         <Link className={bem('Link')}>Projects</Link>
         <ArrowDropDown className={bem('Icon')} />
-      </div> */}
+      </div>
 
       <Menu
         className={bem('ProjectsMenu')}
