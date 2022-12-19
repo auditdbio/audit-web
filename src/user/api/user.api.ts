@@ -80,7 +80,7 @@ export const changeName = async (name: string): Promise<any> => {
   })
     .then((response) => {
       if (response.ok) {
-        return response.json()
+        return response.json().then(userAdaptor)
       } else {
         return Promise.reject(response.statusText)
       }
@@ -97,7 +97,9 @@ export const changePassword = (password: string, email: string): Promise<User> =
           resolve(mockedUser)
         }, 1000)
       })
-    : http.put('/users/password', { password }).then((response) => response.data)
+    : http
+        .put('/users/password', { password })
+        .then((response) => userAdaptor(response.data))
 
 export const remove = async (): Promise<any> => {
   if (MOCK_API) {
@@ -138,7 +140,7 @@ export const restore = async (): Promise<User> => {
     return await http.post('/auth/restore').then((response) => {
       localStorage.setItem('token', response.data.token)
 
-      return response.data.user
+      return userAdaptor(response.data.user)
     })
   } catch (e: any) {
     throw new Error(e.response?.data?.message || `Can't restore user`)

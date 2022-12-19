@@ -13,8 +13,10 @@ export const UnAuthGuard = ({ comp }: { comp: ReactNode }) => {
   }, [comp, user])
 
   const checkUser = (): void => {
-    if (user) {
-      navigate(`/profile`)
+    if (user?.accountType === 'customer') {
+      navigate(`/customer-page`)
+    } else if (user?.accountType === 'auditor') {
+      navigate(`/auditor-page`)
     }
   }
 
