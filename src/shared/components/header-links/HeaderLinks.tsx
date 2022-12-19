@@ -1,6 +1,6 @@
 import React from 'react'
 import { cn } from '@bem-react/classname'
-import { Box, Link } from '@mui/material'
+import { Box } from '@mui/material'
 import { motion } from 'framer-motion'
 import { ArrowDropDown } from '@mui/icons-material'
 
