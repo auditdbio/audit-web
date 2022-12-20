@@ -1,0 +1,26 @@
+@import 'styles/styles.scss';
+
+.ProjectPage {
+  @include page-panel;
+
+  &-Title {
+    @include page-title;
+  }
+
+  &-Input {
+    @include page-input;
+  }
+
+  &-InputLabel {
+    @include page-input-label;
+  }
+
+  &-Button {
+    @include page-button;
+    margin-bottom: $margin-normal !important;
+  }
+
+  &-Alert {
+    @include page-alert;
+  }
+}

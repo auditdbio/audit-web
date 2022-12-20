@@ -1,4 +1,4 @@
-import { Alert, Button, Grid, InputBase, InputLabel } from '@mui/material'
+import { Alert, Button, Grid, InputBase, InputLabel, TextField } from '@mui/material'
 import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import { cn } from '@bem-react/classname'
@@ -9,7 +9,6 @@ import { onlySpaces } from 'shared/helpers/dataValodation'
 
 const componentId = 'AuditorPanel'
 const bem = cn(componentId)
-
 const initialAuditorData: Auditor = {
   _id: undefined,
   fname: '',
@@ -60,10 +59,11 @@ export const AuditorPanel: React.FC<AuditorPanelProps> = ({
   const handleFieldChange = (
     event: React.ChangeEvent<HTMLInputElement>,
     field: string,
+    trim = true,
   ): void => {
     setAuditorData((prevState) => ({
       ...prevState,
-      [field]: event.target.value.trim(),
+      [field]: trim ? event.target.value.trim() : event.target.value,
     }))
 
     setErrors((prevState) => ({
@@ -184,14 +184,21 @@ export const AuditorPanel: React.FC<AuditorPanelProps> = ({
                 About
               </InputLabel>
 
-              <InputBase
+              <TextField
+                multiline
+                rows={5}
+                variant="outlined"
                 id="about-input"
                 className={bem('Input', { error: errors.about })}
                 type="text"
                 value={auditorData.about}
                 error={errors.fname}
                 onChange={(e) =>
-                  handleFieldChange(e as React.ChangeEvent<HTMLInputElement>, 'about')
+                  handleFieldChange(
+                    e as React.ChangeEvent<HTMLInputElement>,
+                    'about',
+                    false,
+                  )
                 }
               />
             </Grid>

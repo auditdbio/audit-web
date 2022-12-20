@@ -8,7 +8,7 @@
   margin-top: 100px !important;
   min-width: 300px !important;
   max-width: $width !important;
-  padding: $padding;
+  padding: calc($padding-normal * 2) $padding;
   position: relative;
   width: 50%;
 

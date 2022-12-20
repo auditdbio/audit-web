@@ -1,0 +1,26 @@
+@import 'styles/styles.scss';
+
+.ProjectCard {
+  background-color: #fafafa;
+  display: flex;
+  flex-direction: column;
+  padding: $padding-normal;
+
+  &-Name {
+    font-weight: bold;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+
+  &-Tags {
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: $margin-normal;
+  }
+
+  &-Button {
+    @include page-button($primary);
+    margin: auto !important;
+    min-width: 80px !important;
+  }
+}

@@ -25,11 +25,9 @@ const bem = cn(componentId)
 
 export const Profile: React.FC = () => {
   const user = useSelector(selectUser) as User
-
+  const dispatch = useDispatch()
   const [name, setName] = useState(user.name)
   const [changName, setChangeName] = useState<Boolean>(false)
-
-  const dispatch = useDispatch()
 
   const editUsername = (): void => {
     setChangeName((prev) => !prev)

@@ -1,0 +1,22 @@
+@import 'styles/styles.scss';
+
+.ProjectsPanel {
+  display: flex;
+  flex-direction: column;
+
+  &-Header {
+    width: 100%;
+    display: flex;
+    margin-bottom: $margin-normal;
+  }
+
+  &-Button {
+    @include page-button($primary);
+
+    margin: auto !important;
+  }
+
+  &-Projects {
+    display: flex;
+  }
+}

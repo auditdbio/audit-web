@@ -48,7 +48,7 @@ export const Login: React.FC = () => {
     return () => {
       dispatch(userActions.resetSuccessMessage())
     }
-  }, [])
+  }, [dispatch])
 
   const [state, setState] = React.useState({
     loginError: false,
@@ -65,7 +65,8 @@ export const Login: React.FC = () => {
 
   useEffect(() => {
     dispatch(userActions.resetErrors())
-  }, [])
+  }, [dispatch])
+
   useEffect(() => {
     if (
       userData.email.length > 0 &&

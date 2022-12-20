@@ -6,17 +6,31 @@ import { Customer } from '@customer/models/customer'
 export type CustomerState = {
   customerPage: {
     audits: any[]
-    customer: Customer | null
     projects: Project[]
+    customer: Customer | null
+
     loaders: {
       audits: boolean
       projects: boolean
       customer: boolean
     }
+
     processing: {
       customer: boolean
       customerError: string
       customerSuccess: string
+    }
+  }
+
+  projectPage: {
+    isNewProject: boolean
+    customerIdForProject: string
+    project: Project | null
+    loader: boolean
+    processing: {
+      project: boolean
+      projectError: string
+      projectSuccess: string
     }
   }
 }
@@ -37,12 +51,24 @@ const initialCustomerState: CustomerState = {
       customerSuccess: '',
     },
   },
+  projectPage: {
+    isNewProject: false,
+    customerIdForProject: '',
+    project: null,
+    loader: false,
+    processing: {
+      project: false,
+      projectError: '',
+      projectSuccess: '',
+    },
+  },
 }
 
 const customerSlice = createSlice({
   name: 'customer',
   initialState: initialCustomerState,
   reducers: {
+    // #region Customer Page
     loadCustomerData(state, action: Action) {
       state.customerPage.loaders.customer = true
       state.customerPage.processing.customerError = ''
@@ -100,6 +126,91 @@ const customerSlice = createSlice({
       state.customerPage.processing.customer = false
       state.customerPage.processing.customerError = action.payload
     },
+
+    loadCustomerProjects(state, action: PayloadAction<string>) {
+      state.customerPage.loaders.projects = true
+    },
+    loadCustomerProjectsSuccess(state, action: PayloadAction<Project[]>) {
+      state.customerPage.projects = action.payload
+      state.customerPage.loaders.projects = false
+    },
+    loadCustomerProjectsFail(state, action: PayloadAction<string>) {
+      state.customerPage.loaders.projects = false
+    },
+
+    loadCustomerAudits(state, action: PayloadAction<string>) {
+      state.customerPage.loaders.audits = true
+    },
+    loadCustomerAuditsSuccess(state, action: PayloadAction<any[]>) {
+      state.customerPage.audits = action.payload
+      state.customerPage.loaders.audits = false
+    },
+    loadCustomerAuditsFail(state, action: PayloadAction<string>) {
+      state.customerPage.loaders.audits = false
+    },
+
+    addProject(state, action: Action) {},
+    editProject(state, action: PayloadAction<Project>) {},
+    removeProject(state, action: PayloadAction<string>) {},
+
+    // #endregion
+
+    // #region Project Page
+    loadProject(state, action: PayloadAction<string>) {
+      state.projectPage.loader = true
+      state.projectPage.processing.projectError = ''
+      state.projectPage.processing.projectSuccess = ''
+    },
+    loadProjectSuccess(state, action: PayloadAction<Project | null>) {
+      state.projectPage.project = action.payload
+      state.projectPage.loader = false
+    },
+    loadProjectFail(state, action: PayloadAction<string>) {
+      state.projectPage.loader = false
+      state.projectPage.processing.projectError = action.payload
+    },
+
+    createProject(state, action: PayloadAction<Project>) {
+      state.projectPage.processing.project = true
+      state.projectPage.processing.projectError = ''
+      state.projectPage.processing.projectSuccess = ''
+    },
+    createProjectSuccess(state, action: PayloadAction<Project>) {
+      state.projectPage.project = action.payload
+      state.projectPage.processing.project = false
+      state.projectPage.processing.projectSuccess = 'Project created successfully'
+    },
+    createProjectFail(state, action: PayloadAction<string>) {
+      state.projectPage.processing.project = false
+      state.projectPage.processing.projectError = action.payload
+    },
+
+    updateProject(state, action: PayloadAction<Project>) {
+      state.projectPage.processing.project = true
+      state.projectPage.processing.projectError = ''
+      state.projectPage.processing.projectSuccess = ''
+    },
+    updateProjectSuccess(state, action: PayloadAction<Project>) {
+      state.projectPage.project = action.payload
+      state.projectPage.processing.project = false
+      state.projectPage.processing.projectSuccess = 'Project updated successfully'
+    },
+    updateProjectFail(state, action: PayloadAction<string>) {
+      state.projectPage.processing.project = false
+      state.projectPage.processing.projectError = action.payload
+    },
+
+    deleteProject(state, action: PayloadAction<string>) {
+      state.projectPage.processing.project = true
+      state.projectPage.processing.projectError = ''
+      state.projectPage.processing.projectSuccess = ''
+    },
+
+    setCustomerIdForProject(state, action: PayloadAction<[string, boolean]>) {
+      state.projectPage.customerIdForProject = action.payload[0]
+      state.projectPage.isNewProject = action.payload[1]
+    },
+    // #endregion
   },
 })
 

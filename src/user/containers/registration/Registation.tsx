@@ -72,7 +72,7 @@ export const Registation: React.FC = () => {
       navigate('/sign-in')
       dispatch(userActions.setSuccessMessage())
     }
-  }, [registrationSuccess])
+  }, [registrationSuccess, navigate, dispatch])
 
   const [state, setState] = React.useState({
     registationError: false,
