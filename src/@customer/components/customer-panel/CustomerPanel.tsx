@@ -60,10 +60,11 @@ export const CustomerPanel: React.FC<CustomerPanelProps> = ({
   const handleFieldChange = (
     event: React.ChangeEvent<HTMLInputElement>,
     field: string,
+    trim = true,
   ): void => {
     setCustomerData((prevState) => ({
       ...prevState,
-      [field]: event.target.value.trim(),
+      [field]: trim ? event.target.value.trim() : event.target.value,
     }))
 
     setErrors((prevState) => ({
@@ -191,7 +192,11 @@ export const CustomerPanel: React.FC<CustomerPanelProps> = ({
                 value={customerData.about}
                 error={errors.fname}
                 onChange={(e) =>
-                  handleFieldChange(e as React.ChangeEvent<HTMLInputElement>, 'about')
+                  handleFieldChange(
+                    e as React.ChangeEvent<HTMLInputElement>,
+                    'about',
+                    false,
+                  )
                 }
               />
             </Grid>
@@ -208,7 +213,11 @@ export const CustomerPanel: React.FC<CustomerPanelProps> = ({
                 value={customerData.company}
                 error={errors.fname}
                 onChange={(e) =>
-                  handleFieldChange(e as React.ChangeEvent<HTMLInputElement>, 'company')
+                  handleFieldChange(
+                    e as React.ChangeEvent<HTMLInputElement>,
+                    'company',
+                    false,
+                  )
                 }
               />
             </Grid>

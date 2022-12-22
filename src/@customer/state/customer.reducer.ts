@@ -68,6 +68,9 @@ const customerSlice = createSlice({
   name: 'customer',
   initialState: initialCustomerState,
   reducers: {
+    resetCustomerState: (state, action: Action) => {
+      state = initialCustomerState
+    },
     // #region Customer Page
     loadCustomerData(state, action: Action) {
       state.customerPage.loaders.customer = true

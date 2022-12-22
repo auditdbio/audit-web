@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from 'react-redux'
 import React, { useEffect, useState } from 'react'
 import { Box, Typography } from '@mui/material'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import TabContext from '@mui/lab/TabContext'
 import { motion } from 'framer-motion'
 import TabPanel from '@mui/lab/TabPanel'
@@ -19,7 +19,6 @@ import {
   selectLoadingCustomer,
   selectProcessingCustomer,
 } from '@customer/state/customer.selectors'
-import { Project } from 'shared/models/project'
 import { CustomerPanel } from '@customer/components/customer-panel/CustomerPanel'
 import { customerActions } from '@customer/state/customer.reducer'
 import { ProjectsPanel } from '@customer/components/projects-panel/ProjectsPanel'
@@ -31,6 +30,7 @@ export const CustomerPage: React.FC = () => {
   const navigate = useNavigate()
   const dispatch = useDispatch()
   const [value, setValue] = useState('3')
+  const location = useLocation()
 
   const customer = useSelector(selectCustomer)
   const customerErrorMessage = useSelector(selectCustomerErrorMessage)
@@ -62,7 +62,9 @@ export const CustomerPage: React.FC = () => {
 
   // Load customer data on page load
   useEffect(() => {
-    dispatch(customerActions.loadCustomerData())
+    if (location?.state?.tab) {
+      setValue(location.state.tab)
+    } else dispatch(customerActions.loadCustomerData())
   }, [])
 
   // Load customer projects and audits on tab change

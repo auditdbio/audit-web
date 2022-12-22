@@ -38,6 +38,9 @@ export const auditorSlice = createSlice({
   name: 'auditor',
   initialState: initialAuditorState,
   reducers: {
+    resetAuditorState: (state, action: Action) => {
+      state = initialAuditorState
+    },
     loadAuditorData(state, action: PayloadAction) {
       state.auditorPage.loaders.auditor = true
       state.auditorPage.processing.auditorError = ''

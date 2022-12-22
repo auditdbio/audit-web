@@ -50,8 +50,9 @@ export const userSlice = createSlice({
     },
 
     logout: (state, action: PayloadAction) => {
-      state.user = null
+      state = initialUserState
     },
+    logoutSuccess: (state, action: Action) => {},
 
     login: (state, action: PayloadAction<LoginData>) => {
       state.progress.login = true

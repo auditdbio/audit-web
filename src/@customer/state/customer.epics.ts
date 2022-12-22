@@ -4,6 +4,7 @@ import { combineEpics, Epic } from 'redux-observable'
 import * as customerApi from '@customer/api/customer.api'
 import * as projectApi from '@customer/api/project.api'
 import { customerActions } from '@customer/state/customer.reducer'
+import { userActions } from 'user/state/user.reducer'
 
 const loadCustomer: Epic = (action$, state$) =>
   action$.pipe(
@@ -84,6 +85,12 @@ const updateProject: Epic = (action$, state$) =>
     ),
   )
 
+const resetCustomerState: Epic = (action$, state$) =>
+  action$.pipe(
+    filter(userActions.logout.match),
+    map(() => customerActions.resetCustomerState()),
+  )
+
 export const customerEpics = combineEpics(
   loadCustomer,
   updateCustomer,
@@ -92,4 +99,5 @@ export const customerEpics = combineEpics(
   createProject,
   updateProject,
   loadCustomerProjects,
+  resetCustomerState,
 )

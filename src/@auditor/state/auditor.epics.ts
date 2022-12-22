@@ -1,8 +1,9 @@
-import { catchError, filter, from, map, of, switchMap } from 'rxjs'
+import { catchError, filter, from, map, of, switchMap, tap } from 'rxjs'
 import { combineEpics, Epic } from 'redux-observable'
 
 import * as api from '@auditor/api/auditor.api'
 import { auditorActions } from '@auditor/state/auditor.reducer'
+import { userActions } from 'user/state/user.reducer'
 
 const loadAuditor: Epic = (action$, state$) =>
   action$.pipe(
@@ -37,4 +38,16 @@ const updateAuditor: Epic = (action$, state$) =>
     ),
   )
 
-export const auditorEpics = combineEpics(loadAuditor, updateAuditor, createAuditor)
+const resetAuditorState: Epic = (action$, state$) =>
+  action$.pipe(
+    filter(userActions.logout.match),
+    tap(() => console.log('resetAuditorState')),
+    map(() => auditorActions.resetAuditorState()),
+  )
+
+export const auditorEpics = combineEpics(
+  loadAuditor,
+  updateAuditor,
+  createAuditor,
+  resetAuditorState,
+)

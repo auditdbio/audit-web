@@ -47,7 +47,8 @@ const logoutUser: Epic = (action$: Actions, state$: States) =>
   action$.pipe(
     filter(userActions.logout.match),
     tap(() => api.logout()),
-    ignoreElements(),
+    tap(() => window.location.reload()),
+    map(() => userActions.logoutSuccess()),
   )
 
 const changeUserName: Epic = (action$: Actions, state$: States) =>
