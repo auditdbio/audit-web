@@ -53,7 +53,6 @@ export const ProjectPage: React.FC = () => {
   const project = useSelector(selectProject)
   const loading = useSelector(selectLoadingProject)
 
-  const submitForm = (event: React.FormEvent<HTMLFormElement>) => event.preventDefault()
   const [projectData, setProjectData] = useState<Project>(initialProjectData)
 
   const [errors, setErrors] = useState({

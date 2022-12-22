@@ -41,7 +41,6 @@ export const CustomerPanel: React.FC<CustomerPanelProps> = ({
   successMessage,
   submit,
 }) => {
-  const submitForm = (event: React.FormEvent<HTMLFormElement>) => event.preventDefault()
   const [customerData, setCustomerData] = useState<Customer>(initialCustomerData)
 
   const [errors, setErrors] = useState({
@@ -144,7 +143,7 @@ export const CustomerPanel: React.FC<CustomerPanelProps> = ({
       {loading ? (
         <div>Loading...</div>
       ) : (
-        <form autoComplete="off" onSubmit={submitForm}>
+        <form autoComplete="off">
           <Grid container spacing={2} className={bem()}>
             <Grid item xs={12}>
               <InputLabel htmlFor="fname-input" className={bem('InputLabel')}>

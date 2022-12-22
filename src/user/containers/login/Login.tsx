@@ -131,10 +131,6 @@ export const Login: React.FC = () => {
     }
   }
 
-  const submitForm = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
-  }
-
   return (
     <motion.div
       className="motion-container"
@@ -147,7 +143,7 @@ export const Login: React.FC = () => {
           Sign in
         </Typography>
 
-        <form autoComplete="off" onSubmit={submitForm}>
+        <form autoComplete="off">
           <Grid xs={12}>
             <Grid container spacing={3}>
               <Grid xs={12} className="Email">

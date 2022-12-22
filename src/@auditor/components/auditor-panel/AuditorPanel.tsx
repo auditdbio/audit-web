@@ -40,7 +40,6 @@ export const AuditorPanel: React.FC<AuditorPanelProps> = ({
   successMessage,
   submit,
 }) => {
-  const submitForm = (event: React.FormEvent<HTMLFormElement>) => event.preventDefault()
   const [auditorData, setAuditorData] = useState<Auditor>(initialAuditorData)
 
   const [errors, setErrors] = useState({
@@ -143,7 +142,7 @@ export const AuditorPanel: React.FC<AuditorPanelProps> = ({
       {loading ? (
         <div>Loading...</div>
       ) : (
-        <form autoComplete="off" onSubmit={submitForm}>
+        <form autoComplete="off">
           <Grid container spacing={2} className={bem()}>
             <Grid item xs={12}>
               <InputLabel htmlFor="fname-input" className={bem('InputLabel')}>
