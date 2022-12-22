@@ -7,11 +7,6 @@ import { selectUser } from 'user/state/user.selectors'
 export const UnAuthGuard = ({ comp }: { comp: ReactNode }) => {
   const user = useSelector(selectUser)
   const navigate = useNavigate()
-
-  useEffect(() => {
-    checkUser()
-  }, [comp, user])
-
   const checkUser = (): void => {
     if (user?.accountType === 'customer') {
       navigate(`/customer-page`)
@@ -19,6 +14,10 @@ export const UnAuthGuard = ({ comp }: { comp: ReactNode }) => {
       navigate(`/auditor-page`)
     }
   }
+
+  useEffect(() => {
+    checkUser()
+  }, [comp, user])
 
   return user ? (
     <React.Fragment></React.Fragment>

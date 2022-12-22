@@ -1,5 +1,6 @@
-import { Auditor } from '@auditor/models/auditor'
 import { Action, createSlice, PayloadAction } from '@reduxjs/toolkit'
+
+import { Auditor } from 'shared/models/auditor'
 
 export type AuditorState = {
   auditorPage: {

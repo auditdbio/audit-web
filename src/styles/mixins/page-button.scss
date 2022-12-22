@@ -1,5 +1,6 @@
 @mixin page-button($bg: $secondary) {
   background-color: $bg !important;
+  color: $white !important;
   height: 35px !important;
   min-width: 200px !important;
   margin: 35px auto 0 !important;

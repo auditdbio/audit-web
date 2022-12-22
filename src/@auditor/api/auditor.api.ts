@@ -1,8 +1,12 @@
 import { AxiosInstance } from 'axios'
 
 import { MOCK_API, PORT_FOR_AUDITORS } from 'app.constants'
-import { auditorAdaptorIn, auditorAdaptorOut } from '@auditor/api/auditor.adaptor'
-import { Auditor, mockedAuditor } from '@auditor/models/auditor'
+import {
+  auditorAdaptorIn,
+  auditorAdaptorOut,
+  ServerAuditor,
+} from '@auditor/api/auditor.adaptor'
+import { Auditor, mockedAuditor } from 'shared/models/auditor'
 import api from 'app.api'
 
 let http: AxiosInstance
@@ -51,6 +55,30 @@ export const get = async (): Promise<Auditor | null> => {
   } catch (e: any) {
     if (e.response.status === 404) {
       return null
+    }
+
+    throw new Error(e.response.data.message)
+  }
+}
+
+export const getAll = async (): Promise<Auditor[]> => {
+  const httpNoAuth = api(PORT_FOR_AUDITORS, false)
+
+  if (MOCK_API) {
+    return new Promise<Auditor[]>((resolve, reject) => {
+      setTimeout(() => {
+        resolve([mockedAuditor, mockedAuditor, mockedAuditor])
+      }, 1000)
+    })
+  }
+
+  try {
+    const response = await httpNoAuth.get<ServerAuditor[]>('/auditors/all')
+
+    return response.data.map((auditor) => auditorAdaptorIn(auditor))
+  } catch (e: any) {
+    if (e.response.status === 404) {
+      return []
     }
 
     throw new Error(e.response.data.message)

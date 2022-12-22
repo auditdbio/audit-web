@@ -1,0 +1,20 @@
+@import 'styles/styles.scss';
+
+.MainPage {
+  display: flex;
+  flex-direction: column !important;
+  height: 100%;
+  width: 100%;
+
+  &-Cards {
+    display: flex;
+    flex-direction: column !important;
+    margin: auto;
+  }
+
+  &-CardsHeader {
+    display: flex;
+    justify-content: space-between;
+    margin: $margin-normal;
+  }
+}

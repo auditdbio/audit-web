@@ -1,7 +1,7 @@
 import { AxiosInstance } from 'axios'
 
 import { MOCK_API, PORT_FOR_CUSTOMERS } from 'app.constants'
-import { Customer, mockedCustomer } from '@customer/models/customer'
+import { Customer, mockedCustomer } from 'shared/models/customer'
 import api from 'app.api'
 
 let http: AxiosInstance

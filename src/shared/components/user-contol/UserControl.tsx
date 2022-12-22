@@ -5,7 +5,7 @@ import { Avatar, IconButton, Menu, MenuItem, Tooltip, Typography } from '@mui/ma
 
 import { useDispatch } from 'react-redux'
 import { userActions } from 'user/state/user.reducer'
-import { User } from 'shared/models/User'
+import { User } from 'shared/models/user'
 import './UserControl.scss'
 import { useNavigate } from 'react-router-dom'
 

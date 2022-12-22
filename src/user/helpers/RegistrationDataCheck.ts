@@ -1,9 +1,5 @@
-import { AccountType, UserRole } from 'shared/models/User'
-import {
-  inputValidator,
-  onlySpaces,
-  validateEmail,
-} from '../../shared/helpers/dataValodation'
+import { AccountType, UserRole } from 'shared/models/user'
+import { inputValidator, validateEmail } from 'shared/helpers/dataValodation'
 
 export type RegistrationData = {
   role?: UserRole

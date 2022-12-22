@@ -3,37 +3,37 @@ import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import { cn } from '@bem-react/classname'
 
-import './AuditorPanel.scss'
-import { Auditor } from '@auditor/models/auditor'
+import './CustomerPanel.scss'
+import { Customer } from 'shared/models/customer'
 import { onlySpaces } from 'shared/helpers/dataValodation'
 
-const componentId = 'AuditorPanel'
+const componentId = 'CustomerPanel'
 const bem = cn(componentId)
 
-const initialAuditorData: Auditor = {
+const initialCustomerData: Customer = {
   _id: undefined,
   fname: '',
   lname: '',
   about: '',
-  tags: '',
+  company: '',
   contacts: {
     email: '',
     telegram: '',
   },
 }
 
-type AuditorPanelProps = {
-  auditor: Auditor | null
+type CustomerPanelProps = {
+  customer: Customer | null
   remove: (id: string) => void
   errorMessage: string
   loading: boolean
   processing: boolean
-  submit: (a: Auditor) => void
+  submit: (c: Customer) => void
   successMessage: string
 }
 
-export const AuditorPanel: React.FC<AuditorPanelProps> = ({
-  auditor,
+export const CustomerPanel: React.FC<CustomerPanelProps> = ({
+  customer,
   remove,
   errorMessage,
   loading,
@@ -42,13 +42,13 @@ export const AuditorPanel: React.FC<AuditorPanelProps> = ({
   submit,
 }) => {
   const submitForm = (event: React.FormEvent<HTMLFormElement>) => event.preventDefault()
-  const [auditorData, setAuditorData] = useState<Auditor>(initialAuditorData)
+  const [customerData, setCustomerData] = useState<Customer>(initialCustomerData)
 
   const [errors, setErrors] = useState({
     fname: false,
     lname: false,
     about: false,
-    tags: false,
+    company: false,
     contacts: {
       email: false,
       telegram: false,
@@ -61,7 +61,7 @@ export const AuditorPanel: React.FC<AuditorPanelProps> = ({
     event: React.ChangeEvent<HTMLInputElement>,
     field: string,
   ): void => {
-    setAuditorData((prevState) => ({
+    setCustomerData((prevState) => ({
       ...prevState,
       [field]: event.target.value.trim(),
     }))
@@ -76,7 +76,7 @@ export const AuditorPanel: React.FC<AuditorPanelProps> = ({
     event: React.ChangeEvent<HTMLInputElement>,
     contact: string,
   ): void => {
-    setAuditorData((prevState) => ({
+    setCustomerData((prevState) => ({
       ...prevState,
       contacts: {
         ...prevState.contacts,
@@ -96,14 +96,14 @@ export const AuditorPanel: React.FC<AuditorPanelProps> = ({
   // Check for errors in form
   useEffect(() => {
     if (
-      !onlySpaces(auditorData.fname) &&
-      auditorData.fname.length > 0 &&
-      !onlySpaces(auditorData.fname) &&
-      auditorData.lname.length > 0 &&
-      !onlySpaces(auditorData.about) &&
-      auditorData.about.length > 0 &&
-      !onlySpaces(auditorData.contacts.email) &&
-      auditorData.contacts.email.length > 0
+      !onlySpaces(customerData.fname) &&
+      customerData.fname.length > 0 &&
+      !onlySpaces(customerData.fname) &&
+      customerData.lname.length > 0 &&
+      !onlySpaces(customerData.about) &&
+      customerData.about.length > 0 &&
+      !onlySpaces(customerData.contacts.email) &&
+      customerData.contacts.email.length > 0
     ) {
       setErrors((state) => ({ ...state, noErrors: true }))
     } else {
@@ -112,20 +112,20 @@ export const AuditorPanel: React.FC<AuditorPanelProps> = ({
 
     setErrors((state) => ({ ...state, errorMessage: '' }))
   }, [
-    auditorData.fname,
-    auditorData.lname,
-    auditorData.about,
-    auditorData.contacts.email,
+    customerData.fname,
+    customerData.lname,
+    customerData.about,
+    customerData.contacts.email,
   ])
 
-  // Handle auditor loaded from server
+  // Handle customer loaded from server
   useEffect(() => {
-    if (auditor) {
-      setAuditorData(auditor)
+    if (customer) {
+      setCustomerData(customer)
     } else {
-      setAuditorData(initialAuditorData)
+      setCustomerData(initialCustomerData)
     }
-  }, [auditor])
+  }, [customer])
 
   // Handle server error
   useEffect(() => {
@@ -154,7 +154,7 @@ export const AuditorPanel: React.FC<AuditorPanelProps> = ({
                 id="fname-input"
                 className={bem('Input', { error: errors.fname })}
                 type="text"
-                value={auditorData.fname}
+                value={customerData.fname}
                 error={errors.fname}
                 onChange={(e) =>
                   handleFieldChange(e as React.ChangeEvent<HTMLInputElement>, 'fname')
@@ -171,7 +171,7 @@ export const AuditorPanel: React.FC<AuditorPanelProps> = ({
                 id="lname-input"
                 className={bem('Input', { error: errors.lname })}
                 type="text"
-                value={auditorData.lname}
+                value={customerData.lname}
                 error={errors.fname}
                 onChange={(e) =>
                   handleFieldChange(e as React.ChangeEvent<HTMLInputElement>, 'lname')
@@ -188,7 +188,7 @@ export const AuditorPanel: React.FC<AuditorPanelProps> = ({
                 id="about-input"
                 className={bem('Input', { error: errors.about })}
                 type="text"
-                value={auditorData.about}
+                value={customerData.about}
                 error={errors.fname}
                 onChange={(e) =>
                   handleFieldChange(e as React.ChangeEvent<HTMLInputElement>, 'about')
@@ -197,18 +197,18 @@ export const AuditorPanel: React.FC<AuditorPanelProps> = ({
             </Grid>
 
             <Grid item xs={12}>
-              <InputLabel htmlFor="tags-input" className={bem('InputLabel')}>
-                Tags
+              <InputLabel htmlFor="company-input" className={bem('InputLabel')}>
+                Company
               </InputLabel>
 
               <InputBase
-                id="tags-input"
-                className={bem('Input', { error: errors.tags })}
+                id="company-input"
+                className={bem('Input', { error: errors.company })}
                 type="text"
-                value={auditorData.tags}
+                value={customerData.company}
                 error={errors.fname}
                 onChange={(e) =>
-                  handleFieldChange(e as React.ChangeEvent<HTMLInputElement>, 'tags')
+                  handleFieldChange(e as React.ChangeEvent<HTMLInputElement>, 'company')
                 }
               />
             </Grid>
@@ -222,7 +222,7 @@ export const AuditorPanel: React.FC<AuditorPanelProps> = ({
                 id="email-input"
                 className={bem('Input', { error: errors.contacts.email })}
                 type="text"
-                value={auditorData.contacts.email}
+                value={customerData.contacts.email}
                 error={errors.contacts.email}
                 onChange={(e) =>
                   handleContactsChange(e as React.ChangeEvent<HTMLInputElement>, 'email')
@@ -239,7 +239,7 @@ export const AuditorPanel: React.FC<AuditorPanelProps> = ({
                 id="telegram-input"
                 className={bem('Input', { error: errors.contacts.telegram })}
                 type="text"
-                value={auditorData.contacts.telegram}
+                value={customerData.contacts.telegram}
                 error={errors.fname}
                 onChange={(e) =>
                   handleContactsChange(
@@ -258,9 +258,9 @@ export const AuditorPanel: React.FC<AuditorPanelProps> = ({
                 variant="contained"
                 disabled={!errors.noErrors || processing}
                 sx={{ mt: 4 }}
-                onClick={() => submit(auditorData)}
+                onClick={() => submit(customerData)}
               >
-                {auditorData._id ? 'Save' : 'Create'}
+                {customerData._id ? 'Save' : 'Create'}
               </Button>
             </Grid>
           </Grid>

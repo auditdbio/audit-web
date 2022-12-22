@@ -1,4 +1,4 @@
-import { AccountType, User, UserRole } from 'shared/models/User'
+import { AccountType, User, UserRole } from 'shared/models/user'
 
 export type ServerUser = {
   name: string

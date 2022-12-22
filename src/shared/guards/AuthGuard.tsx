@@ -7,16 +7,15 @@ import { selectUser } from 'user/state/user.selectors'
 export const AuthGuard = ({ comp }: { comp: ReactNode }) => {
   const user = useSelector(selectUser)
   const navigate = useNavigate()
-
-  useEffect(() => {
-    checkToken()
-  }, [comp, user])
-
   const checkToken = () => {
     if (!user) {
       navigate(`/sign-in`)
     }
   }
+
+  useEffect(() => {
+    checkToken()
+  }, [comp, user])
 
   return !user ? (
     <React.Fragment></React.Fragment>

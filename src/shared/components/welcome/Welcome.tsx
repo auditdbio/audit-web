@@ -4,7 +4,7 @@ import React from 'react'
 import { cn } from '@bem-react/classname'
 import './Welcome.scss'
 import { Button } from '@mui/material'
-import { AccountType } from 'shared/models/User'
+import { AccountType } from 'shared/models/user'
 
 const componentId = 'Welcome'
 const bem = cn(componentId)

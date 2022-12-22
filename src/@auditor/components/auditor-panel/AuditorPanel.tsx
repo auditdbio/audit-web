@@ -1,39 +1,38 @@
-import { Alert, Button, Grid, InputBase, InputLabel } from '@mui/material'
+import { Alert, Button, Grid, InputBase, InputLabel, TextField } from '@mui/material'
 import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import { cn } from '@bem-react/classname'
 
-import './CustomerPanel.scss'
-import { Customer } from '@customer/models/customer'
+import './AuditorPanel.scss'
+import { Auditor } from 'shared/models/auditor'
 import { onlySpaces } from 'shared/helpers/dataValodation'
 
-const componentId = 'CustomerPanel'
+const componentId = 'AuditorPanel'
 const bem = cn(componentId)
-
-const initialCustomerData: Customer = {
+const initialAuditorData: Auditor = {
   _id: undefined,
   fname: '',
   lname: '',
   about: '',
-  company: '',
+  tags: '',
   contacts: {
     email: '',
     telegram: '',
   },
 }
 
-type CustomerPanelProps = {
-  customer: Customer | null
+type AuditorPanelProps = {
+  auditor: Auditor | null
   remove: (id: string) => void
   errorMessage: string
   loading: boolean
   processing: boolean
-  submit: (c: Customer) => void
+  submit: (a: Auditor) => void
   successMessage: string
 }
 
-export const CustomerPanel: React.FC<CustomerPanelProps> = ({
-  customer,
+export const AuditorPanel: React.FC<AuditorPanelProps> = ({
+  auditor,
   remove,
   errorMessage,
   loading,
@@ -42,13 +41,13 @@ export const CustomerPanel: React.FC<CustomerPanelProps> = ({
   submit,
 }) => {
   const submitForm = (event: React.FormEvent<HTMLFormElement>) => event.preventDefault()
-  const [customerData, setCustomerData] = useState<Customer>(initialCustomerData)
+  const [auditorData, setAuditorData] = useState<Auditor>(initialAuditorData)
 
   const [errors, setErrors] = useState({
     fname: false,
     lname: false,
     about: false,
-    company: false,
+    tags: false,
     contacts: {
       email: false,
       telegram: false,
@@ -60,10 +59,11 @@ export const CustomerPanel: React.FC<CustomerPanelProps> = ({
   const handleFieldChange = (
     event: React.ChangeEvent<HTMLInputElement>,
     field: string,
+    trim = true,
   ): void => {
-    setCustomerData((prevState) => ({
+    setAuditorData((prevState) => ({
       ...prevState,
-      [field]: event.target.value.trim(),
+      [field]: trim ? event.target.value.trim() : event.target.value,
     }))
 
     setErrors((prevState) => ({
@@ -76,7 +76,7 @@ export const CustomerPanel: React.FC<CustomerPanelProps> = ({
     event: React.ChangeEvent<HTMLInputElement>,
     contact: string,
   ): void => {
-    setCustomerData((prevState) => ({
+    setAuditorData((prevState) => ({
       ...prevState,
       contacts: {
         ...prevState.contacts,
@@ -96,14 +96,14 @@ export const CustomerPanel: React.FC<CustomerPanelProps> = ({
   // Check for errors in form
   useEffect(() => {
     if (
-      !onlySpaces(customerData.fname) &&
-      customerData.fname.length > 0 &&
-      !onlySpaces(customerData.fname) &&
-      customerData.lname.length > 0 &&
-      !onlySpaces(customerData.about) &&
-      customerData.about.length > 0 &&
-      !onlySpaces(customerData.contacts.email) &&
-      customerData.contacts.email.length > 0
+      !onlySpaces(auditorData.fname) &&
+      auditorData.fname.length > 0 &&
+      !onlySpaces(auditorData.fname) &&
+      auditorData.lname.length > 0 &&
+      !onlySpaces(auditorData.about) &&
+      auditorData.about.length > 0 &&
+      !onlySpaces(auditorData.contacts.email) &&
+      auditorData.contacts.email.length > 0
     ) {
       setErrors((state) => ({ ...state, noErrors: true }))
     } else {
@@ -112,20 +112,20 @@ export const CustomerPanel: React.FC<CustomerPanelProps> = ({
 
     setErrors((state) => ({ ...state, errorMessage: '' }))
   }, [
-    customerData.fname,
-    customerData.lname,
-    customerData.about,
-    customerData.contacts.email,
+    auditorData.fname,
+    auditorData.lname,
+    auditorData.about,
+    auditorData.contacts.email,
   ])
 
-  // Handle customer loaded from server
+  // Handle auditor loaded from server
   useEffect(() => {
-    if (customer) {
-      setCustomerData(customer)
+    if (auditor) {
+      setAuditorData(auditor)
     } else {
-      setCustomerData(initialCustomerData)
+      setAuditorData(initialAuditorData)
     }
-  }, [customer])
+  }, [auditor])
 
   // Handle server error
   useEffect(() => {
@@ -154,7 +154,7 @@ export const CustomerPanel: React.FC<CustomerPanelProps> = ({
                 id="fname-input"
                 className={bem('Input', { error: errors.fname })}
                 type="text"
-                value={customerData.fname}
+                value={auditorData.fname}
                 error={errors.fname}
                 onChange={(e) =>
                   handleFieldChange(e as React.ChangeEvent<HTMLInputElement>, 'fname')
@@ -171,7 +171,7 @@ export const CustomerPanel: React.FC<CustomerPanelProps> = ({
                 id="lname-input"
                 className={bem('Input', { error: errors.lname })}
                 type="text"
-                value={customerData.lname}
+                value={auditorData.lname}
                 error={errors.fname}
                 onChange={(e) =>
                   handleFieldChange(e as React.ChangeEvent<HTMLInputElement>, 'lname')
@@ -184,31 +184,38 @@ export const CustomerPanel: React.FC<CustomerPanelProps> = ({
                 About
               </InputLabel>
 
-              <InputBase
+              <TextField
+                multiline
+                rows={5}
+                variant="outlined"
                 id="about-input"
                 className={bem('Input', { error: errors.about })}
                 type="text"
-                value={customerData.about}
+                value={auditorData.about}
                 error={errors.fname}
                 onChange={(e) =>
-                  handleFieldChange(e as React.ChangeEvent<HTMLInputElement>, 'about')
+                  handleFieldChange(
+                    e as React.ChangeEvent<HTMLInputElement>,
+                    'about',
+                    false,
+                  )
                 }
               />
             </Grid>
 
             <Grid item xs={12}>
-              <InputLabel htmlFor="company-input" className={bem('InputLabel')}>
-                Company
+              <InputLabel htmlFor="tags-input" className={bem('InputLabel')}>
+                Tags
               </InputLabel>
 
               <InputBase
-                id="company-input"
-                className={bem('Input', { error: errors.company })}
+                id="tags-input"
+                className={bem('Input', { error: errors.tags })}
                 type="text"
-                value={customerData.company}
+                value={auditorData.tags}
                 error={errors.fname}
                 onChange={(e) =>
-                  handleFieldChange(e as React.ChangeEvent<HTMLInputElement>, 'company')
+                  handleFieldChange(e as React.ChangeEvent<HTMLInputElement>, 'tags')
                 }
               />
             </Grid>
@@ -222,7 +229,7 @@ export const CustomerPanel: React.FC<CustomerPanelProps> = ({
                 id="email-input"
                 className={bem('Input', { error: errors.contacts.email })}
                 type="text"
-                value={customerData.contacts.email}
+                value={auditorData.contacts.email}
                 error={errors.contacts.email}
                 onChange={(e) =>
                   handleContactsChange(e as React.ChangeEvent<HTMLInputElement>, 'email')
@@ -239,7 +246,7 @@ export const CustomerPanel: React.FC<CustomerPanelProps> = ({
                 id="telegram-input"
                 className={bem('Input', { error: errors.contacts.telegram })}
                 type="text"
-                value={customerData.contacts.telegram}
+                value={auditorData.contacts.telegram}
                 error={errors.fname}
                 onChange={(e) =>
                   handleContactsChange(
@@ -258,9 +265,9 @@ export const CustomerPanel: React.FC<CustomerPanelProps> = ({
                 variant="contained"
                 disabled={!errors.noErrors || processing}
                 sx={{ mt: 4 }}
-                onClick={() => submit(customerData)}
+                onClick={() => submit(auditorData)}
               >
-                {customerData._id ? 'Save' : 'Create'}
+                {auditorData._id ? 'Save' : 'Create'}
               </Button>
             </Grid>
           </Grid>

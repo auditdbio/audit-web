@@ -16,7 +16,7 @@ import {
   selectLoadingAuditor,
   selectProcessingAuditor,
 } from '@auditor/state/auditor.selectors'
-import { AuditorPanel } from '@auditor/containers/auditor-panel/AuditorPanel'
+import { AuditorPanel } from '@auditor/components/auditor-panel/AuditorPanel'
 import { auditorActions } from '@auditor/state/auditor.reducer'
 
 const componentId = 'AuditorPage'

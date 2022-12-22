@@ -14,7 +14,7 @@ import {
 } from 'rxjs'
 
 import * as api from 'user/api/user.api'
-import { User } from 'shared/models/User'
+import { User } from 'shared/models/user'
 import { sharedActions } from 'shared/state/shared.reducer'
 import { userActions, UserState } from 'user/state/user.reducer'
 

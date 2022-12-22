@@ -1,4 +1,4 @@
-import { Auditor, AuditorContacts } from '@auditor/models/auditor'
+import { Auditor, AuditorContacts } from 'shared/models/auditor'
 
 export type ServerAuditor = {
   about: string

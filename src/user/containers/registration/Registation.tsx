@@ -19,7 +19,7 @@ import './Registration.scss'
 
 import { RegistrationData, userDataValidation } from 'user/helpers/RegistrationDataCheck'
 import { userActions } from 'user/state/user.reducer'
-import { AccountType } from 'shared/models/User'
+import { AccountType } from 'shared/models/user'
 import { onlySpaces } from 'shared/helpers/dataValodation'
 import {
   selectAccountTypePreferences,
@@ -72,7 +72,7 @@ export const Registation: React.FC = () => {
       navigate('/sign-in')
       dispatch(userActions.setSuccessMessage())
     }
-  }, [registrationSuccess])
+  }, [registrationSuccess, navigate, dispatch])
 
   const [state, setState] = React.useState({
     registationError: false,

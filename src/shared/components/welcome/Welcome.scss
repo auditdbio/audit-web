@@ -1,3 +1,5 @@
+@import 'styles/styles.scss';
+
 .Welcome {
   margin: auto;
   margin-top: 10%;
@@ -5,6 +7,7 @@
   flex-direction: column;
   width: fit-content;
   align-items: center;
+  margin-bottom: calc($margin-normal * 2);
 
   &-Header {
     text-align: center;

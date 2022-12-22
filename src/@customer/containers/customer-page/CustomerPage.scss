@@ -3,6 +3,10 @@
 .CustomerPage {
   @include page-panel;
 
+  max-width: 600px !important;
+  padding-top: $padding-normal !important;
+  padding-bottom: $padding-normal !important;
+
   &-Title {
     @include page-title;
   }

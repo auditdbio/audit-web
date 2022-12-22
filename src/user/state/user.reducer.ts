@@ -1,6 +1,6 @@
 import { Action, createSlice, PayloadAction } from '@reduxjs/toolkit'
 
-import { AccountType, User } from 'shared/models/User'
+import { AccountType, User } from 'shared/models/user'
 import { RegistrationData } from 'user/helpers/RegistrationDataCheck'
 import { LoginData } from 'user/helpers/LoginDataCheck'
 

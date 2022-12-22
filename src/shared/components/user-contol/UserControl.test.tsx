@@ -1,5 +1,5 @@
 import { render } from '@testing-library/react'
-import { User } from 'shared/models/User'
+import { User } from 'shared/models/user'
 import { UserControl } from './UserControl'
 
 describe('UserControl', () => {
