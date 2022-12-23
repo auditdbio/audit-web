@@ -1,7 +1,7 @@
 import { cn } from '@bem-react/classname'
 import { AnyAction } from '@reduxjs/toolkit'
-import { ArrowDropDown, KeyboardArrowDown } from '@mui/icons-material'
-import { Box, Menu, MenuItem } from '@mui/material'
+import { Menu, MenuItem } from '@mui/material'
+import { KeyboardArrowDown } from '@mui/icons-material'
 import React, { Dispatch, useState } from 'react'
 
 import { sharedActions } from 'shared/state/shared.reducer'

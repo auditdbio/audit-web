@@ -3,7 +3,6 @@
 .UserControl {
   display: flex;
   flex-direction: row;
-  // margin-left: auto;
   margin-right: 1%;
 
   &-IconButton {
@@ -14,6 +13,7 @@
   &-UserName {
     margin: auto !important;
     color: black;
+
     @media screen and (max-width: $screen-xs-width) {
       display: none !important;
     }

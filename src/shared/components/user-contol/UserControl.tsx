@@ -98,28 +98,6 @@ export const UserControl: React.FC<{ user: User }> = ({ user }) => {
           },
         }}
       >
-        {/* <MenuItem
-          className={bem('Auditor')}
-          data-testid={bem('Auditor')}
-          onClick={() => {
-            navigate('/auditor-page')
-            handleClose()
-          }}
-        >
-          Auditor
-        </MenuItem>
-
-        <MenuItem
-          className={bem('Customer')}
-          data-testid={bem('Customer')}
-          onClick={() => {
-            navigate('/customer-page')
-            handleClose()
-          }}
-        >
-          Customer
-        </MenuItem> */}
-
         <MenuItem
           className={bem('MyAccount')}
           data-testid={bem('MyAccount')}
