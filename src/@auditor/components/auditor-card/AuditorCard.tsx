@@ -15,7 +15,6 @@ import { cn } from '@bem-react/classname'
 import './AuditorCard.scss'
 import { Auditor } from 'shared/models/auditor'
 import { AuditorInfo } from '@auditor/containers/auditor-info/AuditorInfo'
-import { Tags } from 'shared/components/tags/Tags'
 
 export type AuditorCardProps = {
   auditor: Auditor
@@ -59,7 +58,9 @@ export const AuditorCard: React.FC<AuditorCardProps> = ({ auditor }) => {
           {auditor.fname} {auditor.lname}
         </Typography>
 
-        <Tags tags={auditor.tags} />
+        <Typography className={bem('Tags')} variant="body2" color="text.secondary">
+          {auditor.tags}
+        </Typography>
       </CardContent>
 
       <CardActions>
