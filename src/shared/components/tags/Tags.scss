@@ -1,0 +1,19 @@
+@import 'styles/styles.scss';
+
+.Tags {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+
+  &-Tag {
+    margin: 5px;
+    padding: 5px;
+    color: $text-color;
+    border: 1px solid $light-gray;
+    border-radius: 5px;
+    font-size: $sm-font-size;
+    overflow: hidden;
+    cursor: default;
+    text-overflow: ellipsis;
+  }
+}

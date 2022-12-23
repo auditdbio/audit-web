@@ -5,6 +5,7 @@ import { cn } from '@bem-react/classname'
 
 import { Project } from 'shared/models/project'
 import './ProjectInfo.scss'
+import { Tags } from 'shared/components/tags/Tags'
 
 const componentId = 'ProjectInfo'
 const bem = cn(componentId)
@@ -39,9 +40,7 @@ export const ProjectInfo: React.FC<{
       </Grid>
 
       <Grid xs={12} className={bem('Tags')}>
-        {project.tags.split(',').map((tag) => (
-          <div className={bem('Tag')}>{tag}</div>
-        ))}
+        <Tags tags={project.tags} />
       </Grid>
 
       <Grid xs={12} display="flex">

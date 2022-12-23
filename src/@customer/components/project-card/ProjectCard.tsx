@@ -16,6 +16,7 @@ import { cn } from '@bem-react/classname'
 import './ProjectCard.scss'
 import { Project } from 'shared/models/project'
 import { ProjectInfo } from '../customer-info/ProjectInfo'
+import { Tags } from 'shared/components/tags/Tags'
 
 export type ProjectCardProps = {
   project: Project
@@ -71,14 +72,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
           {project.name}
         </Typography>
 
-        <Typography
-          className={bem('Tags')}
-          title={project.tags}
-          variant="body2"
-          color="text.secondary"
-        >
-          {project.tags}
-        </Typography>
+        <Tags tags={project.tags} />
       </CardContent>
 
       <CardActions>

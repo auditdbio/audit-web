@@ -15,15 +15,6 @@
     white-space: nowrap;
   }
 
-  &-Tags {
-    cursor: default;
-    flex-wrap: wrap;
-    margin-top: $margin-normal;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-
   &-Button {
     @include page-button($primary);
     margin: auto !important;

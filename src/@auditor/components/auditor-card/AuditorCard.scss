@@ -12,12 +12,6 @@
     white-space: nowrap;
   }
 
-  &-Tags {
-    display: flex;
-    flex-wrap: wrap;
-    margin-top: $margin-normal;
-  }
-
   &-Button {
     @include page-button();
     margin: auto !important;

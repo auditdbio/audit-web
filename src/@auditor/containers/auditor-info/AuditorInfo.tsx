@@ -5,6 +5,7 @@ import { cn } from '@bem-react/classname'
 
 import { Auditor } from 'shared/models/auditor'
 import './AuditorInfo.scss'
+import { Tags } from 'shared/components/tags/Tags'
 
 const componentId = 'AuditorInfo'
 const bem = cn(componentId)
@@ -69,9 +70,7 @@ export const AuditorInfo: React.FC<{
       </Grid>
 
       <Grid xs={12} className={bem('Tags')}>
-        {auditor.tags.split(',').map((tag) => (
-          <div className={bem('Tag')}>{tag}</div>
-        ))}
+        <Tags tags={auditor.tags} />
       </Grid>
 
       <Grid xs={12} display="flex">
