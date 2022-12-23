@@ -63,7 +63,7 @@ export const AuditorInfo: React.FC<{
       ) : null}
 
       <Grid xs={6} display="flex">
-        <span className={bem('Lable', { texrate: true })}>Tex rate</span>
+        <span className={bem('Lable', { texrate: true })}>Tax rate</span>
       </Grid>
       <Grid xs={6}>
         <span className={bem('Data', { texrate: true })}> - </span>
