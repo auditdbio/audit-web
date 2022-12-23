@@ -7,20 +7,31 @@
   padding: $padding-normal;
 
   &-Name {
+    cursor: default;
     font-weight: bold;
     overflow: hidden;
+    text-align: center;
+    text-overflow: ellipsis;
     white-space: nowrap;
   }
 
   &-Tags {
-    display: flex;
+    cursor: default;
     flex-wrap: wrap;
     margin-top: $margin-normal;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   &-Button {
     @include page-button($primary);
     margin: auto !important;
     min-width: 80px !important;
+  }
+
+  &-Avatar {
+    @include size($card-avatar-size);
+    margin: 0 auto $margin-normal !important;
   }
 }

@@ -119,7 +119,7 @@ export const Profile: React.FC = () => {
           </Grid>
         </Grid>
 
-        <Grid xs={12} md={12} lg={6} display="flex" justifyContent="center">
+        {/* <Grid xs={12} md={12} lg={6} display="flex" justifyContent="center">
           <Button
             className={bem('Button', { Password: true })}
             variant="contained"
@@ -127,9 +127,9 @@ export const Profile: React.FC = () => {
           >
             change password
           </Button>
-        </Grid>
+        </Grid> */}
 
-        <Grid xs={12} md={12} lg={6} display="flex" justifyContent="center">
+        <Grid xs={12} md={12} lg={12} display="flex" justifyContent="center">
           <Button
             className={bem('Button', { Delete: true, second: true })}
             variant="contained"

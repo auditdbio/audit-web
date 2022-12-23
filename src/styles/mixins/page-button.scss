@@ -4,6 +4,7 @@
   height: 35px !important;
   min-width: 200px !important;
   margin: 35px auto 0 !important;
+  text-transform: none !important;
 
   &_disabled {
     background-color: $super-light-gray !important;

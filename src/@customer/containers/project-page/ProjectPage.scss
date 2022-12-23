@@ -7,6 +7,14 @@
     @include page-title;
   }
 
+  &-Header {
+    height: 20px;
+    padding: 0 !important;
+    text-align: end;
+    position: relative;
+    right: -33px;
+  }
+
   &-Input {
     @include page-input;
   }
@@ -16,8 +24,27 @@
   }
 
   &-Button {
-    @include page-button;
+    @include page-button($primary);
     margin-bottom: $margin-normal !important;
+  }
+
+  &-HeaderButton {
+    @include page-button($primary);
+    text-transform: none !important;
+    margin: 0 10px 0 0 !important;
+    font-size: $xs-font-size !important;
+    height: 20px !important;
+    min-width: 120px !important;
+    width: 100px;
+
+    &_secondary {
+      background-color: $secondary !important;
+    }
+  }
+
+  &-HeaderMenuIcon {
+    position: relative;
+    top: 7px;
   }
 
   &-Alert {

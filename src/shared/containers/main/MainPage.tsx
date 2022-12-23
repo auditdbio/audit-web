@@ -91,7 +91,7 @@ export const MainPage = () => {
     <div className={bem()}>
       {user ? null : <Welcome onSelect={selectAccountTypeHandler} />}
 
-      <Grid container spacing={2} className={bem('Content')}>
+      <Grid container spacing={10} className={bem('Content')}>
         <Grid item xs={12} sm={6} className={bem('Cards')} data-testid={bem('Auditors')}>
           <Box className={bem('CardsHeader')}>
             <Typography variant="h6" gutterBottom component="div">

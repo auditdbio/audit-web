@@ -5,6 +5,8 @@ import {
   CardContent,
   Typography,
   CardActions,
+  IconButton,
+  Avatar,
 } from '@mui/material'
 import { useState } from 'react'
 import { cn } from '@bem-react/classname'
@@ -30,6 +32,10 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
     isHovered: false,
   })
 
+  const [avatar, setAvatar] = useState(
+    `/images/avatar/${Math.floor(Math.random() * 10)}.jpg`,
+  )
+
   const handleMouseEnter = () => {
     setState((old) => ({ ...old, isHovered: true }))
   }
@@ -45,11 +51,24 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
       onMouseLeave={handleMouseLeave}
     >
       <CardContent>
-        <Typography className={bem('Name')} gutterBottom variant="h6" component="div">
+        <Avatar className={bem('Avatar')} alt={project.name} src={avatar} />
+
+        <Typography
+          className={bem('Name')}
+          title={project.name}
+          gutterBottom
+          variant="h6"
+          component="div"
+        >
           {project.name}
         </Typography>
 
-        <Typography className={bem('Tags')} variant="body2" color="text.secondary">
+        <Typography
+          className={bem('Tags')}
+          title={project.tags}
+          variant="body2"
+          color="text.secondary"
+        >
           {project.tags}
         </Typography>
       </CardContent>

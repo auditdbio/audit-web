@@ -23,4 +23,9 @@
     margin: auto !important;
     min-width: 80px !important;
   }
+
+  &-Avatar {
+    @include size($card-avatar-size);
+    margin: 0 auto $margin-normal !important;
+  }
 }

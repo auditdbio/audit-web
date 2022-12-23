@@ -52,7 +52,7 @@ export const UserControl: React.FC<{ user: User }> = ({ user }) => {
           onClick={handleIconClick}
           size="small"
         >
-          <Avatar>{user.name.substring(0, 1)}</Avatar>
+          <Avatar className={bem('Avatar1')} alt={user.name} src="/images/avatar/2.jpg" />
         </IconButton>
       </Tooltip>
 

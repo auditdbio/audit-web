@@ -5,6 +5,7 @@ import {
   CardContent,
   Typography,
   CardActions,
+  Avatar,
 } from '@mui/material'
 import { useState } from 'react'
 import { cn } from '@bem-react/classname'
@@ -24,6 +25,10 @@ export const AuditorCard: React.FC<AuditorCardProps> = ({ auditor }) => {
     isHovered: false,
   })
 
+  const [avatar, setAvatar] = useState(
+    `/images/avatar/${Math.floor(Math.random() * 10)}.jpg`,
+  )
+
   const handleMouseEnter = () => {
     setState((old) => ({ ...old, isHovered: true }))
   }
@@ -39,6 +44,8 @@ export const AuditorCard: React.FC<AuditorCardProps> = ({ auditor }) => {
       onMouseLeave={handleMouseLeave}
     >
       <CardContent>
+        <Avatar className={bem('Avatar')} alt={auditor.fname} src={avatar} />
+
         <Typography className={bem('Name')} gutterBottom variant="h6" component="div">
           {auditor.fname} {auditor.lname}
         </Typography>

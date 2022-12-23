@@ -7,12 +7,14 @@ import {
   Alert,
   Button,
   TextField,
-  Input,
+  useMediaQuery,
+  IconButton,
 } from '@mui/material'
 import { useDispatch, useSelector } from 'react-redux'
 import { useEffect, useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
+import MenuIcon from '@mui/icons-material/Menu'
 import { cn } from '@bem-react/classname'
 
 import './ProjectPage.scss'
@@ -52,6 +54,7 @@ export const ProjectPage: React.FC = () => {
   const processing = useSelector(selectProcessingProject)
   const project = useSelector(selectProject)
   const loading = useSelector(selectLoadingProject)
+  const isXs = useMediaQuery('(max-width:600px)')
 
   const [projectData, setProjectData] = useState<Project>(initialProjectData)
 
@@ -87,8 +90,14 @@ export const ProjectPage: React.FC = () => {
     }))
   }
 
-  const seeMyProjects = () => {
-    navigate('/customer-page', { state: { tab: 1 } })
+  const handlePublishClick = () => {
+    const status = projectData.status === 'hidden' ? 'shown' : 'hidden'
+
+    if (projectData._id) {
+      dispatch(customerActions.updateProject({ ...projectData, status }))
+    } else {
+      setProjectData((state) => ({ ...state, status }))
+    }
   }
 
   // Choose create or update project
@@ -157,6 +166,30 @@ export const ProjectPage: React.FC = () => {
         ) : (
           <form className={bem('Form')} autoComplete="off">
             <Grid container spacing={2.5}>
+              <Grid item xs={12} className={bem('Header')}>
+                <Button
+                  className={bem('HeaderButton', {
+                    disabled: !errors.noErrors || processing,
+                  })}
+                  data-testid={bem('Button')}
+                >
+                  {'Invite auditor'}
+                </Button>
+
+                <Button
+                  className={bem('HeaderButton', {
+                    disabled: !errors.noErrors || processing,
+                    secondary: project?.status === 'shown',
+                  })}
+                  data-testid={bem('Button')}
+                  onClick={handlePublishClick}
+                >
+                  {project?.status === 'hidden' ? 'Publish project' : 'Unpublish project'}
+                </Button>
+
+                <MenuIcon className={bem('HeaderMenuIcon')} />
+              </Grid>
+
               <Grid item xs={12}>
                 <InputLabel htmlFor="name-input" className={bem('InputLabel')}>
                   Name
@@ -243,10 +276,9 @@ export const ProjectPage: React.FC = () => {
                   type="submit"
                   variant="contained"
                   disabled={!errors.noErrors || processing}
-                  sx={{ mt: 4 }}
                   onClick={() => submit(projectData)}
                 >
-                  {projectData._id ? 'Save' : 'Create'}
+                  {projectData._id ? 'Save changes' : 'Create'}
                 </Button>
               </Grid>
             </Grid>
