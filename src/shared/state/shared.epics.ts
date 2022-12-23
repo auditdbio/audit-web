@@ -5,6 +5,7 @@ import { combineEpics, Epic } from 'redux-observable'
 import * as projectsApi from '@customer/api/project.api'
 import * as auditorsApi from '@auditor/api/auditor.api'
 import { sharedActions, SharedState } from 'shared/state/shared.reducer'
+import { userActions } from 'user/state/user.reducer'
 
 type Actions = Observable<PayloadAction>
 type States = Observable<SharedState>
@@ -31,4 +32,20 @@ const loadProjects: Epic = (action$: Actions, state$: States) =>
     ),
   )
 
-export const sharedEpics = combineEpics(loadAuditors, loadProjects)
+const setInitialUserTypeOnRestore: Epic = (action$: Actions, state$: States) =>
+  action$.pipe(
+    filter(userActions.restoreUserInfoSuccess.match),
+    map((action) => sharedActions.setActiveUserType(action.payload.accountType)),
+  )
+const setInitialUserTypeOnLogin: Epic = (action$: Actions, state$: States) =>
+  action$.pipe(
+    filter(userActions.loginSuccess.match),
+    map((action) => sharedActions.setActiveUserType(action.payload.accountType)),
+  )
+
+export const sharedEpics = combineEpics(
+  loadAuditors,
+  loadProjects,
+  setInitialUserTypeOnRestore,
+  setInitialUserTypeOnLogin,
+)

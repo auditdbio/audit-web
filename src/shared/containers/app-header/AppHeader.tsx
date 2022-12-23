@@ -3,7 +3,7 @@ import React, { useEffect, useRef } from 'react'
 import { cn } from '@bem-react/classname'
 import { motion } from 'framer-motion'
 import { Box, Button } from '@mui/material'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 
 import { selectUser } from 'user/state/user.selectors'
@@ -11,13 +11,17 @@ import { UserControl } from 'shared/components/user-contol/UserControl'
 import { HeaderLinks } from 'shared/components/header-links/HeaderLinks'
 import { UserNavigate } from 'shared/components/user-navigate/UserNavigate'
 import './AppHeader.scss'
+import { UserTypeSwitch } from 'shared/components/user-type-switch/UserTypeSwitch'
+import { selectUserType } from 'shared/state/shared.selectors'
 
 const componentId = 'AppHeader'
 const bem = cn(componentId)
 
 export const AppHeader: React.FC = () => {
+  const actualUserType = useSelector(selectUserType)
   const user = useSelector(selectUser)
   const navigate = useNavigate()
+  const dispatch = useDispatch()
 
   return (
     <Grid container spacing={2} className={bem()} data-testid={bem()}>
@@ -31,7 +35,7 @@ export const AppHeader: React.FC = () => {
         {user === null ? <HeaderLinks navigator={navigate} /> : null}
       </Grid>
 
-      <Grid xs={8.5} md={4.5} display="flex">
+      <Grid xs={8} md={4.5} display="flex">
         {user === null ? (
           <motion.div
             className={bem('Buttons')}
@@ -65,8 +69,13 @@ export const AppHeader: React.FC = () => {
             exit={{ opacity: 0 }}
             className={bem('UserPanel')}
           >
-            <UserNavigate navigator={navigate} />
+            {/* <UserNavigate navigator={navigate} /> */}
             <UserControl user={user} />
+            <UserTypeSwitch
+              userType={actualUserType!}
+              setType={dispatch}
+              navigator={navigate}
+            />
           </motion.div>
         )}
       </Grid>

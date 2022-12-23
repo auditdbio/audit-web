@@ -1,0 +1,27 @@
+@import 'styles/styles.scss';
+
+.UserTypeSwitch {
+  display: flex;
+  flex-direction: row;
+  color: white;
+  margin: $margin-normal;
+
+  &-Button {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    margin: auto;
+    width: 125px;
+    height: 40px;
+    cursor: pointer;
+  }
+
+  &_auditor {
+    background-color: $primary;
+  }
+
+  &_customer {
+    background-color: $secondary;
+  }
+}

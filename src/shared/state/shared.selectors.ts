@@ -3,6 +3,11 @@ import { AppState } from 'app.store'
 
 export const selectSharedSlice = (state: AppState) => state.shared
 
+export const selectUserType = createSelector(
+  selectSharedSlice,
+  (state) => state.activeUserType,
+)
+
 export const selectAuditors = createSelector(selectSharedSlice, (state) => state.auditors)
 
 export const selectAuditorsLoading = createSelector(

@@ -6,6 +6,7 @@ import { AccountType, User } from 'shared/models/user'
 
 export type SharedState = {
   user: User | null
+  activeUserType: AccountType | null
   auditors: Auditor[]
   auditorsLoading: boolean
   auditorsError: string | null
@@ -16,6 +17,7 @@ export type SharedState = {
 
 export const initialSharedState: SharedState = {
   user: null,
+  activeUserType: null,
   auditors: [],
   auditorsLoading: false,
   auditorsError: null,
@@ -54,6 +56,10 @@ export const sharedSlice = createSlice({
     loadProjectsError: (state, action: PayloadAction<string>) => {
       state.projectsLoading = false
       state.projectsError = action.payload
+    },
+
+    setActiveUserType: (state, action: PayloadAction<AccountType>) => {
+      state.activeUserType = action.payload
     },
   },
 })

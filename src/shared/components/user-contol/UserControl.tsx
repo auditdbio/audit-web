@@ -98,7 +98,7 @@ export const UserControl: React.FC<{ user: User }> = ({ user }) => {
           },
         }}
       >
-        <MenuItem
+        {/* <MenuItem
           className={bem('Auditor')}
           data-testid={bem('Auditor')}
           onClick={() => {
@@ -118,7 +118,7 @@ export const UserControl: React.FC<{ user: User }> = ({ user }) => {
           }}
         >
           Customer
-        </MenuItem>
+        </MenuItem> */}
 
         <MenuItem
           className={bem('MyAccount')}
