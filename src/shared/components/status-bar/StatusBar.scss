@@ -1,0 +1,38 @@
+@import 'styles/styles.scss';
+
+.StatusBar {
+  display: flex;
+  flex-direction: row;
+  width: fit-content;
+  margin: auto;
+  padding: 5px 0;
+
+  &-Indicator {
+    font-size: $m-font-size !important;
+    margin: auto;
+    padding: 0 5px 0 5px;
+
+    &_green {
+      color: rgb(0, 183, 0);
+    }
+    &_red {
+      color: $red;
+    }
+    &_gray {
+      color: $gray;
+    }
+    &_primary {
+      color: $primary;
+    }
+    &_secondary {
+      color: $secondary;
+    }
+  }
+
+  &-Desc {
+    margin: auto;
+    color: $text-color;
+    font-size: $sm-font-size;
+    padding: 0 5px 0 5px;
+  }
+}

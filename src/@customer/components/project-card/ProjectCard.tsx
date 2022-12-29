@@ -1,21 +1,21 @@
 import {
   Card,
   Button,
-  CardActionArea,
   CardContent,
   Typography,
   CardActions,
-  IconButton,
   Avatar,
   Dialog,
   DialogContent,
 } from '@mui/material'
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { cn } from '@bem-react/classname'
 
 import './ProjectCard.scss'
 import { Project } from 'shared/models/project'
 import { ProjectInfo } from '../customer-info/ProjectInfo'
+import { StatusBar } from 'shared/components/status-bar/StatusBar'
+import { useLocation } from 'react-router-dom'
 
 export type ProjectCardProps = {
   project: Project
@@ -32,6 +32,8 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
   onDelete,
 }) => {
   const [infoDialog, setInfoDialog] = useState(false)
+  const location = useLocation()
+  const showStatus = location.pathname !== '/main'
   const [state, setState] = useState({
     isHovered: false,
   })
@@ -79,6 +81,13 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
         >
           {project.tags}
         </Typography>
+
+        {showStatus ? (
+          <StatusBar
+            color={project.status === 'shown' ? 'green' : 'secondary'}
+            desc={project.status === 'shown' ? 'Published' : 'Unpublished'}
+          />
+        ) : null}
       </CardContent>
 
       <CardActions>

@@ -35,7 +35,7 @@ export const ProjectsPanel: React.FC<ProjectsPanelProps> = ({
         {loading
           ? 'Loading...'
           : projects.map((project) => (
-              <Grid item xs={12} sm={6} md={4} key={project._id}>
+              <Grid item xs={12} sm={6} md={6} key={project._id}>
                 <ProjectCard
                   project={project}
                   onEdit={editProject}
