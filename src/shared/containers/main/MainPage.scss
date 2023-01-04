@@ -10,6 +10,11 @@
     margin-top: 0 !important;
   }
 
+  &-Title {
+    font-size: $l-font-size;
+    font-weight: bold;
+  }
+
   &-Cards {
     display: flex;
     flex-direction: column !important;

@@ -107,7 +107,7 @@ export const MainPage = () => {
       <Grid container spacing={6} className={bem('Content')}>
         <Grid item xs={12} sm={6} className={bem('Cards')} data-testid={bem('Auditors')}>
           <Box className={bem('CardsHeader')}>
-            <span>Audits</span>
+            <span className={bem('Title')}>Audits</span>
 
             <Search className={bem('Search')}>
               <SearchIconWrapper>
@@ -134,7 +134,7 @@ export const MainPage = () => {
 
         <Grid item xs={12} sm={6} className={bem('Cards')} data-testid={bem('Projects')}>
           <Box className={bem('CardsHeader')}>
-            <span>Projects</span>
+            <span className={bem('Title')}>Projects</span>
 
             <Search className={bem('Search')}>
               <SearchIconWrapper>

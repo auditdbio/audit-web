@@ -9,6 +9,17 @@ export const theme = createTheme({
       styleOverrides: {
         root: {
           fontFamily: '"Montserrat", sans-serif',
+          fontWeight: 'bold',
+          borderRadius: '9px',
+          boxShadow: '0 0',
+        },
+      },
+    },
+
+    MuiMenuItem: {
+      styleOverrides: {
+        root: {
+          fontFamily: 'Montserrat',
         },
       },
     },
@@ -24,37 +35,27 @@ export const theme = createTheme({
     MuiPaper: {
       styleOverrides: {
         root: {
-          borderRadius: '20px',
+          fontFamily: '"Montserrat", sans-serif',
         },
       },
     },
 
-    MuiInputLabel: {},
+    MuiCard: {
+      styleOverrides: {
+        root: {
+          borderRadius: '20px',
+          margin: '0 10px',
+        },
+      },
+    },
 
-    // MuiInput: {
-    //   styleOverrides: {
-    //     root: {
-    //       color: WHITE,
-    //       ':after': {
-    //         borderBottomColor: INPUT_UNDERLINE_COLOR,
-    //       },
-    //       ':not(.Mui-disabled):after': {
-    //         borderBottomColor: INPUT_UNDERLINE_COLOR,
-    //       },
-    //       ':hover:not(.Mui-disabled):after': {
-    //         borderBottomColor: INPUT_UNDERLINE_COLOR,
-    //       },
-    //       ':not(.Mui-disabled):before': {
-    //         borderBottomColor: INPUT_UNDERLINE_COLOR,
-    //       },
-    //       ':hover:not(.Mui-disabled):before': {
-    //         borderBottomColor: INPUT_UNDERLINE_COLOR,
-    //       },
-    //     },
-    //     colorSecondary: {
-    //       color: WHITE,
-    //     },
-    //   },
-    // },
+    MuiCardContent: {
+      styleOverrides: {
+        root: {
+          display: 'flex',
+          flexDirection: 'column',
+        },
+      },
+    },
   },
 })
