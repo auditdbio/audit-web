@@ -1,4 +1,4 @@
-import { alpha, Box, Grid, InputBase, styled, Typography } from '@mui/material'
+import { alpha, Box, Grid, InputBase, styled } from '@mui/material'
 import { useDispatch, useSelector } from 'react-redux'
 import React, { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
@@ -107,9 +107,7 @@ export const MainPage = () => {
       <Grid container spacing={6} className={bem('Content')}>
         <Grid item xs={12} sm={6} className={bem('Cards')} data-testid={bem('Auditors')}>
           <Box className={bem('CardsHeader')}>
-            <Typography variant="h6" gutterBottom component="div">
-              Audits
-            </Typography>
+            <span>Audits</span>
 
             <Search className={bem('Search')}>
               <SearchIconWrapper>
@@ -136,9 +134,7 @@ export const MainPage = () => {
 
         <Grid item xs={12} sm={6} className={bem('Cards')} data-testid={bem('Projects')}>
           <Box className={bem('CardsHeader')}>
-            <Typography variant="h6" gutterBottom component="div">
-              Projects
-            </Typography>
+            <span>Projects</span>
 
             <Search className={bem('Search')}>
               <SearchIconWrapper>

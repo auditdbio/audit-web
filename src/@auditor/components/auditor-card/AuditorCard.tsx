@@ -3,7 +3,6 @@ import {
   Button,
   CardActionArea,
   CardContent,
-  Typography,
   CardActions,
   Avatar,
   Dialog,
@@ -54,13 +53,11 @@ export const AuditorCard: React.FC<AuditorCardProps> = ({ auditor }) => {
       <CardContent>
         <Avatar className={bem('Avatar')} alt={auditor.fname} src={avatar} />
 
-        <Typography className={bem('Name')} gutterBottom variant="h6" component="div">
+        <span className={bem('Name')}>
           {auditor.fname} {auditor.lname}
-        </Typography>
+        </span>
 
-        <Typography className={bem('Tags')} variant="body2" color="text.secondary">
-          {auditor.tags}
-        </Typography>
+        <span className={bem('Tags')}>{auditor.tags}</span>
       </CardContent>
 
       <CardActions>

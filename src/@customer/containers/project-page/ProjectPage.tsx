@@ -5,7 +5,6 @@ import { motion } from 'framer-motion'
 import MenuIcon from '@mui/icons-material/Menu'
 import { cn } from '@bem-react/classname'
 import {
-  Typography,
   Grid,
   InputLabel,
   InputBase,
@@ -159,9 +158,7 @@ export const ProjectPage: React.FC = () => {
       exit={{ opacity: 0 }}
     >
       <Box className={bem()}>
-        <Typography variant="h5" className={bem('Title')}>
-          Project
-        </Typography>
+        <span className={bem('Title')}>Project</span>
 
         {loading ? (
           'Loading...'

@@ -1,7 +1,7 @@
 import React from 'react'
 import { cn } from '@bem-react/classname'
 import { motion } from 'framer-motion'
-import { Avatar, IconButton, Menu, MenuItem, Tooltip, Typography } from '@mui/material'
+import { Avatar, IconButton, Menu, MenuItem, Tooltip } from '@mui/material'
 
 import { useDispatch } from 'react-redux'
 import { userActions } from 'user/state/user.reducer'
@@ -35,15 +35,9 @@ export const UserControl: React.FC<{ user: User }> = ({ user }) => {
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
     >
-      <Typography
-        className={bem('UserName')}
-        data-testid={bem('UserName')}
-        variant="h6"
-        color="inherit"
-        component="div"
-      >
+      <span className={bem('UserName')} data-testid={bem('UserName')} color="inherit">
         {user.name}
-      </Typography>
+      </span>
 
       <Tooltip title="Account">
         <IconButton

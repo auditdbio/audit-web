@@ -6,7 +6,6 @@ import {
   InputAdornment,
   InputBase,
   InputLabel,
-  Typography,
 } from '@mui/material'
 import { useDispatch, useSelector } from 'react-redux'
 import React, { useEffect, useState } from 'react'
@@ -227,9 +226,7 @@ export const Registation: React.FC = () => {
       className="motion-container"
     >
       <Grid container spacing={0} className={bem()}>
-        <Typography variant="h5" className={bem('Title')}>
-          Sign in
-        </Typography>
+        <span className={bem('Title')}>Sign in</span>
 
         <form className={bem('Form')} autoComplete="off">
           <Grid xs={12}>
@@ -242,14 +239,7 @@ export const Registation: React.FC = () => {
                     flexDirection={'column'}
                     alignItems={'center'}
                   >
-                    <Typography
-                      className={bem('RolesTitle')}
-                      variant="caption"
-                      display="block"
-                      gutterBottom
-                    >
-                      Choose who you want to be
-                    </Typography>
+                    <span className={bem('RolesTitle')}>Choose who you want to be</span>
                   </Grid>
 
                   <Grid xs={12}>

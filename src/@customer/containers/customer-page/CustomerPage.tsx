@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from 'react-redux'
 import React, { useEffect, useState } from 'react'
-import { Box, Typography } from '@mui/material'
+import { Box } from '@mui/material'
 import { useLocation, useNavigate } from 'react-router-dom'
 import TabContext from '@mui/lab/TabContext'
 import { motion } from 'framer-motion'
@@ -87,9 +87,7 @@ export const CustomerPage: React.FC = () => {
       exit={{ opacity: 0 }}
     >
       <Box className={bem()}>
-        <Typography variant="h5" className={bem('Title')}>
-          Customer
-        </Typography>
+        <span className={bem('Title')}>Customer</span>
 
         <TabContext value={value}>
           <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>

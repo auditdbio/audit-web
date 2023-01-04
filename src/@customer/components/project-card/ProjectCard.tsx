@@ -2,7 +2,6 @@ import {
   Card,
   Button,
   CardContent,
-  Typography,
   CardActions,
   Avatar,
   Dialog,
@@ -63,24 +62,13 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
       <CardContent>
         <Avatar className={bem('Avatar')} alt={project.name} src={avatar} />
 
-        <Typography
-          className={bem('Name')}
-          title={project.name}
-          gutterBottom
-          variant="h6"
-          component="div"
-        >
+        <span className={bem('Name')} title={project.name}>
           {project.name}
-        </Typography>
+        </span>
 
-        <Typography
-          className={bem('Tags')}
-          title={project.tags}
-          variant="body2"
-          color="text.secondary"
-        >
+        <span className={bem('Tags')} title={project.tags} color="text.secondary">
           {project.tags}
-        </Typography>
+        </span>
 
         {showStatus ? (
           <StatusBar

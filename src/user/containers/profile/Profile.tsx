@@ -6,7 +6,6 @@ import {
   InputBase,
   InputLabel,
   Tooltip,
-  Typography,
 } from '@mui/material'
 import Grid from '@mui/material/Unstable_Grid2'
 import { cn } from '@bem-react/classname'
@@ -57,13 +56,11 @@ export const Profile: React.FC = () => {
       exit={{ opacity: 0 }}
     >
       <Grid container spacing={2} className={bem()}>
-        <Typography variant="h5" className={bem('Title')}>
-          User profile
-        </Typography>
+        <span className={bem('Title')}>User profile</span>
 
         <Grid xs={12} md={12} lg={3} display="flex">
           <Avatar className={bem('Avatar')}>{user.name.substring(0, 1)}</Avatar>
-          {/* <Typography
+          {/* <span
               className={bem('EditAvatar')}
               variant="caption"
               onClick={() => {
@@ -71,7 +68,7 @@ export const Profile: React.FC = () => {
               }}
             >
               Edit
-            </Typography> */}
+            </span> */}
         </Grid>
 
         <Grid xs={12} md={12} lg={9}>

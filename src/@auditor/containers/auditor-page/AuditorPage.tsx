@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from 'react-redux'
 import React, { useEffect } from 'react'
-import { Box, Typography } from '@mui/material'
+import { Box } from '@mui/material'
 import { motion } from 'framer-motion'
 import TabContext from '@mui/lab/TabContext'
 import TabPanel from '@mui/lab/TabPanel'
@@ -57,9 +57,7 @@ export const AuditorPage: React.FC = () => {
       exit={{ opacity: 0 }}
     >
       <Box className={bem()}>
-        <Typography variant="h5" className={bem('Title')}>
-          Auditor
-        </Typography>
+        <span className={bem('Title')}>Auditor</span>
 
         <TabContext value={value}>
           <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>

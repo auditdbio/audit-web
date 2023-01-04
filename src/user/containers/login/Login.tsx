@@ -4,7 +4,6 @@ import {
   IconButton,
   InputLabel,
   Alert,
-  Typography,
   InputBase,
 } from '@mui/material'
 import Grid from '@mui/material/Unstable_Grid2'
@@ -139,9 +138,7 @@ export const Login: React.FC = () => {
       exit={{ opacity: 0 }}
     >
       <Grid container spacing={2} className={bem()}>
-        <Typography variant="h5" className={bem('Title')}>
-          Sign in
-        </Typography>
+        <span className={bem('Title')}>Sign in</span>
 
         <form autoComplete="off">
           <Grid xs={12}>
