@@ -6,6 +6,7 @@
     "@bem-react/classname": "^1.5.12",
     "@emotion/react": "^11.10.5",
     "@emotion/styled": "^11.10.5",
+    "@fontsource/montserrat": "^4.5.13",
     "@mui/icons-material": "^5.10.16",
     "@mui/lab": "^5.0.0-alpha.112",
     "@mui/material": "^5.10.15",

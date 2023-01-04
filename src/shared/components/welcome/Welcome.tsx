@@ -28,7 +28,7 @@ export const Welcome: React.FC<WelcomeProps> = ({ onSelect }) => {
       <Grid container spacing={3} className={bem('Grid')}>
         <Grid xs={12} display="flex">
           <span className={bem('Header')}>
-            Start your project right now <br /> or audit like an expert
+            Start your project right now or audit like an expert
           </span>
         </Grid>
 

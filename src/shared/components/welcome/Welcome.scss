@@ -1,13 +1,11 @@
 @import 'styles/styles.scss';
 
 .Welcome {
-  margin: auto;
-  margin-top: $margin-normal;
+  margin: $margin-normal * 5 auto;
   display: flex;
   flex-direction: row;
   width: fit-content;
   align-items: center;
-  margin-bottom: calc($margin-normal * 2);
 
   &-Grid {
     width: 65% !important;
