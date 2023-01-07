@@ -24,60 +24,65 @@ export const AppHeader: React.FC = () => {
   const dispatch = useDispatch()
 
   return (
-    <Grid container spacing={2} className={bem()} data-testid={bem()}>
-      <Grid xs={3} display="flex">
-        <Box className={bem('Logo')} onClick={() => navigate('/main')}>
-          <img src="images/AuditDB_logo.png" className={bem('Img')} />
-        </Box>
-      </Grid>
-      <Grid xs={0} md={4.5} display="flex">
-        {user === null ? <HeaderLinks navigator={navigate} /> : null}
-      </Grid>
+    <div className="wrapper">
+      <Grid container spacing={2} className={bem()} data-testid={bem()}>
+        <Grid xs={3} display="flex">
+          <Box className={bem('Logo')} onClick={() => navigate('/main')}>
+            <img src="images/AuditDB_logo.png" className={bem('Img')} />
+          </Box>
+        </Grid>
+        <Grid xs={0} md={4.5} display="flex">
+          {user === null ? <HeaderLinks navigator={navigate} /> : null}
+        </Grid>
 
-      <Grid xs={8} md={4.5} display="flex">
-        {user === null ? (
-          <motion.div
-            className={bem('Buttons')}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-          >
-            <Button
-              variant="contained"
-              color="warning"
-              className={bem('Sign', { in: true })}
-              data-testid={bem('SignIn')}
-              onClick={() => navigate('/sign-in')}
+        <Grid xs={8} md={4.5} display="flex">
+          {user === null ? (
+            <motion.div
+              className={bem('Buttons')}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
             >
-              Sign In
-            </Button>
+              <Button
+                color="primary"
+                size="small"
+                variant="contained"
+                className={bem('Button')}
+                data-testid={bem('SignIn')}
+                onClick={() => navigate('/sign-in')}
+              >
+                Sign In
+              </Button>
 
-            <Button
-              variant="outlined"
-              className={bem('Sign', { up: true })}
-              data-testid={bem('SignUp')}
-              onClick={() => navigate('/sign-up')}
+              <Button
+                color="secondary"
+                size="small"
+                variant="outlined"
+                className={bem('Button')}
+                data-testid={bem('SignUp')}
+                onClick={() => navigate('/sign-up')}
+              >
+                Sign Up
+              </Button>
+            </motion.div>
+          ) : (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className={bem('UserPanel')}
             >
-              Sign Up
-            </Button>
-          </motion.div>
-        ) : (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className={bem('UserPanel')}
-          >
-            {/* <UserNavigate navigator={navigate} /> */}
-            <UserControl user={user} />
-            <UserTypeSwitch
-              userType={actualUserType!}
-              setType={dispatch}
-              navigator={navigate}
-            />
-          </motion.div>
-        )}
+              {/* <UserNavigate navigator={navigate} /> */}
+              <UserControl user={user} />
+              <UserTypeSwitch
+                userType={actualUserType!}
+                setType={dispatch}
+                navigator={navigate}
+              />
+            </motion.div>
+          )}
+        </Grid>
       </Grid>
-    </Grid>
+    </div>
   )
 }

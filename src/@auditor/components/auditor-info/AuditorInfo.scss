@@ -24,7 +24,6 @@
   }
 
   &-Close {
-    @include page-button();
     margin: $margin-normal auto !important;
   }
 }

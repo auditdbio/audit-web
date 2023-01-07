@@ -12,7 +12,6 @@
   }
 
   &-Button {
-    @include page-button($primary);
     margin-bottom: $margin-normal !important;
 
     &_secondary {

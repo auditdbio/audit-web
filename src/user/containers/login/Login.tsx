@@ -9,7 +9,7 @@ import {
 import Grid from '@mui/material/Unstable_Grid2'
 import { cn } from '@bem-react/classname'
 import { motion } from 'framer-motion'
-import React, { useEffect } from 'react'
+import React, { MouseEvent, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { VisibilityOff, Visibility } from '@mui/icons-material'
 
@@ -107,8 +107,10 @@ export const Login: React.FC = () => {
     }))
   }
 
-  const handleLogin = (): void => {
+  const handleLogin = (e: MouseEvent): void => {
     let resp = loginDataValidation(userData)
+
+    e.preventDefault()
 
     if (resp.status) {
       dispatch(userActions.resetErrors())

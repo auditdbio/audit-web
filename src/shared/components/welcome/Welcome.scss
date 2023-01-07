@@ -1,7 +1,7 @@
 @import 'styles/styles.scss';
 
 .Welcome {
-  margin: $margin-normal * 5 auto;
+  margin: calc($margin-normal * 5) auto calc($margin-normal * 20);
   display: flex;
   flex-direction: row;
   width: fit-content;
@@ -14,30 +14,30 @@
   }
 
   &-Header {
-    text-align: center;
-    color: #53176d;
-    font-size: $l-font-size * 2;
-    font-weight: bold;
+    color: $secondary;
+    font-size: $xxl-font-size;
     margin: auto;
+    position: relative;
+    text-align: center;
+    text-transform: uppercase;
+    top: -30px;
   }
 
   &-Text {
-    text-align: center;
     color: $text-color;
-    font-size: $l-font-size;
+    font-size: $xl-font-size;
+    text-align: center;
   }
 
   &-Button {
-    min-width: fit-content !important;
-    @include page-button;
+    bottom: -40px;
+    position: relative;
 
     &_auditor {
-      background-color: $secondary !important;
       margin: 0 0 0 auto !important;
     }
 
     &_customer {
-      background-color: $primary !important;
       margin: 0 auto 0 0 !important;
     }
 

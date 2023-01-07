@@ -23,7 +23,6 @@
   }
 
   &-Button {
-    @include page-button($primary);
     margin: auto !important;
     min-width: 80px !important;
   }

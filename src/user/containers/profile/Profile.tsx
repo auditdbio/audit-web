@@ -128,7 +128,7 @@ export const Profile: React.FC = () => {
 
         <Grid xs={12} md={12} lg={12} display="flex" justifyContent="center">
           <Button
-            className={bem('Button', { Delete: true, second: true })}
+            className={bem('Button', { Delete: true })}
             variant="contained"
             onClick={handleDelete}
           >

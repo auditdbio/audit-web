@@ -13,8 +13,13 @@ code {
 }
 
 #root {
+  width: 100%;
+}
+
+.wrapper {
   max-width: 1200px;
   margin: auto;
+  width: 100%;
 }
 
 .motion-container {

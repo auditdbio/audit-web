@@ -1,5 +1,6 @@
 .Girl {
   padding: 0 5px;
+  position: relative;
 
   @media screen and (max-width: 1100px) {
     display: none;
@@ -8,5 +9,15 @@
   &-Img {
     max-width: -webkit-fill-available;
     width: 100%;
+  }
+
+  &_Left {
+    bottom: 50px;
+    left: -70px !important;
+  }
+
+  &_Right {
+    left: 70px !important;
+    top: 100px;
   }
 }

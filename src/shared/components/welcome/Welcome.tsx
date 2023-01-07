@@ -17,50 +17,50 @@ type WelcomeProps = {
 }
 export const Welcome: React.FC<WelcomeProps> = ({ onSelect }) => {
   return (
-    <motion.div
-      className={bem()}
-      data-testid={bem()}
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-    >
-      <LeftGirl />
-      <Grid container spacing={3} className={bem('Grid')}>
-        <Grid xs={12} display="flex">
-          <span className={bem('Header')}>
-            Start your project right now or audit like an expert
-          </span>
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+      <div className={bem({}, ['wrapper'])} data-testid={bem()}>
+        <LeftGirl />
+
+        <Grid container spacing={3} className={bem('Grid')}>
+          <Grid xs={12} display="flex">
+            <span className={bem('Header')}>
+              Start your project right now or audit like an expert
+            </span>
+          </Grid>
+
+          <Grid xs={12} display="flex">
+            <span className={bem('Text')}>
+              AuditDb is a blockchain-based jobs platform that helps clients and
+              freelancers connect. We provide efficient transactions with cryptocurrency,
+              and robust protection through smart contracts - wherever you're based!
+            </span>
+          </Grid>
+
+          <Grid xs={12} sm={6} display="flex">
+            <Button
+              color="secondary"
+              variant="contained"
+              className={bem('Button', { auditor: true })}
+              onClick={() => onSelect('auditor')}
+            >
+              Become auditor
+            </Button>
+          </Grid>
+
+          <Grid xs={12} sm={6} display="flex">
+            <Button
+              color="primary"
+              variant="contained"
+              className={bem('Button', { customer: true })}
+              onClick={() => onSelect('customer')}
+            >
+              Show your project
+            </Button>
+          </Grid>
         </Grid>
 
-        <Grid xs={12} display="flex">
-          <span className={bem('Text')}>
-            AuditDb is a blockchain-based jobs platform that helps clients and freelancers
-            connect. We provide efficient transactions with cryptocurrency, and robust
-            protection through smart contracts - wherever you're based!
-          </span>
-        </Grid>
-
-        <Grid xs={12} sm={6} display="flex">
-          <Button
-            variant="contained"
-            className={bem('Button', { auditor: true })}
-            onClick={() => onSelect('auditor')}
-          >
-            Become auditor
-          </Button>
-        </Grid>
-
-        <Grid xs={12} sm={6} display="flex">
-          <Button
-            variant="contained"
-            className={bem('Button', { customer: true })}
-            onClick={() => onSelect('customer')}
-          >
-            Show your project
-          </Button>
-        </Grid>
-      </Grid>
-      <RightGirl />
+        <RightGirl />
+      </div>
     </motion.div>
   )
 }

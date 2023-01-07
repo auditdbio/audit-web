@@ -8,7 +8,7 @@ import {
   InputLabel,
 } from '@mui/material'
 import { useDispatch, useSelector } from 'react-redux'
-import React, { useEffect, useState } from 'react'
+import React, { MouseEvent, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { cn } from '@bem-react/classname'
@@ -175,7 +175,9 @@ export const Registation: React.FC = () => {
     }
   }
 
-  const handleLogin = (): void => {
+  const handleLogin = (e: MouseEvent): void => {
+    e.preventDefault()
+
     if (userData.password !== password2) {
       setState((prevState) => ({
         ...prevState,

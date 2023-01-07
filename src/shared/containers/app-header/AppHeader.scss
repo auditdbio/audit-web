@@ -3,11 +3,12 @@
 .AppHeader {
   display: flex;
   flex-direction: row;
+  width: 100%;
 
   &-Logo {
     margin: 0 10px;
     margin: auto 0;
-    padding: $padding-normal/2 $padding-normal;
+    padding: calc($padding-normal/2) $padding-normal;
   }
 
   &-Img {
@@ -30,21 +31,10 @@
     }
   }
 
-  &-Sign {
-    @include page-button($primary);
+  &-Button {
     min-width: 100px !important;
     margin: 0 10px !important;
     box-shadow: 0 0 0 0 !important;
-
-    &_in {
-      margin-left: auto !important;
-    }
-    &_up {
-      margin-left: -10px;
-      color: #53176d !important;
-      background: none !important;
-      border: 1.5px solid #53176d !important;
-    }
   }
 
   &-UserPanel {

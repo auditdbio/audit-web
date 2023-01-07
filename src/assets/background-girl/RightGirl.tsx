@@ -7,7 +7,7 @@ const bem = cn('Girl')
 
 export const RightGirl = () => {
   return (
-    <div className={bem()}>
+    <div className={bem({ Right: true })}>
       <img className={bem('Img')} src="images/right-girl.svg" alt="Background image" />
     </div>
   )

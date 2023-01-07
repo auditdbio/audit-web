@@ -23,8 +23,6 @@
   }
 
   &-Button {
-    @include page-button;
-
     &_Password {
       background-color: $primary !important;
     }

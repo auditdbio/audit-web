@@ -15,10 +15,6 @@
     @include page-input-label;
   }
 
-  &-Button {
-    @include page-button;
-  }
-
   &-Alert {
     @include page-alert;
   }

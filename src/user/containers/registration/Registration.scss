@@ -15,10 +15,6 @@
     @include page-input-label;
   }
 
-  &-Button {
-    @include page-button;
-  }
-
   &-Switch {
     width: 250px !important;
     margin: 0 auto $margin-normal !important;

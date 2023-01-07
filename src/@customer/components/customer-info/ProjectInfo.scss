@@ -30,7 +30,6 @@
   }
 
   &-Close {
-    @include page-button($primary);
     margin: $margin-normal auto !important;
   }
 }

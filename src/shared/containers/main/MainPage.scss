@@ -1,19 +1,20 @@
 @import 'styles/styles.scss';
 
 .MainPage {
-  display: flex;
-  flex-direction: column !important;
-  height: 100%;
-  width: 100%;
+  // display: flex;
+  // flex-direction: column !important;
+  // height: 100%;
+  // width: 100%;
 
   &-Content {
     background-color: $secondary;
-    margin-top: 0 !important;
+    padding: calc($padding-normal * 3) 0;
   }
 
   &-Title {
-    font-size: $l-font-size;
-    font-weight: bold;
+    bottom: 10px;
+    font-size: $xxl-font-size;
+    position: relative;
   }
 
   &-Cards {
@@ -24,7 +25,10 @@
   }
 
   &-Search {
-    border: 1px solid $gray;
+    background-color: $secondary !important;
+    border: 1px solid $white;
+    border-radius: 20px !important;
+    height: 40px;
   }
 
   &-CardsHeader {
@@ -32,5 +36,43 @@
     display: flex;
     justify-content: space-between;
     margin: $margin-normal;
+  }
+
+  &-WhoIsUsing {
+    display: flex;
+    font-size: $xl-font-size;
+    height: 300px;
+    margin: auto;
+  }
+
+  &-WhoIsUsingTitle {
+    margin: auto;
+  }
+
+  &-Footer {
+    background-color: $primary;
+    color: $white;
+    display: flex;
+    flex-direction: column;
+    font-size: $xl-font-size;
+    padding: $padding-normal;
+  }
+
+  &-FooterHeader {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: $margin-normal;
+  }
+
+  &-FooterHeaderLogo {
+    font-weight: 700;
+
+    &_Left {
+      color: $secondary;
+    }
+
+    &_Right {
+      color: $white;
+    }
   }
 }
