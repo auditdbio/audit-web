@@ -1,5 +1,5 @@
 import "./App.css";
-import "@fontsource/montserrat";
+import "./index.css";
 import Header from "./components/Header";
 
 const divStyle = {
@@ -11,12 +11,12 @@ function App() {
 	return (
 		<div className="App">
 			<Header />
+			{/* <div style={divStyle}></div>
 			<div style={divStyle}></div>
 			<div style={divStyle}></div>
 			<div style={divStyle}></div>
 			<div style={divStyle}></div>
-			<div style={divStyle}></div>
-			<div style={divStyle}></div>
+			<div style={divStyle}></div> */}
 		</div>
 	);
 }
