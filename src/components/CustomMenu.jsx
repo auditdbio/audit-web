@@ -5,6 +5,7 @@ import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import Divider from "@mui/material/Divider";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+import { Box } from "@mui/material";
 
 const ORANGE_COLOR = "#FF9900";
 const BLACK_COLOR = "#222222";
@@ -57,8 +58,9 @@ const StyledMenu = styled((props) => (
 	},
 }));
 
-export default function CustomMenu() {
-	const buttonName = "Product";
+export default function CustomMenu({ props }) {
+	const buttonName = props.pageName;
+	const menuOptions = props.menuOptions;
 	const [anchorEl, setAnchorEl] = React.useState(null);
 	const open = Boolean(anchorEl);
 	const handleClick = (event) => {
@@ -69,7 +71,13 @@ export default function CustomMenu() {
 	};
 
 	return (
-		<div>
+		<Box
+			sx={{
+				display: "flex",
+				justifyContent: "center",
+				flexDirection: "column",
+			}}
+		>
 			<Button
 				id="demo-customized-button-1"
 				aria-controls={open ? "demo-customized-menu-1" : undefined}
@@ -92,6 +100,7 @@ export default function CustomMenu() {
 						color: ORANGE_COLOR,
 					},
 					textTransform: "none",
+					marginY: "auto",
 				}}
 			>
 				{buttonName}
@@ -109,7 +118,12 @@ export default function CustomMenu() {
 					AuditDB
 				</MenuItem>
 				<Divider sx={{ my: 0, backgroundColor: "orange", mx: "15px" }} />
-				<MenuItem onClick={handleClose} disableRipple>
+				{menuOptions.map((item) => (
+					<MenuItem onClick={handleClose} key={item.id} disableRipple>
+						{item.itemName}
+					</MenuItem>
+				))}
+				{/* <MenuItem onClick={handleClose} disableRipple>
 					Contact
 				</MenuItem>
 
@@ -118,8 +132,8 @@ export default function CustomMenu() {
 				</MenuItem>
 				<MenuItem onClick={handleClose} disableRipple>
 					Our projects
-				</MenuItem>
+				</MenuItem> */}
 			</StyledMenu>
-		</div>
+		</Box>
 	);
 }

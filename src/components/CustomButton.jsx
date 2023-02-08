@@ -1,30 +1,27 @@
 import * as React from "react";
-import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
 
-export default function CustomButton() {
+export default function CustomButton({ props }) {
+	const styles = props.styles;
+	const buttonText = props.text;
 	const buttonStyle = {
-		backgroundColor: "orange",
-		color: "white",
-		borderRaduis: "15px",
+		backgroundColor: styles.backgroundColor,
+		color: styles.color,
+		borderRadius: "15px",
+		fontSize: "26px",
 		fontFamily: "Montserrat",
-		// padding: "14px 60px",
-		// fontFamily: "Montserrat",
 		textTransform: "none",
 		width: "200px",
+		border: styles.border,
 		":hover": {
-			backgroundColor: "#FF9900",
-			color: "white",
+			backgroundColor: styles.backgroundColor,
+			color: styles.color,
 		},
 	};
 
 	return (
-		<Stack spacing={2} direction="row">
-			{/* <Button variant="text">Text</Button>
-			<Button variant="contained">Contained</Button> */}
-			<Button variant="standart" sx={buttonStyle}>
-				Sign in
-			</Button>
-		</Stack>
+		<Button variant="standart" sx={buttonStyle}>
+			{buttonText}
+		</Button>
 	);
 }
