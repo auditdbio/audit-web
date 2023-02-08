@@ -1,21 +1,11 @@
 import "./App.css";
-import "@fontsource/montserrat";
-
-const divStyle = {
-	height: "500px",
-	width: "500px",
-	// backgroundColor: "red",
-};
+import "./index.css";
+import Header from "./components/Header";
 
 function App() {
 	return (
 		<div className="App">
-			<div style={divStyle}></div>
-			<div style={divStyle}></div>
-			<div style={divStyle}></div>
-			<div style={divStyle}></div>
-			<div style={divStyle}></div>
-			<div style={divStyle}></div>
+			<Header />
 		</div>
 	);
 }

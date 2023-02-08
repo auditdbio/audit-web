@@ -1,15 +1,14 @@
 * {
 	margin: 0;
 	padding: 0;
-	font-family: "Montserrat";
+	/* font-family: "Comic Sans"; */
 }
 
 html,
 body {
-	/* height: 100%; */
-	/* width: 100%; */
-	background-image: url(../public/welcome_page/background_img.jpg);
+	background-image: url(./welcome_page/background_img.jpg);
 	background-position: center;
 	background-repeat: no-repeat;
 	background-size: cover;
+	font-family: "Montserrat";
 }
