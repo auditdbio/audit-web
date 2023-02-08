@@ -167,11 +167,11 @@ const Header = () => {
 									display: { xs: "block", md: "none" },
 								}}
 							>
-								{/* {pages.map((page) => (
-									<MenuItem key={page} onClick={handleCloseNavMenu}>
-										<Typography textAlign="center">{page}</Typography>
+								{pages.map((page) => (
+									<MenuItem key={page.id} onClick={handleCloseNavMenu}>
+										<Typography textAlign="center">{page.pageName}</Typography>
 									</MenuItem>
-								))} */}
+								))}
 							</Menu>
 						</Box>
 						<Box
