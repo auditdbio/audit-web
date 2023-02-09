@@ -1,12 +1,17 @@
 import "./App.css";
 import "./index.css";
-import Header from "./components/Header";
+import AppRoutes from "./routes/AppRoutes.jsx";
+import theme from "./styles/themes.js";
+import {ThemeProvider} from '@mui/material/styles'
+import {BrowserRouter} from "react-router-dom";
 
 function App() {
 	return (
-		<div className="App">
-			<Header />
-		</div>
+		<ThemeProvider theme={theme}>
+			<BrowserRouter>
+				<AppRoutes/>
+			</BrowserRouter>
+		</ThemeProvider>
 	);
 }
 
