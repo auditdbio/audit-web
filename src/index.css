@@ -1,6 +1,7 @@
 * {
 	margin: 0;
 	padding: 0;
+	box-sizing: border-box;
 	/* font-family: "Comic Sans"; */
 }
 
@@ -11,4 +12,8 @@ body {
 	background-repeat: no-repeat;
 	background-size: cover;
 	font-family: "Montserrat";
+}
+
+a {
+	text-decoration: none;
 }

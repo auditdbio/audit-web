@@ -1,5 +1,6 @@
 import * as React from "react";
 import Button from "@mui/material/Button";
+import {Link} from 'react-router-dom';
 
 export default function CustomButton({ props }) {
 	const styles = props.styles;
@@ -20,8 +21,10 @@ export default function CustomButton({ props }) {
 	};
 
 	return (
-		<Button variant="standart" sx={buttonStyle}>
-			{buttonText}
-		</Button>
+		<Link to={props.to}>
+			<Button variant="standart" sx={buttonStyle}>
+				{buttonText}
+			</Button>
+		</Link>
 	);
 }

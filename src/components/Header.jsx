@@ -12,8 +12,9 @@ import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import AdbIcon from "@mui/icons-material/Adb";
-import CustomMenu from "./CustomMenu";
-import CustomButton from "./CustomButton";
+import CustomMenu from "./custom/CustomMenu.jsx";
+import CustomButton from "./custom/CustomButton.jsx";
+import {Link} from 'react-router-dom'
 
 const pages = [
 	{
@@ -74,7 +75,7 @@ const pages = [
 const settings = ["Profile", "Account", "Dashboard", "Logout"];
 const signInButton = {
 	text: "Sign In",
-	to: "/login",
+	to: "/sign-in",
 	styles: {
 		backgroundColor: "orange",
 		color: "white",
@@ -83,7 +84,7 @@ const signInButton = {
 
 const signUpButton = {
 	text: "Sign Up",
-	to: "/registration",
+	to: "/sign-up",
 	styles: {
 		backgroundColor: "transparent",
 		color: "#222222",
@@ -133,11 +134,13 @@ const Header = () => {
 							justifyContent: "space-between",
 						}}
 					>
-						<img
-							style={brandStyle}
-							src="welcome_page/logo.svg"
-							alt="audit db logo"
-						/>
+						<Link to={'/'}>
+							<img
+								style={brandStyle}
+								src="../../public/welcome_page/logo.svg"
+								alt="audit db logo"
+							/>
+						</Link>
 						<Box sx={{ flexGrow: 0, display: { xs: "flex", md: "none" } }}>
 							<IconButton
 								size="large"
