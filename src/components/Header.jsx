@@ -50,8 +50,8 @@ const Header = () => {
 			<Container
 				maxWidth="xl"
 				sx={{
-					marginTop: { xs: "40px", md: "60px" },
-					marginBottom: { xs: "40px", md: "60px" },
+					paddingTop: { xs: "40px", md: "60px" },
+					paddingBottom: { xs: "40px", md: "60px" },
 				}}
 			>
 				<Toolbar disableGutters>
