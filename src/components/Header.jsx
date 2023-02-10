@@ -50,8 +50,8 @@ const Header = () => {
 			<Container
 				maxWidth="xl"
 				sx={{
-					marginTop: { xs: "40px", md: "60px" },
-					marginBottom: { xs: "40px", md: "60px" },
+					paddingTop: { xs: "40px", md: "60px" },
+					paddingBottom: { xs: "40px", md: "60px" },
 				}}
 			>
 				<Toolbar disableGutters>
@@ -98,10 +98,49 @@ const Header = () => {
 								sx={{
 									display: { xs: "block", md: "none" },
 								}}
+								PaperProps={{
+									sx: { width: "300px", borderRadius: "15px" },
+								}}
 							>
+								<MenuItem sx={{ marginTop: "1rem" }}>
+									<Box
+										sx={{
+											display: "flex",
+											flexDirection: "column",
+											width: "100%",
+											gap: "1rem",
+											marginX: "1rem",
+										}}
+									>
+										<CustomButton sx={signInButton} onClick={handleSignIn}>
+											Sign In
+										</CustomButton>
+										<CustomButton sx={signUpButton} onClick={handleSignUp}>
+											Sign Up
+										</CustomButton>
+									</Box>
+								</MenuItem>
 								{pages.map((page) => (
-									<MenuItem key={page.id} onClick={handleCloseNavMenu}>
-										<Typography textAlign="center">{page.pageName}</Typography>
+									<MenuItem
+										key={page.id}
+										onClick={handleCloseNavMenu}
+										sx={{
+											":active": {
+												backgroundColor: "orange",
+												color: "white",
+											},
+										}}
+									>
+										<Box
+											textAlign="center"
+											sx={{
+												marginX: "1rem",
+												fontSize: "22px",
+												fontWeight: "500",
+											}}
+										>
+											{page.pageName}
+										</Box>
 									</MenuItem>
 								))}
 							</Menu>
