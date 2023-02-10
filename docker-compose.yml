@@ -1,0 +1,41 @@
+version: '3.7'
+
+services:
+  sample-prod:
+    container_name: sample-prod
+    build:
+      context: "https://github.com/auditdbio/audit-web.git${GIT_BRANCH}"
+      dockerfile: ./Dockerfile
+    environment:
+      - VIRTUAL_HOST=dev.auditdb.io
+      - LETSENCRYPT_HOST=dev.auditdb.io
+      - LETSENCRYPT_EMAIL=mail@auditdb.io
+
+  nginx-proxy:
+    image: nginxproxy/nginx-proxy:1.0
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+      - certs:/etc/nginx/certs:ro
+      - vhost:/etc/nginx/vhost.d
+      - conf:/etc/nginx/conf.d
+      - html:/usr/share/nginx/html
+
+  acme-companion:
+    image: nginxproxy/acme-companion:2.2
+    container_name: nginx-proxy-acme
+    restart: always
+    volumes_from:
+      - nginx-proxy
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - certs:/etc/nginx/certs:rw
+      - acme:/etc/acme.sh
+volumes:
+  vhost:
+  html:
+  certs:
+  acme:
+  conf:
