@@ -205,7 +205,7 @@ const pages = [
 		],
 	},
 ];
-const settings = ["Profile", "Account", "Dashboard", "Logout"];
+// const settings = ["Profile", "Account", "Dashboard", "Logout"];
 const signInButton = {
 	backgroundColor: "orange",
 	color: "white",
@@ -223,10 +223,6 @@ const signUpButton = {
 		backgroundColor: "transparent",
 		color: "black",
 	},
-};
-
-const menuIconStyle = {
-	width: "50px",
 };
 
 export default Header;
