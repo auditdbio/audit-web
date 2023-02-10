@@ -1,10 +1,6 @@
-import * as React from "react";
 import { styled } from "@mui/system";
 import Button from "@mui/material/Button";
-import theme, {
-	buttonResponsiveStyles,
-	radiusOfComponents,
-} from "../../styles/themes";
+import theme, { radiusOfComponents } from "../../styles/themes";
 
 export const CustomButton = styled(Button)({
 	width: "100%",

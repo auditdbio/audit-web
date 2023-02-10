@@ -7,13 +7,9 @@ import Typography from "@mui/material/Typography";
 import Menu from "@mui/material/Menu";
 import MenuIcon from "@mui/icons-material/Menu";
 import Container from "@mui/material/Container";
-import Avatar from "@mui/material/Avatar";
-import Button from "@mui/material/Button";
-import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
-import AdbIcon from "@mui/icons-material/Adb";
 import CustomMenu from "./custom/CustomMenu.jsx";
-import { CustomButton } from "./custom/CustomButton.jsx";
+import { CustomButton } from "./custom/Button.jsx";
 import { Link } from "react-router-dom";
 
 const Header = () => {
@@ -67,14 +63,13 @@ const Header = () => {
 						</Link>
 						<Box sx={{ flexGrow: 0, display: { xs: "flex", md: "none" } }}>
 							<IconButton
-								size="large"
 								aria-label="account of current user"
 								aria-controls="menu-appbar"
 								aria-haspopup="true"
 								onClick={handleOpenNavMenu}
 								color="inherit"
 							>
-								<MenuIcon />
+								<MenuIcon fontSize="large" />
 							</IconButton>
 							<Menu
 								id="menu-appbar"
@@ -104,7 +99,7 @@ const Header = () => {
 						<Box
 							sx={{
 								display: { xs: "none", md: "flex" },
-								gap: "30px",
+								gap: "0.5rem",
 							}}
 						>
 							{pages.map((page) => (
@@ -113,10 +108,10 @@ const Header = () => {
 						</Box>
 						<Box
 							sx={{
-								width: "100%",
+								width: "30%",
 								maxWidth: "500px",
 								display: { xs: "none", md: "flex" },
-								gap: "30px",
+								gap: "1rem",
 							}}
 						>
 							<CustomButton sx={signInButton}>Sign In</CustomButton>
@@ -214,6 +209,10 @@ const signUpButton = {
 		backgroundColor: "transparent",
 		color: "black",
 	},
+};
+
+const menuIconStyle = {
+	width: "50px",
 };
 
 export default Header;

@@ -7,8 +7,15 @@ import Divider from "@mui/material/Divider";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import { Box } from "@mui/material";
 
-const ORANGE_COLOR = "#FF9900";
-const BLACK_COLOR = "#222222";
+export const CustomMenu1 = styled(Button)({
+	width: "100%",
+	borderRadius: "15px",
+	fontSize: "26px",
+	textTransform: "none",
+	// [theme.breakpoints.down("xl")]: {
+	// 	fontSize: "22px",
+	// },
+});
 
 const StyledMenu = styled((props) => (
 	<Menu
@@ -44,12 +51,6 @@ const StyledMenu = styled((props) => (
 				color: theme.palette.text.secondary,
 				marginRight: theme.spacing(1.5),
 			},
-			// "&:active": {
-			// 	backgroundColor: alpha(
-			// 		theme.palette.primary.main,
-			// 		theme.palette.action.selectedOpacity
-			// 	),
-			// },
 			":hover": {
 				backgroundColor: ORANGE_COLOR, // theme.palette.primary.main
 				color: "white",
@@ -92,7 +93,6 @@ export default function CustomMenu({ props }) {
 					background: "transparent",
 					color: BLACK_COLOR,
 					fontSize: "26px",
-					// lineHeight: "32px",
 					fontWeight: "400",
 					fontFamily: "Montserrat",
 					":hover": {
@@ -123,17 +123,10 @@ export default function CustomMenu({ props }) {
 						{item.itemName}
 					</MenuItem>
 				))}
-				{/* <MenuItem onClick={handleClose} disableRipple>
-					Contact
-				</MenuItem>
-
-				<MenuItem onClick={handleClose} disableRipple>
-					Our team
-				</MenuItem>
-				<MenuItem onClick={handleClose} disableRipple>
-					Our projects
-				</MenuItem> */}
 			</StyledMenu>
 		</Box>
 	);
 }
+
+const ORANGE_COLOR = "#FF9900";
+const BLACK_COLOR = "#222222";

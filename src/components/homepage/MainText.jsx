@@ -2,52 +2,59 @@ import { Box } from "@mui/system";
 import theme, { buttonResponsiveStyles } from "../../styles/themes";
 import { Typography } from "@mui/material";
 import { responsiveFontSizes } from "@mui/material/styles";
-import { CustomButton } from "../custom/CustomButton";
+import { CustomButton } from "../custom/Button";
 
 const MainText = () => {
 	return (
-		<Box
-			sx={{
-				display: "flex",
-				justifyContent: "space-between",
-				marginX: "3%",
-			}}
-		>
-			<Box sx={imageStyle}>
+		<div>
+			<Box
+				sx={{
+					display: "flex",
+					justifyContent: "space-between",
+					marginX: "3%",
+				}}
+			>
+				<Box sx={imageStyle}>
+					<img
+						width="100%"
+						src="/welcome_page/person_skate.svg"
+						alt="person_skate"
+					/>
+				</Box>
+
+				<Box sx={textWrapper}>
+					<Typography sx={headingStyle} theme={theme} variant="h1">
+						{headingText}
+					</Typography>
+					<Typography sx={paragraphStyle} theme={theme} variant="body1">
+						{paragraphText}
+					</Typography>
+					<Box sx={buttonsStyle}>
+						<CustomButton sx={auditorButton}>Become auditor</CustomButton>
+						<CustomButton sx={projectButton}>Show your project</CustomButton>
+					</Box>
+				</Box>
+				<Box sx={imageStyle}>
+					<img
+						width="100%"
+						src="/welcome_page/person_bitcoin.svg"
+						alt="person_bitcoin"
+					/>
+				</Box>
+			</Box>
+			<Box sx={imagesStyle}>
 				<img
-					width="100%"
+					width="40%"
 					src="/welcome_page/person_skate.svg"
 					alt="person_skate"
 				/>
-			</Box>
-
-			<Box sx={textWrapper}>
-				<Typography sx={headingStyle} theme={theme} variant="h1">
-					{headingText}
-				</Typography>
-				<Typography sx={paragraphStyle} theme={theme} variant="body1">
-					{paragraphText}
-				</Typography>
-				<Box
-					sx={{
-						flexGrow: 0,
-						display: "flex",
-						justifyContent: "space-around",
-						gap: "2rem",
-					}}
-				>
-					<CustomButton sx={auditorButton}>Become auditor</CustomButton>
-					<CustomButton sx={projectButton}>Show your project</CustomButton>
-				</Box>
-			</Box>
-			<Box sx={imageStyle}>
 				<img
-					width="100%"
+					width="40%"
 					src="/welcome_page/person_bitcoin.svg"
 					alt="person_bitcoin"
 				/>
 			</Box>
-		</Box>
+		</div>
 	);
 };
 
@@ -109,4 +116,21 @@ const imageStyle = {
 	display: { xs: "none", md: "block" },
 	width: "25%",
 };
+
+const buttonsStyle = {
+	flexGrow: 0,
+	display: "flex",
+	flexDirection: { xs: "column", md: "row" },
+	marginX: "auto",
+	minWidth: { xs: "300px", md: "100%" },
+	justifyContent: "space-around",
+	gap: "2rem",
+};
+
+const imagesStyle = {
+	marginTop: "2rem",
+	display: { xs: "flex", md: "none" },
+	justifyContent: "space-around",
+};
+
 export default MainText;

@@ -135,10 +135,10 @@ const theme = createTheme(initialTheme, {
 				fontSize: "52px",
 			},
 			[initialTheme.breakpoints.down("lg")]: {
-				fontSize: "48px",
+				fontSize: "44px",
 			},
-			[initialTheme.breakpoints.down("lg")]: {
-				fontSize: "40px",
+			[initialTheme.breakpoints.down("md")]: {
+				fontSize: "38px",
 			},
 			[initialTheme.breakpoints.down("sm")]: {
 				fontSize: "32px",
@@ -150,10 +150,10 @@ const theme = createTheme(initialTheme, {
 				fontSize: "22px",
 			},
 			[initialTheme.breakpoints.down("lg")]: {
-				fontSize: "18px",
+				fontSize: "20px",
 			},
 			[initialTheme.breakpoints.down("sm")]: {
-				fontSize: "14px",
+				fontSize: "15px",
 			},
 		},
 	},
