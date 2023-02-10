@@ -13,8 +13,132 @@ import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import AdbIcon from "@mui/icons-material/Adb";
 import CustomMenu from "./custom/CustomMenu.jsx";
-import CustomButton from "./custom/CustomButton.jsx";
-import {Link} from 'react-router-dom'
+import { CustomButton } from "./custom/CustomButton.jsx";
+import { Link } from "react-router-dom";
+
+const Header = () => {
+	const [anchorElNav, setAnchorElNav] = React.useState(null);
+	const [anchorElUser, setAnchorElUser] = React.useState(null);
+
+	const brandStyle = {
+		display: "inline-flex",
+	};
+
+	const handleOpenNavMenu = (event) => {
+		setAnchorElNav(event.currentTarget);
+	};
+	const handleOpenUserMenu = (event) => {
+		setAnchorElUser(event.currentTarget);
+	};
+
+	const handleCloseNavMenu = () => {
+		setAnchorElNav(null);
+	};
+
+	const handleCloseUserMenu = () => {
+		setAnchorElUser(null);
+	};
+
+	return (
+		<AppBar position="static" color="transparent" elevation={0}>
+			<Container
+				maxWidth="xl"
+				sx={{
+					marginTop: { xs: "40px", md: "60px" },
+					marginBottom: { xs: "40px", md: "60px" },
+				}}
+			>
+				<Toolbar disableGutters>
+					<Box
+						sx={{
+							flexGrow: 1,
+							width: "100%",
+							display: "flex",
+							flexDirection: "row",
+							justifyContent: "space-between",
+						}}
+					>
+						<Link to={"/"}>
+							<img
+								style={brandStyle}
+								src="/welcome_page/logo.svg"
+								alt="audit db logo"
+							/>
+						</Link>
+						<Box sx={{ flexGrow: 0, display: { xs: "flex", md: "none" } }}>
+							<IconButton
+								size="large"
+								aria-label="account of current user"
+								aria-controls="menu-appbar"
+								aria-haspopup="true"
+								onClick={handleOpenNavMenu}
+								color="inherit"
+							>
+								<MenuIcon />
+							</IconButton>
+							<Menu
+								id="menu-appbar"
+								anchorEl={anchorElNav}
+								anchorOrigin={{
+									vertical: "bottom",
+									horizontal: "left",
+								}}
+								keepMounted
+								transformOrigin={{
+									vertical: "top",
+									horizontal: "left",
+								}}
+								open={Boolean(anchorElNav)}
+								onClose={handleCloseNavMenu}
+								sx={{
+									display: { xs: "block", md: "none" },
+								}}
+							>
+								{pages.map((page) => (
+									<MenuItem key={page.id} onClick={handleCloseNavMenu}>
+										<Typography textAlign="center">{page.pageName}</Typography>
+									</MenuItem>
+								))}
+							</Menu>
+						</Box>
+						<Box
+							sx={{
+								display: { xs: "none", md: "flex" },
+								gap: "30px",
+							}}
+						>
+							{pages.map((page) => (
+								<CustomMenu key={page.id} props={page} />
+							))}
+						</Box>
+						<Box
+							sx={{
+								width: "100%",
+								maxWidth: "500px",
+								display: { xs: "none", md: "flex" },
+								gap: "30px",
+							}}
+						>
+							<CustomButton sx={signInButton}>Sign In</CustomButton>
+							<CustomButton sx={signUpButton}>Sign Up</CustomButton>
+						</Box>
+					</Box>
+					{/* <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
+						{pages.map((page) => (
+							<Button
+								key={page}
+								onClick={handleCloseNavMenu}
+								sx={{ my: 2, color: "black", display: "block" }}
+							>
+								{page}
+							</Button>
+						))}
+					</Box> */}
+				</Toolbar>
+			</Container>
+		</AppBar>
+	);
+};
 
 const pages = [
 	{
@@ -74,147 +198,22 @@ const pages = [
 ];
 const settings = ["Profile", "Account", "Dashboard", "Logout"];
 const signInButton = {
-	text: "Sign In",
-	to: "/sign-in",
-	styles: {
+	backgroundColor: "orange",
+	color: "white",
+	":hover": {
 		backgroundColor: "orange",
 		color: "white",
 	},
 };
 
 const signUpButton = {
-	text: "Sign Up",
-	to: "/sign-up",
-	styles: {
+	backgroundColor: "transparent",
+	color: "#222222",
+	border: "3px solid #52176D",
+	":hover": {
 		backgroundColor: "transparent",
-		color: "#222222",
-		border: "3px solid #52176D",
+		color: "black",
 	},
-};
-
-const Header = () => {
-	const [anchorElNav, setAnchorElNav] = React.useState(null);
-	const [anchorElUser, setAnchorElUser] = React.useState(null);
-
-	const brandStyle = {
-		display: "inline-flex",
-	};
-
-	const handleOpenNavMenu = (event) => {
-		setAnchorElNav(event.currentTarget);
-	};
-	const handleOpenUserMenu = (event) => {
-		setAnchorElUser(event.currentTarget);
-	};
-
-	const handleCloseNavMenu = () => {
-		setAnchorElNav(null);
-	};
-
-	const handleCloseUserMenu = () => {
-		setAnchorElUser(null);
-	};
-
-	return (
-		<AppBar position="static" color="transparent" elevation={0}>
-			<Container
-				maxWidth="xl"
-				sx={{
-					marginTop: { xs: "40px", md: "60px" },
-					marginBottom: { xs: "40px", md: "60px" },
-				}}
-			>
-				<Toolbar disableGutters>
-					<Box
-						sx={{
-							flexGrow: 1,
-							width: "100%",
-							display: "flex",
-							flexDirection: "row",
-							justifyContent: "space-between",
-						}}
-					>
-						<Link to={'/'}>
-							<img
-								style={brandStyle}
-								src="../../public/welcome_page/logo.svg"
-								alt="audit db logo"
-							/>
-						</Link>
-						<Box sx={{ flexGrow: 0, display: { xs: "flex", md: "none" } }}>
-							<IconButton
-								size="large"
-								aria-label="account of current user"
-								aria-controls="menu-appbar"
-								aria-haspopup="true"
-								onClick={handleOpenNavMenu}
-								color="inherit"
-							>
-								<MenuIcon />
-							</IconButton>
-							<Menu
-								id="menu-appbar"
-								anchorEl={anchorElNav}
-								anchorOrigin={{
-									vertical: "bottom",
-									horizontal: "left",
-								}}
-								keepMounted
-								transformOrigin={{
-									vertical: "top",
-									horizontal: "left",
-								}}
-								open={Boolean(anchorElNav)}
-								onClose={handleCloseNavMenu}
-								sx={{
-									display: { xs: "block", md: "none" },
-								}}
-							>
-								{pages.map((page) => (
-									<MenuItem key={page.id} onClick={handleCloseNavMenu}>
-										<Typography textAlign="center">{page.pageName}</Typography>
-									</MenuItem>
-								))}
-							</Menu>
-						</Box>
-						<Box
-							sx={{
-								display: { xs: "none", md: "flex" },
-								gap: "30px",
-							}}
-						>
-							{pages.map((page) => (
-								<CustomMenu key={page.id} props={page} />
-							))}
-							{/* <CustomMenu />
-							<CustomMenu />
-							<CustomMenu /> */}
-						</Box>
-						<Box
-							sx={{
-								display: { xs: "none", md: "flex" },
-								gap: "30px",
-							}}
-						>
-							<CustomButton props={signInButton} />
-							<CustomButton props={signUpButton} />
-						</Box>
-					</Box>
-					{/* <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
-						{pages.map((page) => (
-							<Button
-								key={page}
-								onClick={handleCloseNavMenu}
-								sx={{ my: 2, color: "black", display: "block" }}
-							>
-								{page}
-							</Button>
-						))}
-					</Box> */}
-				</Toolbar>
-			</Container>
-		</AppBar>
-	);
 };
 
 export default Header;

@@ -1,30 +1,17 @@
 import * as React from "react";
+import { styled } from "@mui/system";
 import Button from "@mui/material/Button";
-import {Link} from 'react-router-dom';
+import theme, {
+	buttonResponsiveStyles,
+	radiusOfComponents,
+} from "../../styles/themes";
 
-export default function CustomButton({ props }) {
-	const styles = props.styles;
-	const buttonText = props.text;
-	const buttonStyle = {
-		backgroundColor: styles.backgroundColor,
-		color: styles.color,
-		borderRadius: "15px",
-		fontSize: "26px",
-		fontFamily: "Montserrat",
-		textTransform: "none",
-		width: "200px",
-		border: styles.border,
-		":hover": {
-			backgroundColor: styles.backgroundColor,
-			color: styles.color,
-		},
-	};
-
-	return (
-		<Link to={props.to}>
-			<Button variant="standart" sx={buttonStyle}>
-				{buttonText}
-			</Button>
-		</Link>
-	);
-}
+export const CustomButton = styled(Button)({
+	width: "100%",
+	borderRadius: radiusOfComponents,
+	fontSize: "26px",
+	textTransform: "none",
+	[theme.breakpoints.down("xl")]: {
+		fontSize: "22px",
+	},
+});

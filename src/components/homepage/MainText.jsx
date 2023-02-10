@@ -1,8 +1,8 @@
 import { Box } from "@mui/system";
-import CustomButton from "../custom/CustomButton";
 import theme, { buttonResponsiveStyles } from "../../styles/themes";
 import { Typography } from "@mui/material";
 import { responsiveFontSizes } from "@mui/material/styles";
+import { CustomButton } from "../custom/CustomButton";
 
 const MainText = () => {
 	return (
@@ -13,40 +13,40 @@ const MainText = () => {
 				marginX: "3%",
 			}}
 		>
-			<img
-				width="30%"
-				src="/welcome_page/person_skate.svg"
-				alt="person_skate"
-			/>
-			<Box maxWidth={720} sx={textWrapper}>
-				<Typography style={headingStyle} theme={theme} variant="h1">
+			<Box sx={imageStyle}>
+				<img
+					width="100%"
+					src="/welcome_page/person_skate.svg"
+					alt="person_skate"
+				/>
+			</Box>
+
+			<Box sx={textWrapper}>
+				<Typography sx={headingStyle} theme={theme} variant="h1">
 					{headingText}
 				</Typography>
-				<Typography style={paragraphStyle} theme={theme} variant="body1">
+				<Typography sx={paragraphStyle} theme={theme} variant="body1">
 					{paragraphText}
 				</Typography>
 				<Box
 					sx={{
-						flexGrow: 1,
+						flexGrow: 0,
 						display: "flex",
-						justifyContent: "space-evenly",
+						justifyContent: "space-around",
+						gap: "2rem",
 					}}
 				>
-					<CustomButton props={auditorButton} />
-					<CustomButton
-						sx={{
-							xl: buttonResponsiveStyles.large,
-							lg: buttonResponsiveStyles.medium,
-						}}
-						props={projectButton}
-					/>
+					<CustomButton sx={auditorButton}>Become auditor</CustomButton>
+					<CustomButton sx={projectButton}>Show your project</CustomButton>
 				</Box>
 			</Box>
-			<img
-				width="30%"
-				src="/welcome_page/person_bitcoin.svg"
-				alt="person_bitcoin"
-			/>
+			<Box sx={imageStyle}>
+				<img
+					width="100%"
+					src="/welcome_page/person_bitcoin.svg"
+					alt="person_bitcoin"
+				/>
+			</Box>
 		</Box>
 	);
 };
@@ -58,41 +58,41 @@ const headingStyle = {
 	lineHeight: "73px",
 	textAlign: "center",
 	maxWidth: "720px",
-	// [theme.breakpoints.down("lg")]: {
-	// 	maxWidth: "600px",
-	// },
+	marginX: "auto",
+	[theme.breakpoints.down("lg")]: {
+		maxWidth: "600px",
+	},
 };
 const paragraphStyle = {
+	marginX: "auto",
 	fontWeight: 500,
 	lineHeight: "37px",
 	textAlign: "center",
 	maxWidth: "690px",
-	// [theme.breakpoints.down("lg")]: {
-	// 	maxWidth: "500px",
-	// },
+	[theme.breakpoints.down("lg")]: {
+		maxWidth: "500px",
+	},
 };
+
 const headingText = "Start your project right now or audit like expert";
 const paragraphText =
 	"AuditDb is a blockchain-based jobs platform that helps clients and freelancers connect. We provide efficient transactions with cryptocurrency, and robust protection through smart contracts - wherever you're based!";
 
 const auditorButton = {
-	text: "Become auditor",
-	to: "/",
-	styles: {
+	backgroundColor: "#52176D",
+	color: "white",
+	":hover": {
 		backgroundColor: "#52176D",
 		color: "white",
-		width: "350px",
-		paddingX: "2rem",
 	},
 };
 
 const projectButton = {
-	text: "Show your project",
-	to: "/",
-	styles: {
+	backgroundColor: "orange",
+	color: "white",
+	":hover": {
 		backgroundColor: "orange",
 		color: "white",
-		paddingX: "2rem",
 	},
 };
 
@@ -102,6 +102,11 @@ const textWrapper = {
 	justifyContent: "space-between",
 	flexGrow: 1,
 	marginY: "auto",
-	gap: "1rem",
+	gap: "3rem",
+};
+
+const imageStyle = {
+	display: { xs: "none", md: "block" },
+	width: "25%",
 };
 export default MainText;
