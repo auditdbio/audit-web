@@ -10,9 +10,19 @@ import Container from "@mui/material/Container";
 import MenuItem from "@mui/material/MenuItem";
 import CustomMenu from "./custom/CustomMenu.jsx";
 import { CustomButton } from "./custom/Button.jsx";
-import { Link } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 const Header = () => {
+	const navigate = useNavigate();
+
+	const handleSignIn = () => {
+		navigate("/sign-in");
+	};
+
+	const handleSignUp = () => {
+		navigate("/sign-up");
+	};
+
 	const [anchorElNav, setAnchorElNav] = React.useState(null);
 	const [anchorElUser, setAnchorElUser] = React.useState(null);
 
@@ -114,8 +124,12 @@ const Header = () => {
 								gap: "1rem",
 							}}
 						>
-							<CustomButton sx={signInButton}>Sign In</CustomButton>
-							<CustomButton sx={signUpButton}>Sign Up</CustomButton>
+							<CustomButton sx={signInButton} onClick={handleSignIn}>
+								Sign In
+							</CustomButton>
+							<CustomButton sx={signUpButton} onClick={handleSignUp}>
+								Sign Up
+							</CustomButton>
 						</Box>
 					</Box>
 					{/* <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
