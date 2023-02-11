@@ -1,6 +1,5 @@
 import React from 'react';
 import { Route, Routes } from 'react-router-dom'
-import Header from "../components/Header.jsx";
 import HomePage from "../pages/HomePage.jsx";
 import SignupPage from "../pages/SignupPage.jsx";
 import SigninPage from "../pages/SigninPage.jsx";

@@ -1,6 +1,4 @@
 import React from 'react';
-import {Box} from "@mui/material";
-import {ContentWrapper} from "../styles/themes.js";
 import Layout from "../styles/Layout.jsx";
 import {CustomCard} from "../components/custom/Card";
 import SignupForm from "../components/forms/signup/SignupForm.jsx";
