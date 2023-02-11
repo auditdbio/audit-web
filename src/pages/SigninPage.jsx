@@ -3,7 +3,7 @@ import {Box} from "@mui/material";
 import {ContentWrapper} from "../styles/themes.js";
 import Layout from "../styles/Layout.jsx";
 import {CustomCard} from "../components/custom/Card";
-import SigninForm from "../components/forms/signin/signin.jsx";
+import SigninForm from "../components/forms/signin/SigninForm.jsx";
 
 
 const SigninPage = () => {
