@@ -11,7 +11,7 @@ const MainText = () => {
 				sx={{
 					display: "flex",
 					justifyContent: "space-between",
-					marginX: "3%",
+					padding: "2rem",
 				}}
 			>
 				<Box sx={imageStyle}>
@@ -113,7 +113,9 @@ const textWrapper = {
 };
 
 const imageStyle = {
-	display: { xs: "none", md: "block" },
+	display: { xs: "none", md: "flex" },
+	flexDirection: "column",
+	justifyContent: "center",
 	width: "25%",
 };
 
