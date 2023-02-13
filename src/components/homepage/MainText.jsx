@@ -105,8 +105,8 @@ const textWrapper = {
 };
 
 const imageStyle = {
-	display: { xs: "none", md: "block" },
-	width: "25%",
+	display: { xs: "none", md: "inline" },
+	minWidth: "25%",
 };
 
 const buttonsStyle = {
