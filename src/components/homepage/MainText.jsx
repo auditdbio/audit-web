@@ -6,20 +6,16 @@ import { CustomButton } from "../custom/Button";
 
 const MainText = () => {
 	return (
-		<div>
+		<Box sx={{ width: "100%" }}>
 			<Box
 				sx={{
 					display: "flex",
 					justifyContent: "space-between",
-					marginX: "3%",
+					paddingX: "3%",
 				}}
 			>
 				<Box sx={imageStyle}>
-					<img
-						width="100%"
-						src="/welcome_page/person_skate.svg"
-						alt="person_skate"
-					/>
+					<div style={personSkateStyle}></div>
 				</Box>
 
 				<Box sx={textWrapper}>
@@ -35,26 +31,14 @@ const MainText = () => {
 					</Box>
 				</Box>
 				<Box sx={imageStyle}>
-					<img
-						width="100%"
-						src="/welcome_page/person_bitcoin.svg"
-						alt="person_bitcoin"
-					/>
+					<div style={personBitcoinStyle}></div>
 				</Box>
 			</Box>
 			<Box sx={imagesStyle}>
-				<img
-					width="40%"
-					src="/welcome_page/person_skate.svg"
-					alt="person_skate"
-				/>
-				<img
-					width="40%"
-					src="/welcome_page/person_bitcoin.svg"
-					alt="person_bitcoin"
-				/>
+				<div style={personSkateStyle}></div>
+				<div style={personBitcoinStyle}></div>
 			</Box>
-		</div>
+		</Box>
 	);
 };
 
@@ -66,8 +50,12 @@ const headingStyle = {
 	textAlign: "center",
 	maxWidth: "720px",
 	marginX: "auto",
+	paddingX: "2rem",
 	[theme.breakpoints.down("lg")]: {
 		maxWidth: "600px",
+	},
+	[theme.breakpoints.down("sm")]: {
+		lineHeight: "40px",
 	},
 };
 const paragraphStyle = {
@@ -76,8 +64,12 @@ const paragraphStyle = {
 	lineHeight: "37px",
 	textAlign: "center",
 	maxWidth: "690px",
+	paddingX: "2rem",
 	[theme.breakpoints.down("lg")]: {
 		maxWidth: "500px",
+	},
+	[theme.breakpoints.down("sm")]: {
+		lineHeight: "25px",
 	},
 };
 
@@ -113,8 +105,8 @@ const textWrapper = {
 };
 
 const imageStyle = {
-	display: { xs: "none", md: "block" },
-	width: "25%",
+	display: { xs: "none", md: "inline" },
+	minWidth: "25%",
 };
 
 const buttonsStyle = {
@@ -131,6 +123,26 @@ const imagesStyle = {
 	marginTop: "2rem",
 	display: { xs: "flex", md: "none" },
 	justifyContent: "space-around",
+	height: "250px",
+};
+
+const personSkateStyle = {
+	height: "100%",
+	width: "100%",
+	backgroundImage: "url(/welcome_page/person_skate.svg)",
+	backgroundSize: "contain",
+	backgroundPosition: "center",
+	backgroundRepeat: "no-repeat",
+	margin: "0 auto",
+};
+const personBitcoinStyle = {
+	height: "100%",
+	width: "100%",
+	backgroundImage: "url(/welcome_page/person_bitcoin.svg)",
+	backgroundSize: "contain",
+	backgroundPosition: "center",
+	backgroundRepeat: "no-repeat",
+	margin: "0 auto",
 };
 
 export default MainText;
