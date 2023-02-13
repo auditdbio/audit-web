@@ -1,7 +1,6 @@
 import { Box } from "@mui/system";
 import theme, { buttonResponsiveStyles } from "../../styles/themes";
 import { Typography } from "@mui/material";
-import { responsiveFontSizes } from "@mui/material/styles";
 import { CustomButton } from "../custom/Button";
 
 const MainText = () => {
