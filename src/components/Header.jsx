@@ -148,7 +148,11 @@ const Header = () => {
 							}}
 						>
 							{pages.map((page) => (
-								<CustomMenu key={page.id} props={page} />
+								<CustomMenu
+									key={page.id}
+									options={page.menuOptions}
+									buttonText={page.name}
+								/>
 							))}
 						</Box>
 						<Box
@@ -187,7 +191,7 @@ const Header = () => {
 const pages = [
 	{
 		id: 1,
-		pageName: "Product",
+		name: "Product",
 		menuOptions: [
 			{
 				id: 2,
@@ -205,7 +209,7 @@ const pages = [
 	},
 	{
 		id: 2,
-		pageName: "About Us",
+		name: "About Us",
 		menuOptions: [
 			{
 				id: 2,
@@ -223,7 +227,7 @@ const pages = [
 	},
 	{
 		id: 3,
-		pageName: "Community",
+		name: "Community",
 		menuOptions: [
 			{
 				id: 2,

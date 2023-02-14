@@ -7,16 +7,6 @@ import Divider from "@mui/material/Divider";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import { Box } from "@mui/material";
 
-export const CustomMenu1 = styled(Button)({
-	width: "100%",
-	borderRadius: "15px",
-	fontSize: "26px",
-	textTransform: "none",
-	// [theme.breakpoints.down("xl")]: {
-	// 	fontSize: "22px",
-	// },
-});
-
 const StyledMenu = styled((props) => (
 	<Menu
 		elevation={0}
@@ -59,11 +49,12 @@ const StyledMenu = styled((props) => (
 	},
 }));
 
-export default function CustomMenu({ props }) {
-	const buttonName = props.pageName;
-	const menuOptions = props.menuOptions;
+export default function CustomMenu({ buttonText, options }) {
+	const menuOptions = options;
+
 	const [anchorEl, setAnchorEl] = React.useState(null);
 	const open = Boolean(anchorEl);
+
 	const handleClick = (event) => {
 		setAnchorEl(event.currentTarget);
 	};
@@ -103,7 +94,7 @@ export default function CustomMenu({ props }) {
 					marginY: "auto",
 				}}
 			>
-				{buttonName}
+				{buttonText}
 			</Button>
 			<StyledMenu
 				id="demo-customized-menu-1"
@@ -114,6 +105,7 @@ export default function CustomMenu({ props }) {
 				open={open}
 				onClose={handleClose}
 			>
+				{/* {children} */}
 				<MenuItem onClick={handleClose} disableRipple>
 					AuditDB
 				</MenuItem>
