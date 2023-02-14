@@ -2,9 +2,9 @@ import React from 'react';
 import {Box, Button, Typography} from "@mui/material";
 import Currency from "./icons/Currency.jsx";
 import Star from "./icons/Star.jsx";
-import theme, {radiusOfComponents} from "../styles/themes.js";
+import {radiusOfComponents} from "../styles/themes.js";
 
-const ProjectCard = () => {
+const ProjectCard = ({type}) => {
     return (
         <Box sx={cardWrapper}>
             <Typography variant={'h5'} sx={{fontWeight: 500}}>
@@ -27,7 +27,7 @@ const ProjectCard = () => {
                 <Box/>
                 <Typography>Waiting audit</Typography>
             </Box>
-            <Button variant={'contained'} sx={editButton}>
+            <Button variant={'contained'} sx={[editButton, type === 'auditor' ? editAuditor : {}]}>
                 Edit
             </Button>
             <Button sx={{textTransform: 'none'}}>
@@ -66,6 +66,13 @@ const editButton = (theme) => ({
     borderRadius: radiusOfComponents,
     gap: '40px',
     padding: '11px 0'
+})
+
+const editAuditor = (theme) => ({
+    backgroundColor: theme.palette.secondary.main,
+    '&:hover': {
+        backgroundColor: '#450e5d'
+    }
 })
 
 const infoWrapper = (theme) => ({
