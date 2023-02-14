@@ -2,21 +2,28 @@ import React, {useState} from 'react';
 import Layout from "../styles/Layout.jsx";
 import {Box, Tab, Tabs} from "@mui/material";
 import CustomTabs from "../components/custom/CustomTabs.jsx";
-import {CustomCard} from "../components/custom/Card";
-import theme from "../styles/themes.js";
+import InfoCard from "../components/custom/info-card.jsx";
+import UserInfo from "../components/User-info.jsx";
+import Projects from "../components/Projects.jsx";
 
 const HomeCustomer = () => {
-
+    const [chooseTab, setChooseTab] = useState(tabs[0].value)
 
     return (
         <Layout>
-            <CustomCard sx={wrapper}>
+            <Box sx={{display: 'flex', flexDirection: 'column'}}>
                 <CustomTabs
-                    tabs={tabs}
                     selectedTabSx={selectedTabSx}
+                    name={'type'}
+                    tabs={tabs}
+                    setTab={setChooseTab}
                 />
-
-            </CustomCard>
+                <InfoCard>
+                    {chooseTab === 'audits' && <h2>Audits</h2>}
+                    {chooseTab === 'user-info' && <UserInfo />}
+                    {chooseTab === 'projects' && <Projects />}
+                </InfoCard>
+            </Box>
         </Layout>
     );
 };
@@ -37,11 +44,6 @@ const tabs = [
         label: 'User info'
     }
 ]
-
-const wrapper = (theme) => ({
-    borderRadius: '0px 0px 15px 15px',
-    border: '8px solid orange'
-})
 
 const selectedTabSx = (theme) => ({
     backgroundColor: theme.palette.primary.main,

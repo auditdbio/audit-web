@@ -1,15 +1,18 @@
 import React, {useState} from 'react';
 import {Tab, Tabs} from "@mui/material";
 
-const CustomTabs = ({selectedTabSx, name, tabs}) => {
+const CustomTabs = ({selectedTabSx, name, tabs, setTab}) => {
     const [tabState, setTabState] = useState(tabs[0].value)
+
+    const handleChoose = (value) => {
+        setTabState(value)
+        setTab(value)
+    }
 
     return (
         <Tabs
             value={tabState}
-            onChange={(e, newValue) => {
-                setTabState(newValue)
-            }}
+            onChange={(e, newValue) => handleChoose(newValue)}
             name={name}
             sx={tabsSx}
             variant="fullWidth"
@@ -18,6 +21,7 @@ const CustomTabs = ({selectedTabSx, name, tabs}) => {
             {
                 tabs.map(tab =>
                     <Tab
+                        key={tab.value}
                         value={tab.value}
                         sx={[tab.value === tabState ? selectedTabSx
                             : simpleTab, tabSx]}
@@ -47,7 +51,7 @@ const tabSx = (theme) => ({
 })
 
 const tabsSx = (theme) => ({
-    marginTop: '-64px',
+    marginBottom: '-1px',
     '& .MuiTabs-flexContainer': {
         gap: '3px'
     }
