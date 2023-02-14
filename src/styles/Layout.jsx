@@ -10,11 +10,11 @@ const Layout = ({ children, sx }) => {
 			<Box
 				sx={{
 					display: "flex",
-					flexDirection: "column",
 					alignItems: "center",
 					justifyContent: "center",
 					width: "100%",
-					minHeight: "calc(100vh - 184px)",
+					// minHeight: "calc(100vh - 184px)",
+					paddingY: "150px",
 				}}
 			>
 				{children}
