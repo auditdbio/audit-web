@@ -141,18 +141,3 @@ const customerTabSx = (theme) => ({
     backgroundColor: theme.palette.secondary.main
 })
 
-const formLabelSx = (theme) => ({
-    fontWeight: 500,
-    fontSize: '20px',
-    lineHeight: '24px',
-    color: '#434242',
-    [theme.breakpoints.down('lg')]: {
-        fontSize: '14px'
-    }
-})
-
-const fieldSx = (theme) => ({
-    '& input': {
-        paddingLeft: '35px'
-    }
-})

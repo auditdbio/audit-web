@@ -7,13 +7,14 @@ const Layout = ({children, sx}) => {
     return (
         <ContentWrapper>
             <Header/>
-            <Box sx={{
+            <Box sx={[{
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 width: '100%',
-                minHeight: 'calc(100vh - 184px)'
-            }}>
+                paddingY: '150px'
+                // minHeight: 'calc(100vh - 184px)'
+            }, sx]}>
                 {children}
             </Box>
         </ContentWrapper>
