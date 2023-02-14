@@ -51,7 +51,7 @@ const Header = () => {
 				maxWidth="xl"
 				sx={{
 					paddingTop: { xs: "40px", md: "60px" },
-					paddingBottom: { xs: "40px", md: "60px" },
+					// paddingBottom: { xs: "40px", md: "60px" },
 				}}
 			>
 				<Toolbar disableGutters>
@@ -171,17 +171,6 @@ const Header = () => {
 							</CustomButton>
 						</Box>
 					</Box>
-					{/* <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
-						{pages.map((page) => (
-							<Button
-								key={page}
-								onClick={handleCloseNavMenu}
-								sx={{ my: 2, color: "black", display: "block" }}
-							>
-								{page}
-							</Button>
-						))}
-					</Box> */}
 				</Toolbar>
 			</Container>
 		</AppBar>

@@ -1,13 +1,17 @@
 import React from "react";
 import Layout from "../styles/Layout.jsx";
 import MainText from "../components/homepage/MainText.jsx";
-import SearchSection from "../components/homepage/search-section/SearchSection.jsx";
+import AuditorsProjectsSection from "../components/homepage/search-section/AuditorsProjectsSection.jsx";
 
 const HomePage = () => {
 	return (
-		<Layout>
+		<Layout
+			sx={{
+				flexDirection: "column",
+			}}
+		>
 			<MainText />
-			<SearchSection />
+			<AuditorsProjectsSection />
 		</Layout>
 	);
 };

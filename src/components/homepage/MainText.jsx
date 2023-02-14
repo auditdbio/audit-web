@@ -5,7 +5,7 @@ import { CustomButton } from "../custom/Button";
 
 const MainText = () => {
 	return (
-		<Box sx={{ width: "100%", paddingTop: "3rem", paddingY: "5rem" }}>
+		<Box sx={{ width: "100%", paddingBottom: "5rem" }}>
 			<Box
 				sx={{
 					display: "flex",

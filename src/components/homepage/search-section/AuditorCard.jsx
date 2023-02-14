@@ -1,5 +1,7 @@
 import { Card, Avatar, Box, Typography } from "@mui/material";
 import { CustomButton } from "../../custom/Button";
+import Currency from "../../icons/Currency";
+import Star from "../../icons/Star";
 
 const AuditorCard = () => {
 	return (
@@ -10,9 +12,9 @@ const AuditorCard = () => {
 					gap: "2rem",
 				}}
 			>
-				<Avatar src="/static/images/avatar/1.jpg" sx={avatarStyle} />
+				<Avatar sx={avatarStyle} />
 				<Box sx={columnStyle}>
-					<Typography variant="body1">Mishail Voronnikov</Typography>
+					<Typography sx={mainTextStyle}>Mishail Voronnikov</Typography>
 					<Typography sx={badgeFontStyle}>Cryptography, Games</Typography>
 				</Box>
 				<Box
@@ -23,12 +25,12 @@ const AuditorCard = () => {
 					}}
 				>
 					<Box sx={badgesStyle}>
-						<Box sx={badgeStyle}>
-							<Box sx={dollarBadgeStyle}></Box>
+						<Box sx={infoStyle}>
+							<Currency />
 							<Typography sx={badgeFontStyle}>3.1k</Typography>
 						</Box>
-						<Box sx={badgeStyle}>
-							<Box sx={starBadgeStyle}></Box>
+						<Box sx={infoStyle}>
+							<Star />
 							<Typography sx={badgeFontStyle}>150</Typography>
 						</Box>
 					</Box>
@@ -70,34 +72,16 @@ const badgesStyle = {
 	gap: "2rem",
 };
 
-const badgeStyle = {
+const infoStyle = {
 	display: "flex",
 	justifyContent: "center",
 	alignItems: "center",
 	gap: "0.5rem",
 };
 
-const dollarBadgeStyle = {
-	height: "17px",
-	width: "17px",
-	backgroundImage: "url(/welcome_page/dollar.svg)",
-	backgroundSize: "contain",
-	backgroundPosition: "center",
-	backgroundRepeat: "no-repeat",
-	marginY: "auto",
-};
-
-const starBadgeStyle = {
-	height: "17px",
-	width: "17px",
-	backgroundImage: "url(/welcome_page/star.svg)",
-	backgroundSize: "contain",
-	backgroundPosition: "center",
-	backgroundRepeat: "no-repeat",
-	marginY: "auto",
-};
-
 const badgeFontStyle = {
 	fontSize: "19px",
 };
+
+const mainTextStyle = { fontWeight: 500, fontSize: "26px" };
 export default AuditorCard;

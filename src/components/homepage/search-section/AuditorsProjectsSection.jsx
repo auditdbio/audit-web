@@ -3,9 +3,9 @@ import { Box, Divider } from "@mui/material";
 import AuditorSection from "./AuditorSection";
 import ProjectSection from "./ProjectSection";
 
-const SearchTab = () => {
+const AuditorsProjectsSection = () => {
 	return (
-		<Box sx={searchTabStyle}>
+		<Box sx={AuditorsProjectsSectionStyle}>
 			<AuditorSection />
 			<Divider
 				orientation="vertical"
@@ -23,7 +23,7 @@ const SearchTab = () => {
 	);
 };
 
-const searchTabStyle = {
+const AuditorsProjectsSectionStyle = {
 	width: "100%",
 	backgroundColor: "#52176D",
 	paddingX: "8rem",
@@ -36,4 +36,4 @@ const searchTabStyle = {
 	color: "white",
 };
 
-export default SearchTab;
+export default AuditorsProjectsSection;
