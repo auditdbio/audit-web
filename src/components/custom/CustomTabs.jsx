@@ -47,7 +47,9 @@ const tabSx = (theme) => ({
     fontSize: '27px',
     textTransform: 'capitalize',
     borderRadius: '14.8672px 14.8672px 0px 0px',
-    padding: '15px 53px',
+    // padding: '15px 40px',
+    whiteSpace: 'inherit',
+    width: '100%'
 })
 
 const tabsSx = (theme) => ({

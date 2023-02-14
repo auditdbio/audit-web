@@ -14,7 +14,7 @@ const skills = [
     {frame: 'piton'}
 ]
 
-const UserInfo = () => {
+const UserInfo = ({role}) => {
 
 
     return (
@@ -100,7 +100,12 @@ const UserInfo = () => {
                     />
                 </Box>
             </Box>
-            <Button sx={buttonSx}>Edit</Button>
+            <Button
+                sx={[buttonSx, role === 'auditor' ? submitAuditor : {}]}
+                variant={'contained'}
+            >
+                Edit
+            </Button>
         </Box>
     );
 };
@@ -118,15 +123,18 @@ const iconSx = (theme) => ({
 const buttonSx = (theme) => ({
     margin: '0 auto',
     display: 'block',
-    backgroundColor: theme.palette.primary.main,
     padding: '13px 50px',
     color: theme.palette.background.default,
     borderRadius: radiusOfComponents,
     textTransform: 'capitalize',
     fontSize: '25px',
     fontWeight: 600,
+})
+
+const submitAuditor = (theme) => ({
+    backgroundColor: theme.palette.secondary.main,
     '&:hover': {
-        backgroundColor: '#ff7700'
+        backgroundColor: '#450e5d'
     }
 })
 
