@@ -2,13 +2,11 @@
 	margin: 0;
 	padding: 0;
 	box-sizing: border-box;
-	/* font-family: "Comic Sans"; */
 }
 
 html,
 body {
-	/* background-image: url(./welcome_page/background_img.jpg); */
-	background-image: url(./welcome_page/background_img.svg);
+	background-image: url(../public/welcome_page/background_img.svg);
 	background-position: center;
 	background-repeat: no-repeat;
 	background-size: cover;
