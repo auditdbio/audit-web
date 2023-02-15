@@ -1,17 +1,23 @@
 import { Box } from "@mui/system";
 import theme, { buttonResponsiveStyles } from "../../styles/themes";
 import { Typography } from "@mui/material";
-import { responsiveFontSizes } from "@mui/material/styles";
 import { CustomButton } from "../custom/Button";
+import { useNavigate } from "react-router-dom";
 
 const MainText = () => {
+	const navigate = useNavigate();
+
+	const handleSignUp = () => {
+		navigate("/sign-up");
+	};
+
 	return (
-		<Box sx={{ width: "100%" }}>
+		<Box sx={{ width: "100%", paddingBottom: "5rem" }}>
 			<Box
 				sx={{
 					display: "flex",
 					justifyContent: "space-between",
-					paddingX: "3%",
+					padding: "2rem",
 				}}
 			>
 				<Box sx={imageStyle}>
@@ -26,8 +32,12 @@ const MainText = () => {
 						{paragraphText}
 					</Typography>
 					<Box sx={buttonsStyle}>
-						<CustomButton sx={auditorButton}>Become auditor</CustomButton>
-						<CustomButton sx={projectButton}>Show your project</CustomButton>
+						<CustomButton sx={auditorButton} onClick={handleSignUp}>
+							Become auditor
+						</CustomButton>
+						<CustomButton sx={projectButton} onClick={handleSignUp}>
+							Show your project
+						</CustomButton>
 					</Box>
 				</Box>
 				<Box sx={imageStyle}>

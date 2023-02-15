@@ -51,7 +51,7 @@ const Header = () => {
 				maxWidth="xl"
 				sx={{
 					paddingTop: { xs: "40px", md: "60px" },
-					paddingBottom: { xs: "40px", md: "60px" },
+					// paddingBottom: { xs: "40px", md: "60px" },
 				}}
 			>
 				<Toolbar disableGutters>
@@ -148,7 +148,11 @@ const Header = () => {
 							}}
 						>
 							{pages.map((page) => (
-								<CustomMenu key={page.id} props={page} />
+								<CustomMenu
+									key={page.id}
+									options={page.menuOptions}
+									buttonText={page.name}
+								/>
 							))}
 						</Box>
 						<Box
@@ -167,17 +171,6 @@ const Header = () => {
 							</CustomButton>
 						</Box>
 					</Box>
-					{/* <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
-						{pages.map((page) => (
-							<Button
-								key={page}
-								onClick={handleCloseNavMenu}
-								sx={{ my: 2, color: "black", display: "block" }}
-							>
-								{page}
-							</Button>
-						))}
-					</Box> */}
 				</Toolbar>
 			</Container>
 		</AppBar>
@@ -187,7 +180,7 @@ const Header = () => {
 const pages = [
 	{
 		id: 1,
-		pageName: "Product",
+		name: "Product",
 		menuOptions: [
 			{
 				id: 2,
@@ -205,7 +198,7 @@ const pages = [
 	},
 	{
 		id: 2,
-		pageName: "About Us",
+		name: "About Us",
 		menuOptions: [
 			{
 				id: 2,
@@ -223,7 +216,7 @@ const pages = [
 	},
 	{
 		id: 3,
-		pageName: "Community",
+		name: "Community",
 		menuOptions: [
 			{
 				id: 2,
