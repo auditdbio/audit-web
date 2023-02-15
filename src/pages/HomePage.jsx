@@ -1,7 +1,7 @@
 import React from "react";
 import Layout from "../styles/Layout.jsx";
 import MainText from "../components/homepage/MainText.jsx";
-import AuditorsProjectsSection from "../components/homepage/search-section/AuditorsProjectsSection.jsx";
+import AuditorsProjectsSection from "../components/homepage/auditors-projects-section/AuditorsProjectsSection.jsx";
 
 const HomePage = () => {
 	return (

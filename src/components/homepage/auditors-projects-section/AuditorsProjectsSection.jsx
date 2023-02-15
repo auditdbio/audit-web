@@ -1,4 +1,5 @@
 import { Box, Divider } from "@mui/material";
+import theme from "../../../styles/themes";
 
 import AuditorSection from "./AuditorSection";
 import ProjectSection from "./ProjectSection";
@@ -11,14 +12,12 @@ const AuditorsProjectsSection = () => {
 				orientation="vertical"
 				flexItem
 				sx={{
-					// width: "0.5rem",
 					backgroundColor: "white",
 					color: "white",
 				}}
 				light
 			/>
-			<AuditorSection />
-			{/* <ProjectSection /> */}
+			<ProjectSection />
 		</Box>
 	);
 };
@@ -26,14 +25,17 @@ const AuditorsProjectsSection = () => {
 const AuditorsProjectsSectionStyle = {
 	width: "100%",
 	backgroundColor: "#52176D",
-	paddingX: "8rem",
+	paddingX: "10%",
 	paddingY: "5rem",
 	display: "flex",
-	flexDirection: { xs: "column", lg: "row" },
+	flexDirection: { xs: "column", xl: "column" },
 	justifyContent: "space-between",
-	alignItems: "stretch",
 	gap: "3rem",
 	color: "white",
+	[theme.breakpoints.down("lg")]: {
+		paddingX: "5%",
+		gap: "1rem",
+	},
 };
 
 export default AuditorsProjectsSection;
