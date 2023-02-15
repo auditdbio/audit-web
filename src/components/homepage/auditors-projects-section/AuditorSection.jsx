@@ -10,37 +10,15 @@ const AuditorSection = () => {
 				width: "100%",
 			}}
 		>
-			<Box
-				sx={{
-					display: "flex",
-					justifyContent: "space-between",
-					flexDirection: { xs: "column", sm: "row" },
-					alignItems: "center",
-					gap: "2rem",
-				}}
-			>
+			<Box sx={headerWrapper}>
 				<Typography variant="h1" sx={{ fontWeight: 500 }}>
 					Auditors
 				</Typography>
-				<Box
-					sx={{
-						display: "flex",
-						alignItems: "center",
-						border: "2px white solid",
-						borderRadius: "15px",
-						padding: "0",
-						maxHeight: "42px",
-						width: "60%",
-						[theme.breakpoints.down("sm")]: {
-							width: "100%",
-						},
-					}}
-				>
+				<Box sx={searchWrapper}>
 					<InputBase
 						sx={{
 							ml: 1,
 							flex: 1,
-							// height: "42px",
 							white: "color",
 							padding: "0",
 						}}
@@ -77,8 +55,8 @@ const AuditorSection = () => {
 				<Box
 					sx={{
 						display: {
-							xs: "none",
-							// md: "none",
+							xs: "block",
+							sm: "none",
 							xl: "block",
 						},
 					}}
@@ -99,4 +77,24 @@ const AuditorSection = () => {
 	);
 };
 
+const headerWrapper = {
+	display: "flex",
+	justifyContent: "space-between",
+	flexDirection: { xs: "column", sm: "row" },
+	alignItems: "center",
+	gap: "2rem",
+};
+
+const searchWrapper = {
+	display: "flex",
+	alignItems: "center",
+	border: "2px white solid",
+	borderRadius: "15px",
+	padding: "0",
+	maxHeight: "42px",
+	width: "60%",
+	[theme.breakpoints.down("sm")]: {
+		width: "100%",
+	},
+};
 export default AuditorSection;
