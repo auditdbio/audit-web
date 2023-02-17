@@ -36,6 +36,16 @@ const cardWrapper = (theme) => ({
     [theme.breakpoints.down('lg')]: {
         maxWidth: '1300px',
         minHeight: '530px',
-        width: '100%'
+        width: '100%',
+        padding: 0,
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    [theme.breakpoints.down('sm')]: {
+        padding: '30px 40px'
+    },
+    [theme.breakpoints.down('xs')]: {
+        minHeight: '400px'
     }
 })
