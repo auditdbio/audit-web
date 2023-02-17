@@ -1,4 +1,4 @@
-import {InputAdornment, Typography} from "@mui/material";
+import {Box, InputAdornment, Typography} from "@mui/material";
 import {Field, useField} from 'formik';
 import { TextField } from 'formik-mui'
 import React, {useState} from 'react';
@@ -11,7 +11,7 @@ const PasswordField = ({name, label}) => {
     const handleMouseDownPassword = () => setShowPassword(!showPassword);
 
     return (
-        <>
+        <Box sx={wrapper} className={'password-wrapper'}>
             <Typography sx={formLabelSx}>{label}</Typography>
             <Field
                 component={TextField}
@@ -34,11 +34,20 @@ const PasswordField = ({name, label}) => {
                     ),
                 }}
             />
-        </>
+        </Box>
     );
 };
 
 export default PasswordField;
+
+const wrapper = (theme) => ({
+    display: 'flex',
+    gap: '28px',
+    flexDirection: 'column',
+    '& p.Mui-error': {
+        display: 'none'
+    }
+})
 
 const fieldSx = (theme) => ({
     '& input': {
@@ -52,6 +61,6 @@ const formLabelSx = (theme) => ({
     lineHeight: '24px',
     color: '#434242',
     [theme.breakpoints.down('lg')]: {
-        fontSize: '14px'
+        fontSize: '14px',
     }
 })

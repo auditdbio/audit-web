@@ -18,86 +18,90 @@ const UserInfo = ({role}) => {
 
 
     return (
-        <Box sx={{paddingX: '20px'}}>
-            <Box sx={{display: 'flex', justifyContent: 'center'}}>
-                <Avatar sx={{width: '270px', height: '270px'}}/>
-            </Box>
-            <Box sx={{margin: '68px 0 36px'}}>
-                <Box sx={{display: 'flex', flexDirection: 'column', gap: '28px'}}>
-                    <Box sx={infoWrapper}>
-                        <span>First Name</span>
-                        <Typography>Mihael</Typography>
-                    </Box>
-                    <Box sx={infoWrapper}>
-                        <span>Last name</span>
-                        <Typography>Sorokin</Typography>
-                    </Box>
-                    <Box sx={infoWrapper}>
-                        <span>Company</span>
-                        <Typography>AuditDB network</Typography>
-                    </Box>
-                    <Box sx={infoWrapper}>
-                        <span>E-mail</span>
-                        <Typography>Mihael@gmail.com</Typography>
-                    </Box>
-                    <Box sx={infoWrapper}>
-                        <span>Telegram</span>
-                        <Typography>Mihael@</Typography>
-                    </Box>
-                    <Box sx={infoWrapper}>
-                        <span>Tax rate</span>
-                        <Typography>20 $ per stroke</Typography>
-                    </Box>
+        <Box sx={{paddingX: '10px'}}>
+            <Box sx={contentWrapper}>
+                <Box sx={{display: 'flex', justifyContent: 'center'}}>
+                    <Avatar sx={avatarStyle}/>
                 </Box>
-                <Box sx={{display: 'flex', gap: '18px', flexWrap: 'wrap', marginTop: '34px'}}>
-                    <Chip
-                        sx={{
-                            border: '2px solid #E5E5E5',
-                            borderRadius: '5px',
-                            color: '#434242',
-                            fontWeight: 500
-                        }}
-                        label={'java'}
-                        variant="outlined"
-                        onDelete={() => console.log(11)}
-                        deleteIcon={<ClearIcon sx={iconSx} />}
-                    />
-                    <Chip
-                        sx={{
-                            border: '2px solid #E5E5E5',
-                            borderRadius: '5px',
-                            color: '#434242',
-                            fontWeight: 500
-                        }}
-                        label={'piton'}
-                        variant="outlined"
-                        onDelete={() => console.log(11)}
-                        deleteIcon={<ClearIcon sx={iconSx} />}
-                    />
-                    <Chip
-                        sx={{
-                            border: '2px solid #E5E5E5',
-                            borderRadius: '5px',
-                            color: '#434242',
-                            fontWeight: 500
-                        }}
-                        label={'java'}
-                        variant="outlined"
-                        onDelete={() => console.log(11)}
-                        deleteIcon={<ClearIcon sx={iconSx} />}
-                    />
-                    <Chip
-                        sx={{
-                            border: '2px solid #E5E5E5',
-                            borderRadius: '5px',
-                            color: '#434242',
-                            fontWeight: 500
-                        }}
-                        label={'react'}
-                        variant="outlined"
-                        onDelete={() => console.log(11)}
-                        deleteIcon={<ClearIcon sx={iconSx} />}
-                    />
+                <Box sx={infoStyle}>
+                    <Box sx={{display: 'flex', flexDirection: 'column', gap: '28px'}}>
+                        <Box sx={infoWrapper}>
+                            <span>First Name</span>
+                            <Typography>Mihael</Typography>
+                        </Box>
+                        <Box sx={infoWrapper}>
+                            <span>Last name</span>
+                            <Typography>Sorokin</Typography>
+                        </Box>
+                        <Box sx={infoWrapper}>
+                            <span>Telegram</span>
+                            <Typography>Mihael@</Typography>
+                        </Box>
+                        <Box sx={infoWrapper}>
+                            <span>Tax rate</span>
+                            <Typography>20 $ per stroke</Typography>
+                        </Box>
+                    </Box>
+                    <Box sx={{display: 'flex', gap: '18px', flexWrap: 'wrap'}}>
+                        <Box sx={infoWrapper}>
+                            <span>Company</span>
+                            <Typography>AuditDB network</Typography>
+                        </Box>
+                        <Box sx={infoWrapper}>
+                            <span>E-mail</span>
+                            <Typography>Mihael@gmail.com</Typography>
+                        </Box>
+                        <Box>
+                            <Chip
+                                sx={{
+                                    border: '2px solid #E5E5E5',
+                                    borderRadius: '5px',
+                                    color: '#434242',
+                                    fontWeight: 500
+                                }}
+                                label={'java'}
+                                variant="outlined"
+                                onDelete={() => console.log(11)}
+                                deleteIcon={<ClearIcon sx={iconSx} />}
+                            />
+                            <Chip
+                                sx={{
+                                    border: '2px solid #E5E5E5',
+                                    borderRadius: '5px',
+                                    color: '#434242',
+                                    fontWeight: 500
+                                }}
+                                label={'piton'}
+                                variant="outlined"
+                                onDelete={() => console.log(11)}
+                                deleteIcon={<ClearIcon sx={iconSx} />}
+                            />
+                            <Chip
+                                sx={{
+                                    border: '2px solid #E5E5E5',
+                                    borderRadius: '5px',
+                                    color: '#434242',
+                                    fontWeight: 500
+                                }}
+                                label={'java'}
+                                variant="outlined"
+                                onDelete={() => console.log(11)}
+                                deleteIcon={<ClearIcon sx={iconSx} />}
+                            />
+                            <Chip
+                                sx={{
+                                    border: '2px solid #E5E5E5',
+                                    borderRadius: '5px',
+                                    color: '#434242',
+                                    fontWeight: 500
+                                }}
+                                label={'react'}
+                                variant="outlined"
+                                onDelete={() => console.log(11)}
+                                deleteIcon={<ClearIcon sx={iconSx} />}
+                            />
+                        </Box>
+                    </Box>
                 </Box>
             </Box>
             <Button
@@ -112,11 +116,40 @@ const UserInfo = ({role}) => {
 
 export default UserInfo;
 
+const infoStyle = (theme) => ({
+    margin: '68px 0 36px',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '28px',
+    [theme.breakpoints.down('lg')]: {
+        margin: '0 0 50px',
+        flexDirection: 'row',
+        gap: '40px'
+    }
+})
+
 const iconSx = (theme) => ({
     width: '15px',
     height: '15px',
     '& path': {
         fill: '#52176D'
+    }
+})
+
+const avatarStyle = (theme) => ({
+    width: '270px',
+    height: '270px',
+    [theme.breakpoints.down('lg')]: {
+        width: '205px',
+        height: '205px'
+    }
+})
+
+const contentWrapper = (theme) => ({
+    [theme.breakpoints.down('lg')]: {
+        display: 'flex',
+        gap: '40px'
+        // flexDirection: 'column'
     }
 })
 

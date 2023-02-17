@@ -1,11 +1,11 @@
 import React from 'react';
-import {Typography} from "@mui/material";
+import {Box, Typography} from "@mui/material";
 import {Field} from "formik";
 import {TextField} from "formik-mui";
 
 const SimpleField = ({name, label}) => {
     return (
-        <>
+        <Box sx={wrapper} className={'field-wrapper'}>
             <Typography sx={formLabelSx}>{label}</Typography>
             <Field
                 component={TextField}
@@ -15,11 +15,20 @@ const SimpleField = ({name, label}) => {
                 disabled={false}
                 sx={fieldSx}
             />
-        </>
+        </Box>
     );
 };
 
 export default SimpleField;
+
+const wrapper = (theme) => ({
+    display: 'flex',
+    gap: '28px',
+    flexDirection: 'column',
+    '& p.Mui-error': {
+        display: 'none'
+    }
+})
 
 const formLabelSx = (theme) => ({
     fontWeight: 500,
@@ -27,7 +36,7 @@ const formLabelSx = (theme) => ({
     lineHeight: '24px',
     color: '#434242',
     [theme.breakpoints.down('lg')]: {
-        fontSize: '14px'
+        fontSize: '14px',
     }
 })
 

@@ -25,5 +25,8 @@ const cardWrapper = (theme) => ({
     padding: '109px 130px',
     [theme.breakpoints.down('lg')]: {
         padding: '30px 40px',
+    },
+    [theme.breakpoints.down('md')]: {
+        paddingY: '78px'
     }
 })

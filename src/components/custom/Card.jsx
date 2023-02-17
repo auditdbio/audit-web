@@ -16,7 +16,10 @@ export const CustomCard = styled("div")({
 		"2.21381px rgba(0, 0, 0, 0.0196802)",
 	border: "2px solid #D9D9D9",
 	[theme.breakpoints.down("lg")]: {
-		minHeight: "510px",
-		maxWidth: "500px",
+		minHeight: "610px",
+		maxWidth: "1300px",
 	},
+	[theme.breakpoints.down('md')]: {
+		minHeight: 'unset'
+	}
 });
