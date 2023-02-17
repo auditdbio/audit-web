@@ -26,13 +26,7 @@ const SigninForm = () => {
             {({handleSubmit}) => {
                 return (
                     <Form onSubmit={handleSubmit}>
-                        <Box sx={{
-                            display: 'flex',
-                            flexDirection: 'column',
-                            height: '100%',
-                            width: '100%',
-                            gap: '106px'
-                        }}
+                        <Box sx={formWrapper}
                         >
                             <Box sx={fieldWrapper}>
                                 <SimpleField name={'email'} label={'E-mail'}/>
@@ -56,6 +50,20 @@ const SigninSchema = Yup.object().shape({
     email: Yup.string().email('Invalid email').required('required'),
 });
 
+const formWrapper = (theme) => ({
+    display: 'flex',
+    flexDirection: 'column',
+    height: '100%',
+    width: '100%',
+    gap: '106px',
+    [theme.breakpoints.down('md')]: {
+        gap: '75px'
+    },
+    [theme.breakpoints.down('xs')]: {
+        gap: '60px',
+    }
+})
+
 const submitButton = (theme) => ({
     backgroundColor: theme.palette.secondary.main,
     padding: '13px 140px',
@@ -71,6 +79,11 @@ const submitButton = (theme) => ({
     [theme.breakpoints.down('lg')]: {
         fontSize: '16px',
         paddingY: '11px'
+    },
+    [theme.breakpoints.down('sm')]: {
+        width: '225px',
+        padding: '13px 80px',
+        fontSize: '14px'
     }
 })
 
@@ -81,21 +94,19 @@ const fieldWrapper = (theme) => ({
     width: '100%',
     [theme.breakpoints.down('lg')]: {
         gap: '20px'
-    }
-})
-
-const formLabelSx = (theme) => ({
-    fontWeight: 500,
-    fontSize: '20px',
-    lineHeight: '24px',
-    color: '#434242',
-    [theme.breakpoints.down('lg')]: {
-        fontSize: '14px'
-    }
-})
-
-const fieldSx = (theme) => ({
-    '& input': {
-        paddingLeft: '35px'
+    },
+    [theme.breakpoints.down('md')]: {
+        '& .MuiInputBase-root': {
+            height: '44px',
+            '& input': {
+                paddingY: '7px'
+            }
+        }
+    },
+    [theme.breakpoints.down('sm')]: {
+        gap: '16px',
+        '& .password-wrapper, .field-wrapper': {
+            gap: '16px'
+        }
     }
 })

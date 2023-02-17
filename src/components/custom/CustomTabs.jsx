@@ -49,7 +49,10 @@ const tabSx = (theme) => ({
     borderRadius: '14.8672px 14.8672px 0px 0px',
     // padding: '15px 40px',
     whiteSpace: 'inherit',
-    width: '100%'
+    width: '100%',
+    [theme.breakpoints.down('lg')]: {
+        fontSize: '19px'
+    }
 })
 
 const tabsSx = (theme) => ({

@@ -11,9 +11,11 @@ import CustomMenu from "./custom/CustomMenu.jsx";
 import theme from "../styles/themes.js";
 import { CustomButton } from "./custom/Button.jsx";
 import { useNavigate, Link } from "react-router-dom";
+import {useMediaQuery} from "@mui/material";
 
 const Header = () => {
 	const navigate = useNavigate();
+	const matchSm = useMediaQuery(theme.breakpoints.down('sm'))
 
 	const handleSignIn = () => {
 		navigate("/sign-in");
@@ -141,35 +143,40 @@ const Header = () => {
 								))}
 							</Menu>
 						</Box>
-						<Box
-							sx={{
-								display: { xs: "none", md: "flex" },
-								gap: "0.5rem",
-							}}
-						>
-							{pages.map((page) => (
-								<CustomMenu
-									key={page.id}
-									options={page.menuOptions}
-									buttonText={page.name}
-								/>
-							))}
-						</Box>
-						<Box
-							sx={{
-								width: "30%",
-								maxWidth: "500px",
-								display: { xs: "none", md: "flex" },
-								gap: "1rem",
-							}}
-						>
-							<CustomButton sx={signInButton} onClick={handleSignIn}>
-								Sign In
-							</CustomButton>
-							<CustomButton sx={signUpButton} onClick={handleSignUp}>
-								Sign Up
-							</CustomButton>
-						</Box>
+						{ !matchSm &&
+							<>
+								<Box
+									sx={{
+										display: { xs: "none", md: "flex" },
+										gap: "0.5rem",
+									}}
+								>
+									{pages.map((page) => (
+										<CustomMenu
+											key={page.id}
+											options={page.menuOptions}
+											buttonText={page.name}
+										/>
+									))}
+								</Box>
+								<Box
+									sx={{
+										width: "30%",
+										maxWidth: "500px",
+										display: { xs: "none", md: "flex" },
+										gap: "1rem",
+									}}
+								>
+									<CustomButton sx={signInButton} onClick={handleSignIn}>
+										Sign In
+									</CustomButton>
+									<CustomButton sx={signUpButton} onClick={handleSignUp}>
+										Sign Up
+									</CustomButton>
+								</Box>
+							</>
+						}
+
 					</Box>
 				</Toolbar>
 			</Container>

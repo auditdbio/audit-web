@@ -18,86 +18,90 @@ const UserInfo = ({role}) => {
 
 
     return (
-        <Box sx={{paddingX: '20px'}}>
-            <Box sx={{display: 'flex', justifyContent: 'center'}}>
-                <Avatar sx={{width: '270px', height: '270px'}}/>
-            </Box>
-            <Box sx={{margin: '68px 0 36px'}}>
-                <Box sx={{display: 'flex', flexDirection: 'column', gap: '28px'}}>
-                    <Box sx={infoWrapper}>
-                        <span>First Name</span>
-                        <Typography>Mihael</Typography>
-                    </Box>
-                    <Box sx={infoWrapper}>
-                        <span>Last name</span>
-                        <Typography>Sorokin</Typography>
-                    </Box>
-                    <Box sx={infoWrapper}>
-                        <span>Company</span>
-                        <Typography>AuditDB network</Typography>
-                    </Box>
-                    <Box sx={infoWrapper}>
-                        <span>E-mail</span>
-                        <Typography>Mihael@gmail.com</Typography>
-                    </Box>
-                    <Box sx={infoWrapper}>
-                        <span>Telegram</span>
-                        <Typography>Mihael@</Typography>
-                    </Box>
-                    <Box sx={infoWrapper}>
-                        <span>Tax rate</span>
-                        <Typography>20 $ per stroke</Typography>
-                    </Box>
+        <Box sx={wrapper}>
+            <Box sx={contentWrapper}>
+                <Box sx={{display: 'flex', justifyContent: 'center'}}>
+                    <Avatar sx={avatarStyle}/>
                 </Box>
-                <Box sx={{display: 'flex', gap: '18px', flexWrap: 'wrap', marginTop: '34px'}}>
-                    <Chip
-                        sx={{
-                            border: '2px solid #E5E5E5',
-                            borderRadius: '5px',
-                            color: '#434242',
-                            fontWeight: 500
-                        }}
-                        label={'java'}
-                        variant="outlined"
-                        onDelete={() => console.log(11)}
-                        deleteIcon={<ClearIcon sx={iconSx} />}
-                    />
-                    <Chip
-                        sx={{
-                            border: '2px solid #E5E5E5',
-                            borderRadius: '5px',
-                            color: '#434242',
-                            fontWeight: 500
-                        }}
-                        label={'piton'}
-                        variant="outlined"
-                        onDelete={() => console.log(11)}
-                        deleteIcon={<ClearIcon sx={iconSx} />}
-                    />
-                    <Chip
-                        sx={{
-                            border: '2px solid #E5E5E5',
-                            borderRadius: '5px',
-                            color: '#434242',
-                            fontWeight: 500
-                        }}
-                        label={'java'}
-                        variant="outlined"
-                        onDelete={() => console.log(11)}
-                        deleteIcon={<ClearIcon sx={iconSx} />}
-                    />
-                    <Chip
-                        sx={{
-                            border: '2px solid #E5E5E5',
-                            borderRadius: '5px',
-                            color: '#434242',
-                            fontWeight: 500
-                        }}
-                        label={'react'}
-                        variant="outlined"
-                        onDelete={() => console.log(11)}
-                        deleteIcon={<ClearIcon sx={iconSx} />}
-                    />
+                <Box sx={infoStyle}>
+                    <Box sx={infoInnerStyle}>
+                        <Box sx={infoWrapper}>
+                            <span>First Name</span>
+                            <Typography>Mihael</Typography>
+                        </Box>
+                        <Box sx={infoWrapper}>
+                            <span>Last name</span>
+                            <Typography>Sorokin</Typography>
+                        </Box>
+                        <Box sx={infoWrapper}>
+                            <span>Telegram</span>
+                            <Typography>Mihael@</Typography>
+                        </Box>
+                        <Box sx={infoWrapper}>
+                            <span>Tax rate</span>
+                            <Typography>20 $ per stroke</Typography>
+                        </Box>
+                    </Box>
+                    <Box sx={infoInnerStyle}>
+                        <Box sx={infoWrapper}>
+                            <span>Company</span>
+                            <Typography>AuditDB network</Typography>
+                        </Box>
+                        <Box sx={infoWrapper}>
+                            <span>E-mail</span>
+                            <Typography>Mihael@gmail.com</Typography>
+                        </Box>
+                        <Box>
+                            <Chip
+                                sx={{
+                                    border: '2px solid #E5E5E5',
+                                    borderRadius: '5px',
+                                    color: '#434242',
+                                    fontWeight: 500
+                                }}
+                                label={'java'}
+                                variant="outlined"
+                                onDelete={() => console.log(11)}
+                                deleteIcon={<ClearIcon sx={iconSx} />}
+                            />
+                            <Chip
+                                sx={{
+                                    border: '2px solid #E5E5E5',
+                                    borderRadius: '5px',
+                                    color: '#434242',
+                                    fontWeight: 500
+                                }}
+                                label={'piton'}
+                                variant="outlined"
+                                onDelete={() => console.log(11)}
+                                deleteIcon={<ClearIcon sx={iconSx} />}
+                            />
+                            <Chip
+                                sx={{
+                                    border: '2px solid #E5E5E5',
+                                    borderRadius: '5px',
+                                    color: '#434242',
+                                    fontWeight: 500
+                                }}
+                                label={'java'}
+                                variant="outlined"
+                                onDelete={() => console.log(11)}
+                                deleteIcon={<ClearIcon sx={iconSx} />}
+                            />
+                            <Chip
+                                sx={{
+                                    border: '2px solid #E5E5E5',
+                                    borderRadius: '5px',
+                                    color: '#434242',
+                                    fontWeight: 500
+                                }}
+                                label={'react'}
+                                variant="outlined"
+                                onDelete={() => console.log(11)}
+                                deleteIcon={<ClearIcon sx={iconSx} />}
+                            />
+                        </Box>
+                    </Box>
                 </Box>
             </Box>
             <Button
@@ -112,11 +116,87 @@ const UserInfo = ({role}) => {
 
 export default UserInfo;
 
+const wrapper = (theme) => ({
+    paddingX: '10px',
+    [theme.breakpoints.down('lg')]: {
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '70px'
+    },
+    [theme.breakpoints.down('md')]: {
+        gap: '50px'
+    },
+    [theme.breakpoints.down('sm')]: {
+        gap: '20px'
+    },
+    [theme.breakpoints.down('xs')]: {
+        width: '100%',
+        alignItems: 'center',
+        gap: '25px'
+    }
+})
+
+const infoInnerStyle = (theme) => ({
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '28px',
+    [theme.breakpoints.down('lg')]: {
+        gap: '16px'
+    }
+})
+
+const infoStyle = (theme) => ({
+    margin: '68px 0 36px',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '28px',
+    [theme.breakpoints.down('lg')]: {
+        margin: '0 0 50px',
+        flexDirection: 'row',
+        gap: '40px'
+    },
+    [theme.breakpoints.down('md')]: {
+        gap: '10px',
+    },
+    [theme.breakpoints.down('sm')]: {
+        flexDirection: 'column',
+        gap: '16px',
+        margin: 0
+    },
+})
+
 const iconSx = (theme) => ({
     width: '15px',
     height: '15px',
     '& path': {
         fill: '#52176D'
+    }
+})
+
+const avatarStyle = (theme) => ({
+    width: '270px',
+    height: '270px',
+    [theme.breakpoints.down('lg')]: {
+        width: '205px',
+        height: '205px'
+    },
+    [theme.breakpoints.down('xs')]: {
+        width: '150px',
+        height: '150px',
+    }
+})
+
+const contentWrapper = (theme) => ({
+    [theme.breakpoints.down('lg')]: {
+        display: 'flex',
+        gap: '70px'
+    },
+    [theme.breakpoints.down('md')]: {
+        gap: '50px'
+    },
+    [theme.breakpoints.down('sm')]: {
+        flexDirection: 'column',
+        gap: '40px'
     }
 })
 
@@ -129,6 +209,16 @@ const buttonSx = (theme) => ({
     textTransform: 'capitalize',
     fontSize: '25px',
     fontWeight: 600,
+    [theme.breakpoints.down('lg')]: {
+        fontSize: '18px',
+        padding: '9px 50px',
+        width: '214px',
+        borderRadius: '10px',
+    },
+    [theme.breakpoints.down('xs')]: {
+        width: '88px',
+        padding: '9px 10px'
+    }
 })
 
 const submitAuditor = (theme) => ({
@@ -143,9 +233,27 @@ const infoWrapper = (theme) => ({
     fontWeight: 500,
     fontSize: '20px',
     color: '#434242',
+    '& p': {
+      fontSize: 'inherit'
+    },
     '& span': {
         width: '125px',
         marginRight: '75px',
         color: '#B2B3B3',
+    },
+    [theme.breakpoints.down('lg')]: {
+        fontSize: '15px',
+        '& span': {
+            marginRight: '50px'
+        }
+    },
+    [theme.breakpoints.down('md')]: {
+        '& span': {
+            width: '90px',
+            marginRight: '20px'
+        }
+    },
+    [theme.breakpoints.down('xs')]: {
+        fontSize: '12px'
     }
 })

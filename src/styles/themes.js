@@ -65,10 +65,10 @@ const initialTheme = createTheme({
 	},
 	breakpoints: {
 		values: {
-			xs: 0,
-			sm: 768,
-			md: 1024,
-			lg: 1512,
+			xs: 769,
+			sm: 1024,
+			md: 1290,
+			lg: 1550,
 			xl: 1920,
 		},
 	},
