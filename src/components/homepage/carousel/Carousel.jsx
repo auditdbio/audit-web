@@ -1,14 +1,7 @@
 import { Paper, Button, Box, Typography, Card } from "@mui/material";
 import { Swiper, SwiperSlide, useSwiper } from "swiper/react";
 import { useRef } from "react";
-import {
-	Navigation,
-	Pagination,
-	Scrollbar,
-	A11y,
-	EffectCards,
-	EffectFade,
-} from "swiper";
+import { Navigation, Pagination } from "swiper";
 import "swiper/css/bundle";
 import "swiper/css";
 import FeedbackCard from "./FeedbackCard";
@@ -27,30 +20,20 @@ const Carousel = () => {
 	const nextBtnClass = "swiper-button-next";
 	const prevBtnClass = "swiper-button-prev";
 
-	const items = [
-		{ id: 1, name: "rus" },
-		{ id: 2, name: "rus" },
-		{ id: 3, name: "rus" },
-		{ id: 5, name: "rus" },
-		{ id: 4, name: "rus" },
-	];
-
 	return (
 		<Box
 			sx={{
 				paddingTop: "2rem",
-				maxWidth: "1450px",
+				maxWidth: "1480px",
 			}}
 		>
 			<Box sx={carouselTextStyle}>Who’s using AuditDB?</Box>
 			<Box
 				sx={{
 					display: "flex",
-					justifyContent: "center",
+					justifyContent: "space-between",
 					alignItems: "center",
-					gap: "2rem",
 					zIndex: 100,
-					marginBottom: "5rem",
 				}}
 			>
 				<Button
@@ -61,19 +44,19 @@ const Carousel = () => {
 				<Swiper
 					className="my-slider"
 					modules={[Navigation, Pagination]}
-					spaceBetween={50}
+					spaceBetween={20}
 					slidesPerView={3}
 					onSlideChange={() => console.log("slide change")}
 					onSwiper={(swiper) => {
 						swiperRef.current = swiper;
 					}}
 					loop
-					centeredSlides
+					centeredSlides={true}
 					style={swiperStyles.wrapper}
 				>
 					{items.map((item) => (
 						<SwiperSlide key={item.id} style={swiperStyles.slide}>
-							<FeedbackCard />
+							<FeedbackCard info={item} />
 						</SwiperSlide>
 					))}
 				</Swiper>
@@ -96,13 +79,50 @@ const carouselTextStyle = {
 
 const swiperStyles = {
 	wrapper: {
+		paddingX: "2rem",
+		marginX: "2rem",
 		boxShadow: "none",
-		position: "relative",
-		zIndex: "9999 !important",
-		overflow: "inheit",
 	},
 	slide: {
 		boxShadow: "none",
 	},
 };
+
+const items = [
+	{
+		id: 1,
+		name: "Artem Molodneckiy",
+		interests: "Criptography, Games",
+		description:
+			"“ As one of the first quadratic freelancers to go through the platform, my grant enabled me to leave my job and build open source tutorials and prototypes for the open internet. Super excited to see quadratic funding continue to help high leverage outliers find their place in our ecosystem.”",
+	},
+	{
+		id: 2,
+		name: "Artem Molodneckiy",
+		interests: "Criptography, Games",
+		description:
+			"“ As one of the first quadratic freelancers to go through the platform, my grant enabled me to leave my job and build open source tutorials and prototypes for the open internet. Super excited to see quadratic funding continue to help high leverage outliers find their place in our ecosystem.”",
+	},
+	{
+		id: 3,
+		name: "Artem Molodneckiy",
+		interests: "Criptography, Games",
+		description:
+			"“ As one of the first quadratic freelancers to go through the platform, my grant enabled me to leave my job and build open source tutorials and prototypes for the open internet. Super excited to see quadratic funding continue to help high leverage outliers find their place in our ecosystem.”",
+	},
+	{
+		id: 4,
+		name: "Artem Molodneckiy",
+		interests: "Criptography, Games",
+		description:
+			"“ As one of the first quadratic freelancers to go through the platform, my grant enabled me to leave my job and build open source tutorials and prototypes for the open internet. Super excited to see quadratic funding continue to help high leverage outliers find their place in our ecosystem.”",
+	},
+	{
+		id: 5,
+		name: "Artem Molodneckiy",
+		interests: "Criptography, Games",
+		description:
+			"“ As one of the first quadratic freelancers to go through the platform, my grant enabled me to leave my job and build open source tutorials and prototypes for the open internet. Super excited to see quadratic funding continue to help high leverage outliers find their place in our ecosystem.”",
+	},
+];
 export default Carousel;
