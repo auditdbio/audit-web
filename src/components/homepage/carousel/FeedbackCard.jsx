@@ -23,12 +23,13 @@ const FeedbackCard = ({ info }) => {
 };
 
 const cardWrapper = {
-	height: "540px",
-	width: "385px",
+	height: "100%",
+	width: "100%",
+	maxWidth: "380px",
 	borderRadius: "27px",
 	background: "#FFFFFF",
 	border: "1px solid rgba(67, 66, 66, 0.1)",
-	zIndex: "1000",
+	zIndex: 1,
 	boxShadow:
 		"0px 64.1377px 40.5824px rgba(0, 0, 0, 0.07)," +
 		"0px 14.326px 17.1057px rgba(0, 0, 0, 0.0417275)," +
@@ -36,11 +37,12 @@ const cardWrapper = {
 		"0px 4.26523px 5.09281px rgba(0, 0, 0, 0.0282725), " +
 		"0px 1.77486px 2.11923px rgba(0, 0, 0, 0.0196802)",
 	marginBottom: "75px",
-	marginLeft: "1.5rem",
+	marginX: "10px",
 	display: "flex",
 	flexDirection: "column",
 	justifyContent: "space-between",
 	padding: "40px",
+	gap: "3rem",
 };
 
 const descriptionStyle = {
