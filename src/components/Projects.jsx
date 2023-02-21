@@ -1,11 +1,12 @@
 import React from 'react';
-import {Box, Button} from "@mui/material";
+import {Box, Button, Grid, useMediaQuery} from "@mui/material";
 import ProjectCard from "./Project-card.jsx";
-import {radiusOfComponents} from "../styles/themes.js";
+import theme, {radiusOfComponents} from "../styles/themes.js";
 
 const Projects = ({role}) => {
+    const matchMd = useMediaQuery(theme.breakpoints.down('md'))
     return (
-        <Box>
+        <Box sx={wrapper}>
             <Box sx={{display: 'flex', justifyContent: 'center', mb: '46px'}}>
                 <Button
                     sx={[buttonSx, role === 'auditor' ? buttonAuditorSx : {}]}
@@ -19,24 +20,40 @@ const Projects = ({role}) => {
 
                 </Button>
             </Box>
-            <Box sx={{display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between'}}>
-                <ProjectCard type={role} />
-                <ProjectCard type={role} />
-                <ProjectCard type={role} />
-                <ProjectCard type={role} />
-                <ProjectCard type={role} />
-                {/*<ProjectCard />*/}
-            </Box>
+            <Grid container spacing={3}>
+                <Grid item xs={6} md={3} sm={4}>
+                    <ProjectCard type={role} />
+                </Grid>
+                <Grid item xs={6} md={3} sm={4}>
+                    <ProjectCard type={role} />
+                </Grid>
+                <Grid item xs={6} md={3} sm={4}>
+                    <ProjectCard type={role} />
+                </Grid>
+                <Grid item xs={6} md={3} sm={4}>
+                    <ProjectCard type={role} />
+                </Grid>
+                <Grid item xs={6} md={3} sm={4}>
+                    <ProjectCard type={role} />
+                </Grid>
+            </Grid>
         </Box>
     );
 };
 
 export default Projects;
 
+const wrapper = (theme) => ({
+    padding: '58px 52px 42px',
+    [theme.breakpoints.down('md')]: {
+        padding: '45px 40px 33px'
+    }
+})
+
 const buttonSx = (theme) => ({
-    padding: '20px 34px',
-    borderRadius: radiusOfComponents,
-    fontSize: '25px',
+    padding: '9px 35px',
+    borderRadius: '10px',
+    fontSize: '18px',
     fontWeight: 600,
     lineHeight: '30px',
     textTransform: 'none'

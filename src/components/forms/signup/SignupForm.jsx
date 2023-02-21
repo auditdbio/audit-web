@@ -5,12 +5,15 @@ import PasswordField from "../fields/password-field.jsx";
 import {Form, Formik, Field} from 'formik';
 import * as Yup from 'yup'
 import SimpleField from "../fields/simple-field.jsx";
+import {useDispatch} from "react-redux";
+import {signUp} from "../../../redux/actions/userAction.js";
 
 const SignupForm = () => {
     const [isAuditor, setIsAuditor] = useState('auditor')
+    const dispatch = useDispatch()
     const initialValues = {
-        role: '',
-        userName: '',
+        current_role: '',
+        name: '',
         email: '',
         password: '',
         confirmPassword: '',
@@ -23,8 +26,9 @@ const SignupForm = () => {
             validateOnBlur={false}
             validateOnChange={false}
             onSubmit={(values) => {
-                const newValue = {...values, role: isAuditor}
+                const newValue = {...values, current_role: isAuditor}
                 console.log(newValue)
+                dispatch(signUp(newValue))
             }}
         >
             {({handleSubmit}) => (
@@ -55,7 +59,7 @@ const SignupForm = () => {
                         </Tabs>
                         <Box sx={fieldsWrapper}>
                             <Box sx={fieldWrapper}>
-                                <SimpleField name={'userName'} label={'User name'}/>
+                                <SimpleField name={'name'} label={'User name'}/>
                                 <SimpleField name={'email'} label={'E-mail'}/>
                             </Box>
                             <Box sx={fieldWrapper}>
@@ -66,8 +70,7 @@ const SignupForm = () => {
                         <Button type={'submit'} sx={submitButton} variant={'contained'}>Sing up</Button>
                     </Box>
                 </Form>
-            )
-            }
+            )}
         </Formik>
     );
 };
@@ -79,8 +82,8 @@ const SignupSchema = Yup.object().shape({
         .min(2, 'Too Short!')
         .required('Required'),
     email: Yup.string().email('Invalid email').required('required'),
-    userName: Yup.string().required('Required'),
-    role: Yup.string(),
+    name: Yup.string().required('Required'),
+    current_role: Yup.string(),
     confirmPassword: Yup.string()
         .oneOf([Yup.ref('password'), null], 'Passwords must match').required('Required')
 });
@@ -100,18 +103,13 @@ const titleStyle = (theme) => ({
 
 const submitButton = (theme) => ({
     backgroundColor: theme.palette.secondary.main,
-    padding: '20px 140px',
+    padding: '15px 140px',
     color: '#FCFAF6',
-    fontSize: '26px',
+    fontSize: '25px',
     fontWeight: 600,
     borderRadius: radiusOfComponents,
     maxWidth: '402px',
-    margin: '86px auto 0',
-    [theme.breakpoints.down('lg')]: {
-        fontSize: '25px',
-        paddingY: '15px',
-        margin: '0 auto'
-    },
+    margin: '0 auto',
     [theme.breakpoints.down('md')]: {
         fontSize: '20px',
         lineHeight: '23px'
@@ -129,9 +127,7 @@ const formStyle = (theme) => ({
     height: '100%',
     alignItems: 'center',
     width: '100%',
-    [theme.breakpoints.down('lg')]: {
-        gap: '80px'
-    },
+    gap: '80px',
     [theme.breakpoints.down('md')]: {
         gap: '60px'
     },
@@ -141,14 +137,10 @@ const formStyle = (theme) => ({
 })
 
 const fieldsWrapper = (theme) => ({
-    gap: '28px',
     display: 'flex',
-    flexDirection: 'column',
     width: '100%',
-    [theme.breakpoints.down('lg')]: {
-        gap: '70px',
-        flexDirection: 'row'
-    },
+    gap: '70px',
+    flexDirection: 'row',
     [theme.breakpoints.down('md')]: {
         gap: '20px'
     },
@@ -161,15 +153,13 @@ const fieldWrapper = (theme) => ({
     display: 'flex',
     gap: '28px',
     flexDirection: 'column',
-    [theme.breakpoints.down('lg')]: {
-        width: '50%',
-        '& .password-wrapper, .field-wrapper': {
-            flexDirection: 'row',
-            alignItems: 'center',
-            gap: 0,
-            '& p': {
-                width: '130px'
-            }
+    width: '50%',
+    '& .password-wrapper, .field-wrapper': {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 0,
+        '& p': {
+            width: '130px'
         }
     },
     [theme.breakpoints.down('md')]: {
@@ -200,14 +190,9 @@ const fieldWrapper = (theme) => ({
 })
 
 const tabsSx = (theme) => ({
-    marginTop: '36px',
-    marginBottom: '76px',
-    width: '100%',
-    [theme.breakpoints.down('lg')]: {
-        marginBottom: 0,
-        width: '420px',
-        marginTop: '-50px'
-    },
+    marginBottom: 0,
+    width: '420px',
+    marginTop: '-50px',
     [theme.breakpoints.down('md')]: {
         width: '320px',
         marginTop: '-20px'

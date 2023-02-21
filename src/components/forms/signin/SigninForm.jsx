@@ -5,9 +5,13 @@ import PasswordField from "../fields/password-field.jsx";
 import {Form, Formik, Field} from "formik";
 import * as Yup from "yup";
 import SimpleField from "../fields/simple-field.jsx";
+import {useDispatch} from "react-redux";
+import {signIn} from "../../../redux/actions/userAction.js";
+import {redirect} from "react-router-dom/dist";
 
 
 const SigninForm = () => {
+    const dispatch = useDispatch()
     const initialValues = {
         email: '',
         password: '',
@@ -20,6 +24,7 @@ const SigninForm = () => {
             validateOnBlur={false}
             validateOnChange={false}
             onSubmit={(values) => {
+                dispatch(signIn(values))
                 console.log(values)
             }}
         >
@@ -32,7 +37,7 @@ const SigninForm = () => {
                                 <SimpleField name={'email'} label={'E-mail'}/>
                                 <PasswordField name={'password'} label={'Password'}/>
                             </Box>
-                            <Button type={'submit'} sx={submitButton}>Sing in</Button>
+                            <Button type={'submit'} variant={'contained'} sx={submitButton}>Sing in</Button>
                         </Box>
                     </Form>
                 )
@@ -55,10 +60,7 @@ const formWrapper = (theme) => ({
     flexDirection: 'column',
     height: '100%',
     width: '100%',
-    gap: '106px',
-    [theme.breakpoints.down('md')]: {
-        gap: '75px'
-    },
+    gap: '75px',
     [theme.breakpoints.down('xs')]: {
         gap: '60px',
     }
@@ -66,20 +68,14 @@ const formWrapper = (theme) => ({
 
 const submitButton = (theme) => ({
     backgroundColor: theme.palette.secondary.main,
-    padding: '13px 140px',
+    padding: '11px 140px',
     color: '#FCFAF6',
-    fontSize: '26px',
     fontWeight: 600,
     borderRadius: radiusOfComponents,
     maxWidth: '402px',
     margin: '0 auto',
-    '&:hover': {
-        backgroundColor: '#3a0154'
-    },
-    [theme.breakpoints.down('lg')]: {
-        fontSize: '16px',
-        paddingY: '11px'
-    },
+    fontSize: '16px',
+    paddingY: '11px',
     [theme.breakpoints.down('sm')]: {
         width: '225px',
         padding: '13px 80px',
@@ -88,13 +84,10 @@ const submitButton = (theme) => ({
 })
 
 const fieldWrapper = (theme) => ({
-    gap: '28px',
     display: 'flex',
     flexDirection: 'column',
     width: '100%',
-    [theme.breakpoints.down('lg')]: {
-        gap: '20px'
-    },
+    gap: '20px',
     [theme.breakpoints.down('md')]: {
         '& .MuiInputBase-root': {
             height: '44px',

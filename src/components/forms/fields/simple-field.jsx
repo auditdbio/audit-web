@@ -6,7 +6,7 @@ import {TextField} from "formik-mui";
 const SimpleField = ({name, label}) => {
     return (
         <Box sx={wrapper} className={'field-wrapper'}>
-            <Typography sx={formLabelSx}>{label}</Typography>
+            <Typography variant={'body2'} sx={formLabelSx}>{label}</Typography>
             <Field
                 component={TextField}
                 name={name}
@@ -32,7 +32,7 @@ const wrapper = (theme) => ({
 
 const formLabelSx = (theme) => ({
     fontWeight: 500,
-    fontSize: '20px',
+    fontSize: '14px',
     lineHeight: '24px',
     color: '#434242',
     [theme.breakpoints.down('lg')]: {

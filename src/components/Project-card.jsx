@@ -7,13 +7,13 @@ import {radiusOfComponents} from "../styles/themes.js";
 const ProjectCard = ({type}) => {
     return (
         <Box sx={cardWrapper}>
-            <Typography variant={'h5'} sx={{fontWeight: 500}}>
+            <Typography variant={'h5'}>
                 AuditBD
             </Typography>
             <Typography sx={categorySx}>
-                Criptography,  Games
+                Criptography, Games
             </Typography>
-            <Box sx={{display: 'flex', justifyContent: 'space-between', gap: '40px'}}>
+            <Box sx={{display: 'flex', justifyContent: 'space-between', width: '100%', mt: '18px'}}>
                 <Box sx={infoWrapper}>
                     <Currency/>
                     <Typography>3.1 K</Typography>
@@ -30,7 +30,7 @@ const ProjectCard = ({type}) => {
             <Button variant={'contained'} sx={[editButton, type === 'auditor' ? editAuditor : {}]}>
                 Edit
             </Button>
-            <Button sx={{textTransform: 'none'}}>
+            <Button sx={copyBtn}>
                 Make a copy
             </Button>
         </Box>
@@ -39,14 +39,22 @@ const ProjectCard = ({type}) => {
 
 export default ProjectCard;
 
+const copyBtn = (theme) => ({
+    textTransform: 'none',
+    fontSize: '10px',
+    mt: '12px'
+})
+
 const statusWrapper = (theme) => ({
     display: 'flex',
     alignItems: 'center',
-    justifyContent: 'space-evenly',
+    justifyContent: 'center',
+    gap: '15px',
     width: '100%',
     '& p': {
-      fontSize: '14px',
-      fontWeight: 500
+        fontSize: '10px',
+        fontWeight: 500,
+        color: '#434242'
     },
     '& div': {
         width: '17px',
@@ -58,14 +66,15 @@ const statusWrapper = (theme) => ({
 })
 
 const editButton = (theme) => ({
-    fontSize: '21px',
+    fontSize: '15px',
     fontWeight: 600,
     lineHeight: '25px',
     width: '100%',
     textTransform: 'none',
-    borderRadius: radiusOfComponents,
+    borderRadius: '10px',
     gap: '40px',
-    padding: '11px 0'
+    padding: '9px 0',
+    maxWidth: '170px'
 })
 
 const editAuditor = (theme) => ({
@@ -80,16 +89,17 @@ const infoWrapper = (theme) => ({
     alignItems: 'center',
     justifyContent: 'space-between',
     '& p': {
-        fontSize: '18px!important',
-        marginLeft: '18px'
+        fontSize: '12px!important',
+        marginLeft: '8px'
     }
 })
 
 const categorySx = (theme) => ({
     textAlign: 'center',
-    fontSize: '18px!important',
+    fontSize: '12px!important',
     fontWeight: 500,
-    margin: '7px 0 7px'
+    color: '#434242',
+    margin: '10px 0 7px'
 })
 
 const cardWrapper = (theme) => ({
@@ -104,6 +114,12 @@ const cardWrapper = (theme) => ({
     borderRadius: '25px',
     border: '1px solid rgba(67, 66, 66, 0.1)',
     alignItems: 'center',
-    width: '283px',
-    marginBottom: '40px'
+    '& h5': {
+        fontSize: '18px',
+        fontWeight: 500,
+        lineHeight: '22px'
+    },
+    [theme.breakpoints.down('md')]: {
+        padding: '33px 22px 36px'
+    }
 })

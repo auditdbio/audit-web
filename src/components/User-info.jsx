@@ -62,7 +62,7 @@ const UserInfo = ({role}) => {
                                 label={'java'}
                                 variant="outlined"
                                 onDelete={() => console.log(11)}
-                                deleteIcon={<ClearIcon sx={iconSx} />}
+                                deleteIcon={<ClearIcon sx={iconSx}/>}
                             />
                             <Chip
                                 sx={{
@@ -74,7 +74,7 @@ const UserInfo = ({role}) => {
                                 label={'piton'}
                                 variant="outlined"
                                 onDelete={() => console.log(11)}
-                                deleteIcon={<ClearIcon sx={iconSx} />}
+                                deleteIcon={<ClearIcon sx={iconSx}/>}
                             />
                             <Chip
                                 sx={{
@@ -86,7 +86,7 @@ const UserInfo = ({role}) => {
                                 label={'java'}
                                 variant="outlined"
                                 onDelete={() => console.log(11)}
-                                deleteIcon={<ClearIcon sx={iconSx} />}
+                                deleteIcon={<ClearIcon sx={iconSx}/>}
                             />
                             <Chip
                                 sx={{
@@ -98,7 +98,7 @@ const UserInfo = ({role}) => {
                                 label={'react'}
                                 variant="outlined"
                                 onDelete={() => console.log(11)}
-                                deleteIcon={<ClearIcon sx={iconSx} />}
+                                deleteIcon={<ClearIcon sx={iconSx}/>}
                             />
                         </Box>
                     </Box>
@@ -118,11 +118,9 @@ export default UserInfo;
 
 const wrapper = (theme) => ({
     paddingX: '10px',
-    [theme.breakpoints.down('lg')]: {
-        display: 'flex',
-        flexDirection: 'column',
-        gap: '70px'
-    },
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '70px',
     [theme.breakpoints.down('md')]: {
         gap: '50px'
     },
@@ -139,22 +137,15 @@ const wrapper = (theme) => ({
 const infoInnerStyle = (theme) => ({
     display: 'flex',
     flexDirection: 'column',
-    gap: '28px',
-    [theme.breakpoints.down('lg')]: {
-        gap: '16px'
-    }
+    gap: '16px'
+
 })
 
 const infoStyle = (theme) => ({
-    margin: '68px 0 36px',
     display: 'flex',
-    flexDirection: 'column',
-    gap: '28px',
-    [theme.breakpoints.down('lg')]: {
-        margin: '0 0 50px',
-        flexDirection: 'row',
-        gap: '40px'
-    },
+    margin: '0 0 50px',
+    flexDirection: 'row',
+    gap: '40px',
     [theme.breakpoints.down('md')]: {
         gap: '10px',
     },
@@ -174,12 +165,8 @@ const iconSx = (theme) => ({
 })
 
 const avatarStyle = (theme) => ({
-    width: '270px',
-    height: '270px',
-    [theme.breakpoints.down('lg')]: {
-        width: '205px',
-        height: '205px'
-    },
+    width: '205px',
+    height: '205px',
     [theme.breakpoints.down('xs')]: {
         width: '150px',
         height: '150px',
@@ -187,10 +174,8 @@ const avatarStyle = (theme) => ({
 })
 
 const contentWrapper = (theme) => ({
-    [theme.breakpoints.down('lg')]: {
-        display: 'flex',
-        gap: '70px'
-    },
+    display: 'flex',
+    gap: '70px',
     [theme.breakpoints.down('md')]: {
         gap: '50px'
     },
@@ -203,18 +188,13 @@ const contentWrapper = (theme) => ({
 const buttonSx = (theme) => ({
     margin: '0 auto',
     display: 'block',
-    padding: '13px 50px',
     color: theme.palette.background.default,
-    borderRadius: radiusOfComponents,
     textTransform: 'capitalize',
-    fontSize: '25px',
     fontWeight: 600,
-    [theme.breakpoints.down('lg')]: {
-        fontSize: '18px',
-        padding: '9px 50px',
-        width: '214px',
-        borderRadius: '10px',
-    },
+    fontSize: '18px',
+    padding: '9px 50px',
+    width: '214px',
+    borderRadius: '10px',
     [theme.breakpoints.down('xs')]: {
         width: '88px',
         padding: '9px 10px'
@@ -231,22 +211,16 @@ const submitAuditor = (theme) => ({
 const infoWrapper = (theme) => ({
     display: 'flex',
     fontWeight: 500,
-    fontSize: '20px',
     color: '#434242',
     '& p': {
-      fontSize: 'inherit'
+        fontSize: 'inherit'
     },
     '& span': {
         width: '125px',
-        marginRight: '75px',
+        marginRight: '50px',
         color: '#B2B3B3',
     },
-    [theme.breakpoints.down('lg')]: {
-        fontSize: '15px',
-        '& span': {
-            marginRight: '50px'
-        }
-    },
+    fontSize: '15px',
     [theme.breakpoints.down('md')]: {
         '& span': {
             width: '90px',

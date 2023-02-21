@@ -156,6 +156,16 @@ const theme = createTheme(initialTheme, {
 				fontSize: "15px",
 			},
 		},
+		body2: {
+			fontSize: "20px",
+			[initialTheme.breakpoints.down('md')]: {
+			fontSize: '15px'
+			},
+			[initialTheme.breakpoints.down("sm")]: {
+				fontSize: "12px",
+			},
+
+		},
 	},
 });
 

@@ -19,8 +19,8 @@ const HomeAuditor = () => {
                 />
                 <InfoCard role={'auditor'}>
                     {chooseTab === 'audit requests' && <h2>Audit requests</h2>}
-                    {chooseTab === 'user-info' && <UserInfo role={'auditor'} />}
-                    {chooseTab === 'audits' && <Projects role={'auditor'} />}
+                    {chooseTab === 'user-info' && <UserInfo role={'auditor'}/>}
+                    {chooseTab === 'audits' && <Projects role={'auditor'}/>}
                 </InfoCard>
             </Box>
         </Layout>
@@ -47,10 +47,8 @@ const tabs = [
 const wrapper = (theme) => ({
     display: 'flex',
     flexDirection: 'column',
-    [theme.breakpoints.down('lg')]: {
-        maxWidth: '1300px',
-        width: '100%'
-    }
+    maxWidth: '1300px',
+    width: '100%'
 })
 
 const selectedTabSx = (theme) => ({
