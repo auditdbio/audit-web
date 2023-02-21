@@ -1,3 +1,6 @@
+FROM node:18
+
+# Set the working directory to /app
 WORKDIR /app
 
 # Copy the package.json and package-lock.json to the working directory
@@ -17,7 +20,7 @@ FROM nginx:1.19
 
 # Copy the built React project to the default NGINX static files directory
 COPY --from=0 /app/dist /usr/share/nginx/html
-
+COPY  nginx.conf /etc/nginx/conf.d/default.conf
 
 # Specify the command to run NGINX
 CMD [ "nginx", "-g", "daemon off;" ]

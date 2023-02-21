@@ -4,13 +4,13 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - dev
+      - develop
 
 jobs:
   build:
     runs-on: ubuntu-latest
     env:
-      GIT_BRANCH: "#dev"
+      GIT_BRANCH: "#develop"
 
     steps:
     - uses: actions/checkout@v1
