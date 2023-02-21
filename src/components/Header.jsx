@@ -10,12 +10,16 @@ import MenuItem from "@mui/material/MenuItem";
 import CustomMenu from "./custom/CustomMenu.jsx";
 import theme from "../styles/themes.js";
 import { CustomButton } from "./custom/Button.jsx";
-import { useNavigate, Link } from "react-router-dom";
-import {useMediaQuery} from "@mui/material";
+import { useNavigate, Link } from "react-router-dom/dist";
+import {Button, useMediaQuery} from "@mui/material";
+import {isAuth} from "../lib/helper.js";
+import {useDispatch} from "react-redux";
+import {logout} from "../redux/actions/userAction.js";
 
 const Header = () => {
 	const navigate = useNavigate();
 	const matchSm = useMediaQuery(theme.breakpoints.down('sm'))
+	const dispatch = useDispatch()
 
 	const handleSignIn = () => {
 		navigate("/sign-in");
@@ -46,6 +50,10 @@ const Header = () => {
 	const handleCloseUserMenu = () => {
 		setAnchorElUser(null);
 	};
+
+	const handleLogout = () => {
+		dispatch(logout())
+	}
 
 	return (
 		<AppBar position="static" color="transparent" elevation={0}>
@@ -159,21 +167,27 @@ const Header = () => {
 										/>
 									))}
 								</Box>
-								<Box
-									sx={{
-										width: "30%",
-										maxWidth: "500px",
-										display: { xs: "none", md: "flex" },
-										gap: "1rem",
-									}}
-								>
-									<CustomButton sx={signInButton} onClick={handleSignIn}>
-										Sign In
-									</CustomButton>
-									<CustomButton sx={signUpButton} onClick={handleSignUp}>
-										Sign Up
-									</CustomButton>
-								</Box>
+								{ !isAuth() ?
+									<Box
+										sx={{
+											width: "30%",
+											maxWidth: "500px",
+											display: { xs: "none", md: "flex" },
+											gap: "1rem",
+										}}
+									>
+										<CustomButton sx={signInButton} onClick={handleSignIn}>
+											Sign In
+										</CustomButton>
+										<CustomButton sx={signUpButton} onClick={handleSignUp}>
+											Sign Up
+										</CustomButton>
+									</Box>
+									:
+									<Button sx={logOutButton} onClick={handleLogout} variant={'contained'}>
+										Log out
+									</Button>
+								}
 							</>
 						}
 
@@ -248,6 +262,10 @@ const signInButton = {
 		color: "white",
 	},
 };
+
+const logOutButton = (theme) => ({
+
+})
 
 const signUpButton = {
 	backgroundColor: "transparent",

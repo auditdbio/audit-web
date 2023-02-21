@@ -21,10 +21,7 @@ const auditorStyle = (theme) => ({
 })
 
 const cardWrapper = (theme) => ({
-    width: '700px',
-    minHeight: '900px',
     height: '100%',
-    padding: '60px 44px 50px',
     backgroundColor: theme.palette.background.default,
     borderRadius: '0px 0px 15px 15px',
     boxShadow: '0px 100px 80px rgba(0, 0, 0, 0.07), ' +
@@ -33,7 +30,6 @@ const cardWrapper = (theme) => ({
         '0px 12.5216px 10.0172px rgba(0, 0, 0, 0.035), ' +
         '0px 6.6501px 5.32008px rgba(0, 0, 0, 0.0282725), ' +
         '0px 2.76726px 2.21381px rgba(0, 0, 0, 0.0196802)',
-    [theme.breakpoints.down('lg')]: {
         maxWidth: '1300px',
         minHeight: '530px',
         width: '100%',
@@ -41,7 +37,6 @@ const cardWrapper = (theme) => ({
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-    },
     [theme.breakpoints.down('sm')]: {
         padding: '30px 40px'
     },

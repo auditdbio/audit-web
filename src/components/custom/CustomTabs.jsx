@@ -44,15 +44,12 @@ const simpleTab = (theme) => ({
 
 const tabSx = (theme) => ({
     color: '#222222',
-    fontSize: '27px',
+    fontSize: '19px',
     textTransform: 'capitalize',
     borderRadius: '14.8672px 14.8672px 0px 0px',
     // padding: '15px 40px',
     whiteSpace: 'inherit',
     width: '100%',
-    [theme.breakpoints.down('lg')]: {
-        fontSize: '19px'
-    }
 })
 
 const tabsSx = (theme) => ({

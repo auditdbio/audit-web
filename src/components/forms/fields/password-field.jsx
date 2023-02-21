@@ -12,7 +12,7 @@ const PasswordField = ({name, label}) => {
 
     return (
         <Box sx={wrapper} className={'password-wrapper'}>
-            <Typography sx={formLabelSx}>{label}</Typography>
+            <Typography sx={formLabelSx} variant={'body2'}>{label}</Typography>
             <Field
                 component={TextField}
                 placeholder={'● ● ● ● ● ● ●'}
@@ -57,7 +57,7 @@ const fieldSx = (theme) => ({
 
 const formLabelSx = (theme) => ({
     fontWeight: 500,
-    fontSize: '20px',
+    fontSize: '14px',
     lineHeight: '24px',
     color: '#434242',
     [theme.breakpoints.down('lg')]: {
