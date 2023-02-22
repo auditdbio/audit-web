@@ -1,8 +1,11 @@
 import { Avatar, Box, Card, Typography } from "@mui/material";
+import { useMediaQuery } from "@mui/material";
 
 const FeedbackCard = ({ info }) => {
+	const isSmallScreen = useMediaQuery("(max-width: 769px)");
+
 	return (
-		<Card sx={cardWrapper()}>
+		<Card sx={cardWrapper(isSmallScreen)}>
 			<Typography style={descriptionStyle}>{info.description}</Typography>
 			<Box sx={detailsWrapper}>
 				<Box
@@ -22,7 +25,7 @@ const FeedbackCard = ({ info }) => {
 	);
 };
 
-const cardWrapper = () => ({
+const cardWrapper = (isSmallScreen) => ({
 	height: "100%",
 	width: "100%",
 	maxWidth: "380px",
@@ -37,7 +40,7 @@ const cardWrapper = () => ({
 		"0px 4.26523px 5.09281px rgba(0, 0, 0, 0.0282725), " +
 		"0px 1.77486px 2.11923px rgba(0, 0, 0, 0.0196802)",
 	marginBottom: "40px",
-	marginLeft: { xs: "30px", sm: "70px", md: "0" },
+	marginLeft: isSmallScreen ? "0%" : "0px",
 	display: "flex",
 	flexDirection: "column",
 	justifyContent: "space-between",

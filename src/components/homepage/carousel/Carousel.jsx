@@ -1,10 +1,8 @@
 import "swiper/css/bundle";
-// import "swiper/css";
-// import Swiper from "swiper/bundle";
 import { Paper, Button, Box, Typography, Card } from "@mui/material";
 import { Swiper, SwiperSlide, useSwiper } from "swiper/react";
 import { useRef } from "react";
-import { Navigation, Pagination } from "swiper";
+import { Navigation, Pagination, Virtual } from "swiper";
 import FeedbackCard from "./FeedbackCard";
 import useMediaQuery from "@mui/material/useMediaQuery";
 // import theme from "../../../styles/themes";
@@ -25,17 +23,19 @@ const Carousel = () => {
 	const nextBtnClass = "swiper-button-next";
 	const prevBtnClass = "swiper-button-prev";
 
+	// width: {
+	// 	xs: "450px",
+	// 	sm: "700px",
+	// 	md: "960px",
+	// 	lg: "1480px",
+	// 	xl: "1880px",
+	// },
+
 	return (
 		<Box
 			sx={{
 				paddingTop: "2rem",
-				width: {
-					xs: "450px",
-					sm: "700px",
-					md: "960px",
-					lg: "1480px",
-					xl: "1880px",
-				},
+				width: "90%",
 				marginBottom: "2rem",
 			}}
 		>
@@ -48,19 +48,16 @@ const Carousel = () => {
 					zIndex: 100,
 					margin: "0 auto",
 					gap: "10px",
+					flexGrow: 0,
 				}}
 			>
-				<Button
-					className={prevBtnClass}
-					onClick={handlePrevClick}
-					disableRipple
-					sx={{
-						display: {
-							xs: "none",
-							sm: "block",
-						},
-					}}
-				></Button>
+				{!isMobile && (
+					<Button
+						className={prevBtnClass}
+						onClick={handlePrevClick}
+						disableRipple
+					></Button>
+				)}
 				<Swiper
 					slidesPerView={1}
 					onSlideChange={() => console.log("slide change")}
@@ -83,6 +80,9 @@ const Carousel = () => {
 						},
 					}}
 					loop={true}
+					style={{
+						width: "80%",
+					}}
 				>
 					{items.map((item) => (
 						<SwiperSlide key={item.id}>
@@ -90,45 +90,35 @@ const Carousel = () => {
 						</SwiperSlide>
 					))}
 				</Swiper>
-				<Button
-					className={nextBtnClass}
-					disableRipple
-					onClick={handleNextClick}
-					sx={{
-						display: {
-							xs: "none",
-							sm: "block",
-						},
-					}}
-				></Button>
+				{!isMobile && (
+					<Button
+						className={nextBtnClass}
+						disableRipple
+						onClick={handleNextClick}
+					></Button>
+				)}
 			</Box>
-			<Box
-				className="mobile-buttons"
-				sx={{ display: "flex", justifyContent: "center", gap: "1rem" }}
-			>
-				<Button
-					className={prevBtnClass}
-					onClick={handlePrevClick}
-					disableRipple
+			{isMobile && (
+				<Box
+					className="mobile-buttons"
 					sx={{
-						display: {
-							xs: "block",
-							sm: "none",
-						},
+						display: "flex",
+						justifyContent: "center",
+						gap: "1rem",
 					}}
-				></Button>
-				<Button
-					className={nextBtnClass}
-					disableRipple
-					onClick={handleNextClick}
-					sx={{
-						display: {
-							xs: "block",
-							sm: "none",
-						},
-					}}
-				></Button>
-			</Box>
+				>
+					<Button
+						className={prevBtnClass}
+						onClick={handlePrevClick}
+						disableRipple
+					></Button>
+					<Button
+						className={nextBtnClass}
+						disableRipple
+						onClick={handleNextClick}
+					></Button>
+				</Box>
+			)}
 		</Box>
 	);
 };
@@ -142,8 +132,6 @@ const carouselTextStyle = {
 
 const swiperStyles = {
 	wrapper: {
-		// paddingX: "2rem",
-		// marginX: "2rem",
 		boxShadow: "none",
 		margin: "0 auto",
 	},
