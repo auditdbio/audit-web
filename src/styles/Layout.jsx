@@ -24,5 +24,11 @@ const layoutStyle = (theme) => ({
     padding: '120px 100px',
     [theme.breakpoints.down('sm')]: {
         padding: '60px 30px',
+    },
+    [theme.breakpoints.down('xs')]: {
+        padding: '40px 30px'
+    },
+    [theme.breakpoints.down(450)]: {
+        padding: '40px 10px'
     }
 })

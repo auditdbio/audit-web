@@ -7,7 +7,7 @@ const Projects = ({role}) => {
     const matchMd = useMediaQuery(theme.breakpoints.down('md'))
     return (
         <Box sx={wrapper}>
-            <Box sx={{display: 'flex', justifyContent: 'center', mb: '46px'}}>
+            <Box sx={buttonWrapper}>
                 <Button
                     sx={[buttonSx, role === 'auditor' ? buttonAuditorSx : {}]}
                     variant={'contained'}
@@ -20,20 +20,20 @@ const Projects = ({role}) => {
 
                 </Button>
             </Box>
-            <Grid container spacing={3}>
-                <Grid item xs={6} md={3} sm={4}>
+            <Grid container spacing={2} >
+                <Grid item sx={gridItemStyle}>
                     <ProjectCard type={role} />
                 </Grid>
-                <Grid item xs={6} md={3} sm={4}>
+                <Grid item sx={gridItemStyle}>
                     <ProjectCard type={role} />
                 </Grid>
-                <Grid item xs={6} md={3} sm={4}>
+                <Grid item sx={gridItemStyle}>
                     <ProjectCard type={role} />
                 </Grid>
-                <Grid item xs={6} md={3} sm={4}>
+                <Grid item sx={gridItemStyle}>
                     <ProjectCard type={role} />
                 </Grid>
-                <Grid item xs={6} md={3} sm={4}>
+                <Grid item sx={gridItemStyle}>
                     <ProjectCard type={role} />
                 </Grid>
             </Grid>
@@ -43,10 +43,32 @@ const Projects = ({role}) => {
 
 export default Projects;
 
+const buttonWrapper = (theme) => ({
+    display: 'flex',
+    justifyContent: 'center',
+    mb: '46px',
+    [theme.breakpoints.down('sm')]: {
+        mb: '28px'
+    }
+})
+
 const wrapper = (theme) => ({
     padding: '58px 52px 42px',
     [theme.breakpoints.down('md')]: {
         padding: '45px 40px 33px'
+    },
+    [theme.breakpoints.down('sm')]: {
+        padding: '36px 25px 45px'
+    }
+})
+
+const gridItemStyle = (theme) => ({
+        width: '25%',
+    [theme.breakpoints.down('sm')]: {
+        width: '33.330%'
+    },
+    [theme.breakpoints.down('xs')]: {
+        width: '100%'
     }
 })
 
@@ -56,7 +78,13 @@ const buttonSx = (theme) => ({
     fontSize: '18px',
     fontWeight: 600,
     lineHeight: '30px',
-    textTransform: 'none'
+    textTransform: 'none',
+    [theme.breakpoints.down('sm')]: {
+        fontSize: '14px',
+        width: '161px',
+        padding: '11px 25px',
+        height: '40px'
+    },
 })
 
 const buttonAuditorSx = (theme) => ({

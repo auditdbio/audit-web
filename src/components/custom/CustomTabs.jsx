@@ -50,11 +50,25 @@ const tabSx = (theme) => ({
     // padding: '15px 40px',
     whiteSpace: 'inherit',
     width: '100%',
+    [theme.breakpoints.down('xs')]: {
+        fontSize: '14px',
+        padding: '8px',
+        height: '35px',
+        minHeight: '35px'
+    }
 })
 
 const tabsSx = (theme) => ({
     marginBottom: '-1px',
     '& .MuiTabs-flexContainer': {
         gap: '3px'
+    },
+    [theme.breakpoints.down('xs')]: {
+        minHeight: '35px',
+        height: '35px',
+        '& .MuiTabs-flexContainer': {
+            gap: 0
+            // display: 'block'
+        },
     }
 })

@@ -5,6 +5,7 @@ import InfoCard from "../components/custom/info-card.jsx";
 import UserInfo from "../components/User-info.jsx";
 import Projects from "../components/Projects.jsx";
 import Layout from "../styles/Layout.jsx";
+import AuditRequest from "../components/Audit-request.jsx";
 
 const HomeAuditor = () => {
     const [chooseTab, setChooseTab] = useState(tabs[0].value)
@@ -18,7 +19,7 @@ const HomeAuditor = () => {
                     setTab={setChooseTab}
                 />
                 <InfoCard role={'auditor'}>
-                    {chooseTab === 'audit requests' && <h2>Audit requests</h2>}
+                    {chooseTab === 'audit-requests' && <AuditRequest/>}
                     {chooseTab === 'user-info' && <UserInfo role={'auditor'}/>}
                     {chooseTab === 'audits' && <Projects role={'auditor'}/>}
                 </InfoCard>
@@ -35,7 +36,7 @@ const tabs = [
         label: 'Audits',
     },
     {
-        value: 'audit requests',
+        value: 'audit-requests',
         label: 'Audit requests'
     },
     {

@@ -144,18 +144,18 @@ const theme = createTheme(initialTheme, {
 				fontSize: "32px",
 			},
 		},
-		body1: {
-			fontSize: "26px",
-			[initialTheme.breakpoints.down("xl")]: {
-				fontSize: "22px",
-			},
-			[initialTheme.breakpoints.down("lg")]: {
-				fontSize: "20px",
-			},
-			[initialTheme.breakpoints.down("sm")]: {
-				fontSize: "15px",
-			},
-		},
+		// body1: {
+		// 	fontSize: "26px",
+		// 	[initialTheme.breakpoints.down("xl")]: {
+		// 		fontSize: "22px",
+		// 	},
+		// 	[initialTheme.breakpoints.down("lg")]: {
+		// 		fontSize: "20px",
+		// 	},
+		// 	[initialTheme.breakpoints.down("sm")]: {
+		// 		fontSize: "15px",
+		// 	},
+		// },
 		body2: {
 			fontSize: "20px",
 			[initialTheme.breakpoints.down('md')]: {
