@@ -3,8 +3,10 @@ import theme, { buttonResponsiveStyles } from "../../styles/themes";
 import { Typography } from "@mui/material";
 import { CustomButton } from "../custom/Button";
 import { useNavigate } from "react-router-dom";
+import { useMediaQuery } from "@mui/material";
 
 const MainText = () => {
+	const isMobile = useMediaQuery("(max-width: 768px)");
 	const navigate = useNavigate();
 
 	const handleSignUp = () => {
@@ -20,9 +22,11 @@ const MainText = () => {
 					padding: "2rem",
 				}}
 			>
-				<Box sx={imageStyle}>
-					<div style={personSkateStyle}></div>
-				</Box>
+				{!isMobile && (
+					<Box sx={imageStyle(isMobile)}>
+						<div style={personSkateStyle}></div>
+					</Box>
+				)}
 
 				<Box sx={textWrapper}>
 					<Typography sx={headingStyle} theme={theme} variant="h1">
@@ -31,7 +35,7 @@ const MainText = () => {
 					<Typography sx={paragraphStyle} theme={theme} variant="body1">
 						{paragraphText}
 					</Typography>
-					<Box sx={buttonsStyle}>
+					<Box sx={buttonsStyle(isMobile)}>
 						<CustomButton sx={auditorButton} onClick={handleSignUp}>
 							Become auditor
 						</CustomButton>
@@ -40,14 +44,18 @@ const MainText = () => {
 						</CustomButton>
 					</Box>
 				</Box>
-				<Box sx={imageStyle}>
+				{!isMobile && (
+					<Box sx={imageStyle(isMobile)}>
+						<div style={personBitcoinStyle}></div>
+					</Box>
+				)}
+			</Box>
+			{isMobile && (
+				<Box sx={imagesStyle}>
+					<div style={personSkateStyle}></div>
 					<div style={personBitcoinStyle}></div>
 				</Box>
-			</Box>
-			<Box sx={imagesStyle}>
-				<div style={personSkateStyle}></div>
-				<div style={personBitcoinStyle}></div>
-			</Box>
+			)}
 		</Box>
 	);
 };
@@ -114,25 +122,26 @@ const textWrapper = {
 	gap: "3rem",
 };
 
-const imageStyle = {
-	display: { xs: "none", md: "inline" },
+const imageStyle = (isMobile) => ({
+	display: isMobile ? "none" : "inline",
 	minWidth: "25%",
-};
+});
 
-const buttonsStyle = {
+const buttonsStyle = (isMobile) => ({
 	flexGrow: 0,
 	display: "flex",
-	flexDirection: { xs: "column", md: "row" },
+	flexDirection: isMobile ? "column" : "row",
 	marginX: "auto",
 	minWidth: { xs: "300px", md: "100%" },
 	justifyContent: "space-around",
 	gap: "2rem",
-};
+});
 
 const imagesStyle = {
 	marginTop: "2rem",
-	display: { xs: "flex", md: "none" },
-	justifyContent: "space-around",
+	display: "flex",
+	flexDirection: "row",
+	justifyContent: "space-between",
 	height: "250px",
 };
 
