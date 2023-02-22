@@ -36,6 +36,7 @@ const Carousel = () => {
 					lg: "1480px",
 					xl: "1880px",
 				},
+				marginBottom: "2rem",
 			}}
 		>
 			<Box sx={carouselTextStyle}>Who’s using AuditDB?</Box>
@@ -66,9 +67,6 @@ const Carousel = () => {
 					onSwiper={(swiper) => {
 						swiperRef.current = swiper;
 					}}
-					// pagination={{
-					// 	clickable: true,
-					// }}
 					modules={[Pagination, Navigation]}
 					breakpoints={{
 						920: {
@@ -84,13 +82,7 @@ const Carousel = () => {
 							spaceBetween: 50,
 						},
 					}}
-					// loop={true}
-					// centeredSlides={true}
-					style={
-						{
-							// margin: "1rem",
-						}
-					}
+					loop={true}
 				>
 					{items.map((item) => (
 						<SwiperSlide key={item.id}>
@@ -106,6 +98,33 @@ const Carousel = () => {
 						display: {
 							xs: "none",
 							sm: "block",
+						},
+					}}
+				></Button>
+			</Box>
+			<Box
+				className="mobile-buttons"
+				sx={{ display: "flex", justifyContent: "center", gap: "1rem" }}
+			>
+				<Button
+					className={prevBtnClass}
+					onClick={handlePrevClick}
+					disableRipple
+					sx={{
+						display: {
+							xs: "block",
+							sm: "none",
+						},
+					}}
+				></Button>
+				<Button
+					className={nextBtnClass}
+					disableRipple
+					onClick={handleNextClick}
+					sx={{
+						display: {
+							xs: "block",
+							sm: "none",
 						},
 					}}
 				></Button>
