@@ -117,7 +117,6 @@ const UserInfo = ({role}) => {
 export default UserInfo;
 
 const wrapper = (theme) => ({
-    paddingX: '10px',
     display: 'flex',
     flexDirection: 'column',
     gap: '70px',
@@ -125,7 +124,8 @@ const wrapper = (theme) => ({
         gap: '50px'
     },
     [theme.breakpoints.down('sm')]: {
-        gap: '20px'
+        gap: '20px',
+        padding: '40px 30px'
     },
     [theme.breakpoints.down('xs')]: {
         width: '100%',

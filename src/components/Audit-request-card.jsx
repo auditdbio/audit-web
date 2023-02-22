@@ -4,7 +4,7 @@ import Currency from "./icons/Currency.jsx";
 import Star from "./icons/Star.jsx";
 import theme, {radiusOfComponents} from "../styles/themes.js";
 
-const ProjectCard = ({type}) => {
+const AuditRequestCard = ({type}) => {
     return (
         <Box sx={cardWrapper}>
             <Box sx={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
@@ -25,23 +25,34 @@ const ProjectCard = ({type}) => {
                     </Box>
                 </Box>
             </Box>
-            <Box sx={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
-                <Box sx={statusWrapper}>
-                    <Box/>
-                    <Typography>Waiting audit</Typography>
-                </Box>
-                <Button variant={'contained'} sx={[editButton, type === 'auditor' ? editAuditor : {}]}>
-                    Edit
+            <Box sx={buttonWrapper}>
+                <Button variant={'contained'} sx={[actionButton, type === 'auditor' ? editAuditor : {}]}>
+                    View
                 </Button>
-                <Button sx={copyBtn}>
-                    Make a copy
+                <Button sx={[actionButton, copyBtn]} variant={'contained'} >
+                    Declain
                 </Button>
             </Box>
         </Box>
     );
 };
 
-export default ProjectCard;
+export default AuditRequestCard;
+
+const buttonWrapper = (theme) => ({
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    width: '100%',
+    gap: '7px',
+    mt: '24px',
+    [theme.breakpoints.down('xs')]: {
+        flexDirection: 'column',
+        width: 'unset',
+        justifyContent: 'unset',
+        mt: 0
+    }
+})
 
 const priceWrapper = (theme) => ({
     display: 'flex',
@@ -56,62 +67,26 @@ const priceWrapper = (theme) => ({
 })
 
 const copyBtn = (theme) => ({
-    textTransform: 'none',
-    fontSize: '10px',
-    mt: '12px',
-    [theme.breakpoints.down('xs')]: {
-        mt: '5px'
-    }
+    backgroundColor: theme.palette.secondary.main,
 })
 
-const statusWrapper = (theme) => ({
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: '15px',
-    width: '100%',
-    '& p': {
-        fontSize: '10px',
-        fontWeight: 500,
-        color: '#434242'
-    },
-    '& div': {
-        width: '17px',
-        height: '17px',
-        borderRadius: '50%',
-        backgroundColor: '#09C010'
-    },
-    margin: '40px 0 18px',
-    [theme.breakpoints.down('md')]: {
-        margin: '25px 0 10px'
-    },
-    [theme.breakpoints.down('xs')]: {
-        marginTop: 0,
-        gap: '10px',
-        '& div': {
-            width: '8px',
-            height: '8px',
-            borderRadius: '50%',
-        },
-    }
-})
-
-const editButton = (theme) => ({
-    fontSize: '15px',
+const actionButton = (theme) => ({
+    fontSize: '12px',
     fontWeight: 600,
     lineHeight: '25px',
     width: '100%',
+    height: '34px',
     textTransform: 'none',
-    borderRadius: '10px',
+    borderRadius: '7px',
     gap: '40px',
     padding: '9px 0',
-    maxWidth: '170px',
     [theme.breakpoints.down('md')]: {
         width: '100px',
-        height: '30px'
+        height: '30px',
     },
     [theme.breakpoints.down('xs')]: {
-        fontSize: '11px'
+        fontSize: '11px',
+        height: '26px',
     }
 })
 
@@ -155,7 +130,7 @@ const categorySx = (theme) => ({
 const cardWrapper = (theme) => ({
     display: 'flex',
     flexDirection: 'column',
-    padding: '31px 48px 37px',
+    padding: '30px 14px',
     boxShadow: '0px 64.1377px 76.5824px rgba(0, 0, 0, 0.07),' +
         ' 0px 14.326px 17.1057px rgba(0, 0, 0, 0.0417275),' +
         '0px 8.03104px 9.5893px rgba(0, 0, 0, 0.035), ' +
