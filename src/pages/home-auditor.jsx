@@ -10,7 +10,7 @@ const HomeAuditor = () => {
     const [chooseTab, setChooseTab] = useState(tabs[0].value)
     return (
         <Layout>
-            <Box sx={{display: 'flex', flexDirection: 'column'}}>
+            <Box sx={wrapper}>
                 <CustomTabs
                     selectedTabSx={selectedTabSx}
                     name={'type'}
@@ -19,8 +19,8 @@ const HomeAuditor = () => {
                 />
                 <InfoCard role={'auditor'}>
                     {chooseTab === 'audit requests' && <h2>Audit requests</h2>}
-                    {chooseTab === 'user-info' && <UserInfo role={'auditor'} />}
-                    {chooseTab === 'audits' && <Projects role={'auditor'} />}
+                    {chooseTab === 'user-info' && <UserInfo role={'auditor'}/>}
+                    {chooseTab === 'audits' && <Projects role={'auditor'}/>}
                 </InfoCard>
             </Box>
         </Layout>
@@ -43,6 +43,13 @@ const tabs = [
         label: 'User info'
     }
 ]
+
+const wrapper = (theme) => ({
+    display: 'flex',
+    flexDirection: 'column',
+    maxWidth: '1300px',
+    width: '100%'
+})
 
 const selectedTabSx = (theme) => ({
     backgroundColor: theme.palette.secondary.main,

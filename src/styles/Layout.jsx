@@ -1,29 +1,28 @@
-import React from "react";
-import { ContentWrapper } from "./themes.js";
+import React from 'react';
+import {ContentWrapper} from "./themes.js";
 import Header from "../components/Header.jsx";
 import Box from "@mui/material/Box";
 
-const Layout = ({ children, sx }) => {
-	return (
-		<ContentWrapper>
-			<Header />
-			<Box
-				sx={[
-					{
-						display: "flex",
-						alignItems: "center",
-						justifyContent: "center",
-						width: "100%",
-						paddingTop: "150px",
-						// minHeight: 'calc(100vh - 184px)'
-					},
-					sx,
-				]}
-			>
-				{children}
-			</Box>
-		</ContentWrapper>
-	);
+const Layout = ({children, sx}) => {
+    return (
+        <ContentWrapper>
+            <Header/>
+            <Box sx={[layoutStyle, sx]}>
+                {children}
+            </Box>
+        </ContentWrapper>
+    );
 };
 
 export default Layout;
+
+const layoutStyle = (theme) => ({
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '100%',
+    padding: '120px 100px',
+    [theme.breakpoints.down('sm')]: {
+        padding: '60px 30px',
+    }
+})

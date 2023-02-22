@@ -22,8 +22,8 @@ const cardWrapper = (theme) => ({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    padding: '109px 130px',
-    [theme.breakpoints.down('lg')]: {
         padding: '30px 40px',
+    [theme.breakpoints.down('sm')]: {
+        paddingY: '78px'
     }
 })
