@@ -1,6 +1,6 @@
 import React from 'react';
 import {ContentWrapper} from "./themes.js";
-import Header from "../components/Header.jsx";
+import Header from "../components/header/Header.jsx";
 import Box from "@mui/material/Box";
 
 const Layout = ({children, sx}) => {

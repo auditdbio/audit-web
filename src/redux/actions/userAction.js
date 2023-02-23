@@ -1,7 +1,7 @@
 import axios from "axios";
 import Cookies from 'js-cookie'
 import {history} from "../../services/history.js";
-import {AUTH_TRUE, USER_SIGNIN, USER_SIGNUP} from "./types.js";
+import {AUTH_TRUE, USER_SIGNIN, USER_SIGNUP, LOG_OUT} from "./types.js";
 
 const API_URL = 'http://dev.auditdb.io:3001/api'
 
@@ -42,5 +42,5 @@ export const logout = () => {
     history.push('/')
     Cookies.remove('token')
     sessionStorage.removeItem('token')
-    return {type: 'LOG_OUT'}
+    return {type: LOG_OUT}
 }
