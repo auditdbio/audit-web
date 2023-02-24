@@ -1,4 +1,4 @@
-import {useState} from "react";
+import { useState } from "react";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
@@ -11,10 +11,8 @@ import CustomMenu from "../custom/CustomMenu.jsx";
 import theme from "../../styles/themes.js";
 import { CustomButton } from "../custom/Button.jsx";
 import { useNavigate, Link } from "react-router-dom/dist";
-import { Typography, useMediaQuery, Avatar, Button } from "@mui/material";
+import { Typography, useMediaQuery, Avatar } from "@mui/material";
 import { isAuth } from "../../lib/helper.js";
-import { useDispatch } from "react-redux";
-import { logout } from "../../redux/actions/userAction.js";
 import { CustomBadge } from "../custom/Badge.jsx";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import { UserMenu } from "./UserMenu.jsx";
@@ -22,7 +20,6 @@ import { UserMenu } from "./UserMenu.jsx";
 const Header = () => {
   const navigate = useNavigate();
   const matchSm = useMediaQuery(theme.breakpoints.down("sm"));
-  const dispatch = useDispatch();
 
   const handleSignIn = () => {
     navigate("/sign-in");
@@ -41,7 +38,7 @@ const Header = () => {
   };
   const handleOpenUserMenu = (event) => {
     setAnchorElUser(event.currentTarget);
-    setIsUserMenuOpen(!isUserMenuOpen)
+    setIsUserMenuOpen(!isUserMenuOpen);
   };
 
   const handleCloseNavMenu = () => {
@@ -49,12 +46,8 @@ const Header = () => {
   };
 
   const handleCloseUserMenu = () => {
-    setIsUserMenuOpen(false)
+    setIsUserMenuOpen(false);
     setAnchorElUser(null);
-  };
-
-  const handleLogout = () => {
-    dispatch(logout());
   };
 
   return (
@@ -150,7 +143,7 @@ const Header = () => {
                             sx={{
                               ":active": {
                                 backgroundColor: "orange",
-                                color: "white",
+                                color: "color",
                               },
                             }}
                           >
@@ -162,7 +155,7 @@ const Header = () => {
                                 fontWeight: "500",
                               }}
                             >
-                              {page.pageName}
+                              {page.name}
                             </Box>
                           </MenuItem>
                         ))}
@@ -208,91 +201,57 @@ const Header = () => {
 
             {/* For Authorized user */}
             {isAuth() && (
-
               <>
                 {/*   Mobile Screen  */}
                 {matchSm && (
-                  <Box sx={{ flexGrow: 0, display: "flex" }}>
+                  <Box
+                    sx={{
+                      flexGrow: 0,
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "1rem",
+                    }}
+                  >
+                    <IconButton
+                      disableRipple
+                      aria-label="message"
+                      sx={{
+                        width: "35px",
+                        height: "35px",
+                        backgroundColor: "#D9D9D9",
+                        borderRadius: "50px",
+                        marginY: "auto",
+                      }}
+                    >
+                      <CustomBadge
+                        badgeContent={4}
+                        color="secondary"
+                        sx={{ color: "black" }}
+                      >
+                        <NotificationsIcon />
+                      </CustomBadge>
+                    </IconButton>
+                    <Avatar
+                      sx={{
+                        width: "35px",
+                        height: "35px",
+                      }}
+                    />
                     <IconButton
                       aria-label="account of current user"
                       aria-controls="menu-appbar"
                       aria-haspopup="true"
-                      onClick={handleOpenNavMenu}
+                      onClick={handleOpenUserMenu}
                       color="inherit"
+                      sx={{padding: 0}}
                     >
                       <MenuIcon fontSize="large" />
                     </IconButton>
-                    <Menu
-                      id="menu-appbar"
-                      anchorEl={anchorElNav}
-                      anchorOrigin={{
-                        vertical: "bottom",
-                        horizontal: "left",
-                      }}
-                      keepMounted
-                      transformOrigin={{
-                        vertical: "top",
-                        horizontal: "left",
-                      }}
-                      open={Boolean(anchorElNav)}
-                      onClose={handleCloseNavMenu}
-                      sx={{
-                        display: { xs: "block", md: "none" },
-                      }}
-                      PaperProps={{
-                        sx: { width: "300px", borderRadius: "15px" },
-                      }}
-                    >
-                      <MenuItem sx={{ marginTop: "1rem" }}>
-                        <Box
-                          sx={{
-                            display: "flex",
-                            flexDirection: "column",
-                            width: "100%",
-                            gap: "1rem",
-                            marginX: "1rem",
-                          }}
-                        >
-                          <CustomButton
-                            sx={signInButton}
-                            onClick={handleSignIn}
-                          >
-                            Sign In
-                          </CustomButton>
-                          <CustomButton
-                            sx={signUpButton}
-                            onClick={handleSignUp}
-                          >
-                            Sign Up
-                          </CustomButton>
-                        </Box>
-                      </MenuItem>
-                      {pages.map((page) => (
-                        <MenuItem
-                          key={page.id}
-                          onClick={handleCloseNavMenu}
-                          sx={{
-                            ":active": {
-                              backgroundColor: "orange",
-                              color: "black",
-                            },
-                          }}
-                        >
-                          <Box
-                            textAlign="center"
-                            sx={{
-                              color: "black",
-                              marginX: "1rem",
-                              fontSize: "22px",
-                              fontWeight: "500",
-                              textAlign: "center",
-                            }}
-                          >
-                            {page.name}
-                          </Box>
-                        </MenuItem>
-                      ))}
-                    </Menu>
+                    <UserMenu
+                        open={isUserMenuOpen}
+                        handleClose={handleCloseUserMenu}
+                        anchor={anchorElUser}
+                    />
                   </Box>
                 )}
                 {/* //   Desktop Screen  */}
@@ -346,11 +305,11 @@ const Header = () => {
                         src="/static/images/avatar/1.jpg"
                         sx={avatarStyle}
                       />
-                        <UserMenu
-                          open={isUserMenuOpen}
-                          handleClose={handleCloseUserMenu}
-                          anchor={anchorElUser}
-                        />
+                      <UserMenu
+                        open={isUserMenuOpen}
+                        handleClose={handleCloseUserMenu}
+                        anchor={anchorElUser}
+                      />
                     </IconButton>
                   </Box>
                 )}
@@ -362,28 +321,6 @@ const Header = () => {
     </AppBar>
   );
 };
-
-{
-  /*<Button*/
-}
-{
-  /*  sx={logOutButton}*/
-}
-{
-  /*  onClick={handleLogout}*/
-}
-{
-  /*  variant={"contained"}*/
-}
-{
-  /*>*/
-}
-{
-  /*  Log out*/
-}
-{
-  /*</Button>*/
-}
 
 const pages = [
   {
@@ -497,8 +434,6 @@ const signInButton = {
     color: "white",
   },
 };
-
-const logOutButton = (theme) => ({});
 
 const signUpButton = {
   backgroundColor: "transparent",
