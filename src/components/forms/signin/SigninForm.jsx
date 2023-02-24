@@ -1,17 +1,18 @@
 import React, {useState} from 'react';
-import {Box, Typography, Button} from "@mui/material";
+import {Box, Typography, Button, Stack, Alert, AlertTitle, Snackbar} from "@mui/material";
 import theme, {radiusOfComponents} from "../../../styles/themes.js";
 import PasswordField from "../fields/password-field.jsx";
 import {Form, Formik, Field} from "formik";
 import * as Yup from "yup";
 import SimpleField from "../fields/simple-field.jsx";
-import {useDispatch} from "react-redux";
-import {signIn} from "../../../redux/actions/userAction.js";
+import {useDispatch, useSelector} from "react-redux";
+import {clearUserError, signIn} from "../../../redux/actions/userAction.js";
 import {redirect} from "react-router-dom/dist";
 
 
 const SigninForm = () => {
     const dispatch = useDispatch()
+    const error = useSelector(s => s.user.error)
     const initialValues = {
         email: '',
         password: '',
@@ -25,7 +26,6 @@ const SigninForm = () => {
             validateOnChange={false}
             onSubmit={(values) => {
                 dispatch(signIn(values))
-                console.log(values)
             }}
         >
             {({handleSubmit}) => {
@@ -33,6 +33,20 @@ const SigninForm = () => {
                     <Form onSubmit={handleSubmit}>
                         <Box sx={formWrapper}
                         >
+                            <Snackbar
+                                autoHideDuration={10000}
+                                open={!!error}
+                                anchorOrigin={{ horizontal: 'right', vertical: 'top' }}
+                                onClose={() => {
+                                    dispatch(clearUserError())
+                                }}
+                            >
+                                <Stack sx={{ width: '100%', flexDirection: 'column', gap: 2 }} spacing={2}>
+                                    <Alert severity='error'>
+                                        <AlertTitle>{error}</AlertTitle>
+                                    </Alert>
+                                </Stack>
+                            </Snackbar>
                             <Box sx={fieldWrapper}>
                                 <SimpleField name={'email'} label={'E-mail'}/>
                                 <PasswordField name={'password'} label={'Password'}/>
