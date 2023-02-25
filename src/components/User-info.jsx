@@ -2,6 +2,8 @@ import React from 'react';
 import {Avatar, Box, Button, Chip, Typography} from "@mui/material";
 import theme, {radiusOfComponents} from "../styles/themes.js";
 import ClearIcon from '@mui/icons-material/Clear';
+import {useNavigate} from "react-router-dom/dist";
+import TagsArray from "./tagsArray/index.jsx";
 
 const skills = [
     {frame: 'java'},
@@ -15,7 +17,11 @@ const skills = [
 ]
 
 const UserInfo = ({role}) => {
+    const navigate = useNavigate()
 
+    const handleEdit = () => {
+        navigate('/edit-profile')
+    }
 
     return (
         <Box sx={wrapper}>
@@ -51,62 +57,14 @@ const UserInfo = ({role}) => {
                             <span>E-mail</span>
                             <Typography>Mihael@gmail.com</Typography>
                         </Box>
-                        <Box>
-                            <Chip
-                                sx={{
-                                    border: '2px solid #E5E5E5',
-                                    borderRadius: '5px',
-                                    color: '#434242',
-                                    fontWeight: 500
-                                }}
-                                label={'java'}
-                                variant="outlined"
-                                onDelete={() => console.log(11)}
-                                deleteIcon={<ClearIcon sx={iconSx}/>}
-                            />
-                            <Chip
-                                sx={{
-                                    border: '2px solid #E5E5E5',
-                                    borderRadius: '5px',
-                                    color: '#434242',
-                                    fontWeight: 500
-                                }}
-                                label={'piton'}
-                                variant="outlined"
-                                onDelete={() => console.log(11)}
-                                deleteIcon={<ClearIcon sx={iconSx}/>}
-                            />
-                            <Chip
-                                sx={{
-                                    border: '2px solid #E5E5E5',
-                                    borderRadius: '5px',
-                                    color: '#434242',
-                                    fontWeight: 500
-                                }}
-                                label={'java'}
-                                variant="outlined"
-                                onDelete={() => console.log(11)}
-                                deleteIcon={<ClearIcon sx={iconSx}/>}
-                            />
-                            <Chip
-                                sx={{
-                                    border: '2px solid #E5E5E5',
-                                    borderRadius: '5px',
-                                    color: '#434242',
-                                    fontWeight: 500
-                                }}
-                                label={'react'}
-                                variant="outlined"
-                                onDelete={() => console.log(11)}
-                                deleteIcon={<ClearIcon sx={iconSx}/>}
-                            />
-                        </Box>
+                        <TagsArray/>
                     </Box>
                 </Box>
             </Box>
             <Button
                 sx={[buttonSx, role === 'auditor' ? submitAuditor : {}]}
                 variant={'contained'}
+                onClick={handleEdit}
             >
                 Edit
             </Button>
@@ -154,14 +112,6 @@ const infoStyle = (theme) => ({
         gap: '16px',
         margin: 0
     },
-})
-
-const iconSx = (theme) => ({
-    width: '15px',
-    height: '15px',
-    '& path': {
-        fill: '#52176D'
-    }
 })
 
 const avatarStyle = (theme) => ({

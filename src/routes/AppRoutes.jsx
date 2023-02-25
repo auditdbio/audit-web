@@ -9,6 +9,7 @@ import {PrivateRoute} from "../router/PrivateRoute.jsx";
 import {useDispatch, useSelector} from "react-redux";
 import {authenticate} from "../redux/actions/userAction.js";
 import {isAuth} from "../lib/helper.js";
+import EditProfile from "../pages/edit-profile.jsx";
 
 
 const AppRoutes = () => {
@@ -39,6 +40,14 @@ const AppRoutes = () => {
                     element={
                         <PrivateRoute auth={{isAuthenticated: isAuth() }}>
                             <HomeAuditor />
+                        </PrivateRoute>
+                    }
+                />
+                <Route
+                    path="/edit-profile"
+                    element={
+                        <PrivateRoute auth={{isAuthenticated: isAuth() }}>
+                            <EditProfile />
                         </PrivateRoute>
                     }
                 />
