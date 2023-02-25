@@ -69,6 +69,7 @@ const Header = () => {
               display: "flex",
               flexDirection: "row",
               justifyContent: "space-between",
+              gap: '1rem'
             }}
           >
             <Link to={"/"} style={linkStyle}>
@@ -81,7 +82,7 @@ const Header = () => {
                 {matchSm && (
                   <>
                     <Box
-                      sx={{ flexGrow: 0, display: { xs: "flex", md: "none" } }}
+                      sx={{ flexGrow: 0, display: "flex" }}
                     >
                       <IconButton
                         aria-label="account of current user"
@@ -108,7 +109,7 @@ const Header = () => {
                         open={Boolean(anchorElNav)}
                         onClose={handleCloseNavMenu}
                         sx={{
-                          display: { xs: "block", md: "none" },
+                          display: "block",
                         }}
                         PaperProps={{
                           sx: { width: "300px", borderRadius: "15px" },
@@ -169,7 +170,7 @@ const Header = () => {
                   <>
                     <Box
                       sx={{
-                        display: { xs: "none", md: "flex" },
+                        display: "flex",
                         gap: "0.5rem",
                       }}
                     >
@@ -183,9 +184,9 @@ const Header = () => {
                     </Box>
                     <Box
                       sx={{
-                        width: "30%",
+                        flexGrow: 1,
                         maxWidth: "500px",
-                        display: { xs: "none", md: "flex" },
+                        display: "flex" ,
                         gap: "1rem",
                       }}
                     >
