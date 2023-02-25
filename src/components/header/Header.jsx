@@ -53,8 +53,9 @@ const Header = () => {
   return (
     <AppBar position="static" color="transparent" elevation={0}>
       <Container
-        maxWidth="xl"
+        // maxWidth="xl"
         sx={{
+          maxWidth: '1512px',
           paddingTop: "60px",
           [theme.breakpoints.down("xs")]: {
             paddingTop: "20px",
@@ -87,6 +88,7 @@ const Header = () => {
                         aria-controls="menu-appbar"
                         aria-haspopup="true"
                         onClick={handleOpenNavMenu}
+
                         color="inherit"
                       >
                         <MenuIcon fontSize="large" />

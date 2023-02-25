@@ -65,6 +65,7 @@ const initialTheme = createTheme({
 	},
 	breakpoints: {
 		values: {
+			zero: 0,
 			xs: 769,
 			sm: 1024,
 			md: 1290,
@@ -131,31 +132,31 @@ const theme = createTheme(initialTheme, {
 	typography: {
 		h1: {
 			fontSize: "60px",
-			[initialTheme.breakpoints.down("xl")]: {
+			[initialTheme.breakpoints.down("lg")]: {
 				fontSize: "52px",
 			},
-			[initialTheme.breakpoints.down("lg")]: {
+			[initialTheme.breakpoints.down("md")]: {
 				fontSize: "44px",
 			},
-			[initialTheme.breakpoints.down("md")]: {
+			[initialTheme.breakpoints.down("sm")]: {
 				fontSize: "38px",
 			},
-			[initialTheme.breakpoints.down("sm")]: {
+			[initialTheme.breakpoints.down("xs")]: {
 				fontSize: "32px",
 			},
 		},
-		// body1: {
-		// 	fontSize: "26px",
-		// 	[initialTheme.breakpoints.down("xl")]: {
-		// 		fontSize: "22px",
-		// 	},
-		// 	[initialTheme.breakpoints.down("lg")]: {
-		// 		fontSize: "20px",
-		// 	},
-		// 	[initialTheme.breakpoints.down("sm")]: {
-		// 		fontSize: "15px",
-		// 	},
-		// },
+		body1: {
+			fontSize: "26px",
+			[initialTheme.breakpoints.down("lg")]: {
+				fontSize: "22px",
+			},
+			[initialTheme.breakpoints.down("md")]: {
+				fontSize: "20px",
+			},
+			[initialTheme.breakpoints.down("sm")]: {
+				fontSize: "15px",
+			},
+		},
 		body2: {
 			fontSize: "20px",
 			[initialTheme.breakpoints.down('md')]: {
