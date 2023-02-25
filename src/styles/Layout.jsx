@@ -2,6 +2,7 @@ import React from 'react';
 import {ContentWrapper} from "./themes.js";
 import Header from "../components/header/Header.jsx";
 import Box from "@mui/material/Box";
+import Footer from "../components/footer/Footer.jsx";
 
 const Layout = ({children, sx}) => {
     return (
@@ -10,6 +11,7 @@ const Layout = ({children, sx}) => {
             <Box sx={[layoutStyle, sx]}>
                 {children}
             </Box>
+            <Footer/>
         </ContentWrapper>
     );
 };
