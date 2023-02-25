@@ -7,9 +7,11 @@ import TagsArray from "../../tagsArray/index.jsx";
 import SalarySlider from "../salary-slider/salary-slider.jsx";
 import theme from "../../../styles/themes.js";
 import EditIcon from '@mui/icons-material/Edit';
+import {useNavigate} from "react-router-dom/dist";
 
 const EditProfileForm = () => {
     const matchSm = useMediaQuery(theme.breakpoints.down('sm'))
+    const navigate = useNavigate()
 
     return (
         <Formik
@@ -18,7 +20,7 @@ const EditProfileForm = () => {
             validateOnBlur={false}
             validateOnChange={false}
             onSubmit={(values) => {
-                // dispatch(signIn(values))
+                navigate('/home-customer')
             }}
         >
             {({handleSubmit}) => {
@@ -66,7 +68,11 @@ const EditProfileForm = () => {
                                 </Box>
                             </Box>
                         </Box>
-                        <Button variant={'contained'} sx={buttonSx}>
+                        <Button
+                            type={'submit'}
+                            variant={'contained'}
+                            sx={buttonSx}
+                        >
                             Save changes
                         </Button>
                     </Form>
