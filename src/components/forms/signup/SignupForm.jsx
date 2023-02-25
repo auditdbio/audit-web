@@ -1,16 +1,17 @@
 import React, {useState} from 'react';
-import {Box, Tabs, Tab, Typography, Button, InputAdornment} from "@mui/material";
-import theme, {radiusOfComponents} from "../../../styles/themes.js";
+import {Box, Tabs, Tab, Typography, Button, Snackbar, Stack, Alert, AlertTitle} from "@mui/material";
+import {radiusOfComponents} from "../../../styles/themes.js";
 import PasswordField from "../fields/password-field.jsx";
-import {Form, Formik, Field} from 'formik';
+import {Form, Formik} from 'formik';
 import * as Yup from 'yup'
 import SimpleField from "../fields/simple-field.jsx";
-import {useDispatch} from "react-redux";
-import {signUp} from "../../../redux/actions/userAction.js";
+import {useDispatch, useSelector} from "react-redux";
+import {clearUserError, signUp} from "../../../redux/actions/userAction.js";
 
 const SignupForm = () => {
     const [isAuditor, setIsAuditor] = useState('auditor')
     const dispatch = useDispatch()
+    const error = useSelector(s => s.user.error)
     const initialValues = {
         current_role: '',
         name: '',
@@ -27,7 +28,6 @@ const SignupForm = () => {
             validateOnChange={false}
             onSubmit={(values) => {
                 const newValue = {...values, current_role: isAuditor}
-                console.log(newValue)
                 dispatch(signUp(newValue))
             }}
         >
@@ -37,6 +37,20 @@ const SignupForm = () => {
                         <Typography sx={titleStyle}>
                             Choose who you want to be
                         </Typography>
+                        <Snackbar
+                            autoHideDuration={10000}
+                            open={!!error}
+                            anchorOrigin={{ horizontal: 'right', vertical: 'top' }}
+                            onClose={() => {
+                                dispatch(clearUserError())
+                            }}
+                        >
+                            <Stack sx={{ width: '100%', flexDirection: 'column', gap: 2 }} spacing={2}>
+                                <Alert severity='error'>
+                                    <AlertTitle>{error}</AlertTitle>
+                                </Alert>
+                            </Stack>
+                        </Snackbar>
                         <Tabs
                             value={isAuditor}
                             onChange={(e, newValue) => {

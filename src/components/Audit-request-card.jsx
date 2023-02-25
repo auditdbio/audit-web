@@ -30,7 +30,7 @@ const AuditRequestCard = ({type}) => {
                     View
                 </Button>
                 <Button sx={[actionButton, copyBtn]} variant={'contained'} >
-                    Declain
+                    Decline
                 </Button>
             </Box>
         </Box>

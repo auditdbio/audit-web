@@ -12,7 +12,7 @@ import {isAuth} from "../lib/helper.js";
 
 
 const AppRoutes = () => {
-    const token = useSelector(s => s.token)
+    const token = useSelector(s => s.user.token)
     const dispatch = useDispatch()
     useEffect(() => {
         if (isAuth()){
