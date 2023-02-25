@@ -31,7 +31,7 @@ const Footer = () => {
 							fontWeight: "800",
 						}}
 					>
-						Audithhhh
+						Audit
 					</Typography>
 					<Typography
 						style={{
