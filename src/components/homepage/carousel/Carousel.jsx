@@ -58,16 +58,12 @@ const Carousel = () => {
           }}
           modules={[Pagination, Navigation]}
           breakpoints={{
-            920: {
+            800: {
               slidesPerView: 2,
               spaceBetween: 20,
             },
-            1512: {
+            1450: {
               slidesPerView: 3,
-              spaceBetween: 50,
-            },
-            1920: {
-              slidesPerView: 4,
               spaceBetween: 50,
             },
           }}
