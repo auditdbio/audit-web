@@ -1,13 +1,12 @@
-import React, {useState} from 'react';
-import {Box, Typography, Button, Stack, Alert, AlertTitle, Snackbar} from "@mui/material";
-import theme, {radiusOfComponents} from "../../../styles/themes.js";
+import React from 'react';
+import {Box, Button, Stack, Alert, AlertTitle, Snackbar} from "@mui/material";
+import {radiusOfComponents} from "../../../styles/themes.js";
 import PasswordField from "../fields/password-field.jsx";
-import {Form, Formik, Field} from "formik";
+import {Form, Formik} from "formik";
 import * as Yup from "yup";
 import SimpleField from "../fields/simple-field.jsx";
 import {useDispatch, useSelector} from "react-redux";
 import {clearUserError, signIn} from "../../../redux/actions/userAction.js";
-import {redirect} from "react-router-dom/dist";
 
 
 const SigninForm = () => {
