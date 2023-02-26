@@ -54,6 +54,7 @@ const mainFooterStyles = (isMobile) => ({
   gap: "30px",
 });
 
+
 const footerStyle = (isMobile) => ({
   display: isMobile ? "flex" : "grid",
   flexDirection: isMobile ? "column" : "none",
