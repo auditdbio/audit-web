@@ -69,6 +69,7 @@ const logoIconsStyle = (isMobile) => ({
   marginRight: "auto",
   gap: isMobile ? "30px" : "22px",
   alignSelf: "flex-start",
+  // alignSelf: "flex-start",
 });
 
 const auditStyles = (isMobile) => ({
