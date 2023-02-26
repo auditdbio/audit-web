@@ -1,9 +1,12 @@
 import { Box, Typography } from "@mui/material";
 import TwitterIcon from "@mui/icons-material/Twitter";
 import YouTubeIcon from "@mui/icons-material/YouTube";
-import InstagramIcon from "@mui/icons-material/Instagram";
 import MenuItem from "@mui/material/MenuItem";
 import { useMediaQuery } from "@mui/material";
+import Tiktok from "../icons/Tiktok.jsx";
+import Vk from "../icons/Vk.jsx";
+import { width } from "@mui/system";
+import Instagram from "../icons/Instagram.jsx";
 
 const Footer = () => {
   const isMobile = useMediaQuery("(max-width: 768px)");
@@ -19,10 +22,12 @@ const Footer = () => {
             <Typography style={auditStyles(isMobile)}>Audit</Typography>
             <Typography style={dbStyles(isMobile)}>DB</Typography>
           </Box>
-          <Box>
-            <TwitterIcon sx={IconStyle} />
-            <YouTubeIcon sx={IconStyle} />
-            <InstagramIcon sx={IconStyle} />
+          <Box sx={iconsStyle}>
+            <TwitterIcon sx={iconStyle} />
+            <YouTubeIcon sx={iconStyle} />
+            <Instagram style={iconStyle} />
+            <Vk style={iconStyle} />
+            <Tiktok style={iconStyle} />
           </Box>
         </Box>
         <Box
@@ -49,16 +54,15 @@ const mainFooterStyles = (isMobile) => ({
   flexDirection: "column",
   justifyContent: "space-between",
   backgroundColor: "#FF9900",
-  padding: isMobile ? "35px 54px 28px 54px" : "24px 45px 8px 45px",
+  padding: isMobile ? "35px 30px 28px 30px" : "24px 45px 8px 45px",
   // padding: "1rem",
   gap: "30px",
 });
 
-
 const footerStyle = (isMobile) => ({
   display: isMobile ? "flex" : "grid",
   flexDirection: isMobile ? "column" : "none",
-  gap: "30px",
+  gap: isMobile ? "30px": "0",
   gridTemplateColumns: "1fr repeat(3, auto) 1fr",
   justifyItems: "center",
 });
@@ -83,6 +87,19 @@ const dbStyles = (isMobile) => ({
   color: "#FCFAF6",
   fontWeight: "800",
 });
+
+const iconsStyle = {
+  display: "flex",
+  flexDirection: "row",
+  alignItems: "center",
+  gap: "25px",
+};
+
+const iconStyle = {
+  color: "#52176D",
+  height: "25px",
+  width: "30px",
+};
 
 const menuItems = (isMobile) => ({
   display: "grid",
@@ -133,9 +150,5 @@ const pages = [
     name: "About Us",
   },
 ];
-
-const IconStyle = {
-  color: "#52176D",
-};
 
 export default Footer;
