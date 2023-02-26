@@ -1,9 +1,12 @@
 import { Box, Card, Typography } from "@mui/material";
 import theme from "../styles/themes.js";
 import {CustomButton} from "./custom/Button.jsx";
+import {useNavigate} from "react-router-dom/dist";
 
 
 const AuditCard = () => {
+    const navigate = useNavigate()
+
     return (
         <Card sx={cardWrapper}>
             <Typography sx={auditNameStyle}>AuditDB</Typography>
@@ -20,7 +23,7 @@ const AuditCard = () => {
                 <Typography>Waiting audit</Typography>
             </Box>
             <CustomButton sx={acceptButtonStyle}>Accept</CustomButton>
-            <CustomButton sx={viewButtonStyle}>View</CustomButton>
+            <CustomButton sx={viewButtonStyle} onClick={() => navigate('/audit-info')}>View</CustomButton>
         </Card>
     );
 };
