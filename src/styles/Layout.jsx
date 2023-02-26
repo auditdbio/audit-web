@@ -22,6 +22,9 @@ const layoutStyle = (theme) => ({
     justifyContent: 'center',
     width: '100%',
     padding: '120px 100px',
+    [theme.breakpoints.down('md')]: {
+      padding: '80px 40px'
+    },
     [theme.breakpoints.down('sm')]: {
         padding: '60px 30px',
     },
