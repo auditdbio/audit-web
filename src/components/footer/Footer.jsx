@@ -51,7 +51,7 @@ const Footer = () => {
                 disableRipple
                 key={page.id}
               >
-                <Box >{page.name}</Box>
+                <Box sx={menuItem(isMobile)}>{page.name}</Box>
               </MenuItem>
             ))}
           </Box>
@@ -138,13 +138,17 @@ const menuItems = () => ({
   gap: "0 50px",
 });
 
+const menuItem = (isMobile) => ({
+  fontSize: isMobile ? "22px" : "26px",
+});
+
 const menuItemWrap = (isMobile) => ({
   backgroundColor: "transparent",
   textAlign: "left",
   color: "#FCFAF6",
   fontFamily: "Montserrat",
   marginX: isMobile ? "0" : "2rem",
-  fontSize: isMobile ? "22px" : "26px",
+
   paddingLeft: "0px",
   fontWeight: "400",
 });
