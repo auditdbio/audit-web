@@ -55,7 +55,7 @@ const Header = () => {
       <Container
         // maxWidth="xl"
         sx={{
-          maxWidth: '1512px',
+          maxWidth: "1512px",
           paddingTop: "60px",
           [theme.breakpoints.down("xs")]: {
             paddingTop: "20px",
@@ -69,7 +69,7 @@ const Header = () => {
               display: "flex",
               flexDirection: "row",
               justifyContent: "space-between",
-              gap: '1rem'
+              gap: "1rem",
             }}
           >
             <Link to={"/"} style={linkStyle}>
@@ -81,15 +81,12 @@ const Header = () => {
               <>
                 {matchSm && (
                   <>
-                    <Box
-                      sx={{ flexGrow: 0, display: "flex" }}
-                    >
+                    <Box sx={{ flexGrow: 0, display: "flex" }}>
                       <IconButton
                         aria-label="account of current user"
                         aria-controls="menu-appbar"
                         aria-haspopup="true"
                         onClick={handleOpenNavMenu}
-
                         color="inherit"
                       >
                         <MenuIcon fontSize="large" />
@@ -186,7 +183,7 @@ const Header = () => {
                       sx={{
                         flexGrow: 1,
                         maxWidth: "500px",
-                        display: "flex" ,
+                        display: "flex",
                         gap: "1rem",
                       }}
                     >
@@ -246,14 +243,14 @@ const Header = () => {
                       aria-haspopup="true"
                       onClick={handleOpenUserMenu}
                       color="inherit"
-                      sx={{padding: 0}}
+                      sx={{ padding: 0 }}
                     >
                       <MenuIcon fontSize="large" />
                     </IconButton>
                     <UserMenu
-                        open={isUserMenuOpen}
-                        handleClose={handleCloseUserMenu}
-                        anchor={anchorElUser}
+                      open={isUserMenuOpen}
+                      handleClose={handleCloseUserMenu}
+                      anchor={anchorElUser}
                     />
                   </Box>
                 )}
