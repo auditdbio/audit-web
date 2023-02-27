@@ -11,6 +11,7 @@ import {authenticate} from "../redux/actions/userAction.js";
 import {isAuth} from "../lib/helper.js";
 import EditProfile from "../pages/edit-profile.jsx";
 import AuditInfo from "../pages/audit-info.jsx";
+import AuditRequestInfo from "../pages/audit-request-info.jsx";
 
 
 const AppRoutes = () => {
@@ -57,6 +58,14 @@ const AppRoutes = () => {
                     element={
                         <PrivateRoute auth={{isAuthenticated: isAuth() }}>
                             <AuditInfo />
+                        </PrivateRoute>
+                    }
+                />
+                <Route
+                    path="/audit-request"
+                    element={
+                        <PrivateRoute auth={{isAuthenticated: isAuth() }}>
+                            <AuditRequestInfo />
                         </PrivateRoute>
                     }
                 />
