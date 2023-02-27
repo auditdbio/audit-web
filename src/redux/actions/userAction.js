@@ -11,7 +11,7 @@ import {
     USER_SIGNUP
 } from "./types.js";
 
-const API_URL = 'http://dev.auditdb.io:3001/api'
+const API_URL = import.meta.env.VITE_API_BASE_URL
 
 
 export const signIn = (values) => {
