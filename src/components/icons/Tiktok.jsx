@@ -1,8 +1,8 @@
 const Tiktok = () => {
     return (
         <svg
-            width="21"
-            height="25"
+            width="19"
+            height="23"
             viewBox="0 0 23 25"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"

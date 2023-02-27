@@ -27,7 +27,11 @@ const Footer = () => {
 								<TwitterIcon sx={iconStyle} />
 							</Link>
 							<Link to={"/"}>
-								<YouTubeIcon sx={iconStyle} />
+								<YouTubeIcon sx={{
+                                  color: "#52176D",
+                                  height: "30px",
+                                  width: "35px",
+                                }} />
 							</Link>
 							<Link to={"/"}>
 								<Instagram style={iconStyle} />
