@@ -11,11 +11,12 @@ import CustomMenu from "../custom/CustomMenu.jsx";
 import theme from "../../styles/themes.js";
 import { CustomButton } from "../custom/Button.jsx";
 import { useNavigate, Link } from "react-router-dom/dist";
-import { Typography, useMediaQuery, Avatar } from "@mui/material";
+import { Typography, useMediaQuery, Avatar, Button } from "@mui/material";
 import { isAuth } from "../../lib/helper.js";
 import { CustomBadge } from "../custom/Badge.jsx";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import { UserMenu } from "./UserMenu.jsx";
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 
 const Header = () => {
   const navigate = useNavigate();
@@ -32,6 +33,7 @@ const Header = () => {
   const [anchorElNav, setAnchorElNav] = useState(null);
   const [anchorElUser, setAnchorElUser] = useState(null);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+  // const [anchorRole, setAnchorRole] = useState(null);
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
@@ -50,12 +52,19 @@ const Header = () => {
     setAnchorElUser(null);
   };
 
+  // const handleClickRole = (event) => {
+  //   setAnchorEl(event.currentTarget);
+  // };
+  // const handleCloseRole = () => {
+  //   setAnchorEl(null);
+  // };
+
   return (
     <AppBar position="static" color="transparent" elevation={0}>
       <Container
         // maxWidth="xl"
         sx={{
-          maxWidth: '1512px',
+          maxWidth: "1512px",
           paddingTop: "60px",
           [theme.breakpoints.down("xs")]: {
             paddingTop: "20px",
@@ -69,7 +78,7 @@ const Header = () => {
               display: "flex",
               flexDirection: "row",
               justifyContent: "space-between",
-              gap: '1rem'
+              gap: "1rem",
             }}
           >
             <Link to={"/"} style={linkStyle}>
@@ -81,15 +90,12 @@ const Header = () => {
               <>
                 {matchSm && (
                   <>
-                    <Box
-                      sx={{ flexGrow: 0, display: "flex" }}
-                    >
+                    <Box sx={{ flexGrow: 0, display: "flex" }}>
                       <IconButton
                         aria-label="account of current user"
                         aria-controls="menu-appbar"
                         aria-haspopup="true"
                         onClick={handleOpenNavMenu}
-
                         color="inherit"
                       >
                         <MenuIcon fontSize="large" />
@@ -186,7 +192,7 @@ const Header = () => {
                       sx={{
                         flexGrow: 1,
                         maxWidth: "500px",
-                        display: "flex" ,
+                        display: "flex",
                         gap: "1rem",
                       }}
                     >
@@ -246,14 +252,14 @@ const Header = () => {
                       aria-haspopup="true"
                       onClick={handleOpenUserMenu}
                       color="inherit"
-                      sx={{padding: 0}}
+                      sx={{ padding: 0 }}
                     >
                       <MenuIcon fontSize="large" />
                     </IconButton>
                     <UserMenu
-                        open={isUserMenuOpen}
-                        handleClose={handleCloseUserMenu}
-                        anchor={anchorElUser}
+                      open={isUserMenuOpen}
+                      handleClose={handleCloseUserMenu}
+                      anchor={anchorElUser}
                     />
                   </Box>
                 )}
@@ -314,6 +320,28 @@ const Header = () => {
                         anchor={anchorElUser}
                       />
                     </IconButton>
+                    <Button
+                      variant="contained"
+                      onClick={handleClickRole}
+                      // aria-controls={open ? "demo-customized-menu" : undefined}
+                      // aria-haspopup="true"
+                      // aria-expanded={open ? "true" : undefined}
+                      // variant="contained"
+                      // disableElevation
+                      endIcon={<KeyboardArrowDownIcon />}
+                    >
+                      Customer
+                    </Button>
+                    {/*<Menu>*/}
+                    {/*  MenuListProps={{*/}
+                    {/*  'aria-labelledby': 'demo-customized-button',*/}
+                    {/*}}*/}
+                    {/*  anchorEl = {anchorRole}*/}
+                    {/*  open={open}*/}
+                    {/*  onClose={handleCloseRole}*/}
+                    {/*  <MenuItem>Customer</MenuItem>*/}
+                    {/*  <MenuItem>Auditor</MenuItem>*/}
+                    {/*</Menu>*/}
                   </Box>
                 )}
               </>
