@@ -42,16 +42,16 @@ const Footer = () => {
           </Box>
           <Box
             // menu items
-            sx={menuItems}
+            sx={menuItems(isMobile)}
           >
             {pages.map((page) => (
               <MenuItem
-                sx={menuItemWrap}
+                sx={menuItemWrap(isMobile)}
                 disableGutters
                 disableRipple
                 key={page.id}
               >
-                <Box sx={menuItem(isMobile)}>{page.name}</Box>
+                <Box >{page.name}</Box>
               </MenuItem>
             ))}
           </Box>
@@ -128,7 +128,7 @@ const iconStyle = {
   width: "30px",
 };
 
-const menuItems = {
+const menuItems = () => ({
   display: "grid",
   gridTemplateColumns: {
     zero: "repeat(2, auto)",
@@ -136,9 +136,9 @@ const menuItems = {
     md: "repeat(3, auto)",
   },
   gap: "0 50px",
-};
+});
 
-const menuItemWrap = {
+const menuItemWrap = (isMobile) => ({
   backgroundColor: "transparent",
   textAlign: "left",
   color: "#FCFAF6",
@@ -147,7 +147,7 @@ const menuItemWrap = {
   fontSize: isMobile ? "22px" : "26px",
   paddingLeft: "0px",
   fontWeight: "400",
-};
+});
 
 const rightsStyles = (isMobile) => ({
   fontSize: isMobile ? "9px" : "18px",
