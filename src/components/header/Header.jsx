@@ -16,7 +16,8 @@ import { isAuth } from "../../lib/helper.js";
 import { CustomBadge } from "../custom/Badge.jsx";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import { UserMenu } from "./UserMenu.jsx";
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+// import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+import RoleDropdown from "./RoleDropdown.jsx";
 
 const Header = () => {
   const navigate = useNavigate();
@@ -33,7 +34,8 @@ const Header = () => {
   const [anchorElNav, setAnchorElNav] = useState(null);
   const [anchorElUser, setAnchorElUser] = useState(null);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
-  // const [anchorRole, setAnchorRole] = useState(null);
+  const [anchorElRole, setAnchorElRole] = useState(null);
+  const [isRoleMenuOpen, setIsRoleMenuOpen] = useState(false);
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
@@ -42,6 +44,11 @@ const Header = () => {
     setAnchorElUser(event.currentTarget);
     setIsUserMenuOpen(!isUserMenuOpen);
   };
+
+  // const handleOpenRoleMenu = (event) => {
+  //   setAnchorElRole(event.currentTarget);
+  //   setIsRoleMenuOpen(!isUserMenuOpen);
+  // };
 
   const handleCloseNavMenu = () => {
     setAnchorElNav(null);
@@ -52,12 +59,10 @@ const Header = () => {
     setAnchorElUser(null);
   };
 
-  // const handleClickRole = (event) => {
-  //   setAnchorEl(event.currentTarget);
-  // };
-  // const handleCloseRole = () => {
-  //   setAnchorEl(null);
-  // };
+  const handleCloseRoleMenu = () => {
+    setIsRoleMenuOpen(false);
+    setAnchorElRole(null);
+  };
 
   return (
     <AppBar position="static" color="transparent" elevation={0}>
@@ -320,28 +325,12 @@ const Header = () => {
                         anchor={anchorElUser}
                       />
                     </IconButton>
-                    <Button
-                      variant="contained"
-                      onClick={handleClickRole}
-                      // aria-controls={open ? "demo-customized-menu" : undefined}
-                      // aria-haspopup="true"
-                      // aria-expanded={open ? "true" : undefined}
-                      // variant="contained"
-                      // disableElevation
-                      endIcon={<KeyboardArrowDownIcon />}
-                    >
-                      Customer
-                    </Button>
-                    {/*<Menu>*/}
-                    {/*  MenuListProps={{*/}
-                    {/*  'aria-labelledby': 'demo-customized-button',*/}
-                    {/*}}*/}
-                    {/*  anchorEl = {anchorRole}*/}
-                    {/*  open={open}*/}
-                    {/*  onClose={handleCloseRole}*/}
-                    {/*  <MenuItem>Customer</MenuItem>*/}
-                    {/*  <MenuItem>Auditor</MenuItem>*/}
-                    {/*</Menu>*/}
+                    {/*<Button onClick={handleOpenRoleMenu}>{`Customer ${selectedOption}`}</Button>*/}
+                    <RoleDropdown
+                      open={isRoleMenuOpen}
+                      handleClose={handleCloseRoleMenu}
+                      anchor={anchorElRole}
+                    />
                   </Box>
                 )}
               </>
