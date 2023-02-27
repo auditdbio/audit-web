@@ -10,6 +10,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {authenticate} from "../redux/actions/userAction.js";
 import {isAuth} from "../lib/helper.js";
 import EditProfile from "../pages/edit-profile.jsx";
+import AuditInfo from "../pages/audit-info.jsx";
 
 
 const AppRoutes = () => {
@@ -48,6 +49,14 @@ const AppRoutes = () => {
                     element={
                         <PrivateRoute auth={{isAuthenticated: isAuth() }}>
                             <EditProfile />
+                        </PrivateRoute>
+                    }
+                />
+                <Route
+                    path="/audit-info"
+                    element={
+                        <PrivateRoute auth={{isAuthenticated: isAuth() }}>
+                            <AuditInfo />
                         </PrivateRoute>
                     }
                 />
