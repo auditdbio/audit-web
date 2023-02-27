@@ -3,8 +3,11 @@ import {Box, Button, Typography} from "@mui/material";
 import Currency from "./icons/Currency.jsx";
 import Star from "./icons/Star.jsx";
 import theme, {radiusOfComponents} from "../styles/themes.js";
+import {useNavigate} from "react-router-dom/dist";
 
 const AuditRequestCard = ({type}) => {
+    const navigate = useNavigate()
+
     return (
         <Box sx={cardWrapper}>
             <Box sx={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
@@ -26,7 +29,11 @@ const AuditRequestCard = ({type}) => {
                 </Box>
             </Box>
             <Box sx={buttonWrapper}>
-                <Button variant={'contained'} sx={[actionButton, type === 'auditor' ? editAuditor : {}]}>
+                <Button
+                    variant={'contained'}
+                    sx={[actionButton, type === 'auditor' ? editAuditor : {}]}
+                    onClick={() => navigate('/audit-request')}
+                >
                     View
                 </Button>
                 <Button sx={[actionButton, copyBtn]} variant={'contained'} >
