@@ -66,6 +66,7 @@ export const logout = () => {
     return {type: LOG_OUT}
 }
 
+// вот тут нужно отправить запрос на смену в бэк, и передать в пэйлоде нового юзера из респонса (как при логине)
 export const changeRole = () => {
     return {type: CURRENT_ROLE}
 }

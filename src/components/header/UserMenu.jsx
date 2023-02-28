@@ -14,9 +14,9 @@ export const UserMenu = ({ open, handleClose, anchor }) => {
   const reduxUser = useSelector((state) => state.user.user);
 
   const user = {
-    fullName: "Mishail Voronnikov",
-    interests: "Criptography, Games",
-    email: "mishailvoron@gmail.com",
+    fullName: reduxUser.name || "Mishail Voronnikov",
+    interests: reduxUser.interests || "Criptography, Games",
+    email: reduxUser.email || "mishailvoron@gmail.com",
   };
 
   const handleLogout = () => {
