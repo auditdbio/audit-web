@@ -8,7 +8,8 @@ import {
     SIGN_IN_ERROR,
     USER_IS_ALREADY_EXIST,
     USER_SIGNIN,
-    USER_SIGNUP
+    USER_SIGNUP,
+    CURRENT_ROLE
 } from "./types.js";
 
 const API_URL = 'http://dev.auditdb.io:3001/api'
@@ -63,4 +64,8 @@ export const logout = () => {
     localStorage.removeItem('token')
     localStorage.removeItem('user')
     return {type: LOG_OUT}
+}
+
+export const changeRole = () => {
+    return {type: CURRENT_ROLE}
 }

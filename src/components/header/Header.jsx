@@ -36,6 +36,7 @@ const Header = () => {
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [anchorElRole, setAnchorElRole] = useState(null);
   const [isRoleMenuOpen, setIsRoleMenuOpen] = useState(false);
+  // const [isAuditor, setIsAudito] = useState(false)
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
@@ -270,7 +271,7 @@ const Header = () => {
                 )}
                 {/* //   Desktop Screen  */}
                 {!matchSm && (
-                  <Box sx={{ display: "flex", gap: "2rem" }}>
+                  <Box sx={{ display: "flex", alignItems: "center", gap: "2rem" }}>
                     {authorizedPages.map((page) => (
                       <CustomMenu
                         key={page.id}
@@ -327,6 +328,7 @@ const Header = () => {
                     </IconButton>
                     {/*<Button onClick={handleOpenRoleMenu}>{`Customer ${selectedOption}`}</Button>*/}
                     <RoleDropdown
+                        // isAuditor = {}
                       open={isRoleMenuOpen}
                       handleClose={handleCloseRoleMenu}
                       anchor={anchorElRole}

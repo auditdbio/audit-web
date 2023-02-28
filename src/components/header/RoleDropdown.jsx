@@ -1,7 +1,6 @@
 import * as React from "react";
 import Button from "@mui/material/Button";
-import ButtonGroup from "@mui/material/ButtonGroup";
-import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import ClickAwayListener from "@mui/material/ClickAwayListener";
 import Grow from "@mui/material/Grow";
 import Paper from "@mui/material/Paper";
@@ -9,7 +8,8 @@ import Popper from "@mui/material/Popper";
 import MenuItem from "@mui/material/MenuItem";
 import MenuList from "@mui/material/MenuList";
 
-const options = ["Customer", "Auditor", "test"];
+
+const options = ["Customer", "Auditor"];
 
 export default function RoleDropdown() {
   const [open, setOpen] = React.useState(false);
@@ -39,27 +39,27 @@ export default function RoleDropdown() {
 
   return (
     <React.Fragment>
-      <ButtonGroup   sx={{ height: "60px" }}
+      <Button
+        disableRipple
+        // color={selectedOption === 'option1' ? 'primary' : 'secondary'}
+        sx={roleButtonStyle(selectedIndex)}
         variant="contained"
+        onClick={handleClick}
         ref={anchorRef}
-        aria-label="split button"
+        endIcon={<KeyboardArrowDownIcon />}
+        aria-controls={open ? "split-button-menu" : undefined}
+        aria-expanded={open ? "true" : undefined}
+        aria-label="select merge strategy"
+        aria-haspopup="menu"
+        onClick={handleToggle}
       >
-        <Button   sx={{ height: "60px" }} onClick={handleClick}>{options[selectedIndex]}</Button>
-        <Button
-          sx={{ height: "60px" }}
-          size="small"
-          aria-controls={open ? "split-button-menu" : undefined}
-          aria-expanded={open ? "true" : undefined}
-          aria-label="select merge strategy"
-          aria-haspopup="menu"
-          onClick={handleToggle}
-        >
-          <ArrowDropDownIcon />
-        </Button>
-      </ButtonGroup>
+        {options[selectedIndex]}
+      </Button>
+
       <Popper
         sx={{
           zIndex: 1,
+          width: "230px",
         }}
         open={open}
         anchorEl={anchorRef.current}
@@ -78,13 +78,13 @@ export default function RoleDropdown() {
             <Paper>
               <ClickAwayListener onClickAway={handleClose}>
                 <MenuList
-                  sx={{ height: "60px" }}
-                  // id="split-button-menu"
+                  // sx={{ height: "60px"  }}
+                  id="split-button-menu"
                   autoFocusItem
                 >
                   {options.map((option, index) => (
                     <MenuItem
-                        // sx={{ height: "60px" }}
+                      // sx={{ height: "60px" }}
                       key={option}
                       disabled={index === 2}
                       selected={index === selectedIndex}
@@ -102,3 +102,24 @@ export default function RoleDropdown() {
     </React.Fragment>
   );
 }
+
+const roleButtonStyle = (selectedIndex) => ({
+  height: "60px",
+  width: "30%",
+  backgroundColor: selectedIndex === 1 ? "#52176D" : "#FF9900",
+  borderRadius: "0",
+  fontSize: {
+    zero: "20px",
+    sm: "22px",
+    md: "24px",
+    lg: "26px"
+  },
+  fontWeight: "500",
+  color: "#FCFAF6",
+  textTransform: "none",
+  lineHeight: "32px",
+  ":hover": {
+    backgroundColor: selectedIndex === 1 ? "#52176D" : "#FF9900",
+  },
+  boxShadow: "0",
+});
