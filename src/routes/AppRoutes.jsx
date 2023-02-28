@@ -12,6 +12,7 @@ import {isAuth} from "../lib/helper.js";
 import EditProfile from "../pages/edit-profile.jsx";
 import AuditInfo from "../pages/audit-info.jsx";
 import AuditRequestInfo from "../pages/audit-request-info.jsx";
+import AuditOffer from "../pages/audit-offer.jsx";
 
 
 const AppRoutes = () => {
@@ -66,6 +67,14 @@ const AppRoutes = () => {
                     element={
                         <PrivateRoute auth={{isAuthenticated: isAuth() }}>
                             <AuditRequestInfo />
+                        </PrivateRoute>
+                    }
+                />
+                <Route
+                    path="/audit-request-offer"
+                    element={
+                        <PrivateRoute auth={{isAuthenticated: isAuth() }}>
+                            <AuditOffer />
                         </PrivateRoute>
                     }
                 />
