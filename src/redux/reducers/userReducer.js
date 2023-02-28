@@ -7,7 +7,7 @@ import {
     USER_IS_ALREADY_EXIST,
     USER_SIGNIN,
     USER_SIGNUP,
-    CURRENT_ROLE
+    SELECT_ROLE,
 } from "../actions/types.js";
 
 const initialState = {
@@ -15,7 +15,7 @@ const initialState = {
     isAuth: false,
     user: JSON.parse(localStorage.getItem('user')) || {},
     error: null,
-    current_role: 'auditor'
+    current_role: ''
 }
 export const userReducer = (state = initialState, action) => {
     switch (action.type) {
@@ -33,8 +33,8 @@ export const userReducer = (state = initialState, action) => {
             return {...state, error: 'Email or password incorrect'}
         case LOG_OUT:
             return initialState
-        case CURRENT_ROLE:
-            return {...state,  current_role: 'auditor'}
+        case SELECT_ROLE:
+            return {...state,  current_role: action.payload.user.current_role}
         default:
             return state
     }

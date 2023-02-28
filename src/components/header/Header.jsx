@@ -17,7 +17,7 @@ import { CustomBadge } from "../custom/Badge.jsx";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import { UserMenu } from "./UserMenu.jsx";
 // import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
-import RoleDropdown from "./RoleDropdown.jsx";
+import RoleMenuDropdown from "./RoleMenuDropdown.jsx";
 
 const Header = () => {
   const navigate = useNavigate();
@@ -271,7 +271,9 @@ const Header = () => {
                 )}
                 {/* //   Desktop Screen  */}
                 {!matchSm && (
-                  <Box sx={{ display: "flex", alignItems: "center", gap: "2rem" }}>
+                  <Box
+                    sx={{ display: "flex", alignItems: "center", gap: "2rem" }}
+                  >
                     {authorizedPages.map((page) => (
                       <CustomMenu
                         key={page.id}
@@ -304,6 +306,7 @@ const Header = () => {
                         alignItems: "center",
                         fontSize: "26px",
                         fontWeight: "500",
+                        whiteSpace: 'nowrap',
                       }}
                     >
                       Hello, Michael!
@@ -326,12 +329,10 @@ const Header = () => {
                         anchor={anchorElUser}
                       />
                     </IconButton>
-                    {/*<Button onClick={handleOpenRoleMenu}>{`Customer ${selectedOption}`}</Button>*/}
-                    <RoleDropdown
-                        // isAuditor = {}
-                      open={isRoleMenuOpen}
-                      handleClose={handleCloseRoleMenu}
-                      anchor={anchorElRole}
+                    <RoleMenuDropdown
+                        open={isRoleMenuOpen}
+                        handleClose={handleCloseRoleMenu}
+                        anchor={anchorElRole}
                     />
                   </Box>
                 )}

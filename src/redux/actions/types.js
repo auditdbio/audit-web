@@ -6,4 +6,4 @@ export const CLEAR_ERROR = 'CLEAR_ERROR'
 export const LOG_OUT = 'LOG_OUT'
 export const SIGN_IN_ERROR = 'SIGN_IN_ERROR'
 
-export const CURRENT_ROLE = 'CURRENT_ROLE'
+export const SELECT_ROLE = 'SELECT_ROLE'
