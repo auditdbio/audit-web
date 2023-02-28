@@ -6,9 +6,12 @@ import { Box, Button, Typography } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import { logout } from "../../redux/actions/userAction.js";
 import { useDispatch } from "react-redux";
+import { history } from "../../services/history.js";
+import {useSelector} from "react-redux";
 
 export const UserMenu = ({ open, handleClose, anchor }) => {
   const dispatch = useDispatch();
+  const reduxUser = useSelector((state) => state.user.user);
 
   const user = {
     fullName: "Mishail Voronnikov",
@@ -18,6 +21,15 @@ export const UserMenu = ({ open, handleClose, anchor }) => {
 
   const handleLogout = () => {
     dispatch(logout());
+  };
+
+  const handleMyAccountClick = () => {
+    if (reduxUser.current_role) {
+      history.push({pathname: `/home-${reduxUser.current_role}`}, {
+        some: true,
+      })
+    }
+
   };
 
   return (
@@ -99,7 +111,9 @@ export const UserMenu = ({ open, handleClose, anchor }) => {
       </MenuItem>
       <Divider />
       <MenuItem onClick={handleClose}>
-        <Typography style={mainTextStyle}>My Account</Typography>
+        <Typography style={mainTextStyle} onClick={handleMyAccountClick}>
+          My Account
+        </Typography>
       </MenuItem>
       <Divider />
       <MenuItem onClick={handleClose}>
@@ -107,7 +121,7 @@ export const UserMenu = ({ open, handleClose, anchor }) => {
           onClick={handleLogout}
           style={mainTextStyle}
           sx={{
-            width: '100%',
+            width: "100%",
             textTransform: "none",
           }}
           disableRipple
