@@ -15,7 +15,6 @@ const initialState = {
     isAuth: false,
     user: JSON.parse(localStorage.getItem('user')) || {},
     error: null,
-    current_role: ''
 }
 export const userReducer = (state = initialState, action) => {
     switch (action.type) {
@@ -34,7 +33,7 @@ export const userReducer = (state = initialState, action) => {
         case LOG_OUT:
             return initialState
         case SELECT_ROLE:
-            return {...state,  current_role: action.payload.user.current_role}
+            return {...state,  user: action.payload}
         default:
             return state
     }

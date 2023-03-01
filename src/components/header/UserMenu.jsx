@@ -6,22 +6,22 @@ import { Box, Button, Tab, Tabs, Typography } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import { changeRole, logout } from "../../redux/actions/userAction.js";
 import { useDispatch } from "react-redux";
-import * as React from "react";
-import Switch from "@mui/material/Switch";
-import { useState } from "react";
+import { history } from "../../services/history.js";
+import {useSelector} from "react-redux";
 
 const options = ["Customer", "Auditor"];
 export const UserMenu = ({ open, handleClose, anchor }) => {
   const dispatch = useDispatch();
+  const reduxUser = useSelector((state) => state.user.user);
 
   const [selectedIndex, setSelectedIndex] = React.useState(1);
 
   const [isAuditor, setIsAuditor] = useState("auditor");
 
   const user = {
-    fullName: "Mishail Voronnikov",
-    interests: "Criptography, Games",
-    email: "mishailvoron@gmail.com",
+    fullName: reduxUser.name || "Mishail Voronnikov",
+    interests: reduxUser.interests || "Criptography, Games",
+    email: reduxUser.email || "mishailvoron@gmail.com",
   };
 
   const handleLogout = () => {
@@ -32,6 +32,15 @@ export const UserMenu = ({ open, handleClose, anchor }) => {
     // dispatch(changeRole(value));
     console.log(value);
     setSelectedIndex(index);
+  };
+
+  const handleMyAccountClick = () => {
+    if (reduxUser.current_role) {
+      history.push({pathname: `/home-${reduxUser.current_role}`}, {
+        some: true,
+      })
+    }
+
   };
 
   return (
@@ -146,7 +155,9 @@ export const UserMenu = ({ open, handleClose, anchor }) => {
 
       <Divider />
       <MenuItem onClick={handleClose}>
-        <Typography style={mainTextStyle}>My Account</Typography>
+        <Typography style={mainTextStyle} onClick={handleMyAccountClick}>
+          My Account
+        </Typography>
       </MenuItem>
       <Divider />
       <MenuItem onClick={handleClose}>

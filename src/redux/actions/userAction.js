@@ -84,7 +84,3 @@ export const changeRole = (value) => {
                 // .catch(({response}) => {
                 //     dispatch({type: USER_IS_ALREADY_EXIST});
                 // });
-
-        };
-    }
-;
