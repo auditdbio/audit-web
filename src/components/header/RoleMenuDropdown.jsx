@@ -20,7 +20,8 @@ export default function RoleMenuDropdown() {
   const [selectedIndex, setSelectedIndex] = React.useState(1);
 
   const handleMenuItemClick = (event, index, value) => {
-    dispatch(changeRole(value));
+    // const newValue = { ...values, current_role: isAuditor };
+    // dispatch(changeRole(newValue));
     console.log(value);
     setSelectedIndex(index);
     setOpen(false);
@@ -78,9 +79,21 @@ export default function RoleMenuDropdown() {
 }
 
 const roleButtonStyle = (selectedIndex) => ({
+  display: {
+    zero: "none",
+    sm: "none",
+    md: "flex",
+    lg: "flex",
+  },
   height: "60px",
   width: "30%",
   backgroundColor: selectedIndex === 1 ? "#52176D" : "#FF9900",
+  minWidth: {
+    zero: "0px",
+    sm: "0px",
+    md: "230px",
+    lg: "230px",
+  },
   borderRadius: "0",
   fontSize: {
     zero: "20px",
@@ -94,6 +107,7 @@ const roleButtonStyle = (selectedIndex) => ({
   lineHeight: "32px",
   ":hover": {
     backgroundColor: selectedIndex === 1 ? "#52176D" : "#FF9900",
+    boxShadow: "0",
   },
   boxShadow: "0",
 });

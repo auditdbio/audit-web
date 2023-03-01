@@ -2,13 +2,21 @@ import Avatar from "@mui/material/Avatar";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import Divider from "@mui/material/Divider";
-import { Box, Button, Typography } from "@mui/material";
+import { Box, Button, Tab, Tabs, Typography } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
-import { logout } from "../../redux/actions/userAction.js";
+import { changeRole, logout } from "../../redux/actions/userAction.js";
 import { useDispatch } from "react-redux";
+import * as React from "react";
+import Switch from "@mui/material/Switch";
+import { useState } from "react";
 
+const options = ["Customer", "Auditor"];
 export const UserMenu = ({ open, handleClose, anchor }) => {
   const dispatch = useDispatch();
+
+  const [selectedIndex, setSelectedIndex] = React.useState(1);
+
+  const [isAuditor, setIsAuditor] = useState("auditor");
 
   const user = {
     fullName: "Mishail Voronnikov",
@@ -18,6 +26,12 @@ export const UserMenu = ({ open, handleClose, anchor }) => {
 
   const handleLogout = () => {
     dispatch(logout());
+  };
+
+  const handleMenuItemClick = (event, index, value) => {
+    // dispatch(changeRole(value));
+    console.log(value);
+    setSelectedIndex(index);
   };
 
   return (
@@ -97,6 +111,39 @@ export const UserMenu = ({ open, handleClose, anchor }) => {
           <Typography style={secondaryTextStyle}>{user.email}</Typography>
         </Box>
       </MenuItem>
+      <Tabs
+        value={isAuditor}
+        onChange={(e, newValue, values) => {
+          setIsAuditor(newValue);
+          const newValue2 = { ...values, current_role: isAuditor };
+          dispatch(changeRole(newValue2));
+        }}
+        name={"role"}
+        sx={tabsSx}
+        indicatorColor="none"
+      >
+        <Tab
+          value={"auditor"}
+          sx={[
+            isAuditor === "auditor"
+              ? auditorTabSx
+              : { backgroundColor: "#D9D9D9" },
+            tabSx,
+          ]}
+          label="Auditor"
+        />
+        <Tab
+          value={"customer"}
+          sx={[
+            isAuditor === "customer"
+              ? customerTabSx
+              : { backgroundColor: "#D9D9D9" },
+            tabSx,
+          ]}
+          label="Customer"
+        />
+      </Tabs>
+
       <Divider />
       <MenuItem onClick={handleClose}>
         <Typography style={mainTextStyle}>My Account</Typography>
@@ -107,7 +154,7 @@ export const UserMenu = ({ open, handleClose, anchor }) => {
           onClick={handleLogout}
           style={mainTextStyle}
           sx={{
-            width: '100%',
+            width: "100%",
             textTransform: "none",
           }}
           disableRipple
@@ -125,6 +172,11 @@ const editTextStyle = {
   textTransform: "none",
 };
 
+const roleSelectStyle = (selectedIndex) => ({
+  width: "50%",
+  backgroundColor: selectedIndex ? "#FF9900" : "#52176D",
+});
+
 const mainTextStyle = {
   fontSize: "26px",
   fontWeight: "500",
@@ -135,3 +187,36 @@ const secondaryTextStyle = {
   fontSize: "18px",
   color: "#222222",
 };
+
+const tabsSx = {
+  display: {
+    zero: "flex",
+    sm: "flex",
+    md: "none",
+    lg: "none",
+  },
+};
+
+const tabSx = (theme) => ({
+  width: "50%",
+  color: "#222222",
+  fontSize: "16px",
+  textTransform: "capitalize",
+  [theme.breakpoints.down("md")]: {
+    minHeight: "41px",
+    height: "41px",
+  },
+  [theme.breakpoints.down("sm")]: {
+    fontSize: "14px",
+  },
+});
+
+const auditorTabSx = (theme) => ({
+  backgroundColor: theme.palette.secondary.main,
+  color: "#FCFAF6!important",
+});
+
+const customerTabSx = (theme) => ({
+  color: "#FCFAF6!important",
+  backgroundColor: theme.palette.primary.main,
+});
