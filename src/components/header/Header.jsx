@@ -305,7 +305,6 @@ const Header = () => {
                       disableRipple
                     >
                       <Avatar
-                        src="/static/images/avatar/1.jpg"
                         sx={avatarStyle}
                       />
                       <UserMenu
