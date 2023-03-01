@@ -128,12 +128,7 @@ export const UserMenu = ({ open, handleClose, anchor }) => {
         value={isAuditor}
         onChange={(e, newValue, values) => {
           setIsAuditor(newValue);
-          console.log("is auditor", newValue, values);
-          const newValue2 = {
-            ...values,
-            current_role: isAuditor ? "auditor" : "costumer",
-          };
-
+          // console.log("is auditor", newValue, values);
           dispatch(changeRole(newValue));
         }}
         name={"role"}

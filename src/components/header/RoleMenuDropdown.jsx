@@ -51,6 +51,7 @@ export default function RoleMenuDropdown() {
     setOpen(false);
     console.log(option, option.value);
     setCurrentRole(option.value);
+    dispatch(changeRole(option.value));
   };
 
   const handleToggle = () => {
@@ -92,7 +93,8 @@ export default function RoleMenuDropdown() {
           <MenuItem
             style={{
               width: "230px",
-              display: option.value === currentRole ? "none" : "" }}
+              display: option.value === currentRole ? "none" : "",
+            }}
             sx={
               currentRole === option.value ? menuItemStyled(option.style) : {}
             }
@@ -147,6 +149,4 @@ const menuItemStyled = (option, currentRole) => ({
   height: "60px",
   width: "280px",
   // display: option.value === currentRole ? "none" : "block",
-
-
 });
