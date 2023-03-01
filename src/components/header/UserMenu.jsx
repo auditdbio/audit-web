@@ -10,12 +10,11 @@ import { history } from "../../services/history.js";
 import { useSelector } from "react-redux";
 import React, { useState } from "react";
 
-const options = ["Customer", "Auditor"];
 export const UserMenu = ({ open, handleClose, anchor }) => {
   const dispatch = useDispatch();
   const reduxUser = useSelector((state) => state.user.user);
 
-  const [selectedIndex, setSelectedIndex] = React.useState(1);
+  // const [selectedIndex, setSelectedIndex] = React.useState(1);
 
   const [isAuditor, setIsAuditor] = useState(reduxUser.current_role ?? 'customer');
 
@@ -31,11 +30,11 @@ export const UserMenu = ({ open, handleClose, anchor }) => {
     dispatch(logout());
   };
 
-  const handleMenuItemClick = (event, index, value) => {
-    // dispatch(changeRole(value));
-    console.log(value);
-    setSelectedIndex(index);
-  };
+  // const handleMenuItemClick = (event, index, value) => {
+  //   // dispatch(changeRole(value));
+  //   console.log(value);
+  //   setSelectedIndex(index);
+  // };
 
   const handleMyAccountClick = () => {
     if (reduxUser.current_role) {

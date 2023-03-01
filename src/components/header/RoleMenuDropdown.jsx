@@ -2,43 +2,55 @@ import * as React from "react";
 import Button from "@mui/material/Button";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import MenuItem from "@mui/material/MenuItem";
+import { changeRole, logout } from "../../redux/actions/userAction.js";
 import { useDispatch } from "react-redux";
-import { changeRole } from "../../redux/actions/userAction.js";
+import { history } from "../../services/history.js";
+import { useSelector } from "react-redux";
 import Menu from "@mui/material/Menu";
-
+import { useState } from "react";
+//
 const options = [
   {
     id: 1,
     title: "Customer",
     value: "customer",
     style: {
-      backgroundColor: ''
-    }
+      backgroundColor: "#FF9900",
+    },
   },
   {
     id: 2,
     title: "Auditor",
     value: "auditor",
+    style: {
+      backgroundColor: "#52176D",
+    },
   },
 ];
 
+const displayButton = {
+  auditor: "Auditor",
+  customer: "Customer",
+};
+
+// const options = ["Customer", "Auditor"]
+
 export default function RoleMenuDropdown() {
   const dispatch = useDispatch();
+  const reduxUser = useSelector((state) => state.user.user);
 
-  const initialValues = {
-    current_role: "auditor",
-  };
+  const [currentRole, setCurrentRole] = useState(
+    reduxUser.current_role ?? "auditor"
+  );
 
   const [open, setOpen] = React.useState(false);
   const anchorRef = React.useRef(null);
   const [selectedIndex, setSelectedIndex] = React.useState(1);
 
-  const handleMenuItemClick = (event, index, value) => {
-    // const newValue = { ...values, current_role: isAuditor };
-    // dispatch(changeRole(newValue));
-    console.log(value);
-    setSelectedIndex(index);
+  const handleMenuItemClick = (option) => {
     setOpen(false);
+    console.log(option, option.value);
+    setCurrentRole(option.value);
   };
 
   const handleToggle = () => {
@@ -56,7 +68,7 @@ export default function RoleMenuDropdown() {
     <>
       <Button
         disableRipple
-        sx={roleButtonStyle(selectedIndex)}
+        sx={roleButtonStyle(currentRole)}
         variant="contained"
         // onClick={handleClick}
         ref={anchorRef}
@@ -67,7 +79,7 @@ export default function RoleMenuDropdown() {
         aria-haspopup="menu"
         onClick={handleToggle}
       >
-        {options[selectedIndex]}
+        {displayButton[currentRole]}
       </Button>
 
       <Menu
@@ -76,15 +88,20 @@ export default function RoleMenuDropdown() {
         role={undefined}
         onClose={handleClose}
       >
-        {options.map((option, index) => (
+        {options.map((option) => (
           <MenuItem
-            sx={menuItemStyled}
+            style={{
+              width: "230px",
+              display: option.value === currentRole ? "none" : "" }}
+            sx={
+              currentRole === option.value ? menuItemStyled(option.style) : {}
+            }
             key={option.id}
-            disabled={option.value !== current_role}
-            selected={index === selectedIndex}
-            onClick={(event) => handleMenuItemClick(event, index)}
+            // disabled={option.value !== current_role}
+            // selected={true}
+            onClick={(event) => handleMenuItemClick(option)}
           >
-            {option}
+            {option.title}
           </MenuItem>
         ))}
       </Menu>
@@ -92,7 +109,7 @@ export default function RoleMenuDropdown() {
   );
 }
 
-const roleButtonStyle = (selectedIndex) => ({
+const roleButtonStyle = (currentRole) => ({
   display: {
     zero: "none",
     sm: "none",
@@ -101,7 +118,7 @@ const roleButtonStyle = (selectedIndex) => ({
   },
   height: "60px",
   width: "30%",
-  backgroundColor: selectedIndex === 1 ? "#52176D" : "#FF9900",
+  backgroundColor: currentRole === "auditor" ? "#52176D" : "#FF9900",
   minWidth: {
     zero: "0px",
     sm: "0px",
@@ -120,13 +137,16 @@ const roleButtonStyle = (selectedIndex) => ({
   textTransform: "none",
   lineHeight: "32px",
   ":hover": {
-    backgroundColor: selectedIndex === 1 ? "#52176D" : "#FF9900",
+    backgroundColor: currentRole === "auditor" ? "#52176D" : "#FF9900",
     boxShadow: "0",
   },
   boxShadow: "0",
 });
 
-const menuItemStyled = {
+const menuItemStyled = (option, currentRole) => ({
   height: "60px",
-  width: "230px",
-};
+  width: "280px",
+  // display: option.value === currentRole ? "none" : "block",
+
+
+});
