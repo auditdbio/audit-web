@@ -16,9 +16,11 @@ export const UserMenu = ({ open, handleClose, anchor }) => {
 
   // const [selectedIndex, setSelectedIndex] = React.useState(1);
 
-  const [isAuditor, setIsAuditor] = useState(reduxUser.current_role ?? 'customer');
+  const [isAuditor, setIsAuditor] = useState(
+    reduxUser.current_role ?? "customer"
+  );
 
-  console.log(isAuditor, 'current role')
+  console.log(isAuditor, "current role");
 
   const user = {
     fullName: reduxUser.name || "Mishail Voronnikov",
@@ -126,9 +128,8 @@ export const UserMenu = ({ open, handleClose, anchor }) => {
       </MenuItem>
       <Tabs
         value={isAuditor}
-        onChange={(e, newValue, values) => {
+        onChange={(e, newValue) => {
           setIsAuditor(newValue);
-          // console.log("is auditor", newValue, values);
           dispatch(changeRole(newValue));
         }}
         name={"role"}
@@ -157,13 +158,21 @@ export const UserMenu = ({ open, handleClose, anchor }) => {
         />
       </Tabs>
 
-      <Divider />
+      <Divider sx={{
+        display: {
+          zero: "none",
+          sm: "none",
+          md: "flex",
+          lg: "flex",
+        },
+      }} />
       <MenuItem onClick={handleClose}>
         <Typography style={mainTextStyle} onClick={handleMyAccountClick}>
           My Account
         </Typography>
       </MenuItem>
-      <Divider />
+      <Divider
+      />
       <MenuItem onClick={handleClose}>
         <Button
           onClick={handleLogout}
@@ -187,10 +196,7 @@ const editTextStyle = {
   textTransform: "none",
 };
 
-const roleSelectStyle = (selectedIndex) => ({
-  width: "50%",
-  backgroundColor: selectedIndex ? "#FF9900" : "#52176D",
-});
+
 
 const mainTextStyle = {
   fontSize: "26px",

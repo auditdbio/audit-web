@@ -11,15 +11,18 @@ import CustomMenu from "../custom/CustomMenu.jsx";
 import theme from "../../styles/themes.js";
 import { CustomButton } from "../custom/Button.jsx";
 import { useNavigate, Link } from "react-router-dom/dist";
-import { Typography, useMediaQuery, Avatar, Button } from "@mui/material";
+import { Typography, useMediaQuery, Avatar } from "@mui/material";
 import { isAuth } from "../../lib/helper.js";
 import { CustomBadge } from "../custom/Badge.jsx";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import { UserMenu } from "./UserMenu.jsx";
-// import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import RoleMenuDropdown from "./RoleMenuDropdown.jsx";
+import { useSelector } from "react-redux";
 
 const Header = () => {
+  const reduxUser = useSelector((state) => state.user.user);
+  const [currentUsername] = useState(reduxUser.name);
+
   const navigate = useNavigate();
   const matchSm = useMediaQuery(theme.breakpoints.down("sm"));
 
@@ -306,10 +309,10 @@ const Header = () => {
                         alignItems: "center",
                         fontSize: "26px",
                         fontWeight: "500",
-                        whiteSpace: 'nowrap',
+                        whiteSpace: "nowrap",
                       }}
                     >
-                      Hello, Michael!
+                      Hello, {currentUsername}!
                     </Typography>
                     <IconButton
                       onClick={handleOpenUserMenu}
@@ -330,9 +333,9 @@ const Header = () => {
                       />
                     </IconButton>
                     <RoleMenuDropdown
-                        open={isRoleMenuOpen}
-                        handleClose={handleCloseRoleMenu}
-                        anchor={anchorElRole}
+                      open={isRoleMenuOpen}
+                      handleClose={handleCloseRoleMenu}
+                      anchor={anchorElRole}
                     />
                   </Box>
                 )}

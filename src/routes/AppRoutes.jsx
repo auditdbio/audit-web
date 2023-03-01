@@ -13,6 +13,7 @@ import EditProfile from "../pages/edit-profile.jsx";
 import AuditInfo from "../pages/audit-info.jsx";
 import AuditRequestInfo from "../pages/audit-request-info.jsx";
 import AuditOffer from "../pages/audit-offer.jsx";
+import CreateProject from "../pages/CreateProject.jsx";
 
 
 const AppRoutes = () => {
@@ -75,6 +76,14 @@ const AppRoutes = () => {
                     element={
                         <PrivateRoute auth={{isAuthenticated: isAuth() }}>
                             <AuditOffer />
+                        </PrivateRoute>
+                    }
+                />
+                <Route
+                    path="/create-project"
+                    element={
+                        <PrivateRoute auth={{ isAuthenticated: isAuth() }}>
+                            <CreateProject />
                         </PrivateRoute>
                     }
                 />

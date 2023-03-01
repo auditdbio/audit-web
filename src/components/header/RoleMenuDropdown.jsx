@@ -2,9 +2,8 @@ import * as React from "react";
 import Button from "@mui/material/Button";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import MenuItem from "@mui/material/MenuItem";
-import { changeRole, logout } from "../../redux/actions/userAction.js";
+import { changeRole } from "../../redux/actions/userAction.js";
 import { useDispatch } from "react-redux";
-import { history } from "../../services/history.js";
 import { useSelector } from "react-redux";
 import Menu from "@mui/material/Menu";
 import { useState } from "react";
@@ -33,8 +32,6 @@ const displayButton = {
   customer: "Customer",
 };
 
-// const options = ["Customer", "Auditor"]
-
 export default function RoleMenuDropdown() {
   const dispatch = useDispatch();
   const reduxUser = useSelector((state) => state.user.user);
@@ -45,7 +42,6 @@ export default function RoleMenuDropdown() {
 
   const [open, setOpen] = React.useState(false);
   const anchorRef = React.useRef(null);
-  const [selectedIndex, setSelectedIndex] = React.useState(1);
 
   const handleMenuItemClick = (option) => {
     setOpen(false);
@@ -96,12 +92,12 @@ export default function RoleMenuDropdown() {
               display: option.value === currentRole ? "none" : "",
             }}
             sx={
-              currentRole === option.value ? menuItemStyled(option.style) : {}
+              currentRole === option.value ? menuItemStyled : {}
             }
             key={option.id}
             // disabled={option.value !== current_role}
             // selected={true}
-            onClick={(event) => handleMenuItemClick(option)}
+            onClick={() => handleMenuItemClick(option)}
           >
             {option.title}
           </MenuItem>
@@ -145,8 +141,8 @@ const roleButtonStyle = (currentRole) => ({
   boxShadow: "0",
 });
 
-const menuItemStyled = (option, currentRole) => ({
+const menuItemStyled = {
   height: "60px",
   width: "280px",
   // display: option.value === currentRole ? "none" : "block",
-});
+};
