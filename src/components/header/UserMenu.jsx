@@ -7,8 +7,8 @@ import EditIcon from "@mui/icons-material/Edit";
 import { changeRole, logout } from "../../redux/actions/userAction.js";
 import { useDispatch } from "react-redux";
 import { history } from "../../services/history.js";
-import {useSelector} from "react-redux";
-import React, {useState} from "react";
+import { useSelector } from "react-redux";
+import React, { useState } from "react";
 
 const options = ["Customer", "Auditor"];
 export const UserMenu = ({ open, handleClose, anchor }) => {
@@ -17,7 +17,9 @@ export const UserMenu = ({ open, handleClose, anchor }) => {
 
   const [selectedIndex, setSelectedIndex] = React.useState(1);
 
-  const [isAuditor, setIsAuditor] = useState("auditor");
+  const [isAuditor, setIsAuditor] = useState(reduxUser.current_role ?? 'customer');
+
+  console.log(isAuditor, 'current role')
 
   const user = {
     fullName: reduxUser.name || "Mishail Voronnikov",
@@ -37,11 +39,13 @@ export const UserMenu = ({ open, handleClose, anchor }) => {
 
   const handleMyAccountClick = () => {
     if (reduxUser.current_role) {
-      history.push({pathname: `/home-${reduxUser.current_role}`}, {
-        some: true,
-      })
+      history.push(
+        { pathname: `/home-${reduxUser.current_role}` },
+        {
+          some: true,
+        }
+      );
     }
-
   };
 
   return (
@@ -125,8 +129,13 @@ export const UserMenu = ({ open, handleClose, anchor }) => {
         value={isAuditor}
         onChange={(e, newValue, values) => {
           setIsAuditor(newValue);
-          const newValue2 = { ...values, current_role: isAuditor };
-          dispatch(changeRole(newValue2));
+          console.log("is auditor", newValue, values);
+          const newValue2 = {
+            ...values,
+            current_role: isAuditor ? "auditor" : "costumer",
+          };
+
+          dispatch(changeRole(newValue));
         }}
         name={"role"}
         sx={tabsSx}

@@ -70,15 +70,28 @@ export const logout = () => {
 
 export const changeRole = (value) => {
   return (dispatch) => {
-    axios.post(`${API_URL}/users`, value).then(({ data }) => {
-      dispatch({ type: SELECT_ROLE, payload: data });
-      history.push(
-        { pathname: `/home-${data.user.current_role}` },
-        {
-          some: true,
-        }
-      );
-    });
+    // axios.post(`${API_URL}/users`, value).then(({ data }) => {
+    //   dispatch({ type: SELECT_ROLE, payload: data });
+    //   history.push(
+    //     { pathname: `/home-${data.user.current_role}` },
+    //     {
+    //       some: true,
+    //     }
+    //   );
+    // });
+    const data = {
+      user: {
+          id: "1",
+          current_role: value,
+      }
+    };
+    dispatch({ type: SELECT_ROLE, payload: data });
+    history.push(
+      { pathname: `/home-${value}` },
+      {
+        some: true,
+      }
+    );
   };
 };
 // .catch(({response}) => {

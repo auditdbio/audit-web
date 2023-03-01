@@ -6,7 +6,21 @@ import { useDispatch } from "react-redux";
 import { changeRole } from "../../redux/actions/userAction.js";
 import Menu from "@mui/material/Menu";
 
-const options = ["Customer", "Auditor"];
+const options = [
+  {
+    id: 1,
+    title: "Customer",
+    value: "customer",
+    style: {
+      backgroundColor: ''
+    }
+  },
+  {
+    id: 2,
+    title: "Auditor",
+    value: "auditor",
+  },
+];
 
 export default function RoleMenuDropdown() {
   const dispatch = useDispatch();
@@ -65,8 +79,8 @@ export default function RoleMenuDropdown() {
         {options.map((option, index) => (
           <MenuItem
             sx={menuItemStyled}
-            key={option}
-            disabled={index === 2}
+            key={option.id}
+            disabled={option.value !== current_role}
             selected={index === selectedIndex}
             onClick={(event) => handleMenuItemClick(event, index)}
           >
