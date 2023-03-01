@@ -8,6 +8,7 @@ import { changeRole, logout } from "../../redux/actions/userAction.js";
 import { useDispatch } from "react-redux";
 import { history } from "../../services/history.js";
 import {useSelector} from "react-redux";
+import React, {useState} from "react";
 
 const options = ["Customer", "Auditor"];
 export const UserMenu = ({ open, handleClose, anchor }) => {
