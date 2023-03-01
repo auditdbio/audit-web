@@ -6,8 +6,9 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack.js";
 import GitHubIcon from '@mui/icons-material/GitHub';
 import theme from "../styles/themes.js";
 import {useNavigate} from "react-router-dom/dist";
+import CreateNewFolderOutlinedIcon from '@mui/icons-material/CreateNewFolderOutlined';
 
-const AuditRequestInfo = () => {
+const AuditOffer = () => {
     const navigate = useNavigate()
     const matchXs = useMediaQuery(theme.breakpoints.down('xs'))
 
@@ -40,40 +41,43 @@ const AuditRequestInfo = () => {
                                 150
                             </Box>
                         </Box>
-                        { !matchXs &&
-                            <Box sx={{display: 'flex', gap: '25px'}}>
-                                <Typography variant={'caption'}>Mihael@gmail.com</Typography>
-                                <Typography variant={'caption'}>Mihael@</Typography>
-                            </Box>
-                        }
                     </Box>
                     <Box sx={infoWrapper}>
                         <Typography variant={'h4'}>Main text</Typography>
                         <Typography sx={descriptionSx}>
                             Text text text text text text text tex ttext text text text text text text tex ttexttext text text text text text tex ttext text text text text text text tex ttext
                         </Typography>
-                        { matchXs &&
-                            <Box sx={{display: 'flex', gap: '25px'}}>
-                                <Typography variant={'caption'}>Mihael@gmail.com</Typography>
-                                <Typography variant={'caption'}>Mihael@</Typography>
+                        <Box sx={fileWrapper}>
+                            <Typography sx={subTitleSx}>Upload audit</Typography>
+                            <Box sx={{display: 'flex'}}>
+                                <Box sx={inputWrapper}>Audit Db project chgdjhg  jhjgsd jdhgs ....</Box>
+                                <Button>
+                                    <CreateNewFolderOutlinedIcon fontSize={'large'} color={'disabled'}/>
+                                </Button>
                             </Box>
-                        }
+                        </Box>
+                        {/*{ matchXs &&*/}
+                        {/*    <Box sx={{display: 'flex', gap: '25px'}}>*/}
+                        {/*        <Typography variant={'caption'}>Mihael@gmail.com</Typography>*/}
+                        {/*        <Typography variant={'caption'}>Mihael@</Typography>*/}
+                        {/*    </Box>*/}
+                        {/*}*/}
                         <Box sx={linkWrapper}>
                             <Typography>
-                                <GitHubIcon/>
                                 <Link>www.github.com/fgghhhfj/mjjhddfdf...</Link>
+                                <Button>x</Button>
                             </Typography>
                             <Typography>
-                                <GitHubIcon/>
                                 <Link>www.github.com/fgghhhfj/mjjhddfdf...</Link>
+                                <Button>x</Button>
                             </Typography>
                             <Typography>
-                                <GitHubIcon/>
                                 <Link>www.github.com/fgghhhfj/mjjhddfdf...</Link>
+                                <Button>x</Button>
                             </Typography>
                             <Typography>
-                                <GitHubIcon/>
                                 <Link>www.github.com/fgghhhfj/mjjhddfdf...</Link>
+                                <Button>x</Button>
                             </Typography>
                         </Box>
                     </Box>
@@ -82,16 +86,8 @@ const AuditRequestInfo = () => {
                     <Button
                         variant={'contained'}
                         sx={[buttonSx, {backgroundColor: theme.palette.secondary.main}]}
-                        onClick={()=> navigate('/home-auditor')}
                     >
-                        Decline
-                    </Button>
-                    <Button
-                        variant={'contained'}
-                        sx={buttonSx}
-                        onClick={()=> navigate('/audit-request-offer')}
-                    >
-                        Make offer
+                        Send to customer
                     </Button>
                 </Box>
             </CustomCard>
@@ -99,7 +95,7 @@ const AuditRequestInfo = () => {
     );
 };
 
-export default AuditRequestInfo;
+export default AuditOffer;
 
 const wrapper = (theme) => ({
     padding: '48px 74px 80px',
@@ -108,7 +104,7 @@ const wrapper = (theme) => ({
     alignItems: 'center',
     gap: '20px',
     '& h3': {
-      fontSize: '37px',
+        fontSize: '37px',
         fontWeight: 500,
     },
     [theme.breakpoints.down('md')]: {
@@ -135,6 +131,11 @@ const descriptionSx = (theme) => ({
     }
 })
 
+const subTitleSx = (theme) => ({
+    fontSize: '16px!important',
+    fontWeight: 500,
+})
+
 const contentWrapper = (theme) => ({
     display: 'flex',
     flexDirection: 'column',
@@ -143,6 +144,30 @@ const contentWrapper = (theme) => ({
     '& span': {
         fontSize: '18px',
         fontWeight: 500
+    }
+})
+
+const fileWrapper = (theme) => ({
+    marginTop: '22px',
+    display: 'flex',
+    alignItems: 'center',
+    gap: '30px',
+    justifyContent: 'center',
+    [theme.breakpoints.down('sm')]: {
+        flexDirection: 'column',
+        gap: '10px'
+    }
+})
+
+const inputWrapper = (theme) => ({
+    border: '1.43062px solid #E5E5E5',
+    width: '400px',
+    padding: '15px',
+    marginRight: '10px',
+    [theme.breakpoints.down('sm')]: {
+        width: '250px',
+        overflow: 'hidden',
+        whiteSpace: 'noWrap'
     }
 })
 
@@ -191,6 +216,10 @@ const linkWrapper = (theme) => ({
     columnGap: '80px',
     marginTop: '50px',
     justifyContent: 'space-around',
+    '& button': {
+      padding: 1,
+        minWidth: 'unset',
+    },
     '& p': {
         display: 'flex',
         alignItems: 'center',
@@ -203,6 +232,7 @@ const linkWrapper = (theme) => ({
     [theme.breakpoints.down('sm')]: {
         columnGap: '40px',
         marginTop: '25px',
+        gap: '10px',
         '& p': {
             fontSize: '15px',
         }
@@ -227,14 +257,12 @@ const buttonSx = (theme) => ({
     width: '270px',
     borderRadius: '10px',
     [theme.breakpoints.down('md')]: {
-        width: '210px',
         padding: '11px 0'
     },
     [theme.breakpoints.down('sm')]: {
-        width: '170px'
+        width: '240px'
     },
     [theme.breakpoints.down('xs')]: {
-        width: '140px',
         margin: '0 6px',
     }
 })
