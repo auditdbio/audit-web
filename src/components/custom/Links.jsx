@@ -1,11 +1,12 @@
 import { Box, IconButton, Typography } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
+import theme from "../../styles/themes.js";
 
 export const Links = ({ links, handleDelete }) => {
   return (
     <Box
       sx={{
-        display: "flex",
+        // display: "flex",
         flexDirection: "column",
         paddingLeft: "30px",
       }}
@@ -19,13 +20,16 @@ export const Links = ({ links, handleDelete }) => {
             alignItems: "center",
           }}
         >
-            <a href={link} target="_blank">
-                <Typography variant="body2" sx={linkStyle}>
-                    {link}
-                </Typography>
-            </a>
+          <a href={link} target="_blank">
+            <Typography variant="body2" sx={linkStyle}>
+              {link}
+            </Typography>
+          </a>
 
-          <IconButton sx={{ padding: "5px" }} onClick={()=>handleDelete(link)}>
+          <IconButton
+            sx={{ padding: "5px" }}
+            onClick={() => handleDelete(link)}
+          >
             <CloseIcon
               sx={{
                 height: "18px",
@@ -40,6 +44,16 @@ export const Links = ({ links, handleDelete }) => {
 };
 
 const linkStyle = {
+  whiteSpace: "nowrap",
+  [theme.breakpoints.down("md")]: {
+    width: "250px",
+  },
+  [theme.breakpoints.down("sm")]: {
+    width: "200px",
+  },
+  width: "300px",
+  textOverflow: "ellipsis",
+  overflow: "hidden",
   fontSize: "18px",
   color: "#152BEA",
   textDecoration: "underline",

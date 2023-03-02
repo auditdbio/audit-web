@@ -26,17 +26,6 @@ import IconField from "./forms/fields/array-field.jsx";
 import { Links } from "./custom/Links.jsx";
 import { useFormik } from "formik";
 
-const skills = [
-  { frame: "java" },
-  { frame: "piton" },
-  { frame: "java" },
-  { frame: "piton" },
-  { frame: "java" },
-  { frame: "piton" },
-  { frame: "java" },
-  { frame: "piton" },
-];
-
 const CreateProjectCard = ({ role }) => {
   const navigate = useNavigate();
 
@@ -53,6 +42,8 @@ const CreateProjectCard = ({ role }) => {
   };
   const [links, setLinks] = useState([]);
 
+  const [tags, setTags] = useState([]);
+
   const handleAddLink = (newLink) => {
     setLinks([...links, newLink]);
   };
@@ -61,65 +52,102 @@ const CreateProjectCard = ({ role }) => {
     setLinks(links.filter((link) => link !== targetLink));
   };
 
+  const handleAddTags = (newTag) => {
+    setTags([...tags, newTag]);
+  };
+
+  const handleDeleteTags = (targetTag) => {
+    setTags(tags.filter((tag) => tag !== targetTag));
+  };
+
   return (
-    <Box sx={wrapper}>
-      <Formik
-        initialValues={initialValues}
-        // validationSchema={SigninSchema}
-        // validateOnBlur={false}
-        // validateOnChange={false}
-        onSubmit={(values) => {
-          // dispatch(signIn(values))
-          console.log(values);
-        }}
-      >
-        {({ handleSubmit }) => {
-          return (
-            <Form onSubmit={handleSubmit}>
-              <Box sx={formCard}>
-                <Box sx={formAllFields}>
-                  <Box sx={formWrapper}>
-                    <Box sx={fieldWrapper}>
-                      <SimpleField name={"name"} label={"Name"} />
-                      <IconField
-                        name={"projectLink"}
-                        label={"Project link"}
-                        array={links}
-                        handleAdd={handleAddLink}
-                      />
-                      <Links links={links} handleDelete={handleDeleteLink} />
+    <Box sx={mainBox}>
+      <Box sx={buttonGroup}>
+        <Button variant={"contained"} sx={inviteButton}>
+          Invite auditor
+        </Button>
+        <Button variant={"contained"} sx={publishButton}>
+          Publish project
+        </Button>
+      </Box>
+      <Box sx={wrapper}>
+        <Formik
+          initialValues={initialValues}
+          // validationSchema={SigninSchema}
+          // validateOnBlur={false}
+          // validateOnChange={false}
+          onSubmit={(values) => {
+            // dispatch(signIn(values))
+            console.log(values);
+          }}
+        >
+          {({ handleSubmit }) => {
+            return (
+              <Form onSubmit={handleSubmit}>
+                <Box sx={formCard}>
+                  <Box sx={formAllFields}>
+                    <Box sx={formWrapper}>
+                      <Box sx={fieldWrapper}>
+                        <SimpleField name={"name"} label={"Name"} />
+                        <IconField
+                          name={"projectLink"}
+                          label={"Project link"}
+                          array={links}
+                          handleAdd={handleAddLink}
+                        />
+                        <Links links={links} handleDelete={handleDeleteLink} />
+                      </Box>
+                      <Box
+                        className="description-box"
+                        sx={descriptionFieldWrapper}
+                      >
+                        <DescriptionField
+                          name={"description"}
+                          label={"Description"}
+                        />
+                      </Box>
                     </Box>
-                    <Box
-                      className="description-box"
-                      sx={descriptionFieldWrapper}
-                    >
-                      <DescriptionField
-                        name={"description"}
-                        label={"Description"}
-                      />
+                    <Box sx={tagsFieldWrapper}>
+                      <Box sx={fieldWrapper}>
+                        {/*<SimpleField name={"tags"} label={"Tags"} />*/}
+                        <IconField
+                          name={"projectLink"}
+                          label={"Tags"}
+                          array={links}
+                          handleAdd={handleAddTags}
+                        />
+                      </Box>
+                      <Box sx={tagsArrayWrapper}>
+                        <TagsArray
+                          tags={tags}
+                          handleDelete={handleDeleteTags}
+                        />
+                      </Box>
                     </Box>
                   </Box>
-                  <Box sx={tagsFieldWrapper}>
-                    <Box sx={fieldWrapper}>
-                      <SimpleField name={"tags"} label={"Tags"} />
-                    </Box>
-                    <Box sx={tagsArrayWrapper}>
-                      <TagsArray />
-                    </Box>
-                  </Box>
+                  <Button
+                    type={"submit"}
+                    variant={"contained"}
+                    sx={submitButton}
+                  >
+                    Create
+                  </Button>
                 </Box>
-                <Button type={"submit"} variant={"contained"} sx={submitButton}>
-                  Create
-                </Button>
-              </Box>
-            </Form>
-          );
-        }}
-      </Formik>
+              </Form>
+            );
+          }}
+        </Formik>
+      </Box>
     </Box>
   );
 };
 export default CreateProjectCard;
+
+const mainBox = {
+  display: "flex",
+  flexDirection: "column",
+  paddingTop: "43px",
+};
 
 const wrapper = (theme) => ({
   padding: "70px 90px",
@@ -139,6 +167,63 @@ const wrapper = (theme) => ({
     gap: "25px",
   },
 });
+
+const buttonGroup = {
+  display: "flex",
+  alignSelf: "center",
+  gap: "15px",
+  [theme.breakpoints.down("sm")]: {
+    gap: "10px",
+  },
+};
+
+const inviteButton = {
+  backgroundColor: theme.palette.primary.main,
+  textTransform: "none",
+  boxShadow: "0",
+  maxHeight: "30px",
+  padding: "8px 42px",
+  whiteSpace: "nowrap",
+  color: "#FCFAF6",
+  fontWeight: "500",
+  borderRadius: "4px",
+  maxWidth: "180px",
+  margin: "0 auto",
+  fontSize: "14px",
+  // paddingY: "11px",
+  ":hover": {
+    boxShadow: "0",
+  },
+  [theme.breakpoints.down("sm")]: {
+    width: "125px",
+    padding: "3px 17px",
+    fontSize: "11px",
+  },
+};
+
+const publishButton = {
+  backgroundColor: theme.palette.secondary.main,
+  textTransform: "none",
+  boxShadow: "0",
+  maxHeight: "30px",
+  padding: "8px 42px",
+  whiteSpace: "nowrap",
+  color: "#FCFAF6",
+  fontWeight: "500",
+  borderRadius: "4px",
+  maxWidth: "180px",
+  margin: "0 auto",
+  fontSize: "14px",
+  // paddingY: "11px",
+  ":hover": {
+    boxShadow: "0",
+  },
+  [theme.breakpoints.down("sm")]: {
+    width: "125px",
+    padding: "3px 17px",
+    fontSize: "11px",
+  },
+};
 
 const formCard = {
   display: "flex",
@@ -290,28 +375,35 @@ const fieldWrapper = (theme) => ({
       gap: "16px",
     },
   },
+  [theme.breakpoints.down("xs")]: {
+    width: "100%",
+  },
 });
 const descriptionFieldWrapper = (theme) => ({
   display: "flex",
+
   flexDirection: "column",
   // height: "230px",
   // height: '100%',
   width: "40%",
   // justifyContent: 'center',
   // gap: "20px",
-  [theme.breakpoints.down("md")]: {
-    "& .MuiInputBase-root": {
-      height: "44px",
-      "& input": {
-        paddingY: "7px",
-      },
-    },
-  },
+  // [theme.breakpoints.down("md")]: {
+  //   "& .MuiInputBase-root": {
+  //     height: "44px",
+  //     "& input": {
+  //       paddingY: "7px",
+  //     },
+  //   },
+  // },
   [theme.breakpoints.down("sm")]: {
     gap: "16px",
     "& .password-wrapper, .field-wrapper": {
       gap: "16px",
     },
+  },
+  [theme.breakpoints.down("xs")]: {
+    width: "100%",
   },
 });
 

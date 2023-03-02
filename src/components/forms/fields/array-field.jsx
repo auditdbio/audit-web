@@ -3,6 +3,7 @@ import { Box, IconButton, InputAdornment, Typography } from "@mui/material";
 import { Field } from "formik";
 import { TextField } from "formik-mui";
 import AddLinkIcon from "@mui/icons-material/AddLink";
+import AddCircleOutlineOutlinedIcon from "@mui/icons-material/AddCircleOutlineOutlined";
 
 const IconField = ({ name, label, array, handleAdd }) => {
   const [text, setText] = useState("");
@@ -34,7 +35,7 @@ const IconField = ({ name, label, array, handleAdd }) => {
           endAdornment: (
             <InputAdornment position="end">
               <IconButton aria-label="add" onClick={onClick}>
-                <AddLinkIcon />
+                <AddCircleOutlineOutlinedIcon />
               </IconButton>
             </InputAdornment>
           ),
