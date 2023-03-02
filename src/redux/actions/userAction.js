@@ -12,8 +12,7 @@ import {
   SELECT_ROLE,
 } from "./types.js";
 
-const API_URL = import.meta.env.VITE_API_BASE_URL
-
+const API_URL = import.meta.env.VITE_API_BASE_URL;
 
 export const signIn = (values) => {
   return (dispatch) => {
@@ -80,11 +79,13 @@ export const changeRole = (value) => {
     //     }
     //   );
     // });
+    const current_user = JSON.parse(localStorage.getItem("user"));
+    console.log(current_user);
     const data = {
       user: {
-          id: "1",
-          current_role: value,
-      }
+        ...current_user,
+        current_role: value,
+      },
     };
     // save updated user into local storage and redux
     localStorage.setItem("user", JSON.stringify(data.user));
