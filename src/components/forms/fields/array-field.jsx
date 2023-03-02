@@ -1,9 +1,19 @@
-import React from "react";
-import { Box, Typography } from "@mui/material";
+import React, { useState } from "react";
+import { Box, IconButton, InputAdornment, Typography } from "@mui/material";
 import { Field } from "formik";
 import { TextField } from "formik-mui";
+import AddLinkIcon from "@mui/icons-material/AddLink";
 
-const DescriptionField = ({ name, label }) => {
+const IconField = ({ name, label, array, handleAdd }) => {
+  const [text, setText] = useState("");
+
+  const onClick = () => {
+    if (text && !array.includes(text)) {
+      handleAdd(text);
+      console.log(array);
+    }
+    setText("");
+  };
   return (
     <Box sx={wrapper} className={"field-wrapper"}>
       <Typography variant={"body2"} sx={formLabelSx}>
@@ -11,21 +21,30 @@ const DescriptionField = ({ name, label }) => {
       </Typography>
       <Field
         component={TextField}
-        // rows="9"
-        // maxRows="8"
-        minRows="3"
-        multiline
         name={name}
+        value={text}
+        onChange={(e) => {
+          setText(e.target.value);
+        }}
         placeholder={"● ● ● ● ● ● ●"}
         fullWidth={true}
         disabled={false}
         sx={fieldSx}
+        InputProps={{
+          endAdornment: (
+            <InputAdornment position="end">
+              <IconButton aria-label="add" onClick={onClick}>
+                <AddLinkIcon />
+              </IconButton>
+            </InputAdornment>
+          ),
+        }}
       />
     </Box>
   );
 };
 
-export default DescriptionField;
+export default IconField;
 
 const wrapper = (theme) => ({
   display: "flex",
@@ -33,13 +52,6 @@ const wrapper = (theme) => ({
   flexDirection: "column",
   "& p.Mui-error": {
     display: "none",
-  },
-  height: "100%",
-  "& .MuiInputBase-root": {
-    height: "100%",
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "start",
   },
 });
 
@@ -54,8 +66,7 @@ const formLabelSx = (theme) => ({
 });
 
 const fieldSx = (theme) => ({
-  "& div": {
+  "& input": {
     paddingLeft: "35px",
   },
-  height: "100%",
 });
