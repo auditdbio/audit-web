@@ -11,7 +11,7 @@ const DescriptionField = ({ name, label }) => {
             </Typography>
             <Field
                 component={TextField}
-                rows="9"
+                // rows="9"
                 // maxRows = "9"
                 multiline
                 name={name}
@@ -33,6 +33,10 @@ const wrapper = (theme) => ({
     "& p.Mui-error": {
         display: "none",
     },
+    height: '100%',
+    "& .MuiInputBase-root": {
+        height: '100%',
+    },
 });
 
 const formLabelSx = (theme) => ({
@@ -49,5 +53,5 @@ const fieldSx = (theme) => ({
     "& input": {
         paddingLeft: "35px",
     },
-    // height: "230px",
+    height: "100%",
 });

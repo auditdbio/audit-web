@@ -66,7 +66,7 @@ const CreateProjectCard = ({ role }) => {
                                             />
                                             <SimpleField name={"file-link"} label={"File link"} />
                                         </Box>
-                                        <Box sx={descriptionFieldWrapper}>
+                                        <Box className="description-box" sx={descriptionFieldWrapper}>
                                             <DescriptionField name={"description"} label={"Text"} />
                                         </Box>
                                     </Box>
@@ -264,9 +264,11 @@ const fieldWrapper = (theme) => ({
 const descriptionFieldWrapper = (theme) => ({
     display: "flex",
     flexDirection: "column",
-    height: "230px",
+    // height: "230px",
+    // height: '100%',
     width: "100%",
-    gap: "20px",
+    // justifyContent: 'center',
+    // gap: "20px",
     [theme.breakpoints.down("md")]: {
         "& .MuiInputBase-root": {
             height: "44px",
