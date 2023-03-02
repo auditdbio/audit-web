@@ -21,7 +21,7 @@ import { useSelector } from "react-redux";
 
 const Header = () => {
   const reduxUser = useSelector((state) => state.user.user);
-  const [currentUsername] = useState(reduxUser.name);
+  const [currentUsername] = useState(reduxUser.name || 'User');
 
   const navigate = useNavigate();
   const matchSm = useMediaQuery(theme.breakpoints.down("sm"));
@@ -323,7 +323,6 @@ const Header = () => {
                       disableRipple
                     >
                       <Avatar
-                        src="/static/images/avatar/1.jpg"
                         sx={avatarStyle}
                       />
                       <UserMenu

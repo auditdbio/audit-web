@@ -1,6 +1,7 @@
 import * as React from "react";
 import Button from "@mui/material/Button";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+import { KeyboardArrowUp } from "@mui/icons-material";
 import MenuItem from "@mui/material/MenuItem";
 import { changeRole } from "../../redux/actions/userAction.js";
 import { useDispatch } from "react-redux";
@@ -67,9 +68,8 @@ export default function RoleMenuDropdown() {
         disableRipple
         sx={roleButtonStyle(currentRole)}
         variant="contained"
-        // onClick={handleClick}
         ref={anchorRef}
-        endIcon={<KeyboardArrowDownIcon />}
+        endIcon={open ? <KeyboardArrowUp /> : <KeyboardArrowDownIcon />}
         aria-controls={open ? "split-button-menu" : undefined}
         aria-expanded={open ? "true" : undefined}
         aria-label="select merge strategy"
@@ -90,13 +90,10 @@ export default function RoleMenuDropdown() {
             style={{
               width: "230px",
               display: option.value === currentRole ? "none" : "",
+              justifyContent: "center",
             }}
-            sx={
-              currentRole === option.value ? menuItemStyled : {}
-            }
+            sx={currentRole === option.value ? menuItemStyled : {}}
             key={option.id}
-            // disabled={option.value !== current_role}
-            // selected={true}
             onClick={() => handleMenuItemClick(option)}
           >
             {option.title}
@@ -144,5 +141,6 @@ const roleButtonStyle = (currentRole) => ({
 const menuItemStyled = {
   height: "60px",
   width: "280px",
-  // display: option.value === currentRole ? "none" : "block",
+  marginX: "auto",
+  textAlign: "center",
 };

@@ -86,6 +86,8 @@ export const changeRole = (value) => {
           current_role: value,
       }
     };
+    // save updated user into local storage and redux
+    localStorage.setItem("user", JSON.stringify(data.user));
     dispatch({ type: SELECT_ROLE, payload: data });
     history.push(
       { pathname: `/home-${value}` },

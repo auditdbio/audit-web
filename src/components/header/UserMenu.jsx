@@ -14,8 +14,6 @@ export const UserMenu = ({ open, handleClose, anchor }) => {
   const dispatch = useDispatch();
   const reduxUser = useSelector((state) => state.user.user);
 
-  // const [selectedIndex, setSelectedIndex] = React.useState(1);
-
   const [isAuditor, setIsAuditor] = useState(
     reduxUser.current_role ?? "customer"
   );
@@ -31,12 +29,6 @@ export const UserMenu = ({ open, handleClose, anchor }) => {
   const handleLogout = () => {
     dispatch(logout());
   };
-
-  // const handleMenuItemClick = (event, index, value) => {
-  //   // dispatch(changeRole(value));
-  //   console.log(value);
-  //   setSelectedIndex(index);
-  // };
 
   const handleMyAccountClick = () => {
     if (reduxUser.current_role) {
@@ -60,7 +52,6 @@ export const UserMenu = ({ open, handleClose, anchor }) => {
         elevation: 0,
         sx: {
           overflow: "visible",
-          // filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
           boxShadow:
             "0px 67px 80px rgba(0, 0, 0, 0.07), 0px 14.9653px 17.869px rgba(0, 0, 0, 0.0417275), 0px 8.38944px 10.0172px rgba(0, 0, 0, 0.035), 0px 4.45557px 5.32008px rgba(0, 0, 0, 0.0282725), 0px 1.85406px 2.21381px rgba(0, 0, 0, 0.0196802)",
           mt: "2rem",
