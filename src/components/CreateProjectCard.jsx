@@ -33,10 +33,10 @@ const CreateProjectCard = ({ role }) => {
 
   const initialValues = {
     name: "",
-    projectLink: "project",
+    projectLink: "",
     fileLink: "",
-    description: "desc",
-    tags: "tag",
+    description: "",
+    tags: "",
   };
   const [links, setLinks] = useState([]);
 
@@ -117,9 +117,9 @@ const CreateProjectCard = ({ role }) => {
                       <Box sx={fieldWrapper}>
                         {/*<SimpleField name={"tags"} label={"Tags"} />*/}
                         <IconField
-                          name={"projectLink"}
+                          name={"tags"}
                           label={"Tags"}
-                          array={links}
+                          array={tags}
                           handleAdd={handleAddTags}
                         />
                       </Box>

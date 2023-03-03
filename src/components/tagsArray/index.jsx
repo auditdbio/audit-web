@@ -7,6 +7,7 @@ const TagsArray = ({ tags, handleDelete }) => {
     <Box sx={{ display: "flex", gap: "15px", flexWrap: "wrap" }}>
       {tags.map((tag) => (
         <Chip
+            key={tag}
           sx={{
             border: "2px solid #E5E5E5",
             borderRadius: "5px",
