@@ -3,7 +3,10 @@ import {Box, Button, Grid, useMediaQuery} from "@mui/material";
 import ProjectCard from "./Project-card.jsx";
 import theme, {radiusOfComponents} from "../styles/themes.js";
 
+import {useNavigate} from "react-router-dom/dist";
+
 const Projects = ({role}) => {
+    const navigate = useNavigate()
     const matchMd = useMediaQuery(theme.breakpoints.down('md'))
     return (
         <Box sx={wrapper}>
@@ -11,12 +14,15 @@ const Projects = ({role}) => {
                 <Button
                     sx={[buttonSx, role === 'auditor' ? buttonAuditorSx : {}]}
                     variant={'contained'}
+                    onClick={() => navigate('/create-project')}
                 >
                     {role === 'auditor' ?
                         '+ New audit'
                         :
                         '+ New project'
                     }
+
+
 
                 </Button>
             </Box>

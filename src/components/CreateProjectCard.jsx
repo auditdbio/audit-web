@@ -17,14 +17,12 @@ import { useNavigate } from "react-router-dom/dist";
 import TagsArray from "./tagsArray/index.jsx";
 import { Form, Formik } from "formik";
 import SimpleField from "./forms/fields/simple-field.jsx";
-import PasswordField from "./forms/fields/password-field.jsx";
-import * as Yup from "yup";
-import { clearUserError, signIn } from "../redux/actions/userAction.js";
 import DescriptionField from "./forms/create-project/DescriptionField.jsx";
-import { AccountCircle } from "@mui/icons-material";
 import IconField from "./forms/fields/array-field.jsx";
 import { Links } from "./custom/Links.jsx";
 import { useFormik } from "formik";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack.js";
+import MenuRoundedIcon from "@mui/icons-material/MenuRounded";
 
 const CreateProjectCard = ({ role }) => {
   const navigate = useNavigate();
@@ -62,6 +60,10 @@ const CreateProjectCard = ({ role }) => {
 
   return (
     <Box sx={mainBox}>
+      {/*<Button sx={backButtonSx} onClick={() => navigate("/home-customer")}>*/}
+      {/*  <ArrowBackIcon />*/}
+      {/*</Button>*/}
+
       <Box sx={buttonGroup}>
         <Button variant={"contained"} sx={inviteButton}>
           Invite auditor
@@ -69,7 +71,11 @@ const CreateProjectCard = ({ role }) => {
         <Button variant={"contained"} sx={publishButton}>
           Publish project
         </Button>
+        <Button sx={menuButtonSx}>
+          <MenuRoundedIcon sx={menuButtonIconSx} />
+        </Button>
       </Box>
+
       <Box sx={wrapper}>
         <Formik
           initialValues={initialValues}
@@ -143,11 +149,37 @@ const CreateProjectCard = ({ role }) => {
 };
 export default CreateProjectCard;
 
-const mainBox = {
+const mainBox = (theme) => ({
+  position: "relative",
   display: "flex",
   flexDirection: "column",
   paddingTop: "43px",
-};
+  [theme.breakpoints.down("xs")]: {
+    paddingTop: "30x",
+  },
+});
+
+const backButtonSx = (theme) => ({
+  position: "absolute",
+  left: "30px",
+  top: "40px",
+  [theme.breakpoints.down("sm")]: {
+    top: "5px",
+  },
+});
+
+const menuButtonSx = (theme) => ({
+  color: "#222222",
+  padding: "0",
+  minWidth: "0",
+});
+
+const menuButtonIconSx = (theme) => ({
+  fontSize: "2rem",
+  [theme.breakpoints.down("sm")]: {
+    fontSize: "1.5rem",
+  },
+});
 
 const wrapper = (theme) => ({
   padding: "70px 90px",
@@ -169,6 +201,7 @@ const wrapper = (theme) => ({
 });
 
 const buttonGroup = {
+  // width: "100%",
   display: "flex",
   alignSelf: "center",
   gap: "15px",
@@ -195,9 +228,8 @@ const inviteButton = {
     boxShadow: "0",
   },
   [theme.breakpoints.down("sm")]: {
-    width: "125px",
-    padding: "3px 17px",
-    fontSize: "11px",
+    padding: "3px 15px",
+    fontSize: "10px",
   },
 };
 
@@ -219,9 +251,8 @@ const publishButton = {
     boxShadow: "0",
   },
   [theme.breakpoints.down("sm")]: {
-    width: "125px",
-    padding: "3px 17px",
-    fontSize: "11px",
+    padding: "3px 15px",
+    fontSize: "10px",
   },
 };
 
@@ -325,6 +356,7 @@ const formWrapper = (theme) => ({
   display: "flex",
   height: "100%",
   width: "100%",
+
   justifyContent: "space-between",
   // gap: "175px",
   [theme.breakpoints.down("xs")]: {
