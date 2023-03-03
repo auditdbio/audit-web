@@ -6,14 +6,15 @@ import {
     SIGN_IN_ERROR,
     USER_IS_ALREADY_EXIST,
     USER_SIGNIN,
-    USER_SIGNUP
+    USER_SIGNUP,
+    SELECT_ROLE,
 } from "../actions/types.js";
 
 const initialState = {
     token: Cookies.get('token') || '',
     isAuth: false,
     user: JSON.parse(localStorage.getItem('user')) || {},
-    error: null
+    error: null,
 }
 export const userReducer = (state = initialState, action) => {
     switch (action.type) {
@@ -31,6 +32,8 @@ export const userReducer = (state = initialState, action) => {
             return {...state, error: 'Email or password incorrect'}
         case LOG_OUT:
             return initialState
+        case SELECT_ROLE:
+            return {...state,  user: action.payload}
         default:
             return state
     }
