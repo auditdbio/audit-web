@@ -33,7 +33,7 @@ export const userReducer = (state = initialState, action) => {
         case LOG_OUT:
             return initialState
         case SELECT_ROLE:
-            return {...state,  user: action.payload.user}
+            return {...state,  user: action.payload}
         default:
             return state
     }

@@ -70,34 +70,27 @@ export const logout = () => {
 
 export const changeRole = (value) => {
   return (dispatch) => {
-    // axios.post(`${API_URL}/users`, value).then(({ data }) => {
-    //   dispatch({ type: SELECT_ROLE, payload: data });
-    //   history.push(
-    //     { pathname: `/home-${data.user.current_role}` },
-    //     {
-    //       some: true,
-    //     }
-    //   );
-    // });
-    const current_user = JSON.parse(localStorage.getItem("user"));
-    console.log(current_user);
-    const data = {
-      user: {
-        ...current_user,
-        current_role: value,
-      },
-    };
-    // save updated user into local storage and redux
-    localStorage.setItem("user", JSON.stringify(data.user));
-    dispatch({ type: SELECT_ROLE, payload: data });
-    history.push(
-      { pathname: `/home-${value}` },
-      {
-        some: true,
-      }
-    );
+    axios
+      .patch(
+        `${API_URL}/users`,
+        { current_role: value },
+        {
+          headers: {
+            Authorization: "Bearer " + Cookies.get("token"),
+            "Content-Type": "application/json",
+          },
+        }
+      )
+      .then(({ data }) => {
+        console.log(data);
+        dispatch({ type: SELECT_ROLE, payload: data });
+        localStorage.setItem("user", JSON.stringify(data));
+        history.push(
+          { pathname: `/home-${data.current_role}` },
+          {
+            some: true,
+          }
+        );
+      });
   };
 };
-// .catch(({response}) => {
-//     dispatch({type: USER_IS_ALREADY_EXIST});
-// });
