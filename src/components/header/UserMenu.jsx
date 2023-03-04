@@ -6,19 +6,18 @@ import { Box, Button, Tab, Tabs, Typography } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import { changeRole, logout } from "../../redux/actions/userAction.js";
 import { useDispatch } from "react-redux";
-import { history } from "../../services/history.js";
+import {useNavigate} from "react-router-dom/dist";
 import { useSelector } from "react-redux";
 import React, { useState } from "react";
 
 export const UserMenu = ({ open, handleClose, anchor }) => {
   const dispatch = useDispatch();
   const reduxUser = useSelector((state) => state.user.user);
+  const navigate = useNavigate()
 
   const [isAuditor, setIsAuditor] = useState(
     reduxUser.current_role ?? "customer"
   );
-
-  console.log(isAuditor, "current role");
 
   const user = {
     fullName: reduxUser.name || "Mishail Voronnikov",
@@ -31,14 +30,7 @@ export const UserMenu = ({ open, handleClose, anchor }) => {
   };
 
   const handleMyAccountClick = () => {
-    if (reduxUser.current_role) {
-      history.push(
-        { pathname: `/home-${reduxUser.current_role}` },
-        {
-          some: true,
-        }
-      );
-    }
+      navigate('/profile');
   };
 
   return (

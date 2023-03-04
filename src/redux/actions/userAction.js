@@ -2,14 +2,14 @@ import axios from "axios";
 import Cookies from "js-cookie";
 import { history } from "../../services/history.js";
 import {
-  AUTH_TRUE,
-  CLEAR_ERROR,
-  LOG_OUT,
-  SIGN_IN_ERROR,
-  USER_IS_ALREADY_EXIST,
-  USER_SIGNIN,
-  USER_SIGNUP,
-  SELECT_ROLE,
+    AUTH_TRUE,
+    CLEAR_ERROR,
+    LOG_OUT,
+    SIGN_IN_ERROR,
+    USER_IS_ALREADY_EXIST,
+    USER_SIGNIN,
+    USER_SIGNUP,
+    SELECT_ROLE, UPDATE_USER, CLEAR_SUCCESS,
 } from "./types.js";
 
 const API_URL = import.meta.env.VITE_API_BASE_URL;
@@ -24,7 +24,7 @@ export const signIn = (values) => {
         localStorage.setItem("user", JSON.stringify(data.user));
         dispatch({ type: USER_SIGNIN, payload: data });
         history.push(
-          { pathname: `/home-${data.user.current_role}` },
+          { pathname: `/profile` },
           {
             some: true,
           }
@@ -39,6 +39,10 @@ export const signIn = (values) => {
 export const clearUserError = () => {
   return { type: CLEAR_ERROR };
 };
+
+export const clearUserSuccess = () => {
+    return {type: CLEAR_SUCCESS}
+}
 
 export const signUp = (values) => {
   return (dispatch) => {
@@ -82,11 +86,10 @@ export const changeRole = (value) => {
         }
       )
       .then(({ data }) => {
-        console.log(data);
         dispatch({ type: SELECT_ROLE, payload: data });
         localStorage.setItem("user", JSON.stringify(data));
         history.push(
-          { pathname: `/home-${data.current_role}` },
+          { pathname: `/profile` },
           {
             some: true,
           }
@@ -94,3 +97,22 @@ export const changeRole = (value) => {
       });
   };
 };
+
+export const changePassword = (value) => {
+    return (dispatch) => {
+        axios
+            .patch(
+                `${API_URL}/users`,
+                { password: value },
+                {
+                    headers: {
+                        Authorization: "Bearer " + Cookies.get("token"),
+                        "Content-Type": "application/json",
+                    },
+                }
+            )
+            .then(({ data }) => {
+                dispatch({ type: UPDATE_USER, payload: data });
+            });
+    }
+}

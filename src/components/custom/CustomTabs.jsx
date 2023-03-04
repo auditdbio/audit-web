@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import {Tab, Tabs} from "@mui/material";
 
 const CustomTabs = ({selectedTabSx, name, tabs, setTab}) => {
-    const [tabState, setTabState] = useState(tabs[0].value)
+    const [tabState, setTabState] = useState('user-info')
 
     const handleChoose = (value) => {
         setTabState(value)

@@ -1,17 +1,35 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {Box} from "@mui/material";
 import Layout from "../styles/Layout.jsx";
 import {CustomCard} from "../components/custom/Card.jsx";
 import EditProfileForm from "../components/forms/edit-profile-form/edit-profile-form.jsx";
+import {getCustomer} from "../redux/actions/customerAction.js";
+import {getAuditor} from "../redux/actions/auditorAction.js";
+import {useDispatch, useSelector} from "react-redux";
+import Loader from "../components/Loader.jsx";
 
 const EditProfile = () => {
-    return (
-        <Layout>
-            <CustomCard sx={editWrapper}>
-                <EditProfileForm/>
-            </CustomCard>
-        </Layout>
-    );
+    const role = useSelector(s => s.user.user.current_role)
+    const customer = useSelector(s => s.customer.customer)
+    const auditor = useSelector(s => s.auditor.auditor)
+
+    const dispatch = useDispatch()
+
+    useEffect(() => {
+        if  (role === 'auditor'){
+            dispatch(getCustomer())
+        } else {
+            dispatch(getAuditor())
+        }
+    },[role])
+
+       return (
+           <Layout>
+               <CustomCard sx={editWrapper}>
+                   <EditProfileForm role={role}/>
+               </CustomCard>
+           </Layout>
+       )
 };
 
 export default EditProfile;

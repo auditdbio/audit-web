@@ -15,7 +15,7 @@ const AuditInfo = () => {
         <Layout>
             <CustomCard sx={wrapper}>
                 <Box sx={{display: 'flex', width: '100%', position: 'relative'}}>
-                   <Button sx={backButtonSx} onClick={() => navigate('/home-customer')}>
+                   <Button sx={backButtonSx} onClick={() => navigate(-1)}>
                        <ArrowBackIcon/>
                    </Button>
                     <Typography sx={{width: '100%', textAlign: 'center'}}>

@@ -1,18 +1,24 @@
 import React, {useState} from 'react';
 import {Box, Slider} from "@mui/material";
+import {useField} from "formik";
+import {useSelector} from "react-redux";
+import {AUDITOR} from "../../../redux/actions/types.js";
 
 const SalarySlider = () => {
-    const [amount, setAmount] = useState(30)
+    const role = useSelector(s => s.user.user.current_role)
+    const [taxField, ,taxFieldHelper] = useField('tax')
     return (
         <Box sx={sliderWrapper}>
             <Slider
-                defaultValue={amount}
+                value={+taxField.value}
+                name={taxField.name}
                 valueLabelDisplay="off"
                 sx={sliderSx}
-                onChange={(e) => setAmount(e.target.value)}
+                color={role === AUDITOR ? 'secondary' : "primary"}
+                onChange={(e) => taxFieldHelper.setValue(e.target.value.toString())}
             />
             <Box sx={infoWrapper}>
-                {amount}
+                {taxField.value || 0}
             </Box>
         </Box>
     );
