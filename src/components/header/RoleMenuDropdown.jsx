@@ -46,7 +46,6 @@ export default function RoleMenuDropdown() {
 
   const handleMenuItemClick = (option) => {
     setOpen(false);
-    console.log(option, option.value);
     setCurrentRole(option.value);
     dispatch(changeRole(option.value));
   };

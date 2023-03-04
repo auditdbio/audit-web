@@ -13,16 +13,26 @@ import EditProfile from "../pages/edit-profile.jsx";
 import AuditInfo from "../pages/audit-info.jsx";
 import AuditRequestInfo from "../pages/audit-request-info.jsx";
 import AuditOffer from "../pages/audit-offer.jsx";
+import ProfilePage from "../pages/profile-page.jsx";
+import {AUDITOR} from "../redux/actions/types.js";
+import {getAuditor} from "../redux/actions/auditorAction.js";
+import {getCustomer} from "../redux/actions/customerAction.js";
 
 
 const AppRoutes = () => {
     const token = useSelector(s => s.user.token)
+    const currentRole = useSelector(s => s.user.user.current_role)
     const dispatch = useDispatch()
     useEffect(() => {
         if (isAuth()){
             dispatch(authenticate())
+            if (currentRole === AUDITOR){
+                dispatch(getAuditor())
+            } else {
+                dispatch(getCustomer())
+            }
         }
-    },[dispatch, token])
+    },[dispatch, token, currentRole])
 
     return (
         <>
@@ -31,10 +41,10 @@ const AppRoutes = () => {
                 <Route path={'/sign-up'} element={<SignupPage />} />
                 <Route path={'/sign-in'} element={<SigninPage />} />
                 <Route
-                    path="/home-customer"
+                    path="/profile"
                     element={
                         <PrivateRoute auth={{ isAuthenticated: isAuth() }}>
-                            <HomeCustomer />
+                            <ProfilePage />
                         </PrivateRoute>
                     }
                 />
