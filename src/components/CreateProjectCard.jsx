@@ -23,6 +23,7 @@ import { Links } from "./custom/Links.jsx";
 import { useFormik } from "formik";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack.js";
 import MenuRoundedIcon from "@mui/icons-material/MenuRounded";
+import AuditorSearchModal from "./AuditorSearchModal.jsx";
 
 const CreateProjectCard = ({ role }) => {
   const navigate = useNavigate();
@@ -38,9 +39,19 @@ const CreateProjectCard = ({ role }) => {
     description: "",
     tags: "",
   };
+  const [openInvite, setOpenInvite] = useState(false);
+
   const [links, setLinks] = useState([]);
 
   const [tags, setTags] = useState([]);
+
+  const handleInviteModal = () => {
+    setOpenInvite(true);
+  };
+
+  const handleCloseInviteModal = () => {
+    setOpenInvite(false);
+  };
 
   const handleAddLink = (newLink) => {
     setLinks([...links, newLink]);
@@ -64,8 +75,17 @@ const CreateProjectCard = ({ role }) => {
       {/*  <ArrowBackIcon />*/}
       {/*</Button>*/}
 
+      <AuditorSearchModal
+        open={openInvite}
+        handleClose={handleCloseInviteModal}
+      />
+
       <Box sx={buttonGroup}>
-        <Button variant={"contained"} sx={inviteButton}>
+        <Button
+          variant={"contained"}
+          sx={inviteButton}
+          onClick={handleInviteModal}
+        >
           Invite auditor
         </Button>
         <Button variant={"contained"} sx={publishButton}>
