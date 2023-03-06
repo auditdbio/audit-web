@@ -6,14 +6,16 @@ import {
     SIGN_IN_ERROR,
     USER_IS_ALREADY_EXIST,
     USER_SIGNIN,
-    USER_SIGNUP
+    USER_SIGNUP,
+    SELECT_ROLE, UPDATE_USER, CLEAR_SUCCESS,
 } from "../actions/types.js";
 
 const initialState = {
     token: Cookies.get('token') || '',
     isAuth: false,
     user: JSON.parse(localStorage.getItem('user')) || {},
-    error: null
+    error: null,
+    success: null
 }
 export const userReducer = (state = initialState, action) => {
     switch (action.type) {
@@ -31,6 +33,12 @@ export const userReducer = (state = initialState, action) => {
             return {...state, error: 'Email or password incorrect'}
         case LOG_OUT:
             return initialState
+        case SELECT_ROLE:
+            return {...state,  user: action.payload}
+        case UPDATE_USER:
+            return {...state,  user: action.payload, success: 'Success! Your password is changed'}
+        case CLEAR_SUCCESS:
+            return {...state, success: null}
         default:
             return state
     }

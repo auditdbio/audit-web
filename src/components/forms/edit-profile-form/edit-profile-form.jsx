@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import {Form, Formik} from "formik";
 import {Avatar, Box, Button, Slider, Typography, useMediaQuery} from "@mui/material";
 import SimpleField from "../fields/simple-field.jsx";
@@ -8,81 +8,156 @@ import SalarySlider from "../salary-slider/salary-slider.jsx";
 import theme from "../../../styles/themes.js";
 import EditIcon from '@mui/icons-material/Edit';
 import {useNavigate} from "react-router-dom/dist";
+import {createCustomer, getCustomer, updateCustomer} from "../../../redux/actions/customerAction.js";
+import {useDispatch, useSelector} from "react-redux";
+import {createAuditor, getAuditor, updateAuditor} from "../../../redux/actions/auditorAction.js";
+import Loader from "../../Loader.jsx";
+import {AUDITOR, CUSTOMER} from "../../../redux/actions/types.js";
+import TagsField from "../tags-field/tags-field.jsx";
+import * as Yup from "yup";
+import {changePassword} from "../../../redux/actions/userAction.js";
+import ChangePasswordFormik from "../change-password-formik/index.jsx";
 
-const EditProfileForm = () => {
+const EditProfileForm = ({role}) => {
     const matchSm = useMediaQuery(theme.breakpoints.down('sm'))
-    const navigate = useNavigate()
+    const dispatch = useDispatch()
+    const [passwordState, setPasswordState] = useState('')
 
-    return (
-        <Formik
-            initialValues={{}}
-            // validationSchema={SigninSchema}
-            validateOnBlur={false}
-            validateOnChange={false}
-            onSubmit={(values) => {
-                navigate('/home-customer')
-            }}
-        >
-            {({handleSubmit}) => {
-                return (
-                    <Form onSubmit={handleSubmit}>
-                        <Box sx={wrapper}>
-                            <Box sx={avatarWrapper}>
-                                <Box sx={{display: 'flex', alignItems: 'center', flexDirection: 'column'}}>
-                                    <Avatar/>
-                                    <Button>
-                                        <EditIcon fontSize={'small'}/>
-                                        Edit photo
-                                    </Button>
-                                </Box>
-                                { matchSm &&
-                                    <Box sx={[fieldWrapper, {width: '100%'}]}>
-                                        <SimpleField name={'first-name'} label={'First Name'}/>
-                                        <SimpleField name={'last-name'} label={'Last name'}/>
+    const customer = useSelector(s => s.customer.customer)
+    const auditor = useSelector(s => s.auditor.auditor)
+
+    const data = useMemo(() => {
+        if (role === AUDITOR){
+            return auditor
+        } else {
+            return customer
+        }
+    },[role, customer, auditor])
+
+    if (!data) {
+        return <Loader/>
+    } else {
+        return (
+            <Formik
+                initialValues={{
+                    first_name: data?.first_name || '',
+                    last_name: data?.last_name || '',
+                    contacts: {
+                        telegram: data?.contacts?.telegram || '',
+                        email: data?.contacts?.email || '',
+                    },
+                    about: data?.about || '',
+                    company: data?.company || '',
+                    tax: data?.tax || '',
+                    tags: data?.tags || []
+                }}
+                validationSchema={EditProfileSchema}
+                validateOnBlur={false}
+                validateOnChange={false}
+                onSubmit={(values) => {
+                    if (role !== AUDITOR){
+                        if (!data.first_name && !data.last_name){
+                            dispatch(createCustomer(values))
+                        } else {
+                            dispatch(updateCustomer(values))
+                        }
+                    } else {
+                        if (!data.first_name && !data.last_name){
+                            dispatch(createAuditor(values))
+                        } else {
+                            dispatch(updateAuditor(values))
+                        }
+                    }
+                }}
+            >
+                {({handleSubmit, errors,values}) => {
+                    return (
+                        <Form onSubmit={handleSubmit}>
+                            <Box sx={wrapper}>
+                                <Box sx={avatarWrapper}>
+                                    <Box sx={{display: 'flex', alignItems: 'center', flexDirection: 'column'}}>
+                                        <Avatar/>
+                                        <Button sx={
+                                            role === AUDITOR ? {color: theme.palette.secondary.main} : {}
+                                        }>
+                                            <EditIcon fontSize={'small'}/>
+                                            Edit photo
+                                        </Button>
                                     </Box>
-                                }
-                            </Box>
-                            <Box sx={fieldsWrapper}>
-                                <Box sx={fieldWrapper}>
-                                    { !matchSm &&
-                                        <>
-                                            <SimpleField name={'first-name'} label={'First Name'}/>
-                                            <SimpleField name={'last-name'} label={'Last name'}/>
-                                        </>
+                                    { matchSm &&
+                                        <Box sx={[fieldWrapper, {width: '100%'}]}>
+                                            <SimpleField name={'first_name'} label={'First Name'}/>
+                                            <SimpleField name={'last_name'} label={'Last name'}/>
+                                        </Box>
                                     }
-                                    <SimpleField name={'email'} label={'E-mail'}/>
-                                    <PasswordField name={'password'} label={'Password'}/>
-                                    <SimpleField name={'tags'} label={'Tags'}/>
                                 </Box>
-                                <Box sx={fieldWrapper}>
-                                    <SimpleField name={'company'} label={'Company'}/>
-                                    <SimpleField name={'about'} label={'About'}/>
-                                    <SimpleField name={'telegram'} label={'Telegram'}/>
-                                    <Box>
-                                        <Typography sx={rateLabel}>
-                                            Tax rate per stroke
-                                        </Typography>
-                                        <SalarySlider />
+                                <Box sx={fieldsWrapper}>
+                                    <Box sx={fieldWrapper}>
+                                        { !matchSm &&
+                                            <>
+                                                <SimpleField name={'first_name'} label={'First Name'}/>
+                                                <SimpleField name={'last_name'} label={'Last name'}/>
+                                            </>
+                                        }
+                                        <SimpleField name={'contacts.email'} label={'E-mail'}/>
+                                        <ChangePasswordFormik />
+                                        {!matchSm &&
+                                            <TagsField name={'tags'} label={'Tags'}/>
+                                        }
                                     </Box>
-                                    <TagsArray/>
+                                    <Box sx={fieldWrapper}>
+                                        { role === CUSTOMER &&
+                                            <SimpleField name={'company'} label={'Company'}/>
+                                        }
+                                        <SimpleField name={'about'} label={'About'}/>
+                                        <SimpleField name={'contacts.telegram'} label={'Telegram'}/>
+                                        <Box>
+                                            <Typography sx={rateLabel}>
+                                                Tax rate per stroke
+                                            </Typography>
+                                            <SalarySlider />
+                                        </Box>
+                                        {matchSm &&
+                                            <TagsField name={'tags'} label={'Tags'}/>
+                                        }
+                                            <TagsArray name={'tags'}/>
+                                    </Box>
                                 </Box>
                             </Box>
-                        </Box>
-                        <Button
-                            type={'submit'}
-                            variant={'contained'}
-                            sx={buttonSx}
-                        >
-                            Save changes
-                        </Button>
-                    </Form>
-                )
-            }}
-        </Formik>
-    );
+                            <Button
+                                type={'submit'}
+                                variant={'contained'}
+                                sx={[buttonSx, role === AUDITOR ?
+                                    {backgroundColor: theme.palette.secondary.main} : {}]}
+                            >
+                                Save changes
+                            </Button>
+                        </Form>
+                    )
+                }}
+            </Formik>
+        );
+    }
 };
 
 export default EditProfileForm;
+
+const EditProfileSchema = Yup.object().shape({
+    first_name: Yup.string().required('Required'),
+    last_name: Yup.string().required('Required'),
+    contacts: Yup.object().shape({
+        email: Yup.string().email('Invalid email').required('required'),
+        telegram: Yup.string()
+    }),
+    about: Yup.string(),
+    tax: Yup.string().required('Required'),
+    tags: Yup.array().min(1)
+});
+
+const PasswordValidation = Yup.object().shape({
+    password: Yup.string()
+        .min(6, 'Too Short!'),
+})
 
 const wrapper = (theme) => ({
     display: 'flex',

@@ -1,9 +1,15 @@
-import React from 'react';
+import React, {useEffect, useMemo} from 'react';
 import {Avatar, Box, Button, Chip, Typography} from "@mui/material";
 import theme, {radiusOfComponents} from "../styles/themes.js";
 import ClearIcon from '@mui/icons-material/Clear';
 import {useNavigate} from "react-router-dom/dist";
 import TagsArray from "./tagsArray/index.jsx";
+import {useDispatch, useSelector} from "react-redux";
+import {getAuditor} from "../redux/actions/auditorAction.js";
+import {getCustomer} from "../redux/actions/customerAction.js";
+import Loader from "./Loader.jsx";
+import {AUDITOR} from "../redux/actions/types.js";
+import TagsList from "./tagsList";
 
 const skills = [
     {frame: 'java'},
@@ -18,58 +24,74 @@ const skills = [
 
 const UserInfo = ({role}) => {
     const navigate = useNavigate()
+    const customer = useSelector(s => s.customer.customer)
+    const auditor = useSelector(s => s.auditor.auditor)
 
     const handleEdit = () => {
         navigate('/edit-profile')
     }
 
-    return (
-        <Box sx={wrapper}>
-            <Box sx={contentWrapper}>
-                <Box sx={{display: 'flex', justifyContent: 'center'}}>
-                    <Avatar sx={avatarStyle}/>
-                </Box>
-                <Box sx={infoStyle}>
-                    <Box sx={infoInnerStyle}>
-                        <Box sx={infoWrapper}>
-                            <span>First Name</span>
-                            <Typography>Mihael</Typography>
+    const data = useMemo(() => {
+        if (role === AUDITOR){
+            return auditor
+        } else {
+            return customer
+        }
+    },[role, customer, auditor])
+
+    if (!data){
+        return <Loader role={role}/>
+    } else {
+        return (
+            <Box sx={wrapper}>
+                <Box sx={contentWrapper}>
+                    <Box sx={{display: 'flex', justifyContent: 'center'}}>
+                        <Avatar sx={avatarStyle}/>
+                    </Box>
+                    <Box sx={infoStyle}>
+                        <Box sx={infoInnerStyle}>
+                            <Box sx={infoWrapper}>
+                                <span>First Name</span>
+                                <Typography noWrap={true}>{data.first_name}</Typography>
+                            </Box>
+                            <Box sx={infoWrapper}>
+                                <span>Last name</span>
+                                <Typography noWrap={true}>{data.last_name}</Typography>
+                            </Box>
+                            <Box sx={infoWrapper}>
+                                <span>Telegram</span>
+                                <Typography noWrap={true}>{data.contacts?.telegram}</Typography>
+                            </Box>
+                            <Box sx={infoWrapper}>
+                                <span>Tax rate</span>
+                                {data?.tax && <Typography>{data?.tax} $ per stroke</Typography>}
+                            </Box>
                         </Box>
-                        <Box sx={infoWrapper}>
-                            <span>Last name</span>
-                            <Typography>Sorokin</Typography>
-                        </Box>
-                        <Box sx={infoWrapper}>
-                            <span>Telegram</span>
-                            <Typography>Mihael@</Typography>
-                        </Box>
-                        <Box sx={infoWrapper}>
-                            <span>Tax rate</span>
-                            <Typography>20 $ per stroke</Typography>
+                        <Box sx={infoInnerStyle}>
+                            {role !== AUDITOR &&
+                                <Box sx={infoWrapper}>
+                                    <span>Company</span>
+                                    <Typography noWrap={true}>{data.company}</Typography>
+                                </Box>
+                            }
+                            <Box sx={infoWrapper}>
+                                <span>E-mail</span>
+                                <Typography noWrap={true}>{data.contacts?.email}</Typography>
+                            </Box>
+                            <TagsList data={data.tags}/>
                         </Box>
                     </Box>
-                    <Box sx={infoInnerStyle}>
-                        <Box sx={infoWrapper}>
-                            <span>Company</span>
-                            <Typography>AuditDB network</Typography>
-                        </Box>
-                        <Box sx={infoWrapper}>
-                            <span>E-mail</span>
-                            <Typography>Mihael@gmail.com</Typography>
-                        </Box>
-                        <TagsArray/>
-                    </Box>
                 </Box>
+                <Button
+                    sx={[buttonSx, role === 'auditor' ? submitAuditor : {}]}
+                    variant={'contained'}
+                    onClick={handleEdit}
+                >
+                    Edit
+                </Button>
             </Box>
-            <Button
-                sx={[buttonSx, role === 'auditor' ? submitAuditor : {}]}
-                variant={'contained'}
-                onClick={handleEdit}
-            >
-                Edit
-            </Button>
-        </Box>
-    );
+        );
+    }
 };
 
 export default UserInfo;
@@ -163,7 +185,8 @@ const infoWrapper = (theme) => ({
     fontWeight: 500,
     color: '#434242',
     '& p': {
-        fontSize: 'inherit'
+        fontSize: 'inherit',
+        maxWidth: '250px',
     },
     '& span': {
         width: '125px',
@@ -174,7 +197,10 @@ const infoWrapper = (theme) => ({
     [theme.breakpoints.down('md')]: {
         '& span': {
             width: '90px',
-            marginRight: '20px'
+            marginRight: '20px',
+        },
+        '& p': {
+            maxWidth: '190px'
         }
     },
     [theme.breakpoints.down('xs')]: {

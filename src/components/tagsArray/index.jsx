@@ -1,63 +1,43 @@
 import React from "react";
-import { Box, Chip } from "@mui/material";
+import { Box, Chip, Typography } from "@mui/material";
 import ClearIcon from "@mui/icons-material/Clear.js";
+import { FieldArray, useField } from "formik";
+import theme from "../../styles/themes.js";
 
-const TagsArray = ({ tags, handleDelete }) => {
-  return tags ? (
+const TagsArray = ({ name }) => {
+  const [field, meta] = useField(name);
+
+  return (
     <Box sx={{ display: "flex", gap: "15px", flexWrap: "wrap" }}>
-      {tags.map((tag) => (
-        <Chip
-            key={tag}
-          sx={{
-            border: "2px solid #E5E5E5",
-            borderRadius: "5px",
-            color: "#434242",
-            fontWeight: 500,
-          }}
-          label={tag}
-          variant="outlined"
-          onDelete={() => handleDelete(tag)}
-          deleteIcon={<ClearIcon sx={iconSx} />}
-        />
-      ))}
-    </Box>
-  ) : (
-    <Box sx={{ display: "flex", gap: "15px", flexWrap: "wrap" }}>
-      <Chip
-        sx={{
-          border: "2px solid #E5E5E5",
-          borderRadius: "5px",
-          color: "#434242",
-          fontWeight: 500,
-        }}
-        label={"java"}
-        variant="outlined"
-        onDelete={() => console.log(11)}
-        deleteIcon={<ClearIcon sx={iconSx} />}
-      />
-      <Chip
-        sx={{
-          border: "2px solid #E5E5E5",
-          borderRadius: "5px",
-          color: "#434242",
-          fontWeight: 500,
-        }}
-        label={"piton"}
-        variant="outlined"
-        onDelete={() => console.log(11)}
-        deleteIcon={<ClearIcon sx={iconSx} />}
-      />
-      <Chip
-        sx={{
-          border: "2px solid #E5E5E5",
-          borderRadius: "5px",
-          color: "#434242",
-          fontWeight: 500,
-        }}
-        label={"java"}
-        variant="outlined"
-        onDelete={() => console.log(11)}
-        deleteIcon={<ClearIcon sx={iconSx} />}
+      {meta.error && (
+        <Typography
+          variant={"body1"}
+          sx={{ color: `${theme.palette.error.main}!important` }}
+        >
+          Tags required
+        </Typography>
+      )}
+      <FieldArray
+        name={name}
+        render={(arrayHelper) =>
+          field.value.map((tag, idx) => {
+            return (
+              <Chip
+                key={idx}
+                sx={{
+                  border: "2px solid #E5E5E5",
+                  borderRadius: "5px",
+                  color: "#434242",
+                  fontWeight: 500,
+                }}
+                label={tag}
+                variant="outlined"
+                onDelete={() => arrayHelper.remove(idx)}
+                deleteIcon={<ClearIcon sx={iconSx} />}
+              />
+            );
+          })
+        }
       />
     </Box>
   );

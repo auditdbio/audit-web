@@ -16,8 +16,13 @@ import { isAuth } from "../../lib/helper.js";
 import { CustomBadge } from "../custom/Badge.jsx";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import { UserMenu } from "./UserMenu.jsx";
+import RoleMenuDropdown from "./RoleMenuDropdown.jsx";
+import { useSelector } from "react-redux";
 
 const Header = () => {
+  const reduxUser = useSelector((state) => state.user.user);
+  const [currentUsername] = useState(reduxUser.name || 'User');
+
   const navigate = useNavigate();
   const matchSm = useMediaQuery(theme.breakpoints.down("sm"));
 
@@ -32,6 +37,9 @@ const Header = () => {
   const [anchorElNav, setAnchorElNav] = useState(null);
   const [anchorElUser, setAnchorElUser] = useState(null);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+  const [anchorElRole, setAnchorElRole] = useState(null);
+  const [isRoleMenuOpen, setIsRoleMenuOpen] = useState(false);
+  // const [isAuditor, setIsAudito] = useState(false)
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
@@ -40,6 +48,11 @@ const Header = () => {
     setAnchorElUser(event.currentTarget);
     setIsUserMenuOpen(!isUserMenuOpen);
   };
+
+  // const handleOpenRoleMenu = (event) => {
+  //   setAnchorElRole(event.currentTarget);
+  //   setIsRoleMenuOpen(!isUserMenuOpen);
+  // };
 
   const handleCloseNavMenu = () => {
     setAnchorElNav(null);
@@ -50,12 +63,17 @@ const Header = () => {
     setAnchorElUser(null);
   };
 
+  const handleCloseRoleMenu = () => {
+    setIsRoleMenuOpen(false);
+    setAnchorElRole(null);
+  };
+
   return (
     <AppBar position="static" color="transparent" elevation={0}>
       <Container
         // maxWidth="xl"
         sx={{
-          maxWidth: '1512px',
+          maxWidth: "1512px",
           paddingTop: "60px",
           [theme.breakpoints.down("xs")]: {
             paddingTop: "20px",
@@ -69,7 +87,7 @@ const Header = () => {
               display: "flex",
               flexDirection: "row",
               justifyContent: "space-between",
-              gap: '1rem'
+              gap: "1rem",
             }}
           >
             <Link to={"/"} style={linkStyle}>
@@ -81,15 +99,12 @@ const Header = () => {
               <>
                 {matchSm && (
                   <>
-                    <Box
-                      sx={{ flexGrow: 0, display: "flex" }}
-                    >
+                    <Box sx={{ flexGrow: 0, display: "flex" }}>
                       <IconButton
                         aria-label="account of current user"
                         aria-controls="menu-appbar"
                         aria-haspopup="true"
                         onClick={handleOpenNavMenu}
-
                         color="inherit"
                       >
                         <MenuIcon fontSize="large" />
@@ -186,7 +201,7 @@ const Header = () => {
                       sx={{
                         flexGrow: 1,
                         maxWidth: "500px",
-                        display: "flex" ,
+                        display: "flex",
                         gap: "1rem",
                       }}
                     >
@@ -246,20 +261,22 @@ const Header = () => {
                       aria-haspopup="true"
                       onClick={handleOpenUserMenu}
                       color="inherit"
-                      sx={{padding: 0}}
+                      sx={{ padding: 0 }}
                     >
                       <MenuIcon fontSize="large" />
                     </IconButton>
                     <UserMenu
-                        open={isUserMenuOpen}
-                        handleClose={handleCloseUserMenu}
-                        anchor={anchorElUser}
+                      open={isUserMenuOpen}
+                      handleClose={handleCloseUserMenu}
+                      anchor={anchorElUser}
                     />
                   </Box>
                 )}
                 {/* //   Desktop Screen  */}
                 {!matchSm && (
-                  <Box sx={{ display: "flex", gap: "2rem" }}>
+                  <Box
+                    sx={{ display: "flex", alignItems: "center", gap: "2rem" }}
+                  >
                     {authorizedPages.map((page) => (
                       <CustomMenu
                         key={page.id}
@@ -292,9 +309,10 @@ const Header = () => {
                         alignItems: "center",
                         fontSize: "26px",
                         fontWeight: "500",
+                        whiteSpace: "nowrap",
                       }}
                     >
-                      Hello, Michael!
+                      Hello, {currentUsername}!
                     </Typography>
                     <IconButton
                       onClick={handleOpenUserMenu}
@@ -313,6 +331,11 @@ const Header = () => {
                         anchor={anchorElUser}
                       />
                     </IconButton>
+                    <RoleMenuDropdown
+                      open={isRoleMenuOpen}
+                      handleClose={handleCloseRoleMenu}
+                      anchor={anchorElRole}
+                    />
                   </Box>
                 )}
               </>
