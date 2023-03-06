@@ -29,7 +29,7 @@ const HomeCustomer = () => {
                 <InfoCard>
                     {chooseTab === 'audits' && <Audits />}
                     {chooseTab === 'user-info' && <UserInfo />}
-                    {chooseTab === 'projects' && <Projects />}
+                    {chooseTab === 'projects' && <Projects role={'customer'}/>}
                 </InfoCard>
             </Box>
         </Layout>
