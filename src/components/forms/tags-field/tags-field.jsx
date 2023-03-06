@@ -11,6 +11,7 @@ const TagsField = ({name, label}) => {
     const [field, meta, fieldHelper] = useField(name)
     const [state, setState] = useState('')
     const handleAddTag = () => {
+        if (state === '') return
         setState('')
         fieldHelper.setValue([...field.value, state])
     }

@@ -1,32 +1,26 @@
 import React, { useState } from "react";
 import {
-  Alert,
-  AlertTitle,
-  Avatar,
   Box,
   Button,
-  Chip,
-  InputAdornment,
-  Snackbar,
-  Stack,
-  Typography,
 } from "@mui/material";
 import theme, { radiusOfComponents } from "../styles/themes.js";
-import ClearIcon from "@mui/icons-material/Clear";
 import { useNavigate } from "react-router-dom/dist";
 import TagsArray from "./tagsArray/index.jsx";
 import { Form, Formik } from "formik";
 import SimpleField from "./forms/fields/simple-field.jsx";
 import DescriptionField from "./forms/create-project/DescriptionField.jsx";
-import IconField from "./forms/fields/array-field.jsx";
-import { Links } from "./custom/Links.jsx";
+import { ProjectLinksList } from "./custom/ProjectLinksList.jsx";
 import { useFormik } from "formik";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack.js";
 import MenuRoundedIcon from "@mui/icons-material/MenuRounded";
 import AuditorSearchModal from "./AuditorSearchModal.jsx";
+import TagsField from "./forms/tags-field/tags-field.jsx";
+import {createProject, getProjects} from "../redux/actions/projectAction.js";
+import { useDispatch } from "react-redux";
 
 const CreateProjectCard = ({ role }) => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleEdit = () => {
     navigate("/edit-profile");
@@ -34,16 +28,12 @@ const CreateProjectCard = ({ role }) => {
 
   const initialValues = {
     name: "",
-    projectLink: "",
+    projectLinks: [],
     fileLink: "",
     description: "",
-    tags: "",
+    tags: [],
   };
   const [openInvite, setOpenInvite] = useState(false);
-
-  const [links, setLinks] = useState([]);
-
-  const [tags, setTags] = useState([]);
 
   const handleInviteModal = () => {
     setOpenInvite(true);
@@ -51,22 +41,6 @@ const CreateProjectCard = ({ role }) => {
 
   const handleCloseInviteModal = () => {
     setOpenInvite(false);
-  };
-
-  const handleAddLink = (newLink) => {
-    setLinks([...links, newLink]);
-  };
-
-  const handleDeleteLink = (targetLink) => {
-    setLinks(links.filter((link) => link !== targetLink));
-  };
-
-  const handleAddTags = (newTag) => {
-    setTags([...tags, newTag]);
-  };
-
-  const handleDeleteTags = (targetTag) => {
-    setTags(tags.filter((tag) => tag !== targetTag));
   };
 
   return (
@@ -103,7 +77,8 @@ const CreateProjectCard = ({ role }) => {
           // validateOnBlur={false}
           // validateOnChange={false}
           onSubmit={(values) => {
-            // dispatch(signIn(values))
+            // dispatch(createProject(values));
+            dispatch(getProjects('java'));
             console.log(values);
           }}
         >
@@ -115,13 +90,11 @@ const CreateProjectCard = ({ role }) => {
                     <Box sx={formWrapper}>
                       <Box sx={fieldWrapper}>
                         <SimpleField name={"name"} label={"Name"} />
-                        <IconField
-                          name={"projectLink"}
-                          label={"Project link"}
-                          array={links}
-                          handleAdd={handleAddLink}
+                        <TagsField
+                          name={"projectLinks"}
+                          label={"Project links"}
                         />
-                        <Links links={links} handleDelete={handleDeleteLink} />
+                        <ProjectLinksList name={"projectLinks"} />
                       </Box>
                       <Box
                         className="description-box"
@@ -135,18 +108,13 @@ const CreateProjectCard = ({ role }) => {
                     </Box>
                     <Box sx={tagsFieldWrapper}>
                       <Box sx={fieldWrapper}>
-                        {/*<SimpleField name={"tags"} label={"Tags"} />*/}
-                        <IconField
-                          name={"tags"}
-                          label={"Tags"}
-                          array={tags}
-                          handleAdd={handleAddTags}
-                        />
+                        <TagsField name={"tags"} label={"Tags"} />
                       </Box>
                       <Box sx={tagsArrayWrapper}>
                         <TagsArray
-                          tags={tags}
-                          handleDelete={handleDeleteTags}
+                          name={"tags"}
+                          // tags={tags}
+                          // handleDelete={handleDeleteTags}
                         />
                       </Box>
                     </Box>

@@ -1,16 +1,15 @@
-import Cookies from "js-cookie";
-import { PROJECT_CREATE } from "../actions/types.js";
+import { PROJECT_CREATE, GET_PROJECTS } from "../actions/types.js";
 
 const initialState = {
-  token: Cookies.get("token") || "",
-  isAuth: false,
-  user: JSON.parse(localStorage.getItem("user")) || {},
+  projects: null,
   error: null,
 };
 export const projectReducer = (state = initialState, action) => {
   switch (action.type) {
     case PROJECT_CREATE:
-    // return { token: action.payload.token, isAuth: true, user: action.payload.user }
+      return state;
+    case GET_PROJECTS:
+      return {...state, projects: action.payload};
     default:
       return state;
   }
