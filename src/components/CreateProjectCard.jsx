@@ -29,7 +29,6 @@ const CreateProjectCard = ({ role }) => {
   const initialValues = {
     name: "",
     projectLinks: [],
-    fileLink: "",
     description: "",
     tags: [],
   };
@@ -78,8 +77,8 @@ const CreateProjectCard = ({ role }) => {
           // validateOnChange={false}
           onSubmit={(values) => {
             dispatch(createProject(values));
-            dispatch(getProjects('java'));
-            console.log(values);
+            // dispatch(getProjects('java'));
+            // console.log(values);
           }}
         >
           {({ handleSubmit }) => {
