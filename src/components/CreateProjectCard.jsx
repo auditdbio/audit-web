@@ -58,7 +58,7 @@ const CreateProjectCard = ({ role }) => {
         <Button
           variant={"contained"}
           sx={inviteButton}
-          onClick={handleInviteModal}
+          // onClick={handleInviteModal}
         >
           Invite auditor
         </Button>

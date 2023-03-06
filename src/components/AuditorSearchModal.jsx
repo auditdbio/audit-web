@@ -9,6 +9,7 @@ import { Box } from "@mui/system";
 import InputAdornment from "@mui/material/InputAdornment";
 import SearchIcon from "@mui/icons-material/Search";
 import Autocomplete from "@mui/material/Autocomplete";
+import { createPortal } from "react-dom";
 
 export default function AuditorSearchModal({ open, handleClose }) {
   return (
@@ -16,7 +17,7 @@ export default function AuditorSearchModal({ open, handleClose }) {
       <DialogContent sx={modalWindow}>
         <Box sx={fieldButtonContainer}>
           <Autocomplete
-            disablePortal
+            freeSolo
             id="combo-box-demo"
             options={auditorNames}
             sx={{ autocompleteDropdown }}
@@ -65,6 +66,7 @@ const auditorNames = [
   { label: "Testov test", status: "Free to audit" },
   { label: "Ivan Ivanov", status: "Free to audit" },
   { label: "Akhmet Akhmetov", status: "Free to audit" },
+  { label: "Aket Ahmetov", status: "Free to audit" },
 ];
 
 const fieldButtonContainer = {
