@@ -10,19 +10,56 @@ import InputAdornment from "@mui/material/InputAdornment";
 import SearchIcon from "@mui/icons-material/Search";
 import Autocomplete from "@mui/material/Autocomplete";
 import { createPortal } from "react-dom";
+import { useState } from "react";
 
 export default function AuditorSearchModal({ open, handleClose }) {
+  const [openDrop, setOpenDrop] = useState(false);
+  const [inputValue, setInputValue] = useState("");
+
   return (
     <Dialog open={open} onClose={handleClose}>
       <DialogContent sx={modalWindow}>
         <Box sx={fieldButtonContainer}>
           <Autocomplete
+            open={openDrop}
+            onOpen={() => {
+              if (inputValue) {
+                setOpenDrop(true);
+              }
+            }}
+            onClose={() => setOpenDrop(false)}
+            inputValue={inputValue}
+            onInputChange={(e, value, reason) => {
+              setInputValue(value);
+
+              // only open when inputValue is not empty after the user typed something
+              if (!value) {
+                setOpenDrop(false);
+              }
+            }}
             freeSolo
-            id="combo-box-demo"
+            // id="combo-box-demo"
             options={auditorNames}
             sx={{ autocompleteDropdown }}
             renderInput={(params) => (
-              <TextField {...params} sx={searchField} fullWidth type="text" />
+              <TextField
+                {...params}
+                id="name"
+                sx={searchField}
+                fullWidth
+                type="text"
+                InputProps={{
+                  ...params.InputProps,
+                  startAdornment: (
+                    <>
+                      <InputAdornment position="start">
+                        <SearchIcon />
+                      </InputAdornment>
+                      {params.InputProps.startAdornment}
+                    </>
+                  ),
+                }}
+              />
             )}
           />
           {/*<TextField*/}
@@ -85,8 +122,9 @@ const searchField = {
     backgroundColor: theme.palette.background.default,
     // border: "1px solid #434242",
     borderRadius: "4px",
-    height: "45px",
-    fontSize: "14px",
+    padding: "6px 13px",
+    // height: "45px",
+    fontSize: "24px",
     width: "460px",
     [theme.breakpoints.down("sm")]: {
       width: "100%",
@@ -97,7 +135,12 @@ const searchField = {
 };
 
 const autocompleteDropdown = {
-  width: 300,
+  fontSize: "14px",
+  width: "460px",
+  [theme.breakpoints.down("sm")]: {
+    width: "100%",
+    fontSize: "11px",
+  },
 };
 
 const findButton = {
