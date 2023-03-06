@@ -77,7 +77,7 @@ const CreateProjectCard = ({ role }) => {
           // validateOnBlur={false}
           // validateOnChange={false}
           onSubmit={(values) => {
-            // dispatch(createProject(values));
+            dispatch(createProject(values));
             dispatch(getProjects('java'));
             console.log(values);
           }}

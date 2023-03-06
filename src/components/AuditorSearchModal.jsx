@@ -8,29 +8,39 @@ import theme from "../styles/themes.js";
 import { Box } from "@mui/system";
 import InputAdornment from "@mui/material/InputAdornment";
 import SearchIcon from "@mui/icons-material/Search";
+import Autocomplete from "@mui/material/Autocomplete";
 
 export default function AuditorSearchModal({ open, handleClose }) {
   return (
     <Dialog open={open} onClose={handleClose}>
       <DialogContent sx={modalWindow}>
         <Box sx={fieldButtonContainer}>
-          <TextField
-            type="search"
-            autoFocus
-            id="name"
-            type="text"
-            fullWidth
-            variant="outlined"
-            sx={searchField}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <SearchIcon sx={searchIcon} />
-                </InputAdornment>
-              ),
-              disableUnderline: true,
-            }}
+          <Autocomplete
+            disablePortal
+            id="combo-box-demo"
+            options={auditorNames}
+            sx={{ autocompleteDropdown }}
+            renderInput={(params) => (
+              <TextField {...params} sx={searchField} fullWidth type="text" />
+            )}
           />
+          {/*<TextField*/}
+          {/*  type="search"*/}
+          {/*  autoFocus*/}
+          {/*  id="name"*/}
+          {/*  type="text"*/}
+          {/*  fullWidth*/}
+          {/*  variant="outlined"*/}
+          {/*  sx={searchField}*/}
+          {/*  InputProps={{*/}
+          {/*    startAdornment: (*/}
+          {/*      <InputAdornment position="start">*/}
+          {/*        <SearchIcon sx={searchIcon} />*/}
+          {/*      </InputAdornment>*/}
+          {/*    ),*/}
+          {/*    // disableUnderline: true,*/}
+          {/*  }}*/}
+          {/*/>*/}
           <Button sx={findButton}>Find</Button>
         </Box>
       </DialogContent>
@@ -50,6 +60,12 @@ const modalWindow = {
     height: "100px",
   },
 };
+
+const auditorNames = [
+  { label: "Testov test", status: "Free to audit" },
+  { label: "Ivan Ivanov", status: "Free to audit" },
+  { label: "Akhmet Akhmetov", status: "Free to audit" },
+];
 
 const fieldButtonContainer = {
   display: "flex",
@@ -76,6 +92,10 @@ const searchField = {
       fontSize: "11px",
     },
   },
+};
+
+const autocompleteDropdown = {
+  width: 300,
 };
 
 const findButton = {
