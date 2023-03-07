@@ -17,6 +17,8 @@ import ProfilePage from "../pages/profile-page.jsx";
 import {AUDITOR} from "../redux/actions/types.js";
 import {getAuditor} from "../redux/actions/auditorAction.js";
 import {getCustomer} from "../redux/actions/customerAction.js";
+import Projects from "../components/Projects.jsx";
+import ProjectPage from "../pages/Project-page.jsx";
 
 
 const AppRoutes = () => {
@@ -32,6 +34,7 @@ const AppRoutes = () => {
                 dispatch(getCustomer())
             }
         }
+        // dispatch(getProjects())
     },[dispatch, token, currentRole])
 
     return (
@@ -40,6 +43,7 @@ const AppRoutes = () => {
                 <Route path={'/'} element={<HomePage />} />
                 <Route path={'/sign-up'} element={<SignupPage />} />
                 <Route path={'/sign-in'} element={<SigninPage />} />
+                <Route path={'/projects'} element={<ProjectPage />} />
                 <Route
                     path="/profile"
                     element={
