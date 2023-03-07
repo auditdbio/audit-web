@@ -10,11 +10,56 @@ import InputAdornment from "@mui/material/InputAdornment";
 import SearchIcon from "@mui/icons-material/Search";
 import Autocomplete from "@mui/material/Autocomplete";
 import { createPortal } from "react-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import debounce from "lodash.debounce";
+import Cookies from "js-cookie";
+import axios from "axios";
+import { GET_AUDITOR } from "../redux/actions/types.js";
 
 export default function AuditorSearchModal({ open, handleClose }) {
+  const API_URL = import.meta.env.VITE_API_BASE_URL;
+
+  const [auditorsList, setAuditorsList] = useState([]);
+
   const [openDrop, setOpenDrop] = useState(false);
   const [inputValue, setInputValue] = useState("");
+
+  const [query, setQuery] = useState("");
+
+  const sendRequest = debounce(() => {
+    const token = Cookies.get("token");
+    // return () => {
+    axios
+      .get(`${API_URL}/auditors`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .then(({ data }) => {
+        console.log(data["auditors"]);
+        setAuditorsList(data["auditors"]);
+        // dispatch({type: GET_AUDITOR, payload: data})
+      })
+      .catch(({ response }) => {
+        console.log(response, "res");
+      });
+    // }
+
+    // fetch(`API link`)
+    //   .then((response) => response.json())
+    //   .then((data) => {
+    //     //search result processing
+    //   })
+    //   .catch((consoleError) => {
+    //     console.log("error");
+    //   });
+  }, 500);
+
+  useEffect(() => {
+    sendRequest();
+  }, [query]);
+
+  const handleInputChange = (event) => {
+    setQuery(event.target.value);
+  };
 
   return (
     <Dialog open={open} onClose={handleClose}>
@@ -38,11 +83,12 @@ export default function AuditorSearchModal({ open, handleClose }) {
               }
             }}
             freeSolo
-            // id="combo-box-demo"
             options={auditorNames}
-            sx={{ autocompleteDropdown }}
+            ListboxProps={{ sx: listBox }}
+            // sx={autocompleteDropdown }
             renderInput={(params) => (
               <TextField
+                onChange={handleInputChange}
                 {...params}
                 id="name"
                 sx={searchField}
@@ -62,23 +108,6 @@ export default function AuditorSearchModal({ open, handleClose }) {
               />
             )}
           />
-          {/*<TextField*/}
-          {/*  type="search"*/}
-          {/*  autoFocus*/}
-          {/*  id="name"*/}
-          {/*  type="text"*/}
-          {/*  fullWidth*/}
-          {/*  variant="outlined"*/}
-          {/*  sx={searchField}*/}
-          {/*  InputProps={{*/}
-          {/*    startAdornment: (*/}
-          {/*      <InputAdornment position="start">*/}
-          {/*        <SearchIcon sx={searchIcon} />*/}
-          {/*      </InputAdornment>*/}
-          {/*    ),*/}
-          {/*    // disableUnderline: true,*/}
-          {/*  }}*/}
-          {/*/>*/}
           <Button sx={findButton}>Find</Button>
         </Box>
       </DialogContent>
@@ -122,7 +151,7 @@ const searchField = {
     backgroundColor: theme.palette.background.default,
     // border: "1px solid #434242",
     borderRadius: "4px",
-    padding: "6px 13px",
+    padding: "5px 13px",
     // height: "45px",
     fontSize: "24px",
     width: "460px",
@@ -140,6 +169,21 @@ const autocompleteDropdown = {
   [theme.breakpoints.down("sm")]: {
     width: "100%",
     fontSize: "11px",
+  },
+  backgroundColor: "#FF9900",
+};
+
+const listBox = {
+  "& :hover": {
+    backgroundColor: "#E5E5E5",
+  },
+  "& li": {
+    //list item specific styling
+    border: "0.7px solid #434242",
+    borderRadius: 0,
+    height: "60px",
+    fontSize: "14px",
+    fontWeight: "600",
   },
 };
 
