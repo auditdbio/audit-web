@@ -15,6 +15,7 @@ import debounce from "lodash.debounce";
 import Cookies from "js-cookie";
 import axios from "axios";
 import { GET_AUDITOR } from "../redux/actions/types.js";
+import { Paper } from "@mui/material";
 
 export default function AuditorSearchModal({ open, handleClose }) {
   const API_URL = import.meta.env.VITE_API_BASE_URL;
@@ -41,16 +42,6 @@ export default function AuditorSearchModal({ open, handleClose }) {
       .catch(({ response }) => {
         console.log(response, "res");
       });
-    // }
-
-    // fetch(`API link`)
-    //   .then((response) => response.json())
-    //   .then((data) => {
-    //     //search result processing
-    //   })
-    //   .catch((consoleError) => {
-    //     console.log("error");
-    //   });
   }, 500);
 
   useEffect(() => {
@@ -85,6 +76,7 @@ export default function AuditorSearchModal({ open, handleClose }) {
             freeSolo
             options={auditorNames}
             ListboxProps={{ sx: listBox }}
+            PaperComponent={CustomPaper}
             // sx={autocompleteDropdown }
             renderInput={(params) => (
               <TextField
@@ -99,7 +91,7 @@ export default function AuditorSearchModal({ open, handleClose }) {
                   startAdornment: (
                     <>
                       <InputAdornment position="start">
-                        <SearchIcon />
+                        <SearchIcon sx={searchIcon} />
                       </InputAdornment>
                       {params.InputProps.startAdornment}
                     </>
@@ -115,6 +107,10 @@ export default function AuditorSearchModal({ open, handleClose }) {
   );
 }
 
+const CustomPaper = (props) => {
+  return <Paper {...props} sx={customDropdown} />;
+};
+
 const modalWindow = {
   backgroundColor: theme.palette.primary.main,
   maxWidth: "700px",
@@ -122,18 +118,10 @@ const modalWindow = {
   display: "flex",
   justifyContent: "center",
   alignItems: "center",
-
   [theme.breakpoints.down("sm")]: {
     height: "100px",
   },
 };
-
-const auditorNames = [
-  { label: "Testov test", status: "Free to audit" },
-  { label: "Ivan Ivanov", status: "Free to audit" },
-  { label: "Akhmet Akhmetov", status: "Free to audit" },
-  { label: "Aket Ahmetov", status: "Free to audit" },
-];
 
 const fieldButtonContainer = {
   display: "flex",
@@ -152,15 +140,31 @@ const searchField = {
     // border: "1px solid #434242",
     borderRadius: "4px",
     padding: "5px 13px",
-    // height: "45px",
+    height: "45px",
     fontSize: "24px",
     width: "460px",
     [theme.breakpoints.down("sm")]: {
-      width: "100%",
+      // width: "100%",
       height: "25px",
       fontSize: "11px",
+      // padding: "0",
     },
   },
+  "& .MuiAutocomplete-inputRoot": {
+    [theme.breakpoints.down("sm")]: {
+      width: "100%",
+      // height: "25px",
+      fontSize: "11px",
+      padding: "0",
+    },
+  },
+};
+
+const customDropdown = {
+  // border: "1px solid #434242",
+  borderRadius: "0px",
+  // backgroundColor: "transparent",
+  boxShadow: "0",
 };
 
 const autocompleteDropdown = {
@@ -174,16 +178,20 @@ const autocompleteDropdown = {
 };
 
 const listBox = {
+  border: "1px solid #434242",
   "& :hover": {
-    backgroundColor: "#E5E5E5",
+    backgroundColor: "#FCFAF6",
   },
   "& li": {
     //list item specific styling
-    border: "0.7px solid #434242",
+    backgroundColor: "#FCFAF6",
+    borderBottom: "1px solid #434242",
     borderRadius: 0,
     height: "60px",
     fontSize: "14px",
     fontWeight: "600",
+    margin: "0px",
+    padding: "0px",
   },
 };
 
@@ -200,3 +208,10 @@ const findButton = {
     padding: "6px 31px",
   },
 };
+
+const auditorNames = [
+  { label: "Testov test", status: "Free to audit" },
+  { label: "Ivan Ivanov", status: "Free to audit" },
+  { label: "Akhmet Akhmetov", status: "Free to audit" },
+  { label: "Aket Ahmetov", status: "Free to audit" },
+];
