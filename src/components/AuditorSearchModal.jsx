@@ -15,13 +15,16 @@ import debounce from "lodash.debounce";
 import Cookies from "js-cookie";
 import axios from "axios";
 import { GET_AUDITOR } from "../redux/actions/types.js";
-import { Paper } from "@mui/material";
+import { Paper, Typography } from "@mui/material";
 import AuditorSearchListBox from "./custom/AuditorSearchListBox.jsx";
+import SalarySlider from "./forms/salary-slider/salary-slider.jsx";
 
 export default function AuditorSearchModal({ open, handleClose }) {
   const API_URL = import.meta.env.VITE_API_BASE_URL;
 
   const [auditorsList, setAuditorsList] = useState([]);
+
+  const [selectedAuditor, setSelectedAuditor] = useState("");
 
   const [openDrop, setOpenDrop] = useState(false);
   const [inputValue, setInputValue] = useState("");
@@ -53,6 +56,10 @@ export default function AuditorSearchModal({ open, handleClose }) {
     setQuery(event.target.value);
   };
 
+  const handleOptionChange = (event, value) => {
+    console.log(value);
+  };
+
   return (
     <Dialog open={open} onClose={handleClose}>
       <DialogContent sx={modalWindow}>
@@ -75,28 +82,13 @@ export default function AuditorSearchModal({ open, handleClose }) {
               }
             }}
             freeSolo
+            onChange={handleOptionChange}
             options={auditorNames}
             getOptionLabel={(option) => option.label}
-
-              // ListboxProps={{ sx: listBox }}
-            // ListboxProps={{ name, sx: listBox }}
-            // // ListboxComponent={AuditorSearchListBox}
-            // ListboxComponent={
-            //     <AuditorSearchListBox
-            //         name={option}
-            //     />}
-
             renderOption={(props, option) => (
-              <AuditorSearchListBox
-                {...props}
-                auditor={option.label}
-                // key={name}
-                // value={value}
-                // onChange={handleChange}
-              />
+              <AuditorSearchListBox {...props} auditor={option.label} />
             )}
             PaperComponent={CustomPaper}
-            // sx={autocompleteDropdown }
             renderInput={(params) => (
               <TextField
                 variant="outlined"
@@ -128,6 +120,12 @@ export default function AuditorSearchModal({ open, handleClose }) {
           />
           <Button sx={findButton}>Find</Button>
         </Box>
+        {/*<Box>*/}
+        {/*  <Box>*/}
+        {/*    <Typography sx={rateLabel}>Tax rate per stroke</Typography>*/}
+        {/*    <SalarySlider />*/}
+        {/*  </Box>*/}
+        {/*</Box>*/}
       </DialogContent>
     </Dialog>
   );
@@ -188,38 +186,12 @@ const searchField = {
 };
 
 const customDropdown = {
-  // border: "1px solid #434242",
-  borderRadius: "0px",
-  // backgroundColor: "transparent",
-  boxShadow: "0",
-};
-
-const autocompleteDropdown = {
-  fontSize: "14px",
-  width: "460px",
-  [theme.breakpoints.down("sm")]: {
-    width: "100%",
-    fontSize: "11px",
+  "& .MuiAutocomplete-listbox": {
+    padding: "0",
   },
-  backgroundColor: "#FF9900",
-};
-
-const listBox = {
   border: "1px solid #434242",
-  "& :hover": {
-    backgroundColor: "#FCFAF6",
-  },
-  "& li": {
-    //list item specific styling
-    backgroundColor: "#FCFAF6",
-    borderBottom: "1px solid #434242",
-    borderRadius: 0,
-    height: "60px",
-    fontSize: "14px",
-    fontWeight: "600",
-    margin: "0px",
-    padding: "0px",
-  },
+  borderRadius: "0px",
+  boxShadow: "0",
 };
 
 const findButton = {
@@ -235,6 +207,12 @@ const findButton = {
     padding: "6px 31px",
   },
 };
+
+const rateLabel = (theme) => ({
+  fontSize: "15px",
+  color: "#B2B3B3",
+  fontWeight: 500,
+});
 
 const auditorNames = [
   { label: "Testov test", status: "Free to audit" },

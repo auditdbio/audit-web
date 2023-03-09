@@ -7,13 +7,13 @@ const AuditorSearchListBox = ({ auditor }) => {
   return (
     <Box sx={mainContainer}>
       <Box>
-        <Typography style={nameStyle}>{auditor}</Typography>
+        <Typography sx={nameStyle(theme)}>{auditor}</Typography>
       </Box>
 
       <Box sx={statusContainer}>
         <CircleIcon sx={circleStyle} />
 
-        <Typography style={statusStyle}>Free to audit</Typography>
+        <Typography sx={statusStyle(theme)}>Free to audit</Typography>
       </Box>
     </Box>
   );
@@ -46,28 +46,51 @@ const statusContainer = {
   },
 };
 
-const nameStyle = {
-  fontSize: "9px",
+const nameStyle = (theme) => ({
+  // fontSize: "14px",
   fontWeight: "500px",
-  width: "150px",
-  [theme.breakpoints.down("sm")]: {
-    fontSize: "9px",
+  width: {
+    zero: "100%",
+    sm: "150px",
+    md: "150px",
+    lg: "180px",
   },
-};
 
-const statusStyle = {
-  fontSize: "10px",
+  fontSize: {
+    zero: "9px",
+    sm: "14px",
+    md: "14px",
+    lg: "14px",
+  },
+});
+
+const statusStyle = (theme) => ({
+  // fontSize: "10px",
   fontWeight: "500",
   color: "#434242",
-  [theme.breakpoints.down("sm")]: {
-    fontSize: "8px",
-  },
-};
 
-const circleStyle = {
+  display: {
+    zero: "none",
+    sm: "none",
+    md: "flex",
+    lg: "flex",
+  },
+  fontSize: {
+    zero: "8px",
+    sm: "8px",
+    md: "10px",
+    lg: "10px",
+  },
+});
+
+const circleStyle = (theme) => ({
   fontSize: "10px",
   color: "#09C010",
-  [theme.breakpoints.down("sm")]: {
-    fontSize: "8px",
+
+  display: {
+    zero: "none",
+    sm: "none",
+    md: "flex",
+    lg: "flex",
   },
-};
+});
