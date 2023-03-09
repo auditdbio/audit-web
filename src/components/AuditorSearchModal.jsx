@@ -16,6 +16,7 @@ import Cookies from "js-cookie";
 import axios from "axios";
 import { GET_AUDITOR } from "../redux/actions/types.js";
 import { Paper } from "@mui/material";
+import AuditorSearchListBox from "./custom/AuditorSearchListBox.jsx";
 
 export default function AuditorSearchModal({ open, handleClose }) {
   const API_URL = import.meta.env.VITE_API_BASE_URL;
@@ -75,19 +76,44 @@ export default function AuditorSearchModal({ open, handleClose }) {
             }}
             freeSolo
             options={auditorNames}
-            ListboxProps={{ sx: listBox }}
+            getOptionLabel={(option) => option.label}
+
+              // ListboxProps={{ sx: listBox }}
+            // ListboxProps={{ name, sx: listBox }}
+            // // ListboxComponent={AuditorSearchListBox}
+            // ListboxComponent={
+            //     <AuditorSearchListBox
+            //         name={option}
+            //     />}
+
+            renderOption={(props, option) => (
+              <AuditorSearchListBox
+                {...props}
+                auditor={option.label}
+                // key={name}
+                // value={value}
+                // onChange={handleChange}
+              />
+            )}
             PaperComponent={CustomPaper}
             // sx={autocompleteDropdown }
             renderInput={(params) => (
               <TextField
+                variant="outlined"
                 onChange={handleInputChange}
                 {...params}
                 id="name"
                 sx={searchField}
-                fullWidth
+                // fullWidth
                 type="text"
                 InputProps={{
                   ...params.InputProps,
+                  // className: classes.input,
+                  // sx: {
+                  //   color: "red",
+                  //   // height: "40px",
+                  //   padding: "0px",
+                  // },
                   startAdornment: (
                     <>
                       <InputAdornment position="start">
@@ -113,13 +139,14 @@ const CustomPaper = (props) => {
 
 const modalWindow = {
   backgroundColor: theme.palette.primary.main,
-  maxWidth: "700px",
+  width: "700px",
   height: "170px",
   display: "flex",
   justifyContent: "center",
   alignItems: "center",
   [theme.breakpoints.down("sm")]: {
     height: "100px",
+    width: "100%",
   },
 };
 
@@ -135,27 +162,27 @@ const searchIcon = {
 };
 
 const searchField = {
-  "& .MuiInputBase-root": {
-    backgroundColor: theme.palette.background.default,
-    // border: "1px solid #434242",
-    borderRadius: "4px",
-    padding: "5px 13px",
-    height: "45px",
-    fontSize: "24px",
-    width: "460px",
+  "& .MuiAutocomplete-input": {
+    fontSize: "14px",
     [theme.breakpoints.down("sm")]: {
-      // width: "100%",
-      height: "25px",
       fontSize: "11px",
-      // padding: "0",
     },
   },
-  "& .MuiAutocomplete-inputRoot": {
+
+  "&  .MuiOutlinedInput-root": {
+    backgroundColor: theme.palette.background.default,
+    padding: "0px",
+    height: "45px",
+    borderRadius: "4px",
+    // border: "1px solid #434242",
+    paddingLeft: "8px",
+    fontSize: "14px !important",
+    width: "465px",
     [theme.breakpoints.down("sm")]: {
-      width: "100%",
-      // height: "25px",
+      width: "120px",
+      height: "30px",
       fontSize: "11px",
-      padding: "0",
+      // padding: "0",
     },
   },
 };
@@ -203,7 +230,7 @@ const findButton = {
   height: "45px",
   textTransform: "none",
   [theme.breakpoints.down("sm")]: {
-    height: "25px",
+    height: "30px",
     fontSize: "11px",
     padding: "6px 31px",
   },
@@ -214,4 +241,5 @@ const auditorNames = [
   { label: "Ivan Ivanov", status: "Free to audit" },
   { label: "Akhmet Akhmetov", status: "Free to audit" },
   { label: "Aket Ahmetov", status: "Free to audit" },
+  { label: "Abraham Linkoln Barrows", status: "Free to audit" },
 ];
