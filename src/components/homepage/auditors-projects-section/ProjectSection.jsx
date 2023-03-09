@@ -9,9 +9,25 @@ import {
 import SearchIcon from "@mui/icons-material/Search";
 import PublicProjectCard from "./PublicProjectCard";
 import theme from "../../../styles/themes";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { getProjects } from "../../../redux/actions/projectAction.js";
 
 const ProjectSection = () => {
+  const dispatch = useDispatch();
   const matchSm = useMediaQuery(theme.breakpoints.down("xs"));
+  const [searchInput, setSearchInput] = useState("");
+  const projectReducer = useSelector((state) => state.project);
+
+  useEffect(() => {
+    if (searchInput) {
+      dispatch(getProjects(searchInput));
+    }
+  }, [searchInput]);
+
+  useEffect(() => {
+    console.log("projects", projectReducer);
+  }, [projectReducer]);
 
   return (
     <Box
@@ -38,6 +54,10 @@ const ProjectSection = () => {
                 lineHeight: "26px",
                 padding: "0",
               },
+            }}
+            value={searchInput}
+            onChange={(e) => {
+              setSearchInput(e.target.value);
             }}
           />
           <IconButton
@@ -77,18 +97,6 @@ const ProjectSection = () => {
           </Grid>
         )}
       </Grid>
-      {/*<Box*/}
-      {/*  sx={{*/}
-      {/*    display: "flex",*/}
-      {/*    justifyContent: "space-between",*/}
-      {/*    flexWrap: "wrap",*/}
-      {/*  }}*/}
-      {/*>*/}
-      {/*  <PublicProjectCard />*/}
-      {/*  <PublicProjectCard />*/}
-      {/*  <PublicProjectCard />*/}
-      {/*  {matchSm && (<PublicProjectCard />)}*/}
-      {/*</Box>*/}
       <Box
         sx={{
           display: "flex",

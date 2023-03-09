@@ -14,6 +14,10 @@ export const createProject = (values) => {
       scope: values.projectLinks,
       status: "status test",
       tags: values.tags,
+      publish: false,
+      ready_to_wait: true,
+      prise_from: '0',
+      prise_to: '10000',
     };
     const token = Cookies.get("token");
     axios
@@ -25,8 +29,8 @@ export const createProject = (values) => {
       .then(({ data }) => {
         console.log("create project", data);
         dispatch({ type: PROJECT_CREATE });
-        history.push("/home-customer", {
-          some: true
+        history.push("/profile", {
+          some: true,
         });
       })
       .catch(({ response }) => {

@@ -3,11 +3,14 @@ import { Box, Button, Typography } from "@mui/material";
 import CircleIcon from "@mui/icons-material/Circle";
 import theme from "../../styles/themes.js";
 
-const AuditorSearchListBox = ({ auditor }) => {
+const AuditorSearchListBox = ({ auditor, handleSelectOption }) => {
   return (
-    <Box sx={mainContainer}>
+    <Box
+      sx={mainContainer}
+      onClick={handleSelectOption}
+    >
       <Box>
-        <Typography sx={nameStyle(theme)}>{auditor}</Typography>
+        <Typography sx={nameStyle(theme)}>{auditor.label}</Typography>
       </Box>
 
       <Box sx={statusContainer}>
