@@ -9,6 +9,7 @@ import TagsList from "../components/tagsList.jsx";
 import {useDispatch, useSelector} from "react-redux";
 import {useParams} from "react-router-dom";
 import {confirmAudit, deleteAudit} from "../redux/actions/auditAction.js";
+import {DONE} from "../redux/actions/types.js";
 
 const AuditInfo = () => {
     const navigate = useNavigate()
@@ -80,14 +81,16 @@ const AuditInfo = () => {
                             <TagsList/>
                         </Box>
                     </Box>
-                    <Link
-                        href={"http://res.cloudinary.com/dktewh88s/image/upload/v1678483632/jwsc7yibqu5l7a7463f1.jpg"}
-                        download={true}
-                        target={'_blank'}
-                        sx={{margin: '15px auto 0', display: 'block'}}
-                    >
-                        Report
-                    </Link>
+                    { audit?.report === DONE &&
+                        <Link
+                            href={"http://res.cloudinary.com/dktewh88s/image/upload/v1678483632/jwsc7yibqu5l7a7463f1.jpg"}
+                            download={true}
+                            target={'_blank'}
+                            sx={{margin: '15px auto 0', display: 'block'}}
+                        >
+                            Report
+                        </Link>
+                    }
                 </Box>
                 <Box>
                     { auditRequest &&
