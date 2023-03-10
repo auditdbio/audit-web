@@ -6,17 +6,17 @@ import {
 
 const initialState = {
   auditor: null,
-  auditors: {},
+  auditors: null,
   error: null,
 };
 export const auditorReducer = (state = initialState, action) => {
   switch (action.type) {
     case GET_AUDITOR:
       return { ...state, auditor: action.payload };
-    case GET_AUDITORS:
-      return { ...state, auditors: action.payload };
     case UPDATE_AUDITOR:
       return { ...state, auditor: action.payload };
+    case GET_AUDITORS:
+      return { ...state, auditors: action.payload };
     default:
       return state;
   }

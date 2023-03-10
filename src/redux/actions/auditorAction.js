@@ -60,7 +60,8 @@ export const getAuditors = (values) => {
                 headers: { Authorization: `Bearer ${token}` },
             })
             .then(({ data }) => {
-                dispatch({ type: GET_AUDITORS, payload: data });
+                console.log("get auditors", data);
+                dispatch({ type: GET_AUDITORS, payload: data.auditors });
             })
             .catch(({ response }) => {
                 console.log(response, "res");

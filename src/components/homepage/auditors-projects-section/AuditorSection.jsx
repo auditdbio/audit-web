@@ -23,7 +23,7 @@ const AuditorSection = () => {
 
   const [auditorFound, setAuditorFound] = useState(true);
 
-  const auditorReducer = useSelector((state) => state.auditor.auditors);
+  const auditorReducer = useSelector((state) => state.auditor);
 
 
   useEffect(() => {

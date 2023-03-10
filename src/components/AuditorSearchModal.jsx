@@ -23,15 +23,24 @@ import { ArrowBack } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
 import { getProjects } from "../redux/actions/projectAction.js";
 import { getAuditors } from "../redux/actions/auditorAction.js";
+import { createRequest } from "../redux/actions/auditAction.js";
+import { customerReducer } from "../redux/reducers/customerReducer.js";
 
-export default function AuditorSearchModal({ open, handleClose }) {
+export default function AuditorSearchModal({
+  open,
+  handleClose,
+  handleSubmit,
+}) {
   const dispatch = useDispatch();
   const API_URL = import.meta.env.VITE_API_BASE_URL;
-  const auditorReducer = useSelector((state) => state.auditor.auditor);
+  const auditorReducer = useSelector((state) => state.auditor.auditors);
+  const projectReducer = useSelector((state) => state.project);
+  const customerReducer = useSelector((state) => state.customer);
 
   const [auditorsList, setAuditorsList] = useState([]);
+  const [submitted, setSubmitted] = useState(false);
 
-  const [selectedAuditor, setSelectedAuditor] = useState("");
+  const [selectedAuditor, setSelectedAuditor] = useState({});
 
   const [openDrop, setOpenDrop] = useState(false);
   const [mode, setMode] = useState("search");
@@ -46,13 +55,44 @@ export default function AuditorSearchModal({ open, handleClose }) {
     dispatch(getAuditors(query));
   }, [query]);
 
+  useEffect(() => {
+    if (submitted) {
+      const request = {
+        auditor_contacts: selectedAuditor.contacts ?? {},
+        auditor_id: selectedAuditor.user_id,
+        customer_contacts: customerReducer.customer
+          ? customerReducer.customer.contacts
+          : {},
+        customer_id: customerReducer.customer.user_id,
+        description: "test description",
+        opener: "Customer",
+        price: taxInput.toString(),
+        price_range: {
+          lower_bound: "string",
+          upper_bound: "string",
+        },
+        project_id: projectReducer.recentProject.id,
+        scope: ["string"],
+        time_frame: "string",
+      };
+      dispatch(createRequest(request));
+      setSubmitted(false);
+    }
+  }, [projectReducer.recentProject]);
+
   const handleInputChange = (event) => {
     setQuery(event.target.value);
   };
 
   const handleOptionChange = (option) => {
     console.log(option);
+    setSelectedAuditor(option);
     setMode("offer");
+  };
+
+  const handleSend = async () => {
+    await handleSubmit();
+    setSubmitted(true);
   };
 
   return (
@@ -60,7 +100,7 @@ export default function AuditorSearchModal({ open, handleClose }) {
       {mode === "search" && (
         <DialogContent sx={modalWindow}>
           <Box sx={fieldButtonContainer}>
-            {auditorReducer && auditorReducer.auditors && (
+            {auditorReducer && (
               <Autocomplete
                 open={openDrop}
                 onOpen={() => {
@@ -79,7 +119,7 @@ export default function AuditorSearchModal({ open, handleClose }) {
                 }}
                 freeSolo
                 onChange={handleOptionChange}
-                options={auditorReducer.auditors}
+                options={auditorReducer}
                 filterOptions={(options) => options} // <-- return all options as is
                 getOptionLabel={(option) => option.user_id}
                 onClick={() => {
@@ -171,7 +211,9 @@ export default function AuditorSearchModal({ open, handleClose }) {
                 <Box sx={infoWrapper}>{taxInput || 0}</Box>
               </Box>
               <Box sx={{ justifyContent: "center", display: "flex" }}>
-                <Button sx={sendButton}>Send</Button>
+                <Button sx={sendButton} onClick={handleSend}>
+                  Send
+                </Button>
               </Box>
             </Box>
           </Box>
