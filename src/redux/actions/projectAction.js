@@ -16,8 +16,11 @@ export const createProject = (values) => {
       tags: values.tags,
       publish: false,
       ready_to_wait: true,
-      prise_from: '0',
-      prise_to: '10000',
+      prise_from: "0",
+      prise_to: "10000",
+      creator_contacts: {
+        additionalProp1: "test-contacts",
+      },
     };
     const token = Cookies.get("token");
     axios
