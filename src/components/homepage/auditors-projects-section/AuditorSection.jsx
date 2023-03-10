@@ -14,26 +14,38 @@ import { useDispatch, useSelector } from "react-redux";
 import { getAuditors } from "../../../redux/actions/auditorAction.js";
 import { auditorReducer } from "../../../redux/reducers/auditorReducer.js";
 import { getAllProjects } from "../../../redux/actions/projectAction.js";
-import PublicProjectCard from "./PublicProjectCard.jsx";
 
 const AuditorSection = () => {
   const dispatch = useDispatch();
   const matchSm = useMediaQuery(theme.breakpoints.down("xs"));
 
   const [searchInput, setSearchInput] = useState("");
+
+  const [auditorFound, setAuditorFound] = useState(true);
+
   const auditorReducer = useSelector((state) => state.auditor.auditors);
+
 
   useEffect(() => {
     if (searchInput) {
-      // dispatch(getAuditors(searchInput));
-    }
-    else {
-      // dispatch(getAuditors('java'));
+      dispatch(getAuditors(searchInput));
+    } else {
+      dispatch(getAuditors("java"));
     }
   }, [searchInput]);
 
   useEffect(() => {
-    console.log("auditors", auditorReducer);
+    console.log("auditors front", auditorReducer);
+  }, [auditorReducer]);
+
+  useEffect(() => {
+    if (auditorReducer.auditors && auditorReducer.auditors.length != 0) {
+      setAuditorFound(true);
+      console.log("These are your auditors");
+    } else {
+      setAuditorFound(false);
+      console.log("No auditors found");
+    }
   }, [auditorReducer]);
 
   return (
@@ -79,6 +91,13 @@ const AuditorSection = () => {
         </Box>
       </Box>
       <Box sx={{ height: "2rem" }}></Box>
+      {!auditorFound && (
+        <Box>
+          <Typography variant="h5" sx={{ fontWeight: 500, marginBottom: "20px" }}>
+            No auditors found
+          </Typography>
+        </Box>
+      )}
       <Grid
         container
         rowSpacing={4}
@@ -89,27 +108,14 @@ const AuditorSection = () => {
         }}
         justifyContent="space-between"
       >
-        {/*{auditorReducer && auditorReducer.slice(0,matchSm ? 4 : 3).map((auditor) => (*/}
-        {/*    <Grid key={auditor.id} item zero="6" xs={4}>*/}
-        {/*      <AuditorCard auditor={auditor}/>*/}
-        {/*    </Grid>*/}
-        {/*))}*/}
-
-        <Grid item zero="6" xs={4}>
-          <AuditorCard />
-        </Grid>
-        <Grid item zero="6" xs={4}>
-          <AuditorCard />
-        </Grid>
-        <Grid item zero="6" xs={4}>
-          <AuditorCard />
-        </Grid>
-        {matchSm && (
-          <Grid item zero="6">
-            <AuditorCard />
-          </Grid>
-        )}
+        {auditorReducer.auditors &&
+          auditorReducer.auditors.slice(0, matchSm ? 4 : 3).map((auditor) => (
+            <Grid key={auditor.user_id} item zero="6" xs={4}>
+              <AuditorCard auditor={auditor} />
+            </Grid>
+          ))}
       </Grid>
+
       <Box
         sx={{
           display: "flex",
