@@ -3,8 +3,18 @@ import {Box, Button, Typography} from "@mui/material";
 import Currency from "./icons/Currency.jsx";
 import Star from "./icons/Star.jsx";
 import theme, {radiusOfComponents} from "../styles/themes.js";
+import {AUDITOR, DONE} from "../redux/actions/types.js";
+import {useNavigate} from "react-router-dom/dist";
 
 const ProjectCard = ({type, project}) => {
+    const navigate = useNavigate()
+
+    const handleClick = () => {
+        if (type === AUDITOR){
+          navigate(`/audit-request-offer/${project.id}`)
+        }
+    }
+
     return (
       <Box sx={cardWrapper}>
         <Box
@@ -14,12 +24,12 @@ const ProjectCard = ({type, project}) => {
             alignItems: "center",
           }}
         >
-          <Typography variant={"h5"}>{project.name}</Typography>
+          <Typography variant={"h5"} textAlign={'center'}>{project.name || project.project_name}</Typography>
           <Typography sx={categorySx}>Criptography, Games</Typography>
           <Box sx={priceWrapper}>
             <Box sx={infoWrapper}>
               <Currency />
-              <Typography>3.1 K</Typography>
+              <Typography>{project.price}</Typography>
             </Box>
             <Box sx={infoWrapper}>
               <Star />
@@ -35,16 +45,32 @@ const ProjectCard = ({type, project}) => {
           }}
         >
           <Box sx={statusWrapper}>
-            <Box />
-            <Typography>{project.status}</Typography>
+              { project.report === DONE ?
+                  <Box sx={{backgroundColor: '#52176D'}} /> :
+                  project.status === 'pending' &&
+                  <Box sx={{backgroundColor: '#FF9900'}} />
+              }
+              { (project.status !== 'pending' && audit.report !== DONE) &&
+                  <Box sx={{backgroundColor: '#09C010'}} />
+              }
+              <Typography>
+                  {
+                      !project.status ? 'Waiting for audit' :
+                          project.report === DONE ? 'Finished' : 'In porgress'
+                  }
+              </Typography>
           </Box>
           <Button
             variant={"contained"}
             sx={[editButton, type === "auditor" ? editAuditor : {}]}
+            onClick={handleClick}
           >
-            Edit
+              { type === AUDITOR ? 'Submit' : 'Edit'}
           </Button>
-          <Button sx={copyBtn}>Make a copy</Button>
+            {
+                project.name &&
+                <Button sx={copyBtn}>Make a copy</Button>
+            }
         </Box>
       </Box>
     );
@@ -88,7 +114,6 @@ const statusWrapper = (theme) => ({
         width: '17px',
         height: '17px',
         borderRadius: '50%',
-        backgroundColor: '#09C010'
     },
     margin: '40px 0 18px',
     [theme.breakpoints.down('md')]: {
@@ -163,6 +188,7 @@ const categorySx = (theme) => ({
 
 const cardWrapper = (theme) => ({
     display: 'flex',
+    height: '100%',
     flexDirection: 'column',
     padding: '31px 48px 37px',
     boxShadow: '0px 64.1377px 76.5824px rgba(0, 0, 0, 0.07),' +

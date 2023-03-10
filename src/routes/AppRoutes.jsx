@@ -3,8 +3,6 @@ import {Route, Routes} from 'react-router-dom/dist'
 import HomePage from "../pages/HomePage.jsx";
 import SignupPage from "../pages/SignupPage.jsx";
 import SigninPage from "../pages/SigninPage.jsx";
-import HomeCustomer from "../pages/home-customer.jsx";
-import HomeAuditor from "../pages/home-auditor.jsx";
 import {PrivateRoute} from "../router/PrivateRoute.jsx";
 import {useDispatch, useSelector} from "react-redux";
 import {authenticate} from "../redux/actions/userAction.js";
@@ -21,7 +19,7 @@ import {getCustomer} from "../redux/actions/customerAction.js";
 import Projects from "../components/Projects.jsx";
 import ProjectPage from "../pages/Project-page.jsx";
 import AuditRequestPage from "../pages/Audit-Request-Page.jsx";
-import {getProjects} from "../redux/actions/projectAction.js";
+import {getAllProjects, getProjects} from "../redux/actions/projectAction.js";
 import {getAudits, getAuditsRequest} from "../redux/actions/auditAction.js";
 
 
@@ -33,10 +31,11 @@ const AppRoutes = () => {
         if (isAuth()) {
             dispatch(getAuditor())
             dispatch(getCustomer())
-            dispatch(getProjects())
+            dispatch(getAllProjects())
             if (currentRole){
                 dispatch(getAuditsRequest(currentRole))
                 dispatch(getAudits(currentRole))
+                dispatch(getProjects())
             }
         }
         // dispatch(getProjects())
@@ -66,7 +65,7 @@ const AppRoutes = () => {
                     }
                 />
                 <Route
-                    path="/audit-info"
+                    path="/audit-info/:id"
                     element={
                         <PrivateRoute auth={{isAuthenticated: isAuth()}}>
                             <AuditInfo/>
@@ -82,7 +81,7 @@ const AppRoutes = () => {
                     }
                 />
                 <Route
-                    path="/audit-request-offer"
+                    path="/audit-request-offer/:id"
                     element={
                         <PrivateRoute auth={{isAuthenticated: isAuth()}}>
                             <AuditOffer/>

@@ -1,17 +1,22 @@
-import { Box, Card, Typography } from "@mui/material";
+import {Box, Card, Typography} from "@mui/material";
 import theme from "../styles/themes.js";
 import {CustomButton} from "./custom/Button.jsx";
 import {useNavigate} from "react-router-dom/dist";
+import {useDispatch} from "react-redux";
+import {confirmAudit} from "../redux/actions/auditAction.js";
+import {useMemo} from "react";
+import {DONE} from "../redux/actions/types.js";
 
 
 const AuditCard = ({audit}) => {
     const navigate = useNavigate()
+    const dispatch = useDispatch()
 
     return (
         <Card sx={cardWrapper}>
-            <Typography sx={auditNameStyle}>{audit.name}</Typography>
-            <Typography sx={nameTextStyle}>Mishail Soronikov</Typography>
-            <Typography sx={priceTextStyle}>20 $ per stroke</Typography>
+            <Typography sx={auditNameStyle}>{audit.project_name}</Typography>
+            <Typography sx={nameTextStyle}>{audit.auditor_contacts.email}</Typography>
+            <Typography sx={priceTextStyle}>{audit.price} $ per stroke</Typography>
             <Box sx={dateWrapper}>
                 <Typography sx={dateStyle}>10.01.2023</Typography>
                 <Typography variant={'caption'}>-</Typography>
@@ -19,11 +24,28 @@ const AuditCard = ({audit}) => {
             </Box>
 
             <Box sx={statusWrapper}>
-                <Box />
-                <Typography>{audit.source}</Typography>
+                { audit.report === DONE ?
+                    <Box sx={{backgroundColor: '#52176D'}} /> :
+                     audit.status === 'pending' &&
+                    <Box sx={{backgroundColor: '#FF9900'}} />
+                }
+                { (audit.status !== 'pending' && audit.report !== DONE) &&
+                    <Box sx={{backgroundColor: '#09C010'}} />
+                }
+                <Typography>
+                    {
+                        !audit.status ? 'Waiting for audit' :
+                            audit.report === DONE ? 'Finished' : 'In porgress'
+                    }
+                </Typography>
             </Box>
-            <CustomButton sx={acceptButtonStyle}>Accept</CustomButton>
-            <CustomButton sx={viewButtonStyle} onClick={() => navigate('/audit-info')}>View</CustomButton>
+            { !audit.status &&
+                <CustomButton sx={acceptButtonStyle}
+                onClick={() => dispatch(confirmAudit(audit))}>
+                    Accept
+                </CustomButton>
+            }
+            <CustomButton sx={viewButtonStyle} onClick={() => navigate(`/audit-info/${audit.id}`)}>View</CustomButton>
         </Card>
     );
 };
@@ -100,7 +122,6 @@ const statusWrapper = (theme) => ({
         width: "17px",
         height: "17px",
         borderRadius: "50%",
-        backgroundColor: "#09C010",
         [theme.breakpoints.down("sm")]: {
             width: "10px",
             height: "10px",

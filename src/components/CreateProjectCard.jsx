@@ -15,7 +15,7 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack.js";
 import MenuRoundedIcon from "@mui/icons-material/MenuRounded";
 import AuditorSearchModal from "./AuditorSearchModal.jsx";
 import TagsField from "./forms/tags-field/tags-field.jsx";
-import {createProject, getProjects} from "../redux/actions/projectAction.js";
+import {createProject} from "../redux/actions/projectAction.js";
 import { useDispatch } from "react-redux";
 
 const CreateProjectCard = ({ role }) => {

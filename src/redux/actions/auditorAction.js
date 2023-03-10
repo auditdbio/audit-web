@@ -37,6 +37,7 @@ export const createAuditor = (values) => {
 
 export const updateAuditor = (values) => {
     const token = Cookies.get('token')
+    console.log(values)
     return (dispatch) => {
         axios.patch(`${API_URL}/auditors`, values, {headers: {"Authorization": `Bearer ${token}`}})
             .then(({data}) => {
@@ -59,7 +60,6 @@ export const getAuditors = (values) => {
                 headers: { Authorization: `Bearer ${token}` },
             })
             .then(({ data }) => {
-                console.log("get auditors", data);
                 dispatch({ type: GET_PROJECTS, payload: data });
             })
             .catch(({ response }) => {

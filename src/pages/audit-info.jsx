@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useMemo} from 'react';
 import {CustomCard} from "../components/custom/Card.jsx";
 import Layout from "../styles/Layout.jsx";
 import {Avatar, Box, Button, Typography} from "@mui/material";
@@ -6,9 +6,31 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import theme from "../styles/themes.js";
 import {useNavigate} from "react-router-dom/dist";
 import TagsList from "../components/tagsList.jsx";
+import {useDispatch, useSelector} from "react-redux";
+import {useParams} from "react-router-dom";
+import {confirmAudit, deleteAudit} from "../redux/actions/auditAction.js";
 
 const AuditInfo = () => {
     const navigate = useNavigate()
+    const {id} = useParams()
+    const auditRequest = useSelector(s => s.audits?.auditRequests?.find(audit => audit.id === id))
+    const auditConfirm = useSelector(s => s.audits?.audits?.find(audit => audit.id === id))
+    const audit = useMemo(() => {
+        if (auditRequest && !auditConfirm){
+            return auditRequest
+        } else {
+           return auditConfirm
+        }
+    },[id, auditConfirm, auditRequest])
+    const dispatch = useDispatch()
+
+    const handleConfirm = () => {
+        dispatch(confirmAudit(audit))
+    }
+
+    const handleDecline = () => {
+        dispatch(deleteAudit(audit.id))
+    }
 
     return (
         <Layout>
@@ -26,25 +48,25 @@ const AuditInfo = () => {
                         <Avatar/>
                         <Box>
                             <Typography>
-                                Mihael Sorokin
+                                {audit?.auditor_contacts?.email}
                             </Typography>
                             <Typography>
-                                AuditDB network
+                                {audit?.auditor_contacts?.telegram}
                             </Typography>
                         </Box>
                     </Box>
                     <Box sx={userInfoWrapper}>
                         <Box sx={infoWrapper}>
                             <span>E-mail</span>
-                            <Typography>Mihael@gmail.com</Typography>
+                            <Typography>{audit?.auditor_contacts?.email}</Typography>
                         </Box>
                         <Box sx={infoWrapper}>
                             <span>Telegram</span>
-                            <Typography>Mihael@</Typography>
+                            <Typography>{audit?.auditor_contacts?.telegram}</Typography>
                         </Box>
                         <Box sx={infoWrapper}>
                             <span>Tax rate</span>
-                            <Typography>20 $ per stroke</Typography>
+                            <Typography>{audit?.price} $ per stroke</Typography>
                         </Box>
                     </Box>
                     <Box sx={projectWrapper}>
@@ -58,14 +80,18 @@ const AuditInfo = () => {
                     </Box>
                 </Box>
                 <Box>
+                    { auditRequest &&
+                        <Button
+                            variant={'contained'}
+                            sx={buttonSx}
+                            onClick={handleConfirm}
+                        >
+                            Confirm
+                        </Button>
+                    }
                     <Button
                         variant={'contained'}
-                        sx={buttonSx}
-                    >
-                        Confirm
-                    </Button>
-                    <Button
-                        variant={'contained'}
+                        onClick={handleDecline}
                         sx={[buttonSx, {backgroundColor: theme.palette.secondary.main}]}
                     >
                         Decline
