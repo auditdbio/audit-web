@@ -18,7 +18,7 @@ const Projects = ({ role }) => {
   const projectReducer = useSelector((state) => state.project.projects);
 
   useEffect(() => {
-    dispatch(getProjects("java"));
+    dispatch(getProjects(""));
   }, []);
 
   useEffect(() => {
