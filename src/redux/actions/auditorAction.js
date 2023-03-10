@@ -62,7 +62,7 @@ export const getAuditors = (values) => {
             })
             .then(({ data }) => {
                 console.log("get auditors", data);
-                dispatch({ type: GET_PROJECTS, payload: data });
+                dispatch({ type: GET_AUDITOR, payload: data });
             })
             .catch(({ response }) => {
                 console.log(response, "res");
