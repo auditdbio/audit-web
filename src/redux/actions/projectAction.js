@@ -7,7 +7,6 @@ const API_URL = import.meta.env.VITE_API_BASE_URL;
 
 export const createProject = (values) => {
   return (dispatch) => {
-    console.log("initial", values);
     const data = {
       description: values.description,
       name: values.name,
@@ -23,7 +22,6 @@ export const createProject = (values) => {
         },
       })
       .then(({ data }) => {
-        console.log("create project", data);
         dispatch({ type: PROJECT_CREATE });
         history.push("/home-customer", {
           some: true
@@ -34,15 +32,11 @@ export const createProject = (values) => {
       });
   };
 };
-export const getProjects = (values) => {
-  const token = Cookies.get("token");
+export const getProjects = (values='') => {
   return (dispatch) => {
     axios
-      .get(`${API_URL}/projects/all?tags=${values}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      })
+      .get(`${API_URL}/projects/all?skip=0&limit=20&tags=`)
       .then(({ data }) => {
-        console.log("get projects", data);
         dispatch({ type: GET_PROJECTS, payload: data });
       })
       .catch(({ response }) => {

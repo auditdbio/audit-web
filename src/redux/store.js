@@ -5,6 +5,7 @@ import { userReducer } from "./reducers/userReducer";
 import { customerReducer } from "./reducers/customerReducer.js";
 import { auditorReducer } from "./reducers/auditorReducer.js";
 import { projectReducer } from "./reducers/projectReducer.js";
+import {auditReducer} from "./reducers/auditReducer.jsx";
 
 export const store = createStore(
   combineReducers({
@@ -12,6 +13,7 @@ export const store = createStore(
     project: projectReducer,
     customer: customerReducer,
     auditor: auditorReducer,
+      audits: auditReducer
   }),
   composeWithDevTools(applyMiddleware(thunk))
 );

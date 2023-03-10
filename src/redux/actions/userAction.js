@@ -24,7 +24,7 @@ export const signIn = (values) => {
         localStorage.setItem("user", JSON.stringify(data.user));
         dispatch({ type: USER_SIGNIN, payload: data });
         history.push(
-          { pathname: `/profile` },
+          { pathname: `/profile/user-info` },
           {
             some: true,
           }
@@ -89,7 +89,7 @@ export const changeRole = (value) => {
         dispatch({ type: SELECT_ROLE, payload: data });
         localStorage.setItem("user", JSON.stringify(data));
         history.push(
-          { pathname: `/profile` },
+          { pathname: `/profile/user-info` },
           {
             some: true,
           }

@@ -25,12 +25,11 @@ export const createAuditor = (values) => {
         axios.post(`${API_URL}/auditors`, values, {headers: {"Authorization": `Bearer ${token}`}})
             .then(({data}) => {
                 dispatch({type: UPDATE_AUDITOR, payload: data})
-                history.push({pathname: `/profile`}, {
+                history.push({pathname: `/profile/user-info`}, {
                     some: true,
                 })
             })
             .catch(({response}) => {
-                console.log(response, 'res')
                 // dispatch({type: SIGN_IN_ERROR})
             })
     }
@@ -42,12 +41,11 @@ export const updateAuditor = (values) => {
         axios.patch(`${API_URL}/auditors`, values, {headers: {"Authorization": `Bearer ${token}`}})
             .then(({data}) => {
                 dispatch({type: UPDATE_AUDITOR, payload: data})
-                history.push({pathname: `/profile`}, {
+                history.push({pathname: `/profile/user-info`}, {
                     some: true,
                 })
             })
             .catch(({response}) => {
-                console.log(response, 'res')
                 // dispatch({type: SIGN_IN_ERROR})
             })
     }

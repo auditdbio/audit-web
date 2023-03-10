@@ -30,7 +30,7 @@ export const UserMenu = ({ open, handleClose, anchor }) => {
   };
 
   const handleMyAccountClick = () => {
-      navigate('/profile');
+      navigate('/profile/user-info');
   };
 
   return (

@@ -40,6 +40,8 @@ const EditProfileForm = ({role}) => {
         return (
             <Formik
                 initialValues={{
+                    avatar: '',
+                    free_at: '',
                     first_name: data?.first_name || '',
                     last_name: data?.last_name || '',
                     contacts: {
@@ -55,6 +57,7 @@ const EditProfileForm = ({role}) => {
                 validateOnBlur={false}
                 validateOnChange={false}
                 onSubmit={(values) => {
+                    console.log(123)
                     if (role !== AUDITOR){
                         if (!data.first_name && !data.last_name){
                             dispatch(createCustomer(values))
@@ -115,7 +118,7 @@ const EditProfileForm = ({role}) => {
                                             <Typography sx={rateLabel}>
                                                 Tax rate per stroke
                                             </Typography>
-                                            <SalarySlider />
+                                            <SalarySlider name={'tax'}/>
                                         </Box>
                                         {matchSm &&
                                             <TagsField name={'tags'} label={'Tags'}/>
@@ -150,7 +153,6 @@ const EditProfileSchema = Yup.object().shape({
         telegram: Yup.string()
     }),
     about: Yup.string(),
-    tax: Yup.string().required('Required'),
     tags: Yup.array().min(1)
 });
 

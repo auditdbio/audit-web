@@ -1,29 +1,21 @@
 import React from 'react';
 import {Box, Grid} from "@mui/material";
 import AuditRequestCard from "./Audit-request-card";
+import {useSelector} from "react-redux";
 
 const AuditRequest = () => {
+    const auditRequests = useSelector(s => s.audits.auditRequests)
+
     return (
         <Box sx={wrapper}>
             <Grid container spacing={2} >
-                <Grid item sx={gridItemStyle}>
-                    <AuditRequestCard />
-                </Grid>
-                <Grid item sx={gridItemStyle}>
-                    <AuditRequestCard />
-                </Grid>
-                <Grid item sx={gridItemStyle}>
-                    <AuditRequestCard />
-                </Grid>
-                <Grid item sx={gridItemStyle}>
-                    <AuditRequestCard />
-                </Grid>
-                <Grid item sx={gridItemStyle}>
-                    <AuditRequestCard />
-                </Grid>
-                <Grid item sx={gridItemStyle}>
-                    <AuditRequestCard />
-                </Grid>
+                {
+                    auditRequests?.map(request =>
+                        <Grid item sx={gridItemStyle} key={request.id}>
+                            <AuditRequestCard request={request} />
+                        </Grid>
+                    )
+                }
             </Grid>
         </Box>
     );
@@ -33,6 +25,8 @@ export default AuditRequest;
 
 const wrapper = (theme) => ({
     padding: '58px 52px 42px',
+    minHeight: '560px',
+    width: '100%',
     [theme.breakpoints.down('md')]: {
         padding: '45px 40px 33px'
     },

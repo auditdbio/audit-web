@@ -11,9 +11,11 @@ import {getCustomer} from "../redux/actions/customerAction.js";
 import {getAuditor} from "../redux/actions/auditorAction.js";
 import {AUDITOR} from "../redux/actions/types.js";
 import AuditRequest from "../components/Audit-request.jsx";
+import {useParams} from "react-router-dom";
 
 const ProfilePage = () => {
-    const [chooseTab, setChooseTab] = useState('user-info')
+    const {tab} = useParams()
+    const [chooseTab, setChooseTab] = useState(tab)
     const currentRole = useSelector(s => s.user.user.current_role)
 
     return (
@@ -22,6 +24,7 @@ const ProfilePage = () => {
                 <CustomTabs
                     selectedTabSx={currentRole === AUDITOR ? auditorTabSx : customerTabSx}
                     name={'type'}
+                    choosenTab={chooseTab}
                     tabs={currentRole === AUDITOR ? auditorTabs : customerTabs}
                     setTab={setChooseTab}
                 />
@@ -72,6 +75,7 @@ const wrapper = (theme) => ({
     display: 'flex',
     flexDirection: 'column',
     maxWidth: '1300px',
+    minHeight: '560px',
     width: '100%'
 })
 
