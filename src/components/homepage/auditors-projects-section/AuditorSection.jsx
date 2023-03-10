@@ -9,9 +9,28 @@ import {
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import theme from "../../../styles/themes";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { getAuditors } from "../../../redux/actions/auditorAction.js";
+import { auditorReducer } from "../../../redux/reducers/auditorReducer.js";
+import { getProjects } from "../../../redux/actions/projectAction.js";
 
 const AuditorSection = () => {
+  const dispatch = useDispatch();
   const matchSm = useMediaQuery(theme.breakpoints.down("xs"));
+
+  const [searchInput, setSearchInput] = useState("");
+  const auditorReducer = useSelector((state) => state.auditor);
+
+  useEffect(() => {
+    if (searchInput) {
+      dispatch(getAuditors(searchInput));
+    }
+  }, [searchInput]);
+
+  useEffect(() => {
+    console.log("auditors", auditorReducer);
+  }, [auditorReducer]);
 
   return (
     <Box
@@ -39,6 +58,11 @@ const AuditorSection = () => {
                 padding: "0",
               },
             }}
+
+            value={searchInput}
+            onChange={(e) => {
+              setSearchInput(e.target.value);
+            }}
           />
           <IconButton
             type="button"
@@ -51,13 +75,16 @@ const AuditorSection = () => {
         </Box>
       </Box>
       <Box sx={{ height: "2rem" }}></Box>
-      <Grid container rowSpacing={4}
-            columnSpacing={{
-              zero: 2,
-              xs: 4,
-              md: 12,
-            }}
-            justifyContent="space-between">
+      <Grid
+        container
+        rowSpacing={4}
+        columnSpacing={{
+          zero: 2,
+          xs: 4,
+          md: 12,
+        }}
+        justifyContent="space-between"
+      >
         <Grid item zero="6" xs={4}>
           <AuditorCard />
         </Grid>
