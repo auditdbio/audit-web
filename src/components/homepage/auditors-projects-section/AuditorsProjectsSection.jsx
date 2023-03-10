@@ -31,17 +31,17 @@ const wrapperStyle = {
   backgroundColor: "#52176D",
   width: "100%",
   paddingY: "5rem",
-}
+};
 const AuditorsProjectsSectionStyle = () => ({
   width: "100%",
-  maxWidth: '1512px',
+  maxWidth: "1512px",
   backgroundColor: "#52176D",
   display: "flex",
   flexDirection: "column",
   justifyContent: "space-between",
   gap: "3rem",
   color: "white",
-  marginX: 'auto',
+  marginX: "auto",
   [theme.breakpoints.down("lg")]: {
     paddingX: "5%",
     gap: "1rem",

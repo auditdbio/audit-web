@@ -18,7 +18,7 @@ export const createProject = (values) => {
         console.log("create project", data);
         dispatch({ type: PROJECT_CREATE, payload: data });
         history.push("/profile/projects", {
-          some: true
+          some: true,
         });
       })
       .catch(({ response }) => {
@@ -55,7 +55,7 @@ export const getAllProjects = (values = '') => {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then(({ data }) => {
-        console.log("get projects", data);
+        console.log('projects store', data)
         dispatch({ type: GET_PROJECTS, payload: data });
       })
       .catch(({ response }) => {
