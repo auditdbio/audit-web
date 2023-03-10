@@ -4,9 +4,9 @@ import {useField} from "formik";
 import {useSelector} from "react-redux";
 import {AUDITOR} from "../../../redux/actions/types.js";
 
-const SalarySlider = () => {
+const SalarySlider = ({min = 0, max= 100, name}) => {
     const role = useSelector(s => s.user.user.current_role)
-    const [taxField, ,taxFieldHelper] = useField('tax')
+    const [taxField, ,taxFieldHelper] = useField(name)
     return (
         <Box sx={sliderWrapper}>
             <Slider
@@ -14,6 +14,8 @@ const SalarySlider = () => {
                 name={taxField.name}
                 valueLabelDisplay="off"
                 sx={sliderSx}
+                min={min}
+                max={max}
                 color={role === AUDITOR ? 'secondary' : "primary"}
                 onChange={(e) => taxFieldHelper.setValue(e.target.value.toString())}
             />

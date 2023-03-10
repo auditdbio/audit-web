@@ -1,10 +1,13 @@
 import React, {useState} from 'react';
 import {Tab, Tabs} from "@mui/material";
+import {useNavigate} from "react-router-dom/dist";
 
-const CustomTabs = ({selectedTabSx, name, tabs, setTab}) => {
-    const [tabState, setTabState] = useState('user-info')
+const CustomTabs = ({selectedTabSx, name, tabs, setTab, choosenTab}) => {
+    const [tabState, setTabState] = useState(choosenTab)
+    const navigate = useNavigate()
 
     const handleChoose = (value) => {
+        navigate(`/profile/${value}`)
         setTabState(value)
         setTab(value)
     }

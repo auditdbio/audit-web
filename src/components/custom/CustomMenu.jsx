@@ -6,6 +6,7 @@ import MenuItem from "@mui/material/MenuItem";
 import Divider from "@mui/material/Divider";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import { Box } from "@mui/material";
+import {useNavigate} from "react-router-dom/dist";
 
 const StyledMenu = styled((props) => (
 	<Menu
@@ -51,9 +52,9 @@ const StyledMenu = styled((props) => (
 
 export default function CustomMenu({ buttonText, options }) {
 	const menuOptions = options;
-
 	const [anchorEl, setAnchorEl] = React.useState(null);
 	const open = Boolean(anchorEl);
+	const navigate = useNavigate()
 
 	const handleClick = (event) => {
 		setAnchorEl(event.currentTarget);
@@ -111,7 +112,10 @@ export default function CustomMenu({ buttonText, options }) {
 				</MenuItem>
 				<Divider sx={{ my: 0, backgroundColor: "orange", mx: "15px" }} />
 				{menuOptions.map((item) => (
-					<MenuItem onClick={handleClose} key={item.id} disableRipple>
+					<MenuItem onClick={() => {
+						handleClose()
+						navigate(item.link)
+					}} key={item.id} disableRipple>
 						{item.itemName}
 					</MenuItem>
 				))}

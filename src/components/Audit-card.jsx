@@ -4,12 +4,12 @@ import {CustomButton} from "./custom/Button.jsx";
 import {useNavigate} from "react-router-dom/dist";
 
 
-const AuditCard = () => {
+const AuditCard = ({audit}) => {
     const navigate = useNavigate()
 
     return (
         <Card sx={cardWrapper}>
-            <Typography sx={auditNameStyle}>AuditDB</Typography>
+            <Typography sx={auditNameStyle}>{audit.name}</Typography>
             <Typography sx={nameTextStyle}>Mishail Soronikov</Typography>
             <Typography sx={priceTextStyle}>20 $ per stroke</Typography>
             <Box sx={dateWrapper}>
@@ -20,7 +20,7 @@ const AuditCard = () => {
 
             <Box sx={statusWrapper}>
                 <Box />
-                <Typography>Waiting audit</Typography>
+                <Typography>{audit.source}</Typography>
             </Box>
             <CustomButton sx={acceptButtonStyle}>Accept</CustomButton>
             <CustomButton sx={viewButtonStyle} onClick={() => navigate('/audit-info')}>View</CustomButton>
