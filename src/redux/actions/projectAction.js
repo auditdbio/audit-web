@@ -39,7 +39,7 @@ export const createProject = (values) => {
       });
   };
 };
-export const getProjects = (values) => {
+export const getProjects = (values = '') => {
   const token = Cookies.get("token");
   return (dispatch) => {
     axios
