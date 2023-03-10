@@ -8,12 +8,15 @@ import { changeRole, logout } from "../../redux/actions/userAction.js";
 import { useDispatch } from "react-redux";
 import {useNavigate} from "react-router-dom/dist";
 import { useSelector } from "react-redux";
-import React, { useState } from "react";
+import React, {useMemo, useState} from "react";
+import {AUDITOR} from "../../redux/actions/types.js";
 
 export const UserMenu = ({ open, handleClose, anchor }) => {
   const dispatch = useDispatch();
   const reduxUser = useSelector((state) => state.user.user);
   const navigate = useNavigate()
+  const auditor = useSelector((state) => state.auditor.auditor);
+  const customer = useSelector((state) => state.customer.customer);
 
   const [isAuditor, setIsAuditor] = useState(
     reduxUser.current_role ?? "customer"
@@ -91,6 +94,7 @@ export const UserMenu = ({ open, handleClose, anchor }) => {
           }}
         >
           <Avatar
+              src={reduxUser.current_role === AUDITOR ? auditor?.avatar : customer?.avatar}
             sx={{
               width: "100px",
               height: "100px",

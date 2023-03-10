@@ -50,7 +50,7 @@ const ProjectCard = ({type, project}) => {
                   project.status === 'pending' &&
                   <Box sx={{backgroundColor: '#FF9900'}} />
               }
-              { (project.status !== 'pending' && audit.report !== DONE) &&
+              { (project.status !== 'pending' && project.report !== DONE) &&
                   <Box sx={{backgroundColor: '#09C010'}} />
               }
               <Typography>

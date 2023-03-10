@@ -18,10 +18,13 @@ import NotificationsIcon from "@mui/icons-material/Notifications";
 import { UserMenu } from "./UserMenu.jsx";
 import RoleMenuDropdown from "./RoleMenuDropdown.jsx";
 import { useSelector } from "react-redux";
+import {AUDITOR} from "../../redux/actions/types.js";
 
 const Header = () => {
   const reduxUser = useSelector((state) => state.user.user);
   const [currentUsername] = useState(reduxUser.name || 'User');
+  const auditor = useSelector((state) => state.auditor.auditor);
+  const customer = useSelector((state) => state.customer.customer);
 
   const navigate = useNavigate();
   const matchSm = useMediaQuery(theme.breakpoints.down("sm"));
@@ -250,6 +253,7 @@ const Header = () => {
                       </CustomBadge>
                     </IconButton>
                     <Avatar
+                        sx={reduxUser.current_role === AUDITOR ? auditor?.avatar : customer?.avatar}
                       sx={{
                         width: "35px",
                         height: "35px",
@@ -323,6 +327,7 @@ const Header = () => {
                       disableRipple
                     >
                       <Avatar
+                          src={reduxUser.current_role === AUDITOR ? auditor?.avatar : customer?.avatar}
                         sx={avatarStyle}
                       />
                       <UserMenu

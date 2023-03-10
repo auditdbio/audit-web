@@ -16,7 +16,7 @@ export const createProject = (values) => {
       publish: false,
       ready_to_wait: true,
       prise_from: "0",
-      prise_to: "10000",
+      prise_to: "160",
       creator_contacts: {
         additionalProp1: "test-contacts",
       },
@@ -29,7 +29,7 @@ export const createProject = (values) => {
         },
       })
       .then(({ data }) => {
-        dispatch({ type: PROJECT_CREATE });
+        dispatch({ type: PROJECT_CREATE, payload: data });
         history.push("/profile/projects", {
           some: true
         });

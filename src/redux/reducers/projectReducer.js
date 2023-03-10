@@ -8,7 +8,7 @@ const initialState = {
 export const projectReducer = (state = initialState, action) => {
   switch (action.type) {
     case PROJECT_CREATE:
-      return state;
+      return {...state, myProjects: [...state.myProjects, action.payload], projects: [...state.projects, action.payload]};
     case GET_PROJECTS:
       return {...state, projects: action.payload};
     case GET_MY_PROJECTS:
