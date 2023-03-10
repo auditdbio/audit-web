@@ -1,6 +1,6 @@
 import React, {useEffect, useMemo, useState} from 'react';
 import {Form, Formik} from "formik";
-import {Avatar, Box, Button, Slider, Typography, useMediaQuery} from "@mui/material";
+import {Avatar, Box, Button, Slider, TextField, Typography, useMediaQuery} from "@mui/material";
 import SimpleField from "../fields/simple-field.jsx";
 import PasswordField from "../fields/password-field.jsx";
 import TagsArray from "../../tagsArray/index.jsx";
@@ -17,22 +17,22 @@ import TagsField from "../tags-field/tags-field.jsx";
 import * as Yup from "yup";
 import {changePassword} from "../../../redux/actions/userAction.js";
 import ChangePasswordFormik from "../change-password-formik/index.jsx";
+import AvatarForm from "../Avatar-form/index.jsx";
 
 const EditProfileForm = ({role}) => {
     const matchSm = useMediaQuery(theme.breakpoints.down('sm'))
     const dispatch = useDispatch()
-    const [passwordState, setPasswordState] = useState('')
 
     const customer = useSelector(s => s.customer.customer)
     const auditor = useSelector(s => s.auditor.auditor)
 
     const data = useMemo(() => {
-        if (role === AUDITOR){
+        if (role === AUDITOR) {
             return auditor
         } else {
             return customer
         }
-    },[role, customer, auditor])
+    }, [role, customer, auditor])
 
     if (!data) {
         return <Loader/>
@@ -40,7 +40,7 @@ const EditProfileForm = ({role}) => {
         return (
             <Formik
                 initialValues={{
-                    avatar: '',
+                    avatar: data.avatar || '',
                     free_at: '',
                     first_name: data?.first_name || '',
                     last_name: data?.last_name || '',
@@ -58,15 +58,14 @@ const EditProfileForm = ({role}) => {
                 validateOnBlur={false}
                 validateOnChange={false}
                 onSubmit={(values) => {
-                    console.log(123)
-                    if (role !== AUDITOR){
-                        if (!data.first_name && !data.last_name){
+                    if (role !== AUDITOR) {
+                        if (!data.first_name && !data.last_name) {
                             dispatch(createCustomer(values))
                         } else {
                             dispatch(updateCustomer(values))
                         }
                     } else {
-                        if (!data.first_name && !data.last_name){
+                        if (!data.first_name && !data.last_name) {
                             dispatch(createAuditor(values))
                         } else {
                             dispatch(updateAuditor(values))
@@ -74,21 +73,15 @@ const EditProfileForm = ({role}) => {
                     }
                 }}
             >
-                {({handleSubmit, errors,values}) => {
+                {({handleSubmit, errors, values}) => {
                     return (
                         <Form onSubmit={handleSubmit}>
                             <Box sx={wrapper}>
                                 <Box sx={avatarWrapper}>
                                     <Box sx={{display: 'flex', alignItems: 'center', flexDirection: 'column'}}>
-                                        <Avatar/>
-                                        <Button sx={
-                                            role === AUDITOR ? {color: theme.palette.secondary.main} : {}
-                                        }>
-                                            <EditIcon fontSize={'small'}/>
-                                            Edit photo
-                                        </Button>
+                                        <AvatarForm name={'avatar'} role={role}/>
                                     </Box>
-                                    { matchSm &&
+                                    {matchSm &&
                                         <Box sx={[fieldWrapper, {width: '100%'}]}>
                                             <SimpleField name={'first_name'} label={'First Name'}/>
                                             <SimpleField name={'last_name'} label={'Last name'}/>
@@ -97,20 +90,20 @@ const EditProfileForm = ({role}) => {
                                 </Box>
                                 <Box sx={fieldsWrapper}>
                                     <Box sx={fieldWrapper}>
-                                        { !matchSm &&
+                                        {!matchSm &&
                                             <>
                                                 <SimpleField name={'first_name'} label={'First Name'}/>
                                                 <SimpleField name={'last_name'} label={'Last name'}/>
                                             </>
                                         }
                                         <SimpleField name={'contacts.email'} label={'E-mail'}/>
-                                        <ChangePasswordFormik />
+                                        <ChangePasswordFormik/>
                                         {!matchSm &&
                                             <TagsField name={'tags'} label={'Tags'}/>
                                         }
                                     </Box>
                                     <Box sx={fieldWrapper}>
-                                        { role === CUSTOMER &&
+                                        {role === CUSTOMER &&
                                             <SimpleField name={'company'} label={'Company'}/>
                                         }
                                         <SimpleField name={'about'} label={'About'}/>
@@ -124,7 +117,7 @@ const EditProfileForm = ({role}) => {
                                         {matchSm &&
                                             <TagsField name={'tags'} label={'Tags'}/>
                                         }
-                                            <TagsArray name={'tags'}/>
+                                        <TagsArray name={'tags'}/>
                                     </Box>
                                 </Box>
                             </Box>
@@ -196,7 +189,7 @@ const fieldWrapper = (theme) => ({
     display: 'flex',
     flexDirection: 'column',
     '& .password-wrapper': {
-      gap: '12px'
+        gap: '12px'
     },
     '& .field-wrapper': {
         gap: '12px'
@@ -212,7 +205,7 @@ const fieldWrapper = (theme) => ({
     },
     [theme.breakpoints.down('xs')]: {
         '& p': {
-          fontSize: '12px'
+            fontSize: '12px'
         },
         '& input': {
             fontSize: '12px',
@@ -233,9 +226,7 @@ const buttonSx = (theme) => ({
     [theme.breakpoints.down('md')]: {
         fontSize: '14px',
     },
-    [theme.breakpoints.down('sm')]: {
-
-    }
+    [theme.breakpoints.down('sm')]: {}
 })
 
 const avatarWrapper = (theme) => ({

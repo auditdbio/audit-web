@@ -5,17 +5,18 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack.js";
 import Filter from "../components/forms/filter/index.jsx";
 import ProjectListCard from "../components/Project-list-card.jsx";
 import {useDispatch, useSelector} from "react-redux";
-import {getProjects} from "../redux/actions/projectAction.js";
+import {useNavigate} from "react-router-dom/dist";
 
 const ProjectPage = () => {
     const dispatch = useDispatch()
     const projects = useSelector(s => s.project.projects)
+    const navigate = useNavigate()
 
     return (
         <Layout>
             <Box sx={wrapper}>
                 <Box sx={{display: 'flex', justifyContent: 'space-between'}}>
-                    <Button>
+                    <Button onClick={() => navigate(-1)}>
                         <ArrowBackIcon color={'secondary'}/>
                     </Button>
                     <Box>

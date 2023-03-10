@@ -1,14 +1,37 @@
-import React from 'react';
+import React, {useMemo} from 'react';
 import {CustomCard} from "../components/custom/Card.jsx";
 import Layout from "../styles/Layout.jsx";
-import {Avatar, Box, Button, Typography} from "@mui/material";
+import {Avatar, Box, Button, Typography, Link} from "@mui/material";
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import theme from "../styles/themes.js";
 import {useNavigate} from "react-router-dom/dist";
 import TagsList from "../components/tagsList.jsx";
+import {useDispatch, useSelector} from "react-redux";
+import {useParams} from "react-router-dom";
+import {confirmAudit, deleteAudit} from "../redux/actions/auditAction.js";
+import {DONE} from "../redux/actions/types.js";
 
 const AuditInfo = () => {
     const navigate = useNavigate()
+    const {id} = useParams()
+    const auditRequest = useSelector(s => s.audits?.auditRequests?.find(audit => audit.id === id))
+    const auditConfirm = useSelector(s => s.audits?.audits?.find(audit => audit.id === id))
+    const audit = useMemo(() => {
+        if (auditRequest && !auditConfirm){
+            return auditRequest
+        } else {
+           return auditConfirm
+        }
+    },[id, auditConfirm, auditRequest])
+    const dispatch = useDispatch()
+
+    const handleConfirm = () => {
+        dispatch(confirmAudit(audit))
+    }
+
+    const handleDecline = () => {
+        dispatch(deleteAudit(audit.id))
+    }
 
     return (
         <Layout>
@@ -21,51 +44,67 @@ const AuditInfo = () => {
                         You have offer to audit for AuditDB project!
                     </Typography>
                 </Box>
-                <Box sx={contentWrapper}>
-                    <Box sx={userWrapper}>
-                        <Avatar/>
-                        <Box>
-                            <Typography>
-                                Mihael Sorokin
-                            </Typography>
-                            <Typography>
-                                AuditDB network
-                            </Typography>
+                <Box>
+                    <Box sx={contentWrapper}>
+                        <Box sx={userWrapper}>
+                            <Avatar/>
+                            <Box>
+                                <Typography>
+                                    {audit?.auditor_contacts?.email}
+                                </Typography>
+                                <Typography>
+                                    {audit?.auditor_contacts?.telegram}
+                                </Typography>
+                            </Box>
+                        </Box>
+                        <Box sx={userInfoWrapper}>
+                            <Box sx={infoWrapper}>
+                                <span>E-mail</span>
+                                <Typography>{audit?.auditor_contacts?.email}</Typography>
+                            </Box>
+                            <Box sx={infoWrapper}>
+                                <span>Telegram</span>
+                                <Typography>{audit?.auditor_contacts?.telegram}</Typography>
+                            </Box>
+                            <Box sx={infoWrapper}>
+                                <span>Tax rate</span>
+                                <Typography>{audit?.price} $ per stroke</Typography>
+                            </Box>
+                        </Box>
+                        <Box sx={projectWrapper}>
+                            <Typography>Time for project</Typography>
+                            <Box sx={{display: 'flex', alignItems: 'center', gap: '10px'}}>
+                                <Box sx={dateWrapper}>10.01.2023</Box>
+                                -
+                                <Box sx={dateWrapper}>25.01.2023</Box>
+                            </Box>
+                            <TagsList/>
                         </Box>
                     </Box>
-                    <Box sx={userInfoWrapper}>
-                        <Box sx={infoWrapper}>
-                            <span>E-mail</span>
-                            <Typography>Mihael@gmail.com</Typography>
-                        </Box>
-                        <Box sx={infoWrapper}>
-                            <span>Telegram</span>
-                            <Typography>Mihael@</Typography>
-                        </Box>
-                        <Box sx={infoWrapper}>
-                            <span>Tax rate</span>
-                            <Typography>20 $ per stroke</Typography>
-                        </Box>
-                    </Box>
-                    <Box sx={projectWrapper}>
-                        <Typography>Time for project</Typography>
-                        <Box sx={{display: 'flex', alignItems: 'center', gap: '10px'}}>
-                            <Box sx={dateWrapper}>10.01.2023</Box>
-                            -
-                            <Box sx={dateWrapper}>25.01.2023</Box>
-                        </Box>
-                        <TagsList/>
-                    </Box>
+                    { audit?.report === DONE &&
+                        <Link
+                            href={"http://res.cloudinary.com/dktewh88s/image/upload/v1678483632/jwsc7yibqu5l7a7463f1.jpg"}
+                            download={true}
+                            target={'_blank'}
+                            sx={{margin: '15px auto 0', display: 'block'}}
+                        >
+                            Report
+                        </Link>
+                    }
                 </Box>
                 <Box>
+                    { auditRequest &&
+                        <Button
+                            variant={'contained'}
+                            sx={buttonSx}
+                            onClick={handleConfirm}
+                        >
+                            Confirm
+                        </Button>
+                    }
                     <Button
                         variant={'contained'}
-                        sx={buttonSx}
-                    >
-                        Confirm
-                    </Button>
-                    <Button
-                        variant={'contained'}
+                        onClick={handleDecline}
                         sx={[buttonSx, {backgroundColor: theme.palette.secondary.main}]}
                     >
                         Decline

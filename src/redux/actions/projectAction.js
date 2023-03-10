@@ -1,4 +1,4 @@
-import { GET_PROJECTS, PROJECT_CREATE } from "./types.js";
+import {GET_MY_PROJECTS, GET_PROJECTS, PROJECT_CREATE} from "./types.js";
 import axios from "axios";
 import Cookies from "js-cookie";
 import { history } from "../../services/history.js";
@@ -16,7 +16,7 @@ export const createProject = (values) => {
       })
       .then(({ data }) => {
         console.log("create project", data);
-        dispatch({ type: PROJECT_CREATE });
+        dispatch({ type: PROJECT_CREATE, payload: data });
         history.push("/profile/projects", {
           some: true
         });
@@ -47,7 +47,7 @@ export const editProject = (values) => {
         });
   };
 };
-export const getProjects = (values = '') => {
+export const getAllProjects = (values = '') => {
   const token = Cookies.get("token");
   return (dispatch) => {
     axios
@@ -61,5 +61,21 @@ export const getProjects = (values = '') => {
       .catch(({ response }) => {
         console.log(response, "res");
       });
+  };
+};
+
+export const getProjects = () => {
+  const token = Cookies.get("token");
+  return (dispatch) => {
+    axios
+        .get(`${API_URL}/projects`, {
+          headers: { Authorization: `Bearer ${token}` },
+        })
+        .then(({ data }) => {
+          dispatch({ type: GET_MY_PROJECTS, payload: data });
+        })
+        .catch(({ response }) => {
+          console.log(response, "res");
+        });
   };
 };
