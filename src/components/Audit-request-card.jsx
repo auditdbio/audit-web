@@ -14,7 +14,7 @@ const AuditRequestCard = ({type, request}) => {
     return (
         <Box sx={cardWrapper}>
             <Box sx={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
-                <Typography variant={'h5'}>
+                <Typography variant={'h5'} textAlign={'center'}>
                     {request.project_name}
                 </Typography>
                 <Typography sx={categorySx}>

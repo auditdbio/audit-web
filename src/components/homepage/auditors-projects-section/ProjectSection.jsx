@@ -11,7 +11,7 @@ import PublicProjectCard from "./PublicProjectCard";
 import theme from "../../../styles/themes";
 import {useEffect, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
-import {getProjects} from "../../../redux/actions/projectAction.js";
+import {getAllProjects} from "../../../redux/actions/projectAction.js";
 import MenuItem from "@mui/material/MenuItem";
 
 const ProjectSection = () => {
@@ -23,9 +23,9 @@ const ProjectSection = () => {
 
     useEffect(() => {
         if (searchInput) {
-            dispatch(getProjects(searchInput));
+            dispatch(getAllProjects(searchInput));
         } else {
-            dispatch(getProjects("java"));
+            dispatch(getAllProjects("java"));
         }
     }, [searchInput]);
 

@@ -13,7 +13,7 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getAuditors } from "../../../redux/actions/auditorAction.js";
 import { auditorReducer } from "../../../redux/reducers/auditorReducer.js";
-import { getProjects } from "../../../redux/actions/projectAction.js";
+import { getAllProjects } from "../../../redux/actions/projectAction.js";
 import PublicProjectCard from "./PublicProjectCard.jsx";
 
 const AuditorSection = () => {
