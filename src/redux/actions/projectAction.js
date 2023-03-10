@@ -18,7 +18,9 @@ export const createProject = (values) => {
       ready_to_wait: true,
       prise_from: "0",
       prise_to: "10000",
-      creator_contacts: {},
+      creator_contacts: {
+        additionalProp1: "test-contacts",
+      },
     };
     const token = Cookies.get("token");
     axios
