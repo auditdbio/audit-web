@@ -9,7 +9,10 @@ const AuditorCard = () => {
     <Card sx={cardStyle}>
       <Avatar sx={avatarStyle} />
       <Box sx={columnStyle}>
-        <Typography sx={mainTextStyle}>Mishail Voronnikov</Typography>
+        <Typography sx={mainTextStyle}>
+          Mihael Sorokin
+          {/*{auditor.first_name} {auditor.last_name}*/}
+        </Typography>
         <Typography sx={badgeFontStyle}>Cryptography, Games</Typography>
       </Box>
       <Box

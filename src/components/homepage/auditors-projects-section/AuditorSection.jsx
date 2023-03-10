@@ -14,17 +14,21 @@ import { useDispatch, useSelector } from "react-redux";
 import { getAuditors } from "../../../redux/actions/auditorAction.js";
 import { auditorReducer } from "../../../redux/reducers/auditorReducer.js";
 import { getProjects } from "../../../redux/actions/projectAction.js";
+import PublicProjectCard from "./PublicProjectCard.jsx";
 
 const AuditorSection = () => {
   const dispatch = useDispatch();
   const matchSm = useMediaQuery(theme.breakpoints.down("xs"));
 
   const [searchInput, setSearchInput] = useState("");
-  const auditorReducer = useSelector((state) => state.auditor);
+  const auditorReducer = useSelector((state) => state.auditor.auditors);
 
   useEffect(() => {
     if (searchInput) {
-      dispatch(getAuditors(searchInput));
+      // dispatch(getAuditors(searchInput));
+    }
+    else {
+      // dispatch(getAuditors('java'));
     }
   }, [searchInput]);
 
@@ -85,6 +89,12 @@ const AuditorSection = () => {
         }}
         justifyContent="space-between"
       >
+        {/*{auditorReducer && auditorReducer.slice(0,matchSm ? 4 : 3).map((auditor) => (*/}
+        {/*    <Grid key={auditor.id} item zero="6" xs={4}>*/}
+        {/*      <AuditorCard auditor={auditor}/>*/}
+        {/*    </Grid>*/}
+        {/*))}*/}
+
         <Grid item zero="6" xs={4}>
           <AuditorCard />
         </Grid>
