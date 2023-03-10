@@ -4,14 +4,14 @@ import { CustomButton } from "../../custom/Button";
 import Currency from "../../icons/Currency";
 import Star from "../../icons/Star";
 
-const AuditorCard = () => {
+const AuditorCard = ({auditor}) => {
   return (
     <Card sx={cardStyle}>
       <Avatar sx={avatarStyle} />
       <Box sx={columnStyle}>
         <Typography sx={mainTextStyle}>
-          Mihael Sorokin
-          {/*{auditor.first_name} {auditor.last_name}*/}
+          {/*Mihael Sorokin*/}
+          {auditor.first_name} {auditor.last_name}
         </Typography>
         <Typography sx={badgeFontStyle}>Cryptography, Games</Typography>
       </Box>

@@ -20,6 +20,9 @@ export const AUDIT_REQUEST_CREATE = "AUDIT_REQUEST_CRETE";
 export const GET_AUDIT_REQUEST = "GET_AUDIT_REQUEST"
 export const DELETE_REQUEST = "DELETE_REQUEST"
 export const GET_AUDITS = "GET_AUDITS"
+
+export const GET_AUDITORS = "GET_AUDITORS"
+
 export const GET_MY_PROJECTS = "GET_MY_PROJECTS"
 export const CONFIRM_AUDIT = "CONFIRM_AUDIT"
 export const DONE = 'done'
