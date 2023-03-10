@@ -4,15 +4,18 @@ import Currency from "./icons/Currency.jsx";
 import Star from "./icons/Star.jsx";
 import theme, {radiusOfComponents} from "../styles/themes.js";
 import {useNavigate} from "react-router-dom/dist";
+import {useDispatch} from "react-redux";
+import {deleteAudit} from "../redux/actions/auditAction.js";
 
-const AuditRequestCard = ({type}) => {
+const AuditRequestCard = ({type, request}) => {
     const navigate = useNavigate()
+    const dispatch = useDispatch()
 
     return (
         <Box sx={cardWrapper}>
             <Box sx={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
                 <Typography variant={'h5'}>
-                    AuditBD
+                    {request.project_name}
                 </Typography>
                 <Typography sx={categorySx}>
                     Criptography, Games
@@ -20,7 +23,7 @@ const AuditRequestCard = ({type}) => {
                 <Box sx={priceWrapper}>
                     <Box sx={infoWrapper}>
                         <Currency/>
-                        <Typography>3.1 K</Typography>
+                        <Typography>{request.price}</Typography>
                     </Box>
                     <Box sx={infoWrapper}>
                         <Star/>
@@ -32,11 +35,14 @@ const AuditRequestCard = ({type}) => {
                 <Button
                     variant={'contained'}
                     sx={[actionButton, type === 'auditor' ? editAuditor : {}]}
-                    onClick={() => navigate('/audit-request')}
+                    onClick={() => navigate(`/audit-request/${request.id}`)}
                 >
                     View
                 </Button>
-                <Button sx={[actionButton, copyBtn]} variant={'contained'} >
+                <Button sx={[actionButton, copyBtn]}
+                        onClick={() => dispatch(deleteAudit(request.id))}
+                        variant={'contained'}
+                >
                     Decline
                 </Button>
             </Box>

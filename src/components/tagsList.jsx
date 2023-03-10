@@ -6,7 +6,7 @@ import {FieldArray, useField} from "formik";
 const TagsList = ({data}) => {
 
     return (
-        <Box sx={{display: 'flex', gap: '15px', flexWrap: 'wrap'}}>
+        <Box sx={{display: 'flex', gap: '15px', flexWrap: 'wrap', maxWidth: '300px'}}>
 
             {
                 data?.map((tag, idx) =>

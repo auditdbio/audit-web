@@ -17,8 +17,8 @@ export const createProject = (values) => {
       .then(({ data }) => {
         console.log("create project", data);
         dispatch({ type: PROJECT_CREATE });
-        history.push("/profile", {
-          some: true,
+        history.push("/profile/projects", {
+          some: true
         });
       })
       .catch(({ response }) => {
@@ -47,7 +47,7 @@ export const editProject = (values) => {
         });
   };
 };
-export const getProjects = (values) => {
+export const getProjects = (values = '') => {
   const token = Cookies.get("token");
   return (dispatch) => {
     axios

@@ -355,14 +355,17 @@ const pages = [
       {
         id: 2,
         itemName: "Contact",
+        link: '/'
       },
       {
         id: 3,
         itemName: "Our team",
+        link: '/'
       },
       {
         id: 4,
         itemName: "Our projects",
+        link: '/projects'
       },
     ],
   },
@@ -373,14 +376,17 @@ const pages = [
       {
         id: 2,
         itemName: "Contact",
+        link: '/'
       },
       {
         id: 3,
         itemName: "Our team",
+        link: '/'
       },
       {
         id: 4,
         itemName: "Our projects",
+        link: '/projects'
       },
     ],
   },
@@ -391,14 +397,17 @@ const pages = [
       {
         id: 2,
         itemName: "Contact",
+        link: '/'
       },
       {
         id: 3,
         itemName: "Our team",
+        link: '/'
       },
       {
         id: 4,
         itemName: "Our projects",
+        link: '/projects'
       },
     ],
   },
@@ -410,20 +419,29 @@ const authorizedPages = [
     name: "Audits",
     menuOptions: [
       {
+        id: 1,
+        itemName: "Our projects",
+        link: '/projects'
+      },
+      {
         id: 2,
         itemName: "New project",
+        link: '/'
       },
       {
         id: 3,
         itemName: "My audits",
+        link: '/'
       },
       {
         id: 4,
         itemName: "My audits requests",
+        link: '/'
       },
       {
         id: 5,
         itemName: "Audits history",
+        link: '/'
       },
     ],
   },
@@ -431,6 +449,11 @@ const authorizedPages = [
     id: 2,
     name: "Projects",
     menuOptions: [
+      {
+        id: 1,
+        itemName: "Our projects",
+        link: '/projects'
+      },
       {
         id: 2,
         itemName: "New project",

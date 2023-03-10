@@ -3,10 +3,9 @@ import {CustomCard} from "../components/custom/Card.jsx";
 import Layout from "../styles/Layout.jsx";
 import {Avatar, Box, Button, Typography} from "@mui/material";
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import {CustomButton} from "../components/custom/Button.jsx";
-import TagsArray from "../components/tagsArray/index.jsx";
 import theme from "../styles/themes.js";
 import {useNavigate} from "react-router-dom/dist";
+import TagsList from "../components/tagsList.jsx";
 
 const AuditInfo = () => {
     const navigate = useNavigate()
@@ -55,7 +54,7 @@ const AuditInfo = () => {
                             -
                             <Box sx={dateWrapper}>25.01.2023</Box>
                         </Box>
-                        <TagsArray/>
+                        <TagsList/>
                     </Box>
                 </Box>
                 <Box>

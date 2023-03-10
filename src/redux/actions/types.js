@@ -16,3 +16,7 @@ export const CUSTOMER = "customer";
 export const UPDATE_USER = "UPDATE_USER";
 export const PROJECT_CREATE = "PROJECT_CREATE";
 export const GET_PROJECTS = "GET_PROJECTS";
+export const AUDIT_REQUEST_CREATE = "AUDIT_REQUEST_CRETE";
+export const GET_AUDIT_REQUEST = "GET_AUDIT_REQUEST"
+export const DELETE_REQUEST = "DELETE_REQUEST"
+export const GET_AUDITS = "GET_AUDITS"
