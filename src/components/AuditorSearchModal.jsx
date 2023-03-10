@@ -20,13 +20,27 @@ import AuditorSearchListBox from "./custom/AuditorSearchListBox.jsx";
 import SalarySlider from "./forms/salary-slider/salary-slider.jsx";
 import IconButton from "@mui/material/IconButton";
 import { ArrowBack } from "@mui/icons-material";
+import { useDispatch, useSelector } from "react-redux";
+import { getProjects } from "../redux/actions/projectAction.js";
+import { getAuditors } from "../redux/actions/auditorAction.js";
+import { createRequest } from "../redux/actions/auditAction.js";
+import { customerReducer } from "../redux/reducers/customerReducer.js";
 
-export default function AuditorSearchModal({ open, handleClose }) {
+export default function AuditorSearchModal({
+  open,
+  handleClose,
+  handleSubmit,
+}) {
+  const dispatch = useDispatch();
   const API_URL = import.meta.env.VITE_API_BASE_URL;
+  const auditorReducer = useSelector((state) => state.auditor.auditors);
+  const projectReducer = useSelector((state) => state.project);
+  const customerReducer = useSelector((state) => state.customer);
 
   const [auditorsList, setAuditorsList] = useState([]);
+  const [submitted, setSubmitted] = useState(false);
 
-  const [selectedAuditor, setSelectedAuditor] = useState("");
+  const [selectedAuditor, setSelectedAuditor] = useState({});
 
   const [openDrop, setOpenDrop] = useState(false);
   const [mode, setMode] = useState("search");
@@ -35,30 +49,36 @@ export default function AuditorSearchModal({ open, handleClose }) {
   const [taxInput, setTaxInput] = useState(50);
 
   const [query, setQuery] = useState("");
-
-  const sendRequest = () => {
-    const token = Cookies.get("token");
-    return;
-    if (!query) return;
-    // return () => {
-    axios
-      .get(`${API_URL}/auditors/all?tags=${query}&skip=0&limit=100`, {
-        headers: { Authorization: `Bearer ${token}` },
-      })
-      .then(({ data }) => {
-        console.log(data);
-        console.log(data["auditors"]);
-        // setAuditorsList(data["auditors"]);
-        // dispatch({type: GET_AUDITOR, payload: data})
-      })
-      .catch(({ response }) => {
-        console.log(response, "res");
-      });
-  };
+  console.log("auditor reducer", auditorReducer);
+  useEffect(() => {
+    console.log("searching...");
+    dispatch(getAuditors(query));
+  }, [query]);
 
   useEffect(() => {
-    sendRequest();
-  }, [query]);
+    if (submitted) {
+      const request = {
+        auditor_contacts: selectedAuditor.contacts ?? {},
+        auditor_id: selectedAuditor.user_id,
+        customer_contacts: customerReducer.customer
+          ? customerReducer.customer.contacts
+          : {},
+        customer_id: customerReducer.customer.user_id,
+        description: "test description",
+        opener: "Customer",
+        price: taxInput.toString(),
+        price_range: {
+          lower_bound: "string",
+          upper_bound: "string",
+        },
+        project_id: projectReducer.recentProject.id,
+        scope: ["string"],
+        time_frame: "string",
+      };
+      dispatch(createRequest(request));
+      setSubmitted(false);
+    }
+  }, [projectReducer.recentProject]);
 
   const handleInputChange = (event) => {
     setQuery(event.target.value);
@@ -66,7 +86,13 @@ export default function AuditorSearchModal({ open, handleClose }) {
 
   const handleOptionChange = (option) => {
     console.log(option);
+    setSelectedAuditor(option);
     setMode("offer");
+  };
+
+  const handleSend = async () => {
+    await handleSubmit();
+    setSubmitted(true);
   };
 
   return (
@@ -74,72 +100,65 @@ export default function AuditorSearchModal({ open, handleClose }) {
       {mode === "search" && (
         <DialogContent sx={modalWindow}>
           <Box sx={fieldButtonContainer}>
-            <Autocomplete
-              open={openDrop}
-              onOpen={() => {
-                if (inputValue) {
-                  setOpenDrop(true);
-                }
-              }}
-              onClose={() => setOpenDrop(false)}
-              inputValue={inputValue}
-              onInputChange={(e, value, reason) => {
-                setInputValue(value);
-
-                // only open when inputValue is not empty after the user typed something
-                if (!value) {
-                  setOpenDrop(false);
-                }
-              }}
-              freeSolo
-              onSelect={() => {
-                console.log("select");
-              }}
-              // onChange={handleOptionChange}
-              options={auditorNames}
-              getOptionLabel={(option) => option.label}
-              onClick={() => {
-                {
-                  console.log("click");
-                }
-              }}
-              renderOption={(props, option) => (
-                <AuditorSearchListBox
-                  {...props}
-                  auditor={option}
-                  handleSelectOption={() => handleOptionChange(option)}
-                />
-              )}
-              PaperComponent={CustomPaper}
-              renderInput={(params) => (
-                <TextField
-                  variant="outlined"
-                  onChange={handleInputChange}
-                  {...params}
-                  id="name"
-                  sx={searchField}
-                  // fullWidth
-                  type="text"
-                  InputProps={{
-                    ...params.InputProps,
-                    // className: classes.input,
-                    // sx: {
-                    //   color: "red",
-                    //   // height: "40px",
-                    //   padding: "0px",
-                    // },
-                    startAdornment: (
-                      <>
-                        <InputAdornment position="start">
-                          <SearchIcon sx={searchIcon} />
-                        </InputAdornment>
-                        {params.InputProps.startAdornment}
-                      </>
-                    ),
-                  }}
-                />
-              )}
-            />
+            {auditorReducer && (
+              <Autocomplete
+                open={openDrop}
+                onOpen={() => {
+                  if (inputValue) {
+                    setOpenDrop(true);
+                  }
+                }}
+                openOnFocus={true}
+                onClose={() => setOpenDrop(false)}
+                inputValue={inputValue}
+                onInputChange={(e, value, reason) => {
+                  setInputValue(value);
+                  if (!value) {
+                    setOpenDrop(false);
+                  }
+                }}
+                freeSolo
+                onChange={handleOptionChange}
+                options={auditorReducer}
+                filterOptions={(options) => options} // <-- return all options as is
+                getOptionLabel={(option) => option.user_id}
+                onClick={() => {
+                  {
+                    console.log("click");
+                  }
+                }}
+                renderOption={(props, option) => (
+                  <AuditorSearchListBox
+                    {...props}
+                    auditor={option}
+                    handleSelectOption={() => handleOptionChange(option)}
+                  />
+                )}
+                PaperComponent={CustomPaper}
+                renderInput={(params) => (
+                  <TextField
+                    variant="outlined"
+                    onChange={handleInputChange}
+                    {...params}
+                    id="name"
+                    sx={searchField}
+                    // fullWidth
+                    type="text"
+                    InputProps={{
+                      ...params.InputProps,
+                      startAdornment: (
+                        <>
+                          <InputAdornment position="start">
+                            <SearchIcon sx={searchIcon} />
+                          </InputAdornment>
+                          {params.InputProps.startAdornment}
+                        </>
+                      ),
+                    }}
+                  />
+                )}
+              />
+            )}
             <Button sx={findButton}>Find</Button>
           </Box>
         </DialogContent>
@@ -176,7 +195,7 @@ export default function AuditorSearchModal({ open, handleClose }) {
                   display: "flex",
                   justifyContent: "space-between",
                   alignItems: "center",
-                  marginY: '20px',
+                  marginY: "20px",
                 }}
               >
                 <Slider
@@ -192,7 +211,9 @@ export default function AuditorSearchModal({ open, handleClose }) {
                 <Box sx={infoWrapper}>{taxInput || 0}</Box>
               </Box>
               <Box sx={{ justifyContent: "center", display: "flex" }}>
-                <Button sx={sendButton}>Send</Button>
+                <Button sx={sendButton} onClick={handleSend}>
+                  Send
+                </Button>
               </Box>
             </Box>
           </Box>

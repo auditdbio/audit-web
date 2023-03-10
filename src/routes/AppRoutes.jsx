@@ -1,5 +1,5 @@
 import React, {useEffect} from 'react';
-import {Route, Routes} from 'react-router-dom/dist'
+import { Route, Routes } from 'react-router-dom/dist'
 import HomePage from "../pages/HomePage.jsx";
 import SignupPage from "../pages/SignupPage.jsx";
 import SigninPage from "../pages/SigninPage.jsx";
@@ -21,6 +21,7 @@ import ProjectPage from "../pages/Project-page.jsx";
 import AuditRequestPage from "../pages/Audit-Request-Page.jsx";
 import {getAllProjects, getProjects} from "../redux/actions/projectAction.js";
 import {getAudits, getAuditsRequest} from "../redux/actions/auditAction.js";
+import EditProject from "../pages/EditProject.jsx";
 
 
 const AppRoutes = () => {
@@ -96,9 +97,17 @@ const AppRoutes = () => {
                         </PrivateRoute>
                     }
                 />
+                <Route
+                    path="/edit-project"
+                    element={
+                        <PrivateRoute auth={{ isAuthenticated: isAuth() }}>
+                            <EditProject />
+                        </PrivateRoute>
+                    }
+                />
             </Routes>
         </>
     );
 };
 
-export default AppRoutes
+export default AppRoutes;

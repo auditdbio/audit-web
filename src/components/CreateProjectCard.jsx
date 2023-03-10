@@ -1,8 +1,5 @@
-import React, { useState } from "react";
-import {
-  Box,
-  Button,
-} from "@mui/material";
+import React, { useEffect, useState } from "react";
+import { Box, Button } from "@mui/material";
 import theme, { radiusOfComponents } from "../styles/themes.js";
 import { useNavigate } from "react-router-dom/dist";
 import TagsArray from "./tagsArray/index.jsx";
@@ -15,22 +12,70 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack.js";
 import MenuRoundedIcon from "@mui/icons-material/MenuRounded";
 import AuditorSearchModal from "./AuditorSearchModal.jsx";
 import TagsField from "./forms/tags-field/tags-field.jsx";
-import {createProject} from "../redux/actions/projectAction.js";
-import { useDispatch } from "react-redux";
+import {
+  createProject,
+  editProject,
+  getProjects,
+} from "../redux/actions/projectAction.js";
+import { useDispatch, useSelector } from "react-redux";
+import * as Yup from "yup";
+import { useLocation } from "react-router-dom";
+import { getAuditsRequest } from "../redux/actions/auditAction.js";
+import { AuditRequestsArray } from "./custom/AuditRequestsArray.jsx";
 
-const CreateProjectCard = ({ role }) => {
+const CreateProjectCard = ({ role, projectInfo }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const location = useLocation();
+  const customerReducer = useSelector((state) => state.customer);
+  const auditReducer = useSelector((state) => state.audits);
+  const [auditRequests, setAuditRequests] = useState([]);
+
+  useEffect(() => {
+    dispatch(getAuditsRequest("customer"));
+  }, []);
+  useEffect(() => {
+    if (auditReducer.auditRequests && projectInfo) {
+      console.log(auditReducer, projectInfo.id);
+      setAuditRequests(
+        auditReducer.auditRequests &&
+          auditReducer.auditRequests.filter(
+            (request) => request.project_id === projectInfo.id
+          )
+      );
+    }
+  }, [auditReducer]);
+
+  // console.log("project info", projectInfo);
+
+  let editMode = !!projectInfo;
+
+  // console.log("audit reqs", auditRequests);
 
   const handleEdit = () => {
     navigate("/edit-profile");
   };
 
+  const validationSchema = Yup.object().shape({
+    tags: Yup.array().min(1, "Please enter at least one tag"),
+    scope: Yup.array().min(1, "Please enter at least one link"),
+    name: Yup.string().required("Name field is required"),
+    description: Yup.string().required("Description field is required"),
+  });
+
   const initialValues = {
-    name: "",
-    projectLinks: [],
-    description: "",
-    tags: [],
+    name: projectInfo ? projectInfo.name : "",
+    scope: projectInfo ? projectInfo.scope : [],
+    description: projectInfo ? projectInfo.description : "",
+    tags: projectInfo ? projectInfo.tags : [],
+    status: projectInfo ? projectInfo.status : "status test",
+    publish: projectInfo ? projectInfo.publish : false,
+    ready_to_wait: projectInfo ? projectInfo.name : true,
+    prise_from: "0",
+    prise_to: "10000",
+    creator_contacts: customerReducer.customer
+      ? customerReducer.customer.contacts
+      : {},
   };
   const [openInvite, setOpenInvite] = useState(false);
 
@@ -43,57 +88,59 @@ const CreateProjectCard = ({ role }) => {
   };
 
   return (
-    <Box sx={mainBox}>
-      {/*<Button sx={backButtonSx} onClick={() => navigate("/home-customer")}>*/}
-      {/*  <ArrowBackIcon />*/}
-      {/*</Button>*/}
+    <Formik
+      initialValues={initialValues}
+      validationSchema={validationSchema}
+      onSubmit={(values) => {
+        editMode
+          ? dispatch(editProject({ ...values, id: projectInfo.id }))
+          : dispatch(createProject(values));
+        // navigate('/profile/projects')
+      }}
+    >
+      {({ handleSubmit }) => {
+        return (
+          <Box sx={mainBox}>
+            <Button
+              sx={backButtonSx}
+              onClick={() => navigate("/profile/projects")}
+            >
+              <ArrowBackIcon />
+            </Button>
 
-      <AuditorSearchModal
-        open={openInvite}
-        handleClose={handleCloseInviteModal}
-      />
+            <AuditorSearchModal
+              open={openInvite}
+              handleClose={handleCloseInviteModal}
+              handleSubmit={handleSubmit}
+            />
 
-      <Box sx={buttonGroup}>
-        <Button
-          variant={"contained"}
-          sx={inviteButton}
-          onClick={handleInviteModal}
-        >
-          Invite auditor
-        </Button>
-        <Button variant={"contained"} sx={publishButton}>
-          Publish project
-        </Button>
-        <Button sx={menuButtonSx}>
-          <MenuRoundedIcon sx={menuButtonIconSx} />
-        </Button>
-      </Box>
+            <Box sx={buttonGroup}>
+              <Button
+                variant={"contained"}
+                sx={inviteButton}
+                onClick={() => {
+                  handleInviteModal();
+                }}
+              >
+                Invite auditor
+              </Button>
+              <Button variant={"contained"} sx={publishButton}>
+                Publish project
+              </Button>
+              <Button sx={menuButtonSx}>
+                <MenuRoundedIcon sx={menuButtonIconSx} />
+              </Button>
+            </Box>
 
-      <Box sx={wrapper}>
-        <Formik
-          initialValues={initialValues}
-          // validationSchema={SigninSchema}
-          // validateOnBlur={false}
-          // validateOnChange={false}
-          onSubmit={(values) => {
-            dispatch(createProject(values));
-            // dispatch(getProjects('java'));
-            // console.log(values);
-          }}
-        >
-          {({ handleSubmit }) => {
-            return (
+            <Box sx={wrapper}>
               <Form onSubmit={handleSubmit}>
                 <Box sx={formCard}>
                   <Box sx={formAllFields}>
                     <Box sx={formWrapper}>
                       <Box sx={fieldWrapper}>
                         <SimpleField name={"name"} label={"Name"} />
-                        <TagsField
-                          name={"projectLinks"}
-                          label={"Project links"}
-                        />
-                        <ProjectLinksList name={"projectLinks"} />
+                        <TagsField name={"scope"} label={"Project links"} />
+                        <ProjectLinksList name={"scope"} />
                       </Box>
                       <Box
                         className="description-box"
@@ -117,21 +164,24 @@ const CreateProjectCard = ({ role }) => {
                         />
                       </Box>
                     </Box>
+                    <Box>
+                      <AuditRequestsArray requests={auditRequests ?? []} />
+                    </Box>
                   </Box>
                   <Button
                     type={"submit"}
                     variant={"contained"}
                     sx={submitButton}
                   >
-                    Create
+                    {editMode ? "Save changes" : "Create"}
                   </Button>
                 </Box>
               </Form>
-            );
-          }}
-        </Formik>
-      </Box>
-    </Box>
+            </Box>
+          </Box>
+        );
+      }}
+    </Formik>
   );
 };
 export default CreateProjectCard;

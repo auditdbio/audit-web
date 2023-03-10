@@ -10,7 +10,7 @@ const AuditorSearchListBox = ({ auditor, handleSelectOption }) => {
       onClick={handleSelectOption}
     >
       <Box>
-        <Typography sx={nameStyle(theme)}>{auditor.label}</Typography>
+        <Typography sx={nameStyle(theme)}>{auditor.first_name} {auditor.last_name}</Typography>
       </Box>
 
       <Box sx={statusContainer}>

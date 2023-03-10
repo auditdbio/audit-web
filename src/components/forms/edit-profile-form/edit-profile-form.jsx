@@ -51,7 +51,8 @@ const EditProfileForm = ({role}) => {
                     about: data?.about || '',
                     company: data?.company || '',
                     tax: data?.tax || '',
-                    tags: data?.tags || []
+                    tags: data?.tags || [],
+                    avatar: ''
                 }}
                 validationSchema={EditProfileSchema}
                 validateOnBlur={false}
