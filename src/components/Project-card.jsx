@@ -4,40 +4,49 @@ import Currency from "./icons/Currency.jsx";
 import Star from "./icons/Star.jsx";
 import theme, {radiusOfComponents} from "../styles/themes.js";
 
-const ProjectCard = ({type}) => {
+const ProjectCard = ({type, project}) => {
     return (
-        <Box sx={cardWrapper}>
-            <Box sx={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
-                <Typography variant={'h5'}>
-                    AuditBD
-                </Typography>
-                <Typography sx={categorySx}>
-                    Criptography, Games
-                </Typography>
-                <Box sx={priceWrapper}>
-                    <Box sx={infoWrapper}>
-                        <Currency/>
-                        <Typography>3.1 K</Typography>
-                    </Box>
-                    <Box sx={infoWrapper}>
-                        <Star/>
-                        <Typography>150</Typography>
-                    </Box>
-                </Box>
+      <Box sx={cardWrapper}>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+          }}
+        >
+          <Typography variant={"h5"}>{project.name}</Typography>
+          <Typography sx={categorySx}>Criptography, Games</Typography>
+          <Box sx={priceWrapper}>
+            <Box sx={infoWrapper}>
+              <Currency />
+              <Typography>3.1 K</Typography>
             </Box>
-            <Box sx={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
-                <Box sx={statusWrapper}>
-                    <Box/>
-                    <Typography>Waiting audit</Typography>
-                </Box>
-                <Button variant={'contained'} sx={[editButton, type === 'auditor' ? editAuditor : {}]}>
-                    Edit
-                </Button>
-                <Button sx={copyBtn}>
-                    Make a copy
-                </Button>
+            <Box sx={infoWrapper}>
+              <Star />
+              <Typography>150</Typography>
             </Box>
+          </Box>
         </Box>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+          }}
+        >
+          <Box sx={statusWrapper}>
+            <Box />
+            <Typography>{project.status}</Typography>
+          </Box>
+          <Button
+            variant={"contained"}
+            sx={[editButton, type === "auditor" ? editAuditor : {}]}
+          >
+            Edit
+          </Button>
+          <Button sx={copyBtn}>Make a copy</Button>
+        </Box>
+      </Box>
     );
 };
 

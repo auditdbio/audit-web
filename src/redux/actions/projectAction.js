@@ -13,6 +13,13 @@ export const createProject = (values) => {
       scope: values.projectLinks,
       status: "status test",
       tags: values.tags,
+      publish: false,
+      ready_to_wait: true,
+      prise_from: "0",
+      prise_to: "10000",
+      creator_contacts: {
+        additionalProp1: "test-contacts",
+      },
     };
     const token = Cookies.get("token");
     axios
@@ -23,7 +30,7 @@ export const createProject = (values) => {
       })
       .then(({ data }) => {
         dispatch({ type: PROJECT_CREATE });
-        history.push("/home-customer", {
+        history.push("/profile/projects", {
           some: true
         });
       })
@@ -32,10 +39,13 @@ export const createProject = (values) => {
       });
   };
 };
-export const getProjects = (values='') => {
+export const getProjects = (values) => {
+  const token = Cookies.get("token");
   return (dispatch) => {
     axios
-      .get(`${API_URL}/projects/all?skip=0&limit=20&tags=`)
+      .get(`${API_URL}/projects/all?tags=${values}&limit=100&skip=0`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
       .then(({ data }) => {
         dispatch({ type: GET_PROJECTS, payload: data });
       })

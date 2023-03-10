@@ -1,15 +1,32 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Box, Button, Grid, useMediaQuery } from "@mui/material";
 import ProjectCard from "./Project-card.jsx";
 import theme, { radiusOfComponents } from "../styles/themes.js";
 
 import { useNavigate } from "react-router-dom/dist";
+import PublicProjectCard from "./homepage/auditors-projects-section/PublicProjectCard.jsx";
+import { useDispatch, useSelector } from "react-redux";
+import { getProjects } from "../redux/actions/projectAction.js";
+
 
 const Projects = ({ role }) => {
   const navigate = useNavigate();
   const matchMd = useMediaQuery(theme.breakpoints.down("md"));
+
+  const dispatch = useDispatch();
+  const matchSm = useMediaQuery(theme.breakpoints.down("xs"));
+  const projectReducer = useSelector((state) => state.project.projects);
+
+  useEffect(() => {
+    dispatch(getProjects(""));
+  }, []);
+
+  useEffect(() => {
+    console.log("projects", projectReducer);
+  }, [projectReducer]);
+
   const handleNavigate = () => {
-    console.log(role)
+    console.log(role);
     if (role === "customer") navigate("/create-project");
     // else if (role === "auditor") navigate("/create-audit");
   };
@@ -25,21 +42,28 @@ const Projects = ({ role }) => {
         </Button>
       </Box>
       <Grid container spacing={2}>
-        <Grid item sx={gridItemStyle}>
-          <ProjectCard type={role} />
-        </Grid>
-        <Grid item sx={gridItemStyle}>
-          <ProjectCard type={role} />
-        </Grid>
-        <Grid item sx={gridItemStyle}>
-          <ProjectCard type={role} />
-        </Grid>
-        <Grid item sx={gridItemStyle}>
-          <ProjectCard type={role} />
-        </Grid>
-        <Grid item sx={gridItemStyle}>
-          <ProjectCard type={role} />
-        </Grid>
+        {projectReducer &&
+          projectReducer.map((project) => (
+            <Grid key={project.id} item zero="6" xs={4}>
+              <ProjectCard project={project} />
+            </Grid>
+          ))}
+
+        {/*<Grid item sx={gridItemStyle}>*/}
+        {/*  <ProjectCard type={role} />*/}
+        {/*</Grid>*/}
+        {/*<Grid item sx={gridItemStyle}>*/}
+        {/*  <ProjectCard type={role} />*/}
+        {/*</Grid>*/}
+        {/*<Grid item sx={gridItemStyle}>*/}
+        {/*  <ProjectCard type={role} />*/}
+        {/*</Grid>*/}
+        {/*<Grid item sx={gridItemStyle}>*/}
+        {/*  <ProjectCard type={role} />*/}
+        {/*</Grid>*/}
+        {/*<Grid item sx={gridItemStyle}>*/}
+        {/*  <ProjectCard type={role} />*/}
+        {/*</Grid>*/}
       </Grid>
     </Box>
   );

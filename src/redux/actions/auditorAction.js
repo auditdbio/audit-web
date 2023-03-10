@@ -1,6 +1,6 @@
 import Cookies from "js-cookie";
 import axios from "axios";
-import {GET_AUDITOR, GET_CUSTOMER, UPDATE_AUDITOR, UPDATE_CUSTOMER} from "./types.js";
+import {GET_AUDITOR, GET_CUSTOMER, GET_PROJECTS, UPDATE_AUDITOR, UPDATE_CUSTOMER} from "./types.js";
 import {history} from "../../services/history.js";
 
 const API_URL = import.meta.env.VITE_API_BASE_URL
@@ -50,3 +50,20 @@ export const updateAuditor = (values) => {
             })
     }
 }
+
+export const getAuditors = (values) => {
+    const token = Cookies.get("token");
+    return (dispatch) => {
+        axios
+            .get(`${API_URL}/auditors/all?tags=${values}&limit=100&skip=0`, {
+                headers: { Authorization: `Bearer ${token}` },
+            })
+            .then(({ data }) => {
+                console.log("get auditors", data);
+                dispatch({ type: GET_PROJECTS, payload: data });
+            })
+            .catch(({ response }) => {
+                console.log(response, "res");
+            });
+    };
+};

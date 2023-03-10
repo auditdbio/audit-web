@@ -2,10 +2,10 @@ import { Box, Card, Typography } from "@mui/material";
 import theme from "../../../styles/themes";
 import { CustomButton } from "../../custom/Button";
 
-const PublicProjectCard = () => {
+const PublicProjectCard = ({ project }) => {
   return (
     <Card sx={cardWrapper}>
-      <Typography sx={auditNameStyle}>AuditDB</Typography>
+      <Typography sx={auditNameStyle}>{project.name}</Typography>
       <Typography sx={nameTextStyle}>Mishail Soronikov</Typography>
       <Typography sx={priceTextStyle}>20 $ per stroke</Typography>
       <Box sx={dateWrapper}>
@@ -16,7 +16,7 @@ const PublicProjectCard = () => {
 
       <Box sx={statusWrapper}>
         <Box />
-        <Typography>Waiting audit</Typography>
+        <Typography>{project.status}</Typography>
       </Box>
       <CustomButton sx={acceptButtonStyle}>Accept</CustomButton>
       <CustomButton sx={viewButtonStyle}>View</CustomButton>
@@ -75,7 +75,7 @@ const statusWrapper = (theme) => ({
   "& p": {
     fontSize: "14px",
     fontWeight: 500,
-    textAlign: 'center',
+    textAlign: "center",
     [theme.breakpoints.down("sm")]: {
       fontSize: "10px",
     },
@@ -134,7 +134,7 @@ const dateStyle = {
   color: "#434242",
   border: "1.8px #E5E5E5 solid",
   padding: "1rem",
-  textAlign: 'center',
+  textAlign: "center",
   [theme.breakpoints.down("sm")]: {
     fontSize: "10px",
     padding: "0.3rem",
