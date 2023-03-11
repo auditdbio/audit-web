@@ -2,7 +2,7 @@ import Cookies from "js-cookie";
 import axios from "axios";
 import {
     AUDIT_REQUEST_CREATE, AUDITOR,
-    CONFIRM_AUDIT,
+    CONFIRM_AUDIT, DELETE_AUDIT,
     DELETE_REQUEST,
     GET_AUDIT_REQUEST,
     GET_AUDITS,
@@ -22,6 +22,7 @@ export const createRequest = (values) => {
                 },
             })
             .then(({ data }) => {
+                dispatch(getAuditsRequest())
                 dispatch({ type: AUDIT_REQUEST_CREATE, payload: data });
             })
             .catch(({ response }) => {
@@ -66,10 +67,10 @@ export const getAudits = (role) => {
     };
 };
 
-export const deleteAudit = (id) => {
+export const deleteAuditRequest = (id) => {
     return (dispatch) => {
         const token = Cookies.get("token");
-        axios.delete(`${API_URL}/requests/${id}`, {
+        axios.delete(`${API_URL}/request/${id}`, {
             headers: {
                 Authorization: `Bearer ${token}`,
             }
@@ -79,19 +80,16 @@ export const deleteAudit = (id) => {
     }
 }
 
-export const submitAudit = (id) => {
+export const deleteAudit = (id) => {
     return (dispatch) => {
         const token = Cookies.get("token");
-        axios.patch(`${API_URL}/audit/change_status`, {
-            id: id,
-            status: 'done'
-        }, {
+        axios.delete(`${API_URL}/audit/${id}`, {
             headers: {
                 Authorization: `Bearer ${token}`,
             }
         }).then(({data}) => {
-            dispatch({type: SUBMIT_AUDIT, payload: data})
             history.back()
+            dispatch({type: DELETE_AUDIT, payload: data})
         })
     }
 }
@@ -99,14 +97,12 @@ export const submitAudit = (id) => {
 export const addReportAudit = (values) => {
     return (dispatch) => {
         const token = Cookies.get("token");
-        axios.patch(`${API_URL}/audit/add_report`, values, {
+        axios.patch(`${API_URL}/audit`, values, {
             headers: {
                 Authorization: `Bearer ${token}`,
             }
         }).then(({data}) => {
-            history.push("/profile/projects", {
-                some: true
-            });
+            history.back();
             dispatch(getAudits(AUDITOR))
         })
     }
@@ -120,7 +116,6 @@ export const confirmAudit = (values) => {
                 Authorization: `Bearer ${token}`,
             }
         }).then(({data}) => {
-            console.log(data)
             history.back()
             dispatch({type: CONFIRM_AUDIT, payload: data})
         })

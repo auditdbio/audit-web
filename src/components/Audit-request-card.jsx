@@ -5,7 +5,7 @@ import Star from "./icons/Star.jsx";
 import theme, {radiusOfComponents} from "../styles/themes.js";
 import {useNavigate} from "react-router-dom/dist";
 import {useDispatch} from "react-redux";
-import {deleteAudit} from "../redux/actions/auditAction.js";
+import {deleteAuditRequest} from "../redux/actions/auditAction.js";
 
 const AuditRequestCard = ({type, request}) => {
     const navigate = useNavigate()
@@ -40,7 +40,7 @@ const AuditRequestCard = ({type, request}) => {
                     View
                 </Button>
                 <Button sx={[actionButton, copyBtn]}
-                        onClick={() => dispatch(deleteAudit(request.id))}
+                        onClick={() => dispatch(deleteAuditRequest(request.id))}
                         variant={'contained'}
                 >
                     Decline

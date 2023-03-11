@@ -42,7 +42,6 @@ export const updateCustomer = (values) => {
     return (dispatch) => {
         axios.patch(`${API_URL}/customer`, values, {headers: {"Authorization": `Bearer ${token}`}})
             .then(({data}) => {
-                console.log(data, 'customer data')
                 dispatch({type: 'UPDATE_CUSTOMER', payload: data})
                 history.push({pathname: `/profile/user-info`}, {
                     some: true,

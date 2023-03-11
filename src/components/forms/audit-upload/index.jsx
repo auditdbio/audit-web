@@ -5,7 +5,7 @@ import {useField} from "formik";
 import axios from "axios";
 
 const AuditUpload = ({name}) => {
-    const [field, , fieldHelper] = useField(name)
+    const [field, meta, fieldHelper] = useField(name)
     const formData = new FormData();
 
     const handleUpdateAudit = (e) => {
@@ -16,7 +16,7 @@ const AuditUpload = ({name}) => {
     }
     return (
         <>
-            <Box sx={inputWrapper}>{field?.value}</Box>
+            <Box sx={[inputWrapper, meta.error ? {borderColor: '#f44336'} : {}]}>{field?.value}</Box>
             <Button>
                 <label htmlFor="audit-upload">
                     <CreateNewFolderOutlinedIcon fontSize={'large'} color={'disabled'}/>

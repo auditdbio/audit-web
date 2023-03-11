@@ -49,22 +49,22 @@ const ProjectCard = ({ type, project }) => {
         }}
       >
         <Box sx={statusWrapper}>
-          {project.report === DONE ? (
+          {project.status === DONE ? (
             <Box sx={{ backgroundColor: "#52176D" }} />
           ) : (
             project.status === "pending" && (
               <Box sx={{ backgroundColor: "#FF9900" }} />
             )
           )}
-          {project.status !== "pending" && project.report !== DONE && (
+          {project.status !== "pending" && project.status !== DONE && (
             <Box sx={{ backgroundColor: "#09C010" }} />
           )}
           <Typography>
             {!project.status
               ? "Waiting for audit"
-              : project.report === DONE
+              : project.status === DONE
               ? "Finished"
-              : "In porgress"}
+              : "In progress"}
           </Typography>
         </Box>
         <Button
