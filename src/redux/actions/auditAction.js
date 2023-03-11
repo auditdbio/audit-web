@@ -91,6 +91,7 @@ export const submitAudit = (id) => {
             }
         }).then(({data}) => {
             dispatch({type: SUBMIT_AUDIT, payload: data})
+            history.back()
         })
     }
 }
@@ -120,6 +121,7 @@ export const confirmAudit = (values) => {
             }
         }).then(({data}) => {
             console.log(data)
+            history.back()
             dispatch({type: CONFIRM_AUDIT, payload: data})
         })
     }

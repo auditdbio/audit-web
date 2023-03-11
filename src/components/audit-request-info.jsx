@@ -11,6 +11,7 @@ import {Form, Formik} from "formik";
 import * as Yup from "yup";
 import {useDispatch, useSelector} from "react-redux";
 import {createRequest} from "../redux/actions/auditAction.js";
+import dayjs from "dayjs";
 
 const AuditRequestInfo = ({project, onClose}) => {
     const navigate = useNavigate()
@@ -130,17 +131,24 @@ const AuditRequestInfo = ({project, onClose}) => {
                             opener: 'auditor',
                             price: '',
                             description: project?.description || '',
-                            price_range: '',
-                            project_id: project?.project_id,
+                            price_range: {
+                                lower_bound: project?.price || '',
+                                upper_bound: project?.price || ''
+                            },
+                            time: {
+                                begin: '',
+                                end: ''
+                            },
+                            project_id: project?.id,
                             scope: project?.scope,
                             time_frame: ''
                         }}
                         onSubmit={(values) => {
                             const newValue = {...values,
-                                price: values.price_range,
+                                price: values.salary,
                                 price_range: {
-                                    lower_bound: values.price_range,
-                                    upper_bound: values.price_range
+                                    lower_bound: values.salary,
+                                    upper_bound: values.salary
                                 }}
                             dispatch(createRequest(newValue))
                             handleClose()
@@ -149,7 +157,7 @@ const AuditRequestInfo = ({project, onClose}) => {
                             }
                         }}
                     >
-                        {({handleSubmit, errors}) => {
+                        {({handleSubmit, setFieldValue}) => {
                             return (
                                 <Form onSubmit={handleSubmit}>
                                     <Typography variant={'h5'} sx={{width: '100%', textAlign: 'center'}}>
@@ -159,7 +167,7 @@ const AuditRequestInfo = ({project, onClose}) => {
                                         <Typography variant={'caption'}>
                                             Tax rate per stroke
                                         </Typography>
-                                        <SalarySlider name={'price_range'}/>
+                                        <SalarySlider name={'salary'}/>
                                     </Box>
                                     <Box>
                                         <Typography variant={'caption'}>
@@ -169,10 +177,18 @@ const AuditRequestInfo = ({project, onClose}) => {
                                             <TextField
                                                 type={'date'}
                                                 placeholder={''}
+                                                defaultValue={dayjs(project?.time?.begin).format('DD-MM-YYYY')}
+                                                onChange={(e) => {
+                                                    setFieldValue('time.begin', new Date(e.target.value))
+                                                }}
                                             />
                                             <TextField
                                                 type={'date'}
                                                 placeholder={''}
+                                                // value={project.time.end}
+                                                onChange={(e) => {
+                                                    setFieldValue('time.end', new Date(e.target.value))
+                                                }}
                                             />
                                         </Box>
                                     </Box>
@@ -198,7 +214,7 @@ const MakeOfferSchema = Yup.object().shape({
     customer_id: Yup.string(),
     opener: Yup.string(),
     price: Yup.number(),
-    price_range: Yup.string(),
+    price_range: Yup.object(),
     project_id: Yup.string(),
     scope: Yup.array(),
     time_frame: Yup.string()

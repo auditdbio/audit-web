@@ -12,7 +12,9 @@ export const auditReducer = (state = initialState, action) => {
 
     switch (action.type) {
         case AUDIT_REQUEST_CREATE:
-            return {...state, auditRequests: [...state.auditRequests, action.payload]};
+            return {...state,
+                auditRequests: [...state.auditRequests.map(audit => audit.id === action.payload.id ? action.payload : audit)]
+            };
         case GET_AUDIT_REQUEST:
             return {...state, auditRequests: action.payload.audits};
         case DELETE_REQUEST:
@@ -20,7 +22,10 @@ export const auditReducer = (state = initialState, action) => {
         case GET_AUDITS:
             return {...state, audits: action.payload.audits}
         case CONFIRM_AUDIT:
-            return {...state, audits: [...state.audits, action.payload]}
+            return {...state,
+                audits: [...state.audits, action.payload],
+                auditRequests: state.auditRequests.filter(request => request.project_id !== action.payload.project_id)
+            }
         case SUBMIT_AUDIT:
             return {...state, audits: state.audits?.map(audit => audit.id === action.payload.id ? action.payload : audit)}
         default:

@@ -10,6 +10,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {useParams} from "react-router-dom";
 import {confirmAudit, deleteAudit} from "../redux/actions/auditAction.js";
 import {DONE} from "../redux/actions/types.js";
+import dayjs from "dayjs";
 
 const AuditInfo = () => {
     const navigate = useNavigate()
@@ -74,9 +75,9 @@ const AuditInfo = () => {
                         <Box sx={projectWrapper}>
                             <Typography>Time for project</Typography>
                             <Box sx={{display: 'flex', alignItems: 'center', gap: '10px'}}>
-                                <Box sx={dateWrapper}>10.01.2023</Box>
+                                <Box sx={dateWrapper}>{dayjs(audit?.time?.begin).format('DD.MM.YYYY') }</Box>
                                 -
-                                <Box sx={dateWrapper}>25.01.2023</Box>
+                                <Box sx={dateWrapper}>{dayjs(audit?.time?.end).format('DD.MM.YYYY') }</Box>
                             </Box>
                             <TagsList/>
                         </Box>
