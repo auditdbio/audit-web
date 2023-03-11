@@ -183,9 +183,9 @@ export default function AuditorSearchModal({
               </IconButton>
             </Box>
 
-            <Box sx={{ paddingX: "10%" }}>
+            <Box sx={{ paddingX: "10%"}}>
               <Typography
-                style={{ ...rateLabel(), color: "black", marginBottom: "15px" }}
+                style={{ ...rateLabel(), color: "black", marginBottom: "10px", fontSize: '13px' }}
               >
                 Add some information
               </Typography>
@@ -241,13 +241,14 @@ const modalWindow = {
 
 const offerDialogStyle = {
   backgroundColor: "white",
+  padding: '10px',
   width: "700px",
   display: "flex",
   justifyContent: "center",
   alignItems: "center",
   [theme.breakpoints.down("sm")]: {
-    height: "100px",
-    width: "100%",
+    height: "250px",
+    width: "220px",
   },
 };
 
@@ -326,13 +327,14 @@ const sendButton = {
   },
 };
 const rateLabel = (theme) => ({
-  fontSize: "14px",
+  fontSize: "11px",
   color: "#B2B3B3",
   fontWeight: 500,
 });
 
 const sliderSx = (theme) => ({
   height: "9px",
+
   "& .MuiSlider-track, .MuiSlider-rail": {
     backgroundColor: "#B9B9B9",
     border: "none",
