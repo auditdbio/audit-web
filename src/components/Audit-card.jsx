@@ -6,6 +6,7 @@ import {useDispatch} from "react-redux";
 import {confirmAudit} from "../redux/actions/auditAction.js";
 import {useMemo} from "react";
 import {DONE} from "../redux/actions/types.js";
+import dayjs from "dayjs";
 
 
 const AuditCard = ({audit}) => {
@@ -18,9 +19,9 @@ const AuditCard = ({audit}) => {
             <Typography sx={nameTextStyle}>{audit.auditor_contacts.email}</Typography>
             <Typography sx={priceTextStyle}>{audit.price} $ per stroke</Typography>
             <Box sx={dateWrapper}>
-                <Typography sx={dateStyle}>10.01.2023</Typography>
+                <Typography sx={dateStyle}>{dayjs(audit?.time?.begin).format('DD.MM.YYYY') }</Typography>
                 <Typography variant={'caption'}>-</Typography>
-                <Typography sx={dateStyle}>10.01.2023</Typography>
+                <Typography sx={dateStyle}>{dayjs(audit?.time?.end).format('DD.MM.YYYY') }</Typography>
             </Box>
 
             <Box sx={statusWrapper}>

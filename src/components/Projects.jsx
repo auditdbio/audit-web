@@ -25,7 +25,7 @@ const Projects = ({ role }) => {
       return myProjects;
     }
   }, [role, projects, myProjects]);
-
+  console.log(myProjects)
   useEffect(() => {
     dispatch(getProjects());
   }, []);

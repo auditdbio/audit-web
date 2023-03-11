@@ -23,7 +23,7 @@ const ProjectPage = () => {
                         <Filter/>
                     </Box>
                 </Box>
-                <Box sx={{display: 'flex', flexWrap: 'wrap', paddingY: '70px'}}>
+                <Box sx={{display: 'flex', flexWrap: 'wrap', paddingY: '70px', height: '100%', overflow: 'scroll'}}>
                     {projects?.map(project =>
                             <Box sx={{width: '50%'}} key={project.id}>
                                 <ProjectListCard project={project}/>
@@ -40,7 +40,7 @@ export default ProjectPage;
 
 const wrapper = (theme) => ({
     width: '100%',
-    padding: '43px 53px 44px 32px',
+    padding: '43px 20px 44px 32px',
     backgroundColor: '#FCFAF6',
     border: '1.42857px solid #D9D9D9',
     boxShadow: '0px 71.4286px 57.1429px rgba(0, 0, 0, 0.07),' +
