@@ -10,11 +10,12 @@ import CreateNewFolderOutlinedIcon from '@mui/icons-material/CreateNewFolderOutl
 import {useDispatch, useSelector} from "react-redux";
 import {useParams} from "react-router-dom";
 import {Form, Formik} from 'formik'
-import {addReportAudit, getAudits, submitAudit} from "../redux/actions/auditAction.js";
+import {addReportAudit, getAudits} from "../redux/actions/auditAction.js";
 import EditIcon from "@mui/icons-material/Edit.js";
 import AuditUpload from "../components/forms/audit-upload/index.jsx";
 import Loader from "../components/Loader.jsx";
 import {AUDITOR} from "../redux/actions/types.js";
+import * as Yup from "yup";
 
 const AuditOffer = () => {
     const {id} = useParams()
@@ -29,18 +30,19 @@ const AuditOffer = () => {
         return (
             <Layout>
                 <Formik
-                    initialValues={{...audit,
+                    initialValues={{
+                        id: audit.id,
+                        status: 'done',
                         report: audit.report || '',
-                        report_link: audit.report || ''
                     }}
+                    validationSchema={SubmitValidation}
                     onSubmit={(values) => {
-                        dispatch(submitAudit(values.id))
                         dispatch(addReportAudit(values))
                     }}
                 >
                     {({handleSubmit}) => {
                         return (
-                            <Form onSubmit={handleSubmit}>
+                            <Form onSubmit={handleSubmit} style={{width: '100%', maxWidth: '1300px'}}>
                                 <CustomCard sx={wrapper}>
                                     <Box sx={{display: 'flex', width: '100%', position: 'relative'}}>
                                         <Button sx={backButtonSx} onClick={() => navigate(-1)}>
@@ -118,6 +120,10 @@ const AuditOffer = () => {
 };
 
 export default AuditOffer;
+
+const SubmitValidation = Yup.object().shape({
+    report: Yup.string().required('File is required')
+});
 
 const wrapper = (theme) => ({
     padding: '48px 74px 80px',

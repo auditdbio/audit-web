@@ -17,7 +17,6 @@ const ProfilePage = () => {
     const {tab} = useParams()
     const [chooseTab, setChooseTab] = useState(tab)
     const currentRole = useSelector(s => s.user.user.current_role)
-
     return (
         <Layout>
             <Box sx={wrapper}>

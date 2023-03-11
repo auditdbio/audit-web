@@ -5,7 +5,6 @@ import {useNavigate} from "react-router-dom/dist";
 const CustomTabs = ({selectedTabSx, name, tabs, setTab, choosenTab}) => {
     const [tabState, setTabState] = useState(choosenTab)
     const navigate = useNavigate()
-
     const handleChoose = (value) => {
         navigate(`/profile/${value}`)
         setTabState(value)

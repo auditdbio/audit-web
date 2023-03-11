@@ -25,18 +25,18 @@ const AuditCard = ({audit}) => {
             </Box>
 
             <Box sx={statusWrapper}>
-                { audit.report === DONE ?
+                { audit.status === DONE ?
                     <Box sx={{backgroundColor: '#52176D'}} /> :
                      audit.status === 'pending' &&
                     <Box sx={{backgroundColor: '#FF9900'}} />
                 }
-                { (audit.status !== 'pending' && audit.report !== DONE) &&
+                { (audit.status !== 'pending' && audit.status !== DONE) &&
                     <Box sx={{backgroundColor: '#09C010'}} />
                 }
                 <Typography>
                     {
                         !audit.status ? 'Waiting for audit' :
-                            audit.report === DONE ? 'Finished' : 'In porgress'
+                            audit.status === DONE ? 'Finished' : 'In progress'
                     }
                 </Typography>
             </Box>
