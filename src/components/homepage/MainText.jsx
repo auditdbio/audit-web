@@ -4,17 +4,34 @@ import { Typography } from "@mui/material";
 import { CustomButton } from "../custom/Button";
 import { useNavigate } from "react-router-dom";
 import { useMediaQuery } from "@mui/material";
+import React, { useState } from "react";
+import WaitingListModal from "../WaitingListModal.jsx";
 
 const MainText = () => {
   const isMobile = useMediaQuery("(max-width: 768px)");
   const navigate = useNavigate();
+
+  const [openModal, setOpenModal] = useState(false);
+
+  const handleModal = () => {
+    setOpenModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setOpenModal(false);
+  };
 
   const handleSignUp = () => {
     navigate("/sign-up");
   };
 
   return (
-    <Box sx={{ width: "100%", paddingBottom: "5rem", maxWidth: '1512px' }}>
+    <Box sx={{ width: "100%", paddingBottom: "5rem", maxWidth: "1512px" }}>
+      <WaitingListModal
+        open={openModal}
+        handleClose={handleCloseModal}
+        // handleSubmit={handleSubmit}
+      />
       <Box
         sx={{
           display: "flex",
@@ -36,10 +53,17 @@ const MainText = () => {
             {paragraphText}
           </Typography>
           <Box sx={buttonsStyle(isMobile)}>
-            <CustomButton sx={auditorButton} onClick={handleSignUp}>
+            {/*<CustomButton sx={auditorButton} onClick={handleSignUp}>*/}
+            {/*  Become auditor*/}
+            {/*</CustomButton>*/}
+            {/*<CustomButton sx={projectButton} onClick={handleSignUp}>*/}
+            {/*  Show your project*/}
+            {/*</CustomButton> */}
+
+            <CustomButton sx={auditorButton} onClick={handleModal}>
               Become auditor
             </CustomButton>
-            <CustomButton sx={projectButton} onClick={handleSignUp}>
+            <CustomButton sx={projectButton} onClick={handleModal}>
               Show your project
             </CustomButton>
           </Box>

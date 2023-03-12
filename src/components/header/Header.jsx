@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
@@ -18,11 +18,12 @@ import NotificationsIcon from "@mui/icons-material/Notifications";
 import { UserMenu } from "./UserMenu.jsx";
 import RoleMenuDropdown from "./RoleMenuDropdown.jsx";
 import { useSelector } from "react-redux";
-import {AUDITOR} from "../../redux/actions/types.js";
+import { AUDITOR } from "../../redux/actions/types.js";
+import WaitingListModal from "../WaitingListModal.jsx";
 
 const Header = () => {
   const reduxUser = useSelector((state) => state.user.user);
-  const [currentUsername] = useState(reduxUser.name || 'User');
+  const [currentUsername] = useState(reduxUser.name || "User");
   const auditor = useSelector((state) => state.auditor.auditor);
   const customer = useSelector((state) => state.customer.customer);
 
@@ -42,6 +43,8 @@ const Header = () => {
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [anchorElRole, setAnchorElRole] = useState(null);
   const [isRoleMenuOpen, setIsRoleMenuOpen] = useState(false);
+
+  const [openModal, setOpenModal] = useState(false);
   // const [isAuditor, setIsAudito] = useState(false)
 
   const handleOpenNavMenu = (event) => {
@@ -71,8 +74,21 @@ const Header = () => {
     setAnchorElRole(null);
   };
 
+  const handleModal = () => {
+    setOpenModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setOpenModal(false);
+  };
+
   return (
     <AppBar position="static" color="transparent" elevation={0}>
+      <WaitingListModal
+        open={openModal}
+        handleClose={handleCloseModal}
+        // handleSubmit={handleSubmit}
+      />
       <Container
         // maxWidth="xl"
         sx={{
@@ -143,18 +159,21 @@ const Header = () => {
                               marginX: "1rem",
                             }}
                           >
-                            <CustomButton
-                              sx={signInButton}
-                              onClick={handleSignIn}
-                            >
-                              Sign In
+                            <CustomButton sx={signInButton} onClick={handleModal}>
+                              Waiting list
                             </CustomButton>
-                            <CustomButton
-                              sx={signUpButton}
-                              onClick={handleSignUp}
-                            >
-                              Sign Up
-                            </CustomButton>
+                            {/*<CustomButton*/}
+                            {/*  sx={signInButton}*/}
+                            {/*  onClick={handleSignIn}*/}
+                            {/*>*/}
+                            {/*  Sign In*/}
+                            {/*</CustomButton>*/}
+                            {/*<CustomButton*/}
+                            {/*  sx={signUpButton}*/}
+                            {/*  onClick={handleSignUp}*/}
+                            {/*>*/}
+                            {/*  Sign Up*/}
+                            {/*</CustomButton>*/}
                           </Box>
                         </MenuItem>
                         {pages.map((page) => (
@@ -203,17 +222,22 @@ const Header = () => {
                     <Box
                       sx={{
                         flexGrow: 1,
-                        maxWidth: "500px",
+                        // maxWidth: "500px",
+                        maxWidth: "250px",
                         display: "flex",
                         gap: "1rem",
                       }}
                     >
-                      <CustomButton sx={signInButton} onClick={handleSignIn}>
-                        Sign In
+                      <CustomButton sx={signInButton} onClick={handleModal}>
+                        Waiting list
                       </CustomButton>
-                      <CustomButton sx={signUpButton} onClick={handleSignUp}>
-                        Sign Up
-                      </CustomButton>
+
+                      {/*<CustomButton sx={signInButton} onClick={handleSignIn}>*/}
+                      {/*  Sign In*/}
+                      {/*</CustomButton>*/}
+                      {/*<CustomButton sx={signUpButton} onClick={handleSignUp}>*/}
+                      {/*  Sign Up*/}
+                      {/*</CustomButton>*/}
                     </Box>
                   </>
                 )}
@@ -253,7 +277,11 @@ const Header = () => {
                       </CustomBadge>
                     </IconButton>
                     <Avatar
-                        sx={reduxUser.current_role === AUDITOR ? auditor?.avatar : customer?.avatar}
+                      sx={
+                        reduxUser.current_role === AUDITOR
+                          ? auditor?.avatar
+                          : customer?.avatar
+                      }
                       sx={{
                         width: "35px",
                         height: "35px",
@@ -327,7 +355,11 @@ const Header = () => {
                       disableRipple
                     >
                       <Avatar
-                          src={reduxUser.current_role === AUDITOR ? auditor?.avatar : customer?.avatar}
+                        src={
+                          reduxUser.current_role === AUDITOR
+                            ? auditor?.avatar
+                            : customer?.avatar
+                        }
                         sx={avatarStyle}
                       />
                       <UserMenu
@@ -360,17 +392,17 @@ const pages = [
       {
         id: 2,
         itemName: "Contact",
-        link: '/'
+        link: "/",
       },
       {
         id: 3,
         itemName: "Our team",
-        link: '/'
+        link: "/",
       },
       {
         id: 4,
         itemName: "Our projects",
-        link: '/projects'
+        link: "/projects",
       },
     ],
   },
@@ -381,17 +413,17 @@ const pages = [
       {
         id: 2,
         itemName: "Contact",
-        link: '/'
+        link: "/",
       },
       {
         id: 3,
         itemName: "Our team",
-        link: '/'
+        link: "/",
       },
       {
         id: 4,
         itemName: "Our projects",
-        link: '/projects'
+        link: "/projects",
       },
     ],
   },
@@ -402,17 +434,17 @@ const pages = [
       {
         id: 2,
         itemName: "Contact",
-        link: '/'
+        link: "/",
       },
       {
         id: 3,
         itemName: "Our team",
-        link: '/'
+        link: "/",
       },
       {
         id: 4,
         itemName: "Our projects",
-        link: '/projects'
+        link: "/projects",
       },
     ],
   },
@@ -426,27 +458,27 @@ const authorizedPages = [
       {
         id: 1,
         itemName: "Our projects",
-        link: '/projects'
+        link: "/projects",
       },
       {
         id: 2,
         itemName: "New project",
-        link: '/'
+        link: "/",
       },
       {
         id: 3,
         itemName: "My audits",
-        link: '/'
+        link: "/",
       },
       {
         id: 4,
         itemName: "My audits requests",
-        link: '/'
+        link: "/",
       },
       {
         id: 5,
         itemName: "Audits history",
-        link: '/'
+        link: "/",
       },
     ],
   },
@@ -457,7 +489,7 @@ const authorizedPages = [
       {
         id: 1,
         itemName: "Our projects",
-        link: '/projects'
+        link: "/projects",
       },
       {
         id: 2,
