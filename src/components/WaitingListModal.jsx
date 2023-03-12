@@ -14,10 +14,7 @@ import { createRequest } from "../redux/actions/auditAction.js";
 
 export default function WaitingListModal({ open, handleClose, handleSubmit }) {
   const dispatch = useDispatch();
-  const API_URL = import.meta.env.VITE_API_BASE_URL;
   const auditorReducer = useSelector((state) => state.auditor.auditors);
-  const projectReducer = useSelector((state) => state.project);
-  const customerReducer = useSelector((state) => state.customer);
 
   const [submitted, setSubmitted] = useState(false);
 
@@ -44,6 +41,7 @@ export default function WaitingListModal({ open, handleClose, handleSubmit }) {
         console.error(error);
         alert("Error submitting form!");
       });
+    handleClose();
   };
 
   const handleInputChange = (event) => {
