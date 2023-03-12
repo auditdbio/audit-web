@@ -31,7 +31,7 @@ const AuditInfo = () => {
     }
 
     const handleDecline = () => {
-        if (audit.status === DONE){
+        if (audit?.status){
             dispatch(deleteAudit(audit.id))
         } else {
             dispatch(deleteAuditRequest(audit.id))

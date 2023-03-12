@@ -130,7 +130,7 @@ const AuditRequestInfo = ({project, onClose}) => {
                             auditor_contacts: {...auditor?.contacts},
                             customer_contacts: {...project?.customer_contacts},
                             customer_id: project?.customer_id,
-                            opener: 'auditor',
+                            opener: user.current_role,
                             price: '',
                             description: project?.description || '',
                             price_range: {

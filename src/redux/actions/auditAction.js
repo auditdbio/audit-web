@@ -76,13 +76,14 @@ export const deleteAuditRequest = (id) => {
   return (dispatch) => {
     const token = Cookies.get("token");
     axios
-      .delete(`${API_URL}/request/${id}`, {
+      .delete(`${API_URL}/requests/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       })
       .then(({ data }) => {
-        dispatch({ type: DELETE_REQUEST, payload: data });
+        dispatch({ type: DELETE_REQUEST, payload: data })
+        history.back()
       });
   };
 };
