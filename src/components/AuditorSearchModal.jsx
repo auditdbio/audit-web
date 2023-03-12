@@ -55,31 +55,19 @@ export default function AuditorSearchModal({
   const [startTime, setStartTime] = useState(dayjs());
   const [endTime, setEndTime] = useState(dayjs());
   const [query, setQuery] = useState("");
-  const minDate = dayjs("2000-01-01").format("YYYY-MM-DD"); // set the minimum date to January 1, 1900
 
   console.log("auditor reducer", auditorReducer);
 
   useEffect(() => {
-    console.log("searching...");
+    // console.log("searching...");
     dispatch(getAuditors(query));
   }, [query]);
 
-  useEffect(() => {
-    // setStartTime(dayjs());
-    // setEndTime(dayjs());
-  }, []);
-
   const handleStartTimeChange = (e) => {
-    // console.log(e.target.value);
-    // console.log(dayjs(e.target.value));
-    // setStartTime(dayjs(e.target.value, "YYYY-MM-DD"));
-    // setStartTime(new Date(e.target.value));
     setStartTime(e);
   };
 
   const handleEndTimeChange = (e) => {
-    // console.log(dayjs(e.target.value))
-    // setEndTime(dayjs(e.target.value, "YYYY-MM-DD"));
     setEndTime(e);
   };
 
@@ -92,15 +80,15 @@ export default function AuditorSearchModal({
           ? customerReducer.customer.contacts
           : {},
         customer_id: customerReducer.customer.user_id,
-        description: "test description",
+        description: projectReducer.recentProject.description,
         opener: "Customer",
         price: taxInput.toString(),
         price_range: {
-          lower_bound: "string",
+          lower_bound: "",
           upper_bound: "string",
         },
         project_id: projectReducer.recentProject.id,
-        scope: ["string"],
+        scope: projectReducer.recentProject.scope,
         time: {
           begin: startTime.format("YYYY-MM-DD"),
           end: endTime.format("YYYY-MM-DD"),
@@ -108,7 +96,7 @@ export default function AuditorSearchModal({
         time_frame: "string",
       };
       dispatch(createRequest(request));
-      console.log(request);
+      // console.log(request);
       setSubmitted(false);
     }
   }, [projectReducer.recentProject]);
@@ -118,7 +106,7 @@ export default function AuditorSearchModal({
   };
 
   const handleOptionChange = (option) => {
-    console.log(option);
+    // console.log(option);
     setSelectedAuditor(option);
     setMode("offer");
   };
@@ -172,11 +160,6 @@ export default function AuditorSearchModal({
                 options={auditorReducer}
                 filterOptions={(options) => options} // <-- return all options as is
                 getOptionLabel={(option) => option.user_id}
-                onClick={() => {
-                  {
-                    console.log("click");
-                  }
-                }}
                 renderOption={(props, option) => (
                   <AuditorSearchListBox
                     {...props}

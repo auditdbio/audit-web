@@ -46,11 +46,7 @@ const CreateProjectCard = ({ role, projectInfo }) => {
     }
   }, [auditReducer]);
 
-  // console.log("project info", projectInfo);
-
   let editMode = !!projectInfo;
-
-  // console.log("audit reqs", auditRequests);
 
   const handleEdit = () => {
     navigate("/edit-profile");
