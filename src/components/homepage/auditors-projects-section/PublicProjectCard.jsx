@@ -34,7 +34,7 @@ const cardWrapper = {
   height: "100%",
   // maxWidth: "340px",
   // maxHeight: "450px",
-  gap: "1rem",
+  gap: "1.5rem",
   // marginY: "1.5rem",
   borderRadius: "1.5rem",
   boxShadow:

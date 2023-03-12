@@ -92,6 +92,7 @@ const CreateProjectCard = ({ role, projectInfo }) => {
       initialValues={initialValues}
       validationSchema={validationSchema}
       onSubmit={(values) => {
+        console.log(values)
         editMode
           ? dispatch(editProject({ ...values, id: projectInfo.id }))
           : dispatch(createProject(values));
