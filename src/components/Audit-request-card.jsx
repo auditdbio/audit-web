@@ -20,7 +20,7 @@ const AuditRequestCard = ({ type, request, audit }) => {
         <Typography variant={"h5"} textAlign={"center"}>
           {request.project_name}
         </Typography>
-        <Typography sx={categorySx}>Criptography, Games</Typography>
+        <Typography sx={categorySx}>{(request || audit)?.tags?.map(el => el).join(', ') ?? ''}</Typography>
         <Box sx={dateWrapper}>
           <Typography sx={dateStyle}>{dayjs(audit?.time?.begin).format('DD.MM.YYYY') }</Typography>
           <Typography variant={'caption'}>-</Typography>

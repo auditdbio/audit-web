@@ -29,7 +29,7 @@ const ProjectCard = ({ type, project }) => {
         <Typography variant={"h5"} textAlign={"center"}>
           {project.name || project.project_name}
         </Typography>
-        <Typography sx={categorySx}>Criptography, Games</Typography>
+        <Typography sx={categorySx}>{project?.tags?.map(el => el).join(', ') ?? ''}</Typography>
         <Box sx={priceWrapper}>
           <Box sx={infoWrapper}>
             <Currency />

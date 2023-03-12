@@ -54,7 +54,7 @@ const AuditOffer = () => {
                                     </Box>
                                     <Box>
                                         <Box sx={contentWrapper}>
-                                            <Typography sx={titleSx}>{audit?.scope?.map(el => el + ', ')}</Typography>
+                                            <Typography sx={titleSx}>{audit?.tags?.map(el => el).join(', ') ?? ''}</Typography>
                                             <Box sx={salaryWrapper}>
                                                 <Box sx={{display: 'flex', alignItems: 'center', gap: '15px'}}>
                                                     <svg width="27" height="26" viewBox="0 0 27 26" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -72,7 +72,7 @@ const AuditOffer = () => {
                                             </Box>
                                         </Box>
                                         <Box sx={infoWrapper}>
-                                            <Typography variant={'h4'}>Main text</Typography>
+                                            <Typography variant={'h4'}>Description</Typography>
                                             <Typography sx={descriptionSx}>
                                                 {audit?.description}
                                             </Typography>
@@ -92,6 +92,7 @@ const AuditOffer = () => {
                                                 {
                                                     audit?.scope?.map((el, idx) =>
                                                         <Typography key={idx}>
+                                                            <GitHubIcon/>
                                                             <Link>{el}</Link>
                                                             {/*<Button>x</Button>*/}
                                                         </Typography>
@@ -211,7 +212,7 @@ const infoWrapper = (theme) => ({
     '& h4': {
         fontWeight: 600,
         fontSize: '24px',
-        marginBottom: '40px',
+        marginBottom: '20px',
         textAlign: 'center'
     },
     [theme.breakpoints.down('sm')]: {

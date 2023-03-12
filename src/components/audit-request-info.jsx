@@ -41,7 +41,9 @@ const AuditRequestInfo = ({project, onClose}) => {
             </Box>
             <Box>
                 <Box sx={contentWrapper} className={'audit-request-content-wrapper'}>
-                    <Typography sx={titleSx} className={'audit-request-title'}>Criptography, Games</Typography>
+                    <Typography sx={titleSx} className={'audit-request-title'}>
+                        {project?.tags?.map(el => el).join(', ') ?? ''}
+                    </Typography>
                     <Box sx={salaryWrapper} className={'audit-request-salary'}>
                         <Box sx={{display: 'flex', alignItems: 'center', gap: '15px'}}>
                             <svg width="27" height="26" viewBox="0 0 27 26" fill="none"
@@ -73,7 +75,7 @@ const AuditRequestInfo = ({project, onClose}) => {
                     }
                 </Box>
                 <Box sx={infoWrapper} className={'audit-request-info'}>
-                    <Typography variant={'h4'}>Main text</Typography>
+                    <Typography variant={'h4'}>Description</Typography>
                     <Typography sx={descriptionSx}>
                         {project?.description}
                     </Typography>
@@ -324,7 +326,7 @@ const infoWrapper = (theme) => ({
     '& h4': {
         fontWeight: 600,
         fontSize: '24px',
-        marginBottom: '40px',
+        marginBottom: '20px',
         textAlign: 'center'
     },
     [theme.breakpoints.down('sm')]: {
