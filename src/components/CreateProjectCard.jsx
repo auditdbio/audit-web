@@ -83,16 +83,19 @@ const CreateProjectCard = ({ role, projectInfo }) => {
     setOpenInvite(false);
   };
 
+  const handleInviteAuditor = () => {};
+
   return (
     <Formik
       initialValues={initialValues}
       validationSchema={validationSchema}
       onSubmit={(values) => {
-        console.log(values)
-        editMode
-          ? dispatch(editProject({ ...values, id: projectInfo.id }))
-          : dispatch(createProject(values));
-        // navigate('/profile/projects')
+        console.log(values);
+        if (editMode) {
+          dispatch(editProject({ ...values, id: projectInfo.id }))
+        } else {
+          dispatch(createProject(values));
+        }
       }}
     >
       {({ handleSubmit }) => {
@@ -107,6 +110,7 @@ const CreateProjectCard = ({ role, projectInfo }) => {
 
             <AuditorSearchModal
               open={openInvite}
+              editMode={editMode}
               handleClose={handleCloseInviteModal}
               handleSubmit={handleSubmit}
             />
@@ -161,9 +165,9 @@ const CreateProjectCard = ({ role, projectInfo }) => {
                         />
                       </Box>
                     </Box>
-                    <Box>
-                      <AuditRequestsArray requests={auditRequests ?? []} />
-                    </Box>
+                    {/*<Box>*/}
+                    {/*  <AuditRequestsArray requests={auditRequests ?? []} />*/}
+                    {/*</Box>*/}
                   </Box>
                   <Button
                     type={"submit"}

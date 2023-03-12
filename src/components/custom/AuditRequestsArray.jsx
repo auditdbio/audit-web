@@ -13,7 +13,7 @@ export const AuditRequestsArray = ({ requests }) => {
       )}
       {requests.map((req, index) => (
         <Box
-          key={req.id}
+          key={index}
           sx={{
             display: "flex",
             // justifyContent: "space-between",

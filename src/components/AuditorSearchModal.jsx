@@ -30,12 +30,15 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import star from "./icons/Star.jsx";
+import { useNavigate } from "react-router-dom";
 
 export default function AuditorSearchModal({
   open,
   handleClose,
   handleSubmit,
+  editMode,
 }) {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const API_URL = import.meta.env.VITE_API_BASE_URL;
   const auditorReducer = useSelector((state) => state.auditor.auditors);
@@ -96,7 +99,10 @@ export default function AuditorSearchModal({
         time_frame: "string",
       };
       dispatch(createRequest(request));
-      // console.log(request);
+      // navigate("/edit-project", {
+      //   state: { project: projectReducer.recentProject },
+      // });
+      setMode("search");
       setSubmitted(false);
     }
   }, [projectReducer.recentProject]);
@@ -126,8 +132,9 @@ export default function AuditorSearchModal({
     } else {
       setErrorEnd(null);
     }
-    await handleSubmit();
+    handleSubmit();
     setSubmitted(true);
+    handleClose();
   };
 
   const [errorStart, setErrorStart] = React.useState(null);
