@@ -141,7 +141,7 @@ const AuditRequestInfo = ({project, onClose}) => {
                                 begin: '',
                                 end: ''
                             },
-                            project_id: project?.id,
+                            project_id: project?.project_id || project?.id,
                             scope: project?.scope,
                             time_frame: ''
                         }}

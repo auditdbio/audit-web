@@ -27,6 +27,7 @@ export const createRequest = (values) => {
       })
       .then(({ data }) => {
         dispatch(getAuditsRequest(current_role));
+        history.back()
         dispatch({ type: AUDIT_REQUEST_CREATE, payload: data });
       })
       .catch(({ response }) => {
