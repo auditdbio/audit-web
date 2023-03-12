@@ -30,7 +30,7 @@ const AuditorSection = () => {
     if (searchInput) {
       dispatch(getAuditors(searchInput));
     } else {
-      dispatch(getAuditors("java"));
+      dispatch(getAuditors(""));
     }
   }, [searchInput]);
 

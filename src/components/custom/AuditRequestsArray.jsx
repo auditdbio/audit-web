@@ -8,7 +8,9 @@ export const AuditRequestsArray = ({ requests }) => {
         flexDirection: "column",
       }}
     >
-        <Typography style={headerText}>Audit requests:</Typography>
+      {requests.length > 0 && (
+        <Typography style={headerText}>Audit requests</Typography>
+      )}
       {requests.map((req, index) => (
         <Box
           key={req.id}
@@ -17,9 +19,10 @@ export const AuditRequestsArray = ({ requests }) => {
             // justifyContent: "space-between",
           }}
         >
-          <Typography style={textStyle}>{index+1}</Typography>
-          <Typography style={textStyle}>{". Auditor name "}</Typography>
-            <Typography style={textStyle}>{`---request id: ${req.id}`}</Typography>
+          <Typography style={nameStyle}>{"Auditor name "}</Typography>
+          <Typography
+            style={textStyle}
+          >{`---request id: ${req.id}`}</Typography>
           {/*<Typography style={textStyle}>{". "+req.auditor_id}</Typography>*/}
         </Box>
       ))}
@@ -28,7 +31,11 @@ export const AuditRequestsArray = ({ requests }) => {
 };
 
 const textStyle = {
-  fontSize: "12px",
+  fontSize: "14px",
+};
+const nameStyle = {
+  fontSize: "14px",
+  color: "#FF9900",
 };
 const headerText = {
   fontSize: "14px",

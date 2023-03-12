@@ -8,11 +8,11 @@ const PublicProjectCard = ({ project }) => {
       <Typography sx={auditNameStyle}>{project.name}</Typography>
       <Typography sx={nameTextStyle}>Mishail Soronikov</Typography>
       <Typography sx={priceTextStyle}>20 $ per stroke</Typography>
-      <Box sx={dateWrapper}>
-        <Typography sx={dateStyle}>10.01.2023</Typography>
-        <Typography>-</Typography>
-        <Typography sx={dateStyle}>10.01.2023</Typography>
-      </Box>
+      {/*<Box sx={dateWrapper}>*/}
+      {/*  <Typography sx={dateStyle}>10.01.2023</Typography>*/}
+      {/*  <Typography>-</Typography>*/}
+      {/*  <Typography sx={dateStyle}>10.01.2023</Typography>*/}
+      {/*</Box>*/}
 
       <Box sx={statusWrapper}>
         <Box />
@@ -34,7 +34,7 @@ const cardWrapper = {
   height: "100%",
   // maxWidth: "340px",
   // maxHeight: "450px",
-  gap: "1rem",
+  gap: "1.5rem",
   // marginY: "1.5rem",
   borderRadius: "1.5rem",
   boxShadow:

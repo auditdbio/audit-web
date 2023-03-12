@@ -25,6 +25,11 @@ import { getProjects } from "../redux/actions/projectAction.js";
 import { getAuditors } from "../redux/actions/auditorAction.js";
 import { createRequest } from "../redux/actions/auditAction.js";
 import { customerReducer } from "../redux/reducers/customerReducer.js";
+import dayjs from "dayjs";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { LocalizationProvider } from "@mui/x-date-pickers";
+import star from "./icons/Star.jsx";
 
 export default function AuditorSearchModal({
   open,
@@ -47,13 +52,36 @@ export default function AuditorSearchModal({
 
   const [inputValue, setInputValue] = useState("");
   const [taxInput, setTaxInput] = useState(50);
-
+  const [startTime, setStartTime] = useState(dayjs());
+  const [endTime, setEndTime] = useState(dayjs());
   const [query, setQuery] = useState("");
+  const minDate = dayjs("2000-01-01").format("YYYY-MM-DD"); // set the minimum date to January 1, 1900
+
   console.log("auditor reducer", auditorReducer);
+
   useEffect(() => {
     console.log("searching...");
     dispatch(getAuditors(query));
   }, [query]);
+
+  useEffect(() => {
+    // setStartTime(dayjs());
+    // setEndTime(dayjs());
+  }, []);
+
+  const handleStartTimeChange = (e) => {
+    // console.log(e.target.value);
+    // console.log(dayjs(e.target.value));
+    // setStartTime(dayjs(e.target.value, "YYYY-MM-DD"));
+    // setStartTime(new Date(e.target.value));
+    setStartTime(e);
+  };
+
+  const handleEndTimeChange = (e) => {
+    // console.log(dayjs(e.target.value))
+    // setEndTime(dayjs(e.target.value, "YYYY-MM-DD"));
+    setEndTime(e);
+  };
 
   useEffect(() => {
     if (submitted) {
@@ -73,9 +101,14 @@ export default function AuditorSearchModal({
         },
         project_id: projectReducer.recentProject.id,
         scope: ["string"],
+        time: {
+          begin: startTime.format("YYYY-MM-DD"),
+          end: endTime.format("YYYY-MM-DD"),
+        },
         time_frame: "string",
       };
       dispatch(createRequest(request));
+      console.log(request);
       setSubmitted(false);
     }
   }, [projectReducer.recentProject]);
@@ -91,9 +124,26 @@ export default function AuditorSearchModal({
   };
 
   const handleSend = async () => {
+    const isStartDateValid = dayjs(startTime, "DD.MM.YYYY").isValid();
+    const isEndDateValid = dayjs(endTime, "DD.MM.YYYY").isValid();
+    // console.log("start", startTime.format('YYYY-MM-DD'));
+    // console.log("end", endTime.format('YYYY-MM-DD'));
+    if (!isStartDateValid) {
+      setErrorStart("Enter start date");
+    } else {
+      setErrorStart(null);
+    }
+    if (!isEndDateValid) {
+      setErrorEnd("Enter end date");
+    } else {
+      setErrorEnd(null);
+    }
     await handleSubmit();
     setSubmitted(true);
   };
+
+  const [errorStart, setErrorStart] = React.useState(null);
+  const [errorEnd, setErrorEnd] = React.useState(null);
 
   return (
     <Dialog open={open} onClose={handleClose}>
@@ -185,10 +235,69 @@ export default function AuditorSearchModal({
 
             <Box sx={{ paddingX: "10%" }}>
               <Typography
-                style={{ ...rateLabel(), color: "black", marginBottom: "15px" }}
+                style={{
+                  ...rateLabel(),
+                  color: "black",
+                  marginBottom: "10px",
+                  fontSize: "13px",
+                }}
               >
                 Add some information
               </Typography>
+              <Typography style={rateLabel()}>Choose audit timeline</Typography>
+              {/*<Box sx={dateWrapper}>*/}
+              {/*  <TextField*/}
+              {/*    type={"date"}*/}
+              {/*    placeholder={""}*/}
+              {/*    value={dayjs(startTime).format("YYYY-MM-DD")}*/}
+              {/*    onChange={handleStartTimeChange}*/}
+              {/*    sx={dateStyle}*/}
+              {/*    inputProps={{*/}
+              {/*      inputMode: "numeric", // specify that the input should be numeric only*/}
+              {/*      inputFormat: ''*/}
+              {/*    }}*/}
+              {/*  />*/}
+              {/*  <Typography variant={"caption"}>-</Typography>*/}
+              {/*  <TextField*/}
+              {/*    type={"date"}*/}
+              {/*    placeholder={""}*/}
+              {/*    value={endTime ? endTime.format("YYYY-MM-DD") : ""}*/}
+              {/*    onChange={handleEndTimeChange}*/}
+              {/*    inputProps={{*/}
+              {/*      min: minDate,*/}
+              {/*    }}*/}
+              {/*    sx={dateStyle}*/}
+              {/*  />*/}
+              {/*</Box>*/}
+              <Box sx={dateWrapper}>
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <DatePicker
+                    value={startTime}
+                    onChange={handleStartTimeChange}
+                    sx={dateStyle}
+                    disablePast
+                    slotProps={{
+                      textField: {
+                        helperText: errorStart,
+                      },
+                    }}
+                  />
+                  <Typography variant={"caption"}>-</Typography>
+                  <DatePicker
+                    value={endTime}
+                    onChange={handleEndTimeChange}
+                    sx={dateStyle}
+                    disablePast
+                    slotProps={{
+                      textField: {
+                        helperText: errorEnd,
+                      },
+                    }}
+                  />
+                </LocalizationProvider>
+              </Box>
+              {/*{startTime.format("DD/MM/YYYY")}*/}
+              {/*{endTime.format("DD/MM/YYYY")}*/}
               <Typography style={rateLabel()}>Tax rate per stroke</Typography>
               <Box
                 sx={{
@@ -234,19 +343,21 @@ const modalWindow = {
   justifyContent: "center",
   alignItems: "center",
   [theme.breakpoints.down("sm")]: {
-    height: "100px",
+    height: "100%",
     width: "100%",
   },
 };
 
 const offerDialogStyle = {
   backgroundColor: "white",
+  padding: "10px",
   width: "700px",
   display: "flex",
   justifyContent: "center",
   alignItems: "center",
   [theme.breakpoints.down("sm")]: {
-    height: "100px",
+    paddingBottom: "30px",
+    height: "100%",
     width: "100%",
   },
 };
@@ -326,7 +437,7 @@ const sendButton = {
   },
 };
 const rateLabel = (theme) => ({
-  fontSize: "14px",
+  fontSize: "11px",
   color: "#B2B3B3",
   fontWeight: 500,
 });
@@ -345,7 +456,43 @@ const infoWrapper = (theme) => ({
   padding: "15px 0",
   textAlign: "center",
 });
-
+const dateWrapper = {
+  display: "flex",
+  flexDirection: "row",
+  gap: "0.5rem",
+  alignItems: "center",
+  width: "100%",
+  marginTop: "5px",
+  marginBottom: "30px",
+  [theme.breakpoints.down("sm")]: {
+    gap: "5px",
+    "& span": {
+      fontSize: "8px",
+    },
+  },
+};
+const dateStyle = {
+  width: "150px",
+  height: "40px",
+  "& .MuiPickersDay-day": {
+    fontSize: "0.8rem",
+    [theme.breakpoints.down("sm")]: {
+      fontSize: "10px",
+    },
+  },
+  "& .MuiInputBase-input": {
+    fontSize: "0.8rem",
+    [theme.breakpoints.down("sm")]: {
+      fontSize: "10px",
+    },
+  },
+  "& .MuiInputLabel-root": {
+    fontSize: "0.8rem",
+    [theme.breakpoints.down("sm")]: {
+      fontSize: "10px",
+    },
+  },
+};
 const auditorNames = [
   {
     label: "Testov test",
