@@ -42,6 +42,7 @@ const AuditRequestCard = ({ type, request, audit }) => {
           variant={"contained"}
           sx={[actionButton, type === "auditor" ? editAuditor : {}]}
           onClick={() => navigate(`/audit-request/${request.id}`)}
+
         >
           View
         </Button>

@@ -86,6 +86,7 @@ export const changeRole = (value) => {
         }
       )
       .then(({ data }) => {
+          console.log('role', data)
         dispatch({ type: SELECT_ROLE, payload: data });
         localStorage.setItem("user", JSON.stringify(data));
         history.push(
