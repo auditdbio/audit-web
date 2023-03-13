@@ -59,7 +59,6 @@ export default function AuditorSearchModal({
   const [endTime, setEndTime] = useState(dayjs());
   const [query, setQuery] = useState("");
 
-  console.log("auditor reducer", auditorReducer);
 
   useEffect(() => {
     // console.log("searching...");

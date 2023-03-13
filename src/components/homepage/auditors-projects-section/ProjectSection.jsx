@@ -33,16 +33,13 @@ const ProjectSection = () => {
     }, [searchInput]);
 
   useEffect(() => {
-    console.log("projectReducer ==>", projectReducer);
   }, [projectReducer]);
 
   useEffect(() => {
     if (projectReducer && projectReducer.length != 0) {
       setProjectFound(true);
-      console.log("These are your projects");
     } else {
       setProjectFound(false);
-      console.log("No projects found");
     }
   }, [projectReducer]);
 
