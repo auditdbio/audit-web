@@ -1,22 +1,13 @@
 import * as React from "react";
 import Button from "@mui/material/Button";
-import TextField from "@mui/material/TextField";
 import Dialog from "@mui/material/Dialog";
 import DialogContent from "@mui/material/DialogContent";
 import theme from "../styles/themes.js";
 import { Box } from "@mui/system";
-import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
 import { Typography } from "@mui/material";
 import GitHubIcon from "@mui/icons-material/GitHub";
 
 export default function ProjectModal({ open, handleClose, project }) {
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
-  const API_URL = import.meta.env.VITE_API_BASE_URL;
-
-  const projectReducer = useSelector((state) => state.project);
-
   return (
     <Dialog open={open} onClose={handleClose}>
       <DialogContent sx={modalWindow}>
@@ -31,15 +22,19 @@ export default function ProjectModal({ open, handleClose, project }) {
           <Typography sx={modalDescription}>{project.description}</Typography>
         </Box>
         <Box sx={linksList}>
-          <Box sx={linkGroup}>
-            <GitHubIcon sx={iconStyle} />
-            <Typography sx={linkStyle}>
-              https://dev.auditdb.io/swagger-ui/?urls.primaryName=audits#/audits/requests_by_id
-            </Typography>
-          </Box>
+          {project.scope.map((item) => (
+            <Box sx={linkGroup} key={item.scope}>
+              <GitHubIcon sx={iconStyle} />
+              <a href={item} target="_blank">
+                <Typography sx={linkStyle}>{item}</Typography>
+              </a>
+            </Box>
+          ))}
         </Box>
         <Box sx={fieldButtonContainer}>
-          <Button sx={backButton}>Back</Button>
+          <Button sx={backButton} onClick={handleClose}>
+            Back
+          </Button>
           <Button sx={findButton}>Make offer</Button>
         </Box>
       </DialogContent>
@@ -49,12 +44,19 @@ export default function ProjectModal({ open, handleClose, project }) {
 
 const modalWindow = {
   backgroundColor: theme.palette.background,
-  width: "700px",
+
+  width: "600px",
   display: "flex",
   gap: "50px",
   flexDirection: "column",
   justifyContent: "center",
   alignItems: "center",
+  padding: {
+    zero: "25px",
+    sm: "25px",
+    md: "45px",
+    lg: "50px",
+  },
   [theme.breakpoints.down("sm")]: {
     height: "100%",
     width: "100%",
@@ -63,6 +65,7 @@ const modalWindow = {
 };
 
 const titlesBox = {
+  maxWidth: "400px",
   display: "flex",
   flexDirection: "column",
   gap: {
@@ -75,8 +78,9 @@ const titlesBox = {
 };
 
 const modalHeader = {
+
   fontSize: {
-    zero: "30px",
+    zero: "25px",
     sm: "30px",
     md: "33px",
     lg: "37px",
@@ -85,8 +89,9 @@ const modalHeader = {
 };
 
 const modalSubheader = {
+  textAlign: "center",
   fontSize: {
-    zero: "20px",
+    zero: "16px",
     sm: "20px",
     md: "22px",
     lg: "25px",
@@ -107,7 +112,12 @@ const modalDescription = {
 const linksList = {
   display: "flex",
   flexDirection: "column",
-  gap: "20px",
+  gap: {
+    zero: "10px",
+    sm: "15px",
+    md: "2px",
+    lg: "20px",
+  },
 };
 
 const iconStyle = {
@@ -163,8 +173,14 @@ const findButton = {
   backgroundColor: theme.palette.primary.main,
   color: theme.palette.background.default,
   borderRadius: "4px",
-  padding: "12px 63px",
+  // padding: "12px 63px",
   height: "45px",
+  width: {
+    zero: "100px",
+    sm: "100px",
+    md: "150px",
+    lg: "230px",
+  },
   textTransform: "none",
   ":hover": {
     backgroundColor: theme.palette.primary.main,
@@ -172,7 +188,7 @@ const findButton = {
   [theme.breakpoints.down("sm")]: {
     height: "30px",
     fontSize: "10px",
-    padding: "6px 31px",
+    // padding: "6px 31px",
   },
 };
 
@@ -180,7 +196,13 @@ const backButton = {
   backgroundColor: theme.palette.secondary.main,
   color: theme.palette.background.default,
   borderRadius: "4px",
-  padding: "12px 63px",
+  width: {
+    zero: "100px",
+    sm: "100px",
+    md: "150px",
+    lg: "230px",
+  },
+  // padding: "12px 63px",
   height: "45px",
   textTransform: "none",
   ":hover": {
@@ -189,103 +211,6 @@ const backButton = {
   [theme.breakpoints.down("sm")]: {
     height: "30px",
     fontSize: "10px",
-    padding: "6px 31px",
+    // padding: "6px 31px",
   },
 };
-const sendButton = {
-  backgroundColor: theme.palette.primary.main,
-  color: theme.palette.background.default,
-  borderRadius: "4px",
-  padding: "12px 63px",
-  height: "45px",
-  width: "50%",
-  textTransform: "none",
-  [theme.breakpoints.down("sm")]: {
-    height: "30px",
-    fontSize: "11px",
-    padding: "6px 31px",
-  },
-  ":hover": {
-    backgroundColor: theme.palette.primary.main,
-    color: theme.palette.background.default,
-  },
-};
-const rateLabel = (theme) => ({
-  fontSize: "11px",
-  color: "#B2B3B3",
-  fontWeight: 500,
-});
-
-const sliderSx = (theme) => ({
-  height: "9px",
-  "& .MuiSlider-track, .MuiSlider-rail": {
-    backgroundColor: "#B9B9B9",
-    border: "none",
-  },
-});
-
-const infoWrapper = (theme) => ({
-  border: "1.42857px solid #E5E5E5",
-  width: "100px",
-  padding: "15px 0",
-  textAlign: "center",
-});
-const dateWrapper = {
-  display: "flex",
-  flexDirection: "row",
-  gap: "0.5rem",
-  alignItems: "center",
-  width: "100%",
-  marginTop: "5px",
-  marginBottom: "30px",
-  [theme.breakpoints.down("sm")]: {
-    gap: "5px",
-    "& span": {
-      fontSize: "8px",
-    },
-  },
-};
-const dateStyle = {
-  width: "150px",
-  height: "40px",
-  "& .MuiPickersDay-day": {
-    fontSize: "0.8rem",
-    [theme.breakpoints.down("sm")]: {
-      fontSize: "10px",
-    },
-  },
-  "& .MuiInputBase-input": {
-    fontSize: "0.8rem",
-    [theme.breakpoints.down("sm")]: {
-      fontSize: "10px",
-    },
-  },
-  "& .MuiInputLabel-root": {
-    fontSize: "0.8rem",
-    [theme.breakpoints.down("sm")]: {
-      fontSize: "10px",
-    },
-  },
-};
-const auditorNames = [
-  {
-    label: "Testov test",
-    status: "Free to audit",
-  },
-  {
-    label: "Ivan Ivanov",
-    status: "Free to audit",
-  },
-  {
-    label: "Akhmet Akhmetov",
-    status: "Free to audit",
-  },
-  {
-    label: "Aket Ahmetov",
-    status: "Free to audit",
-  },
-  {
-    label: "Abraham Linkoln Barrows",
-    status: "Free to audit",
-  },
-];

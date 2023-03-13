@@ -42,7 +42,7 @@ const PublicProjectCard = ({ project }) => {
       <CustomButton
         sx={viewButtonStyle}
         // onClick={() => navigate(`/audit-request/${project.id}`)}
-        // onClick={handleView}
+        onClick={handleView}
       >
         {" "}
         View{" "}
