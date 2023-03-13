@@ -5,7 +5,7 @@ import {useNavigate} from "react-router-dom/dist";
 import {useDispatch} from "react-redux";
 import {confirmAudit} from "../redux/actions/auditAction.js";
 import {useMemo} from "react";
-import {DONE} from "../redux/actions/types.js";
+import {DONE, SUBMITED} from "../redux/actions/types.js";
 import dayjs from "dayjs";
 
 
@@ -16,8 +16,8 @@ const AuditCard = ({audit}) => {
     return (
         <Card sx={cardWrapper}>
             <Typography sx={auditNameStyle}>{audit.project_name}</Typography>
-            <Typography sx={nameTextStyle}>{audit.auditor_contacts.email}</Typography>
-            <Typography sx={priceTextStyle}>{audit.price} $ per stroke</Typography>
+            <Typography sx={nameTextStyle}>{audit?.auditor_contacts?.email}</Typography>
+            <Typography sx={priceTextStyle}>{audit?.price} $ per stroke</Typography>
             <Box sx={dateWrapper}>
                 <Typography sx={dateStyle}>{dayjs(audit?.time?.begin).format('DD.MM.YYYY') }</Typography>
                 <Typography variant={'caption'}>-</Typography>
@@ -25,18 +25,22 @@ const AuditCard = ({audit}) => {
             </Box>
 
             <Box sx={statusWrapper}>
-                { audit.status === DONE ?
-                    <Box sx={{backgroundColor: '#52176D'}} /> :
-                     audit.status === 'pending' &&
-                    <Box sx={{backgroundColor: '#FF9900'}} />
-                }
-                { (audit.status !== 'pending' && audit.status !== DONE) &&
-                    <Box sx={{backgroundColor: '#09C010'}} />
+                { audit.status !== SUBMITED &&
+                    <>
+                        { audit.status === DONE ?
+                            <Box sx={{backgroundColor: '#52176D'}} /> :
+                            audit.status === 'pending' &&
+                            <Box sx={{backgroundColor: '#FF9900'}} />
+                        }
+                        { (audit.status !== 'pending' && audit.status !== DONE) &&
+                            <Box sx={{backgroundColor: '#09C010'}} />
+                        }
+                    </>
                 }
                 <Typography>
                     {
                         !audit.status ? 'Waiting for audit' :
-                            audit.status === DONE ? 'Finished' : 'In progress'
+                            audit.status === DONE ? 'Finished' : audit.status === SUBMITED ? 'Submitted' : 'In progress'
                     }
                 </Typography>
             </Box>
@@ -134,25 +138,25 @@ const statusWrapper = (theme) => ({
 const nameTextStyle = {
     color: "#152BEA",
     fontWeight: "500",
-    fontSize: "14px",
+    fontSize: "14px!important",
     [theme.breakpoints.down("sm")]: {
-        fontSize: "12px",
+        fontSize: "12px!important",
     },
 };
 
 const priceTextStyle = {
     fontWeight: "500",
-    fontSize: "14px",
+    fontSize: "14px!important",
     [theme.breakpoints.down("sm")]: {
-        fontSize: "11.5px",
+        fontSize: "11.5px!important",
     },
 };
 
 const auditNameStyle = {
     fontWeight: "500",
-    fontSize: "18px",
+    fontSize: "18px!important",
     [theme.breakpoints.down("sm")]: {
-        fontSize: "14px",
+        fontSize: "14px!important",
     },
 };
 
