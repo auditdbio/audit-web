@@ -9,7 +9,7 @@ import Audits from "../components/Audits.jsx";
 import {useDispatch, useSelector} from "react-redux";
 import {getCustomer} from "../redux/actions/customerAction.js";
 import {getAuditor} from "../redux/actions/auditorAction.js";
-import {AUDITOR} from "../redux/actions/types.js";
+import {AUDITOR, CUSTOMER} from "../redux/actions/types.js";
 import AuditRequest from "../components/Audit-request.jsx";
 import {useParams} from "react-router-dom";
 
@@ -28,10 +28,10 @@ const ProfilePage = () => {
                     setTab={setChooseTab}
                 />
                 <InfoCard role={currentRole}>
-                    {chooseTab === 'audits' && <Audits />}
+                    {(chooseTab === 'audits' && currentRole === CUSTOMER) && <Audits />}
                     {chooseTab === 'user-info' && <UserInfo role={currentRole} />}
                     {chooseTab === 'projects' && <Projects role={currentRole} />}
-                    {chooseTab === 'audit-requests' && <AuditRequest/>}
+                    {(chooseTab === 'audits' && currentRole === AUDITOR) && <AuditRequest/>}
                 </InfoCard>
             </Box>
         </Layout>
@@ -46,7 +46,7 @@ const auditorTabs = [
         label: 'Audits',
     },
     {
-        value: 'audit-requests',
+        value: 'audits',
         label: 'Audit requests'
     },
     {

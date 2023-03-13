@@ -4,7 +4,7 @@ import CreateNewFolderOutlinedIcon from "@mui/icons-material/CreateNewFolderOutl
 import {useField} from "formik";
 import axios from "axios";
 
-const AuditUpload = ({name}) => {
+const AuditUpload = ({name, disabled}) => {
     const [field, meta, fieldHelper] = useField(name)
     const formData = new FormData();
 
@@ -17,7 +17,7 @@ const AuditUpload = ({name}) => {
     return (
         <>
             <Box sx={[inputWrapper, meta.error ? {borderColor: '#f44336'} : {}]}>{field?.value}</Box>
-            <Button>
+            <Button disabled={disabled}>
                 <label htmlFor="audit-upload">
                     <CreateNewFolderOutlinedIcon fontSize={'large'} color={'disabled'}/>
                 </label>

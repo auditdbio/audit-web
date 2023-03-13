@@ -9,7 +9,7 @@ import TagsList from "../components/tagsList.jsx";
 import {useDispatch, useSelector} from "react-redux";
 import {useParams} from "react-router-dom";
 import {acceptAudit, confirmAudit, deleteAudit, deleteAuditRequest} from "../redux/actions/auditAction.js";
-import {DONE, SUBMITED} from "../redux/actions/types.js";
+import {CUSTOMER, DONE, SUBMITED} from "../redux/actions/types.js";
 import dayjs from "dayjs";
 
 const AuditInfo = () => {
@@ -115,9 +115,10 @@ const AuditInfo = () => {
                         <Button
                             variant={'contained'}
                             sx={buttonSx}
+                            disabled={audit?.last_changer.toLowerCase() === CUSTOMER}
                             onClick={handleConfirm}
                         >
-                            Confirm
+                            Accept
                         </Button>
                     }
                     { (audit?.status !== SUBMITED && audit?.status === DONE) &&
@@ -135,7 +136,7 @@ const AuditInfo = () => {
                             onClick={handleDecline}
                             sx={[buttonSx, {backgroundColor: theme.palette.secondary.main}]}
                         >
-                                Decline
+                                Cancel
                         </Button>
                     }
 
