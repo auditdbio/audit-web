@@ -177,7 +177,7 @@ const AuditRequestInfo = ({project, onClose}) => {
                                     </Typography>
                                     <Box sx={{width: '100%'}}>
                                         <Typography variant={'caption'}>
-                                            Tax rate per stroke
+                                            Price per line of code
                                         </Typography>
                                         <SalarySlider name={'price'}/>
                                     </Box>

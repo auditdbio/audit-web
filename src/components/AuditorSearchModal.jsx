@@ -287,7 +287,7 @@ export default function AuditorSearchModal({
               </Box>
               {/*{startTime.format("DD/MM/YYYY")}*/}
               {/*{endTime.format("DD/MM/YYYY")}*/}
-              <Typography style={rateLabel()}>Tax rate per stroke</Typography>
+              <Typography style={rateLabel()}>Price per line of code</Typography>
               <Box
                 sx={{
                   display: "flex",

@@ -52,7 +52,6 @@ const EditProfileForm = ({role}) => {
                     company: data?.company || '',
                     tax: data?.tax || '',
                     tags: data?.tags || [],
-                    avatar: ''
                 }}
                 validationSchema={EditProfileSchema}
                 validateOnBlur={false}
@@ -108,12 +107,14 @@ const EditProfileForm = ({role}) => {
                                         }
                                         <SimpleField name={'about'} label={'About'}/>
                                         <SimpleField name={'contacts.telegram'} label={'Telegram'}/>
-                                        <Box>
-                                            <Typography sx={rateLabel}>
-                                                Tax rate per stroke
-                                            </Typography>
-                                            <SalarySlider name={'tax'}/>
-                                        </Box>
+                                        {role !== CUSTOMER &&
+                                            <Box>
+                                                <Typography sx={rateLabel}>
+                                                    Price per line of code
+                                                </Typography>
+                                                <SalarySlider name={'tax'}/>
+                                            </Box>
+                                        }
                                         {matchSm &&
                                             <TagsField name={'tags'} label={'Tags'}/>
                                         }
