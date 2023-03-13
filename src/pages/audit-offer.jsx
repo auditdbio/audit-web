@@ -14,7 +14,7 @@ import {addReportAudit, getAudits} from "../redux/actions/auditAction.js";
 import EditIcon from "@mui/icons-material/Edit.js";
 import AuditUpload from "../components/forms/audit-upload/index.jsx";
 import Loader from "../components/Loader.jsx";
-import {AUDITOR} from "../redux/actions/types.js";
+import {AUDITOR, SUBMITED} from "../redux/actions/types.js";
 import * as Yup from "yup";
 
 const AuditOffer = () => {
@@ -71,6 +71,14 @@ const AuditOffer = () => {
                                                 </Box>
                                             </Box>
                                         </Box>
+                                        <Box sx={[{display: 'flex', gap: '25px'}, contactWrapper]}>
+                                            <Typography variant={'caption'}>
+                                                {audit?.customer_contacts?.email}
+                                            </Typography>
+                                            <Typography variant={'caption'}>
+                                                {audit?.customer_contacts?.telegram}
+                                            </Typography>
+                                        </Box>
                                         <Box sx={infoWrapper}>
                                             <Typography variant={'h4'}>Description</Typography>
                                             <Typography sx={descriptionSx}>
@@ -82,12 +90,6 @@ const AuditOffer = () => {
                                                     <AuditUpload name={'report'}/>
                                                 </Box>
                                             </Box>
-                                            {/*{ matchXs &&*/}
-                                            {/*    <Box sx={{display: 'flex', gap: '25px'}}>*/}
-                                            {/*        <Typography variant={'caption'}>Mihael@gmail.com</Typography>*/}
-                                            {/*        <Typography variant={'caption'}>Mihael@</Typography>*/}
-                                            {/*    </Box>*/}
-                                            {/*}*/}
                                             <Box sx={linkWrapper}>
                                                 {
                                                     audit?.scope?.map((el, idx) =>
@@ -102,13 +104,15 @@ const AuditOffer = () => {
                                         </Box>
                                     </Box>
                                     <Box sx={buttonWrapper}>
-                                        <Button
-                                            variant={'contained'}
-                                            type={'submit'}
-                                            sx={[buttonSx, {backgroundColor: theme.palette.secondary.main}]}
-                                        >
-                                            Send to customer
-                                        </Button>
+                                        { audit.status !== SUBMITED &&
+                                            <Button
+                                                variant={'contained'}
+                                                type={'submit'}
+                                                sx={[buttonSx, {backgroundColor: theme.palette.secondary.main}]}
+                                            >
+                                                Send to customer
+                                            </Button>
+                                        }
                                     </Box>
                                 </CustomCard>
                             </Form>
@@ -150,6 +154,15 @@ const wrapper = (theme) => ({
 
 const buttonWrapper = (theme) => ({
     marginTop: '40px'
+})
+
+const contactWrapper = (theme) => ({
+    width: '370px',
+    margin: '15px auto 0',
+    justifyContent: 'space-between',
+    '& span': {
+        fontSize: '16px'
+    }
 })
 
 const descriptionSx = (theme) => ({

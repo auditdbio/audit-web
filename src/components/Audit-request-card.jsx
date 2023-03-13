@@ -8,7 +8,7 @@ import { useDispatch } from "react-redux";
 import { deleteAuditRequest } from "../redux/actions/auditAction.js";
 import dayjs from "dayjs";
 
-const AuditRequestCard = ({ type, request, audit }) => {
+const AuditRequestCard = ({ type, request }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -22,9 +22,9 @@ const AuditRequestCard = ({ type, request, audit }) => {
         </Typography>
         <Typography sx={categorySx}>{(request || audit)?.tags?.map(el => el).join(', ') ?? ''}</Typography>
         <Box sx={dateWrapper}>
-          <Typography sx={dateStyle}>{dayjs(audit?.time?.begin).format('DD.MM.YYYY') }</Typography>
+          <Typography sx={dateStyle}>{dayjs(request?.time?.begin).format('DD.MM.YYYY') }</Typography>
           <Typography variant={'caption'}>-</Typography>
-          <Typography sx={dateStyle}>{dayjs(audit?.time?.end).format('DD.MM.YYYY') }</Typography>
+          <Typography sx={dateStyle}>{dayjs(request?.time?.end).format('DD.MM.YYYY') }</Typography>
         </Box>
         <Box sx={priceWrapper}>
           <Box sx={infoWrapper}>

@@ -3,7 +3,7 @@ import axios from "axios";
 import {
   AUDIT_REQUEST_CREATE,
   AUDITOR,
-  CONFIRM_AUDIT,
+  CONFIRM_AUDIT, CUSTOMER,
   DELETE_AUDIT,
   DELETE_REQUEST,
   GET_AUDIT_REQUEST,
@@ -27,7 +27,7 @@ export const createRequest = (values) => {
       })
       .then(({ data }) => {
         dispatch(getAuditsRequest(current_role));
-        // history.back()
+        history.back()
         dispatch({ type: AUDIT_REQUEST_CREATE, payload: data });
       })
       .catch(({ response }) => {
@@ -117,6 +117,22 @@ export const addReportAudit = (values) => {
         history.back();
         dispatch(getAudits(AUDITOR));
       });
+  };
+};
+
+export const acceptAudit = (values) => {
+  return (dispatch) => {
+    const token = Cookies.get("token");
+    axios
+        .patch(`${API_URL}/audit`, values, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        .then(({ data }) => {
+          history.back();
+          dispatch(getAudits(CUSTOMER));
+        });
   };
 };
 

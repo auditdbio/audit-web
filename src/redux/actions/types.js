@@ -28,3 +28,4 @@ export const CONFIRM_AUDIT = "CONFIRM_AUDIT";
 export const DONE = "done";
 export const INPROGRESS = "inprogres";
 export const SUBMIT_AUDIT = "SUBMIT_AUDIT";
+export const SUBMITED = 'SUBMITED'
