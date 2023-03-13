@@ -72,8 +72,12 @@ const AuditRequestInfo = ({project, onClose}) => {
                     </Box>
                     {!matchXs &&
                         <Box sx={{display: 'flex', gap: '25px'}}>
-                            <Typography variant={'caption'}>{project?.creator_contacts?.additionalProp1}</Typography>
-                            {/*<Typography variant={'caption'}>Mihael@</Typography>*/}
+                            <Typography variant={'caption'}>
+                                {project?.creator_contacts?.email || project?.customer_contacts?.email}
+                            </Typography>
+                            <Typography variant={'caption'}>
+                                {project?.creator_contacts?.telegram || project?.customer_contacts?.telegram}
+                            </Typography>
                         </Box>
                     }
                 </Box>
@@ -84,8 +88,12 @@ const AuditRequestInfo = ({project, onClose}) => {
                     </Typography>
                     {matchXs &&
                         <Box sx={{display: 'flex', gap: '25px'}}>
-                            <Typography variant={'caption'}>{project?.creator_contacts?.additionalProp1}</Typography>
-                            {/*<Typography variant={'caption'}>Mihael@</Typography>*/}
+                            <Typography variant={'caption'}>
+                                {project?.creator_contacts?.email || project?.customer_contacts?.email}
+                            </Typography>
+                            <Typography variant={'caption'}>
+                                {project?.creator_contacts?.telegram || project?.customer_contacts?.telegram}
+                            </Typography>
                         </Box>
                     }
                     <Box sx={linkWrapper} className={'audit-request-links'}>
@@ -131,7 +139,7 @@ const AuditRequestInfo = ({project, onClose}) => {
                         initialValues={{
                             auditor_id: auditor?.user_id,
                             auditor_contacts: {...auditor?.contacts},
-                            customer_contacts: {...project?.customer_contacts},
+                            customer_contacts: {...project?.creator_contacts},
                             customer_id: project?.customer_id,
                             last_changer: user.current_role,
                             price: project?.price || '',

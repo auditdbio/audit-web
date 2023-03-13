@@ -71,6 +71,14 @@ const AuditOffer = () => {
                                                 </Box>
                                             </Box>
                                         </Box>
+                                        <Box sx={[{display: 'flex', gap: '25px'}, contactWrapper]}>
+                                            <Typography variant={'caption'}>
+                                                {audit?.customer_contacts?.email}
+                                            </Typography>
+                                            <Typography variant={'caption'}>
+                                                {audit?.customer_contacts?.telegram}
+                                            </Typography>
+                                        </Box>
                                         <Box sx={infoWrapper}>
                                             <Typography variant={'h4'}>Description</Typography>
                                             <Typography sx={descriptionSx}>
@@ -82,12 +90,6 @@ const AuditOffer = () => {
                                                     <AuditUpload name={'report'}/>
                                                 </Box>
                                             </Box>
-                                            {/*{ matchXs &&*/}
-                                            {/*    <Box sx={{display: 'flex', gap: '25px'}}>*/}
-                                            {/*        <Typography variant={'caption'}>Mihael@gmail.com</Typography>*/}
-                                            {/*        <Typography variant={'caption'}>Mihael@</Typography>*/}
-                                            {/*    </Box>*/}
-                                            {/*}*/}
                                             <Box sx={linkWrapper}>
                                                 {
                                                     audit?.scope?.map((el, idx) =>
@@ -152,6 +154,15 @@ const wrapper = (theme) => ({
 
 const buttonWrapper = (theme) => ({
     marginTop: '40px'
+})
+
+const contactWrapper = (theme) => ({
+    width: '370px',
+    margin: '15px auto 0',
+    justifyContent: 'space-between',
+    '& span': {
+        fontSize: '16px'
+    }
 })
 
 const descriptionSx = (theme) => ({

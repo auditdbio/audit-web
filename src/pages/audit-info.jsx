@@ -54,7 +54,9 @@ const AuditInfo = () => {
                        <ArrowBackIcon/>
                    </Button>
                     <Typography sx={{width: '100%', textAlign: 'center'}}>
-                        You have offer to audit for AuditDB project!
+                        You have offer to audit for <span style={{fontWeight: 500}}>
+                        {audit?.project_name}
+                    </span> project!
                     </Typography>
                 </Box>
                 <Box>
@@ -94,6 +96,7 @@ const AuditInfo = () => {
                             <TagsList/>
                         </Box>
                     </Box>
+                    <Box sx={{marginY: '15px', overflow: 'auto', maxHeight: '150px', paddingY: '5px'}}>{audit?.description}</Box>
                     { (audit?.status === DONE || audit?.status === SUBMITED) &&
                         <Box sx={{display: 'flex', justifyContent: 'center'}}>
                             <Link
@@ -177,8 +180,8 @@ const contentWrapper = (theme) => ({
     },
     [theme.breakpoints.down('sm')]: {
         flexDirection: 'column',
-        alignItems: 'baseline',
-        gap: '16px'
+        alignItems: 'center',
+        gap: '16px',
     }
 })
 
@@ -192,7 +195,7 @@ const userWrapper = (theme) => ({
         fontSize: '15px',
         fontWeight: 500,
         '&:nth-of-type(1)': {
-            margin: '34px 0 18px'
+            margin: '13px 0 18px'
         }
     },
     [theme.breakpoints.down('md')]: {
