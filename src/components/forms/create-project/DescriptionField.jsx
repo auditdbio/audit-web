@@ -55,7 +55,11 @@ const formLabelSx = (theme) => ({
 
 const fieldSx = (theme) => ({
   "& div": {
-    paddingLeft: "35px",
+    paddingLeft: "15px",
+    paddingRight: '5px'
+  },
+  '& textarea': {
+    paddingRight: '10px'
   },
   height: "100%",
 });

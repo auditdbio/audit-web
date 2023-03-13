@@ -427,7 +427,7 @@ const submitButton = (theme) => ({
 const fieldWrapper = (theme) => ({
   display: "flex",
   flexDirection: "column",
-  justifyContent: "space-between",
+  // justifyContent: "space-between",
   // maxWidth: "450px",
   width: "40%",
   gap: "20px",
@@ -451,7 +451,11 @@ const fieldWrapper = (theme) => ({
 });
 const descriptionFieldWrapper = (theme) => ({
   display: "flex",
-
+  '& textarea': {
+    height: '100%!important',
+    maxHeight: '255px',
+    overflow: 'auto!important'
+  },
   flexDirection: "column",
   // height: "230px",
   // height: '100%',
@@ -474,6 +478,10 @@ const descriptionFieldWrapper = (theme) => ({
   },
   [theme.breakpoints.down("xs")]: {
     width: "100%",
+    '& textarea': {
+      height: '305px!important',
+      maxHeight: 'unset',
+    }
   },
 });
 
