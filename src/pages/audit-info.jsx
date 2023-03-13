@@ -8,8 +8,8 @@ import {useNavigate} from "react-router-dom/dist";
 import TagsList from "../components/tagsList.jsx";
 import {useDispatch, useSelector} from "react-redux";
 import {useParams} from "react-router-dom";
-import {confirmAudit, deleteAudit, deleteAuditRequest} from "../redux/actions/auditAction.js";
-import {DONE} from "../redux/actions/types.js";
+import {acceptAudit, confirmAudit, deleteAudit, deleteAuditRequest} from "../redux/actions/auditAction.js";
+import {DONE, SUBMITED} from "../redux/actions/types.js";
 import dayjs from "dayjs";
 
 const AuditInfo = () => {
@@ -36,6 +36,14 @@ const AuditInfo = () => {
         } else {
             dispatch(deleteAuditRequest(audit.id))
         }
+    }
+
+    const handleAcceptAudit = () => {
+        dispatch(acceptAudit({
+            id: audit.id,
+            report: audit.report,
+            status: SUBMITED
+        }))
     }
 
     return (
@@ -86,7 +94,7 @@ const AuditInfo = () => {
                             <TagsList/>
                         </Box>
                     </Box>
-                    { audit?.status === DONE &&
+                    { (audit?.status === DONE || audit?.status === SUBMITED) &&
                         <Box sx={{display: 'flex', justifyContent: 'center'}}>
                             <Link
                                 href={audit.report}
@@ -109,16 +117,25 @@ const AuditInfo = () => {
                             Confirm
                         </Button>
                     }
-                    <Button
-                        variant={'contained'}
-                        onClick={handleDecline}
-                        sx={[buttonSx, {backgroundColor: theme.palette.secondary.main}]}
-                    >
-                        { audit?.status === DONE ?
-                            'Submit' :
-                            'Decline'
-                        }
-                    </Button>
+                    { (audit?.status !== SUBMITED && audit?.status === DONE) &&
+                        <Button
+                            variant={'contained'}
+                            sx={buttonSx}
+                            onClick={handleAcceptAudit}
+                        >
+                            Confirm
+                        </Button>
+                    }
+                    { audit?.status !== SUBMITED &&
+                        <Button
+                            variant={'contained'}
+                            onClick={handleDecline}
+                            sx={[buttonSx, {backgroundColor: theme.palette.secondary.main}]}
+                        >
+                                Decline
+                        </Button>
+                    }
+
                 </Box>
             </CustomCard>
         </Layout>

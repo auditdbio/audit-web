@@ -14,7 +14,7 @@ import {addReportAudit, getAudits} from "../redux/actions/auditAction.js";
 import EditIcon from "@mui/icons-material/Edit.js";
 import AuditUpload from "../components/forms/audit-upload/index.jsx";
 import Loader from "../components/Loader.jsx";
-import {AUDITOR} from "../redux/actions/types.js";
+import {AUDITOR, SUBMITED} from "../redux/actions/types.js";
 import * as Yup from "yup";
 
 const AuditOffer = () => {
@@ -102,13 +102,15 @@ const AuditOffer = () => {
                                         </Box>
                                     </Box>
                                     <Box sx={buttonWrapper}>
-                                        <Button
-                                            variant={'contained'}
-                                            type={'submit'}
-                                            sx={[buttonSx, {backgroundColor: theme.palette.secondary.main}]}
-                                        >
-                                            Send to customer
-                                        </Button>
+                                        { audit.status !== SUBMITED &&
+                                            <Button
+                                                variant={'contained'}
+                                                type={'submit'}
+                                                sx={[buttonSx, {backgroundColor: theme.palette.secondary.main}]}
+                                            >
+                                                Send to customer
+                                            </Button>
+                                        }
                                     </Box>
                                 </CustomCard>
                             </Form>

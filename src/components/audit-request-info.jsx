@@ -198,12 +198,22 @@ const AuditRequestInfo = ({project, onClose}) => {
                                                         const value = new Date(e)
                                                         setFieldValue('time.end', value.toString())
                                                     }}
+                                                    disablePast
                                                     inputFormat='DD.MM.YYYY'
                                                 />
                                             </LocalizationProvider>
                                         </Box>
                                     </Box>
-                                    <Button variant={'contained'} type={'submit'} color={'secondary'}>
+                                    <Button
+                                        variant={'contained'}
+                                        sx={{
+                                        textTransform: 'unset',
+                                        width: '360px',
+                                        paddingY: '24px',
+                                        fontSize: '18px',
+                                        borderRadius: '10px'
+                                    }}
+                                        type={'submit'} color={'secondary'}>
                                         Send offer
                                     </Button>
                                 </Form>
@@ -231,28 +241,6 @@ const MakeOfferSchema = Yup.object().shape({
     time_frame: Yup.string()
 });
 
-const dateStyle = {
-    width: "150px",
-    height: "40px",
-    "& .MuiPickersDay-day": {
-        fontSize: "0.8rem",
-        [theme.breakpoints.down("sm")]: {
-            fontSize: "10px",
-        },
-    },
-    "& .MuiInputBase-input": {
-        fontSize: "0.8rem",
-        [theme.breakpoints.down("sm")]: {
-            fontSize: "10px",
-        },
-    },
-    "& .MuiInputLabel-root": {
-        fontSize: "0.8rem",
-        [theme.breakpoints.down("sm")]: {
-            fontSize: "10px",
-        },
-    },
-};
 
 const modalWrapper = (theme) => ({
     position: 'absolute',
@@ -276,13 +264,6 @@ const modalWrapper = (theme) => ({
         flexDirection: 'column',
         gap: '50px',
         alignItems: 'center',
-        '& button': {
-            textTransform: 'unset',
-            width: '360px',
-            paddingY: '24px',
-            fontSize: '18px',
-            borderRadius: '10px'
-        }
     },
 
 })
