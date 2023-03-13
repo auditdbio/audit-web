@@ -7,11 +7,14 @@ import GitHubIcon from '@mui/icons-material/GitHub';
 import theme from "../styles/themes.js";
 import {useNavigate} from "react-router-dom/dist";
 import SalarySlider from "./forms/salary-slider/salary-slider.jsx";
-import {Form, Formik} from "formik";
+import {Form, Formik, Field} from "formik";
 import * as Yup from "yup";
 import {useDispatch, useSelector} from "react-redux";
 import {createRequest} from "../redux/actions/auditAction.js";
 import dayjs from "dayjs";
+import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs";
+import {DatePicker} from "@mui/x-date-pickers/DatePicker";
+import {LocalizationProvider} from "@mui/x-date-pickers";
 
 const AuditRequestInfo = ({project, onClose}) => {
     const navigate = useNavigate()
@@ -130,16 +133,16 @@ const AuditRequestInfo = ({project, onClose}) => {
                             auditor_contacts: {...auditor?.contacts},
                             customer_contacts: {...project?.customer_contacts},
                             customer_id: project?.customer_id,
-                            opener: user.current_role,
-                            price: '',
+                            last_changer: user.current_role,
+                            price: project?.price || '',
                             description: project?.description || '',
                             price_range: {
                                 lower_bound: project?.price || '',
                                 upper_bound: project?.price || ''
                             },
                             time: {
-                                begin: '',
-                                end: ''
+                                begin: project?.time?.begin || '',
+                                end: project?.time?.end || ''
                             },
                             project_id: project?.project_id || project?.id,
                             scope: project?.scope,
@@ -147,10 +150,9 @@ const AuditRequestInfo = ({project, onClose}) => {
                         }}
                         onSubmit={(values) => {
                             const newValue = {...values,
-                                price: values.salary,
                                 price_range: {
-                                    lower_bound: values.salary,
-                                    upper_bound: values.salary
+                                    lower_bound: values.price,
+                                    upper_bound: values.price
                                 }}
                             dispatch(createRequest(newValue))
                             handleClose()
@@ -159,7 +161,7 @@ const AuditRequestInfo = ({project, onClose}) => {
                             }
                         }}
                     >
-                        {({handleSubmit, setFieldValue}) => {
+                        {({handleSubmit, setFieldValue, values}) => {
                             return (
                                 <Form onSubmit={handleSubmit}>
                                     <Typography variant={'h5'} sx={{width: '100%', textAlign: 'center'}}>
@@ -169,29 +171,36 @@ const AuditRequestInfo = ({project, onClose}) => {
                                         <Typography variant={'caption'}>
                                             Tax rate per stroke
                                         </Typography>
-                                        <SalarySlider name={'salary'}/>
+                                        <SalarySlider name={'price'}/>
                                     </Box>
                                     <Box>
                                         <Typography variant={'caption'}>
                                             Time frame
                                         </Typography>
                                         <Box sx={{display: 'flex', gap: '20px'}}>
-                                            <TextField
-                                                type={'date'}
-                                                placeholder={''}
-                                                defaultValue={dayjs(project?.time?.begin).format('DD-MM-YYYY')}
-                                                onChange={(e) => {
-                                                    setFieldValue('time.begin', new Date(e.target.value))
-                                                }}
-                                            />
-                                            <TextField
-                                                type={'date'}
-                                                placeholder={''}
-                                                // value={project.time.end}
-                                                onChange={(e) => {
-                                                    setFieldValue('time.end', new Date(e.target.value))
-                                                }}
-                                            />
+                                            <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                                <Field
+                                                    component={DatePicker}
+                                                    name={'time.begin'}
+                                                    value={dayjs(values.time?.begin)}
+                                                    inputFormat='DD.MM.YYYY'
+                                                    onChange={(e) => {
+                                                        const value = new Date(e)
+                                                        setFieldValue('time.begin', value.toString())
+                                                    }}
+                                                    disablePast
+                                                />
+                                                <Typography variant={"caption"}>-</Typography>
+                                                <Field
+                                                    component={DatePicker}
+                                                    value={dayjs(values.time?.end)}
+                                                    onChange={(e) => {
+                                                        const value = new Date(e)
+                                                        setFieldValue('time.end', value.toString())
+                                                    }}
+                                                    inputFormat='DD.MM.YYYY'
+                                                />
+                                            </LocalizationProvider>
                                         </Box>
                                     </Box>
                                     <Button variant={'contained'} type={'submit'} color={'secondary'}>
@@ -221,6 +230,29 @@ const MakeOfferSchema = Yup.object().shape({
     scope: Yup.array(),
     time_frame: Yup.string()
 });
+
+const dateStyle = {
+    width: "150px",
+    height: "40px",
+    "& .MuiPickersDay-day": {
+        fontSize: "0.8rem",
+        [theme.breakpoints.down("sm")]: {
+            fontSize: "10px",
+        },
+    },
+    "& .MuiInputBase-input": {
+        fontSize: "0.8rem",
+        [theme.breakpoints.down("sm")]: {
+            fontSize: "10px",
+        },
+    },
+    "& .MuiInputLabel-root": {
+        fontSize: "0.8rem",
+        [theme.breakpoints.down("sm")]: {
+            fontSize: "10px",
+        },
+    },
+};
 
 const modalWrapper = (theme) => ({
     position: 'absolute',
