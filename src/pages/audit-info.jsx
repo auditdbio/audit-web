@@ -8,8 +8,8 @@ import {useNavigate} from "react-router-dom/dist";
 import TagsList from "../components/tagsList.jsx";
 import {useDispatch, useSelector} from "react-redux";
 import {useParams} from "react-router-dom";
-import {confirmAudit, deleteAudit, deleteAuditRequest} from "../redux/actions/auditAction.js";
-import {DONE} from "../redux/actions/types.js";
+import {acceptAudit, confirmAudit, deleteAudit, deleteAuditRequest} from "../redux/actions/auditAction.js";
+import {DONE, SUBMITED} from "../redux/actions/types.js";
 import dayjs from "dayjs";
 
 const AuditInfo = () => {
@@ -31,11 +31,19 @@ const AuditInfo = () => {
     }
 
     const handleDecline = () => {
-        if (audit.status === DONE){
+        if (audit?.status){
             dispatch(deleteAudit(audit.id))
         } else {
             dispatch(deleteAuditRequest(audit.id))
         }
+    }
+
+    const handleAcceptAudit = () => {
+        dispatch(acceptAudit({
+            id: audit.id,
+            report: audit.report,
+            status: SUBMITED
+        }))
     }
 
     return (
@@ -46,7 +54,9 @@ const AuditInfo = () => {
                        <ArrowBackIcon/>
                    </Button>
                     <Typography sx={{width: '100%', textAlign: 'center'}}>
-                        You have offer to audit for AuditDB project!
+                        You have offer to audit for <span style={{fontWeight: 500}}>
+                        {audit?.project_name}
+                    </span> project!
                     </Typography>
                 </Box>
                 <Box>
@@ -86,7 +96,8 @@ const AuditInfo = () => {
                             <TagsList/>
                         </Box>
                     </Box>
-                    { audit?.status === DONE &&
+                    <Box sx={{marginY: '15px', overflow: 'auto', maxHeight: '150px', paddingY: '5px'}}>{audit?.description}</Box>
+                    { (audit?.status === DONE || audit?.status === SUBMITED) &&
                         <Box sx={{display: 'flex', justifyContent: 'center'}}>
                             <Link
                                 href={audit.report}
@@ -109,16 +120,25 @@ const AuditInfo = () => {
                             Confirm
                         </Button>
                     }
-                    <Button
-                        variant={'contained'}
-                        onClick={handleDecline}
-                        sx={[buttonSx, {backgroundColor: theme.palette.secondary.main}]}
-                    >
-                        { audit?.status === DONE ?
-                            'Submit' :
-                            'Decline'
-                        }
-                    </Button>
+                    { (audit?.status !== SUBMITED && audit?.status === DONE) &&
+                        <Button
+                            variant={'contained'}
+                            sx={buttonSx}
+                            onClick={handleAcceptAudit}
+                        >
+                            Confirm
+                        </Button>
+                    }
+                    { audit?.status !== SUBMITED &&
+                        <Button
+                            variant={'contained'}
+                            onClick={handleDecline}
+                            sx={[buttonSx, {backgroundColor: theme.palette.secondary.main}]}
+                        >
+                                Decline
+                        </Button>
+                    }
+
                 </Box>
             </CustomCard>
         </Layout>
@@ -160,8 +180,8 @@ const contentWrapper = (theme) => ({
     },
     [theme.breakpoints.down('sm')]: {
         flexDirection: 'column',
-        alignItems: 'baseline',
-        gap: '16px'
+        alignItems: 'center',
+        gap: '16px',
     }
 })
 
@@ -175,7 +195,7 @@ const userWrapper = (theme) => ({
         fontSize: '15px',
         fontWeight: 500,
         '&:nth-of-type(1)': {
-            margin: '34px 0 18px'
+            margin: '13px 0 18px'
         }
     },
     [theme.breakpoints.down('md')]: {

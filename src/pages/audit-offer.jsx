@@ -14,7 +14,7 @@ import {addReportAudit, getAudits} from "../redux/actions/auditAction.js";
 import EditIcon from "@mui/icons-material/Edit.js";
 import AuditUpload from "../components/forms/audit-upload/index.jsx";
 import Loader from "../components/Loader.jsx";
-import {AUDITOR} from "../redux/actions/types.js";
+import {AUDITOR, SUBMITED} from "../redux/actions/types.js";
 import * as Yup from "yup";
 
 const AuditOffer = () => {
@@ -54,7 +54,7 @@ const AuditOffer = () => {
                                     </Box>
                                     <Box>
                                         <Box sx={contentWrapper}>
-                                            <Typography sx={titleSx}>{audit?.scope?.map(el => el + ', ')}</Typography>
+                                            <Typography sx={titleSx}>{audit?.tags?.map(el => el).join(', ') ?? ''}</Typography>
                                             <Box sx={salaryWrapper}>
                                                 <Box sx={{display: 'flex', alignItems: 'center', gap: '15px'}}>
                                                     <svg width="27" height="26" viewBox="0 0 27 26" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -71,8 +71,16 @@ const AuditOffer = () => {
                                                 </Box>
                                             </Box>
                                         </Box>
+                                        <Box sx={[{display: 'flex', gap: '25px'}, contactWrapper]}>
+                                            <Typography variant={'caption'}>
+                                                {audit?.customer_contacts?.email}
+                                            </Typography>
+                                            <Typography variant={'caption'}>
+                                                {audit?.customer_contacts?.telegram}
+                                            </Typography>
+                                        </Box>
                                         <Box sx={infoWrapper}>
-                                            <Typography variant={'h4'}>Main text</Typography>
+                                            <Typography variant={'h4'}>Description</Typography>
                                             <Typography sx={descriptionSx}>
                                                 {audit?.description}
                                             </Typography>
@@ -82,16 +90,11 @@ const AuditOffer = () => {
                                                     <AuditUpload name={'report'}/>
                                                 </Box>
                                             </Box>
-                                            {/*{ matchXs &&*/}
-                                            {/*    <Box sx={{display: 'flex', gap: '25px'}}>*/}
-                                            {/*        <Typography variant={'caption'}>Mihael@gmail.com</Typography>*/}
-                                            {/*        <Typography variant={'caption'}>Mihael@</Typography>*/}
-                                            {/*    </Box>*/}
-                                            {/*}*/}
                                             <Box sx={linkWrapper}>
                                                 {
                                                     audit?.scope?.map((el, idx) =>
                                                         <Typography key={idx}>
+                                                            <GitHubIcon/>
                                                             <Link>{el}</Link>
                                                             {/*<Button>x</Button>*/}
                                                         </Typography>
@@ -101,13 +104,15 @@ const AuditOffer = () => {
                                         </Box>
                                     </Box>
                                     <Box sx={buttonWrapper}>
-                                        <Button
-                                            variant={'contained'}
-                                            type={'submit'}
-                                            sx={[buttonSx, {backgroundColor: theme.palette.secondary.main}]}
-                                        >
-                                            Send to customer
-                                        </Button>
+                                        { audit.status !== SUBMITED &&
+                                            <Button
+                                                variant={'contained'}
+                                                type={'submit'}
+                                                sx={[buttonSx, {backgroundColor: theme.palette.secondary.main}]}
+                                            >
+                                                Send to customer
+                                            </Button>
+                                        }
                                     </Box>
                                 </CustomCard>
                             </Form>
@@ -149,6 +154,15 @@ const wrapper = (theme) => ({
 
 const buttonWrapper = (theme) => ({
     marginTop: '40px'
+})
+
+const contactWrapper = (theme) => ({
+    width: '370px',
+    margin: '15px auto 0',
+    justifyContent: 'space-between',
+    '& span': {
+        fontSize: '16px'
+    }
 })
 
 const descriptionSx = (theme) => ({
@@ -211,7 +225,7 @@ const infoWrapper = (theme) => ({
     '& h4': {
         fontWeight: 600,
         fontSize: '24px',
-        marginBottom: '40px',
+        marginBottom: '20px',
         textAlign: 'center'
     },
     [theme.breakpoints.down('sm')]: {

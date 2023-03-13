@@ -4,12 +4,16 @@ import { Typography } from "@mui/material";
 import { CustomButton } from "../custom/Button";
 import { useNavigate } from "react-router-dom";
 import { useMediaQuery } from "@mui/material";
+import { isAuth } from "../../lib/helper.js";
+import { useDispatch } from "react-redux";
+import { changeRole } from "../../redux/actions/userAction.js";
 import React, { useState } from "react";
 import WaitingListModal from "../WaitingListModal.jsx";
 
 const MainText = () => {
   const isMobile = useMediaQuery("(max-width: 768px)");
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const [openModal, setOpenModal] = useState(false);
 
@@ -23,6 +27,16 @@ const MainText = () => {
 
   const handleSignUp = () => {
     navigate("/sign-up");
+  };
+
+  const handleBecomeAuditor = () => {
+    dispatch(changeRole("auditor"));
+    navigate("/profile/projects");
+  };
+
+  const handleShowProject = () => {
+    dispatch(changeRole("customer"));
+    navigate("/profile/projects");
   };
 
   return (
@@ -53,13 +67,6 @@ const MainText = () => {
             {paragraphText}
           </Typography>
           <Box sx={buttonsStyle(isMobile)}>
-            {/*<CustomButton sx={auditorButton} onClick={handleSignUp}>*/}
-            {/*  Become auditor*/}
-            {/*</CustomButton>*/}
-            {/*<CustomButton sx={projectButton} onClick={handleSignUp}>*/}
-            {/*  Show your project*/}
-            {/*</CustomButton> */}
-
             <CustomButton sx={auditorButton} onClick={handleModal}>
               Become auditor
             </CustomButton>

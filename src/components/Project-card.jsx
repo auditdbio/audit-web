@@ -3,7 +3,7 @@ import { Box, Button, Typography } from "@mui/material";
 import Currency from "./icons/Currency.jsx";
 import Star from "./icons/Star.jsx";
 import theme, { radiusOfComponents } from "../styles/themes.js";
-import { AUDITOR, DONE } from "../redux/actions/types.js";
+import {AUDITOR, DONE, SUBMITED} from "../redux/actions/types.js";
 import { useNavigate } from "react-router-dom/dist";
 
 const ProjectCard = ({ type, project }) => {
@@ -29,7 +29,7 @@ const ProjectCard = ({ type, project }) => {
         <Typography variant={"h5"} textAlign={"center"}>
           {project.name || project.project_name}
         </Typography>
-        <Typography sx={categorySx}>Criptography, Games</Typography>
+        <Typography sx={categorySx}>{project?.tags?.map(el => el).join(', ') ?? ''}</Typography>
         <Box sx={priceWrapper}>
           <Box sx={infoWrapper}>
             <Currency />
@@ -46,25 +46,28 @@ const ProjectCard = ({ type, project }) => {
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
+          marginTop: 'auto',
+          marginBottom: 0
         }}
       >
         <Box sx={statusWrapper}>
-          {project.status === DONE ? (
-            <Box sx={{ backgroundColor: "#52176D" }} />
-          ) : (
-            project.status === "pending" && (
-              <Box sx={{ backgroundColor: "#FF9900" }} />
-            )
-          )}
-          {project.status !== "pending" && project.status !== DONE && (
-            <Box sx={{ backgroundColor: "#09C010" }} />
-          )}
+          { project.status !== SUBMITED &&
+              <>
+                { project.status === DONE ?
+                    <Box sx={{backgroundColor: '#52176D'}} /> :
+                    project.status === 'pending' &&
+                    <Box sx={{backgroundColor: '#FF9900'}} />
+                }
+                { (project.status !== 'pending' && project.status !== DONE) &&
+                    <Box sx={{backgroundColor: '#09C010'}} />
+                }
+              </>
+          }
           <Typography>
-            {!project.status
-              ? "Waiting for audit"
-              : project.status === DONE
-              ? "Finished"
-              : "In progress"}
+            {
+              !project.status ? 'Waiting for audit' :
+                  project.status === DONE ? 'Finished' : project.status === SUBMITED ? 'Submitted' : 'In progress'
+            }
           </Typography>
         </Box>
         <Button
@@ -138,7 +141,7 @@ const editButton = (theme) => ({
   fontSize: "15px",
   fontWeight: 600,
   lineHeight: "25px",
-  width: "100%",
+  width: "110px",
   textTransform: "none",
   borderRadius: "10px",
   gap: "40px",
@@ -194,6 +197,7 @@ const cardWrapper = (theme) => ({
   display: "flex",
   flexDirection: "column",
   padding: "31px 48px 37px",
+  height: '100%',
   boxShadow:
     "0px 64.1377px 76.5824px rgba(0, 0, 0, 0.07)," +
     " 0px 14.326px 17.1057px rgba(0, 0, 0, 0.0417275)," +

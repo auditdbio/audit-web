@@ -46,11 +46,7 @@ const CreateProjectCard = ({ role, projectInfo }) => {
     }
   }, [auditReducer]);
 
-  // console.log("project info", projectInfo);
-
   let editMode = !!projectInfo;
-
-  // console.log("audit reqs", auditRequests);
 
   const handleEdit = () => {
     navigate("/edit-profile");
@@ -87,16 +83,19 @@ const CreateProjectCard = ({ role, projectInfo }) => {
     setOpenInvite(false);
   };
 
+  const handleInviteAuditor = () => {};
+
   return (
     <Formik
       initialValues={initialValues}
       validationSchema={validationSchema}
       onSubmit={(values) => {
-        console.log(values)
-        editMode
-          ? dispatch(editProject({ ...values, id: projectInfo.id }))
-          : dispatch(createProject(values));
-        // navigate('/profile/projects')
+        console.log(values);
+        if (editMode) {
+          dispatch(editProject({ ...values, id: projectInfo.id }))
+        } else {
+          dispatch(createProject(values));
+        }
       }}
     >
       {({ handleSubmit }) => {
@@ -111,6 +110,7 @@ const CreateProjectCard = ({ role, projectInfo }) => {
 
             <AuditorSearchModal
               open={openInvite}
+              editMode={editMode}
               handleClose={handleCloseInviteModal}
               handleSubmit={handleSubmit}
             />
@@ -165,9 +165,9 @@ const CreateProjectCard = ({ role, projectInfo }) => {
                         />
                       </Box>
                     </Box>
-                    <Box>
-                      <AuditRequestsArray requests={auditRequests ?? []} />
-                    </Box>
+                    {/*<Box>*/}
+                    {/*  <AuditRequestsArray requests={auditRequests ?? []} />*/}
+                    {/*</Box>*/}
                   </Box>
                   <Button
                     type={"submit"}
@@ -427,7 +427,7 @@ const submitButton = (theme) => ({
 const fieldWrapper = (theme) => ({
   display: "flex",
   flexDirection: "column",
-  justifyContent: "space-between",
+  // justifyContent: "space-between",
   // maxWidth: "450px",
   width: "40%",
   gap: "20px",
@@ -451,7 +451,11 @@ const fieldWrapper = (theme) => ({
 });
 const descriptionFieldWrapper = (theme) => ({
   display: "flex",
-
+  '& textarea': {
+    height: '100%!important',
+    maxHeight: '255px',
+    overflow: 'auto!important'
+  },
   flexDirection: "column",
   // height: "230px",
   // height: '100%',
@@ -474,6 +478,10 @@ const descriptionFieldWrapper = (theme) => ({
   },
   [theme.breakpoints.down("xs")]: {
     width: "100%",
+    '& textarea': {
+      height: '305px!important',
+      maxHeight: 'unset',
+    }
   },
 });
 

@@ -4,7 +4,7 @@ import { CustomButton } from "../../custom/Button";
 import Currency from "../../icons/Currency";
 import Star from "../../icons/Star";
 
-const AuditorCard = ({auditor}) => {
+const AuditorCard = ({ auditor }) => {
   return (
     <Card sx={cardStyle}>
       <Avatar sx={avatarStyle} />
@@ -13,7 +13,17 @@ const AuditorCard = ({auditor}) => {
           {/*Mihael Sorokin*/}
           {auditor.first_name} {auditor.last_name}
         </Typography>
-        <Typography sx={badgeFontStyle}>Cryptography, Games</Typography>
+
+        {/*{auditor.tags.map((tag) => (*/}
+        {/*    <Typography sx={badgeFontStyle} key={tag}>*/}
+        {/*{tag},*/}
+        {/*    </Typography>*/}
+        {/*    ))}*/}
+        <Typography sx={badgeFontStyle}>
+          {auditor.tags
+            .map((item) => item.charAt(0).toUpperCase() + item.slice(1))
+            .join(", ")}
+        </Typography>
       </Box>
       <Box
         sx={{

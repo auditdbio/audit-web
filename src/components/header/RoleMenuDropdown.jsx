@@ -7,7 +7,7 @@ import { changeRole } from "../../redux/actions/userAction.js";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import Menu from "@mui/material/Menu";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 //
 const options = [
   {
@@ -40,6 +40,10 @@ export default function RoleMenuDropdown() {
   const [currentRole, setCurrentRole] = useState(
     reduxUser.current_role ?? "auditor"
   );
+
+  useEffect(() => {
+    setCurrentRole(reduxUser.current_role);
+  }, [reduxUser.current_role]);
 
   const [open, setOpen] = React.useState(false);
   const anchorRef = React.useRef(null);

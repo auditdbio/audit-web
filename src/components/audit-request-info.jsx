@@ -7,11 +7,14 @@ import GitHubIcon from '@mui/icons-material/GitHub';
 import theme from "../styles/themes.js";
 import {useNavigate} from "react-router-dom/dist";
 import SalarySlider from "./forms/salary-slider/salary-slider.jsx";
-import {Form, Formik} from "formik";
+import {Form, Formik, Field} from "formik";
 import * as Yup from "yup";
 import {useDispatch, useSelector} from "react-redux";
 import {createRequest} from "../redux/actions/auditAction.js";
 import dayjs from "dayjs";
+import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs";
+import {DatePicker} from "@mui/x-date-pickers/DatePicker";
+import {LocalizationProvider} from "@mui/x-date-pickers";
 
 const AuditRequestInfo = ({project, onClose}) => {
     const navigate = useNavigate()
@@ -41,7 +44,9 @@ const AuditRequestInfo = ({project, onClose}) => {
             </Box>
             <Box>
                 <Box sx={contentWrapper} className={'audit-request-content-wrapper'}>
-                    <Typography sx={titleSx} className={'audit-request-title'}>Criptography, Games</Typography>
+                    <Typography sx={titleSx} className={'audit-request-title'}>
+                        {project?.tags?.map(el => el).join(', ') ?? ''}
+                    </Typography>
                     <Box sx={salaryWrapper} className={'audit-request-salary'}>
                         <Box sx={{display: 'flex', alignItems: 'center', gap: '15px'}}>
                             <svg width="27" height="26" viewBox="0 0 27 26" fill="none"
@@ -67,20 +72,28 @@ const AuditRequestInfo = ({project, onClose}) => {
                     </Box>
                     {!matchXs &&
                         <Box sx={{display: 'flex', gap: '25px'}}>
-                            <Typography variant={'caption'}>{project?.creator_contacts?.additionalProp1}</Typography>
-                            {/*<Typography variant={'caption'}>Mihael@</Typography>*/}
+                            <Typography variant={'caption'}>
+                                {project?.creator_contacts?.email || project?.customer_contacts?.email}
+                            </Typography>
+                            <Typography variant={'caption'}>
+                                {project?.creator_contacts?.telegram || project?.customer_contacts?.telegram}
+                            </Typography>
                         </Box>
                     }
                 </Box>
                 <Box sx={infoWrapper} className={'audit-request-info'}>
-                    <Typography variant={'h4'}>Main text</Typography>
+                    <Typography variant={'h4'}>Description</Typography>
                     <Typography sx={descriptionSx}>
                         {project?.description}
                     </Typography>
                     {matchXs &&
                         <Box sx={{display: 'flex', gap: '25px'}}>
-                            <Typography variant={'caption'}>{project?.creator_contacts?.additionalProp1}</Typography>
-                            {/*<Typography variant={'caption'}>Mihael@</Typography>*/}
+                            <Typography variant={'caption'}>
+                                {project?.creator_contacts?.email || project?.customer_contacts?.email}
+                            </Typography>
+                            <Typography variant={'caption'}>
+                                {project?.creator_contacts?.telegram || project?.customer_contacts?.telegram}
+                            </Typography>
                         </Box>
                     }
                     <Box sx={linkWrapper} className={'audit-request-links'}>
@@ -126,29 +139,28 @@ const AuditRequestInfo = ({project, onClose}) => {
                         initialValues={{
                             auditor_id: auditor?.user_id,
                             auditor_contacts: {...auditor?.contacts},
-                            customer_contacts: {...project?.customer_contacts},
+                            customer_contacts: {...project?.creator_contacts},
                             customer_id: project?.customer_id,
-                            opener: 'auditor',
-                            price: '',
+                            last_changer: user.current_role,
+                            price: project?.price || '',
                             description: project?.description || '',
                             price_range: {
                                 lower_bound: project?.price || '',
                                 upper_bound: project?.price || ''
                             },
                             time: {
-                                begin: '',
-                                end: ''
+                                begin: project?.time?.begin || '',
+                                end: project?.time?.end || ''
                             },
-                            project_id: project?.id,
+                            project_id: project?.project_id || project?.id,
                             scope: project?.scope,
                             time_frame: ''
                         }}
                         onSubmit={(values) => {
                             const newValue = {...values,
-                                price: values.salary,
                                 price_range: {
-                                    lower_bound: values.salary,
-                                    upper_bound: values.salary
+                                    lower_bound: values.price,
+                                    upper_bound: values.price
                                 }}
                             dispatch(createRequest(newValue))
                             handleClose()
@@ -157,7 +169,7 @@ const AuditRequestInfo = ({project, onClose}) => {
                             }
                         }}
                     >
-                        {({handleSubmit, setFieldValue}) => {
+                        {({handleSubmit, setFieldValue, values}) => {
                             return (
                                 <Form onSubmit={handleSubmit}>
                                     <Typography variant={'h5'} sx={{width: '100%', textAlign: 'center'}}>
@@ -167,32 +179,45 @@ const AuditRequestInfo = ({project, onClose}) => {
                                         <Typography variant={'caption'}>
                                             Tax rate per stroke
                                         </Typography>
-                                        <SalarySlider name={'salary'}/>
+                                        <SalarySlider name={'price'}/>
                                     </Box>
                                     <Box>
                                         <Typography variant={'caption'}>
                                             Time frame
                                         </Typography>
-                                        <Box sx={{display: 'flex', gap: '20px'}}>
-                                            <TextField
-                                                type={'date'}
-                                                placeholder={''}
-                                                defaultValue={dayjs(project?.time?.begin).format('DD-MM-YYYY')}
-                                                onChange={(e) => {
-                                                    setFieldValue('time.begin', new Date(e.target.value))
-                                                }}
-                                            />
-                                            <TextField
-                                                type={'date'}
-                                                placeholder={''}
-                                                // value={project.time.end}
-                                                onChange={(e) => {
-                                                    setFieldValue('time.end', new Date(e.target.value))
-                                                }}
-                                            />
+                                        <Box sx={{display: 'flex', gap: '20px', marginTop: '15px', alignItems: 'center'}}>
+                                            <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                                <Field
+                                                    component={DatePicker}
+                                                    name={'time.begin'}
+                                                    value={dayjs(values.time?.begin)}
+                                                    sx={dateStyle}
+                                                    inputFormat='DD.MM.YYYY'
+                                                    onChange={(e) => {
+                                                        const value = new Date(e)
+                                                        setFieldValue('time.begin', value.toString())
+                                                    }}
+                                                    disablePast
+                                                />
+                                                <Typography variant={"caption"}>-</Typography>
+                                                <Field
+                                                    component={DatePicker}
+                                                    value={dayjs(values.time?.end)}
+                                                    sx={dateStyle}
+                                                    onChange={(e) => {
+                                                        const value = new Date(e)
+                                                        setFieldValue('time.end', value.toString())
+                                                    }}
+                                                    disablePast
+                                                    inputFormat='DD.MM.YYYY'
+                                                />
+                                            </LocalizationProvider>
                                         </Box>
                                     </Box>
-                                    <Button variant={'contained'} type={'submit'} color={'secondary'}>
+                                    <Button
+                                        variant={'contained'}
+                                        sx={submitBtn}
+                                        type={'submit'} color={'secondary'}>
                                         Send offer
                                     </Button>
                                 </Form>
@@ -220,6 +245,32 @@ const MakeOfferSchema = Yup.object().shape({
     time_frame: Yup.string()
 });
 
+const dateStyle = {
+    width: "150px",
+    "& .MuiPickersDay-day": {
+        fontSize: "0.8rem",
+        [theme.breakpoints.down("sm")]: {
+            fontSize: "10px",
+        },
+    },
+    "& .MuiInputBase-input": {
+        fontSize: "0.8rem",
+        [theme.breakpoints.down("sm")]: {
+            fontSize: "10px",
+        },
+    },
+    "& .MuiInputLabel-root": {
+        fontSize: "0.8rem",
+        [theme.breakpoints.down("sm")]: {
+            fontSize: "10px",
+        },
+    },
+    [theme.breakpoints.down('sm')]: {
+        width: '130px'
+    }
+};
+
+
 const modalWrapper = (theme) => ({
     position: 'absolute',
     top: '50%',
@@ -242,14 +293,18 @@ const modalWrapper = (theme) => ({
         flexDirection: 'column',
         gap: '50px',
         alignItems: 'center',
-        '& button': {
-            textTransform: 'unset',
-            width: '360px',
-            paddingY: '24px',
-            fontSize: '18px',
-            borderRadius: '10px'
+    },
+    [theme.breakpoints.down('sm')]: {
+        width: 380,
+        '& form': {
+            paddingX: '20px',
+            paddingY: '30px',
+            gap: '30px'
         }
     },
+    [theme.breakpoints.down('xs')]: {
+        width: 350
+    }
 
 })
 
@@ -277,6 +332,18 @@ const wrapper = (theme) => ({
 
 const backButtonConfirm = (theme) => ({
 
+})
+
+const submitBtn = (theme) => ({
+    textTransform: 'unset',
+    width: '360px',
+    paddingY: '24px',
+    fontSize: '18px',
+    borderRadius: '10px',
+    [theme.breakpoints.down('sm')]: {
+        width: '140px',
+        paddingY: '12px'
+    }
 })
 
 const buttonWrapper = (theme) => ({
@@ -324,7 +391,7 @@ const infoWrapper = (theme) => ({
     '& h4': {
         fontWeight: 600,
         fontSize: '24px',
-        marginBottom: '40px',
+        marginBottom: '20px',
         textAlign: 'center'
     },
     [theme.breakpoints.down('sm')]: {
@@ -335,9 +402,6 @@ const infoWrapper = (theme) => ({
     },
     [theme.breakpoints.down('xs')]: {
         width: '310px',
-        '& h4': {
-            textAlign: 'start',
-        },
     }
 })
 
@@ -362,6 +426,11 @@ const linkWrapper = (theme) => ({
         '& p': {
             fontSize: '15px',
         }
+    },
+    [theme.breakpoints.down('xs')]: {
+        flexDirection: 'column',
+        columnGap: 'unset',
+        gap: '15px'
     }
 })
 
