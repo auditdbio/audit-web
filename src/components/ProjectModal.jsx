@@ -8,7 +8,6 @@ import { Typography } from "@mui/material";
 import GitHubIcon from "@mui/icons-material/GitHub";
 
 export default function ProjectModal({ open, handleClose, project }) {
-  console.log(project);
   return (
     <Dialog open={open} onClose={handleClose}>
       <DialogContent sx={modalWindow}>
