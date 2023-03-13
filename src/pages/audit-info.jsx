@@ -82,8 +82,8 @@ const AuditInfo = () => {
                                 <Typography>{audit?.auditor_contacts?.telegram}</Typography>
                             </Box>
                             <Box sx={infoWrapper}>
-                                <span>Tax rate</span>
-                                <Typography>{audit?.price} $ per stroke</Typography>
+                                <span>Price:</span>
+                                <Typography>${audit?.price} per line</Typography>
                             </Box>
                         </Box>
                         <Box sx={projectWrapper}>

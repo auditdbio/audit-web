@@ -62,10 +62,12 @@ const UserInfo = ({role}) => {
                                 <span>Telegram</span>
                                 <Typography noWrap={true}>{data.contacts?.telegram}</Typography>
                             </Box>
-                            <Box sx={infoWrapper}>
-                                <span>Tax rate</span>
-                                {data?.tax && <Typography>{data?.tax} $ per stroke</Typography>}
-                            </Box>
+                            {role === AUDITOR &&
+                                <Box sx={infoWrapper}>
+                                    <span>Price:</span>
+                                    {data?.tax && <Typography>${data?.tax} per line</Typography>}
+                                </Box>
+                            }
                         </Box>
                         <Box sx={infoInnerStyle}>
                             {role !== AUDITOR &&
