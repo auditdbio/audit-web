@@ -87,7 +87,7 @@ const AuditOffer = () => {
                                             <Box sx={fileWrapper}>
                                                 <Typography sx={subTitleSx}>Upload audit</Typography>
                                                 <Box sx={{display: 'flex'}}>
-                                                    <AuditUpload name={'report'}/>
+                                                    <AuditUpload disabled={audit.status === SUBMITED} name={'report'}/>
                                                 </Box>
                                             </Box>
                                             <Box sx={linkWrapper}>
