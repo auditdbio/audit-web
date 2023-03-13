@@ -36,7 +36,6 @@ const CreateProjectCard = ({ role, projectInfo }) => {
   }, []);
   useEffect(() => {
     if (auditReducer.auditRequests && projectInfo) {
-      console.log(auditReducer, projectInfo.id);
       setAuditRequests(
         auditReducer.auditRequests &&
           auditReducer.auditRequests.filter(
@@ -90,7 +89,6 @@ const CreateProjectCard = ({ role, projectInfo }) => {
       initialValues={initialValues}
       validationSchema={validationSchema}
       onSubmit={(values) => {
-        console.log(values);
         if (editMode) {
           dispatch(editProject({ ...values, id: projectInfo.id }))
         } else {

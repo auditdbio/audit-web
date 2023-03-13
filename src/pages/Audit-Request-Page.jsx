@@ -7,7 +7,6 @@ import {useSelector} from "react-redux";
 const AuditRequestPage = () => {
     const {id} = useParams()
     const auditInfo = useSelector(s => s.audits?.auditRequests?.find(project => project.id === id))
-    console.log(auditInfo)
     return (
         <Layout>
             <AuditRequestInfo project={auditInfo}/>
