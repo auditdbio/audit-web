@@ -5,7 +5,7 @@ import {useNavigate} from "react-router-dom/dist";
 import {useDispatch} from "react-redux";
 import {confirmAudit} from "../redux/actions/auditAction.js";
 import {useMemo} from "react";
-import {DONE, SUBMITED} from "../redux/actions/types.js";
+import {CUSTOMER, DONE, SUBMITED} from "../redux/actions/types.js";
 import dayjs from "dayjs";
 
 
@@ -45,7 +45,9 @@ const AuditCard = ({audit}) => {
                 </Typography>
             </Box>
             { !audit.status &&
-                <CustomButton sx={acceptButtonStyle}
+                <CustomButton sx={[acceptButtonStyle,
+                    audit?.last_changer.toLowerCase() === CUSTOMER ? {backgroundColor: '#d7d7d7'} : {}]}
+                              disabled={audit?.last_changer.toLowerCase() === CUSTOMER}
                 onClick={() => dispatch(confirmAudit(audit))}>
                     Accept
                 </CustomButton>
