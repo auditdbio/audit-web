@@ -177,12 +177,13 @@ const AuditRequestInfo = ({project, onClose}) => {
                                         <Typography variant={'caption'}>
                                             Time frame
                                         </Typography>
-                                        <Box sx={{display: 'flex', gap: '20px'}}>
+                                        <Box sx={{display: 'flex', gap: '20px', marginTop: '15px', alignItems: 'center'}}>
                                             <LocalizationProvider dateAdapter={AdapterDayjs}>
                                                 <Field
                                                     component={DatePicker}
                                                     name={'time.begin'}
                                                     value={dayjs(values.time?.begin)}
+                                                    sx={dateStyle}
                                                     inputFormat='DD.MM.YYYY'
                                                     onChange={(e) => {
                                                         const value = new Date(e)
@@ -194,6 +195,7 @@ const AuditRequestInfo = ({project, onClose}) => {
                                                 <Field
                                                     component={DatePicker}
                                                     value={dayjs(values.time?.end)}
+                                                    sx={dateStyle}
                                                     onChange={(e) => {
                                                         const value = new Date(e)
                                                         setFieldValue('time.end', value.toString())
@@ -206,13 +208,7 @@ const AuditRequestInfo = ({project, onClose}) => {
                                     </Box>
                                     <Button
                                         variant={'contained'}
-                                        sx={{
-                                        textTransform: 'unset',
-                                        width: '360px',
-                                        paddingY: '24px',
-                                        fontSize: '18px',
-                                        borderRadius: '10px'
-                                    }}
+                                        sx={submitBtn}
                                         type={'submit'} color={'secondary'}>
                                         Send offer
                                     </Button>
@@ -241,6 +237,31 @@ const MakeOfferSchema = Yup.object().shape({
     time_frame: Yup.string()
 });
 
+const dateStyle = {
+    width: "150px",
+    "& .MuiPickersDay-day": {
+        fontSize: "0.8rem",
+        [theme.breakpoints.down("sm")]: {
+            fontSize: "10px",
+        },
+    },
+    "& .MuiInputBase-input": {
+        fontSize: "0.8rem",
+        [theme.breakpoints.down("sm")]: {
+            fontSize: "10px",
+        },
+    },
+    "& .MuiInputLabel-root": {
+        fontSize: "0.8rem",
+        [theme.breakpoints.down("sm")]: {
+            fontSize: "10px",
+        },
+    },
+    [theme.breakpoints.down('sm')]: {
+        width: '130px'
+    }
+};
+
 
 const modalWrapper = (theme) => ({
     position: 'absolute',
@@ -265,6 +286,17 @@ const modalWrapper = (theme) => ({
         gap: '50px',
         alignItems: 'center',
     },
+    [theme.breakpoints.down('sm')]: {
+        width: 380,
+        '& form': {
+            paddingX: '20px',
+            paddingY: '30px',
+            gap: '30px'
+        }
+    },
+    [theme.breakpoints.down('xs')]: {
+        width: 350
+    }
 
 })
 
@@ -292,6 +324,18 @@ const wrapper = (theme) => ({
 
 const backButtonConfirm = (theme) => ({
 
+})
+
+const submitBtn = (theme) => ({
+    textTransform: 'unset',
+    width: '360px',
+    paddingY: '24px',
+    fontSize: '18px',
+    borderRadius: '10px',
+    [theme.breakpoints.down('sm')]: {
+        width: '140px',
+        paddingY: '12px'
+    }
 })
 
 const buttonWrapper = (theme) => ({
@@ -350,9 +394,6 @@ const infoWrapper = (theme) => ({
     },
     [theme.breakpoints.down('xs')]: {
         width: '310px',
-        '& h4': {
-            textAlign: 'start',
-        },
     }
 })
 
@@ -377,6 +418,11 @@ const linkWrapper = (theme) => ({
         '& p': {
             fontSize: '15px',
         }
+    },
+    [theme.breakpoints.down('xs')]: {
+        flexDirection: 'column',
+        columnGap: 'unset',
+        gap: '15px'
     }
 })
 
