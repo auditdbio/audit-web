@@ -1,10 +1,30 @@
 import { Box, Card, Typography } from "@mui/material";
 import theme from "../../../styles/themes";
 import { CustomButton } from "../../custom/Button";
+import { useNavigate } from "react-router-dom";
+import React, { useState } from "react";
+import ProjectModal from "../../ProjectModal.jsx";
 
 const PublicProjectCard = ({ project }) => {
+  const navigate = useNavigate();
+
+  const [openModal, setOpenModal] = useState(false);
+  const handleView = () => {
+    setOpenModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setOpenModal(false);
+  };
+
   return (
     <Card sx={cardWrapper}>
+      <ProjectModal
+        open={openModal}
+        handleClose={handleCloseModal}
+        project={project}
+      />
+
       <Typography sx={auditNameStyle}>{project.name}</Typography>
       <Typography sx={nameTextStyle}>Mishail Soronikov</Typography>
       <Typography sx={priceTextStyle}>20 $ per stroke</Typography>
@@ -18,8 +38,15 @@ const PublicProjectCard = ({ project }) => {
         <Box />
         <Typography>{project.status}</Typography>
       </Box>
-      <CustomButton sx={acceptButtonStyle}>Accept</CustomButton>
-      <CustomButton sx={viewButtonStyle}>View</CustomButton>
+      {/*<CustomButton sx={acceptButtonStyle}>Accept</CustomButton>*/}
+      <CustomButton
+        sx={viewButtonStyle}
+        // onClick={() => navigate(`/audit-request/${project.id}`)}
+        // onClick={handleView}
+      >
+        {" "}
+        View{" "}
+      </CustomButton>
     </Card>
   );
 };

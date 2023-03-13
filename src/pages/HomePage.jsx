@@ -18,6 +18,7 @@ const HomePage = () => {
 				},
 			}}
 		>
+
 			<MainText />
 			<AuditorsProjectsSection />
 			<Carousel />

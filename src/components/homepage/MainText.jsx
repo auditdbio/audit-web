@@ -4,17 +4,33 @@ import { Typography } from "@mui/material";
 import { CustomButton } from "../custom/Button";
 import { useNavigate } from "react-router-dom";
 import { useMediaQuery } from "@mui/material";
+import { isAuth } from "../../lib/helper.js";
+import { useDispatch } from "react-redux";
+import { changeRole } from "../../redux/actions/userAction.js";
 
 const MainText = () => {
   const isMobile = useMediaQuery("(max-width: 768px)");
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleSignUp = () => {
     navigate("/sign-up");
   };
 
+  const handleBecomeAuditor = () => {
+
+    dispatch(changeRole("auditor"));
+    navigate("/profile/projects");
+  };
+
+  const handleShowProject = () => {
+
+    dispatch(changeRole("customer"));
+    navigate("/profile/projects");
+  };
+
   return (
-    <Box sx={{ width: "100%", paddingBottom: "5rem", maxWidth: '1512px' }}>
+    <Box sx={{ width: "100%", paddingBottom: "5rem", maxWidth: "1512px" }}>
       <Box
         sx={{
           display: "flex",
@@ -36,10 +52,16 @@ const MainText = () => {
             {paragraphText}
           </Typography>
           <Box sx={buttonsStyle(isMobile)}>
-            <CustomButton sx={auditorButton} onClick={handleSignUp}>
+            <CustomButton
+              sx={auditorButton}
+              onClick={isAuth ? handleBecomeAuditor : handleSignUp}
+            >
               Become auditor
             </CustomButton>
-            <CustomButton sx={projectButton} onClick={handleSignUp}>
+            <CustomButton
+              sx={projectButton}
+              onClick={isAuth ? handleShowProject : handleSignUp}
+            >
               Show your project
             </CustomButton>
           </Box>
