@@ -35,16 +35,13 @@ const AuditorSection = () => {
   }, [searchInput]);
 
   useEffect(() => {
-    console.log("auditors front", auditorReducer);
   }, [auditorReducer]);
 
   useEffect(() => {
     if (auditorReducer.auditors && auditorReducer.auditors.length != 0) {
       setAuditorFound(true);
-      console.log("These are your auditors");
     } else {
       setAuditorFound(false);
-      console.log("No auditors found");
     }
   }, [auditorReducer]);
 

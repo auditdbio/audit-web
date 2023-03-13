@@ -15,7 +15,6 @@ export const createProject = (values) => {
         },
       })
       .then(({ data }) => {
-        console.log("create project", data);
         dispatch({ type: PROJECT_CREATE, payload: data });
         history.push("/profile/projects");
       })
@@ -34,7 +33,6 @@ export const editProject = (values) => {
         },
       })
       .then(({ data }) => {
-        console.log("edit project", data);
         dispatch({ type: PROJECT_UPDATE, payload: data });
         history.push("/profile/projects", {
           some: true,
@@ -53,7 +51,6 @@ export const getAllProjects = (values = "") => {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then(({ data }) => {
-        console.log('projects store', data)
         dispatch({ type: GET_PROJECTS, payload: data });
       })
       .catch(({ response }) => {
