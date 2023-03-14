@@ -182,7 +182,14 @@ const Header = () => {
                         {waitingMobilePages.map((page) => (
                           <MenuItem
                             key={page.id}
-                            onClick={handleCloseNavMenu}
+                            onClick={() => {
+                              handleCloseNavMenu();
+                              if (page.link.includes("http")) {
+                                window.open(page.link, "_blank");
+                              } else {
+                                navigate(page.link);
+                              }
+                            }}
                             sx={{
                               ":active": {
                                 backgroundColor: "orange",
@@ -196,9 +203,6 @@ const Header = () => {
                                 marginX: "1rem",
                                 fontSize: "22px",
                                 fontWeight: "500",
-                              }}
-                              onClick={()=>{
-                                navigate(page.link)
                               }}
                             >
                               {page.name}
@@ -411,6 +415,11 @@ const waitingMobilePages = [
     name: "FAQ",
     link: "/FAQ",
   },
+  {
+    id: 5,
+    name: "Screencast",
+    link: "https://youtu.be/J7L4yAhS6Rw",
+  },
 ];
 
 const pages = [
@@ -453,6 +462,11 @@ const pages = [
         id: 4,
         itemName: "FAQ",
         link: "/FAQ",
+      },
+      {
+        id: 5,
+        itemName: "Screencast",
+        link: "https://youtu.be/J7L4yAhS6Rw",
       },
     ],
   },

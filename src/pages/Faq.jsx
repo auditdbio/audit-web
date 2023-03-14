@@ -100,6 +100,9 @@ const wrapper = (theme) => ({
             marginBottom: '10px'
         }
     },
+    '& li': {
+        fontWeight: 500
+    },
     [theme.breakpoints.down('md')]: {
         '& p': {
             fontSize: '18px',
