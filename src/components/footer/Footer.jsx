@@ -10,7 +10,7 @@ import Instagram from "../icons/Instagram.jsx";
 
 const Footer = () => {
 	const isMobile = useMediaQuery("(max-width: 768px)");
-
+	console.log(pages)
 	return (
 		<Box sx={footerContainerStyles}>
 			<Box sx={mainFooterStyles(isMobile)}>
@@ -23,7 +23,7 @@ const Footer = () => {
 							<Typography style={dbStyles(isMobile)}>DB</Typography>
 						</Box>
 						<Box sx={iconsStyle}>
-							<Link to={"/"}>
+							<Link to={"https://twitter.com/auditdbio?t=oOdybhqGYlv129TyT8y-2g&s=09"}>
 								<TwitterIcon sx={iconStyle} />
 							</Link>
 							<Link to={"/"}>
@@ -36,9 +36,9 @@ const Footer = () => {
 							<Link to={"/"}>
 								<Instagram style={iconStyle} />
 							</Link>
-							<Link to={"/"}>
-								<Vk style={iconStyle} />
-							</Link>
+							{/*<Link to={"/"}>*/}
+							{/*	<Vk style={iconStyle} />*/}
+							{/*</Link>*/}
 							<Link to={"/"}>
 								<Tiktok style={iconStyle} />
 							</Link>
@@ -55,15 +55,15 @@ const Footer = () => {
 								disableRipple
 								key={page.id}
 							>
-								<Box sx={menuItem(isMobile)}>{page.name}</Box>
+
+								<Box sx={menuItem(isMobile)}>
+									<Link to={page.path}>{page.name}</Link>
+								</Box>
 							</MenuItem>
 						))}
 					</Box>
 				</Box>
 
-				<Typography style={rightsStyles(isMobile)}>
-					2022 All rights reserved.
-				</Typography>
 			</Box>
 		</Box>
 	);
@@ -74,6 +74,7 @@ const footerContainerStyles = {
 	flexDirection: "row",
 	justifyContent: "center",
 	backgroundColor: "#FF9900",
+	paddingBottom: '35px'
 };
 
 const mainFooterStyles = (isMobile) => ({
@@ -144,6 +145,9 @@ const menuItems = () => ({
 
 const menuItem = (isMobile) => ({
 	fontSize: isMobile ? "22px" : "26px",
+	'& a': {
+		color: '#fff'
+	}
 });
 
 const menuItemWrap = (isMobile) => ({
@@ -166,24 +170,26 @@ const rightsStyles = (isMobile) => ({
 const pages = [
 	{
 		id: 1,
-		name: "Product",
+		name: "For customers",
+		path: '/for-customers'
 	},
 	{
 		id: 2,
-		name: "About Us",
+		name: "For auditors",
+		path: '/for-auditors'
 	},
-	{
-		id: 3,
-		name: "Product",
-	},
-	{
-		id: 4,
-		name: "About Us",
-	},
-	{
-		id: 5,
-		name: "Product",
-	},
+	// {
+	// 	id: 3,
+	// 	name: "Product",
+	// },
+	// {
+	// 	id: 4,
+	// 	name: "About Us",
+	// },
+	// {
+	// 	id: 5,
+	// 	name: "Product",
+	// },
 	{
 		id: 6,
 		name: "About Us",
