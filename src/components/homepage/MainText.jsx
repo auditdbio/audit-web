@@ -29,16 +29,6 @@ const MainText = () => {
     navigate("/sign-up");
   };
 
-  const handleBecomeAuditor = () => {
-    dispatch(changeRole("auditor"));
-    navigate("/profile/projects");
-  };
-
-  const handleShowProject = () => {
-    dispatch(changeRole("customer"));
-    navigate("/profile/projects");
-  };
-
   return (
     <Box sx={{ width: "100%", paddingBottom: "5rem", maxWidth: "1512px" }}>
       <WaitingListModal
