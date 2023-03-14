@@ -391,19 +391,19 @@ const pages = [
     menuOptions: [
       {
         id: 2,
-        itemName: "Contact",
-        link: "/",
+        itemName: "For customers",
+        link: "/for-customers",
       },
       {
         id: 3,
-        itemName: "Our team",
-        link: "/",
+        itemName: "For auditors",
+        link: "/for-auditors",
       },
-      {
-        id: 4,
-        itemName: "Our projects",
-        link: "/projects",
-      },
+      // {
+      //   id: 4,
+      //   itemName: "Our projects",
+      //   link: "/projects",
+      // },
     ],
   },
   {
@@ -427,27 +427,27 @@ const pages = [
       },
     ],
   },
-  {
-    id: 3,
-    name: "Community",
-    menuOptions: [
-      {
-        id: 2,
-        itemName: "Contact",
-        link: "/",
-      },
-      {
-        id: 3,
-        itemName: "Our team",
-        link: "/",
-      },
-      {
-        id: 4,
-        itemName: "Our projects",
-        link: "/projects",
-      },
-    ],
-  },
+  // {
+  //   id: 3,
+  //   name: "Community",
+  //   menuOptions: [
+  //     {
+  //       id: 2,
+  //       itemName: "Contact",
+  //       link: "/",
+  //     },
+  //     {
+  //       id: 3,
+  //       itemName: "Our team",
+  //       link: "/",
+  //     },
+  //     {
+  //       id: 4,
+  //       itemName: "Our projects",
+  //       link: "/projects",
+  //     },
+  //   ],
+  // },
 ];
 
 const authorizedPages = [
