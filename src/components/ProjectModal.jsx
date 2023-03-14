@@ -6,10 +6,27 @@ import theme from "../styles/themes.js";
 import { Box } from "@mui/system";
 import { Typography } from "@mui/material";
 import GitHubIcon from "@mui/icons-material/GitHub";
+import WaitingListModal from "./WaitingListModal.jsx";
+import { useState } from "react";
 
 export default function ProjectModal({ open, handleClose, project }) {
+  const [openModal, setOpenModal] = useState(false);
+
+  const handleModal = () => {
+    setOpenModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setOpenModal(false);
+  };
+
   return (
     <Dialog open={open} onClose={handleClose}>
+      <WaitingListModal
+        open={openModal}
+        handleClose={handleCloseModal}
+        // handleSubmit={handleSubmit}
+      />
       <DialogContent sx={modalWindow}>
         <Box sx={titlesBox}>
           <Typography sx={modalHeader}>{project.name}</Typography>
@@ -35,7 +52,9 @@ export default function ProjectModal({ open, handleClose, project }) {
           <Button sx={backButton} onClick={handleClose}>
             Back
           </Button>
-          <Button sx={findButton}>Make offer</Button>
+          <Button sx={findButton} onClick={handleModal}>
+            Make offer
+          </Button>
         </Box>
       </DialogContent>
     </Dialog>
