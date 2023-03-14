@@ -7,23 +7,18 @@ import theme from "../styles/themes.js";
 import { Box } from "@mui/system";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { Paper, Slider, Typography } from "@mui/material";
+import { Typography } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { getAuditors } from "../redux/actions/auditorAction.js";
-import { createRequest } from "../redux/actions/auditAction.js";
 
-export default function WaitingListModal({ open, handleClose, handleSubmit }) {
+export default function WaitingListModal({ open, handleClose }) {
   const dispatch = useDispatch();
   const auditorReducer = useSelector((state) => state.auditor.auditors);
 
-  const [submitted, setSubmitted] = useState(false);
-
-  const [selectedAuditor, setSelectedAuditor] = useState({});
 
   const [inputValue, setInputValue] = useState("");
-  const [taxInput, setTaxInput] = useState(50);
 
-  const [query, setQuery] = useState("");
+  const [query] = useState("");
   console.log("auditor reducer", auditorReducer);
   useEffect(() => {
     console.log("searching...");
@@ -53,7 +48,7 @@ export default function WaitingListModal({ open, handleClose, handleSubmit }) {
       <DialogContent sx={modalWindow}>
         <Box sx={{ maxWidth: "80%" }}>
           <Typography sx={modalTitle(theme)}>
-            If you want to be placed to waiting list, fill in the form, please
+            Fill in the form with your e-mail, and we invite you to join our auditors community
           </Typography>
         </Box>
         <Box sx={fieldButtonContainer}>
@@ -101,11 +96,7 @@ const fieldButtonContainer = {
   display: "flex",
   gap: "10px",
 };
-const searchIcon = {
-  [theme.breakpoints.down("sm")]: {
-    fontSize: "15px",
-  },
-};
+
 
 const searchField = {
   "& .MuiAutocomplete-input": {
@@ -119,7 +110,6 @@ const searchField = {
     padding: "0px",
     height: "45px",
     borderRadius: "4px",
-    // border: "1px solid #434242",
     paddingLeft: "8px",
     fontSize: "14px !important",
     width: "465px",
@@ -127,7 +117,6 @@ const searchField = {
       width: "120px",
       height: "30px",
       fontSize: "11px",
-      // padding: "0",
     },
   },
 };
