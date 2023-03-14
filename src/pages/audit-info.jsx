@@ -62,7 +62,7 @@ const AuditInfo = () => {
                 <Box>
                     <Box sx={contentWrapper}>
                         <Box sx={userWrapper}>
-                            <Avatar/>
+                            <Avatar src={audit?.avatar}/>
                             <Box>
                                 <Typography>
                                     {audit?.auditor_contacts?.email}
