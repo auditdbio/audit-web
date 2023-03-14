@@ -18,13 +18,11 @@ const MainText = () => {
   };
 
   const handleBecomeAuditor = () => {
-
     dispatch(changeRole("auditor"));
     navigate("/profile/projects");
   };
 
   const handleShowProject = () => {
-
     dispatch(changeRole("customer"));
     navigate("/profile/projects");
   };
@@ -54,13 +52,13 @@ const MainText = () => {
           <Box sx={buttonsStyle(isMobile)}>
             <CustomButton
               sx={auditorButton}
-              onClick={isAuth ? handleBecomeAuditor : handleSignUp}
+              onClick={isAuth() ? handleBecomeAuditor : handleSignUp}
             >
               Become auditor
             </CustomButton>
             <CustomButton
               sx={projectButton}
-              onClick={isAuth ? handleShowProject : handleSignUp}
+              onClick={isAuth() ? handleShowProject : handleSignUp}
             >
               Show your project
             </CustomButton>
