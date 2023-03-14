@@ -159,7 +159,10 @@ const Header = () => {
                               marginX: "1rem",
                             }}
                           >
-                            <CustomButton sx={signInButton} onClick={handleModal}>
+                            <CustomButton
+                              sx={signInButton}
+                              onClick={handleModal}
+                            >
                               Waiting list
                             </CustomButton>
                             {/*<CustomButton*/}
@@ -176,14 +179,14 @@ const Header = () => {
                             {/*</CustomButton>*/}
                           </Box>
                         </MenuItem>
-                        {pages.map((page) => (
+                        {waitingMobilePages.map((page) => (
                           <MenuItem
                             key={page.id}
                             onClick={handleCloseNavMenu}
                             sx={{
                               ":active": {
                                 backgroundColor: "orange",
-                                color: "color",
+                                color: "white",
                               },
                             }}
                           >
@@ -193,6 +196,9 @@ const Header = () => {
                                 marginX: "1rem",
                                 fontSize: "22px",
                                 fontWeight: "500",
+                              }}
+                              onClick={()=>{
+                                navigate(page.link)
                               }}
                             >
                               {page.name}
@@ -384,6 +390,19 @@ const Header = () => {
   );
 };
 
+const waitingMobilePages = [
+  {
+    id: 1,
+    name: "For customers",
+    link: "/for-customers",
+  },
+  {
+    id: 2,
+    name: "For auditors",
+    link: "/for-auditors",
+  },
+];
+
 const pages = [
   {
     id: 1,
@@ -412,18 +431,18 @@ const pages = [
     menuOptions: [
       {
         id: 2,
-        itemName: "Contact",
+        itemName: "AuditDB",
         link: "/",
       },
       {
         id: 3,
-        itemName: "Our team",
+        itemName: "Contact us",
         link: "/",
       },
       {
         id: 4,
-        itemName: "Our projects",
-        link: "/projects",
+        itemName: "FAQ",
+        link: "/",
       },
     ],
   },
