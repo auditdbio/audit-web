@@ -26,7 +26,7 @@ const FeedbackCard = ({ info }) => {
 };
 
 const cardWrapper = (isSmallScreen) => ({
-	height: "100%",
+	minHeight: "500px",
 	width: "100%",
 	maxWidth: "380px",
 	borderRadius: "27px",
