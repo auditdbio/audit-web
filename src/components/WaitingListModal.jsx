@@ -8,8 +8,7 @@ import { Box } from "@mui/system";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { Typography } from "@mui/material";
-import { useDispatch, useSelector } from "react-redux";
-import { getAuditors } from "../redux/actions/auditorAction.js";
+const API_URL = import.meta.env.VITE_API_BASE_URL
 
 export default function WaitingListModal({ open, handleClose }) {
   const [inputValue, setInputValue] = useState("");
@@ -17,7 +16,7 @@ export default function WaitingListModal({ open, handleClose }) {
   const handleSendEmail = (event) => {
     event.preventDefault();
     axios
-      .post("https://dev.auditdb.io/api/waiting_list", { email: inputValue })
+      .post(`${API_URL}/waiting_list`, { email: inputValue })
       .then((response) => {
         console.log(response);
       })

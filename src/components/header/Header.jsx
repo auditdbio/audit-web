@@ -401,6 +401,16 @@ const waitingMobilePages = [
     name: "For auditors",
     link: "/for-auditors",
   },
+  {
+    id: 3,
+    name: "AuditDB",
+    link: "/audit-db",
+  },
+  {
+    id: 4,
+    name: "FAQ",
+    link: "/FAQ",
+  },
 ];
 
 const pages = [
@@ -408,6 +418,11 @@ const pages = [
     id: 1,
     name: "Product",
     menuOptions: [
+      {
+        id: 1,
+        itemName: "AuditDB",
+        link: "/audit-db",
+      },
       {
         id: 2,
         itemName: "For customers",
@@ -430,19 +445,14 @@ const pages = [
     name: "About Us",
     menuOptions: [
       {
-        id: 2,
-        itemName: "AuditDB",
-        link: "/",
-      },
-      {
         id: 3,
         itemName: "Contact us",
-        link: "/",
+        link: "/contact-us",
       },
       {
         id: 4,
         itemName: "FAQ",
-        link: "/",
+        link: "/FAQ",
       },
     ],
   },

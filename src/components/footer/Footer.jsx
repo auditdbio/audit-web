@@ -168,13 +168,15 @@ const pages = [
 	// 	name: "Product",
 	// },
 	{
-		id: 4,
-		name: "About Us",
+		id: 3,
+		name: "AuditDB",
+		path: "/audit-db",
 	},
-	// {
-	// 	id: 5,
-	// 	name: "Product",
-	// },
+	{
+		id: 5,
+		name: "Contact us",
+		path: "/contact-us",
+	},
 	// {
 	// 	id: 6,
 	// 	name: "About Us",
