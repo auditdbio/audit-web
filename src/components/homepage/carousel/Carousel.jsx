@@ -121,59 +121,66 @@ const carouselTextStyle = {
 const items = [
   {
     id: 1,
-    name: "Artem Molodneckiy",
-    interests: "Criptography, Games",
+    name: "Sarah Johnson",
+    interests: "Crypto, Auditor",
     description:
-      "“ As one of the first quadratic freelancers to go through the platform, my grant enabled me to leave my job and build open source tutorials and prototypes for the open internet. Super excited to see quadratic funding continue to help high leverage outliers find their place in our ecosystem.”",
+      "“AuditDb is a secure blockchain-based platform that connects freelancers with clients. I highly recommend it for anyone looking for job opportunities. The added security of blockchain technology is a bonus.”",
   },
   {
     id: 2,
-    name: "Artem Molodneckiy",
-    interests: "Criptography, Games",
+    name: "David Lee",
+    interests: " Blockchain, Accounting",
     description:
-      "“ As one of the first quadratic freelancers to go through the platform, my grant enabled me to leave my job and build open source tutorials and prototypes for the open internet. Super excited to see quadratic funding continue to help high leverage outliers find their place in our ecosystem.”",
+      "“I was initially skeptical about blockchain-based job platforms, but AuditDb exceeded my expectations. It's easy to use, and I found my dream job within weeks. I highly recommend it to anyone looking for quality work.”",
   },
   {
     id: 3,
-    name: "Artem Molodneckiy",
-    interests: "Criptography, Games",
+    name: "Maria Rodriguez",
+    interests: "Consulting, Accounting",
     description:
-      "“ As one of the first quadratic freelancers to go through the platform, my grant enabled me to leave my job and build open source tutorials and prototypes for the open internet. Super excited to see quadratic funding continue to help high leverage outliers find their place in our ecosystem.”",
+      "“As a freelancer, I found AuditDb to be the perfect platform to connect with clients. The user-friendly interface and added security of blockchain technology provide peace of mind. Highly recommended!”",
   },
   {
     id: 4,
-    name: "Artem Molodneckiy",
-    interests: "Criptography, Games",
+    name: "John Smith",
+    interests: "Crypto, Middle",
     description:
-      "“ As one of the first quadratic freelancers to go through the platform, my grant enabled me to leave my job and build open source tutorials and prototypes for the open internet. Super excited to see quadratic funding continue to help high leverage outliers find their place in our ecosystem.”",
+      "“AuditDb is an excellent platform for freelancers to showcase their skills and connect with clients. The consistent work I've found through this platform has been a game-changer. Highly recommend it to other freelancers.”",
   },
   {
     id: 5,
-    name: "Artem Molodneckiy",
-    interests: "Criptography, Games",
+    name: "Emily Wong",
+    interests: "Bigfour, Accounting",
     description:
-      "“ As one of the first quadratic freelancers to go through the platform, my grant enabled me to leave my job and build open source tutorials and prototypes for the open internet. Super excited to see quadratic funding continue to help high leverage outliers find their place in our ecosystem.”",
+      "“The job search process can be daunting, but AuditDb made it a breeze. Its blockchain-based platform ensures secure transactions, and I was able to find a great job in no time. I highly recommend it.”",
   },
   {
     id: 6,
-    name: "Artem Molodneckiy",
-    interests: "Criptography, Games",
+    name: "Alex Patel",
+    interests: "Audit, Crypto",
     description:
-      "“ As one of the first quadratic freelancers to go through the platform, my grant enabled me to leave my job and build open source tutorials and prototypes for the open internet. Super excited to see quadratic funding continue to help high leverage outliers find their place in our ecosystem.”",
+      "“I was impressed with the level of transparency AuditDb provides. As a client, I was able to see the progress of the project and ensure that my payments were secure. Highly recommend it for both clients and freelancers.”",
   },
   {
     id: 7,
-    name: "Artem Molodneckiy",
-    interests: "Criptography, Games",
+    name: "Rachel Kim",
+    interests: "Blockchain, Crypto",
     description:
-      "“ As one of the first quadratic freelancers to go through the platform, my grant enabled me to leave my job and build open source tutorials and prototypes for the open internet. Super excited to see quadratic funding continue to help high leverage outliers find their place in our ecosystem.”",
+      "“AuditDb has simplified the job search process for me. Its easy-to-use interface and secure transactions make it stand out from other job platforms. Highly recommended for anyone looking for quality work.”",
   },
   {
     id: 8,
-    name: "Artem Molodneckiy",
-    interests: "Criptography, Games",
+    name: "Tom Jackson",
+    interests: "Auditor, Bigfour",
     description:
-      "“ As one of the first quadratic freelancers to go through the platform, my grant enabled me to leave my job and build open source tutorials and prototypes for the open internet. Super excited to see quadratic funding continue to help high leverage outliers find their place in our ecosystem.”",
+      "“The freelance market can be competitive, but AuditDb makes it easier to connect with clients. Its blockchain technology ensures that both parties can trust the transaction. Highly recommend it for freelancers and clients alike.”",
+  },
+  {
+    id: 9,
+    name: "Samantha Chen",
+    interests: "Audit, Blockchain",
+    description:
+      "“AuditDb is a reliable platform for both clients and freelancers. Its blockchain-based technology provides added security, and I've found quality work through this platform. Highly recommended.”",
   },
 ];
 export default Carousel;
