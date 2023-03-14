@@ -7,6 +7,8 @@ import { Link } from "react-router-dom/dist";
 import Tiktok from "../icons/Tiktok.jsx";
 import Vk from "../icons/Vk.jsx";
 import Instagram from "../icons/Instagram.jsx";
+import Discord from "../icons/Discord.jsx";
+import Telegram from "../icons/Telegram.jsx";
 
 const Footer = () => {
 	const isMobile = useMediaQuery("(max-width: 768px)");
@@ -26,21 +28,11 @@ const Footer = () => {
 							<Link to={"https://twitter.com/auditdbio?t=oOdybhqGYlv129TyT8y-2g&s=09"}>
 								<TwitterIcon sx={iconStyle} />
 							</Link>
-							<Link to={"/"}>
-								<YouTubeIcon sx={{
-                                  color: "#52176D",
-                                  height: "30px",
-                                  width: "35px",
-                                }} />
+							<Link to={"https://discord.gg/2Wg6GGs93C"}>
+								<Discord style={iconStyle} />
 							</Link>
-							<Link to={"/"}>
-								<Instagram style={iconStyle} />
-							</Link>
-							{/*<Link to={"/"}>*/}
-							{/*	<Vk style={iconStyle} />*/}
-							{/*</Link>*/}
-							<Link to={"/"}>
-								<Tiktok style={iconStyle} />
+							<Link to={"https://t.me/+B6deDZFIg3k4Y2Zi"}>
+								<Telegram style={iconStyle} />
 							</Link>
 						</Box>
 					</Box>
