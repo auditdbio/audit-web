@@ -22,8 +22,11 @@ import AuditRequestPage from "../pages/Audit-Request-Page.jsx";
 import {getAllProjects, getProjects} from "../redux/actions/projectAction.js";
 import {getAudits, getAuditsRequest} from "../redux/actions/auditAction.js";
 import EditProject from "../pages/EditProject.jsx";
-import ForCustomer from "../pages/For-customer.jsx";
 import ForAuditor from "../pages/For-auditor.jsx";
+import ForCustomer from "../pages/For-customer.jsx";
+import AuditDb from "../pages/AuditDb.jsx";
+import Faq from "../pages/Faq.jsx";
+import ContactUs from "../pages/Contact-Us";
 
 
 const AppRoutes = () => {
@@ -51,8 +54,11 @@ const AppRoutes = () => {
                 <Route path={'/sign-up'} element={<SignupPage/>}/>
                 <Route path={'/sign-in'} element={<SigninPage/>}/>
                 <Route path={'/projects'} element={<ProjectPage/>}/>
-                <Route path={'/for-customers'} element={<ForCustomer/>}/>
                 <Route path={'/for-auditors'} element={<ForAuditor/>}/>
+                <Route path={'/for-customers'} element={<ForCustomer/>}/>
+                <Route path={'/audit-db'} element={<AuditDb/>}/>
+                <Route path={'/FAQ'} element={<Faq/>}/>
+                <Route path={'/contact-us'} element={<ContactUs/>}/>
                 <Route
                     path="/profile/:tab"
                     element={

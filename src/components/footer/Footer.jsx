@@ -1,12 +1,8 @@
 import { Box, Typography } from "@mui/material";
 import TwitterIcon from "@mui/icons-material/Twitter";
-import YouTubeIcon from "@mui/icons-material/YouTube";
 import MenuItem from "@mui/material/MenuItem";
 import { useMediaQuery } from "@mui/material";
 import { Link } from "react-router-dom/dist";
-import Tiktok from "../icons/Tiktok.jsx";
-import Vk from "../icons/Vk.jsx";
-import Instagram from "../icons/Instagram.jsx";
 import Discord from "../icons/Discord.jsx";
 import Telegram from "../icons/Telegram.jsx";
 
@@ -16,9 +12,7 @@ const Footer = () => {
 	return (
 		<Box sx={footerContainerStyles}>
 			<Box sx={mainFooterStyles(isMobile)}>
-				{/*logo, icons, menu*/}
 				<Box sx={footerStyle(isMobile)}>
-					{/*logo and icons*/}
 					<Box sx={logoIconsStyle(isMobile)}>
 						<Box sx={{ display: "flex" }}>
 							<Typography style={auditStyles(isMobile)}>Audit</Typography>
@@ -38,7 +32,6 @@ const Footer = () => {
 						</Box>
 					</Box>
 					<Box
-						// menu items
 						sx={menuItems(isMobile)}
 					>
 						{pages.map((page) => (
@@ -48,7 +41,6 @@ const Footer = () => {
 								disableRipple
 								key={page.id}
 							>
-
 								<Box sx={menuItem(isMobile)}>
 									<Link to={page.path}>{page.name}</Link>
 								</Box>
@@ -175,18 +167,20 @@ const pages = [
 	// 	id: 3,
 	// 	name: "Product",
 	// },
+	{
+		id: 3,
+		name: "AuditDB",
+		path: "/audit-db",
+	},
+	{
+		id: 5,
+		name: "Contact us",
+		path: "/contact-us",
+	},
 	// {
-	// 	id: 4,
+	// 	id: 6,
 	// 	name: "About Us",
 	// },
-	// {
-	// 	id: 5,
-	// 	name: "Product",
-	// },
-	{
-		id: 6,
-		name: "About Us",
-	},
 ];
 
 export default Footer;
