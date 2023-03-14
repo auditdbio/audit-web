@@ -48,7 +48,7 @@ const wrapper = (theme) => ({
         fontWeight: 600
     },
     '& ul':{
-        fontSize: '22px',
+      fontSize: '22px',
         paddingLeft: '30px'
     },
     '& p': {
