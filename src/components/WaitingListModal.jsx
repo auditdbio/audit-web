@@ -12,18 +12,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { getAuditors } from "../redux/actions/auditorAction.js";
 
 export default function WaitingListModal({ open, handleClose }) {
-  const dispatch = useDispatch();
-  const auditorReducer = useSelector((state) => state.auditor.auditors);
-
-
   const [inputValue, setInputValue] = useState("");
-
-  const [query] = useState("");
-  console.log("auditor reducer", auditorReducer);
-  useEffect(() => {
-    console.log("searching...");
-    dispatch(getAuditors(query));
-  }, [query]);
 
   const handleSendEmail = (event) => {
     event.preventDefault();
@@ -48,7 +37,8 @@ export default function WaitingListModal({ open, handleClose }) {
       <DialogContent sx={modalWindow}>
         <Box sx={{ maxWidth: "80%" }}>
           <Typography sx={modalTitle(theme)}>
-            Fill in the form with your e-mail, and we invite you to join our auditors community
+            Fill in the form with your e-mail, and we invite you to join our
+            auditors community
           </Typography>
         </Box>
         <Box sx={fieldButtonContainer}>
@@ -96,7 +86,6 @@ const fieldButtonContainer = {
   display: "flex",
   gap: "10px",
 };
-
 
 const searchField = {
   "& .MuiAutocomplete-input": {

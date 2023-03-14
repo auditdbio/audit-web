@@ -25,7 +25,6 @@ const AuditorSection = () => {
 
   const auditorReducer = useSelector((state) => state.auditor);
 
-
   useEffect(() => {
     if (searchInput) {
       dispatch(getAuditors(searchInput));
@@ -34,11 +33,10 @@ const AuditorSection = () => {
     }
   }, [searchInput]);
 
-  useEffect(() => {
-  }, [auditorReducer]);
+  useEffect(() => {}, [auditorReducer]);
 
   useEffect(() => {
-    if (auditorReducer.auditors && auditorReducer.auditors.length != 0) {
+    if (auditorReducer.auditors && auditorReducer.auditors.length !== 0) {
       setAuditorFound(true);
     } else {
       setAuditorFound(false);
@@ -71,7 +69,6 @@ const AuditorSection = () => {
                 padding: "0",
               },
             }}
-
             value={searchInput}
             onChange={(e) => {
               setSearchInput(e.target.value);
@@ -90,7 +87,10 @@ const AuditorSection = () => {
       <Box sx={{ height: "2rem" }}></Box>
       {!auditorFound && (
         <Box>
-          <Typography variant="h5" sx={{ fontWeight: 500, marginBottom: "20px" }}>
+          <Typography
+            variant="h5"
+            sx={{ fontWeight: 500, marginBottom: "20px" }}
+          >
             No auditors found
           </Typography>
         </Box>
