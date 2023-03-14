@@ -245,7 +245,7 @@ const Header = () => {
                       }}
                     >
                       <CustomBadge
-                        badgeContent={4}
+                        badgeContent={0}
                         color="secondary"
                         sx={{ color: "black" }}
                       >
@@ -300,7 +300,7 @@ const Header = () => {
                       }}
                     >
                       <CustomBadge
-                        badgeContent={4}
+                        badgeContent={0}
                         color="secondary"
                         sx={{ color: "black" }}
                       >
