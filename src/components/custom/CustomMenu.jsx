@@ -107,10 +107,10 @@ export default function CustomMenu({ buttonText, options }) {
 				onClose={handleClose}
 			>
 				{/* {children} */}
-				<MenuItem onClick={handleClose} disableRipple>
-					AuditDB
-				</MenuItem>
-				<Divider sx={{ my: 0, backgroundColor: "orange", mx: "15px" }} />
+				{/*<MenuItem onClick={handleClose} disableRipple>*/}
+				{/*	AuditDB*/}
+				{/*</MenuItem>*/}
+				{/*<Divider sx={{ my: 0, backgroundColor: "orange", mx: "15px" }} />*/}
 				{menuOptions.map((item) => (
 					<MenuItem onClick={() => {
 						handleClose()
