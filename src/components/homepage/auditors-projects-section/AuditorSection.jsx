@@ -120,7 +120,7 @@ const AuditorSection = () => {
           alignItems: "center",
         }}
       >
-        <Typography variant="body2">view more...</Typography>
+        {/*<Typography variant="body2">view more...</Typography>*/}
       </Box>
     </Box>
   );

@@ -13,7 +13,7 @@ export default function AuditorModal({ open, handleClose, auditor }) {
       <DialogContent sx={modalWindow}>
         <Box sx={contentWrapper}>
           <Box sx={{ display: "flex", justifyContent: "center" }}>
-            <Avatar src="" sx={avatarStyle} />
+            <Avatar src={auditor.avatar} sx={avatarStyle} />
           </Box>
           <Box sx={infoStyle}>
             <Box sx={infoInnerStyle}>
@@ -50,7 +50,12 @@ export default function AuditorModal({ open, handleClose, auditor }) {
             <Box sx={infoInnerStyle}></Box>
           </Box>
         </Box>
-        <Button sx={findButton}>Invite to project</Button>
+        <Box sx={fieldButtonContainer}>
+          <Button sx={backButton} onClick={handleClose}>
+            Back
+          </Button>
+          <Button sx={findButton}>Invite to project</Button>
+        </Box>
       </DialogContent>
     </Dialog>
   );
@@ -168,3 +173,31 @@ const infoWrapper = (theme) => ({
     fontSize: "12px",
   },
 });
+
+const backButton = {
+  backgroundColor: theme.palette.secondary.main,
+  color: theme.palette.background.default,
+  borderRadius: "4px",
+  width: {
+    zero: "100px",
+    sm: "100px",
+    md: "150px",
+    lg: "230px",
+  },
+  // padding: "12px 63px",
+  height: "45px",
+  textTransform: "none",
+  ":hover": {
+    backgroundColor: theme.palette.secondary.main,
+  },
+  [theme.breakpoints.down("sm")]: {
+    height: "30px",
+    fontSize: "10px",
+    // padding: "6px 31px",
+  },
+};
+
+const fieldButtonContainer = {
+  display: "flex",
+  gap: "10px",
+};

@@ -24,7 +24,7 @@ const AuditorCard = ({ auditor }) => {
         handleClose={handleCloseModal}
         auditor={auditor}
       />
-      <Avatar sx={avatarStyle} />
+      <Avatar src={auditor.avatar} sx={avatarStyle} />
       <Box sx={columnStyle}>
         <Typography sx={mainTextStyle}>
           {/*Mihael Sorokin*/}
@@ -52,7 +52,7 @@ const AuditorCard = ({ auditor }) => {
         <Box sx={badgesStyle}>
           <Box sx={infoStyle}>
             <Currency />
-            <Typography sx={badgeFontStyle}>3.1k</Typography>
+            <Typography sx={badgeFontStyle}>{`${auditor.tax}`}</Typography>
           </Box>
           <Box sx={infoStyle}>
             <Star />
