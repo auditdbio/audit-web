@@ -22,8 +22,8 @@ export default function ProjectModal({ open, handleClose, project }) {
           <Typography sx={modalDescription}>{project.description}</Typography>
         </Box>
         <Box sx={linksList}>
-          {project.scope.map((item) => (
-            <Box sx={linkGroup} key={item.scope}>
+          {project.scope.map((item, index) => (
+            <Box sx={linkGroup} key={index}>
               <GitHubIcon sx={iconStyle} />
               <a href={item} target="_blank">
                 <Typography sx={linkStyle}>{item}</Typography>
@@ -78,7 +78,6 @@ const titlesBox = {
 };
 
 const modalHeader = {
-
   fontSize: {
     zero: "25px",
     sm: "30px",

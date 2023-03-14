@@ -26,8 +26,12 @@ const PublicProjectCard = ({ project }) => {
       />
 
       <Typography sx={auditNameStyle}>{project.name}</Typography>
-      <Typography sx={nameTextStyle}>Mishail Soronikov</Typography>
-      <Typography sx={priceTextStyle}>20 $ per stroke</Typography>
+      <Typography sx={nameTextStyle}>{project.creator_contacts.email}</Typography>
+      <Typography sx={modalSubheader}>
+        {project.tags
+          .map((item) => item.charAt(0).toUpperCase() + item.slice(1))
+          .join(", ")}
+      </Typography>
       {/*<Box sx={dateWrapper}>*/}
       {/*  <Typography sx={dateStyle}>10.01.2023</Typography>*/}
       {/*  <Typography>-</Typography>*/}
@@ -166,5 +170,15 @@ const dateStyle = {
     fontSize: "10px",
     padding: "0.3rem",
   },
+};
+const modalSubheader = {
+  textAlign: "center",
+  fontSize: {
+    zero: "16px",
+    sm: "20px",
+    md: "22px",
+    lg: "25px",
+  },
+  fontWeight: "400",
 };
 export default PublicProjectCard;

@@ -28,7 +28,7 @@ const ProjectSection = () => {
         if (searchInput) {
             dispatch(getAllProjects(searchInput));
         } else {
-            dispatch(getAllProjects("java"));
+            dispatch(getAllProjects(""));
         }
     }, [searchInput]);
 
@@ -36,7 +36,7 @@ const ProjectSection = () => {
   }, [projectReducer]);
 
   useEffect(() => {
-    if (projectReducer && projectReducer.length != 0) {
+    if (projectReducer && projectReducer.length !== 0) {
       setProjectFound(true);
     } else {
       setProjectFound(false);
