@@ -1,8 +1,12 @@
 import { Box, Typography } from "@mui/material";
 import TwitterIcon from "@mui/icons-material/Twitter";
+import YouTubeIcon from "@mui/icons-material/YouTube";
 import MenuItem from "@mui/material/MenuItem";
 import { useMediaQuery } from "@mui/material";
 import { Link } from "react-router-dom/dist";
+import Tiktok from "../icons/Tiktok.jsx";
+import Vk from "../icons/Vk.jsx";
+import Instagram from "../icons/Instagram.jsx";
 import Discord from "../icons/Discord.jsx";
 import Telegram from "../icons/Telegram.jsx";
 
@@ -12,7 +16,9 @@ const Footer = () => {
 	return (
 		<Box sx={footerContainerStyles}>
 			<Box sx={mainFooterStyles(isMobile)}>
+				{/*logo, icons, menu*/}
 				<Box sx={footerStyle(isMobile)}>
+					{/*logo and icons*/}
 					<Box sx={logoIconsStyle(isMobile)}>
 						<Box sx={{ display: "flex" }}>
 							<Typography style={auditStyles(isMobile)}>Audit</Typography>
@@ -32,6 +38,7 @@ const Footer = () => {
 						</Box>
 					</Box>
 					<Box
+						// menu items
 						sx={menuItems(isMobile)}
 					>
 						{pages.map((page) => (
