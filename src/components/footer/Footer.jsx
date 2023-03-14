@@ -55,6 +55,7 @@ const Footer = () => {
 								disableRipple
 								key={page.id}
 							>
+
 								<Box sx={menuItem(isMobile)}>
 									<Link to={page.path}>{page.name}</Link>
 								</Box>
@@ -181,18 +182,18 @@ const pages = [
 	// 	id: 3,
 	// 	name: "Product",
 	// },
-	{
-		id: 4,
-		name: "About Us",
-	},
+	// {
+	// 	id: 4,
+	// 	name: "About Us",
+	// },
 	// {
 	// 	id: 5,
 	// 	name: "Product",
 	// },
-	// {
-	// 	id: 6,
-	// 	name: "About Us",
-	// },
+	{
+		id: 6,
+		name: "About Us",
+	},
 ];
 
 export default Footer;
