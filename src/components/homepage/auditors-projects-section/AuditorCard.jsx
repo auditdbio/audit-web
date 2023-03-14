@@ -3,10 +3,27 @@ import theme from "../../../styles/themes";
 import { CustomButton } from "../../custom/Button";
 import Currency from "../../icons/Currency";
 import Star from "../../icons/Star";
+import { useState } from "react";
+import AuditorModal from "../../AuditorModal.jsx";
 
 const AuditorCard = ({ auditor }) => {
+  const [openModal, setOpenModal] = useState(false);
+
+  const handleView = () => {
+    setOpenModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setOpenModal(false);
+  };
+
   return (
     <Card sx={cardStyle}>
+      <AuditorModal
+        open={openModal}
+        handleClose={handleCloseModal}
+        auditor={auditor}
+      />
       <Avatar sx={avatarStyle} />
       <Box sx={columnStyle}>
         <Typography sx={mainTextStyle}>
@@ -42,7 +59,9 @@ const AuditorCard = ({ auditor }) => {
             <Typography sx={badgeFontStyle}>150</Typography>
           </Box>
         </Box>
-        <CustomButton sx={buttonStyle}>More info</CustomButton>
+        <CustomButton sx={buttonStyle} onClick={handleView}>
+          More info
+        </CustomButton>
       </Box>
     </Card>
   );
