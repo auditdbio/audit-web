@@ -6,10 +6,28 @@ import theme from "../styles/themes.js";
 import { Box } from "@mui/system";
 import { Avatar, Typography } from "@mui/material";
 import TagsList from "./tagsList.jsx";
+import WaitingListModal from "./WaitingListModal.jsx";
+import { useState } from "react";
 
 export default function AuditorModal({ open, handleClose, auditor }) {
+  const [openModal, setOpenModal] = useState(false);
+
+  const handleModal = () => {
+    setOpenModal(true);
+
+  };
+
+  const handleCloseModal = () => {
+    setOpenModal(false);
+  };
+
   return (
     <Dialog open={open} onClose={handleClose}>
+      <WaitingListModal
+        open={openModal}
+        handleClose={handleCloseModal}
+        // handleSubmit={handleSubmit}
+      />
       <DialogContent sx={modalWindow}>
         <Box sx={contentWrapper}>
           <Box sx={{ display: "flex", justifyContent: "center" }}>
@@ -50,7 +68,9 @@ export default function AuditorModal({ open, handleClose, auditor }) {
             <Box sx={infoInnerStyle}></Box>
           </Box>
         </Box>
-        <Button sx={findButton}>Invite to project</Button>
+        <Button sx={findButton} onClick={handleModal}>
+          Invite to project
+        </Button>
       </DialogContent>
     </Dialog>
   );
