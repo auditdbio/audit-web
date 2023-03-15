@@ -16,20 +16,20 @@ const ProjectListCard = ({project}) => {
 
     return (
         <Box sx={wrapper}>
-            <Box sx={{display: 'flex', flexDirection: 'column'}}>
+            <Box sx={contentWrapper}>
                 <Typography sx={{marginBottom: '33px'}}>
                     {project.name}
                 </Typography>
                 <TagsList data={project.tags}/>
             </Box>
-            <Box sx={{display: 'flex', alignItems: 'center', flexDirection: 'column'}}>
+            <Box sx={{display: 'flex', alignItems: 'center', flexDirection: 'column', height: '100%'}}>
                 <Typography>
                     {project.publish_options.prise_to} $
                 </Typography>
                 <Button
                     color={'secondary'}
                     size={'small'}
-                    sx={{width: '170px', textTransform: 'unset', marginTop: '33px'}}
+                    sx={viewButton}
                     variant={'contained'}
                     onClick={handleOpen}
                 >
@@ -52,16 +52,41 @@ const ProjectListCard = ({project}) => {
 
 export default ProjectListCard;
 
-const tags = [
-    'java', 'pithon', 'js'
-]
+const contentWrapper = (theme) => ({
+    display: 'flex',
+    flexDirection: 'column',
+    '& .tagsWrapper': {
+
+    }
+})
+
+const viewButton = (theme) => ({
+    width: '170px',
+    textTransform: 'unset',
+    marginTop: '33px',
+    [theme.breakpoints.down('md')]: {
+        width: '130px'
+    },
+    [theme.breakpoints.down('xs')]: {
+        width: '100px',
+        fontSize: '9px'
+    }
+})
+
 
 const wrapper = (theme) => ({
     padding: '22px 33px 22px 45px',
     border: '1px solid #B2B3B3',
     display: 'flex',
-    alignItems: 'center',
     justifyContent: 'space-between',
+    height: '100%',
+    gap: '20px',
+    [theme.breakpoints.down('sm')]: {
+        paddingX: '20px',
+        '& .MuiChip-root': {
+            fontSize: '10px'
+        }
+    }
 })
 
 const modalWrapper = (theme) => ({
