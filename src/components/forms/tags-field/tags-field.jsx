@@ -6,7 +6,7 @@ import AddIcon from '@mui/icons-material/Add';
 import {useSelector} from "react-redux";
 import {AUDITOR} from "../../../redux/actions/types.js";
 
-const TagsField = ({name, label}) => {
+const TagsField = ({name, label, placeholder}) => {
     const role = useSelector(s => s.user.user.current_role)
     const [field, meta, fieldHelper] = useField(name)
     const [state, setState] = useState('')
@@ -21,7 +21,7 @@ const TagsField = ({name, label}) => {
             <Typography variant={'body2'} sx={formLabelSx}>{label}</Typography>
         <Field
             component={TextField}
-            placeholder={'● ● ● ● ● ● ●'}
+            placeholder={placeholder ? placeholder : '● ● ● ● ● ● ●'}
             fullWidth={true}
             name={'tag-field'}
             disabled={false}

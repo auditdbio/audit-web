@@ -31,11 +31,18 @@ const AuditRequestInfo = ({project, onClose}) => {
         setOpen(false);
     };
 
+    const handleBack = () => {
+        if (onClose){
+            onClose()
+        } else {
+            navigate(-1)
+        }
+    }
     return (
         <CustomCard sx={wrapper} className={'audit-request-wrapper'}>
             <Box sx={{display: 'flex', width: '100%', position: 'relative'}}>
                 <Button sx={backButtonSx} className={'audit-request-back-btn'}
-                        onClick={() => navigate(-1)}>
+                        onClick={handleBack}>
                     <ArrowBackIcon color={'secondary'}/>
                 </Button>
                 <Typography variant={'h3'} sx={{width: '100%', textAlign: 'center'}}>

@@ -20,7 +20,7 @@ const TagsArray = ({ name }) => {
       <FieldArray
         name={name}
         render={(arrayHelper) =>
-          field.value.map((tag, idx) => {
+          field?.value?.map((tag, idx) => {
             return (
               <Chip
                 key={idx}

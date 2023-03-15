@@ -15,7 +15,7 @@ const ProjectPage = () => {
     return (
         <Layout>
             <Box sx={wrapper}>
-                <Box sx={{display: 'flex', justifyContent: 'space-between'}}>
+                <Box sx={projectTopWrapper}>
                     <Button onClick={() => navigate(-1)}>
                         <ArrowBackIcon color={'secondary'}/>
                     </Button>
@@ -23,9 +23,9 @@ const ProjectPage = () => {
                         <Filter/>
                     </Box>
                 </Box>
-                <Box sx={{display: 'flex', flexWrap: 'wrap', paddingY: '70px', height: '100%', overflow: 'scroll'}}>
+                <Box sx={contentWrapper}>
                     {projects?.map(project =>
-                            <Box sx={{width: '50%'}} key={project.id}>
+                            <Box sx={projectListWrapper} key={project.id}>
                                 <ProjectListCard project={project}/>
                             </Box>
                         )
@@ -38,9 +38,42 @@ const ProjectPage = () => {
 
 export default ProjectPage;
 
+const contentWrapper = (theme) => ({
+    display: 'flex',
+    flexWrap: 'wrap',
+    paddingRight: '20px',
+    height: '90%',
+    overflow: 'scroll',
+    [theme.breakpoints.down('sm')]: {
+        flexDirection: 'column',
+        flexWrap: 'unset'
+    }
+})
+
+const projectTopWrapper = (theme) => ({
+    display: 'flex',
+    justifyContent: 'space-between',
+    mb: '60px',
+    paddingRight: '20px',
+    alignItems: 'center',
+    [theme.breakpoints.down('xs')]: {
+        '& button': {
+            marginLeft: 0,
+            minWidth: '40px'
+        }
+    }
+})
+
+const projectListWrapper = (theme) => ({
+    width: '50%',
+    [theme.breakpoints.down('sm')]: {
+        width: '100%'
+    }
+})
+
 const wrapper = (theme) => ({
     width: '100%',
-    padding: '43px 20px 44px 32px',
+    padding: '43px 0 44px 32px',
     backgroundColor: '#FCFAF6',
     border: '1.42857px solid #D9D9D9',
     boxShadow: '0px 71.4286px 57.1429px rgba(0, 0, 0, 0.07),' +
@@ -50,5 +83,9 @@ const wrapper = (theme) => ({
         '0px 4.75007px 3.80006px rgba(0, 0, 0, 0.0282725), ' +
         '0px 1.97661px 1.58129px rgba(0, 0, 0, 0.0196802)',
     borderRadius: '10.7143px',
-    height: '1300px'
+    height: '1300px',
+    [theme.breakpoints.down('sm')]: {
+        paddingLeft: '20px',
+        paddingTop: '22px'
+    }
 })
