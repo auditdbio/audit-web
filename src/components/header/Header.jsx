@@ -393,6 +393,11 @@ const pages = [
         itemName: "Our projects",
         link: '/projects'
       },
+      {
+        id: 5,
+        itemName: "Our auditors",
+        link: '/auditors'
+      },
     ],
   },
   // {
