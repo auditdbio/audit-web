@@ -74,8 +74,8 @@ const cardWrapper = {
     "0px 8.03104px 9.5893px rgba(0, 0, 0, 0.035), " +
     "0px 4.26523px 5.09281px rgba(0, 0, 0, 0.0282725), " +
     "0px 1.77486px 2.11923px rgba(0, 0, 0, 0.0196802)",
-  [theme.breakpoints.down("sm")]: {
-    // maxWidth: "200px",
+  [theme.breakpoints.down("xs")]: {
+    gap: '15px'
   },
 };
 
@@ -132,6 +132,9 @@ const nameTextStyle = {
   [theme.breakpoints.down("sm")]: {
     fontSize: "14px",
   },
+  [theme.breakpoints.down("xs")]: {
+    fontSize: "10px",
+  },
 };
 
 const priceTextStyle = {
@@ -174,8 +177,8 @@ const dateStyle = {
 const modalSubheader = {
   textAlign: "center",
   fontSize: {
-    zero: "16px",
-    sm: "20px",
+    zero: "10px",
+    sm: "16px",
     md: "22px",
     lg: "25px",
   },
