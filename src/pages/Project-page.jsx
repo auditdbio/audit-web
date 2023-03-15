@@ -20,7 +20,7 @@ const ProjectPage = () => {
                         <ArrowBackIcon color={'secondary'}/>
                     </Button>
                     <Box>
-                        <Filter/>
+                        <Filter target={'project'}/>
                     </Box>
                 </Box>
                 <Box sx={contentWrapper}>
