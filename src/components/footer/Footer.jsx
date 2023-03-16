@@ -174,18 +174,20 @@ const pages = [
 	// 	id: 3,
 	// 	name: "Product",
 	// },
+	{
+		id: 3,
+		name: "AuditDB",
+		path: "/audit-db",
+	},
+	{
+		id: 5,
+		name: "Contact us",
+		path: "/contact-us",
+	},
 	// {
-	// 	id: 4,
+	// 	id: 6,
 	// 	name: "About Us",
 	// },
-	// {
-	// 	id: 5,
-	// 	name: "Product",
-	// },
-	{
-		id: 6,
-		name: "About Us",
-	},
 ];
 
 export default Footer;

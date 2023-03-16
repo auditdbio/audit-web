@@ -114,7 +114,11 @@ export default function CustomMenu({ buttonText, options }) {
 				{menuOptions.map((item) => (
 					<MenuItem onClick={() => {
 						handleClose()
-						navigate(item.link)
+						if (item.link.includes('http')) {
+							window.open(item.link, '_blank');
+						} else {
+							navigate(item.link)
+						}
 					}} key={item.id} disableRipple>
 						{item.itemName}
 					</MenuItem>

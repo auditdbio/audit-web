@@ -358,19 +358,24 @@ const pages = [
     name: "Product",
     menuOptions: [
       {
+        id: 1,
+        itemName: "AuditDB",
+        link: "/audit-db",
+      },
+      {
         id: 2,
         itemName: "For customers",
-        link: '/for-customers'
+        link: "/for-customers",
       },
       {
         id: 3,
         itemName: "For auditors",
-        link: '/for-auditors'
+        link: "/for-auditors",
       },
       // {
       //   id: 4,
       //   itemName: "Our projects",
-      //   link: '/projects'
+      //   link: "/projects",
       // },
     ],
   },
@@ -379,19 +384,19 @@ const pages = [
     name: "About Us",
     menuOptions: [
       {
-        id: 2,
-        itemName: "Contact",
-        link: '/'
-      },
-      {
         id: 3,
-        itemName: "Our team",
-        link: '/'
+        itemName: "Contact us",
+        link: "/contact-us",
       },
       {
         id: 4,
-        itemName: "Our projects",
-        link: '/projects'
+        itemName: "FAQ",
+        link: "/FAQ",
+      },
+      {
+        id: 5,
+        itemName: "Screencast",
+        link: "https://youtu.be/J7L4yAhS6Rw",
       },
       {
         id: 5,
@@ -407,17 +412,17 @@ const pages = [
   //     {
   //       id: 2,
   //       itemName: "Contact",
-  //       link: '/'
+  //       link: "/",
   //     },
   //     {
   //       id: 3,
   //       itemName: "Our team",
-  //       link: '/'
+  //       link: "/",
   //     },
   //     {
   //       id: 4,
   //       itemName: "Our projects",
-  //       link: '/projects'
+  //       link: "/projects",
   //     },
   //   ],
   // },

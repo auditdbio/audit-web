@@ -6,8 +6,10 @@ import {FieldArray, useField} from "formik";
 const TagsList = ({data}) => {
 
     return (
-        <Box sx={{display: 'flex', gap: '15px', flexWrap: 'wrap', maxWidth: '300px'}}>
-
+        <Box
+            className={'tagsWrapper'}
+            sx={{display: 'flex', gap: '15px', flexWrap: 'wrap', maxWidth: '300px'}}
+        >
             {
                 data?.map((tag, idx) =>
                     <Chip
