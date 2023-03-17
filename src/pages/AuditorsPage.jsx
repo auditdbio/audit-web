@@ -17,6 +17,13 @@ const AuditorsPage = () => {
   const auditorReducer = useSelector((state) => state.auditor);
 
   // const projects = useSelector(s => s.project.projects)
+  useEffect(() => {``
+    // if (searchInput) {
+    //   dispatch(getAuditors(searchInput));
+    // } else {
+    dispatch(getAuditors(""));
+    // }
+  }, []);
 
   return (
     <Layout>
@@ -26,7 +33,7 @@ const AuditorsPage = () => {
             <ArrowBackIcon color={"secondary"} />
           </Button>
           <Box>
-            <Filter />
+            <Filter target={'auditor'} />
           </Box>
         </Box>
         <Box
@@ -34,19 +41,15 @@ const AuditorsPage = () => {
             display: "flex",
             flexWrap: "wrap",
             paddingY: "70px",
-            height: "100%",
+            height: "98%",
             overflow: "scroll",
           }}
         >
-          {/*{auditorReducer.auditors?.map((auditor) => (*/}
-          {/*  <Box sx={{ width: "50%" }} key={auditor.user_id}>*/}
-          {/*    <AuditorListCard auditor={auditor} />*/}
-          {/*  </Box>*/}
-          {/*))}*/}
-
-          <Box sx={{ width: "50%" }}>
-            <AuditorListCard />
-          </Box>
+          {auditorReducer.auditors?.map((auditor) => (
+            <Box sx={auditorContainerStyle} key={auditor.user_id}>
+              <AuditorListCard auditor={auditor} />
+            </Box>
+          ))}
         </Box>
       </Box>
     </Layout>
@@ -57,7 +60,7 @@ export default AuditorsPage;
 
 const wrapper = (theme) => ({
   width: "100%",
-  padding: "43px 20px 44px 32px",
+  padding: "43px 20px 44px 20px",
   backgroundColor: "#FCFAF6",
   border: "1.42857px solid #D9D9D9",
   boxShadow:
@@ -70,3 +73,12 @@ const wrapper = (theme) => ({
   borderRadius: "10.7143px",
   height: "1300px",
 });
+
+const auditorContainerStyle = {
+  width: {
+    zero: "100%",
+    sm: "50%",
+    md: "50%",
+    lg: "50%",
+  },
+};
