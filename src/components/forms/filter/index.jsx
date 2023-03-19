@@ -24,11 +24,12 @@ import dayjs from "dayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import theme from "../../../styles/themes.js";
 import { SliderRange } from "../salary-slider/slider-range.jsx";
+import {PROJECTS} from "../../../redux/actions/types.js";
 
 const Filter = ({ target }) => {
   const [isOpen, setIsOpen] = useState(false);
 
-  const mainColor = target === "auditor" ? "secondary" : "primary";
+  const mainColor = target === PROJECTS ? "secondary" : "primary";
 
   const handleClose = () => {
     setIsOpen(false);
@@ -56,7 +57,7 @@ const Filter = ({ target }) => {
       {({ handleSubmit, values, setFieldValue, handleChange }) => {
         console.log(values);
         return (
-          <Form>
+          <Form onSubmit={handleSubmit}>
             <Box>
               <Box sx={headerWrapper}>
                 <Field
@@ -106,7 +107,7 @@ const Filter = ({ target }) => {
                     label={"Price per line of code"}
                     component={SliderRange}
                     sx={{
-                      color: target === "auditor" ? "#52176D" : "#FF9900",
+                      color: target === PROJECTS ? "#52176D" : "#FF9900",
                     }}
                     min={0}
                     max={200}
@@ -225,6 +226,7 @@ const Filter = ({ target }) => {
                   </Box>
                   <Button
                     color={mainColor}
+                    type={'submit'}
                     variant={"contained"}
                     sx={submitButton}
                   >

@@ -38,15 +38,14 @@ const AppRoutes = () => {
         if (isAuth()) {
             dispatch(getAuditor())
             dispatch(getCustomer())
-
+            dispatch(getProjects())
             if (currentRole){
                 dispatch(getAuditsRequest(currentRole))
                 dispatch(getAudits(currentRole))
-                dispatch(getProjects())
             }
         }
         // dispatch(getProjects())
-    }, [dispatch, token, currentRole])
+    }, [token, currentRole, isAuth])
 
     return (
         <>

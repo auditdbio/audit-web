@@ -29,3 +29,4 @@ export const DONE = "done";
 export const INPROGRESS = "inprogres";
 export const SUBMIT_AUDIT = "SUBMIT_AUDIT";
 export const SUBMITED = 'SUBMITED'
+export const PROJECTS = 'projects'
