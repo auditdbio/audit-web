@@ -39,10 +39,14 @@ export default function AuditorModal({ open, handleClose, auditor }) {
   const handleInvite = () => {
     if (!isAuth()) {
       navigate("/sign-up");
-      return
+      return;
     }
     setMode("invite");
   };
+
+  useEffect(() => {
+    if (open) setMode("info");
+  }, [open]);
 
   // useEffect(() => {
   //   // console.log("searching...");

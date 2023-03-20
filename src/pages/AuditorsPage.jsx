@@ -15,10 +15,6 @@ const AuditorsPage = () => {
 
   const auditorReducer = useSelector((state) => state.auditor);
 
-  // useEffect(() => {
-  //   dispatch(getAuditors(""));
-  // }, []);
-
   return (
     <Layout>
       <Box sx={wrapper}>
@@ -47,19 +43,23 @@ const AuditorsPage = () => {
                 <AuditorListCard auditor={auditor} />
               </Box>
             ))}
+            {auditorReducer.auditors?.length % 2 === 1 && (
+              <Box sx={fakeContainerStyle}>
+              </Box>
+            )}
           </Box>
         )}
         {auditorReducer.auditors?.length === 0 && (
-            <Box
-                sx={{
-                  paddingTop: '70px',
-                  display: "flex",
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}
-            >
-              No results
-            </Box>
+          <Box
+            sx={{
+              paddingTop: "70px",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            No results
+          </Box>
         )}
       </Box>
     </Layout>
@@ -81,7 +81,6 @@ const wrapper = (theme) => ({
     "0px 4.75007px 3.80006px rgba(0, 0, 0, 0.0282725), " +
     "0px 1.97661px 1.58129px rgba(0, 0, 0, 0.0196802)",
   borderRadius: "10.7143px",
-  // height: "1300px",
   minHeight: "1000px",
 });
 
@@ -92,4 +91,14 @@ const auditorContainerStyle = {
     md: "50%",
     lg: "50%",
   },
+};
+
+const fakeContainerStyle = {
+  width: {
+    zero: "100%",
+    sm: "50%",
+    md: "50%",
+    lg: "50%",
+  },
+  border: "0.5px solid #B2B3B3",
 };
