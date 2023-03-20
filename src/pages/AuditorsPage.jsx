@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Layout from "../styles/Layout.jsx";
-import { Box, Button } from "@mui/material";
+import { Box, Button, useMediaQuery } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack.js";
 import Filter from "../components/forms/filter/index.jsx";
 import ProjectListCard from "../components/Project-list-card.jsx";
@@ -8,10 +8,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom/dist";
 import AuditorListCard from "../components/AuditorListCard.jsx";
 import { getAuditors } from "../redux/actions/auditorAction.js";
+import theme from "../styles/themes.js";
 
 const AuditorsPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const matchSm = useMediaQuery(theme.breakpoints.down("sm"));
 
   const auditorReducer = useSelector((state) => state.auditor);
 
@@ -43,9 +45,8 @@ const AuditorsPage = () => {
                 <AuditorListCard auditor={auditor} />
               </Box>
             ))}
-            {auditorReducer.auditors?.length % 2 === 1 && (
-              <Box sx={fakeContainerStyle}>
-              </Box>
+            {!matchSm && auditorReducer.auditors?.length % 2 === 1 && (
+              <Box sx={fakeContainerStyle}></Box>
             )}
           </Box>
         )}
