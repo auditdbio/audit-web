@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import Layout from "../styles/Layout.jsx";
 import { Box, Button } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack.js";
@@ -15,11 +15,9 @@ const AuditorsPage = () => {
 
   const auditorReducer = useSelector((state) => state.auditor);
 
-
-
-  useEffect(() => {
-    dispatch(getAuditors(""));
-  }, []);
+  // useEffect(() => {
+  //   dispatch(getAuditors(""));
+  // }, []);
 
   return (
     <Layout>
@@ -29,24 +27,40 @@ const AuditorsPage = () => {
             <ArrowBackIcon color={"secondary"} />
           </Button>
           <Box>
-            <Filter target={'auditor'} />
+            <Filter target={"auditor"} />
           </Box>
         </Box>
-        <Box
-          sx={{
-            display: "flex",
-            flexWrap: "wrap",
-            paddingY: "70px",
-            height: "98%",
-            overflow: "scroll",
-          }}
-        >
-          {auditorReducer.auditors?.map((auditor) => (
-            <Box sx={auditorContainerStyle} key={auditor.user_id}>
-              <AuditorListCard auditor={auditor} />
+        {auditorReducer.auditors?.length > 0 && (
+          <Box
+            sx={{
+              display: "flex",
+              flexWrap: "wrap",
+              marginTop: "70px",
+              // paddingTop: '70px',
+              // height: "98%",
+              // overflow: "scroll",
+              border: "0.5px solid #B2B3B3",
+            }}
+          >
+            {auditorReducer.auditors?.map((auditor) => (
+              <Box sx={auditorContainerStyle} key={auditor.user_id}>
+                <AuditorListCard auditor={auditor} />
+              </Box>
+            ))}
+          </Box>
+        )}
+        {auditorReducer.auditors?.length === 0 && (
+            <Box
+                sx={{
+                  paddingTop: '70px',
+                  display: "flex",
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}
+            >
+              No results
             </Box>
-          ))}
-        </Box>
+        )}
       </Box>
     </Layout>
   );
@@ -67,7 +81,8 @@ const wrapper = (theme) => ({
     "0px 4.75007px 3.80006px rgba(0, 0, 0, 0.0282725), " +
     "0px 1.97661px 1.58129px rgba(0, 0, 0, 0.0196802)",
   borderRadius: "10.7143px",
-  height: "1300px",
+  // height: "1300px",
+  minHeight: "1000px",
 });
 
 const auditorContainerStyle = {

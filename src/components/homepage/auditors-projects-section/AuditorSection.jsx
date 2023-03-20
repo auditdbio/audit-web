@@ -14,9 +14,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { getAuditors } from "../../../redux/actions/auditorAction.js";
 import { auditorReducer } from "../../../redux/reducers/auditorReducer.js";
 import { getAllProjects } from "../../../redux/actions/projectAction.js";
+import { useNavigate } from "react-router-dom/dist";
 
 const AuditorSection = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const matchSm = useMediaQuery(theme.breakpoints.down("xs"));
 
   const [searchInput, setSearchInput] = useState("");
@@ -24,7 +26,6 @@ const AuditorSection = () => {
   const [auditorFound, setAuditorFound] = useState(true);
 
   const auditorReducer = useSelector((state) => state.auditor);
-
 
   useEffect(() => {
     if (searchInput) {
@@ -34,8 +35,7 @@ const AuditorSection = () => {
     }
   }, [searchInput]);
 
-  useEffect(() => {
-  }, [auditorReducer]);
+  useEffect(() => {}, [auditorReducer]);
 
   useEffect(() => {
     if (auditorReducer.auditors && auditorReducer.auditors.length != 0) {
@@ -71,7 +71,6 @@ const AuditorSection = () => {
                 padding: "0",
               },
             }}
-
             value={searchInput}
             onChange={(e) => {
               setSearchInput(e.target.value);
@@ -82,6 +81,9 @@ const AuditorSection = () => {
             sx={{ p: "10px", color: "white" }}
             aria-label="search"
             disableRipple
+            onClick={() => {
+              navigate(`/auditors?search=${searchInput}`);
+            }}
           >
             <SearchIcon />
           </IconButton>
@@ -90,7 +92,10 @@ const AuditorSection = () => {
       <Box sx={{ height: "2rem" }}></Box>
       {!auditorFound && (
         <Box>
-          <Typography variant="h5" sx={{ fontWeight: 500, marginBottom: "20px" }}>
+          <Typography
+            variant="h5"
+            sx={{ fontWeight: 500, marginBottom: "20px" }}
+          >
             No auditors found
           </Typography>
         </Box>

@@ -5,10 +5,13 @@ import TagsList from "./tagsList.jsx";
 import CircleIcon from "@mui/icons-material/Circle";
 import theme from "../styles/themes.js";
 import AuditorModal from "./AuditorModal.jsx";
+import { isAuth } from "../lib/helper.js";
+import { useNavigate } from "react-router-dom";
 
 const AuditorListCard = ({ auditor }) => {
-  const [isOpenView, setIsOpenView] = useState(false);
+  const navigate = useNavigate();
 
+  const [isOpenView, setIsOpenView] = useState(false);
   const [isOpenInvite, setIsOpenInvite] = useState(false);
 
   const handleOpenView = () => {
@@ -19,6 +22,10 @@ const AuditorListCard = ({ auditor }) => {
   };
 
   const handleOpenInvite = () => {
+    if (!isAuth()) {
+      navigate("/sign-up");
+      return;
+    }
     setIsOpenInvite(true);
   };
   const handleCloseInvite = () => {
@@ -76,7 +83,6 @@ const AuditorListCard = ({ auditor }) => {
         handleClose={handleCloseView}
         auditor={auditor}
       />
-
     </Box>
   );
 };
@@ -85,7 +91,7 @@ export default AuditorListCard;
 
 const wrapper = (theme) => ({
   padding: "32px 38px 32px 38px",
-  border: "1px solid #B2B3B3",
+  border: "0.5px solid #B2B3B3",
   display: "flex",
   gap: "10px",
   justifyContent: "space-between",

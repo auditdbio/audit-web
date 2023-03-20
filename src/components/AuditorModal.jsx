@@ -6,20 +6,20 @@ import theme from "../styles/themes.js";
 import { Box } from "@mui/system";
 import { Avatar, Slider, Typography } from "@mui/material";
 import TagsList from "./tagsList.jsx";
-import {useEffect, useState} from "react";
+import { useEffect, useState } from "react";
 import IconButton from "@mui/material/IconButton";
 import { ArrowBack } from "@mui/icons-material";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import dayjs from "dayjs";
-import {getAuditors} from "../redux/actions/auditorAction.js";
-import {createRequest} from "../redux/actions/auditAction.js";
-import {useNavigate} from "react-router-dom";
-import {useDispatch, useSelector} from "react-redux";
+import { getAuditors } from "../redux/actions/auditorAction.js";
+import { createRequest } from "../redux/actions/auditAction.js";
+import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { isAuth } from "../lib/helper.js";
 
 export default function AuditorModal({ open, handleClose, auditor }) {
-
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const API_URL = import.meta.env.VITE_API_BASE_URL;
@@ -37,6 +37,10 @@ export default function AuditorModal({ open, handleClose, auditor }) {
   const [query, setQuery] = useState("");
 
   const handleInvite = () => {
+    if (!isAuth()) {
+      navigate("/sign-up");
+      return
+    }
     setMode("invite");
   };
 
@@ -119,7 +123,6 @@ export default function AuditorModal({ open, handleClose, auditor }) {
   const [errorStart, setErrorStart] = React.useState(null);
   const [errorEnd, setErrorEnd] = React.useState(null);
 
-
   return (
     <Dialog open={open} onClose={handleClose}>
       {mode === "info" && (
@@ -188,7 +191,7 @@ export default function AuditorModal({ open, handleClose, auditor }) {
             <Box>
               <IconButton
                 onClick={() => {
-                  setMode("search");
+                  setMode("info");
                 }}
               >
                 <ArrowBack style={{ color: "orange" }} />
