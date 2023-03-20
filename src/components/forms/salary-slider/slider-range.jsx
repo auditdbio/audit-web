@@ -8,7 +8,7 @@ export const SliderRange = ({ min, max, value, onChange, label, sx }) => (
     </Typography>
     <Box sx={sliderWrapper} className={"salary-slider"}>
       <Slider
-        range
+        range={"true"}
         min={min}
         max={max}
         value={value}
@@ -17,12 +17,12 @@ export const SliderRange = ({ min, max, value, onChange, label, sx }) => (
           ...sliderSx,
           ...sx,
         }}
-        trackStyle={{ backgroundColor: "#007aff" }}
-        handleStyle={{
-          borderColor: "#007aff",
-          backgroundColor: "#007aff",
-        }}
-        railStyle={{ backgroundColor: "#b7b7b7" }}
+        // trackStyle={{ backgroundColor: "#007aff" }}
+        // handleStyle={{
+        //   borderColor: "#007aff",
+        //   backgroundColor: "#007aff",
+        // }}
+        // railStyle={{ backgroundColor: "#b7b7b7" }}
       />
       <Box sx={infoWrapper}>
         {value[0]}-{value[1]} $

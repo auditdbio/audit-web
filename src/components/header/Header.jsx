@@ -398,6 +398,11 @@ const pages = [
         itemName: "Screencast",
         link: "https://youtu.be/J7L4yAhS6Rw",
       },
+      {
+        id: 5,
+        itemName: "Our auditors",
+        link: '/auditors'
+      },
     ],
   },
   // {

@@ -132,11 +132,15 @@ const menuItems = () => ({
 		sm: "repeat(3, auto)",
 		md: "repeat(3, auto)",
 	},
-	gap: "0 50px",
+	gap: {
+		zero: "0 20px",
+		sm: "0 30px",
+		md: "0 50px",
+	},
 });
 
 const menuItem = (isMobile) => ({
-	fontSize: isMobile ? "22px" : "26px",
+	fontSize: isMobile ? "18px" : "26px",
 	'& a': {
 		color: '#fff'
 	}
