@@ -30,12 +30,22 @@ import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { getAuditors } from "../../../redux/actions/auditorAction.js";
 import { auditorReducer } from "../../../redux/reducers/auditorReducer.js";
+import {useLocation} from "react-router-dom";
 
 const Filter = ({ target }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const mainColor = target === PROJECTS ? "secondary" : "primary";
   const dispatch = useDispatch();
+  // const search = ''
+  const search = new URLSearchParams(useLocation().search).get('search');
+
+  // console.log('search ', search)
+  useEffect(() => {
+    window.scrollTo(0, 0);
+    dispatch(getAuditors(search || ""));
+  }, []);
+
   const handleClose = () => {
     setIsOpen(false);
   };
@@ -51,7 +61,7 @@ const Filter = ({ target }) => {
     <Formik
       initialValues={{
         sort: "",
-        search: "",
+        search: search || "",
         tags: [],
         time: {
           begin: "",
@@ -62,8 +72,7 @@ const Filter = ({ target }) => {
       validationSchema={{}}
       validateOnBlur={false}
       validateOnChange={false}
-      onSubmit={(values) => {
-      }}
+      onSubmit={(values) => {}}
     >
       {({ handleSubmit, values, setFieldValue, handleChange }) => {
         return (

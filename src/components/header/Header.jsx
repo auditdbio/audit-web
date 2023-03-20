@@ -254,7 +254,7 @@ const Header = () => {
                     </IconButton>
                     <Avatar
                         sx={reduxUser.current_role === AUDITOR ? auditor?.avatar : customer?.avatar}
-                      sx={{
+                      style={{
                         width: "35px",
                         height: "35px",
                       }}
@@ -398,11 +398,11 @@ const pages = [
         itemName: "Screencast",
         link: "https://youtu.be/J7L4yAhS6Rw",
       },
-      {
-        id: 5,
-        itemName: "Our auditors",
-        link: '/auditors'
-      },
+      // {
+      //   id: 5,
+      //   itemName: "Our auditors",
+      //   link: '/auditors'
+      // },
     ],
   },
   // {
