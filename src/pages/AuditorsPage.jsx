@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, {useEffect, useState} from "react";
 import Layout from "../styles/Layout.jsx";
 import { Box, Button } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack.js";
@@ -11,18 +11,14 @@ import { getAuditors } from "../redux/actions/auditorAction.js";
 
 const AuditorsPage = () => {
   const dispatch = useDispatch();
-  const projects = useSelector((s) => s.project.projects);
   const navigate = useNavigate();
 
   const auditorReducer = useSelector((state) => state.auditor);
 
-  // const projects = useSelector(s => s.project.projects)
-  useEffect(() => {``
-    // if (searchInput) {
-    //   dispatch(getAuditors(searchInput));
-    // } else {
+
+
+  useEffect(() => {
     dispatch(getAuditors(""));
-    // }
   }, []);
 
   return (

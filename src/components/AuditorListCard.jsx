@@ -77,20 +77,6 @@ const AuditorListCard = ({ auditor }) => {
         auditor={auditor}
       />
 
-      {/*<Modal*/}
-      {/*  open={isOpen}*/}
-      {/*  onClose={handleClose}*/}
-      {/*  aria-labelledby="parent-modal-title"*/}
-      {/*  aria-describedby="parent-modal-description"*/}
-      {/*>*/}
-      {/*  <Box sx={modalWrapper}>*/}
-      {/*    <AuditRequestInfo*/}
-      {/*      onClose={handleClose}*/}
-      {/*      project={project}*/}
-      {/*      modal={true}*/}
-      {/*    />*/}
-      {/*  </Box>*/}
-      {/*</Modal>*/}
     </Box>
   );
 };
