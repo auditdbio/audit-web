@@ -22,6 +22,7 @@ import * as Yup from "yup";
 import { useLocation } from "react-router-dom";
 import { getAuditsRequest } from "../redux/actions/auditAction.js";
 import { AuditRequestsArray } from "./custom/AuditRequestsArray.jsx";
+import Markdown from "./custom/Markdown-editor.jsx";
 
 const CreateProjectCard = ({ role, projectInfo }) => {
   const navigate = useNavigate();
@@ -140,29 +141,19 @@ const CreateProjectCard = ({ role, projectInfo }) => {
                         <SimpleField name={"name"} label={"Name"} />
                         <TagsField name={"scope"} label={"Project links"} />
                         <ProjectLinksList name={"scope"} />
+                            <TagsField name={"tags"} label={"Tags"} />
+                            <TagsArray
+                                name={"tags"}
+                            />
                       </Box>
                       <Box
                         className="description-box"
                         sx={descriptionFieldWrapper}
                       >
-                        <DescriptionField
-                          name={"description"}
-                          label={"Description"}
-                        />
+                        <Markdown name={'description'} />
                       </Box>
                     </Box>
-                    <Box sx={tagsFieldWrapper}>
-                      <Box sx={fieldWrapper}>
-                        <TagsField name={"tags"} label={"Tags"} />
-                      </Box>
-                      <Box sx={tagsArrayWrapper}>
-                        <TagsArray
-                          name={"tags"}
-                          // tags={tags}
-                          // handleDelete={handleDeleteTags}
-                        />
-                      </Box>
-                    </Box>
+
                     {/*<Box>*/}
                     {/*  <AuditRequestsArray requests={auditRequests ?? []} />*/}
                     {/*</Box>*/}
@@ -230,6 +221,9 @@ const wrapper = (theme) => ({
     padding: "40px 30px",
   },
   [theme.breakpoints.down("xs")]: {
+    '& form': {
+      width: '100%'
+    },
     width: "100%",
     alignItems: "center",
     gap: "25px",
@@ -457,7 +451,7 @@ const descriptionFieldWrapper = (theme) => ({
   flexDirection: "column",
   // height: "230px",
   // height: '100%',
-  width: "40%",
+  width: "50%",
   // justifyContent: 'center',
   // gap: "20px",
   // [theme.breakpoints.down("md")]: {
@@ -516,5 +510,5 @@ const formAllFields = {
 };
 
 const tagsArrayWrapper = {
-  width: "40%",
+  width: "100%",
 };

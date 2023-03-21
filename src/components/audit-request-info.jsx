@@ -15,6 +15,7 @@ import dayjs from "dayjs";
 import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs";
 import {DatePicker} from "@mui/x-date-pickers/DatePicker";
 import {LocalizationProvider} from "@mui/x-date-pickers";
+import Markdown from "./custom/Markdown.jsx";
 
 const AuditRequestInfo = ({project, onClose}) => {
     const navigate = useNavigate()
@@ -49,7 +50,7 @@ const AuditRequestInfo = ({project, onClose}) => {
                     {project?.name || project?.project_name}
                 </Typography>
             </Box>
-            <Box>
+            <Box sx={{width: '100%'}}>
                 <Box sx={contentWrapper} className={'audit-request-content-wrapper'}>
                     <Typography sx={titleSx} className={'audit-request-title'}>
                         {project?.tags?.map(el => el).join(', ') ?? ''}
@@ -89,10 +90,18 @@ const AuditRequestInfo = ({project, onClose}) => {
                     }
                 </Box>
                 <Box sx={infoWrapper} className={'audit-request-info'}>
-                    <Typography variant={'h4'}>Description</Typography>
-                    <Typography sx={descriptionSx}>
-                        {project?.description}
+                    <Typography
+                        variant={'h4'}
+                        sx={{
+                            fontWeight: 600,
+                            fontSize: '24px',
+                            marginBottom: '20px',
+                            textAlign: 'center'
+                        }}
+                    >
+                        Description
                     </Typography>
+                    <Markdown value={project?.description}/>
                     {matchXs &&
                         <Box sx={{display: 'flex', gap: '25px'}}>
                             <Typography variant={'caption'}>
@@ -395,12 +404,6 @@ const salaryWrapper = (theme) => ({
 
 const infoWrapper = (theme) => ({
     marginTop: '30px',
-    '& h4': {
-        fontWeight: 600,
-        fontSize: '24px',
-        marginBottom: '20px',
-        textAlign: 'center'
-    },
     [theme.breakpoints.down('sm')]: {
         '& span': {
             fontSize: '15px',
