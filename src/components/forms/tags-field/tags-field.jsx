@@ -36,6 +36,7 @@ const TagsField = ({name, label, placeholder}) => {
                         </IconButton>
                     </InputAdornment>
                 ),
+
             }}
         />
         </Box>

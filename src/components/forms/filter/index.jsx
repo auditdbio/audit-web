@@ -24,22 +24,44 @@ import dayjs from "dayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import theme from "../../../styles/themes.js";
 import { SliderRange } from "../salary-slider/slider-range.jsx";
-import {PROJECTS} from "../../../redux/actions/types.js";
+import { PROJECTS } from "../../../redux/actions/types.js";
+
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { getAuditors } from "../../../redux/actions/auditorAction.js";
+import { auditorReducer } from "../../../redux/reducers/auditorReducer.js";
+import {useLocation} from "react-router-dom";
 
 const Filter = ({ target }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const mainColor = target === PROJECTS ? "secondary" : "primary";
+  const dispatch = useDispatch();
+  // const search = ''
+  const search = new URLSearchParams(useLocation().search).get('search');
+
+  // console.log('search ', search)
+  useEffect(() => {
+    window.scrollTo(0, 0);
+    dispatch(getAuditors(search || ""));
+  }, []);
 
   const handleClose = () => {
     setIsOpen(false);
   };
 
+  const handleInput = (e, values) => {
+    values.search = e.target.value;
+    dispatch(getAuditors(e.target.value));
+  };
+
+  useEffect(() => {}, [auditorReducer]);
+
   return (
     <Formik
       initialValues={{
         sort: "",
-        search: "",
+        search: search || "",
         tags: [],
         time: {
           begin: "",
@@ -50,12 +72,9 @@ const Filter = ({ target }) => {
       validationSchema={{}}
       validateOnBlur={false}
       validateOnChange={false}
-      onSubmit={(values) => {
-        console.log(values);
-      }}
+      onSubmit={(values) => {}}
     >
       {({ handleSubmit, values, setFieldValue, handleChange }) => {
-        console.log(values);
         return (
           <Form onSubmit={handleSubmit}>
             <Box>
@@ -65,6 +84,7 @@ const Filter = ({ target }) => {
                   name={"search"}
                   disabled={false}
                   size={"small"}
+                  onInput={(e) => handleInput(e, values)}
                   InputProps={{
                     endAdornment: (
                       <InputAdornment position="end">
@@ -226,7 +246,7 @@ const Filter = ({ target }) => {
                   </Box>
                   <Button
                     color={mainColor}
-                    type={'submit'}
+                    type={"submit"}
                     variant={"contained"}
                     sx={submitButton}
                   >
