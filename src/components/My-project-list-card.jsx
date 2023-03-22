@@ -50,7 +50,7 @@ const MyProjectListCard = ({ type, project }) => {
                     marginTop: '30px',
                 }}
             >
-                <Checkbox sx={checkBoxSx}/>
+                <Checkbox color={'success'} sx={checkBoxSx}/>
             </Box>
         </Box>
     );

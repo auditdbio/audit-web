@@ -68,6 +68,14 @@ const submitBtn = (theme) => ({
     padding: '22px 0',
     fontSize: '18px',
     borderRadius: '10px',
+    [theme.breakpoints.down('md')]: {
+        width: '266px',
+        padding: '11px 0',
+        fontSize: '14px',
+    },
+    [theme.breakpoints.down('xs')]: {
+        width: '178px',
+    }
 })
 
 const backButtonSx = (theme) => ({
