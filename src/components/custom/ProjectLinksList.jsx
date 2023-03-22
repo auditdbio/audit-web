@@ -12,7 +12,6 @@ export const ProjectLinksList = ({ name }) => {
       sx={{
         // display: "flex",
         flexDirection: "column",
-        paddingLeft: "30px",
       }}
     >
       {meta.error && (

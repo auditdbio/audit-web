@@ -10,9 +10,6 @@ const Markdown = ({name}) => {
 
     return (
         <Box data-color-mode="light" sx={wrapper}>
-            <Typography variant={"body2"} sx={formLabelSx}>
-                Description
-            </Typography>
             <MarkdownEditor
                 toolbars={[]}
                 height={'300px'}

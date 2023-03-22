@@ -139,24 +139,26 @@ const CreateProjectCard = ({ role, projectInfo }) => {
                     <Box sx={formWrapper}>
                       <Box sx={fieldWrapper}>
                         <SimpleField name={"name"} label={"Name"} />
+                        <TagsField name={"tags"} label={"Tags"} />
+                        <TagsArray
+                            name={"tags"}
+                        />
+                      </Box>
+                      <Box sx={fieldWrapper}>
                         <TagsField name={"scope"} label={"Project links"} />
                         <ProjectLinksList name={"scope"} />
-                            <TagsField name={"tags"} label={"Tags"} />
-                            <TagsArray
-                                name={"tags"}
-                            />
-                      </Box>
-                      <Box
-                        className="description-box"
-                        sx={descriptionFieldWrapper}
-                      >
-                        <Markdown name={'description'} />
                       </Box>
                     </Box>
 
                     {/*<Box>*/}
                     {/*  <AuditRequestsArray requests={auditRequests ?? []} />*/}
                     {/*</Box>*/}
+                  </Box>
+                  <Box
+                      className="description-box"
+                      sx={descriptionFieldWrapper}
+                  >
+                    <Markdown name={'description'} />
                   </Box>
                   <Button
                     type={"submit"}
@@ -192,6 +194,7 @@ const backButtonSx = (theme) => ({
   top: "40px",
   [theme.breakpoints.down("sm")]: {
     top: "5px",
+    left: 0
   },
 });
 
@@ -212,13 +215,8 @@ const wrapper = (theme) => ({
   padding: "70px 90px",
   display: "flex",
   flexDirection: "column",
-  gap: "70px",
-  [theme.breakpoints.down("md")]: {
-    gap: "50px",
-  },
   [theme.breakpoints.down("sm")]: {
-    gap: "20px",
-    padding: "40px 30px",
+    padding: "30px 20px",
   },
   [theme.breakpoints.down("xs")]: {
     '& form': {
@@ -226,7 +224,6 @@ const wrapper = (theme) => ({
     },
     width: "100%",
     alignItems: "center",
-    gap: "25px",
   },
 });
 
@@ -290,7 +287,7 @@ const formCard = {
   display: "flex",
   flexDirection: "column",
   justifyContent: "center",
-  gap: "75px",
+  gap: "35px",
 };
 
 const infoInnerStyle = (theme) => ({
@@ -390,7 +387,7 @@ const formWrapper = (theme) => ({
   justifyContent: "space-between",
   // gap: "175px",
   [theme.breakpoints.down("xs")]: {
-    gap: "60px",
+    gap: "16px",
     flexDirection: "column",
   },
 });
@@ -398,11 +395,12 @@ const formWrapper = (theme) => ({
 const submitButton = (theme) => ({
   backgroundColor: theme.palette.primary.main,
   boxShadow: "0",
-  padding: "11px 140px",
+  padding: "21px 0",
   color: "#FCFAF6",
   fontWeight: 600,
+  textTransform: 'unset',
   borderRadius: radiusOfComponents,
-  maxWidth: "402px",
+  width: "402px",
   margin: "0 auto",
   fontSize: "16px",
   paddingY: "11px",
@@ -411,7 +409,7 @@ const submitButton = (theme) => ({
   },
   [theme.breakpoints.down("sm")]: {
     width: "225px",
-    padding: "13px 80px",
+    padding: "13px 0",
     fontSize: "14px",
   },
 });
@@ -421,7 +419,7 @@ const fieldWrapper = (theme) => ({
   flexDirection: "column",
   // justifyContent: "space-between",
   // maxWidth: "450px",
-  width: "40%",
+  width: "48%",
   gap: "20px",
   [theme.breakpoints.down("md")]: {
     "& .MuiInputBase-root": {
@@ -451,7 +449,7 @@ const descriptionFieldWrapper = (theme) => ({
   flexDirection: "column",
   // height: "230px",
   // height: '100%',
-  width: "50%",
+  width: "100%",
   // justifyContent: 'center',
   // gap: "20px",
   // [theme.breakpoints.down("md")]: {

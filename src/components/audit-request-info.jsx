@@ -410,9 +410,6 @@ const infoWrapper = (theme) => ({
             fontWeight: 500
         }
     },
-    [theme.breakpoints.down('xs')]: {
-        width: '310px',
-    }
 })
 
 const linkWrapper = (theme) => ({
