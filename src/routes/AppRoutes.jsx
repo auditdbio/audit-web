@@ -28,6 +28,7 @@ import AuditorsPage from "../pages/AuditorsPage.jsx";
 import AuditDb from "../pages/AuditDb.jsx";
 import Faq from "../pages/Faq.jsx";
 import ContactUs from "../pages/Contact-Us.jsx";
+import MyProjects from "../pages/My-projects.jsx";
 
 
 const AppRoutes = () => {
@@ -74,6 +75,14 @@ const AppRoutes = () => {
                     element={
                         <PrivateRoute auth={{isAuthenticated: isAuth()}}>
                             <EditProfile/>
+                        </PrivateRoute>
+                    }
+                />
+                <Route
+                    path="/my-projects"
+                    element={
+                        <PrivateRoute auth={{isAuthenticated: isAuth()}}>
+                            <MyProjects/>
                         </PrivateRoute>
                     }
                 />

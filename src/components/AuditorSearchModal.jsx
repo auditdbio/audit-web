@@ -201,7 +201,7 @@ export default function AuditorSearchModal({
             <Button sx={findButton}>Find</Button>
           </Box>
         </DialogContent>
-      )}n
+      )}
       {mode === "offer" && (
         <DialogContent sx={offerDialogStyle}>
           <Box

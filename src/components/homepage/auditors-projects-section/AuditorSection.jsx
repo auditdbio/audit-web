@@ -89,7 +89,7 @@ const AuditorSection = () => {
           </IconButton>
         </Box>
       </Box>
-      <Box sx={{ height: "2rem" }}></Box>
+      <Box sx={{ height: "2rem" }}/>
       {!auditorFound && (
         <Box>
           <Typography

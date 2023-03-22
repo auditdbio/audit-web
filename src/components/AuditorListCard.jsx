@@ -25,6 +25,8 @@ const AuditorListCard = ({ auditor }) => {
     if (!isAuth()) {
       navigate("/sign-up");
       return;
+    } else {
+      navigate('/my-projects')
     }
     setIsOpenInvite(true);
   };

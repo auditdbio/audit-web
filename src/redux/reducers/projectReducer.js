@@ -21,7 +21,7 @@ export const projectReducer = (state = initialState, action) => {
         projects: [...state.projects, action.payload],
       };
     case GET_PROJECTS:
-      return { ...state, projects: [...action.payload, ...action.payload] };
+      return { ...state, projects: action.payload };
     case PROJECT_UPDATE:
       return { ...state, recentProject: action.payload };
     case GET_MY_PROJECTS:

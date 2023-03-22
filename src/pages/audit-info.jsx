@@ -11,6 +11,7 @@ import {useParams} from "react-router-dom";
 import {acceptAudit, confirmAudit, deleteAudit, deleteAuditRequest} from "../redux/actions/auditAction.js";
 import {CUSTOMER, DONE, SUBMITED} from "../redux/actions/types.js";
 import dayjs from "dayjs";
+import Markdown from "../components/custom/Markdown.jsx";
 
 const AuditInfo = () => {
     const navigate = useNavigate()
@@ -96,7 +97,7 @@ const AuditInfo = () => {
                             <TagsList/>
                         </Box>
                     </Box>
-                    <Box sx={{marginY: '15px', overflow: 'auto', maxHeight: '150px', paddingY: '5px'}}>{audit?.description}</Box>
+                    <Markdown value={audit?.description}/>
                     { (audit?.status === DONE || audit?.status === SUBMITED) &&
                         <Box sx={{display: 'flex', justifyContent: 'center'}}>
                             <Link
