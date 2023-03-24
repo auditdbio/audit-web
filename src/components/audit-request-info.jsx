@@ -90,17 +90,6 @@ const AuditRequestInfo = ({project, onClose}) => {
                     }
                 </Box>
                 <Box sx={infoWrapper} className={'audit-request-info'}>
-                    <Typography
-                        variant={'h4'}
-                        sx={{
-                            fontWeight: 600,
-                            fontSize: '24px',
-                            marginBottom: '20px',
-                            textAlign: 'center'
-                        }}
-                    >
-                        Description
-                    </Typography>
                     <Markdown value={project?.description}/>
                     {matchXs &&
                         <Box sx={{display: 'flex', gap: '25px'}}>

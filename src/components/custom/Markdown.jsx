@@ -1,11 +1,10 @@
 import React from 'react';
 import {Box} from "@mui/material";
-import MarkdownEditor from '@uiw/react-markdown-editor';
-
+import MDEditor from '@uiw/react-md-editor';
 const Markdown = ({value}) => {
     return (
         <Box data-color-mode="light" sx={wrapper}>
-            <MarkdownEditor.Markdown source={value}/>
+            <MDEditor.Markdown source={value} />
         </Box>
     );
 };

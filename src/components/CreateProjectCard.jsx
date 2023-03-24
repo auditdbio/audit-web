@@ -443,7 +443,7 @@ const descriptionFieldWrapper = (theme) => ({
   display: "flex",
   '& textarea': {
     height: '100%!important',
-    maxHeight: '255px',
+    // maxHeight: '255px',
     overflow: 'auto!important'
   },
   flexDirection: "column",
