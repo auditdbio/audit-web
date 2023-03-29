@@ -1,35 +1,80 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import Layout from "../styles/Layout.jsx";
 import {Box, Button} from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack.js";
 import Filter from "../components/forms/filter/index.jsx";
 import ProjectListCard from "../components/Project-list-card.jsx";
 import {useSelector} from "react-redux";
-import {useNavigate} from "react-router-dom/dist";
+import {useNavigate, useSearchParams} from "react-router-dom/dist";
 import {PROJECTS} from "../redux/actions/types.js";
 
 const ProjectPage = () => {
     const projects = useSelector(s => s.project.projects)
+    const [searchParams, setSearchParams] = useSearchParams()
+    const [query, setQuery] = useState(undefined)
     const navigate = useNavigate()
+
+    const applyFilter = (filter) => {
+        setQuery((query) => {
+            const {...data} = (query || {})
+            return {
+                ...data,
+
+                search: filter.search || '',
+                tags: filter.tags.map((tag) => tag),
+                dateFrom: filter.dateFrom || '',
+                dateTo: filter.dateTo || '',
+                from: filter.price.from || '',
+                to: filter.price.to || '',
+            }
+        })
+    }
+
+    const clearFilter = () => {
+        setQuery((query) => {
+            const { ...data } = (query || {})
+            return {}
+        })
+    }
+
+    const initialFilter = {
+        search: searchParams.get('search') || '',
+        tags: searchParams.getAll('tags') || [],
+        dateFrom: searchParams.get('dateFrom') || '',
+        dateTo: searchParams.get('dateTo') || '',
+        price: {
+            from: searchParams.get('from') || 0,
+            to: searchParams.get('to') || 0
+        },
+    }
+
+    const handleGoBack = () => {
+        navigate(-1)
+    }
+
+    useEffect(() => {
+        if (query) {
+            setSearchParams({...query})
+        }
+    }, [query]);
 
     return (
         <Layout>
             <Box sx={wrapper}>
                 <Box sx={projectTopWrapper}>
-                    <Button onClick={() => navigate(-1)}>
+                    <Button onClick={handleGoBack}>
                         <ArrowBackIcon color={'secondary'}/>
                     </Button>
                     <Box>
-                        <Filter target={PROJECTS}/>
+                        <Filter target={PROJECTS} initial={initialFilter} submit={applyFilter}/>
                     </Box>
                 </Box>
                 <Box sx={contentWrapper}>
                     {projects?.map(project =>
-                            <Box sx={projectListWrapper} key={project.id}>
-                                <ProjectListCard project={project}/>
-                            </Box>
-                        )
-                    }
+                        <Box sx={projectListWrapper} key={project.id}>
+                            <ProjectListCard project={project}/>
+                        </Box>
+                    )}
                 </Box>
             </Box>
         </Layout>

@@ -14,7 +14,7 @@ import AuditOffer from "../pages/audit-offer.jsx";
 import CreateProject from "../pages/CreateProject.jsx";
 import ProfilePage from "../pages/profile-page.jsx";
 import { AUDITOR } from "../redux/actions/types.js";
-import { getAuditor } from "../redux/actions/auditorAction.js";
+import {getAuditor, getAuditors} from "../redux/actions/auditorAction.js";
 import { getCustomer } from "../redux/actions/customerAction.js";
 import Projects from "../components/Projects.jsx";
 import ProjectPage from "../pages/Project-page.jsx";
@@ -38,7 +38,7 @@ const AppRoutes = () => {
     useEffect(() => {
         dispatch(getAllProjects())
         if (isAuth()) {
-            dispatch(getAuditor())
+            dispatch(getAuditors())
             dispatch(getCustomer())
             dispatch(getProjects())
             if (currentRole){
@@ -46,7 +46,6 @@ const AppRoutes = () => {
                 dispatch(getAudits(currentRole))
             }
         }
-        // dispatch(getProjects())
     }, [token, currentRole, isAuth])
 
     return (

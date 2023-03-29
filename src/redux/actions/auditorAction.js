@@ -51,7 +51,7 @@ export const updateAuditor = (values) => {
     }
 }
 
-export const getAuditors = (values) => {
+export const getAuditors = (values='') => {
     const token = Cookies.get("token");
     return (dispatch) => {
         axios
@@ -62,7 +62,7 @@ export const getAuditors = (values) => {
                 dispatch({ type: GET_AUDITORS, payload: data.auditors });
             })
             .catch(({ response }) => {
-                // console.log(response, "res");
+                console.log(response, "res")
             });
     };
 };

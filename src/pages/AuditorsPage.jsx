@@ -5,7 +5,7 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack.js";
 import Filter from "../components/forms/filter/index.jsx";
 import ProjectListCard from "../components/Project-list-card.jsx";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom/dist";
+import {useNavigate, useSearchParams} from "react-router-dom/dist";
 import AuditorListCard from "../components/AuditorListCard.jsx";
 import { getAuditors } from "../redux/actions/auditorAction.js";
 import theme from "../styles/themes.js";
@@ -14,8 +14,49 @@ const AuditorsPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const matchSm = useMediaQuery(theme.breakpoints.down("sm"));
-
+  const [searchParams, setSearchParams] = useSearchParams()
+  const [query, setQuery] = useState(undefined)
   const auditorReducer = useSelector((state) => state.auditor);
+
+  const applyFilter = (filter) => {
+    setQuery((query) => {
+      const {...data} = (query || {})
+      return {
+        ...data,
+
+        search: filter.search || '',
+        tags: filter.tags.map((tag) => tag),
+        dateFrom: filter.dateFrom || '',
+        dateTo: filter.dateTo || '',
+        from: filter.price.from || '',
+        to: filter.price.to || '',
+      }
+    })
+  }
+
+  const initialFilter = {
+    search: searchParams.get('search') || '',
+    tags: searchParams.getAll('tags') || [],
+    dateFrom: searchParams.get('dateFrom') || '',
+    dateTo: searchParams.get('dateTo') || '',
+    price: {
+      from: searchParams.get('from') || 0,
+      to: searchParams.get('to') || 0
+    },
+  }
+
+  const clearFilter = () => {
+    setQuery((query) => {
+      const { ...data } = (query || {})
+      return {}
+    })
+  }
+
+  useEffect(() => {
+    if (query) {
+      setSearchParams({...query})
+    }
+  }, [query]);
 
   return (
     <Layout>
@@ -25,7 +66,7 @@ const AuditorsPage = () => {
             <ArrowBackIcon color={"secondary"} />
           </Button>
           <Box>
-            <Filter target={"auditor"} />
+            <Filter target={"auditor"} submit={applyFilter} initial={initialFilter}/>
           </Box>
         </Box>
         {auditorReducer.auditors?.length > 0 && (
@@ -46,7 +87,7 @@ const AuditorsPage = () => {
               </Box>
             ))}
             {!matchSm && auditorReducer.auditors?.length % 2 === 1 && (
-              <Box sx={fakeContainerStyle}></Box>
+              <Box sx={fakeContainerStyle}/>
             )}
           </Box>
         )}
