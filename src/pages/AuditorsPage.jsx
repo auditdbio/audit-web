@@ -75,9 +75,6 @@ const AuditorsPage = () => {
               display: "flex",
               flexWrap: "wrap",
               marginTop: "70px",
-              // paddingTop: '70px',
-              // height: "98%",
-              // overflow: "scroll",
               border: "0.5px solid #B2B3B3",
             }}
           >
