@@ -441,7 +441,7 @@ const authorizedPages = [
       {
         id: 2,
         itemName: "New project",
-        link: '/'
+        link: '/create-project'
       },
       {
         id: 3,
@@ -472,6 +472,7 @@ const authorizedPages = [
       {
         id: 2,
         itemName: "New project",
+        link: '/create-project'
       },
       {
         id: 3,

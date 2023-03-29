@@ -21,20 +21,6 @@ const CreateProject = () => {
 
 export default CreateProject;
 
-const tabs = [
-    {
-        value: "audits",
-        label: "Audits",
-    },
-    {
-        value: "projects",
-        label: "Projects",
-    },
-    {
-        value: "user-info",
-        label: "User info",
-    },
-];
 
 const wrapper = (theme) => ({
     display: "flex",

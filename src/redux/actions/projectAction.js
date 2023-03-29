@@ -51,7 +51,6 @@ export const getAllProjects = (values = "") => {
           // { headers: { Authorization: `Bearer ${token}` },}
       )
       .then(({ data }) => {
-        console.log(data, 'dadada')
         dispatch({ type: GET_PROJECTS, payload: data });
       })
       .catch(({ response }) => {

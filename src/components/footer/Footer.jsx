@@ -12,7 +12,7 @@ import Telegram from "../icons/Telegram.jsx";
 
 const Footer = () => {
 	const isMobile = useMediaQuery("(max-width: 768px)");
-	console.log(pages)
+
 	return (
 		<Box sx={footerContainerStyles}>
 			<Box sx={mainFooterStyles(isMobile)}>
