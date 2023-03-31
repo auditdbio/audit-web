@@ -7,7 +7,7 @@ import markdownItKatex from "markdown-it-katex";
 import {Box} from "@mui/material";
 import {useField} from "formik";
 import hljs from "highlight.js";
-import 'highlight.js/styles/ascetic.css';
+import 'highlight.js/styles/github.css';
 
 const mdParser = new MarkdownIt({
     html: false,
