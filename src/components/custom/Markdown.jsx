@@ -2,7 +2,7 @@ import React from 'react';
 import {Box} from "@mui/material";
 import 'katex/dist/katex.min.css';
 import hljs from 'highlight.js';
-import 'highlight.js/styles/atom-one-dark.css';
+import 'highlight.js/styles/ascetic.css';
 import MarkdownIt from "markdown-it";
 import markdownItKatex from "markdown-it-katex";
 import ReactMarkdownEditorLite from "react-markdown-editor-lite";

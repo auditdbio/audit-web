@@ -7,6 +7,7 @@ import markdownItKatex from "markdown-it-katex";
 import {Box} from "@mui/material";
 import {useField} from "formik";
 import hljs from "highlight.js";
+import 'highlight.js/styles/ascetic.css';
 
 const mdParser = new MarkdownIt({
     html: false,
@@ -14,6 +15,7 @@ const mdParser = new MarkdownIt({
     typographer: true,
     highlight: function (str, lang) {
         if (lang && hljs.getLanguage(lang)) {
+            console.log(hljs.getLanguage(lang));
             try {
                 return hljs.highlight(str, { language: lang }).value;
             } catch (__) {}
