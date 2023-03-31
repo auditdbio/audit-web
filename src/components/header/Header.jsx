@@ -18,7 +18,7 @@ import NotificationsIcon from "@mui/icons-material/Notifications";
 import { UserMenu } from "./UserMenu.jsx";
 import RoleMenuDropdown from "./RoleMenuDropdown.jsx";
 import { useSelector } from "react-redux";
-import {AUDITOR} from "../../redux/actions/types.js";
+import {AUDITOR, CUSTOMER} from "../../redux/actions/types.js";
 
 const Header = () => {
   const reduxUser = useSelector((state) => state.user.user);
@@ -463,6 +463,7 @@ const authorizedPages = [
   {
     id: 2,
     name: "Projects",
+    role: CUSTOMER,
     menuOptions: [
       {
         id: 1,
@@ -477,14 +478,39 @@ const authorizedPages = [
       {
         id: 3,
         itemName: "My audits",
+        link: '/profile/audits'
       },
       {
         id: 4,
         itemName: "My audits requests",
+        link: '/profile/audits'
       },
       {
-        id: 5,
-        itemName: "Audits history",
+        id: 3,
+        name: "Projects",
+        role: AUDITOR,
+        menuOptions: [
+          {
+            id: 1,
+            itemName: "Our projects",
+            link: '/projects'
+          },
+          {
+            id: 2,
+            itemName: "New project",
+            link: '/create-project'
+          },
+          {
+            id: 3,
+            itemName: "My audits",
+            link: '/profile/projects'
+          },
+          {
+            id: 4,
+            itemName: "My audits requests",
+            link: '/profile/audits'
+          },
+        ],
       },
     ],
   },

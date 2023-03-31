@@ -1,21 +1,43 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from "react";
+import MarkdownIt from "markdown-it";
+import MdEditor from "react-markdown-editor-lite";
+import "react-markdown-editor-lite/lib/index.css";
+import "katex/dist/katex.min.css";
+import markdownItKatex from "markdown-it-katex";
 import {Box} from "@mui/material";
-import MarkdownEditor from "@uiw/react-markdown-editor";
 import {useField} from "formik";
-import MDEditor from '@uiw/react-md-editor';
-import katex from "katex";
-import "katex/dist/katex.css";
+import hljs from "highlight.js";
 
+const mdParser = new MarkdownIt({
+    html: false,
+    linkify: true,
+    typographer: true,
+    highlight: function (str, lang) {
+        if (lang && hljs.getLanguage(lang)) {
+            try {
+                return hljs.highlight(str, { language: lang }).value;
+            } catch (__) {}
+        }
+
+        return ''; // use external default escaping
+    },
+}).use(markdownItKatex);
 
 const Markdown = ({name}) => {
     const [markdownField, , markdownHelper] = useField(name);
 
+    const handleEditorChange = ({ html, text }) => {
+        markdownHelper.setValue(text);
+    };
+
+
     return (
         <Box data-color-mode="light" sx={wrapper}>
-            <MDEditor
-                height={300}
+            <MdEditor
                 value={markdownField.value}
-                onChange={(e)=> markdownHelper.setValue(e)}
+                renderHTML={(text) => mdParser.render(text)}
+                onChange={handleEditorChange}
+                style={{ height: '300px' }}
             />
         </Box>
     );
