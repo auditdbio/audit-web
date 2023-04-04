@@ -2,7 +2,7 @@ import {
   PROJECT_CREATE,
   GET_PROJECTS,
   GET_MY_PROJECTS,
-  PROJECT_UPDATE,
+  PROJECT_UPDATE, SEARCH_PROJECTS,
 } from "../actions/types.js";
 
 const initialState = {
@@ -10,6 +10,7 @@ const initialState = {
   myProjects: null,
   recentProject: null,
   error: null,
+  searchProjects: null,
 };
 export const projectReducer = (state = initialState, action) => {
   switch (action.type) {
@@ -26,7 +27,8 @@ export const projectReducer = (state = initialState, action) => {
       return { ...state, recentProject: action.payload };
     case GET_MY_PROJECTS:
       return { ...state, myProjects: action.payload.projects };
-
+    case SEARCH_PROJECTS:
+      return { ...state, searchProjects: action.payload };
     default:
       return state;
   }

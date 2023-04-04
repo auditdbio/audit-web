@@ -1,4 +1,4 @@
-import {GET_MY_PROJECTS, GET_PROJECTS, PROJECT_CREATE, PROJECT_UPDATE} from "./types.js";
+import {GET_MY_PROJECTS, GET_PROJECTS, PROJECT_CREATE, PROJECT_UPDATE, SEARCH_PROJECTS} from "./types.js";
 import axios from "axios";
 import Cookies from "js-cookie";
 import { history } from "../../services/history.js";
@@ -68,6 +68,23 @@ export const getProjects = () => {
         })
         .then(({ data }) => {
           dispatch({ type: GET_MY_PROJECTS, payload: data });
+        })
+        .catch(({ response }) => {
+          console.log(response, "res");
+        });
+  };
+};
+
+export const searchProjects = (values) => {
+    const searchValues = {
+        query: values?.search || '',
+        tags: values?.tags || [],
+    }
+  return (dispatch) => {
+    axios
+        .get(`${API_URL}/search?query=${searchValues.query}&tags=${searchValues.tags.map(tag => tag + ',')}&page=0&per_page=0&kind=project`)
+        .then(({ data }) => {
+          dispatch({ type: SEARCH_PROJECTS, payload: data });
         })
         .catch(({ response }) => {
           console.log(response, "res");

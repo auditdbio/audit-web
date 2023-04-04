@@ -4,15 +4,17 @@ import {Box, Button} from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack.js";
 import Filter from "../components/forms/filter/index.jsx";
 import ProjectListCard from "../components/Project-list-card.jsx";
-import {useSelector} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {useNavigate, useSearchParams} from "react-router-dom/dist";
 import {PROJECTS} from "../redux/actions/types.js";
+import {searchProjects} from "../redux/actions/projectAction.js";
 
 const ProjectPage = () => {
-    const projects = useSelector(s => s.project.projects)
+    const projects = useSelector(s => s.project.searchProjects)
     const [searchParams, setSearchParams] = useSearchParams()
     const [query, setQuery] = useState(undefined)
     const navigate = useNavigate()
+    const dispatch = useDispatch()
 
     const applyFilter = (filter) => {
         setQuery((query) => {
@@ -28,6 +30,7 @@ const ProjectPage = () => {
                 to: filter.price.to || '',
             }
         })
+        dispatch(searchProjects(filter))
     }
 
     const clearFilter = () => {
@@ -58,6 +61,11 @@ const ProjectPage = () => {
         }
     }, [query]);
 
+    useEffect(() => {
+        dispatch(searchProjects(initialFilter))
+    },[searchParams.toString()])
+
+
     return (
         <Layout>
             <Box sx={wrapper}>
@@ -70,11 +78,14 @@ const ProjectPage = () => {
                     </Box>
                 </Box>
                 <Box sx={contentWrapper}>
-                    {projects?.map(project =>
-                        <Box sx={projectListWrapper} key={project.id}>
-                            <ProjectListCard project={project}/>
-                        </Box>
-                    )}
+                    <Box sx={{    display: 'flex',
+                        flexWrap: 'wrap',}}>
+                        {projects?.map(project =>
+                            <Box sx={projectListWrapper} key={project.id}>
+                                <ProjectListCard project={project}/>
+                            </Box>
+                        )}
+                    </Box>
                 </Box>
             </Box>
         </Layout>
@@ -84,8 +95,6 @@ const ProjectPage = () => {
 export default ProjectPage;
 
 const contentWrapper = (theme) => ({
-    display: 'flex',
-    flexWrap: 'wrap',
     paddingRight: '20px',
     height: '90%',
     overflow: 'scroll',

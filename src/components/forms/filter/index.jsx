@@ -35,22 +35,13 @@ const Filter = ({target, submit, initial}) => {
     const [isOpen, setIsOpen] = useState(false);
 
     const mainColor = target === PROJECTS ? "secondary" : "primary";
-    // const dispatch = useDispatch();
-    // // const search = ''
-    // const search = new URLSearchParams(useLocation().search).get('search');
 
-    // console.log('search ', search)
     useEffect(() => {
         window.scrollTo(0, 0);
     }, []);
 
     const handleClose = () => {
         setIsOpen(false);
-    };
-
-    const handleInput = (e, values) => {
-        values.search = e.target.value;
-        // dispatch(getAuditors(e.target.value));
     };
 
     return (
@@ -158,7 +149,7 @@ const Filter = ({target, submit, initial}) => {
                                                             value={dayjs(values.dateTo)}
                                                             sx={dateStyle}
                                                             onChange={(e) => {
-                                                                const value = +new Date(e);
+                                                                const value = new Date(e);
                                                                 setFieldValue("dateTo", value.toString());
                                                             }}
                                                             disablePast
