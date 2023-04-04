@@ -1,6 +1,6 @@
 import Cookies from "js-cookie";
 import axios from "axios";
-import {GET_AUDITOR, GET_AUDITORS, UPDATE_AUDITOR} from "./types.js";
+import {GET_AUDITOR, GET_AUDITORS, SEARCH_AUDITOR, SEARCH_PROJECTS, UPDATE_AUDITOR} from "./types.js";
 import {history} from "../../services/history.js";
 
 const API_URL = import.meta.env.VITE_API_BASE_URL
@@ -67,3 +67,19 @@ export const getAuditors = (values='') => {
     };
 };
 
+export const searchAuditor = (values) => {
+    const searchValues = {
+        query: values?.search || '',
+        tags: values?.tags || [],
+    }
+    return (dispatch) => {
+        axios
+            .get(`${API_URL}/search?query=${searchValues.query}&tags=${searchValues.tags.map(tag => tag + ',')}&page=0&per_page=0&kind=auditor`)
+            .then(({ data }) => {
+                dispatch({ type: SEARCH_AUDITOR, payload: data });
+            })
+            .catch(({ response }) => {
+                console.log(response, "res");
+            });
+    };
+};

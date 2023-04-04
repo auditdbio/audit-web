@@ -7,7 +7,7 @@ import ProjectListCard from "../components/Project-list-card.jsx";
 import { useDispatch, useSelector } from "react-redux";
 import {useNavigate, useSearchParams} from "react-router-dom/dist";
 import AuditorListCard from "../components/AuditorListCard.jsx";
-import { getAuditors } from "../redux/actions/auditorAction.js";
+import {getAuditors, searchAuditor} from "../redux/actions/auditorAction.js";
 import theme from "../styles/themes.js";
 
 const AuditorsPage = () => {
@@ -58,6 +58,10 @@ const AuditorsPage = () => {
     }
   }, [query]);
 
+  useEffect(() => {
+    dispatch(searchAuditor(initialFilter));
+  }, [searchParams.toString()]);
+
   return (
     <Layout>
       <Box sx={wrapper}>
@@ -78,7 +82,7 @@ const AuditorsPage = () => {
               border: "0.5px solid #B2B3B3",
             }}
           >
-            {auditorReducer.auditors?.map((auditor) => (
+            {auditorReducer.searchAuditors?.map((auditor) => (
               <Box sx={auditorContainerStyle} key={auditor.user_id}>
                 <AuditorListCard auditor={auditor} />
               </Box>
