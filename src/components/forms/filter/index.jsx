@@ -161,7 +161,13 @@ const Filter = ({target, submit, initial}) => {
                                             <Box sx={sortWrapper}>
                                                 <FormGroup>
                                                     <FormControlLabel
-                                                        control={<Checkbox color={mainColor}/>}
+                                                        control={
+                                                            <Checkbox
+                                                                onChange={(e) =>
+                                                                    setFieldValue("readyToWait", e.target.checked)
+                                                                }
+                                                                color={mainColor}/>
+                                                        }
                                                         label="Ready to wait"
                                                     />
                                                 </FormGroup>
@@ -184,14 +190,14 @@ const Filter = ({target, submit, initial}) => {
                                                                 onChange={(e) =>
                                                                     setFieldValue("sort", e.target.value)
                                                                 }
-                                                                value={"low-to-height"}
+                                                                value={"1"}
                                                                 sx={{
                                                                     color: "orange",
                                                                     "&.Mui-checked": {
                                                                         color: "orange",
                                                                     },
                                                                 }}
-                                                                checked={values.sort === "low-to-height"}
+                                                                checked={values.sort === "1"}
                                                             />
                                                         }
                                                         color={mainColor}
@@ -212,9 +218,9 @@ const Filter = ({target, submit, initial}) => {
                                                                 onChange={(e) =>
                                                                     setFieldValue("sort", e.target.value)
                                                                 }
-                                                                value={"height-to-low"}
+                                                                value={"-1"}
                                                                 color={mainColor}
-                                                                checked={values.sort === "height-to-low"}
+                                                                checked={values.sort === "-1"}
                                                             />
                                                         }
                                                         label="Price: Height to Low "

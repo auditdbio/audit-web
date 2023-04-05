@@ -13,12 +13,13 @@ import {useEffect, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {getAllProjects} from "../../../redux/actions/projectAction.js";
 import MenuItem from "@mui/material/MenuItem";
+import {useNavigate} from "react-router-dom/dist";
 
 const ProjectSection = () => {
   const dispatch = useDispatch();
   const matchSm = useMediaQuery(theme.breakpoints.down("xs"));
   const [searchInput, setSearchInput] = useState("");
-
+  const navigate = useNavigate();
   const [projectFound, setProjectFound] = useState(true);
 
   const projectReducer = useSelector((state) => state.project.projects);
@@ -79,6 +80,9 @@ const ProjectSection = () => {
             sx={{ p: "10px", color: "white" }}
             aria-label="search"
             disableRipple
+            onClick={() => {
+                navigate(`/projects?search=${searchInput}`);
+            }}
           >
             <SearchIcon />
           </IconButton>

@@ -16,8 +16,7 @@ const AuditorsPage = () => {
   const matchSm = useMediaQuery(theme.breakpoints.down("sm"));
   const [searchParams, setSearchParams] = useSearchParams()
   const [query, setQuery] = useState(undefined)
-  const auditorReducer = useSelector((state) => state.auditor);
-
+  const auditorReducer = useSelector((state) => state.auditor.searchAuditors);
   const applyFilter = (filter) => {
     setQuery((query) => {
       const {...data} = (query || {})
@@ -30,6 +29,8 @@ const AuditorsPage = () => {
         dateTo: filter.dateTo || '',
         from: filter.price.from || '',
         to: filter.price.to || '',
+        sort: filter.sort || '',
+        readyToWait: filter.readyToWait || false,
       }
     })
   }
@@ -39,6 +40,8 @@ const AuditorsPage = () => {
     tags: searchParams.getAll('tags') || [],
     dateFrom: searchParams.get('dateFrom') || '',
     dateTo: searchParams.get('dateTo') || '',
+    readyToWait: searchParams.get('readyToWait') || false,
+    sort: searchParams.get('sort') || '',
     price: {
       from: searchParams.get('from') || 0,
       to: searchParams.get('to') || 0
@@ -73,7 +76,7 @@ const AuditorsPage = () => {
             <Filter target={"auditor"} submit={applyFilter} initial={initialFilter}/>
           </Box>
         </Box>
-        {auditorReducer.auditors?.length > 0 && (
+        {auditorReducer?.length > 0 && (
           <Box
             sx={{
               display: "flex",
@@ -82,17 +85,17 @@ const AuditorsPage = () => {
               border: "0.5px solid #B2B3B3",
             }}
           >
-            {auditorReducer.searchAuditors?.map((auditor) => (
+            {auditorReducer?.map((auditor) => (
               <Box sx={auditorContainerStyle} key={auditor.user_id}>
                 <AuditorListCard auditor={auditor} />
               </Box>
             ))}
-            {!matchSm && auditorReducer.auditors?.length % 2 === 1 && (
+            {!matchSm && auditorReducer?.length % 2 === 1 && (
               <Box sx={fakeContainerStyle}/>
             )}
           </Box>
         )}
-        {auditorReducer.auditors?.length === 0 && (
+        {auditorReducer?.length === 0 && (
           <Box
             sx={{
               paddingTop: "70px",

@@ -28,6 +28,7 @@ const ProjectPage = () => {
                 dateTo: filter.dateTo || '',
                 from: filter.price.from || '',
                 to: filter.price.to || '',
+                readyToWait: filter.readyToWait || false,
             }
         })
         dispatch(searchProjects(filter))
@@ -45,6 +46,7 @@ const ProjectPage = () => {
         tags: searchParams.getAll('tags') || [],
         dateFrom: searchParams.get('dateFrom') || '',
         dateTo: searchParams.get('dateTo') || '',
+        readyToWait: searchParams.get('readyToWait') || false,
         price: {
             from: searchParams.get('from') || 0,
             to: searchParams.get('to') || 0

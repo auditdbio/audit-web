@@ -71,10 +71,12 @@ export const searchAuditor = (values) => {
     const searchValues = {
         query: values?.search || '',
         tags: values?.tags || [],
+        order: values?.order || '1',
     }
+
     return (dispatch) => {
         axios
-            .get(`${API_URL}/search?query=${searchValues.query}&tags=${searchValues.tags.map(tag => tag + ',')}&page=0&per_page=0&kind=auditor`)
+            .get(`${API_URL}/search?query=${searchValues.query}&tags=${searchValues.tags.map(tag => tag + ',')}&sort_by=price&sort_order=${searchValues.order}&page=0&per_page=0&kind=auditor`)
             .then(({ data }) => {
                 dispatch({ type: SEARCH_AUDITOR, payload: data });
             })
