@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React from "react";
 import MarkdownIt from "markdown-it";
 import MdEditor from "react-markdown-editor-lite";
 import "react-markdown-editor-lite/lib/index.css";
@@ -8,6 +8,7 @@ import {Box} from "@mui/material";
 import {useField} from "formik";
 import hljs from "highlight.js";
 import 'highlight.js/styles/github.css';
+import 'react-katex/dist/react-katex.js';
 
 const mdParser = new MarkdownIt({
     html: false,
@@ -40,6 +41,16 @@ const Markdown = ({name}) => {
                 renderHTML={(text) => mdParser.render(text)}
                 onChange={handleEditorChange}
                 style={{ height: '300px' }}
+                config={{
+                    katex: {
+                        delimiters: [
+                            { left: '$$', right: '$$', display: true },
+                            { left: '\\[', right: '\\]', display: true },
+                            { left: '$', right: '$', display: false },
+                            { left: '\\(', right: '\\)', display: false },
+                        ],
+                    },
+                }}
             />
         </Box>
     );
@@ -61,15 +72,11 @@ const wrapper = (theme) => ({
         whiteSpace: 'unset',
         wordWrap: 'unset',
         flexShrink: 'unset'
+    },
+    '& .katex .vlist': {
+        verticalAlign: 'unset'
+    },
+    '& .mbin,.mrel': {
+        margin: '0 3px'
     }
 })
-
-const formLabelSx = (theme) => ({
-    fontWeight: 500,
-    fontSize: "14px",
-    lineHeight: "24px",
-    color: "#434242",
-    [theme.breakpoints.down("lg")]: {
-        fontSize: "14px",
-    },
-});
