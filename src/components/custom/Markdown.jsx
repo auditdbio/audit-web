@@ -49,11 +49,5 @@ const wrapper = (theme) => ({
     '& .rc-md-editor,.rc-md-editor .editor-container>.section': {
         backgroundColor: 'unset',
         border: 'unset',
-    },
-    '& .katex .vlist': {
-        verticalAlign: 'unset'
-    },
-    '& .mbin,.mrel': {
-        margin: '0 3px'
     }
 })
