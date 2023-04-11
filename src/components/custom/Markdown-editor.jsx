@@ -8,7 +8,7 @@ import {Box} from "@mui/material";
 import {useField} from "formik";
 import hljs from "highlight.js";
 import 'highlight.js/styles/github.css';
-// import 'react-katex/dist/react-katex.js';
+import 'react-katex/dist/react-katex.js';
 
 const mdParser = new MarkdownIt({
     html: false,
