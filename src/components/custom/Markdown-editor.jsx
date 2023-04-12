@@ -61,6 +61,12 @@ const wrapper = (theme) => ({
         whiteSpace: 'unset',
         wordWrap: 'unset',
         flexShrink: 'unset'
+    },
+    '& .katex .vlist': {
+        verticalAlign: 'unset'
+    },
+    '& .mbin,.mrel': {
+        margin: '0 3px'
     }
 })
 
