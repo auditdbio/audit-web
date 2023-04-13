@@ -133,7 +133,7 @@ export default function AuditorModal({ open, handleClose, auditor }) {
         <DialogContent sx={modalWindow}>
           <Box sx={contentWrapper}>
             <Box sx={{ display: "flex", justifyContent: "center" }}>
-              <Avatar src={auditor.avatar} sx={avatarStyle} />
+              <Avatar src={`https://dev.auditdb.io/api/files/get/{auditor.avatar}`} sx={avatarStyle} />
             </Box>
             <Box sx={infoStyle}>
               <Box sx={infoInnerStyle}>

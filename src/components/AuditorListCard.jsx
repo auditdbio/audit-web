@@ -39,7 +39,7 @@ const AuditorListCard = ({ auditor }) => {
       <Box sx={cardLeftSide}>
         <Box sx={avatarDescription}>
           <Box>
-            <Avatar src={auditor.avatar} sx={avatarStyle} />
+            <Avatar src={`https://dev.auditdb.io/api/files/get/${auditor.avatar}`} sx={avatarStyle} />
           </Box>
           <Box sx={descriptionStyle(theme)}>
             <Box sx={{ display: "flex", flexDirection: "column", gap: "5px" }}>

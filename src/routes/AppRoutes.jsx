@@ -39,6 +39,7 @@ const AppRoutes = () => {
         dispatch(getAllProjects())
         if (isAuth()) {
             dispatch(getAuditors())
+            dispatch(getAuditor())
             dispatch(getCustomer())
             dispatch(getProjects())
             if (currentRole){

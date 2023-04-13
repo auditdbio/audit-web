@@ -94,7 +94,8 @@ export const UserMenu = ({ open, handleClose, anchor }) => {
           }}
         >
           <Avatar
-              src={reduxUser.current_role === AUDITOR ? auditor?.avatar : customer?.avatar}
+              src={reduxUser.current_role === AUDITOR ? `https://dev.auditdb.io/api/files/get/${auditor?.avatar}`
+                  : `https://dev.auditdb.io/api/files/get/${customer?.avatar}`}
             sx={{
               width: "100px",
               height: "100px",

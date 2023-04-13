@@ -327,7 +327,8 @@ const Header = () => {
                       disableRipple
                     >
                       <Avatar
-                          src={reduxUser.current_role === AUDITOR ? auditor?.avatar : customer?.avatar}
+                          src={reduxUser.current_role === AUDITOR ? `https://dev.auditdb.io/api/files/get/${auditor?.avatar}`
+                              : `https://dev.auditdb.io/api/files/get/${customer?.avatar}`}
                         sx={avatarStyle}
                       />
                       <UserMenu

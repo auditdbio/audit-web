@@ -46,7 +46,7 @@ const UserInfo = ({role}) => {
             <Box sx={wrapper}>
                 <Box sx={contentWrapper}>
                     <Box sx={{display: 'flex', justifyContent: 'center'}}>
-                        <Avatar src={data.avatar} sx={avatarStyle}/>
+                        <Avatar src={data.avatar && `https://dev.auditdb.io/api/files/get/${data.avatar}`} sx={avatarStyle}/>
                     </Box>
                     <Box sx={infoStyle}>
                         <Box sx={infoInnerStyle}>
