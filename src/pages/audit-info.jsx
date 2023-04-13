@@ -51,11 +51,13 @@ const AuditInfo = () => {
 
     const handleOpenReport = () => {
         axios.get(`https://dev.auditdb.io/api/files/get/${audit.report}`, {
-            withCredentials: true,
-            headers: {
-                // 'X-CSRF-Token': 'Authorization =' + Cookies.get("token"),
-                Authorization: Cookies.get("token")},
-        })
+                withCredentials: true,
+                headers: {
+                    // 'X-CSRF-Token': 'Authorization =' + Cookies.get("token"),
+                    headers: {Authorization: "Bearer " + Cookies.get("token")}
+                }
+            }
+        )
             .then(res => console.log(res))
     }
 
@@ -75,7 +77,7 @@ const AuditInfo = () => {
                 <Box>
                     <Box sx={contentWrapper}>
                         <Box sx={userWrapper}>
-                            <Avatar src={audit?.avatar}/>
+                            <Avatar src={audit?.avatar ? `https://dev.auditdb.io/api/files/get/${audit?.avatar}` : ""}/>
                             <Box>
                                 <Typography>
                                     {audit?.auditor_contacts?.email}

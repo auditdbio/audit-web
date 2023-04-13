@@ -31,7 +31,7 @@ export const signIn = (values) => {
         );
       })
       .catch(({ response }) => {
-        dispatch({ type: SIGN_IN_ERROR });
+        dispatch({ type: SIGN_IN_ERROR, payload: response.data });
       });
   };
 };

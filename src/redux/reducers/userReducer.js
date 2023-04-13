@@ -30,7 +30,7 @@ export const userReducer = (state = initialState, action) => {
         case CLEAR_ERROR:
             return {...state, error: null}
         case SIGN_IN_ERROR:
-            return {...state, error: 'Email or password incorrect'}
+            return {...state, error: action.payload}
         case LOG_OUT:
             return initialState
         case SELECT_ROLE:

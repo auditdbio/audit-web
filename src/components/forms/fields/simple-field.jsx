@@ -3,14 +3,14 @@ import {Box, Typography} from "@mui/material";
 import {Field} from "formik";
 import {TextField} from "formik-mui";
 
-const SimpleField = ({name, label}) => {
+const SimpleField = ({name, label, emptyPH = false}) => {
     return (
         <Box sx={wrapper} className={'field-wrapper'}>
             <Typography variant={'body2'} sx={formLabelSx}>{label}</Typography>
             <Field
                 component={TextField}
                 name={name}
-                placeholder={'● ● ● ● ● ● ●'}
+                placeholder={!emptyPH ? '● ● ● ● ● ● ●' : ''}
                 fullWidth={true}
                 disabled={false}
                 sx={fieldSx}

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import {useMemo, useState} from "react";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
@@ -19,6 +19,7 @@ import { UserMenu } from "./UserMenu.jsx";
 import RoleMenuDropdown from "./RoleMenuDropdown.jsx";
 import { useSelector } from "react-redux";
 import {AUDITOR, CUSTOMER} from "../../redux/actions/types.js";
+import Logo from "../icons/Logo.jsx";
 
 const Header = () => {
   const reduxUser = useSelector((state) => state.user.user);
@@ -71,6 +72,17 @@ const Header = () => {
     setAnchorElRole(null);
   };
 
+  const userAvatar = useMemo(() => {
+    if (reduxUser.current_role === AUDITOR && !!auditor?.avatar){
+      return auditor.avatar;
+    } else if (reduxUser.current_role === CUSTOMER && !!customer?.avatar){
+      return customer.avatar;
+    } else {
+      return null
+    }
+
+  }, [reduxUser.current_role, customer?.avatar, auditor?.avatar]);
+
   return (
     <AppBar position="static" color="transparent" elevation={0}>
       <Container
@@ -94,7 +106,9 @@ const Header = () => {
             }}
           >
             <Link to={"/"} style={linkStyle}>
-              <Box sx={logoStyle}/>
+              <Box sx={logoStyle}>
+                <Logo />
+              </Box>
             </Link>
 
             {/* For Unauthorized user */}
@@ -253,8 +267,7 @@ const Header = () => {
                       </CustomBadge>
                     </IconButton>
                     <Avatar
-                        src={reduxUser.current_role === AUDITOR ? `https://dev.auditdb.io/api/files/get/${auditor?.avatar}`
-                            : `https://dev.auditdb.io/api/files/get/${customer?.avatar}`}
+                        src={userAvatar ? `https://dev.auditdb.io/api/files/get/${userAvatar}` : ""}
                       style={{
                         width: "35px",
                         height: "35px",
@@ -328,12 +341,12 @@ const Header = () => {
                       disableRipple
                     >
                       <Avatar
-                          src={reduxUser.current_role === AUDITOR ? `https://dev.auditdb.io/api/files/get/${auditor?.avatar}`
-                              : `https://dev.auditdb.io/api/files/get/${customer?.avatar}`}
+                          src={userAvatar ? `https://dev.auditdb.io/api/files/get/${userAvatar}` : ""}
                         sx={avatarStyle}
                       />
                       <UserMenu
                         open={isUserMenuOpen}
+                        userAvatar={userAvatar}
                         handleClose={handleCloseUserMenu}
                         anchor={anchorElUser}
                       />
@@ -546,10 +559,10 @@ const linkStyle = {
 const logoStyle = {
   height: "50px",
   width: "200px",
-  backgroundImage: "url(/welcome_page/logo.svg)",
-  backgroundSize: "contain",
-  backgroundPosition: "center",
-  backgroundRepeat: "no-repeat",
+  // backgroundImage: "url(/welcome_page/logo.svg)",
+  // backgroundSize: "contain",
+  // backgroundPosition: "center",
+  // backgroundRepeat: "no-repeat",
   marginY: "auto",
   [theme.breakpoints.down("sm")]: {
     height: "40px",

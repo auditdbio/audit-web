@@ -1,38 +1,121 @@
 import React from 'react';
 import Layout from "../styles/Layout.jsx";
-import {Box, Typography} from "@mui/material";
+import {Alert, AlertTitle, Box, Button, Snackbar, Stack, TextField, Typography} from "@mui/material";
 import {CustomCard} from "../components/custom/Card.jsx";
+import {Form, Formik, Field} from "formik";
+import SimpleField from "../components/forms/fields/simple-field.jsx";
+import {radiusOfComponents} from "../styles/themes.js";
 
 const AuditDb = () => {
+
+    const initialValues = {
+        email: '',
+        password: '',
+    }
     return (
         <Layout>
-            <CustomCard sx={wrapper}>
-                <Box sx={contentWrapper}>
-                    <svg width="424" height="148" viewBox="0 0 424 148" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path fillRule="evenodd" clipRule="evenodd" d="M200.827 4.20288H406.62C413.689 4.20288 419.474 9.98413 419.474 17.0501V130.684C419.474 137.75 413.689 143.531 406.62 143.531H200.827C193.757 143.531 187.973 137.75 187.973 130.684V17.0501C187.973 9.98413 193.757 4.20288 200.827 4.20288ZM197.365 0H410.302C417.812 0 423.954 6.13914 423.954 13.6456V134.354C423.954 141.861 417.812 148 410.302 148H197.365C189.846 148 183.704 141.861 183.704 134.354C183.704 95.6292 183.704 56.9132 183.704 18.188V13.6456C183.704 6.13914 189.846 0 197.365 0Z" fill="#47115F"/>
-                        <path fillRule="evenodd" clipRule="evenodd" d="M392.619 117.938L327.213 78.5426L396.833 25.8507L303.618 85.6086L210.347 25.814L279.572 78.2398L208.484 120.801L285.513 82.2041L303.434 93.4087L321.521 81.6994L392.619 117.938Z" fill="#020202"/>
-                        <path d="M315.846 35.6438V36.4163L314.219 37.304V36.105L308.821 32.9921L303.423 29.8793L298.025 32.9921H298.036L292.638 36.105V48.568L293.284 48.9369V50.8162L291 49.5019V35.1711L297.217 31.5856L303.423 28L309.64 31.5856L315.846 35.1711V35.6438ZM315.846 48.1414V49.5019L309.64 53.0874L303.423 56.673L301.058 55.3126L302.639 54.3326L303.423 54.7937L308.821 51.6809L314.219 48.568V47.2883L315.846 48.1414Z" fill="#020202"/>
-                        <path fillRule="evenodd" clipRule="evenodd" d="M293.974 37.4077L313.099 47.5764L294.205 57.872L293.974 37.4077Z" fill="#47115F"/>
-                        <path fillRule="evenodd" clipRule="evenodd" d="M317.826 48.3027L306.498 42.2845L317.687 36.1855L317.826 48.3027Z" fill="#FE9900"/>
-                        <path fillRule="evenodd" clipRule="evenodd" d="M168.867 128.729L110.522 123.535L169.638 117.717C173.898 117.295 174.624 129.243 168.867 128.729Z" fill="#FE9900"/>
-                        <path fillRule="evenodd" clipRule="evenodd" d="M168.766 80.9469L58.465 76.175L168.537 70.0267C174.863 69.6688 174.596 81.1946 168.766 80.9469Z" fill="#FE9900"/>
-                        <path fillRule="evenodd" clipRule="evenodd" d="M168.335 30.8151L0 25.0063L168.114 18.4175C174.587 18.0963 174.192 31.0903 168.335 30.8151Z" fill="#FE9900"/>
-                    </svg>
-                </Box>
-                <Box sx={contactWrapper}>
-                    <Typography variant={'h3'}>
-                        We are happy to answer all your question and get any feedback
-                    </Typography>
-                    <Typography
-                        sx={{
-                            border: '3px solid #FF9900',
-                            borderRadius: '15px',
-                            padding: '15px 85px'
-                        }}
-                    >
-                        hello@auditdb.io
-                    </Typography>
-                </Box>
+            <CustomCard>
+                <Formik
+                    initialValues={initialValues}
+                    validationSchema={{}}
+                    validateOnBlur={false}
+                    validateOnChange={false}
+                    onSubmit={(values) => {
+                        console.log(values)
+                        // dispatch(signIn(values))
+                    }}
+                >
+                    {({handleSubmit}) => {
+                        return (
+                            <Form onSubmit={handleSubmit}>
+                                <Box sx={{padding: '40px'}}>
+                                    <Box sx={wrapper}>
+                                        <Box sx={[contentWrapper, imgWrapper]}>
+                                            <Box sx={{display: 'flex', flexDirection: 'column', gap: '5px'}}>
+                                                <Typography variant={'h3'}>
+                                                    Leave us a message,
+                                                    or write to
+                                                </Typography>
+                                                <Typography variant={'h3'} color={'primary'}>
+                                                    hello@auditdb.io
+                                                </Typography>
+                                            </Box>
+                                            <svg width="258" height="223" viewBox="0 0 258 223" fill="none"
+                                                 xmlns="http://www.w3.org/2000/svg">
+                                                <path fillRule="evenodd" clipRule="evenodd"
+                                                      d="M18.362 4.50736H239.068C246.651 4.50736 252.852 10.7067 252.852 18.2832V140.09C252.852 147.666 246.651 153.861 239.068 153.861H18.362C10.7782 153.861 4.57755 147.666 4.57755 140.09V18.2832C4.57755 10.7067 10.7782 4.50736 18.362 4.50736ZM14.6453 0H243.015C251.069 0 257.66 6.58478 257.66 14.6313V144.024C257.66 152.07 251.069 158.65 243.015 158.65H14.6453C6.59111 158.65 0 152.07 0 144.024C0 102.513 0 61.0067 0 19.5005V14.6313C0 6.58478 6.59111 0 14.6453 0Z"
+                                                      fill="#47115F"/>
+                                                <path fillRule="evenodd" clipRule="evenodd"
+                                                      d="M224.055 126.417L153.91 84.1967L228.576 27.7161L128.6 91.7685L28.5709 27.6738L102.814 83.8677L26.5762 129.486L109.184 88.1165L128.402 100.125L147.804 87.576L224.055 126.417Z"
+                                                      fill="#2B2A29"/>
+                                                <path
+                                                    d="M140.413 44.171V44.8337L139.015 45.5951V44.5752L134.41 41.915L129.804 39.2595L125.198 41.915L120.597 44.5752V55.202L121.143 55.5216V57.1244L119.2 56.0011V43.7715L124.502 40.7118L129.804 37.6567L135.106 40.7118L140.413 43.7715V44.171ZM140.413 54.8401V56.0058L135.106 59.0608L129.804 62.1205L127.781 60.9549L129.131 60.123L129.804 60.5131L134.41 57.8576L139.015 55.202V54.1116L140.413 54.8401Z"
+                                                    fill="#020202"/>
+                                                <path fillRule="evenodd" clipRule="evenodd"
+                                                      d="M121.736 45.6797L138.065 54.356L121.938 63.1404L121.736 45.6797Z"
+                                                      fill="#47115F"/>
+                                                <path fillRule="evenodd" clipRule="evenodd"
+                                                      d="M142.102 54.9812L132.434 49.8441L141.984 44.6411L142.102 54.9812Z"
+                                                      fill="#FE9900"/>
+                                                <path
+                                                    d="M72.8127 172.52H43.188C41.1791 172.52 39.556 174.142 39.556 176.144C39.556 178.151 41.1791 179.772 43.188 179.772H72.8127C74.8168 179.772 76.4399 178.151 76.4399 176.144C76.4399 174.142 74.8168 172.52 72.8127 172.52Z"
+                                                    fill="#FE9900"/>
+                                                <path
+                                                    d="M151.61 214.905H151.605L82.5465 215.042C80.5423 215.042 78.9193 216.668 78.924 218.675C78.9287 220.672 80.5517 222.294 82.5559 222.294H82.5606L151.619 222.157C153.618 222.153 155.246 220.527 155.237 218.524C155.232 216.522 153.609 214.905 151.61 214.905Z"
+                                                    fill="#FE9900"/>
+                                                <path
+                                                    d="M215.785 193.045H171.867C169.863 193.045 168.24 194.667 168.24 196.669C168.24 198.676 169.863 200.298 171.867 200.298H215.785C217.789 200.298 219.417 198.676 219.417 196.669C219.417 194.667 217.789 193.045 215.785 193.045Z"
+                                                    fill="#FE9900"/>
+                                            </svg>
+                                        </Box>
+                                        <Box sx={contactWrapper}>
+                                            <Box
+                                                sx={{display: 'flex', flexDirection: 'column', gap: '15px', width: '100%'}}>
+                                                {/*<Snackbar*/}
+                                                {/*    autoHideDuration={10000}*/}
+                                                {/*    open={!!error}*/}
+                                                {/*    anchorOrigin={{ horizontal: 'right', vertical: 'top' }}*/}
+                                                {/*    onClose={() => {*/}
+                                                {/*        // dispatch(clearUserError())*/}
+                                                {/*    }}*/}
+                                                {/*>*/}
+                                                {/*    <Stack sx={{ width: '100%', flexDirection: 'column', gap: 2 }} spacing={2}>*/}
+                                                {/*        <Alert severity='success'>*/}
+                                                {/*            <AlertTitle>{error}</AlertTitle>*/}
+                                                {/*        </Alert>*/}
+                                                {/*    </Stack>*/}
+                                                {/*</Snackbar>*/}
+                                                <SimpleField name={'name'} label={'Name'} emptyPH={true}/>
+                                                <SimpleField name={'company'} label={'Company'} emptyPH={true}/>
+                                                <SimpleField name={'email'} label={'E-mail'} emptyPH={true}/>
+                                                <Box sx={fieldWrapper}>
+                                                    <Typography variant={'body2'} sx={formLabelSx}>Your text
+                                                        there</Typography>
+                                                    <Field
+                                                        name={'message'}
+                                                        as={TextField}
+                                                        multiline
+                                                        rows={5}
+                                                        variant={'outlined'}
+                                                        sx={textFieldSx}
+                                                    />
+                                                </Box>
+                                            </Box>
+                                        </Box>
+                                    </Box>
+                                    <Button
+                                        type={'submit'}
+                                        color={'primary'}
+                                        variant={'contained'}
+                                        sx={submitButton}
+                                    >
+                                        Send
+                                    </Button>
+                                </Box>
+                            </Form>
+                        )
+                    }}
+                </Formik>
             </CustomCard>
         </Layout>
     );
@@ -40,10 +123,21 @@ const AuditDb = () => {
 
 export default AuditDb;
 
+const imgWrapper = (theme) => ({
+    gap: '90px',
+    [theme.breakpoints.down('md')]: {
+        gap: '70px'
+    },
+    [theme.breakpoints.down('xs')]: {
+        gap: '40px'
+    }
+})
+
 const contentWrapper = (theme) => ({
     display: 'flex',
     alignItems: 'center',
     width: '50%',
+    flexDirection: 'column',
     justifyContent: 'center',
     [theme.breakpoints.down('sm')]: {
         width: '100%',
@@ -53,36 +147,73 @@ const contentWrapper = (theme) => ({
     }
 })
 
+const formLabelSx = (theme) => ({
+    fontWeight: 500,
+    fontSize: '14px',
+    lineHeight: '24px',
+    color: '#434242',
+    [theme.breakpoints.down('lg')]: {
+        fontSize: '14px',
+    }
+})
+
+const textFieldSx = (theme) => ({
+        width: '100%',
+        '& .MuiOutlinedInput-root': {
+            borderRadius: radiusOfComponents,
+        },
+        '& .MuiOutlinedInput-input': {
+            padding: '15px 20px',
+            fontSize: '16px',
+            fontWeight: 400,
+            color: '#000000',
+        }
+    }
+)
 const contactWrapper = (theme) => ({
     flexDirection: 'column',
     justifyContent: 'center',
     display: 'flex',
     alignItems: 'center',
     width: '50%',
+    '& form': {
+        width: '100%',
+        height: '100%'
+    },
     [theme.breakpoints.down('sm')]: {
         width: '100%'
     }
 })
 
+const submitButton = (theme) => ({
+    display: 'block',
+    padding: '18px 140px',
+    color: '#FCFAF6',
+    textTransform: 'unset',
+    fontWeight: 600,
+    maxWidth: '402px',
+    margin: '45px auto 0',
+    borderRadius: '15px',
+    fontSize: '16px',
+    paddingY: '11px',
+    [theme.breakpoints.down('sm')]: {
+        width: '225px',
+        padding: '13px 80px',
+        fontSize: '14px'
+    }
+})
+
 const wrapper = (theme) => ({
-    padding: '40px',
     display: 'flex',
     gap: '25px',
     '& h3': {
         fontSize: '26px',
         fontWeight: 600,
         textAlign: 'center',
-        width: '460px'
-    },
-    '& p': {
-        fontSize: '22px',
-        marginTop: '48px',
+        width: '300px'
     },
     [theme.breakpoints.down('md')]: {
         minHeight: '500px',
-        '& p': {
-            fontSize: '18px',
-        },
         '& h3': {
             fontSize: '22px',
         },
@@ -94,9 +225,25 @@ const wrapper = (theme) => ({
             width: 'unset'
         }
     },
-    [theme.breakpoints.down('xs')]: {
-        '& p': {
-            fontSize: '16px',
-        },
+})
+
+const fieldWrapper = (theme) => ({
+    display: 'flex',
+    flexDirection: 'column',
+    width: '100%',
+    gap: '20px',
+    [theme.breakpoints.down('md')]: {
+        '& .MuiInputBase-root': {
+            height: '44px',
+            '& input': {
+                paddingY: '7px'
+            }
+        }
+    },
+    [theme.breakpoints.down('sm')]: {
+        gap: '16px',
+        '& .password-wrapper, .field-wrapper': {
+            gap: '16px'
+        }
     }
 })

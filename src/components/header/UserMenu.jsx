@@ -11,7 +11,7 @@ import { useSelector } from "react-redux";
 import React, {useMemo, useState} from "react";
 import {AUDITOR} from "../../redux/actions/types.js";
 
-export const UserMenu = ({ open, handleClose, anchor }) => {
+export const UserMenu = ({ open, handleClose, anchor, userAvatar }) => {
   const dispatch = useDispatch();
   const reduxUser = useSelector((state) => state.user.user);
   const navigate = useNavigate()
@@ -94,8 +94,7 @@ export const UserMenu = ({ open, handleClose, anchor }) => {
           }}
         >
           <Avatar
-              src={reduxUser.current_role === AUDITOR ? `https://dev.auditdb.io/api/files/get/${auditor?.avatar}`
-                  : `https://dev.auditdb.io/api/files/get/${customer?.avatar}`}
+              src={userAvatar ? `https://dev.auditdb.io/api/files/get/${userAvatar}` : ''}
             sx={{
               width: "100px",
               height: "100px",
