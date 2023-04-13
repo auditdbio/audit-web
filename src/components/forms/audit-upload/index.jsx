@@ -3,16 +3,26 @@ import {Box, Button} from "@mui/material";
 import CreateNewFolderOutlinedIcon from "@mui/icons-material/CreateNewFolderOutlined.js";
 import {useField} from "formik";
 import axios from "axios";
+import Cookies from "js-cookie";
+import {useSelector} from "react-redux";
 
-const AuditUpload = ({name, disabled}) => {
+const AuditUpload = ({name, disabled, auditId}) => {
     const [field, meta, fieldHelper] = useField(name)
-    const formData = new FormData();
+    const formData = new FormData()
+    const user = useSelector(state => state.user.user)
 
     const handleUpdateAudit = (e) => {
         formData.append('file', e.target.files[0])
-        formData.append('upload_preset', 'gallery')
-        axios.post('https://api.cloudinary.com/v1_1/dktewh88s/upload', formData)
-            .then(({data}) => fieldHelper.setValue(data.url))
+        formData.append('path', user.id + user.current_role + e.target.files[0].name)
+        formData.append('original_name', e.target.files[0].name)
+        formData.append("private", "true")
+        formData.append('audit', auditId)
+        axios.post('https://dev.auditdb.io/api/files/create', formData, {
+            headers: {Authorization: "Bearer " + Cookies.get("token")}
+        })
+            .then((data) => {
+                fieldHelper.setValue(formData.get('path'))
+            })
     }
     return (
         <>

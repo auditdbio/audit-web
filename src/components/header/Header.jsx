@@ -94,7 +94,7 @@ const Header = () => {
             }}
           >
             <Link to={"/"} style={linkStyle}>
-              <Box sx={logoStyle}></Box>
+              <Box sx={logoStyle}/>
             </Link>
 
             {/* For Unauthorized user */}
@@ -253,7 +253,8 @@ const Header = () => {
                       </CustomBadge>
                     </IconButton>
                     <Avatar
-                        sx={reduxUser.current_role === AUDITOR ? auditor?.avatar : customer?.avatar}
+                        src={reduxUser.current_role === AUDITOR ? `https://dev.auditdb.io/api/files/get/${auditor?.avatar}`
+                            : `https://dev.auditdb.io/api/files/get/${customer?.avatar}`}
                       style={{
                         width: "35px",
                         height: "35px",

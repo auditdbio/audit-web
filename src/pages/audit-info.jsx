@@ -12,6 +12,8 @@ import {acceptAudit, confirmAudit, deleteAudit, deleteAuditRequest} from "../red
 import {CUSTOMER, DONE, SUBMITED} from "../redux/actions/types.js";
 import dayjs from "dayjs";
 import Markdown from "../components/custom/Markdown.jsx";
+import axios from "axios";
+import Cookies from "js-cookie";
 
 const AuditInfo = () => {
     const navigate = useNavigate()
@@ -45,6 +47,16 @@ const AuditInfo = () => {
             report: audit.report,
             status: SUBMITED
         }))
+    }
+
+    const handleOpenReport = () => {
+        axios.get(`https://dev.auditdb.io/api/files/get/${audit.report}`, {
+            withCredentials: true,
+            headers: {
+                // 'X-CSRF-Token': 'Authorization =' + Cookies.get("token"),
+                Authorization: Cookies.get("token")},
+        })
+            .then(res => console.log(res))
     }
 
     return (
@@ -100,14 +112,12 @@ const AuditInfo = () => {
                     <Markdown value={audit?.description}/>
                     { (audit?.status === DONE || audit?.status === SUBMITED) &&
                         <Box sx={{display: 'flex', justifyContent: 'center'}}>
-                            <Link
-                                href={audit.report}
-                                download={true}
-                                target={'_blank'}
+                            <Button
+                                onClick={handleOpenReport}
                                 sx={{margin: '15px auto 0', display: 'block'}}
                             >
                                 Report
-                            </Link>
+                            </Button>
                         </Box>
                     }
                 </Box>

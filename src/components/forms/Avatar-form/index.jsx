@@ -22,7 +22,7 @@ const AvatarForm = ({role, name, data}) => {
 
     const handleUpdateAvatar = (e) => {
         formData.append('file', e.target.files[0])
-        formData.append('path', user.id + user.current_role)
+        formData.append('path', user.id + user.current_role + e.target.files[0].name)
         formData.append('original_name', e.target.files[0].name)
         formData.append("private", "false")
         axios.post('https://dev.auditdb.io/api/files/create', formData, {
