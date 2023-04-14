@@ -5,21 +5,22 @@ import {CustomCard} from "../components/custom/Card.jsx";
 import {Form, Formik, Field} from "formik";
 import SimpleField from "../components/forms/fields/simple-field.jsx";
 import {radiusOfComponents} from "../styles/themes.js";
+import DescriptionField from "../components/forms/create-project/DescriptionField.jsx";
+// import Textarea from "@uiw/react-md-editor/lib/components/TextArea/Textarea.js";
 
 const AuditDb = () => {
 
     const initialValues = {
         email: '',
-        password: '',
+        name: '',
+        company: '',
+        message: '',
     }
     return (
         <Layout>
             <CustomCard>
                 <Formik
                     initialValues={initialValues}
-                    validationSchema={{}}
-                    validateOnBlur={false}
-                    validateOnChange={false}
                     onSubmit={(values) => {
                         console.log(values)
                         // dispatch(signIn(values))
@@ -89,16 +90,7 @@ const AuditDb = () => {
                                                 <SimpleField name={'company'} label={'Company'} emptyPH={true}/>
                                                 <SimpleField name={'email'} label={'E-mail'} emptyPH={true}/>
                                                 <Box sx={fieldWrapper}>
-                                                    <Typography variant={'body2'} sx={formLabelSx}>Your text
-                                                        there</Typography>
-                                                    <Field
-                                                        name={'message'}
-                                                        as={TextField}
-                                                        multiline
-                                                        rows={5}
-                                                        variant={'outlined'}
-                                                        sx={textFieldSx}
-                                                    />
+                                                    <DescriptionField name={'message'} label={'Your text there'} />
                                                 </Box>
                                             </Box>
                                         </Box>

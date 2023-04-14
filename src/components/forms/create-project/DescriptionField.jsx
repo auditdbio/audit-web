@@ -16,7 +16,7 @@ const DescriptionField = ({ name, label }) => {
         minRows="3"
         multiline
         name={name}
-        placeholder={"● ● ● ● ● ● ●"}
+        placeholder={""}
         fullWidth={true}
         disabled={false}
         sx={fieldSx}
