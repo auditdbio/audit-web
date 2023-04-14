@@ -12,8 +12,8 @@ const DescriptionField = ({ name, label }) => {
       <Field
         component={TextField}
         // rows="9"
-        // maxRows="8"
-        minRows="3"
+        maxRows="5"
+        minRows="4"
         multiline
         name={name}
         placeholder={""}
