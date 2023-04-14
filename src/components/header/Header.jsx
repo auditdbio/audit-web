@@ -373,17 +373,17 @@ const pages = [
     name: "Product",
     menuOptions: [
       {
-        id: 1,
+        id: 11,
         itemName: "AuditDB",
         link: "/audit-db",
       },
       {
-        id: 2,
+        id: 12,
         itemName: "For customers",
         link: "/for-customers",
       },
       {
-        id: 3,
+        id: 13,
         itemName: "For auditors",
         link: "/for-auditors",
       },
@@ -399,17 +399,17 @@ const pages = [
     name: "About Us",
     menuOptions: [
       {
-        id: 3,
+        id: 23,
         itemName: "Contact us",
         link: "/contact-us",
       },
       {
-        id: 4,
+        id: 24,
         itemName: "FAQ",
         link: "/FAQ",
       },
       {
-        id: 5,
+        id: 25,
         itemName: "Screencast",
         link: "https://youtu.be/J7L4yAhS6Rw",
       },
@@ -449,27 +449,27 @@ const authorizedPages = [
     name: "Audits",
     menuOptions: [
       {
-        id: 1,
+        id: 111,
         itemName: "Our projects",
         link: '/projects'
       },
       {
-        id: 2,
+        id: 112,
         itemName: "New project",
         link: '/create-project'
       },
       {
-        id: 3,
+        id: 113,
         itemName: "My audits",
         link: '/'
       },
       {
-        id: 4,
+        id: 114,
         itemName: "My audits requests",
         link: '/'
       },
       {
-        id: 5,
+        id: 115,
         itemName: "Audits history",
         link: '/'
       },
@@ -481,47 +481,47 @@ const authorizedPages = [
     role: CUSTOMER,
     menuOptions: [
       {
-        id: 1,
+        id: 221,
         itemName: "Our projects",
         link: '/projects'
       },
       {
-        id: 2,
+        id: 222,
         itemName: "New project",
         link: '/create-project'
       },
       {
-        id: 3,
+        id: 223,
         itemName: "My audits",
         link: '/profile/audits'
       },
       {
-        id: 4,
+        id: 224,
         itemName: "My audits requests",
         link: '/profile/audits'
       },
       {
-        id: 3,
+        id: 22331,
         name: "Projects",
         role: AUDITOR,
         menuOptions: [
           {
-            id: 1,
+            id: 2231,
             itemName: "Our projects",
             link: '/projects'
           },
           {
-            id: 2,
+            id: 2232,
             itemName: "New project",
             link: '/create-project'
           },
           {
-            id: 3,
+            id: 2233,
             itemName: "My audits",
             link: '/profile/projects'
           },
           {
-            id: 4,
+            id: 2234,
             itemName: "My audits requests",
             link: '/profile/audits'
           },

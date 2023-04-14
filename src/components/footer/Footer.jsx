@@ -37,8 +37,7 @@ const Footer = () => {
 						</Box>
 					</Box>
 					<Box
-						// menu items
-						sx={menuItems(isMobile)}
+						sx={menuItems}
 					>
 						{pages.map((page) => (
 							<MenuItem
@@ -80,16 +79,10 @@ const mainFooterStyles = (isMobile) => ({
 });
 
 const footerStyle = (isMobile) => ({
-	display: isMobile ? "flex" : "grid",
+	display: "flex",
 	flexDirection: isMobile ? "column" : "none",
 	gap: isMobile ? "30px" : "0",
-	gridTemplateColumns: {
-		zero: "1fr repeat(3, auto)",
-		sm: "1fr repeat(3, auto)",
-		md: "1fr repeat(3, auto) 1fr",
-		lg: "1fr repeat(3, auto) 1fr",
-	},
-	justifyItems: "center",
+	// justifyItems: "center",
 });
 
 const logoIconsStyle = (isMobile) => ({
@@ -125,18 +118,24 @@ const iconStyle = {
 	width: "30px",
 };
 
-const menuItems = () => ({
-	display: "grid",
-	gridTemplateColumns: {
-		zero: "repeat(2, auto)",
-		sm: "repeat(3, auto)",
-		md: "repeat(3, auto)",
+const menuItems = (theme) => ({
+	display: "flex",
+	gap: '65px',
+	[theme.breakpoints.down('lg')]: {
+		gap: '30px',
 	},
-	gap: {
-		zero: "0 20px",
-		sm: "0 30px",
-		md: "0 50px",
+	[theme.breakpoints.down('md')]: {
+		gap: '20px',
+		'& li': {
+			margin: 0,
+			'& a':	{
+				fontSize: '18px'
+			}
+		}
 	},
+	[theme.breakpoints.down('xs')]: {
+		flexDirection: 'column'
+	}
 });
 
 const menuItem = (isMobile) => ({
