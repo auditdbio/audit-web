@@ -84,16 +84,16 @@ export default function AuditorSearchModal({
         customer_id: customerReducer.customer.user_id,
         description: projectReducer.recentProject.description,
         opener: "Customer",
-        price: taxInput.toString(),
+        price: parseInt(taxInput),
         price_range: {
-          lower_bound: "",
-          upper_bound: "string",
+          from: parseInt(taxInput),
+          to: parseInt(taxInput),
         },
         project_id: projectReducer.recentProject.id,
         scope: projectReducer.recentProject.scope,
         time: {
-          begin: startTime.format("YYYY-MM-DD"),
-          end: endTime.format("YYYY-MM-DD"),
+          from: startTime.format("YYYY-MM-DD"),
+          to: endTime.format("YYYY-MM-DD"),
         },
         time_frame: "string",
       };
@@ -234,30 +234,6 @@ export default function AuditorSearchModal({
                 Add some information
               </Typography>
               <Typography style={rateLabel()}>Choose audit timeline</Typography>
-              {/*<Box sx={dateWrapper}>*/}
-              {/*  <TextField*/}
-              {/*    type={"date"}*/}
-              {/*    placeholder={""}*/}
-              {/*    value={dayjs(startTime).format("YYYY-MM-DD")}*/}
-              {/*    onChange={handleStartTimeChange}*/}
-              {/*    sx={dateStyle}*/}
-              {/*    inputProps={{*/}
-              {/*      inputMode: "numeric", // specify that the input should be numeric only*/}
-              {/*      inputFormat: ''*/}
-              {/*    }}*/}
-              {/*  />*/}
-              {/*  <Typography variant={"caption"}>-</Typography>*/}
-              {/*  <TextField*/}
-              {/*    type={"date"}*/}
-              {/*    placeholder={""}*/}
-              {/*    value={endTime ? endTime.format("YYYY-MM-DD") : ""}*/}
-              {/*    onChange={handleEndTimeChange}*/}
-              {/*    inputProps={{*/}
-              {/*      min: minDate,*/}
-              {/*    }}*/}
-              {/*    sx={dateStyle}*/}
-              {/*  />*/}
-              {/*</Box>*/}
               <Box sx={dateWrapper}>
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                   <DatePicker
@@ -285,8 +261,6 @@ export default function AuditorSearchModal({
                   />
                 </LocalizationProvider>
               </Box>
-              {/*{startTime.format("DD/MM/YYYY")}*/}
-              {/*{endTime.format("DD/MM/YYYY")}*/}
               <Typography style={rateLabel()}>Price per line of code</Typography>
               <Box
                 sx={{

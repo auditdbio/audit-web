@@ -49,7 +49,12 @@ const Filter = ({target, submit, initial}) => {
             initialValues={initial}
             enableReinitialize
             onSubmit={(values) => {
-                submit(values)
+                const newValues = {
+                    ...values,
+                    dateFrom: values.dateFrom ? dayjs(values.dateFrom).format("DD-MM-YYYY") : '',
+                    dateTo: values.dateTo ? dayjs(values.dateTo).format("DD-MM-YYYY") : '',
+                }
+                submit(newValues)
                 setIsOpen(false);
             }}
         >
