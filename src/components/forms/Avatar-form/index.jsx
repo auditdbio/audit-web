@@ -1,5 +1,5 @@
-import React, {useEffect} from 'react';
-import {Avatar, Button} from "@mui/material";
+import React, {useEffect, useState} from 'react';
+import {Alert, AlertTitle, Avatar, Button, Snackbar, Stack} from "@mui/material";
 import {AUDITOR} from "../../../redux/actions/types.js";
 import theme from "../../../styles/themes.js";
 import EditIcon from "@mui/icons-material/Edit.js";
@@ -13,6 +13,7 @@ const AvatarForm = ({role, name}) => {
     const user = useSelector(state => state.user.user)
     const [avatarField, ,fieldHelper] = useField(name)
     const formData = new FormData();
+    const [error, setError] = useState(null)
 
     const handleUpdateAvatar = (e) => {
         formData.append('file', e.target.files[0])
@@ -31,6 +32,7 @@ const AvatarForm = ({role, name}) => {
             })
             .catch((err) => {
                 console.log(err)
+                setError('Error while uploading file')
                 formData.delete('file')
                 formData.delete('path')
                 formData.delete('original_name')
@@ -41,6 +43,20 @@ const AvatarForm = ({role, name}) => {
     return (
         <>
             <Avatar src={`https://dev.auditdb.io/api/files/get/${avatarField.value}`}/>
+            <Snackbar
+                autoHideDuration={10000}
+                open={!!error}
+                anchorOrigin={{ horizontal: 'right', vertical: 'top' }}
+                onClose={() => {
+                    setError(null)
+                }}
+            >
+                <Stack sx={{ width: '100%', flexDirection: 'column', gap: 2 }} spacing={2}>
+                    <Alert severity='error'>
+                        <AlertTitle>{error}</AlertTitle>
+                    </Alert>
+                </Stack>
+            </Snackbar>
             <Button sx={
                 role === AUDITOR ? {color: theme.palette.secondary.main} : {}
             }>

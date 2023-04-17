@@ -1,5 +1,5 @@
-import React from 'react';
-import {Box, Button} from "@mui/material";
+import React, {useState} from 'react';
+import {Alert, AlertTitle, Box, Button, Snackbar, Stack} from "@mui/material";
 import CreateNewFolderOutlinedIcon from "@mui/icons-material/CreateNewFolderOutlined.js";
 import {useField} from "formik";
 import axios from "axios";
@@ -10,6 +10,7 @@ const AuditUpload = ({name, disabled, auditId, auditorId, customerId}) => {
     const [field, meta, fieldHelper] = useField(name)
     const formData = new FormData()
     const user = useSelector(state => state.user.user)
+    const [error, setError] = useState(null)
 
     const handleUpdateAudit = (e) => {
         formData.append('file', e.target.files[0])
@@ -24,11 +25,42 @@ const AuditUpload = ({name, disabled, auditId, auditorId, customerId}) => {
         })
             .then((data) => {
                 fieldHelper.setValue(formData.get('path'))
+                formData.delete('file')
+                formData.delete('path')
+                formData.delete('original_name')
+                formData.delete('private')
+                formData.delete('audit')
+                formData.delete('auditorId')
+                formData.delete('customerId')
+            })
+            .catch((err) => {
+                setError('Error while uploading file')
+                formData.delete('file')
+                formData.delete('path')
+                formData.delete('original_name')
+                formData.delete('private')
+                formData.delete('audit')
+                formData.delete('auditorId')
+                formData.delete('customerId')
             })
     }
     return (
         <>
             <Box sx={[inputWrapper, meta.error ? {borderColor: '#f44336'} : {}]}>{field?.value}</Box>
+            <Snackbar
+                autoHideDuration={10000}
+                open={!!error}
+                anchorOrigin={{ horizontal: 'right', vertical: 'top' }}
+                onClose={() => {
+                    setError(null)
+                }}
+            >
+                <Stack sx={{ width: '100%', flexDirection: 'column', gap: 2 }} spacing={2}>
+                    <Alert severity='error'>
+                        <AlertTitle>{error}</AlertTitle>
+                    </Alert>
+                </Stack>
+            </Snackbar>
             <Button disabled={disabled}>
                 <label htmlFor="audit-upload">
                     <CreateNewFolderOutlinedIcon fontSize={'large'} color={'disabled'}/>
