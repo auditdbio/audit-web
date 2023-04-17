@@ -21,6 +21,7 @@ import { useLocation } from "react-router-dom";
 import { getAuditsRequest } from "../redux/actions/auditAction.js";
 import { AuditRequestsArray } from "./custom/AuditRequestsArray.jsx";
 import Markdown from "./custom/Markdown-editor.jsx";
+import SalarySlider from "./forms/salary-slider/salary-slider.jsx";
 
 const CreateProjectCard = ({ role, projectInfo }) => {
   const navigate = useNavigate();
@@ -65,8 +66,7 @@ const CreateProjectCard = ({ role, projectInfo }) => {
     status: projectInfo ? projectInfo.status : "status test",
     publish: projectInfo ? projectInfo.publish : false,
     ready_to_wait: projectInfo ? projectInfo.name : true,
-    prise_from: "0",
-    prise_to: "10000",
+    price: projectInfo ? projectInfo.price : 0,
     creator_contacts: customerReducer.customer
       ? customerReducer.customer.contacts
       : {},
@@ -88,10 +88,11 @@ const CreateProjectCard = ({ role, projectInfo }) => {
       initialValues={initialValues}
       validationSchema={validationSchema}
       onSubmit={(values) => {
+        const newValue = {...values, price: parseInt(values.price)}
         if (editMode) {
-          dispatch(editProject({ ...values, id: projectInfo.id }))
+          dispatch(editProject({ ...newValue, id: projectInfo.id }))
         } else {
-          dispatch(createProject(values));
+          dispatch(createProject(newValue));
         }
       }}
     >
@@ -145,6 +146,7 @@ const CreateProjectCard = ({ role, projectInfo }) => {
                       <Box sx={fieldWrapper}>
                         <TagsField name={"scope"} label={"Project links"} />
                         <ProjectLinksList name={"scope"} />
+                        <SalarySlider name={'price'}/>
                       </Box>
                     </Box>
 

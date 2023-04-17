@@ -50,15 +50,20 @@ const AuditInfo = () => {
     }
 
     const handleOpenReport = () => {
-        axios.get(`https://dev.auditdb.io/api/files/get/${audit.report}`, {
-                withCredentials: true,
-                headers: {
-                    // 'X-CSRF-Token': 'Authorization =' + Cookies.get("token"),
-                    headers: {Authorization: "Bearer " + Cookies.get("token")}
-                }
-            }
-        )
-            .then(res => console.log(res))
+        axios.get(`https://dev.auditdb.io/api/files/get/${audit?.report}`, {
+            responseType: 'blob',
+            withCredentials: true,
+            headers: {
+                Authorization: `Bearer ${Cookies.get("token")}`,
+            }})
+            .then((response) => {
+            const url = window.URL.createObjectURL(new Blob([response.data]));
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', `${audit?.project_name}.pdf`);
+            document.body.appendChild(link);
+            link.click();
+        })
     }
 
     return (

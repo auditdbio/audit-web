@@ -293,7 +293,7 @@ const Header = () => {
                 {/* //   Desktop Screen  */}
                 {!matchSm && (
                   <Box
-                    sx={{ display: "flex", alignItems: "center", gap: "2rem" }}
+                    sx={{ display: "flex", alignItems: "center", gap: "15px" }}
                   >
                     {authorizedPages.map((page) => (
                       <CustomMenu
@@ -321,15 +321,7 @@ const Header = () => {
                         <NotificationsIcon />
                       </CustomBadge>
                     </IconButton>
-                    <Typography
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        fontSize: "26px",
-                        fontWeight: "500",
-                        whiteSpace: "nowrap",
-                      }}
-                    >
+                    <Typography sx={userGreeting}>
                       Hello, {currentUsername}!
                     </Typography>
                     <IconButton
@@ -531,6 +523,14 @@ const authorizedPages = [
   },
 ];
 
+const userGreeting = (theme) => ({
+  display: "flex",
+  alignItems: "center",
+  fontSize: "26px",
+  fontWeight: "500",
+  whiteSpace: "nowrap",
+})
+
 const signInButton = {
   backgroundColor: "orange",
   color: "white",
@@ -570,9 +570,13 @@ const logoStyle = {
   },
 };
 
-const avatarStyle = {
+const avatarStyle = (theme) => ({
   width: "100px",
   height: "100px",
-};
+  [theme.breakpoints.down('lg')]: {
+    width: '60px',
+    height: '60px',
+  }
+});
 
 export default Header;

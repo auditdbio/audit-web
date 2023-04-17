@@ -6,7 +6,7 @@ import axios from "axios";
 import Cookies from "js-cookie";
 import {useSelector} from "react-redux";
 
-const AuditUpload = ({name, disabled, auditId}) => {
+const AuditUpload = ({name, disabled, auditId, auditorId, customerId}) => {
     const [field, meta, fieldHelper] = useField(name)
     const formData = new FormData()
     const user = useSelector(state => state.user.user)
@@ -17,6 +17,8 @@ const AuditUpload = ({name, disabled, auditId}) => {
         formData.append('original_name', e.target.files[0].name)
         formData.append("private", "true")
         formData.append('audit', auditId)
+        formData.append('auditorId', auditorId)
+        formData.append('customerId', customerId)
         axios.post('https://dev.auditdb.io/api/files/create', formData, {
             headers: {Authorization: "Bearer " + Cookies.get("token")}
         })
@@ -34,6 +36,7 @@ const AuditUpload = ({name, disabled, auditId}) => {
             </Button>
             <input id={'audit-upload'}
                    style={{display: 'none'}}
+                   accept="application/pdf"
                    onChange={handleUpdateAudit}
                    type="file"
             />

@@ -150,12 +150,12 @@ const AuditRequestInfo = ({project, onClose}) => {
                             price: project?.price || '',
                             description: project?.description || '',
                             price_range: {
-                                lower_bound: project?.price || '',
-                                upper_bound: project?.price || ''
+                                from: project?.price || '',
+                                to: project?.price || ''
                             },
                             time: {
-                                begin: project?.time?.begin || '',
-                                end: project?.time?.end || ''
+                                from: project?.time?.from || '',
+                                to: project?.time?.to || ''
                             },
                             project_id: project?.project_id || project?.id,
                             scope: project?.scope,
@@ -163,9 +163,10 @@ const AuditRequestInfo = ({project, onClose}) => {
                         }}
                         onSubmit={(values) => {
                             const newValue = {...values,
+                                price: parseInt(values.price),
                                 price_range: {
-                                    lower_bound: values.price,
-                                    upper_bound: values.price
+                                    from: parseInt(values.price),
+                                    to: parseInt(values.price)
                                 }}
                             dispatch(createRequest(newValue))
                             handleClose()
@@ -200,7 +201,7 @@ const AuditRequestInfo = ({project, onClose}) => {
                                                     inputFormat='DD.MM.YYYY'
                                                     onChange={(e) => {
                                                         const value = new Date(e)
-                                                        setFieldValue('time.begin', value.toString())
+                                                        setFieldValue('time.from', value.toString())
                                                     }}
                                                     disablePast
                                                 />
@@ -211,7 +212,7 @@ const AuditRequestInfo = ({project, onClose}) => {
                                                     sx={dateStyle}
                                                     onChange={(e) => {
                                                         const value = new Date(e)
-                                                        setFieldValue('time.end', value.toString())
+                                                        setFieldValue('time.to', value.toString())
                                                     }}
                                                     disablePast
                                                     inputFormat='DD.MM.YYYY'

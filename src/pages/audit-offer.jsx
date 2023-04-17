@@ -17,8 +17,6 @@ import Loader from "../components/Loader.jsx";
 import {AUDITOR, SUBMITED} from "../redux/actions/types.js";
 import * as Yup from "yup";
 import Markdown from "../components/custom/Markdown.jsx";
-import axios from "axios";
-import Cookies from "js-cookie";
 
 const AuditOffer = () => {
     const {id} = useParams()
@@ -26,17 +24,6 @@ const AuditOffer = () => {
     const dispatch = useDispatch()
     const matchXs = useMediaQuery(theme.breakpoints.down('xs'))
     const audit = useSelector(s=> s.audits.audits?.find(audit => audit.id === id))
-
-    // const handleOpenReport = () => {
-    //     const config = {
-    //         withCredentials: true,
-    //         headers: {
-    //             Authorization: Cookies.get("token")
-    //         }
-    //         }
-    //     axios.get(`https://dev.auditdb.io/api/files/get/${audit?.report}`, config)
-    //         .then(res => console.log(res))
-    // }
 
     if (!audit){
         return <Loader />
@@ -98,8 +85,13 @@ const AuditOffer = () => {
                                             <Box sx={fileWrapper}>
                                                 <Typography sx={subTitleSx}>Upload audit</Typography>
                                                 <Box sx={{display: 'flex'}}>
-                                                    <AuditUpload disabled={audit.status === SUBMITED} auditId={audit.id} name={'report'}/>
-                                                    {/*<button type={'button'} onClick={handleOpenReport}>CLICK</button>*/}
+                                                    <AuditUpload
+                                                        disabled={audit.status === SUBMITED}
+                                                        auditId={audit.id}
+                                                        auditorId={audit.auditor_id}
+                                                        customerId={audit.customer_id}
+                                                        name={'report'}
+                                                    />
                                                 </Box>
                                             </Box>
                                             <Box sx={linkWrapper}>

@@ -90,12 +90,16 @@ export default function RoleMenuDropdown() {
       >
         {options.map((option) => (
           <MenuItem
-            style={{
-              width: "230px",
+            sx={[currentRole === option.value ? menuItemStyled : {}, {
+              width: {
+                zero: "0px",
+                sm: "0px",
+                md: "190px",
+                lg: "230px",
+              },
               display: option.value === currentRole ? "none" : "",
               justifyContent: "center",
-            }}
-            sx={currentRole === option.value ? menuItemStyled : {}}
+            }]}
             key={option.id}
             onClick={() => handleMenuItemClick(option)}
           >
@@ -120,7 +124,7 @@ const roleButtonStyle = (currentRole) => ({
   minWidth: {
     zero: "0px",
     sm: "0px",
-    md: "230px",
+    md: "190px",
     lg: "230px",
   },
   borderRadius: "0",

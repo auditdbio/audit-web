@@ -9,16 +9,10 @@ import Cookies from "js-cookie";
 import {useSelector} from "react-redux";
 
 
-const AvatarForm = ({role, name, data}) => {
+const AvatarForm = ({role, name}) => {
     const user = useSelector(state => state.user.user)
     const [avatarField, ,fieldHelper] = useField(name)
     const formData = new FormData();
-    // const handleUpdateAvatar = (e) => {
-    //     formData.append('file', e.target.files[0])
-    //     formData.append('upload_preset', 'gallery')
-    //     axios.post('https://api.cloudinary.com/v1_1/dktewh88s/upload', formData)
-    //         .then(({data}) => fieldHelper.setValue(data.url))
-    // }
 
     const handleUpdateAvatar = (e) => {
         formData.append('file', e.target.files[0])
@@ -30,6 +24,17 @@ const AvatarForm = ({role, name, data}) => {
         })
             .then((data) => {
                 fieldHelper.setValue(formData.get('path'))
+                formData.delete('file')
+                formData.delete('path')
+                formData.delete('original_name')
+                formData.delete('private')
+            })
+            .catch((err) => {
+                console.log(err)
+                formData.delete('file')
+                formData.delete('path')
+                formData.delete('original_name')
+                formData.delete('private')
             })
     }
 
@@ -46,6 +51,7 @@ const AvatarForm = ({role, name, data}) => {
             </Button>
             <input id={'file-upload'}
                    style={{display: 'none'}}
+                   accept={".jpg,.png,.jpeg,.gif,.bmp,.tif,.tiff,.webp"}
                    onChange={handleUpdateAvatar}
                    type="file"
             />

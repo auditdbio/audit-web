@@ -10,8 +10,6 @@ import Loader from "../components/Loader.jsx";
 
 const EditProfile = () => {
     const role = useSelector(s => s.user.user.current_role)
-    const customer = useSelector(s => s.customer.customer)
-    const auditor = useSelector(s => s.auditor.auditor)
 
     const dispatch = useDispatch()
 

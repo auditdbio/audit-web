@@ -24,7 +24,7 @@ const ProjectListCard = ({project}) => {
             </Box>
             <Box sx={{display: 'flex', alignItems: 'center', flexDirection: 'column', height: '100%'}}>
                 <Typography>
-                    {project.publish_options.prise_to} $
+                    {project.price} $
                 </Typography>
                 <Button
                     color={'secondary'}
