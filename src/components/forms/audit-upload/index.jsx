@@ -13,36 +13,42 @@ const AuditUpload = ({name, disabled, auditId, auditorId, customerId}) => {
     const [error, setError] = useState(null)
 
     const handleUpdateAudit = (e) => {
-        formData.append('file', e.target.files[0])
-        formData.append('path', user.id + user.current_role + e.target.files[0].name)
-        formData.append('original_name', e.target.files[0].name)
-        formData.append("private", "true")
-        formData.append('audit', auditId)
-        formData.append('auditorId', auditorId)
-        formData.append('customerId', customerId)
-        axios.post('https://dev.auditdb.io/api/files/create', formData, {
-            headers: {Authorization: "Bearer " + Cookies.get("token")}
-        })
-            .then((data) => {
-                fieldHelper.setValue(formData.get('path'))
-                formData.delete('file')
-                formData.delete('path')
-                formData.delete('original_name')
-                formData.delete('private')
-                formData.delete('audit')
-                formData.delete('auditorId')
-                formData.delete('customerId')
+        const file = e.target.files[0];
+        const fileSize = file.size;
+        if (fileSize > 10000000) {
+           return setError('File size is too large')
+        } else {
+            formData.append('file', file)
+            formData.append('path', user.id + user.current_role + file.name)
+            formData.append('original_name', file.name)
+            formData.append("private", "true")
+            formData.append('audit', auditId)
+            formData.append('auditorId', auditorId)
+            formData.append('customerId', customerId)
+            axios.post('https://dev.auditdb.io/api/files/create', formData, {
+                headers: {Authorization: "Bearer " + Cookies.get("token")}
             })
-            .catch((err) => {
-                setError('Error while uploading file')
-                formData.delete('file')
-                formData.delete('path')
-                formData.delete('original_name')
-                formData.delete('private')
-                formData.delete('audit')
-                formData.delete('auditorId')
-                formData.delete('customerId')
-            })
+                .then((data) => {
+                    fieldHelper.setValue(formData.get('path'))
+                    formData.delete('file')
+                    formData.delete('path')
+                    formData.delete('original_name')
+                    formData.delete('private')
+                    formData.delete('audit')
+                    formData.delete('auditorId')
+                    formData.delete('customerId')
+                })
+                .catch((err) => {
+                    setError('Error while uploading file')
+                    formData.delete('file')
+                    formData.delete('path')
+                    formData.delete('original_name')
+                    formData.delete('private')
+                    formData.delete('audit')
+                    formData.delete('auditorId')
+                    formData.delete('customerId')
+                })
+        }
     }
     return (
         <>

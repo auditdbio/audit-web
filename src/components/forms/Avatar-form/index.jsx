@@ -16,28 +16,34 @@ const AvatarForm = ({role, name}) => {
     const [error, setError] = useState(null)
 
     const handleUpdateAvatar = (e) => {
-        formData.append('file', e.target.files[0])
-        formData.append('path', user.id + user.current_role + e.target.files[0].name)
-        formData.append('original_name', e.target.files[0].name)
-        formData.append("private", "false")
-        axios.post('https://dev.auditdb.io/api/files/create', formData, {
+        const file = e.target.files[0];
+        const fileSize = file.size;
+        if (fileSize > 10000000) {
+           return setError('File size is too big')
+        } else {
+            formData.append('file', file)
+            formData.append('path', user.id + user.current_role + file.name)
+            formData.append('original_name', file.name)
+            formData.append("private", "false")
+            axios.post('https://dev.auditdb.io/api/files/create', formData, {
                 headers: {Authorization: "Bearer " + Cookies.get("token")}
-        })
-            .then((data) => {
-                fieldHelper.setValue(formData.get('path'))
-                formData.delete('file')
-                formData.delete('path')
-                formData.delete('original_name')
-                formData.delete('private')
             })
-            .catch((err) => {
-                console.log(err)
-                setError('Error while uploading file')
-                formData.delete('file')
-                formData.delete('path')
-                formData.delete('original_name')
-                formData.delete('private')
-            })
+                .then((data) => {
+                    fieldHelper.setValue(formData.get('path'))
+                    formData.delete('file')
+                    formData.delete('path')
+                    formData.delete('original_name')
+                    formData.delete('private')
+                })
+                .catch((err) => {
+                    console.log(err)
+                    setError('Error while uploading file')
+                    formData.delete('file')
+                    formData.delete('path')
+                    formData.delete('original_name')
+                    formData.delete('private')
+                })
+        }
     }
 
     return (
