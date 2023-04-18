@@ -47,7 +47,7 @@ export const clearUserSuccess = () => {
 export const signUp = (values) => {
   return (dispatch) => {
     axios
-      .post(`${API_URL}/users`, values)
+      .post(`${API_URL}/user`, values)
       .then(({ data }) => {
         dispatch({ type: USER_SIGNUP, payload: data });
         history.push("/sign-in", {
@@ -72,11 +72,11 @@ export const logout = () => {
   return { type: LOG_OUT };
 };
 
-export const changeRole = (value) => {
+export const changeRole = (value, id) => {
   return (dispatch) => {
     axios
       .patch(
-        `${API_URL}/users`,
+        `${API_URL}/user/${id}`,
         { current_role: value },
         {
           headers: {

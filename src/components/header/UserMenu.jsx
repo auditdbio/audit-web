@@ -118,7 +118,7 @@ export const UserMenu = ({ open, handleClose, anchor, userAvatar }) => {
         value={isAuditor}
         onChange={(e, newValue) => {
           setIsAuditor(newValue);
-          dispatch(changeRole(newValue));
+          dispatch(changeRole(newValue, reduxUser.id));
         }}
         name={"role"}
         sx={tabsSx}

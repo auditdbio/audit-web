@@ -26,7 +26,6 @@ import SalarySlider from "./forms/salary-slider/salary-slider.jsx";
 const CreateProjectCard = ({ role, projectInfo }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const location = useLocation();
   const customerReducer = useSelector((state) => state.customer);
   const auditReducer = useSelector((state) => state.audits);
   const [auditRequests, setAuditRequests] = useState([]);

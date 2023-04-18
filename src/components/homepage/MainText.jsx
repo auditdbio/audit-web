@@ -5,26 +5,34 @@ import { CustomButton } from "../custom/Button";
 import { useNavigate } from "react-router-dom";
 import { useMediaQuery } from "@mui/material";
 import { isAuth } from "../../lib/helper.js";
-import { useDispatch } from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import { changeRole } from "../../redux/actions/userAction.js";
 
 const MainText = () => {
   const isMobile = useMediaQuery("(max-width: 768px)");
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const user = useSelector((state) => state.user.user);
 
   const handleSignUp = () => {
     navigate("/sign-up");
   };
 
   const handleBecomeAuditor = () => {
-    dispatch(changeRole("auditor"));
-    navigate("/profile/projects");
+    if (user.current_role){
+      dispatch(changeRole("auditor", user.id));
+    } else {
+        navigate("/sign-up");
+    }
+
   };
 
   const handleShowProject = () => {
-    dispatch(changeRole("customer"));
-    navigate("/profile/projects");
+    if (user.current_role){
+      dispatch(changeRole("customer", user.id));
+    } else {
+        navigate("/sign-up");
+    }
   };
 
   return (

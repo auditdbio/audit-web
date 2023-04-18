@@ -51,7 +51,7 @@ export default function RoleMenuDropdown() {
   const handleMenuItemClick = (option) => {
     setOpen(false);
     setCurrentRole(option.value);
-    dispatch(changeRole(option.value));
+    dispatch(changeRole(option.value, reduxUser.id));
   };
 
   const handleToggle = () => {
