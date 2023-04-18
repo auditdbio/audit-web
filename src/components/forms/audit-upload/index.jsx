@@ -40,7 +40,11 @@ const AuditUpload = ({name, disabled, auditId, auditorId, customerId}) => {
                     formData.delete('customerId')
                 })
                 .catch((err) => {
-                    setError('Error while uploading file')
+                    if (err?.code === "ERR_NETWORK"){
+                        setError('File size is too big')
+                    } else {
+                        setError('Error while uploading file')
+                    }
                     formData.delete('file')
                     formData.delete('path')
                     formData.delete('original_name')

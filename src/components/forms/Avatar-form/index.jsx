@@ -37,8 +37,12 @@ const AvatarForm = ({role, name}) => {
                     formData.delete('private')
                 })
                 .catch((err) => {
-                    console.log(err)
-                    setError('Error while uploading file')
+                    console.log(err?.code === "ERR_NETWORK")
+                    if (err?.code === "ERR_NETWORK"){
+                        setError('File size is too big')
+                    } else {
+                        setError('Error while uploading file')
+                    }
                     formData.delete('file')
                     formData.delete('path')
                     formData.delete('original_name')
