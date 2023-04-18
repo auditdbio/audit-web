@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Box, Button } from "@mui/material";
+import {Alert, AlertTitle, Box, Button, Snackbar, Stack} from "@mui/material";
 import theme, { radiusOfComponents } from "../styles/themes.js";
 import { useNavigate } from "react-router-dom/dist";
 import TagsArray from "./tagsArray/index.jsx";
@@ -29,6 +29,7 @@ const CreateProjectCard = ({ role, projectInfo }) => {
   const customerReducer = useSelector((state) => state.customer);
   const auditReducer = useSelector((state) => state.audits);
   const [auditRequests, setAuditRequests] = useState([]);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     dispatch(getAuditsRequest("customer"));
@@ -84,6 +85,15 @@ const CreateProjectCard = ({ role, projectInfo }) => {
 
   const handleInviteAuditor = () => {};
 
+  const handlePublish = (values) => {
+    const newValue = {...values, publish_options: {...values.publish_options, publish: !values.publish_options.publish}}
+    if (editMode) {
+      dispatch(editProject({ ...newValue, id: projectInfo.id }))
+    } else {
+      dispatch(createProject(newValue));
+    }
+  }
+
   return (
     <Formik
       initialValues={initialValues}
@@ -97,7 +107,7 @@ const CreateProjectCard = ({ role, projectInfo }) => {
         }
       }}
     >
-      {({ handleSubmit }) => {
+      {({ handleSubmit, values }) => {
         return (
           <Box sx={mainBox}>
             <Button
@@ -106,6 +116,18 @@ const CreateProjectCard = ({ role, projectInfo }) => {
             >
               <ArrowBackIcon />
             </Button>
+            <Snackbar
+                autoHideDuration={10000}
+                open={!!error}
+                anchorOrigin={{ horizontal: 'right', vertical: 'top' }}
+                onClose={() => setError(null)}
+            >
+              <Stack sx={{ width: '100%', flexDirection: 'column', gap: 2 }} spacing={2}>
+                <Alert severity='error'>
+                  <AlertTitle>{error}</AlertTitle>
+                </Alert>
+              </Stack>
+            </Snackbar>
 
             <AuditorSearchModal
               open={openInvite}
@@ -124,8 +146,22 @@ const CreateProjectCard = ({ role, projectInfo }) => {
               >
                 Invite auditor
               </Button>
-              <Button variant={"contained"} sx={publishButton}>
-                Publish project
+              <Button
+                  variant={"contained"}
+                  sx={publishButton}
+                  onClick={() => {
+                    if (values.name && values.tags.length > 0 && values.scope.length > 0 && values.description) {
+                      handlePublish(values)
+                    } else {
+                      setError('Please fill all required fields')
+                    }
+                  }}
+              >
+                { !values?.publish_options?.publish ?
+                  'Publish project'
+                    :
+                    'Draft project'
+                }
               </Button>
               <Button sx={menuButtonSx}>
                 <MenuRoundedIcon sx={menuButtonIconSx} />

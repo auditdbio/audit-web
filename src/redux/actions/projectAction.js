@@ -44,6 +44,28 @@ export const editProject = (values) => {
       });
   };
 };
+
+export const changeStatusProject = (values) => {
+    return async (dispatch) => {
+        const token = Cookies.get("token");
+        await axios
+            .patch(`${API_URL}/project/${values.id}`, values, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            })
+            .then(({ data }) => {
+                dispatch({ type: PROJECT_UPDATE, payload: data });
+                history.push("/profile/projects", {
+                    some: true,
+                });
+            })
+            .catch(({ response }) => {
+                console.log(response, "res");
+            });
+    };
+};
+
 export const getAllProjects = (values = "") => {
   const token = Cookies.get("token");
   return async (dispatch) => {
@@ -77,7 +99,7 @@ export const getProjects = () => {
 };
 
 export const searchProjects = (values) => {
-    console.log(values, "values");
+
     const searchValues = {
         query: values?.search || '',
         tags: values?.tags || '',
