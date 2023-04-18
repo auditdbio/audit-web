@@ -6,6 +6,7 @@ import theme from "../styles/themes.js";
 import { Box } from "@mui/system";
 import { Typography } from "@mui/material";
 import GitHubIcon from "@mui/icons-material/GitHub";
+import Markdown from "./custom/Markdown.jsx";
 
 export default function ProjectModal({ open, handleClose, project }) {
   return (
@@ -19,7 +20,7 @@ export default function ProjectModal({ open, handleClose, project }) {
               .map((item) => item.charAt(0).toUpperCase() + item.slice(1))
               .join(", ")}
           </Typography>
-          <Typography sx={modalDescription}>{project.description}</Typography>
+          <Markdown value={project.description}/>
         </Box>
         <Box sx={linksList}>
           {project.scope.map((item, index) => (
