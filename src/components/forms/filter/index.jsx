@@ -26,10 +26,6 @@ import theme from "../../../styles/themes.js";
 import {SliderRange} from "../salary-slider/slider-range.jsx";
 import {PROJECTS} from "../../../redux/actions/types.js";
 import {useEffect} from "react";
-import {useDispatch} from "react-redux";
-import {getAuditors} from "../../../redux/actions/auditorAction.js";
-import {auditorReducer} from "../../../redux/reducers/auditorReducer.js";
-import {useLocation} from "react-router-dom/dist";
 
 const Filter = ({target, submit, initial}) => {
     const [isOpen, setIsOpen] = useState(false);
@@ -49,16 +45,11 @@ const Filter = ({target, submit, initial}) => {
             initialValues={initial}
             enableReinitialize
             onSubmit={(values) => {
-                const newValues = {
-                    ...values,
-                    dateFrom: values.dateFrom ? dayjs(values.dateFrom).format("DD-MM-YYYY") : '',
-                    dateTo: values.dateTo ? dayjs(values.dateTo).format("DD-MM-YYYY") : '',
-                }
-                submit(newValues)
+                submit(values)
                 setIsOpen(false);
             }}
         >
-            {({handleSubmit, values, setFieldValue}) => {
+            {({handleSubmit, values, setFieldValue, getFieldMeta}) => {
                 return (
                     <Form onSubmit={handleSubmit}>
                         <Box>
@@ -133,6 +124,7 @@ const Filter = ({target, submit, initial}) => {
                                                         <Field
                                                             component={DatePicker}
                                                             name={"dateFrom"}
+                                                            defaultValue={new Date()}
                                                             value={dayjs(values.dateFrom)}
                                                             sx={dateStyle}
                                                             inputFormat="DD.MM.YYYY"

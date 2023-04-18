@@ -26,7 +26,7 @@ export const projectReducer = (state = initialState, action) => {
     case PROJECT_UPDATE:
       return { ...state, recentProject: action.payload };
     case GET_MY_PROJECTS:
-      return { ...state, myProjects: action.payload.projects };
+      return { ...state, myProjects: action.payload };
     case SEARCH_PROJECTS:
       return { ...state, searchProjects: action.payload };
     default:

@@ -8,7 +8,7 @@ const API_URL = import.meta.env.VITE_API_BASE_URL
 export const getAuditor = (values) => {
     const token = Cookies.get('token')
     return (dispatch) => {
-        axios.get(`${API_URL}/auditors`, {headers: {"Authorization": `Bearer ${token}`}})
+        axios.get(`${API_URL}/my_auditor`, {headers: {"Authorization": `Bearer ${token}`}})
             .then(({data}) => {
                 dispatch({type: GET_AUDITOR, payload: data})
             })
@@ -22,7 +22,7 @@ export const getAuditor = (values) => {
 export const createAuditor = (values) => {
     const token = Cookies.get('token')
     return (dispatch) => {
-        axios.post(`${API_URL}/auditors`, values, {headers: {"Authorization": `Bearer ${token}`}})
+        axios.post(`${API_URL}/auditor`, values, {headers: {"Authorization": `Bearer ${token}`}})
             .then(({data}) => {
                 dispatch({type: UPDATE_AUDITOR, payload: data})
                 history.push({pathname: `/profile/user-info`}, {
@@ -38,7 +38,7 @@ export const createAuditor = (values) => {
 export const updateAuditor = (values) => {
     const token = Cookies.get('token')
     return (dispatch) => {
-        axios.patch(`${API_URL}/auditors`, values, {headers: {"Authorization": `Bearer ${token}`}})
+        axios.patch(`${API_URL}/auditor/${values.userId}`, values, {headers: {"Authorization": `Bearer ${token}`}})
             .then(({data}) => {
                 dispatch({type: UPDATE_AUDITOR, payload: data})
                 history.push({pathname: `/profile/user-info`}, {
@@ -55,11 +55,11 @@ export const getAuditors = (values='') => {
     const token = Cookies.get("token");
     return (dispatch) => {
         axios
-            .get(`${API_URL}/auditors/all?tags=${values.toLowerCase()}&limit=100&skip=0`, {
+            .get(`${API_URL}/search?kind=auditor&query=&tags=${values.toLowerCase()}&per_page=100&page=0`, {
                 headers: { Authorization: `Bearer ${token}` },
             })
             .then(({ data }) => {
-                dispatch({ type: GET_AUDITORS, payload: data.auditors });
+                dispatch({ type: GET_AUDITORS, payload: data });
             })
             .catch(({ response }) => {
                 console.log(response, "res")

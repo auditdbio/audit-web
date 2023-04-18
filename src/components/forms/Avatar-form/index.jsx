@@ -7,6 +7,7 @@ import {useField} from "formik";
 import axios from "axios";
 import Cookies from "js-cookie";
 import {useSelector} from "react-redux";
+import {ASSET_URL} from "../../../services/urls.js";
 
 
 const AvatarForm = ({role, name}) => {
@@ -25,7 +26,7 @@ const AvatarForm = ({role, name}) => {
             formData.append('path', user.id + user.current_role + file.name)
             formData.append('original_name', file.name)
             formData.append("private", "false")
-            axios.post('https://dev.auditdb.io/api/files/create', formData, {
+            axios.post(ASSET_URL, formData, {
                 headers: {Authorization: "Bearer " + Cookies.get("token")}
             })
                 .then((data) => {
@@ -48,7 +49,8 @@ const AvatarForm = ({role, name}) => {
 
     return (
         <>
-            <Avatar src={`https://dev.auditdb.io/api/files/get/${avatarField.value}`}/>
+            {/*<Avatar src={`https://dev.auditdb.io/api/files/get/${avatarField.value}`}/>*/}
+            <Avatar src={`${ASSET_URL}/${avatarField.value}`}/>
             <Snackbar
                 autoHideDuration={10000}
                 open={!!error}

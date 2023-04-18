@@ -10,6 +10,7 @@ import {getCustomer} from "../redux/actions/customerAction.js";
 import Loader from "./Loader.jsx";
 import {AUDITOR} from "../redux/actions/types.js";
 import TagsList from "./tagsList";
+import {ASSET_URL} from "../services/urls.js";
 
 const skills = [
     {frame: 'java'},
@@ -46,7 +47,7 @@ const UserInfo = ({role}) => {
             <Box sx={wrapper}>
                 <Box sx={contentWrapper}>
                     <Box sx={{display: 'flex', justifyContent: 'center'}}>
-                        <Avatar src={data.avatar && `https://dev.auditdb.io/api/files/get/${data.avatar}`} sx={avatarStyle}/>
+                        <Avatar src={data.avatar && `${ASSET_URL}/${data.avatar}`} sx={avatarStyle}/>
                     </Box>
                     <Box sx={infoStyle}>
                         <Box sx={infoInnerStyle}>
@@ -64,8 +65,9 @@ const UserInfo = ({role}) => {
                             </Box>
                             {role === AUDITOR &&
                                 <Box sx={infoWrapper}>
-                                    <span>Price:</span>
-                                    {data?.tax && <Typography>${data?.tax} per line</Typography>}
+                                    <span>Price range:</span>
+                                    {data?.price_range?.from && data?.price_range?.to
+                                        && <Typography>${data?.price_range?.from} - {data?.price_range?.to} per line</Typography>}
                                 </Box>
                             }
                         </Box>

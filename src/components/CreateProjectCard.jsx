@@ -59,17 +59,19 @@ const CreateProjectCard = ({ role, projectInfo }) => {
   });
 
   const initialValues = {
+    id: projectInfo ? projectInfo.id : "",
+    publish_options: {
+      publish: projectInfo ? projectInfo?.publish_options?.publish : false,
+      ready_to_wait: projectInfo ? projectInfo?.publish_options?.ready_to_wait : true,
+    },
+    publish_contacts: true,
     name: projectInfo ? projectInfo.name : "",
     scope: projectInfo ? projectInfo.scope : [],
     description: projectInfo ? projectInfo.description : "",
     tags: projectInfo ? projectInfo.tags : [],
     status: projectInfo ? projectInfo.status : "status test",
-    publish: projectInfo ? projectInfo.publish : false,
-    ready_to_wait: projectInfo ? projectInfo.name : true,
     price: projectInfo ? projectInfo.price : 0,
-    creator_contacts: customerReducer.customer
-      ? customerReducer.customer.contacts
-      : {},
+    creator_contacts: customerReducer?.customer?.contacts,
   };
   const [openInvite, setOpenInvite] = useState(false);
 

@@ -40,7 +40,7 @@ export const getAuditsRequest = (role) => {
   return (dispatch) => {
     const token = Cookies.get("token");
     axios
-      .get(`${API_URL}/requests?role=${role}`, {
+      .get(`${API_URL}/my_audit_request/${role}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -58,7 +58,7 @@ export const getAudits = (role) => {
   return (dispatch) => {
     const token = Cookies.get("token");
     axios
-      .get(`${API_URL}/audit?role=${role}`, {
+      .get(`${API_URL}/my_audit/${role}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -108,7 +108,7 @@ export const addReportAudit = (values) => {
   return (dispatch) => {
     const token = Cookies.get("token");
     axios
-      .patch(`${API_URL}/audit`, values, {
+      .patch(`${API_URL}/audit/${values.id}`, values, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

@@ -2,6 +2,7 @@ import {GET_MY_PROJECTS, GET_PROJECTS, PROJECT_CREATE, PROJECT_UPDATE, SEARCH_PR
 import axios from "axios";
 import Cookies from "js-cookie";
 import { history } from "../../services/history.js";
+import dayjs from "dayjs";
 
 const API_URL = import.meta.env.VITE_API_BASE_URL;
 
@@ -9,7 +10,7 @@ export const createProject = (values) => {
   return async (dispatch) => {
     const token = Cookies.get("token");
     await axios
-      .post(`${API_URL}/projects`, values, {
+      .post(`${API_URL}/project`, values, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -27,7 +28,7 @@ export const editProject = (values) => {
   return async (dispatch) => {
     const token = Cookies.get("token");
     await axios
-      .patch(`${API_URL}/projects`, values, {
+      .patch(`${API_URL}/project/${values.id}`, values, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -47,7 +48,7 @@ export const getAllProjects = (values = "") => {
   const token = Cookies.get("token");
   return async (dispatch) => {
     await axios
-      .get(`${API_URL}/projects/all?tags=${values.toLowerCase()}&limit=100&skip=0`,
+      .get(`${API_URL}/search?kind=project&query=&tags=${values.toLowerCase()}&per_page=100&page=0`,
           // { headers: { Authorization: `Bearer ${token}` },}
       )
       .then(({ data }) => {
@@ -63,7 +64,7 @@ export const getProjects = () => {
   const token = Cookies.get("token");
   return (dispatch) => {
     axios
-        .get(`${API_URL}/projects`, {
+        .get(`${API_URL}/my_project`, {
           headers: { Authorization: `Bearer ${token}` },
         })
         .then(({ data }) => {
@@ -76,13 +77,23 @@ export const getProjects = () => {
 };
 
 export const searchProjects = (values) => {
+
     const searchValues = {
         query: values?.search || '',
-        tags: values?.tags || [],
+        tags: values?.tags || '',
+        ready_to_wait: values?.ready_to_wait || '',
+        // dateFrom: dayjs(values?.dateFrom).format("DD-MM-YYYY") || '',
+        // dateTo: dayjs(values?.dateTo).format("DD-MM-YYYY") || '',
+        priceFrom: values?.price.from || '',
+        priceTo: values?.price.to || '',
+        sort: values?.sort || '',
     }
   return (dispatch) => {
     axios
-        .get(`${API_URL}/search?query=${searchValues.query}&tags=${searchValues.tags.map(tag => tag + ',')}&page=0&per_page=0&kind=project`)
+        // .get(`${API_URL}/search?query=${searchValues.query}&tags=${searchValues.tags.map(tag => tag + ',')}
+        // ${searchValues.ready_to_wait && "&ready_to_wait="`${searchValues.ready_to_wait}`}&sort_by=price&priceFrom=${searchValues.priceFrom}&priceTo=${searchValues.priceTo}&dateFrom=${searchValues.dateFrom}&dateTo=${searchValues.dateTo}
+        // &sort_order=1&page=0&per_page=0&kind=project`)
+        .get(`${API_URL}/search?query=${searchValues.query}&tags=${searchValues.tags.map(tag => tag + ',')}&${searchValues.ready_to_wait && "&ready_to_wait="`${searchValues.ready_to_wait}`}&sort_by=price&priceFrom=${searchValues.priceFrom}&priceTo=${searchValues.priceTo}&sort_order=1&page=0&per_page=0&kind=project`)
         .then(({ data }) => {
           dispatch({ type: SEARCH_PROJECTS, payload: data });
         })

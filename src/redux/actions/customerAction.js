@@ -9,7 +9,7 @@ const API_URL = import.meta.env.VITE_API_BASE_URL
 export const getCustomer = (values) => {
     const token = Cookies.get('token')
     return (dispatch) => {
-        axios.get(`${API_URL}/customer`, {headers: {"Authorization": `Bearer ${token}`}})
+        axios.get(`${API_URL}/my_customer`, {headers: {"Authorization": `Bearer ${token}`}})
             .then(({data}) => {
                 dispatch({type: GET_CUSTOMER, payload: data})
             })
@@ -40,7 +40,7 @@ export const createCustomer = (values) => {
 export const updateCustomer = (values) => {
     const token = Cookies.get('token')
     return (dispatch) => {
-        axios.patch(`${API_URL}/customer`, values, {headers: {"Authorization": `Bearer ${token}`}})
+        axios.patch(`${API_URL}/customer/${values.userId}`, values, {headers: {"Authorization": `Bearer ${token}`}})
             .then(({data}) => {
                 dispatch({type: 'UPDATE_CUSTOMER', payload: data})
                 history.push({pathname: `/profile/user-info`}, {

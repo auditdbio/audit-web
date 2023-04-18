@@ -5,6 +5,7 @@ import {useField} from "formik";
 import axios from "axios";
 import Cookies from "js-cookie";
 import {useSelector} from "react-redux";
+import {ASSET_URL} from "../../../services/urls.js";
 
 const AuditUpload = ({name, disabled, auditId, auditorId, customerId}) => {
     const [field, meta, fieldHelper] = useField(name)
@@ -25,7 +26,7 @@ const AuditUpload = ({name, disabled, auditId, auditorId, customerId}) => {
             formData.append('audit', auditId)
             formData.append('auditorId', auditorId)
             formData.append('customerId', customerId)
-            axios.post('https://dev.auditdb.io/api/files/create', formData, {
+            axios.post(ASSET_URL, formData, {
                 headers: {Authorization: "Bearer " + Cookies.get("token")}
             })
                 .then((data) => {

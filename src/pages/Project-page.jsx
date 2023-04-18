@@ -22,13 +22,14 @@ const ProjectPage = () => {
             return {
                 ...data,
 
+                sort: filter.sort || '',
                 search: filter.search || '',
                 tags: filter.tags.map((tag) => tag),
                 dateFrom: filter.dateFrom || '',
                 dateTo: filter.dateTo || '',
                 from: filter.price.from || '',
                 to: filter.price.to || '',
-                readyToWait: filter.readyToWait || false,
+                readyToWait: filter.readyToWait || '',
             }
         })
         dispatch(searchProjects(filter))
@@ -44,9 +45,10 @@ const ProjectPage = () => {
     const initialFilter = {
         search: searchParams.get('search') || '',
         tags: searchParams.getAll('tags') || [],
-        dateFrom: searchParams.get('dateFrom') || '',
-        dateTo: searchParams.get('dateTo') || '',
-        readyToWait: searchParams.get('readyToWait') || false,
+        dateFrom: searchParams.get('dateFrom') || new Date(),
+        dateTo: searchParams.get('dateTo') || new Date(),
+        sort: searchParams.get('sort') || '',
+        readyToWait: searchParams.get('readyToWait') || '',
         price: {
             from: searchParams.get('from') || 0,
             to: searchParams.get('to') || 0

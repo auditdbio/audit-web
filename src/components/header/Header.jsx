@@ -20,6 +20,7 @@ import RoleMenuDropdown from "./RoleMenuDropdown.jsx";
 import { useSelector } from "react-redux";
 import {AUDITOR, CUSTOMER} from "../../redux/actions/types.js";
 import Logo from "../icons/Logo.jsx";
+import {ASSET_URL} from "../../services/urls.js";
 
 const Header = () => {
   const reduxUser = useSelector((state) => state.user.user);
@@ -267,7 +268,7 @@ const Header = () => {
                       </CustomBadge>
                     </IconButton>
                     <Avatar
-                        src={userAvatar ? `https://dev.auditdb.io/api/files/get/${userAvatar}` : ""}
+                        src={userAvatar ? `${ASSET_URL}/${userAvatar}` : ""}
                       style={{
                         width: "35px",
                         height: "35px",
@@ -333,7 +334,7 @@ const Header = () => {
                       disableRipple
                     >
                       <Avatar
-                          src={userAvatar ? `https://dev.auditdb.io/api/files/get/${userAvatar}` : ""}
+                          src={userAvatar ? `${ASSET_URL}/${userAvatar}` : ""}
                         sx={avatarStyle}
                       />
                       <UserMenu

@@ -14,6 +14,7 @@ import dayjs from "dayjs";
 import Markdown from "../components/custom/Markdown.jsx";
 import axios from "axios";
 import Cookies from "js-cookie";
+import {ASSET_URL} from "../services/urls.js";
 
 const AuditInfo = () => {
     const navigate = useNavigate()
@@ -50,7 +51,7 @@ const AuditInfo = () => {
     }
 
     const handleOpenReport = () => {
-        axios.get(`https://dev.auditdb.io/api/files/get/${audit?.report}`, {
+        axios.get(`${ASSET_URL}/${audit?.report}`, {
             responseType: 'blob',
             withCredentials: true,
             headers: {
@@ -82,7 +83,7 @@ const AuditInfo = () => {
                 <Box>
                     <Box sx={contentWrapper}>
                         <Box sx={userWrapper}>
-                            <Avatar src={audit?.avatar ? `https://dev.auditdb.io/api/files/get/${audit?.avatar}` : ""}/>
+                            <Avatar src={audit?.avatar ? `${ASSET_URL}/${audit?.avatar}` : ""}/>
                             <Box>
                                 <Typography>
                                     {audit?.auditor_contacts?.email}

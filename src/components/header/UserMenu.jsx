@@ -10,6 +10,7 @@ import {useNavigate} from "react-router-dom/dist";
 import { useSelector } from "react-redux";
 import React, {useMemo, useState} from "react";
 import {AUDITOR} from "../../redux/actions/types.js";
+import {ASSET_URL} from "../../services/urls.js";
 
 export const UserMenu = ({ open, handleClose, anchor, userAvatar }) => {
   const dispatch = useDispatch();
@@ -94,7 +95,7 @@ export const UserMenu = ({ open, handleClose, anchor, userAvatar }) => {
           }}
         >
           <Avatar
-              src={userAvatar ? `https://dev.auditdb.io/api/files/get/${userAvatar}` : ''}
+              src={userAvatar ? `${ASSET_URL}/${userAvatar}` : ''}
             sx={{
               width: "100px",
               height: "100px",

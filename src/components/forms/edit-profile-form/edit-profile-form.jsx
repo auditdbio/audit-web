@@ -1,5 +1,5 @@
 import React, {useEffect, useMemo, useState} from 'react';
-import {Form, Formik} from "formik";
+import {Field, Form, Formik} from "formik";
 import {Avatar, Box, Button, Slider, TextField, Typography, useMediaQuery} from "@mui/material";
 import SimpleField from "../fields/simple-field.jsx";
 import PasswordField from "../fields/password-field.jsx";
@@ -12,12 +12,13 @@ import {createCustomer, getCustomer, updateCustomer} from "../../../redux/action
 import {useDispatch, useSelector} from "react-redux";
 import {createAuditor, getAuditor, updateAuditor} from "../../../redux/actions/auditorAction.js";
 import Loader from "../../Loader.jsx";
-import {AUDITOR, CUSTOMER} from "../../../redux/actions/types.js";
+import {AUDITOR, CUSTOMER, PROJECTS} from "../../../redux/actions/types.js";
 import TagsField from "../tags-field/tags-field.jsx";
 import * as Yup from "yup";
 import {changePassword} from "../../../redux/actions/userAction.js";
 import ChangePasswordFormik from "../change-password-formik/index.jsx";
 import AvatarForm from "../Avatar-form/index.jsx";
+import {SliderRange} from "../salary-slider/slider-range.jsx";
 
 const EditProfileForm = ({role}) => {
     const matchSm = useMediaQuery(theme.breakpoints.down('sm'))
@@ -40,6 +41,7 @@ const EditProfileForm = ({role}) => {
         return (
             <Formik
                 initialValues={{
+                    userId: data.user_id || '',
                     avatar: data.avatar || '',
                     free_at: '',
                     first_name: data?.first_name || '',
@@ -50,7 +52,10 @@ const EditProfileForm = ({role}) => {
                     },
                     about: data?.about || '',
                     company: data?.company || '',
-                    tax: data?.tax || '',
+                    price_range: {
+                        from: data?.price_range?.from || 0,
+                        to: data?.price_range?.to || 0,
+                    },
                     tags: data?.tags || [],
                 }}
                 validationSchema={EditProfileSchema}
@@ -72,7 +77,7 @@ const EditProfileForm = ({role}) => {
                     }
                 }}
             >
-                {({handleSubmit, errors, values}) => {
+                {({handleSubmit, errors, values, setFieldValue}) => {
                     return (
                         <Form onSubmit={handleSubmit}>
                             <Box sx={wrapper}>
@@ -112,7 +117,21 @@ const EditProfileForm = ({role}) => {
                                                 <Typography sx={rateLabel}>
                                                     Price per line of code
                                                 </Typography>
-                                                <SalarySlider name={'tax'}/>
+                                                <Field
+                                                    name="price_range"
+                                                    value={values.price_range}
+                                                    component={SliderRange}
+                                                    sx={{
+                                                        color: "#52176D",
+                                                    }}
+                                                    min={0}
+                                                    max={200}
+                                                    onChange={(e, newValue) => {
+                                                        const value = Array.isArray(newValue) ? newValue : [newValue, newValue];
+                                                        setFieldValue("price_range.from", value[0])
+                                                        setFieldValue("price_range.to", value[1])
+                                                    }}
+                                                />
                                             </Box>
                                         }
                                         {matchSm &&

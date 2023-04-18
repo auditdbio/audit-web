@@ -18,6 +18,7 @@ import { createRequest } from "../redux/actions/auditAction.js";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { isAuth } from "../lib/helper.js";
+import {ASSET_URL} from "../services/urls.js";
 
 export default function AuditorModal({ open, handleClose, auditor }) {
   const navigate = useNavigate();
@@ -133,7 +134,7 @@ export default function AuditorModal({ open, handleClose, auditor }) {
         <DialogContent sx={modalWindow}>
           <Box sx={contentWrapper}>
             <Box sx={{ display: "flex", justifyContent: "center" }}>
-              <Avatar src={`https://dev.auditdb.io/api/files/get/{auditor.avatar}`} sx={avatarStyle} />
+              <Avatar src={`${ASSET_URL}/${auditor.avatar}`} sx={avatarStyle} />
             </Box>
             <Box sx={infoStyle}>
               <Box sx={infoInnerStyle}>

@@ -7,6 +7,7 @@ import theme from "../styles/themes.js";
 import AuditorModal from "./AuditorModal.jsx";
 import { isAuth } from "../lib/helper.js";
 import { useNavigate } from "react-router-dom";
+import {ASSET_URL} from "../services/urls.js";
 
 const AuditorListCard = ({ auditor }) => {
   const navigate = useNavigate();
@@ -39,7 +40,7 @@ const AuditorListCard = ({ auditor }) => {
       <Box sx={cardLeftSide}>
         <Box sx={avatarDescription}>
           <Box>
-            <Avatar src={`https://dev.auditdb.io/api/files/get/${auditor.avatar}`} sx={avatarStyle} />
+            <Avatar src={`${ASSET_URL}/${auditor.avatar}`} sx={avatarStyle} />
           </Box>
           <Box sx={descriptionStyle(theme)}>
             <Box sx={{ display: "flex", flexDirection: "column", gap: "5px" }}>
