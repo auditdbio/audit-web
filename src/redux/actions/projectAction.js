@@ -77,23 +77,21 @@ export const getProjects = () => {
 };
 
 export const searchProjects = (values) => {
-
+    console.log(values, "values");
     const searchValues = {
         query: values?.search || '',
         tags: values?.tags || '',
         ready_to_wait: values?.ready_to_wait || '',
-        // dateFrom: dayjs(values?.dateFrom).format("DD-MM-YYYY") || '',
-        // dateTo: dayjs(values?.dateTo).format("DD-MM-YYYY") || '',
-        priceFrom: values?.price.from || '',
-        priceTo: values?.price.to || '',
-        sort: values?.sort || '',
+        dateFrom: dayjs().valueOf(values?.dateFrom) || '',
+        dateTo: dayjs().valueOf(values?.dateTo)  || '',
+        priceFrom: parseInt(values?.price.from) || '',
+        priceTo: parseInt(values?.price.to) || '',
+        sort: values?.sort || 1,
     }
   return (dispatch) => {
     axios
-        // .get(`${API_URL}/search?query=${searchValues.query}&tags=${searchValues.tags.map(tag => tag + ',')}
-        // ${searchValues.ready_to_wait && "&ready_to_wait="`${searchValues.ready_to_wait}`}&sort_by=price&priceFrom=${searchValues.priceFrom}&priceTo=${searchValues.priceTo}&dateFrom=${searchValues.dateFrom}&dateTo=${searchValues.dateTo}
-        // &sort_order=1&page=0&per_page=0&kind=project`)
-        .get(`${API_URL}/search?query=${searchValues.query}&tags=${searchValues.tags.map(tag => tag + ',')}&${searchValues.ready_to_wait && "&ready_to_wait="`${searchValues.ready_to_wait}`}&sort_by=price&priceFrom=${searchValues.priceFrom}&priceTo=${searchValues.priceTo}&sort_order=1&page=0&per_page=0&kind=project`)
+        .get(`${API_URL}/search?query=${searchValues.query}&tags=${searchValues.tags.map(tag => tag + ',')}${searchValues.ready_to_wait && "&ready_to_wait="`${searchValues.ready_to_wait}`}&sort_by=price&priceFrom=${searchValues.priceFrom}&priceTo=${searchValues.priceTo}&dateFrom=${searchValues.dateFrom}&dateTo=${searchValues.dateTo}&sort_order=${searchValues.sort}&page=0&per_page=0&kind=project`)
+        // .get(`${API_URL}/search?query=${searchValues.query}&tags=${searchValues.tags.map(tag => tag + ',')}&${searchValues.ready_to_wait && "&ready_to_wait="`${searchValues.ready_to_wait}`}&sort_by=price&priceFrom=${searchValues.priceFrom}&priceTo=${searchValues.priceTo}&sort_order=1&page=0&per_page=0&kind=project`)
         .then(({ data }) => {
           dispatch({ type: SEARCH_PROJECTS, payload: data });
         })

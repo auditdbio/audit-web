@@ -39,6 +39,7 @@ const AuditRequestInfo = ({project, onClose}) => {
             navigate(-1)
         }
     }
+
     return (
         <CustomCard sx={wrapper} className={'audit-request-wrapper'}>
             <Box sx={{display: 'flex', width: '100%', position: 'relative'}}>
@@ -154,8 +155,8 @@ const AuditRequestInfo = ({project, onClose}) => {
                                 to: project?.price || ''
                             },
                             time: {
-                                from: project?.time?.from || '',
-                                to: project?.time?.to || ''
+                                from: dayjs(project?.time?.from) || new Date(),
+                                to: dayjs(project?.time?.to) || new Date()
                             },
                             project_id: project?.project_id || project?.id,
                             scope: project?.scope,
@@ -196,7 +197,7 @@ const AuditRequestInfo = ({project, onClose}) => {
                                                 <Field
                                                     component={DatePicker}
                                                     name={'time.begin'}
-                                                    value={dayjs(values.time?.begin)}
+                                                    value={dayjs(values.time?.from)}
                                                     sx={dateStyle}
                                                     inputFormat='DD.MM.YYYY'
                                                     onChange={(e) => {
@@ -208,7 +209,7 @@ const AuditRequestInfo = ({project, onClose}) => {
                                                 <Typography variant={"caption"}>-</Typography>
                                                 <Field
                                                     component={DatePicker}
-                                                    value={dayjs(values.time?.end)}
+                                                    value={dayjs(values.time?.to)}
                                                     sx={dateStyle}
                                                     onChange={(e) => {
                                                         const value = new Date(e)

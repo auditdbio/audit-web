@@ -12,6 +12,7 @@ import {
   SUBMIT_AUDIT,
 } from "./types.js";
 import { history } from "../../services/history.js";
+import dayjs from "dayjs";
 
 const API_URL = import.meta.env.VITE_API_BASE_URL;
 
@@ -19,8 +20,15 @@ export const createRequest = (values) => {
   return (dispatch) => {
     const token = Cookies.get("token");
     const current_role = JSON.parse(localStorage.getItem("user")).current_role;
+    console.log(values)
     axios
-      .post(`${API_URL}/requests`, values, {
+      .post(`${API_URL}/audit_request`, {
+        ...values,
+        time: {
+          from: dayjs().valueOf(values.time.from),
+          to: dayjs().valueOf(values.time.to),
+        }
+      }, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
