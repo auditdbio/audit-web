@@ -89,7 +89,7 @@ const wrapper = (theme) => ({
     }
 })
 
-const modalWrapper = (theme) => ({
+export const modalWrapper = (theme) => ({
     position: 'absolute',
     top: '50%',
     left: '50%',

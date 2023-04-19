@@ -16,6 +16,7 @@ import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs";
 import {DatePicker} from "@mui/x-date-pickers/DatePicker";
 import {LocalizationProvider} from "@mui/x-date-pickers";
 import Markdown from "./custom/Markdown.jsx";
+import {isAuth} from "../lib/helper.js";
 
 const AuditRequestInfo = ({project, onClose}) => {
     const navigate = useNavigate()
@@ -120,13 +121,15 @@ const AuditRequestInfo = ({project, onClose}) => {
                 >
                     Decline
                 </Button>
-                <Button
-                    variant={'contained'}
-                    sx={buttonSx}
-                    onClick={handleOpen}
-                >
-                    Make offer
-                </Button>
+                { (user.current_role === 'auditor' && isAuth()) &&
+                    <Button
+                        variant={'contained'}
+                        sx={buttonSx}
+                        onClick={handleOpen}
+                    >
+                        Make offer
+                    </Button>
+                }
             </Box>
             <Modal
                 open={open}

@@ -1,9 +1,11 @@
-import { Box, Card, Typography } from "@mui/material";
+import {Box, Card, Modal, Typography} from "@mui/material";
 import theme from "../../../styles/themes";
 import { CustomButton } from "../../custom/Button";
 import { useNavigate } from "react-router-dom";
 import React, { useState } from "react";
 import ProjectModal from "../../ProjectModal.jsx";
+import AuditRequestInfo from "../../audit-request-info.jsx";
+import {modalWrapper} from "../../Project-list-card.jsx";
 
 const PublicProjectCard = ({ project }) => {
   const navigate = useNavigate();
@@ -19,12 +21,16 @@ const PublicProjectCard = ({ project }) => {
 
   return (
     <Card sx={cardWrapper}>
-      <ProjectModal
-        open={openModal}
-        handleClose={handleCloseModal}
-        project={project}
-      />
-
+      <Modal
+          open={openModal}
+          onClose={handleCloseModal}
+          aria-labelledby="parent-modal-title"
+          aria-describedby="parent-modal-description"
+      >
+        <Box sx={modalWrapper}>
+          <AuditRequestInfo onClose={handleCloseModal} project={project} modal={true}/>
+        </Box>
+      </Modal>
       <Typography sx={auditNameStyle}>{project.name}</Typography>
       <Typography sx={nameTextStyle}>{project.creator_contacts.email}</Typography>
       <Typography sx={modalSubheader}>
