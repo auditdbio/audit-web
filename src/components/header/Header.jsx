@@ -13,7 +13,7 @@ import { CustomButton } from "../custom/Button.jsx";
 import { useNavigate, Link } from "react-router-dom/dist";
 import { Typography, useMediaQuery, Avatar } from "@mui/material";
 import { isAuth } from "../../lib/helper.js";
-import { CustomBadge } from "../custom/Badge.jsx";
+import CustomBadge from "../customBudge";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import { UserMenu } from "./UserMenu.jsx";
 import RoleMenuDropdown from "./RoleMenuDropdown.jsx";
@@ -248,25 +248,7 @@ const Header = () => {
                       gap: "1rem",
                     }}
                   >
-                    <IconButton
-                      disableRipple
-                      aria-label="message"
-                      sx={{
-                        width: "35px",
-                        height: "35px",
-                        backgroundColor: "#D9D9D9",
-                        borderRadius: "50px",
-                        marginY: "auto",
-                      }}
-                    >
-                      <CustomBadge
-                        badgeContent={0}
-                        color="secondary"
-                        sx={{ color: "black" }}
-                      >
-                        <NotificationsIcon />
-                      </CustomBadge>
-                    </IconButton>
+                    <CustomBadge />
                     <Avatar
                         src={userAvatar ? `${ASSET_URL}/${userAvatar}` : ""}
                       style={{
@@ -303,25 +285,7 @@ const Header = () => {
                         buttonText={page.name}
                       />
                     ))}
-                    <IconButton
-                      disableRipple
-                      aria-label="message"
-                      sx={{
-                        width: "35px",
-                        height: "35px",
-                        backgroundColor: "#D9D9D9",
-                        borderRadius: "50px",
-                        marginY: "auto",
-                      }}
-                    >
-                      <CustomBadge
-                        badgeContent={0}
-                        color="secondary"
-                        sx={{ color: "black" }}
-                      >
-                        <NotificationsIcon />
-                      </CustomBadge>
-                    </IconButton>
+                    <CustomBadge />
                     <Typography sx={userGreeting}>
                       Hello, {currentUsername}!
                     </Typography>
