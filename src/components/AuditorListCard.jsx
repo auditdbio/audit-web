@@ -8,9 +8,12 @@ import AuditorModal from "./AuditorModal.jsx";
 import { isAuth } from "../lib/helper.js";
 import { useNavigate } from "react-router-dom";
 import {ASSET_URL} from "../services/urls.js";
+import {useSelector} from "react-redux";
+import {CUSTOMER} from "../redux/actions/types.js";
 
 const AuditorListCard = ({ auditor }) => {
   const navigate = useNavigate();
+  const user = useSelector((state) => state.user.user);
 
   const [isOpenView, setIsOpenView] = useState(false);
   const [isOpenInvite, setIsOpenInvite] = useState(false);
@@ -70,15 +73,17 @@ const AuditorListCard = ({ auditor }) => {
         >
           View more
         </Button>
-        <Button
-          color={"primary"}
-          size={"small"}
-          sx={inviteButtonStyle(theme)}
-          variant={"contained"}
-          onClick={handleOpenInvite}
-        >
-          Invite to project
-        </Button>
+        { (isAuth() && user.current_role === CUSTOMER ) &&
+          <Button
+              color={"primary"}
+              size={"small"}
+              sx={inviteButtonStyle(theme)}
+              variant={"contained"}
+              onClick={handleOpenInvite}
+          >
+            Invite to project
+          </Button>
+        }
       </Box>
 
       <AuditorModal

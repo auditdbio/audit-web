@@ -19,14 +19,15 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { isAuth } from "../lib/helper.js";
 import {ASSET_URL} from "../services/urls.js";
+import {CUSTOMER} from "../redux/actions/types.js";
 
 export default function AuditorModal({ open, handleClose, auditor }) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const API_URL = import.meta.env.VITE_API_BASE_URL;
-  const auditorReducer = useSelector((state) => state.auditor.auditors);
   const projectReducer = useSelector((state) => state.project);
   const customerReducer = useSelector((state) => state.customer);
+  const user = useSelector((state) => state.user.user);
 
   const [mode, setMode] = useState("info");
   const [submitted, setSubmitted] = useState(false);
@@ -177,9 +178,11 @@ export default function AuditorModal({ open, handleClose, auditor }) {
             <Button sx={backButton} onClick={handleClose}>
               Back
             </Button>
-            <Button sx={findButton} onClick={handleInvite}>
-              Invite to project
-            </Button>
+            { (isAuth() && user.current_role === CUSTOMER) &&
+              <Button sx={findButton} onClick={handleInvite}>
+                Invite to project
+              </Button>
+            }
           </Box>
         </DialogContent>
       )}
