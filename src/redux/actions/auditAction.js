@@ -20,7 +20,6 @@ export const createRequest = (values) => {
   return (dispatch) => {
     const token = Cookies.get("token");
     const current_role = JSON.parse(localStorage.getItem("user")).current_role;
-    console.log(values)
     axios
       .post(`${API_URL}/audit_request`, {
         ...values,

@@ -5,6 +5,7 @@ import Currency from "../../icons/Currency";
 import Star from "../../icons/Star";
 import { useState } from "react";
 import AuditorModal from "../../AuditorModal.jsx";
+import {ASSET_URL} from "../../../services/urls.js";
 
 const AuditorCard = ({ auditor }) => {
   const [openModal, setOpenModal] = useState(false);
@@ -24,18 +25,11 @@ const AuditorCard = ({ auditor }) => {
         handleClose={handleCloseModal}
         auditor={auditor}
       />
-      <Avatar src={auditor.avatar} sx={avatarStyle} />
+      <Avatar src={`${ASSET_URL}/${auditor.avatar}`} sx={avatarStyle} />
       <Box sx={columnStyle}>
         <Typography sx={mainTextStyle}>
-          {/*Mihael Sorokin*/}
           {auditor.first_name} {auditor.last_name}
         </Typography>
-
-        {/*{auditor.tags.map((tag) => (*/}
-        {/*    <Typography sx={badgeFontStyle} key={tag}>*/}
-        {/*{tag},*/}
-        {/*    </Typography>*/}
-        {/*    ))}*/}
         <Typography sx={badgeFontStyle}>
           {auditor.tags
             .map((item) => item.charAt(0).toUpperCase() + item.slice(1))

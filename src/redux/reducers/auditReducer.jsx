@@ -16,7 +16,7 @@ export const auditReducer = (state = initialState, action) => {
                 auditRequests: [...state.auditRequests, action.payload]
             };
         case GET_AUDIT_REQUEST:
-            return {...state, auditRequests: action.payload.audits};
+            return {...state, auditRequests: action.payload};
         case DELETE_REQUEST:
             return {...state, auditRequests: state.auditRequests.filter(request => request.id !== action.payload.id)}
         case DELETE_AUDIT:
