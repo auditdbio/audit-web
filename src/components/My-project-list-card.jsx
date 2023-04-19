@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import {Box, Button, Checkbox, Typography} from "@mui/material";
 import Currency from "./icons/Currency.jsx";
 import Star from "./icons/Star.jsx";
@@ -6,16 +6,21 @@ import theme, { radiusOfComponents } from "../styles/themes.js";
 import {AUDITOR, DONE, SUBMITED} from "../redux/actions/types.js";
 import { useNavigate } from "react-router-dom/dist";
 
-const MyProjectListCard = ({ type, project }) => {
+const MyProjectListCard = ({ type, project, setState, state }) => {
     const navigate = useNavigate();
+    const [isDone, setIsDone] = useState(false);
 
-    const handleClick = () => {
-        if (type === AUDITOR) {
-            navigate(`/audit-request-offer/${project.id}`);
-        } else {
-            navigate("/edit-project", { state: { project } });
-        }
+    const handleClick = (e) => {
+        setIsDone(e.target.checked);
     };
+
+    useEffect(() => {
+        if (isDone) {
+            setState([...state, project]);
+        } else {
+            setState(state.filter(el => el.id !== project.id));
+        }
+    }, [isDone]);
 
     return (
         <Box sx={cardWrapper}>
@@ -50,7 +55,7 @@ const MyProjectListCard = ({ type, project }) => {
                     marginTop: '30px',
                 }}
             >
-                <Checkbox color={'success'} sx={checkBoxSx}/>
+                <Checkbox color={'success'} onChange={handleClick} sx={checkBoxSx}/>
             </Box>
         </Box>
     );

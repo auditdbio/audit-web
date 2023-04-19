@@ -79,7 +79,7 @@ const AppRoutes = () => {
                     }
                 />
                 <Route
-                    path="/my-projects"
+                    path="/my-projects/:id"
                     element={
                         <PrivateRoute auth={{isAuthenticated: isAuth()}}>
                             <MyProjects/>

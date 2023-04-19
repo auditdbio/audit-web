@@ -25,18 +25,16 @@ const AuditorListCard = ({ auditor }) => {
     setIsOpenView(false);
   };
 
-  const handleOpenInvite = () => {
+  const handleOpenInvite = (id) => {
     if (!isAuth()) {
       navigate("/sign-up");
       return;
     } else {
-      navigate('/my-projects')
+      navigate(`/my-projects/${id}`)
     }
     setIsOpenInvite(true);
   };
-  const handleCloseInvite = () => {
-    setIsOpenInvite(false);
-  };
+
 
   return (
     <Box sx={wrapper}>
@@ -79,18 +77,13 @@ const AuditorListCard = ({ auditor }) => {
               size={"small"}
               sx={inviteButtonStyle(theme)}
               variant={"contained"}
-              onClick={handleOpenInvite}
+              onClick={() => handleOpenInvite(auditor.user_id)}
           >
             Invite to project
           </Button>
         }
       </Box>
 
-      <AuditorModal
-        open={isOpenView}
-        handleClose={handleCloseView}
-        auditor={auditor}
-      />
     </Box>
   );
 };

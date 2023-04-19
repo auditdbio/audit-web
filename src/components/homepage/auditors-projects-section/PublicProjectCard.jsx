@@ -1,15 +1,14 @@
-import {Box, Card, Modal, Typography} from "@mui/material";
+import {Alert, AlertTitle, Box, Card, Modal, Snackbar, Stack, Typography} from "@mui/material";
 import theme from "../../../styles/themes";
 import { CustomButton } from "../../custom/Button";
 import { useNavigate } from "react-router-dom";
 import React, { useState } from "react";
 import ProjectModal from "../../ProjectModal.jsx";
 import AuditRequestInfo from "../../audit-request-info.jsx";
-import {modalWrapper} from "../../Project-list-card.jsx";
 
 const PublicProjectCard = ({ project }) => {
   const navigate = useNavigate();
-
+  const [error, setError] = useState(null)
   const [openModal, setOpenModal] = useState(false);
   const handleView = () => {
     setOpenModal(true);
@@ -18,6 +17,10 @@ const PublicProjectCard = ({ project }) => {
   const handleCloseModal = () => {
     setOpenModal(false);
   };
+
+  const handleError = () => {
+    setError('Your role is not an auditor')
+  }
 
   return (
     <Card sx={cardWrapper}>
@@ -28,7 +31,12 @@ const PublicProjectCard = ({ project }) => {
           aria-describedby="parent-modal-description"
       >
         <Box sx={modalWrapper}>
-          <AuditRequestInfo onClose={handleCloseModal} project={project} modal={true}/>
+          <AuditRequestInfo
+              onClose={handleCloseModal}
+              project={project}
+              handleError={handleError}
+              modal={true}
+          />
         </Box>
       </Modal>
       <Typography sx={auditNameStyle}>{project.name}</Typography>
@@ -43,7 +51,18 @@ const PublicProjectCard = ({ project }) => {
       {/*  <Typography>-</Typography>*/}
       {/*  <Typography sx={dateStyle}>10.01.2023</Typography>*/}
       {/*</Box>*/}
-
+      <Snackbar
+          autoHideDuration={10000}
+          open={!!error}
+          anchorOrigin={{ horizontal: 'right', vertical: 'top' }}
+          onClose={() => setError(null)}
+      >
+        <Stack sx={{ width: '100%', flexDirection: 'column', gap: 2 }} spacing={2}>
+          <Alert severity='error'>
+            <AlertTitle>{error}</AlertTitle>
+          </Alert>
+        </Stack>
+      </Snackbar>
       <Box sx={statusWrapper}>
         <Box />
         <Typography>{project.status}</Typography>
@@ -61,7 +80,30 @@ const PublicProjectCard = ({ project }) => {
   );
 };
 
-const cardWrapper = {
+const modalWrapper = (theme) => ({
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: 700,
+  height: '90%',
+  overflow: 'auto',
+  borderRadius: '14px',
+  '& .audit-request-wrapper': {
+    gap: '5px',
+    paddingX: '44px',
+  },
+  [theme.breakpoints.down('md')]: {
+    '& .audit-request-wrapper': {
+      paddingX: '20px',
+    }
+  },
+  [theme.breakpoints.down('xs')]: {
+    width: 360,
+  }
+})
+
+const cardWrapper = (theme) => ({
   display: "flex",
   flexDirection: "column",
   justifyContent: "space-between",
@@ -75,15 +117,15 @@ const cardWrapper = {
   // marginY: "1.5rem",
   borderRadius: "1.5rem",
   boxShadow:
-    "0px 64.1377px 76.5824px rgba(0, 0, 0, 0.07)," +
-    " 0px 14.326px 17.1057px rgba(0, 0, 0, 0.0417275)," +
-    "0px 8.03104px 9.5893px rgba(0, 0, 0, 0.035), " +
-    "0px 4.26523px 5.09281px rgba(0, 0, 0, 0.0282725), " +
-    "0px 1.77486px 2.11923px rgba(0, 0, 0, 0.0196802)",
+      "0px 64.1377px 76.5824px rgba(0, 0, 0, 0.07)," +
+      " 0px 14.326px 17.1057px rgba(0, 0, 0, 0.0417275)," +
+      "0px 8.03104px 9.5893px rgba(0, 0, 0, 0.035), " +
+      "0px 4.26523px 5.09281px rgba(0, 0, 0, 0.0282725), " +
+      "0px 1.77486px 2.11923px rgba(0, 0, 0, 0.0196802)",
   [theme.breakpoints.down("xs")]: {
     gap: '15px'
   },
-};
+})
 
 const acceptButtonStyle = {
   backgroundColor: "#52176D",

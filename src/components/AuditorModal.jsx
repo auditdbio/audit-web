@@ -4,7 +4,7 @@ import Dialog from "@mui/material/Dialog";
 import DialogContent from "@mui/material/DialogContent";
 import theme from "../styles/themes.js";
 import { Box } from "@mui/system";
-import { Avatar, Slider, Typography } from "@mui/material";
+import {Alert, AlertTitle, Avatar, Slider, Snackbar, Stack, Typography} from "@mui/material";
 import TagsList from "./tagsList.jsx";
 import { useEffect, useState } from "react";
 import IconButton from "@mui/material/IconButton";
@@ -19,49 +19,40 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { isAuth } from "../lib/helper.js";
 import {ASSET_URL} from "../services/urls.js";
+import SalarySlider from "./forms/salary-slider/salary-slider.jsx";
+import {Field, Form, Formik} from "formik";
 import {CUSTOMER} from "../redux/actions/types.js";
 
-export default function AuditorModal({ open, handleClose, auditor }) {
+export default function AuditorModal({ open, handleClose, auditor, isForm, onSubmit }) {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
-  const API_URL = import.meta.env.VITE_API_BASE_URL;
-  const projectReducer = useSelector((state) => state.project);
-  const customerReducer = useSelector((state) => state.customer);
-  const user = useSelector((state) => state.user.user);
-
+  const auditorReducer = useSelector((state) => state.auditor.auditors);
+  const customerReducer = useSelector((state) => state.customer.customer);
+  const user = useSelector(s=> s.user.user)
   const [mode, setMode] = useState("info");
   const [submitted, setSubmitted] = useState(false);
   const [openDrop, setOpenDrop] = useState(false);
   const [inputValue, setInputValue] = useState("");
   const [taxInput, setTaxInput] = useState(50);
-  const [startTime, setStartTime] = useState(dayjs());
-  const [endTime, setEndTime] = useState(dayjs());
-  const [query, setQuery] = useState("");
+  const [error, setError] = useState(null)
 
   const handleInvite = () => {
-    if (!isAuth()) {
-      navigate("/sign-up");
-      return;
+    if (user.current_role === CUSTOMER && isAuth()){
+      return navigate(`/my-projects/${auditor.user_id}`, )
+    } else if (user.current_role !== CUSTOMER && isAuth()){
+      setError('Your role is not an customer')
+    } else {
+      navigate('/sign-up')
     }
-    setMode("invite");
   };
 
   useEffect(() => {
-    if (open) setMode("info");
+    if (open && !isForm) {
+      setMode("info")
+    } else {
+      setMode("invite")
+    }
   }, [open]);
 
-  // useEffect(() => {
-  //   // console.log("searching...");
-  //   dispatch(getAuditors(query));
-  // }, [query]);
-
-  const handleStartTimeChange = (e) => {
-    setStartTime(e);
-  };
-
-  const handleEndTimeChange = (e) => {
-    setEndTime(e);
-  };
 
   // useEffect(() => {
   //   if (submitted) {
@@ -106,26 +97,6 @@ export default function AuditorModal({ open, handleClose, auditor }) {
   //   setMode("offer");
   // };
 
-  const handleSend = async () => {
-    const isStartDateValid = dayjs(startTime, "DD.MM.YYYY").isValid();
-    const isEndDateValid = dayjs(endTime, "DD.MM.YYYY").isValid();
-    // console.log("start", startTime.format('YYYY-MM-DD'));
-    // console.log("end", endTime.format('YYYY-MM-DD'));
-    if (!isStartDateValid) {
-      setErrorStart("Enter start date");
-    } else {
-      setErrorStart(null);
-    }
-    if (!isEndDateValid) {
-      setErrorEnd("Enter end date");
-    } else {
-      setErrorEnd(null);
-    }
-    handleSubmit();
-    setSubmitted(true);
-    handleClose();
-  };
-
   const [errorStart, setErrorStart] = React.useState(null);
   const [errorEnd, setErrorEnd] = React.useState(null);
 
@@ -133,6 +104,18 @@ export default function AuditorModal({ open, handleClose, auditor }) {
     <Dialog open={open} onClose={handleClose}>
       {mode === "info" && (
         <DialogContent sx={modalWindow}>
+          <Snackbar
+              autoHideDuration={10000}
+              open={!!error}
+              anchorOrigin={{ horizontal: 'right', vertical: 'top' }}
+              onClose={() => setError(null)}
+          >
+            <Stack sx={{ width: '100%', flexDirection: 'column', gap: 2 }} spacing={2}>
+              <Alert severity='error'>
+                <AlertTitle>{error}</AlertTitle>
+              </Alert>
+            </Stack>
+          </Snackbar>
           <Box sx={contentWrapper}>
             <Box sx={{ display: "flex", justifyContent: "center" }}>
               <Avatar src={`${ASSET_URL}/${auditor.avatar}`} sx={avatarStyle} />
@@ -171,137 +154,135 @@ export default function AuditorModal({ open, handleClose, auditor }) {
                 </Box>
                 <TagsList data={auditor.tags} />
               </Box>
-              <Box sx={infoInnerStyle}></Box>
+              <Box sx={infoInnerStyle}/>
             </Box>
           </Box>
           <Box sx={fieldButtonContainer}>
             <Button sx={backButton} onClick={handleClose}>
               Back
             </Button>
-            { (isAuth() && user.current_role === CUSTOMER) &&
-              <Button sx={findButton} onClick={handleInvite}>
-                Invite to project
-              </Button>
-            }
+            <Button sx={findButton} onClick={handleInvite}>
+              Invite to project
+            </Button>
           </Box>
         </DialogContent>
       )}
       {mode === "invite" && (
-        <DialogContent sx={offerDialogStyle}>
-          <Box
-            sx={{
-              height: "100%",
-              width: "100%",
-              display: "flex",
-              flexDirection: "column",
-            }}
+          <Formik
+              validator={() => ({})}
+              initialValues={{
+                auditor_id: auditor?.user_id,
+                auditor_contacts: {...auditor?.contacts},
+                customer_contacts: {...customerReducer?.contacts},
+                customer_id: customerReducer?.user_id,
+                last_changer: CUSTOMER,
+                price:  '50',
+                price_range: {
+                  from: '',
+                  to: ''
+                },
+                time: {
+                  from: new Date(),
+                  to: new Date()
+                },
+              }}
+              onSubmit={(values) => {
+                const newValue = {...values,
+                  price: parseInt(values.price),
+                  price_range: {
+                    from: parseInt(values.price),
+                    to: parseInt(values.price)
+                  }}
+                onSubmit(newValue)
+                handleClose()
+                if (onClose){
+                  onClose()
+                }
+              }}
           >
-            <Box>
-              <IconButton
-                onClick={() => {
-                  setMode("info");
-                }}
-              >
-                <ArrowBack style={{ color: "orange" }} />
-              </IconButton>
-            </Box>
+            {({handleSubmit, setFieldValue, values}) => {
+              return (
+                  <Form onSubmit={handleSubmit}>
+                    <DialogContent sx={offerDialogStyle}>
+                      <Box
+                          sx={{
+                            height: "100%",
+                            width: "100%",
+                            display: "flex",
+                            flexDirection: "column",
+                          }}
+                      >
+                        <Box>
+                          <IconButton
+                              onClick={() => {
+                                handleClose()
+                              }}
+                          >
+                            <ArrowBack style={{ color: "orange" }} />
+                          </IconButton>
+                        </Box>
 
-            <Box sx={{ paddingX: "10%" }}>
-              <Typography
-                style={{
-                  ...rateLabel(),
-                  color: "black",
-                  marginBottom: "10px",
-                  fontSize: "13px",
-                }}
-              >
-                Add some information
-              </Typography>
-              <Typography style={rateLabel()}>Choose audit timeline</Typography>
-              {/*<Box sx={dateWrapper}>*/}
-              {/*  <TextField*/}
-              {/*    type={"date"}*/}
-              {/*    placeholder={""}*/}
-              {/*    value={dayjs(startTime).format("YYYY-MM-DD")}*/}
-              {/*    onChange={handleStartTimeChange}*/}
-              {/*    sx={dateStyle}*/}
-              {/*    inputProps={{*/}
-              {/*      inputMode: "numeric", // specify that the input should be numeric only*/}
-              {/*      inputFormat: ''*/}
-              {/*    }}*/}
-              {/*  />*/}
-              {/*  <Typography variant={"caption"}>-</Typography>*/}
-              {/*  <TextField*/}
-              {/*    type={"date"}*/}
-              {/*    placeholder={""}*/}
-              {/*    value={endTime ? endTime.format("YYYY-MM-DD") : ""}*/}
-              {/*    onChange={handleEndTimeChange}*/}
-              {/*    inputProps={{*/}
-              {/*      min: minDate,*/}
-              {/*    }}*/}
-              {/*    sx={dateStyle}*/}
-              {/*  />*/}
-              {/*</Box>*/}
-              <Box sx={dateWrapper}>
-                <LocalizationProvider dateAdapter={AdapterDayjs}>
-                  <DatePicker
-                    value={startTime}
-                    onChange={handleStartTimeChange}
-                    sx={dateStyle}
-                    disablePast
-                    slotProps={{
-                      textField: {
-                        helperText: errorStart,
-                      },
-                    }}
-                  />
-                  <Typography variant={"caption"}>-</Typography>
-                  <DatePicker
-                    value={endTime}
-                    onChange={handleEndTimeChange}
-                    sx={dateStyle}
-                    disablePast
-                    slotProps={{
-                      textField: {
-                        helperText: errorEnd,
-                      },
-                    }}
-                  />
-                </LocalizationProvider>
-              </Box>
-              {/*{startTime.format("DD/MM/YYYY")}*/}
-              {/*{endTime.format("DD/MM/YYYY")}*/}
-              <Typography style={rateLabel()}>
-                Price per line of code
-              </Typography>
-              <Box
-                sx={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  marginY: "20px",
-                }}
-              >
-                <Slider
-                  value={taxInput}
-                  name={"taxField.name"}
-                  valueLabelDisplay="off"
-                  sx={sliderSx}
-                  color={"primary"}
-                  onChange={(e) =>
-                    setTaxInput(Number(e.target.value.toString()))
-                  }
-                />
-                <Box sx={infoWrapper}>{taxInput || 0}</Box>
-              </Box>
-              <Box sx={{ justifyContent: "center", display: "flex" }}>
-                <Button sx={sendButton} onClick={handleSend}>
-                  Send
-                </Button>
-              </Box>
-            </Box>
-          </Box>
-        </DialogContent>
+                        <Box sx={{ paddingX: "10%" }}>
+                          <Typography
+                              style={{
+                                ...rateLabel(),
+                                color: "black",
+                                marginBottom: "10px",
+                                fontSize: "13px",
+                              }}
+                          >
+                            Add some information
+                          </Typography>
+                          <Typography style={rateLabel()}>Choose audit timeline</Typography>
+                          <Box sx={dateWrapper}>
+                            <LocalizationProvider dateAdapter={AdapterDayjs}>
+                              <Field
+                                  component={DatePicker}
+                                  value={dayjs(values.time?.from)}
+                                  sx={dateStyle}
+                                  onChange={(e) => {
+                                    const value = new Date(e)
+                                    setFieldValue('time.from', value.toString())
+                                  }}
+                                  disablePast
+                                  inputFormat='DD.MM.YYYY'
+                              />
+                              <Typography variant={"caption"}>-</Typography>
+                              <Field
+                                  component={DatePicker}
+                                  value={dayjs(values.time?.to)}
+                                  sx={dateStyle}
+                                  onChange={(e) => {
+                                    const value = new Date(e)
+                                    setFieldValue('time.to', value.toString())
+                                  }}
+                                  disablePast
+                                  inputFormat='DD.MM.YYYY'
+                              />
+                            </LocalizationProvider>
+                          </Box>
+                          <Typography style={rateLabel()}>
+                            Price per line of code
+                          </Typography>
+                          <Box
+                              sx={{
+                                marginY: "20px",
+                              }}
+                          >
+                            <SalarySlider name={'price'}/>
+                          </Box>
+                          <Box sx={{ justifyContent: "center", display: "flex" }}>
+                            <Button sx={sendButton} type={'submit'}>
+                              Send
+                            </Button>
+                          </Box>
+                        </Box>
+                      </Box>
+                    </DialogContent>
+                  </Form>
+              )
+            }}
+          </Formik>
       )}
     </Dialog>
   );

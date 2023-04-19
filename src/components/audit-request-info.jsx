@@ -1,7 +1,19 @@
 import React, {useState} from 'react';
 import {CustomCard} from "./custom/Card.jsx";
 import Layout from "../styles/Layout.jsx";
-import {Avatar, Box, Button, Typography, Link, useMediaQuery, Modal, TextField} from "@mui/material";
+import {
+    Avatar,
+    Box,
+    Button,
+    Typography,
+    Link,
+    useMediaQuery,
+    Modal,
+    TextField,
+    Stack,
+    Alert,
+    AlertTitle, Snackbar
+} from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack.js";
 import GitHubIcon from '@mui/icons-material/GitHub';
 import theme from "../styles/themes.js";
@@ -18,7 +30,7 @@ import {LocalizationProvider} from "@mui/x-date-pickers";
 import Markdown from "./custom/Markdown.jsx";
 import {isAuth} from "../lib/helper.js";
 
-const AuditRequestInfo = ({project, onClose}) => {
+const AuditRequestInfo = ({project, onClose, handleError}) => {
     const navigate = useNavigate()
     const matchXs = useMediaQuery(theme.breakpoints.down('xs'))
     const [open, setOpen] = useState(false)
@@ -27,8 +39,15 @@ const AuditRequestInfo = ({project, onClose}) => {
     const dispatch = useDispatch()
 
     const handleOpen = () => {
-        setOpen(true);
-    };
+        if (user.current_role === 'auditor' && isAuth()){
+            setOpen(true);
+        } else if (user.current_role !== 'auditor' && isAuth()){
+            handleError()
+        } else {
+            navigate('/sign-up')
+        }
+    }
+
     const handleClose = () => {
         setOpen(false);
     };
@@ -121,7 +140,6 @@ const AuditRequestInfo = ({project, onClose}) => {
                 >
                     Decline
                 </Button>
-                { (user.current_role === 'auditor' && isAuth()) &&
                     <Button
                         variant={'contained'}
                         sx={buttonSx}
@@ -129,7 +147,6 @@ const AuditRequestInfo = ({project, onClose}) => {
                     >
                         Make offer
                     </Button>
-                }
             </Box>
             <Modal
                 open={open}
@@ -199,7 +216,7 @@ const AuditRequestInfo = ({project, onClose}) => {
                                             <LocalizationProvider dateAdapter={AdapterDayjs}>
                                                 <Field
                                                     component={DatePicker}
-                                                    name={'time.begin'}
+                                                    name={'time.from'}
                                                     value={dayjs(values.time?.from)}
                                                     sx={dateStyle}
                                                     inputFormat='DD.MM.YYYY'

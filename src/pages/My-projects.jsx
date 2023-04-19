@@ -1,37 +1,88 @@
-import React from 'react';
+import React, {useState} from 'react';
 import Layout from "../styles/Layout.jsx";
 import {CustomCard} from "../components/custom/Card.jsx";
 import {Box, Button, Grid, Typography} from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack.js";
 import {useNavigate} from "react-router-dom/dist";
-import {useSelector} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import ProjectCard from "../components/Project-card.jsx";
 import MyProjectListCard from "../components/My-project-list-card.jsx";
+import AuditorModal from "../components/AuditorModal.jsx";
+import {useParams} from "react-router-dom";
+import Loader from "../components/Loader.jsx";
+import {createRequest} from "../redux/actions/auditAction.js";
 
 const MyProjects = () => {
     const navigate = useNavigate()
+    const dispatch = useDispatch()
     const myProjects = useSelector(state => state.project.myProjects)
+    const params = useParams()
+    const [isOpenInvite, setIsOpenInvite] = useState(false);
+    const [isOpenView, setIsOpenView] = useState(false);
+    const [chosen, setChosen] = useState([])
+    const auditor = useSelector(state => state?.auditor?.auditors?.find(auditor => auditor.user_id === params.id))
 
-    return (
-        <Layout>
-            <CustomCard sx={wrapper}>
-                <Box sx={{display: 'flex', justifyContent: 'center', width: '100%', position: 'relative'}}>
-                    <Button sx={backButtonSx} onClick={() => navigate(-1)}>
-                        <ArrowBackIcon/>
-                    </Button>
-                    <Typography variant={'h6'}>Choose project you want to audit</Typography>
-                </Box>
-                <Grid container spacing={2}>
-                    {myProjects?.map((project) => (
-                        <Grid key={project.id} item sx={gridItemStyle}>
-                            <MyProjectListCard project={project} />
-                        </Grid>
-                    ))}
-                </Grid>
-                <Button variant={'contained'} sx={submitBtn}>Invite to project</Button>
-            </CustomCard>
-        </Layout>
-    );
+    const handleCloseView = () => {
+        setIsOpenView(false);
+    };
+
+    const handleInviteAuditor = (values) => {
+        if  (chosen.length > 0){
+            chosen.map((project) => {
+                const data = {
+                    ...project,
+                    ...values,
+                    project_id: project.id,
+                }
+                dispatch(createRequest(data))
+            })
+        }
+    };
+
+    const handleOpenView = () => {
+        setIsOpenView(true);
+    };
+
+    if  (!auditor) {
+        return <Box sx={{
+            height: '100vh',
+            width: '100%',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center'
+        }}
+        >
+            <Loader/>
+        </Box>
+    } else {
+        return (
+            <Layout>
+                <CustomCard sx={wrapper}>
+                    <Box sx={{display: 'flex', justifyContent: 'center', width: '100%', position: 'relative'}}>
+                        <Button sx={backButtonSx} onClick={() => navigate(-1)}>
+                            <ArrowBackIcon/>
+                        </Button>
+                        <Typography variant={'h6'}>Choose project you want to audit</Typography>
+                    </Box>
+                    <Grid container spacing={2}>
+                        {myProjects?.map((project) => (
+                            <Grid key={project.id} item sx={gridItemStyle}>
+                                <MyProjectListCard setState={setChosen} state={chosen} project={project} />
+                            </Grid>
+                        ))}
+                    </Grid>
+                    <Button variant={'contained'} sx={submitBtn} onClick={handleOpenView}>Invite to project</Button>
+                    <AuditorModal
+                        open={isOpenView}
+                        handleClose={handleCloseView}
+                        auditor={auditor}
+                        isForm={true}
+                        onSubmit={handleInviteAuditor}
+                    />
+                </CustomCard>
+            </Layout>
+        );
+    }
 };
 
 export default MyProjects;

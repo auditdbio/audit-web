@@ -1,10 +1,11 @@
 import React, {useState} from 'react';
-import {Box, Button, Modal, Typography} from "@mui/material";
+import {Alert, AlertTitle, Box, Button, Modal, Snackbar, Stack, Typography} from "@mui/material";
 import AuditRequestInfo from "./audit-request-info.jsx";
 import TagsList from "./tagsList.jsx";
 
 const ProjectListCard = ({project}) => {
     const [isOpen, setIsOpen] = useState(false)
+    const [error, setError] = useState(null)
 
     const handleOpen = () => {
         setIsOpen(true)
@@ -14,8 +15,24 @@ const ProjectListCard = ({project}) => {
         setIsOpen(false)
     }
 
+    const handleError = () => {
+        setError('Your role is not an auditor')
+    }
+
     return (
         <Box sx={wrapper}>
+            <Snackbar
+                autoHideDuration={10000}
+                open={!!error}
+                anchorOrigin={{ horizontal: 'right', vertical: 'top' }}
+                onClose={() => setError(null)}
+            >
+                <Stack sx={{ width: '100%', flexDirection: 'column', gap: 2 }} spacing={2}>
+                    <Alert severity='error'>
+                        <AlertTitle>{error}</AlertTitle>
+                    </Alert>
+                </Stack>
+            </Snackbar>
             <Box sx={contentWrapper}>
                 <Typography sx={{marginBottom: '33px'}}>
                     {project.name}
@@ -43,7 +60,11 @@ const ProjectListCard = ({project}) => {
                 aria-describedby="parent-modal-description"
             >
                 <Box sx={modalWrapper}>
-                    <AuditRequestInfo onClose={handleClose} project={project} modal={true}/>
+                    <AuditRequestInfo
+                        onClose={handleClose}
+                        project={project}
+                        handleError={handleError}
+                        modal={true}/>
                 </Box>
             </Modal>
         </Box>
