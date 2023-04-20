@@ -22,7 +22,7 @@ const ProjectListCard = ({project}) => {
     return (
         <Box sx={wrapper}>
             <Snackbar
-                autoHideDuration={10000}
+                autoHideDuration={3000}
                 open={!!error}
                 anchorOrigin={{ horizontal: 'right', vertical: 'top' }}
                 onClose={() => setError(null)}

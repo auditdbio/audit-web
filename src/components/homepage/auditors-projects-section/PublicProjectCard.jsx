@@ -52,7 +52,7 @@ const PublicProjectCard = ({ project }) => {
       {/*  <Typography sx={dateStyle}>10.01.2023</Typography>*/}
       {/*</Box>*/}
       <Snackbar
-          autoHideDuration={10000}
+          autoHideDuration={3000}
           open={!!message}
           anchorOrigin={{ horizontal: 'right', vertical: 'top' }}
           onClose={() => message(null)}

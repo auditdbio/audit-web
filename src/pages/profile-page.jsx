@@ -24,7 +24,7 @@ const ProfilePage = () => {
     return (
         <Layout>
             <Snackbar
-                autoHideDuration={10000}
+                autoHideDuration={3000}
                 open={!!message}
                 anchorOrigin={{ horizontal: 'right', vertical: 'top' }}
                 onClose={() => dispatch(clearUserSuccess())}
