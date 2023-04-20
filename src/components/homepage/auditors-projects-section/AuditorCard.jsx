@@ -6,11 +6,12 @@ import Star from "../../icons/Star";
 import React, { useState } from "react";
 import AuditorModal from "../../AuditorModal.jsx";
 import {ASSET_URL} from "../../../services/urls.js";
+import {useNavigate} from "react-router-dom/dist";
 
 const AuditorCard = ({ auditor }) => {
   const [openModal, setOpenModal] = useState(false);
   const [message, setMessage] = useState(null)
-  const [isForm, setIsForm] = useState(false)
+  const navigate = useNavigate()
 
   const handleView = () => {
     setOpenModal(true);
@@ -21,8 +22,11 @@ const AuditorCard = ({ auditor }) => {
   };
 
   const handleError = () => {
-    setMessage('Switched to customer role"')
-    setIsForm(true)
+    setMessage('Switched to customer role')
+    const delayedFunc = setTimeout(() => {
+      navigate(`/my-projects/${auditor.user_id}`)
+    }, 1000)
+    return () => clearTimeout(delayedFunc)
   }
 
   return (
@@ -32,7 +36,6 @@ const AuditorCard = ({ auditor }) => {
         handleClose={handleCloseModal}
         auditor={auditor}
         handleError={handleError}
-        isForm={isForm}
       />
       <Snackbar
           autoHideDuration={3000}
@@ -67,7 +70,7 @@ const AuditorCard = ({ auditor }) => {
         <Box sx={badgesStyle}>
           <Box sx={infoStyle}>
             <Currency />
-            <Typography sx={badgeFontStyle}>{`${auditor.tax}`}</Typography>
+            <Typography sx={badgeFontStyle}>{auditor.price_range.from} - {auditor.price_range.to}</Typography>
           </Box>
           <Box sx={infoStyle}>
             <Star />

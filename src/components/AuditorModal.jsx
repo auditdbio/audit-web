@@ -34,9 +34,8 @@ export default function AuditorModal({ open, handleClose, auditor, isForm, onSub
   const dispatch = useDispatch();
 
   const handleInvite = () => {
-
     if (user.current_role === CUSTOMER && isAuth() && myProjects.length){
-      return navigate(`/my-projects/${auditor.user_id}`, )
+      return navigate(`/my-projects/${auditor.user_id}` )
     } else if (user.current_role !== CUSTOMER && isAuth() && !customerReducer?.first_name && !customerReducer?.last_name){
       dispatch(changeRolePublicCustomer(CUSTOMER, user.id, customerReducer))
     } else if (user.current_role !== CUSTOMER && isAuth() && customerReducer?.first_name && customerReducer?.last_name && handleError){
@@ -56,50 +55,6 @@ export default function AuditorModal({ open, handleClose, auditor, isForm, onSub
       setMode("invite")
     }
   }, [open, isForm]);
-
-
-  // useEffect(() => {
-  //   if (submitted) {
-  //     const request = {
-  //       auditor_contacts: selectedAuditor.contacts ?? {},
-  //       auditor_id: selectedAuditor.user_id,
-  //       customer_contacts: customerReducer.customer
-  //           ? customerReducer.customer.contacts
-  //           : {},
-  //       customer_id: customerReducer.customer.user_id,
-  //       description: projectReducer.recentProject.description,
-  //       opener: "Customer",
-  //       price: taxInput.toString(),
-  //       price_range: {
-  //         lower_bound: "",
-  //         upper_bound: "string",
-  //       },
-  //       project_id: projectReducer.recentProject.id,
-  //       scope: projectReducer.recentProject.scope,
-  //       time: {
-  //         begin: startTime.format("YYYY-MM-DD"),
-  //         end: endTime.format("YYYY-MM-DD"),
-  //       },
-  //       time_frame: "string",
-  //     };
-  //     dispatch(createRequest(request));
-  //     // navigate("/edit-project", {
-  //     //   state: { project: projectReducer.recentProject },
-  //     // });
-  //     setMode("search");
-  //     setSubmitted(false);
-  //   }
-  // }, [projectReducer.recentProject]);
-
-  // const handleInputChange = (event) => {
-  //   setQuery(event.target.value);
-  // };
-  //
-  // const handleOptionChange = (option) => {
-  //   // console.log(option);
-  //   setSelectedAuditor(option);
-  //   setMode("offer");
-  // };
 
   const [errorStart, setErrorStart] = React.useState(null);
   const [errorEnd, setErrorEnd] = React.useState(null);
@@ -142,13 +97,9 @@ export default function AuditorModal({ open, handleClose, auditor, isForm, onSub
                 </Box>
                 <Box sx={infoWrapper}>
                   <span>Price:</span>
-                  {auditor?.tax && (
-                    <Typography>${auditor?.tax} per line</Typography>
+                  {auditor.price_range.from && (
+                    <Typography>${auditor.price_range.from} - {auditor.price_range.to} per line</Typography>
                   )}
-                </Box>
-                <Box sx={infoWrapper}>
-                  <span>Company</span>
-                  <Typography noWrap={true}>{auditor.company}</Typography>
                 </Box>
                 <Box sx={infoWrapper}>
                   <span>E-mail</span>

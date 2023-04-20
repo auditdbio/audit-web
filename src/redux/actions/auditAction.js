@@ -83,7 +83,7 @@ export const deleteAuditRequest = (id) => {
   return (dispatch) => {
     const token = Cookies.get("token");
     axios
-      .delete(`${API_URL}/requests/${id}`, {
+      .delete(`${API_URL}/audit_request/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
