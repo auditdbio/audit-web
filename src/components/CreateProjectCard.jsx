@@ -24,7 +24,7 @@ import { AuditRequestsArray } from "./custom/AuditRequestsArray.jsx";
 import Markdown from "./custom/Markdown-editor.jsx";
 import SalarySlider from "./forms/salary-slider/salary-slider.jsx";
 
-const CreateProjectCard = ({ role, projectInfo }) => {
+const CreateProjectCard = ({projectInfo }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const customerReducer = useSelector((state) => state.customer);
@@ -32,6 +32,7 @@ const CreateProjectCard = ({ role, projectInfo }) => {
   const [auditRequests, setAuditRequests] = useState([]);
   const [error, setError] = useState(null);
   const projectMessage = useSelector((state) => state.project.message);
+  const [isPublished, setIsPublished] = useState( projectInfo?.publish_options.publish || false);
 
   useEffect(() => {
     dispatch(getAuditsRequest("customer"));
@@ -85,12 +86,12 @@ const CreateProjectCard = ({ role, projectInfo }) => {
     setOpenInvite(false);
   };
 
-  const handleInviteAuditor = () => {};
 
   const handlePublish = (values) => {
+    setIsPublished(!isPublished)
     const newValue = {...values,
       publish_options: {...values.publish_options,
-        publish: !values.publish_options.publish}
+        publish: !isPublished}
     }
     if (editMode) {
       dispatch(changeStatusProject({ ...newValue, id: projectInfo.id }))
@@ -113,6 +114,7 @@ const CreateProjectCard = ({ role, projectInfo }) => {
       }}
     >
       {({ handleSubmit, values }) => {
+
         return (
           <Box sx={mainBox}>
             <Button
@@ -165,17 +167,14 @@ const CreateProjectCard = ({ role, projectInfo }) => {
                     }
                   }}
               >
-                { !values?.publish_options?.publish ?
-                  'Publish project'
-                    :
-                    'Hide project'
+                { isPublished ?
+                    'Hide project' : 'Publish project'
                 }
               </Button>
               <Button sx={menuButtonSx}>
                 <MenuRoundedIcon sx={menuButtonIconSx} />
               </Button>
             </Box>
-
             <Box sx={wrapper}>
               <Form onSubmit={handleSubmit}>
                 <Box sx={formCard}>

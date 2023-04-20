@@ -5,7 +5,7 @@ import Projects from "../components/Projects.jsx";
 import Audits from "../components/Audits.jsx";
 import CreateProjectCard from "../components/CreateProjectCard.jsx";
 import { CustomCard } from "../components/custom/Card.jsx";
-import {useLocation, useParams} from "react-router-dom";
+import {useParams} from "react-router-dom";
 import {useSelector} from "react-redux";
 import Loader from "../components/Loader.jsx";
 
