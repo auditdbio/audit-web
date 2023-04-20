@@ -11,6 +11,7 @@ import MenuRoundedIcon from "@mui/icons-material/MenuRounded";
 import AuditorSearchModal from "./AuditorSearchModal.jsx";
 import TagsField from "./forms/tags-field/tags-field.jsx";
 import {
+  changeStatusProject,
   createProject,
   editProject,
   getProjects,
@@ -88,7 +89,7 @@ const CreateProjectCard = ({ role, projectInfo }) => {
   const handlePublish = (values) => {
     const newValue = {...values, publish_options: {...values.publish_options, publish: !values.publish_options.publish}}
     if (editMode) {
-      dispatch(editProject({ ...newValue, id: projectInfo.id }))
+      dispatch(changeStatusProject({ ...newValue, id: projectInfo.id }))
     } else {
       dispatch(createProject(newValue));
     }
