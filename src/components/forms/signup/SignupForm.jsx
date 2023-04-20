@@ -40,12 +40,12 @@ const SignupForm = () => {
                         <Snackbar
                             autoHideDuration={10000}
                             open={!!error}
-                            anchorOrigin={{ horizontal: 'right', vertical: 'top' }}
+                            anchorOrigin={{horizontal: 'right', vertical: 'top'}}
                             onClose={() => {
                                 dispatch(clearUserError())
                             }}
                         >
-                            <Stack sx={{ width: '100%', flexDirection: 'column', gap: 2 }} spacing={2}>
+                            <Stack sx={{width: '100%', flexDirection: 'column', gap: 2}} spacing={2}>
                                 <Alert severity='error'>
                                     <AlertTitle>{error}</AlertTitle>
                                 </Alert>
@@ -74,21 +74,7 @@ const SignupForm = () => {
                         <Box sx={fieldsWrapper}>
                             <Box sx={fieldWrapper}>
                                 <SimpleField name={'name'} label={'User name'}/>
-                                <Box>
-                                    <SimpleField name={'email'} label={'E-mail'}/>
-                                    <Button
-                                        variant={'text'}
-                                        sx={(theme) => ({
-                                            display: 'block',
-                                            marginRight: 0,
-                                            marginLeft: 'auto',
-                                            textTransform: 'none',
-                                            color: isAuditor === 'customer' ? theme.palette.primary.main : theme.palette.secondary.main,
-                                        })}
-                                    >
-                                        Verify email
-                                    </Button>
-                                </Box>
+                                <SimpleField name={'email'} label={'E-mail'}/>
                             </Box>
                             <Box sx={fieldWrapper}>
                                 <PasswordField name={'password'} label={'Password'}/>
