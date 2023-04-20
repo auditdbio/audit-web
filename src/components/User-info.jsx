@@ -12,17 +12,6 @@ import {AUDITOR} from "../redux/actions/types.js";
 import TagsList from "./tagsList";
 import {ASSET_URL} from "../services/urls.js";
 
-const skills = [
-    {frame: 'java'},
-    {frame: 'piton'},
-    {frame: 'java'},
-    {frame: 'piton'},
-    {frame: 'java'},
-    {frame: 'piton'},
-    {frame: 'java'},
-    {frame: 'piton'}
-]
-
 const UserInfo = ({role}) => {
     const navigate = useNavigate()
     const customer = useSelector(s => s.customer.customer)

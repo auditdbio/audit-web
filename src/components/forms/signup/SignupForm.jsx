@@ -74,7 +74,21 @@ const SignupForm = () => {
                         <Box sx={fieldsWrapper}>
                             <Box sx={fieldWrapper}>
                                 <SimpleField name={'name'} label={'User name'}/>
-                                <SimpleField name={'email'} label={'E-mail'}/>
+                                <Box>
+                                    <SimpleField name={'email'} label={'E-mail'}/>
+                                    <Button
+                                        variant={'text'}
+                                        sx={(theme) => ({
+                                            display: 'block',
+                                            marginRight: 0,
+                                            marginLeft: 'auto',
+                                            textTransform: 'none',
+                                            color: isAuditor === 'customer' ? theme.palette.primary.main : theme.palette.secondary.main,
+                                        })}
+                                    >
+                                        Verify email
+                                    </Button>
+                                </Box>
                             </Box>
                             <Box sx={fieldWrapper}>
                                 <PasswordField name={'password'} label={'Password'}/>

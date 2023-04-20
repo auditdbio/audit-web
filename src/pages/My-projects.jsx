@@ -30,8 +30,13 @@ const MyProjects = () => {
         if  (chosen.length > 0){
             chosen.map((project) => {
                 const data = {
-                    ...project,
-                    ...values,
+                    customer_id: values.customer_id,
+                    auditor_id: values.auditor_id,
+                    price: values.price,
+                    description: project.description,
+                    time: values.time,
+                    // ...project,
+                    // ...values,
                     project_id: project.id,
                 }
                 dispatch(createRequest(data))
