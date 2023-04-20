@@ -19,14 +19,11 @@ export const UserMenu = ({ open, handleClose, anchor, userAvatar }) => {
   const auditor = useSelector((state) => state.auditor.auditor);
   const customer = useSelector((state) => state.customer.customer);
 
-  const [isAuditor, setIsAuditor] = useState(
-    reduxUser.current_role ?? "customer"
-  );
 
   const user = {
-    fullName: reduxUser.name || "Mishail Voronnikov",
-    interests: reduxUser.interests || "Criptography, Games",
-    email: reduxUser.email || "mishailvoron@gmail.com",
+    fullName: reduxUser.name || "",
+    tags: reduxUser.interests || "",
+    email: reduxUser.email || "",
   };
 
   const handleLogout = () => {
@@ -115,9 +112,8 @@ export const UserMenu = ({ open, handleClose, anchor, userAvatar }) => {
         </Box>
       </MenuItem>
       <Tabs
-        value={isAuditor}
+        value={reduxUser.current_role}
         onChange={(e, newValue) => {
-          setIsAuditor(newValue);
           dispatch(changeRole(newValue, reduxUser.id));
         }}
         name={"role"}
@@ -127,7 +123,7 @@ export const UserMenu = ({ open, handleClose, anchor, userAvatar }) => {
         <Tab
           value={AUDITOR}
           sx={[
-            isAuditor === AUDITOR
+            reduxUser.current_role === AUDITOR
               ? auditorTabSx
               : { backgroundColor: "#D9D9D9" },
             tabSx,
@@ -137,7 +133,7 @@ export const UserMenu = ({ open, handleClose, anchor, userAvatar }) => {
         <Tab
           value={CUSTOMER}
           sx={[
-            isAuditor === CUSTOMER
+            reduxUser.current_role === CUSTOMER
               ? customerTabSx
               : { backgroundColor: "#D9D9D9" },
             tabSx,

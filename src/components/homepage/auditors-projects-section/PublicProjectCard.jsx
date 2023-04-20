@@ -55,7 +55,7 @@ const PublicProjectCard = ({ project }) => {
           autoHideDuration={3000}
           open={!!message}
           anchorOrigin={{ horizontal: 'right', vertical: 'top' }}
-          onClose={() => message(null)}
+          onClose={() => setMessage(null)}
       >
         <Stack sx={{ width: '100%', flexDirection: 'column', gap: 2 }} spacing={2}>
           <Alert severity='success'>
