@@ -13,7 +13,7 @@ const ProjectCard = ({ type, project }) => {
     if (type === AUDITOR) {
       navigate(`/audit-request-offer/${project.id}`);
     } else {
-      navigate("/edit-project", { state: { project } });
+      navigate(`/edit-project/${project.id}`);
     }
   };
 

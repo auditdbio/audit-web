@@ -79,6 +79,8 @@ export const radiusOfComponents = "14px";
 
 export const ContentWrapper = styled("div")({
 	minHeight: "100vh",
+	display: 'flex',
+	flexDirection: 'column'
 });
 
 const theme = createTheme(initialTheme, {

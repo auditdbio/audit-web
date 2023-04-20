@@ -5,22 +5,35 @@ import Projects from "../components/Projects.jsx";
 import Audits from "../components/Audits.jsx";
 import CreateProjectCard from "../components/CreateProjectCard.jsx";
 import { CustomCard } from "../components/custom/Card.jsx";
-import { useLocation } from "react-router-dom";
+import {useLocation, useParams} from "react-router-dom";
+import {useSelector} from "react-redux";
+import Loader from "../components/Loader.jsx";
 
 const EditProject = () => {
-  const location = useLocation();
-  const { project } = location.state;
+  const projectId = useParams();
+  const project = useSelector((s) => s.project?.myProjects?.find((p) => p.id === projectId.id));
 
-  return (
-    <Layout>
-      <Box sx={wrapper}>
-        <CustomCard>
-          <CreateProjectCard projectInfo={project} />
-        </CustomCard>
-      </Box>
-    </Layout>
-  );
-};
+    return (
+      <Layout>
+        <Box sx={wrapper}>
+          { !project ? <Box sx={{
+                height: '100%',
+                width: '100%',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center'
+              }}
+              >
+                <Loader/>
+              </Box> :
+            <CustomCard>
+              <CreateProjectCard projectInfo={project} />
+            </CustomCard>
+          }
+        </Box>
+      </Layout>
+    );
+  }
 
 export default EditProject;
 
@@ -44,4 +57,5 @@ const wrapper = (theme) => ({
   flexDirection: "column",
   maxWidth: "1300px",
   width: "100%",
+  height: '100%'
 });

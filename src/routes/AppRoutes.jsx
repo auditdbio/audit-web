@@ -119,7 +119,7 @@ const AppRoutes = () => {
                     }
                 />
                 <Route
-                    path="/edit-project"
+                    path="/edit-project/:id"
                     element={
                         <PrivateRoute auth={{ isAuthenticated: isAuth() }}>
                             <EditProject />

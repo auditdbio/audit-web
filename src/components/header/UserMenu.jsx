@@ -9,7 +9,7 @@ import { useDispatch } from "react-redux";
 import {useNavigate} from "react-router-dom/dist";
 import { useSelector } from "react-redux";
 import React, {useMemo, useState} from "react";
-import {AUDITOR} from "../../redux/actions/types.js";
+import {AUDITOR, CUSTOMER} from "../../redux/actions/types.js";
 import {ASSET_URL} from "../../services/urls.js";
 
 export const UserMenu = ({ open, handleClose, anchor, userAvatar }) => {
@@ -125,9 +125,9 @@ export const UserMenu = ({ open, handleClose, anchor, userAvatar }) => {
         indicatorColor="none"
       >
         <Tab
-          value={"auditor"}
+          value={AUDITOR}
           sx={[
-            isAuditor === "auditor"
+            isAuditor === AUDITOR
               ? auditorTabSx
               : { backgroundColor: "#D9D9D9" },
             tabSx,
@@ -135,9 +135,9 @@ export const UserMenu = ({ open, handleClose, anchor, userAvatar }) => {
           label="Auditor"
         />
         <Tab
-          value={"customer"}
+          value={CUSTOMER}
           sx={[
-            isAuditor === "customer"
+            isAuditor === CUSTOMER
               ? customerTabSx
               : { backgroundColor: "#D9D9D9" },
             tabSx,

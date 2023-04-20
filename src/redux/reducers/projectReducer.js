@@ -2,7 +2,7 @@ import {
   PROJECT_CREATE,
   GET_PROJECTS,
   GET_MY_PROJECTS,
-  PROJECT_UPDATE, SEARCH_PROJECTS,
+  PROJECT_UPDATE, SEARCH_PROJECTS, PROJECT_UPDATE_STATUS, CLEAR_SUCCESS,
 } from "../actions/types.js";
 
 const initialState = {
@@ -11,6 +11,7 @@ const initialState = {
   recentProject: null,
   error: null,
   searchProjects: null,
+  message: null
 };
 export const projectReducer = (state = initialState, action) => {
   switch (action.type) {
@@ -24,11 +25,32 @@ export const projectReducer = (state = initialState, action) => {
     case GET_PROJECTS:
       return { ...state, projects: action.payload };
     case PROJECT_UPDATE:
-      return { ...state, recentProject: action.payload };
+      return {
+        ...state, recentProject: action.payload, myProjects: state.myProjects.map((project) => {
+          if (project.id === action.payload.id) {
+            return action.payload;
+          }
+          return project;
+        })
+      }
+    case PROJECT_UPDATE_STATUS:
+      return {
+        ...state,
+        message: `Project ${action.payload.publish_options?.publish ? 'published' : 'hidden'}`,
+        recentProject: action.payload, myProjects: state.myProjects.map((project) => {
+          if (project.id === action.payload.id) {
+            return action.payload;
+          }
+          return project;
+        }),
+      }
     case GET_MY_PROJECTS:
       return { ...state, myProjects: action.payload };
     case SEARCH_PROJECTS:
       return { ...state, searchProjects: action.payload };
+    case CLEAR_SUCCESS: {
+      return { ...state, message: null }
+    }
     default:
       return state;
   }

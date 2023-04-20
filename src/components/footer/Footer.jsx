@@ -65,7 +65,9 @@ const footerContainerStyles = {
 	flexDirection: "row",
 	justifyContent: "center",
 	backgroundColor: "#FF9900",
-	paddingBottom: '35px'
+	paddingBottom: '35px',
+	marginBottom: 0,
+	marginTop: 'auto'
 };
 
 const mainFooterStyles = (isMobile) => ({

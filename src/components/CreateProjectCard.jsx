@@ -11,7 +11,7 @@ import MenuRoundedIcon from "@mui/icons-material/MenuRounded";
 import AuditorSearchModal from "./AuditorSearchModal.jsx";
 import TagsField from "./forms/tags-field/tags-field.jsx";
 import {
-  changeStatusProject,
+  changeStatusProject, clearProjectMessage,
   createProject,
   editProject,
   getProjects,
@@ -31,6 +31,7 @@ const CreateProjectCard = ({ role, projectInfo }) => {
   const auditReducer = useSelector((state) => state.audits);
   const [auditRequests, setAuditRequests] = useState([]);
   const [error, setError] = useState(null);
+  const projectMessage = useSelector((state) => state.project.message);
 
   useEffect(() => {
     dispatch(getAuditsRequest("customer"));
@@ -87,7 +88,10 @@ const CreateProjectCard = ({ role, projectInfo }) => {
   const handleInviteAuditor = () => {};
 
   const handlePublish = (values) => {
-    const newValue = {...values, publish_options: {...values.publish_options, publish: !values.publish_options.publish}}
+    const newValue = {...values,
+      publish_options: {...values.publish_options,
+        publish: !values.publish_options.publish}
+    }
     if (editMode) {
       dispatch(changeStatusProject({ ...newValue, id: projectInfo.id }))
     } else {
@@ -118,14 +122,17 @@ const CreateProjectCard = ({ role, projectInfo }) => {
               <ArrowBackIcon />
             </Button>
             <Snackbar
-                autoHideDuration={10000}
-                open={!!error}
+                autoHideDuration={3000}
+                open={!!error || projectMessage}
                 anchorOrigin={{ horizontal: 'right', vertical: 'top' }}
-                onClose={() => setError(null)}
+                onClose={() => {
+                  setError(null)
+                  dispatch(clearProjectMessage())
+                }}
             >
               <Stack sx={{ width: '100%', flexDirection: 'column', gap: 2 }} spacing={2}>
-                <Alert severity='error'>
-                  <AlertTitle>{error}</AlertTitle>
+                <Alert severity={!projectMessage ? 'error' : 'success'}>
+                  <AlertTitle>{error || projectMessage}</AlertTitle>
                 </Alert>
               </Stack>
             </Snackbar>
@@ -161,7 +168,7 @@ const CreateProjectCard = ({ role, projectInfo }) => {
                 { !values?.publish_options?.publish ?
                   'Publish project'
                     :
-                    'Draft project'
+                    'Hide project'
                 }
               </Button>
               <Button sx={menuButtonSx}>
