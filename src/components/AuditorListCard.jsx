@@ -10,7 +10,7 @@ import { useNavigate } from "react-router-dom";
 import {ASSET_URL} from "../services/urls.js";
 import {useDispatch, useSelector} from "react-redux";
 import {CUSTOMER} from "../redux/actions/types.js";
-import {changeRolePublicCustomer} from "../redux/actions/userAction.js";
+import {changeRolePublicCustomer, changeRolePublicCustomerNoRedirect} from "../redux/actions/userAction.js";
 import {Alert, AlertTitle} from "@mui/lab";
 
 const AuditorListCard = ({ auditor }) => {
@@ -19,6 +19,7 @@ const AuditorListCard = ({ auditor }) => {
   const [openModal, setOpenModal] = useState(false);
   const customerReducer = useSelector((state) => state.customer.customer);
   const [message, setMessage] = useState('')
+  const [isForm, setIsForm] = useState(false)
   const myProjects = useSelector((state) => state.project.myProjects);
   const dispatch = useDispatch();
 
@@ -33,8 +34,11 @@ const AuditorListCard = ({ auditor }) => {
   const handleInvite = () => {
     if (user.current_role === CUSTOMER && isAuth() && myProjects.length){
       return navigate(`/my-projects/${auditor.user_id}`, )
-    } else if (user.current_role !== CUSTOMER && isAuth()){
+    } else if (user.current_role !== CUSTOMER && isAuth() && !customerReducer?.first_name && !customerReducer?.last_name){
       dispatch(changeRolePublicCustomer(CUSTOMER, user.id, customerReducer))
+    } else if (user.current_role !== CUSTOMER && isAuth() && customerReducer?.first_name && customerReducer?.last_name){
+      dispatch(changeRolePublicCustomerNoRedirect(CUSTOMER, user.id, customerReducer))
+      setIsForm(true)
     } else if (user.current_role === CUSTOMER && isAuth() && !myProjects.length){
       setMessage('No active projects')
     } else {
@@ -45,13 +49,13 @@ const AuditorListCard = ({ auditor }) => {
   return (
     <Box sx={wrapper}>
         <Snackbar
-            autoHideDuration={10000}
+            autoHideDuration={3000}
             open={!!message}
             anchorOrigin={{ horizontal: 'right', vertical: 'top' }}
             onClose={() => setMessage(null)}
         >
           <Stack sx={{ width: '100%', flexDirection: 'column', gap: 2 }} spacing={2}>
-            <Alert severity='error'>
+            <Alert severity={isForm ? 'success' : 'error'}>
               <AlertTitle>{message}</AlertTitle>
             </Alert>
           </Stack>
@@ -60,6 +64,7 @@ const AuditorListCard = ({ auditor }) => {
           open={openModal}
           handleClose={handleCloseModal}
           auditor={auditor}
+          isForm={isForm}
       />
       <Box sx={cardLeftSide}>
         <Box sx={avatarDescription}>

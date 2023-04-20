@@ -20,10 +20,10 @@ import {ASSET_URL} from "../services/urls.js";
 import SalarySlider from "./forms/salary-slider/salary-slider.jsx";
 import {Field, Form, Formik} from "formik";
 import {CUSTOMER} from "../redux/actions/types.js";
-import {changeRolePublicCustomer} from "../redux/actions/userAction.js";
+import {changeRolePublicCustomer, changeRolePublicCustomerNoRedirect} from "../redux/actions/userAction.js";
 import {Alert, AlertTitle} from "@mui/lab";
 
-export default function AuditorModal({ open, handleClose, auditor, isForm, onSubmit }) {
+export default function AuditorModal({ open, handleClose, auditor, isForm, onSubmit, handleError }) {
   const navigate = useNavigate();
   const auditorReducer = useSelector((state) => state.auditor.auditors);
   const customerReducer = useSelector((state) => state.customer.customer);
@@ -34,10 +34,14 @@ export default function AuditorModal({ open, handleClose, auditor, isForm, onSub
   const dispatch = useDispatch();
 
   const handleInvite = () => {
+
     if (user.current_role === CUSTOMER && isAuth() && myProjects.length){
       return navigate(`/my-projects/${auditor.user_id}`, )
-    } else if (user.current_role !== CUSTOMER && isAuth()){
+    } else if (user.current_role !== CUSTOMER && isAuth() && !customerReducer?.first_name && !customerReducer?.last_name){
       dispatch(changeRolePublicCustomer(CUSTOMER, user.id, customerReducer))
+    } else if (user.current_role !== CUSTOMER && isAuth() && customerReducer?.first_name && customerReducer?.last_name && handleError){
+      dispatch(changeRolePublicCustomerNoRedirect(CUSTOMER, user.id, customerReducer))
+      handleError()
     } else if (user.current_role === CUSTOMER && isAuth() && !myProjects.length){
       setMessage('No active projects')
     } else {
@@ -51,7 +55,7 @@ export default function AuditorModal({ open, handleClose, auditor, isForm, onSub
     } else {
       setMode("invite")
     }
-  }, [open]);
+  }, [open, isForm]);
 
 
   // useEffect(() => {

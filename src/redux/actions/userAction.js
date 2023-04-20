@@ -184,6 +184,26 @@ export const changeRolePublicAuditorNoRedirect = (value, id, currentRole) => {
     };
 };
 
+export const changeRolePublicCustomerNoRedirect = (value, id, currentRole) => {
+    return (dispatch) => {
+        axios
+            .patch(
+                `${API_URL}/user/${id}`,
+                { current_role: value },
+                {
+                    headers: {
+                        Authorization: "Bearer " + Cookies.get("token"),
+                        "Content-Type": "application/json",
+                    },
+                }
+            )
+            .then(({ data }) => {
+                dispatch({ type: SELECT_ROLE, payload: data });
+                localStorage.setItem("user", JSON.stringify(data));
+            })
+    };
+};
+
 export const changePassword = (value) => {
     return (dispatch) => {
         axios

@@ -1,14 +1,16 @@
-import { Card, Avatar, Box, Typography } from "@mui/material";
+import {Card, Avatar, Box, Typography, Stack, Alert, AlertTitle, Snackbar} from "@mui/material";
 import theme from "../../../styles/themes";
 import { CustomButton } from "../../custom/Button";
 import Currency from "../../icons/Currency";
 import Star from "../../icons/Star";
-import { useState } from "react";
+import React, { useState } from "react";
 import AuditorModal from "../../AuditorModal.jsx";
 import {ASSET_URL} from "../../../services/urls.js";
 
 const AuditorCard = ({ auditor }) => {
   const [openModal, setOpenModal] = useState(false);
+  const [message, setMessage] = useState(null)
+  const [isForm, setIsForm] = useState(false)
 
   const handleView = () => {
     setOpenModal(true);
@@ -18,13 +20,32 @@ const AuditorCard = ({ auditor }) => {
     setOpenModal(false);
   };
 
+  const handleError = () => {
+    setMessage('Switched to customer role"')
+    setIsForm(true)
+  }
+
   return (
     <Card sx={cardStyle}>
       <AuditorModal
         open={openModal}
         handleClose={handleCloseModal}
         auditor={auditor}
+        handleError={handleError}
+        isForm={isForm}
       />
+      <Snackbar
+          autoHideDuration={3000}
+          open={!!message}
+          anchorOrigin={{ horizontal: 'right', vertical: 'top' }}
+          onClose={() => setMessage(null)}
+      >
+        <Stack sx={{ width: '100%', flexDirection: 'column', gap: 2 }} spacing={2}>
+          <Alert severity='success'>
+            <AlertTitle>{message}</AlertTitle>
+          </Alert>
+        </Stack>
+      </Snackbar>
       <Avatar src={`${ASSET_URL}/${auditor.avatar}`} sx={avatarStyle} />
       <Box sx={columnStyle}>
         <Typography sx={mainTextStyle}>

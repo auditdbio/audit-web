@@ -5,7 +5,7 @@ import TagsList from "./tagsList.jsx";
 
 const ProjectListCard = ({project}) => {
     const [isOpen, setIsOpen] = useState(false)
-    const [error, setError] = useState(null)
+    const [message, setMessage] = useState(null)
 
     const handleOpen = () => {
         setIsOpen(true)
@@ -16,20 +16,20 @@ const ProjectListCard = ({project}) => {
     }
 
     const handleError = () => {
-        setError('Your role is not an auditor')
+        setMessage('Switched to auditor role')
     }
 
     return (
         <Box sx={wrapper}>
             <Snackbar
                 autoHideDuration={3000}
-                open={!!error}
+                open={!!message}
                 anchorOrigin={{ horizontal: 'right', vertical: 'top' }}
-                onClose={() => setError(null)}
+                onClose={() => setMessage(null)}
             >
                 <Stack sx={{ width: '100%', flexDirection: 'column', gap: 2 }} spacing={2}>
-                    <Alert severity='error'>
-                        <AlertTitle>{error}</AlertTitle>
+                    <Alert severity='success'>
+                        <AlertTitle>{message}</AlertTitle>
                     </Alert>
                 </Stack>
             </Snackbar>
