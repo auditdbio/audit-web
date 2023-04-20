@@ -28,8 +28,8 @@ const CustomBudge = () => {
             { isOpen &&
                 <ClickAwayListener onClickAway={() => setIsOpen(false)}>
                     <Box sx={modalWrapper(currentRole, theme)}>
-                        <Typography sx={{color: '#000'}}>
-                            No notifications
+                        <Typography sx={titleStyle}>
+                            Nothing new to report
                         </Typography>
                     </Box>
                 </ClickAwayListener>
@@ -47,13 +47,23 @@ const CustomBudge = () => {
 
 export default CustomBudge;
 
+const titleStyle = (theme) => ({
+    color: '#000',
+    fontSize: '16px!important',
+
+})
+
 const modalWrapper = (role, theme) => ({
     position: "absolute",
     top: '44px',
-    width: '250px',
+    width: '220px',
     padding: '0.5rem',
+    left: 0,
     backgroundColor: '#fff',
     borderRadius: '5px',
     border: '1px solid',
     borderColor: role === AUDITOR ? theme.palette.secondary?.main : theme.palette.primary.main,
+    [theme.breakpoints.down('sm')]: {
+        left: 'auto',
+    },
 })
