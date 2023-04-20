@@ -8,7 +8,7 @@ import AuditRequestInfo from "../../audit-request-info.jsx";
 
 const PublicProjectCard = ({ project }) => {
   const navigate = useNavigate();
-  const [error, setError] = useState(null)
+  const [message, setMessage] = useState(null)
   const [openModal, setOpenModal] = useState(false);
   const handleView = () => {
     setOpenModal(true);
@@ -19,7 +19,7 @@ const PublicProjectCard = ({ project }) => {
   };
 
   const handleError = () => {
-    setError('Your role is not an auditor')
+    setMessage('Switched to auditor role')
   }
 
   return (
@@ -53,13 +53,13 @@ const PublicProjectCard = ({ project }) => {
       {/*</Box>*/}
       <Snackbar
           autoHideDuration={10000}
-          open={!!error}
+          open={!!message}
           anchorOrigin={{ horizontal: 'right', vertical: 'top' }}
-          onClose={() => setError(null)}
+          onClose={() => message(null)}
       >
         <Stack sx={{ width: '100%', flexDirection: 'column', gap: 2 }} spacing={2}>
-          <Alert severity='error'>
-            <AlertTitle>{error}</AlertTitle>
+          <Alert severity='success'>
+            <AlertTitle>{message}</AlertTitle>
           </Alert>
         </Stack>
       </Snackbar>

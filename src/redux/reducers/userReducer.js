@@ -7,7 +7,11 @@ import {
     USER_IS_ALREADY_EXIST,
     USER_SIGNIN,
     USER_SIGNUP,
-    SELECT_ROLE, UPDATE_USER, CLEAR_SUCCESS,
+    SELECT_ROLE,
+    UPDATE_USER,
+    CLEAR_SUCCESS,
+    CHANGE_ROLE_HAVE_PROFILE_CUSTOMER,
+    CHANGE_ROLE_DONT_HAVE_PROFILE_CUSTOMER, CHANGE_ROLE_HAVE_PROFILE_AUDITOR, CHANGE_ROLE_DONT_HAVE_PROFILE_AUDITOR,
 } from "../actions/types.js";
 
 const initialState = {
@@ -34,11 +38,19 @@ export const userReducer = (state = initialState, action) => {
         case LOG_OUT:
             return initialState
         case SELECT_ROLE:
-            return {...state,  user: action.payload}
+            return {...state, user: action.payload}
         case UPDATE_USER:
-            return {...state,  user: action.payload, success: 'Success! Your password is changed'}
+            return {...state, user: action.payload, success: 'Success! Your password is changed'}
         case CLEAR_SUCCESS:
             return {...state, success: null}
+        case CHANGE_ROLE_HAVE_PROFILE_CUSTOMER:
+            return {...state, user: action.payload, success: 'Switched to customer role' }
+        case CHANGE_ROLE_DONT_HAVE_PROFILE_CUSTOMER:
+            return {...state, user: action.payload, success: 'Fill your customer profile and create some projects' }
+        case CHANGE_ROLE_HAVE_PROFILE_AUDITOR:
+            return {...state, user: action.payload, success: 'Switched to auditor role' }
+        case CHANGE_ROLE_DONT_HAVE_PROFILE_AUDITOR:
+            return {...state, user: action.payload, success: 'Fill your auditor profile' }
         default:
             return state
     }

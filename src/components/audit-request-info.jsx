@@ -29,6 +29,8 @@ import {DatePicker} from "@mui/x-date-pickers/DatePicker";
 import {LocalizationProvider} from "@mui/x-date-pickers";
 import Markdown from "./custom/Markdown.jsx";
 import {isAuth} from "../lib/helper.js";
+import {AUDITOR} from "../redux/actions/types.js";
+import {changeRolePublicAuditor, changeRolePublicAuditorNoRedirect} from "../redux/actions/userAction.js";
 
 const AuditRequestInfo = ({project, onClose, handleError}) => {
     const navigate = useNavigate()
@@ -39,12 +41,20 @@ const AuditRequestInfo = ({project, onClose, handleError}) => {
     const dispatch = useDispatch()
 
     const handleOpen = () => {
-        if (user.current_role === 'auditor' && isAuth()){
+        if (user.current_role === AUDITOR && isAuth() && auditor?.first_name && auditor?.last_name){
             setOpen(true);
-        } else if (user.current_role !== 'auditor' && isAuth()){
+        } else if (user.current_role !== AUDITOR && isAuth() && auditor?.first_name && auditor?.last_name){
+            dispatch(changeRolePublicAuditorNoRedirect(AUDITOR, user.id, auditor))
             handleError()
+            setOpen(true)
+        } else if (!auditor?.first_name && !auditor?.last_name && user.current_role === AUDITOR && isAuth()){
+            dispatch(changeRolePublicAuditor(AUDITOR, user.id, auditor))
+        } else if (user.current_role !== AUDITOR && isAuth() && !auditor?.first_name && !auditor?.last_name){
+            dispatch(changeRolePublicAuditor(AUDITOR, user.id, auditor))
+            handleError()
+            setOpen(true)
         } else {
-            navigate('/sign-up')
+            navigate('/sign-in')
         }
     }
 

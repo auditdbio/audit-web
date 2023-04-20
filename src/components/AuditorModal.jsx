@@ -4,7 +4,7 @@ import Dialog from "@mui/material/Dialog";
 import DialogContent from "@mui/material/DialogContent";
 import theme from "../styles/themes.js";
 import { Box } from "@mui/system";
-import {Alert, AlertTitle, Avatar, Slider, Snackbar, Stack, Typography} from "@mui/material";
+import {Avatar, Snackbar, Stack, Typography} from "@mui/material";
 import TagsList from "./tagsList.jsx";
 import { useEffect, useState } from "react";
 import IconButton from "@mui/material/IconButton";
@@ -13,8 +13,6 @@ import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import dayjs from "dayjs";
-import { getAuditors } from "../redux/actions/auditorAction.js";
-import { createRequest } from "../redux/actions/auditAction.js";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { isAuth } from "../lib/helper.js";
@@ -22,6 +20,8 @@ import {ASSET_URL} from "../services/urls.js";
 import SalarySlider from "./forms/salary-slider/salary-slider.jsx";
 import {Field, Form, Formik} from "formik";
 import {CUSTOMER} from "../redux/actions/types.js";
+import {changeRolePublicCustomer} from "../redux/actions/userAction.js";
+import {Alert, AlertTitle} from "@mui/lab";
 
 export default function AuditorModal({ open, handleClose, auditor, isForm, onSubmit }) {
   const navigate = useNavigate();
@@ -29,19 +29,19 @@ export default function AuditorModal({ open, handleClose, auditor, isForm, onSub
   const customerReducer = useSelector((state) => state.customer.customer);
   const user = useSelector(s=> s.user.user)
   const [mode, setMode] = useState("info");
-  const [submitted, setSubmitted] = useState(false);
-  const [openDrop, setOpenDrop] = useState(false);
-  const [inputValue, setInputValue] = useState("");
-  const [taxInput, setTaxInput] = useState(50);
-  const [error, setError] = useState(null)
+  const [message, setMessage] = useState('')
+  const myProjects = useSelector((state) => state.project.myProjects);
+  const dispatch = useDispatch();
 
   const handleInvite = () => {
-    if (user.current_role === CUSTOMER && isAuth()){
+    if (user.current_role === CUSTOMER && isAuth() && myProjects.length){
       return navigate(`/my-projects/${auditor.user_id}`, )
     } else if (user.current_role !== CUSTOMER && isAuth()){
-      setError('Your role is not an customer')
+      dispatch(changeRolePublicCustomer(CUSTOMER, user.id, customerReducer))
+    } else if (user.current_role === CUSTOMER && isAuth() && !myProjects.length){
+      setMessage('No active projects')
     } else {
-      navigate('/sign-up')
+      navigate('/sign-in')
     }
   };
 
@@ -106,13 +106,13 @@ export default function AuditorModal({ open, handleClose, auditor, isForm, onSub
         <DialogContent sx={modalWindow}>
           <Snackbar
               autoHideDuration={10000}
-              open={!!error}
+              open={!!message}
               anchorOrigin={{ horizontal: 'right', vertical: 'top' }}
-              onClose={() => setError(null)}
+              onClose={() => setMessage(null)}
           >
             <Stack sx={{ width: '100%', flexDirection: 'column', gap: 2 }} spacing={2}>
               <Alert severity='error'>
-                <AlertTitle>{error}</AlertTitle>
+                <AlertTitle>{message}</AlertTitle>
               </Alert>
             </Stack>
           </Snackbar>

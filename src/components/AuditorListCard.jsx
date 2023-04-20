@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Avatar, Box, Button, Modal, Typography } from "@mui/material";
+import {Avatar, Box, Button, Modal, Snackbar, Stack, Typography} from "@mui/material";
 import AuditRequestInfo from "./audit-request-info.jsx";
 import TagsList from "./tagsList.jsx";
 import CircleIcon from "@mui/icons-material/Circle";
@@ -8,36 +8,59 @@ import AuditorModal from "./AuditorModal.jsx";
 import { isAuth } from "../lib/helper.js";
 import { useNavigate } from "react-router-dom";
 import {ASSET_URL} from "../services/urls.js";
-import {useSelector} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {CUSTOMER} from "../redux/actions/types.js";
+import {changeRolePublicCustomer} from "../redux/actions/userAction.js";
+import {Alert, AlertTitle} from "@mui/lab";
 
 const AuditorListCard = ({ auditor }) => {
   const navigate = useNavigate();
   const user = useSelector((state) => state.user.user);
+  const [openModal, setOpenModal] = useState(false);
+  const customerReducer = useSelector((state) => state.customer.customer);
+  const [message, setMessage] = useState('')
+  const myProjects = useSelector((state) => state.project.myProjects);
+  const dispatch = useDispatch();
 
-  const [isOpenView, setIsOpenView] = useState(false);
-  const [isOpenInvite, setIsOpenInvite] = useState(false);
-
-  const handleOpenView = () => {
-    setIsOpenView(true);
+  const handleView = () => {
+    setOpenModal(true);
   };
-  const handleCloseView = () => {
-    setIsOpenView(false);
+
+  const handleCloseModal = () => {
+    setOpenModal(false);
   };
 
-  const handleOpenInvite = (id) => {
-    if (!isAuth()) {
-      navigate("/sign-up");
-      return;
+  const handleInvite = () => {
+    if (user.current_role === CUSTOMER && isAuth() && myProjects.length){
+      return navigate(`/my-projects/${auditor.user_id}`, )
+    } else if (user.current_role !== CUSTOMER && isAuth()){
+      dispatch(changeRolePublicCustomer(CUSTOMER, user.id, customerReducer))
+    } else if (user.current_role === CUSTOMER && isAuth() && !myProjects.length){
+      setMessage('No active projects')
     } else {
-      navigate(`/my-projects/${id}`)
+      navigate('/sign-in')
     }
-    setIsOpenInvite(true);
   };
-
 
   return (
     <Box sx={wrapper}>
+        <Snackbar
+            autoHideDuration={10000}
+            open={!!message}
+            anchorOrigin={{ horizontal: 'right', vertical: 'top' }}
+            onClose={() => setMessage(null)}
+        >
+          <Stack sx={{ width: '100%', flexDirection: 'column', gap: 2 }} spacing={2}>
+            <Alert severity='error'>
+              <AlertTitle>{message}</AlertTitle>
+            </Alert>
+          </Stack>
+        </Snackbar>
+      <AuditorModal
+          open={openModal}
+          handleClose={handleCloseModal}
+          auditor={auditor}
+      />
       <Box sx={cardLeftSide}>
         <Box sx={avatarDescription}>
           <Box>
@@ -67,21 +90,19 @@ const AuditorListCard = ({ auditor }) => {
           size={"small"}
           sx={viewButtonStyle}
           variant={"contained"}
-          onClick={handleOpenView}
+          onClick={handleView}
         >
           View more
         </Button>
-        { (isAuth() && user.current_role === CUSTOMER ) &&
           <Button
               color={"primary"}
               size={"small"}
               sx={inviteButtonStyle(theme)}
               variant={"contained"}
-              onClick={() => handleOpenInvite(auditor.user_id)}
+              onClick={handleInvite}
           >
             Invite to project
           </Button>
-        }
       </Box>
 
     </Box>

@@ -9,7 +9,12 @@ import {
     USER_IS_ALREADY_EXIST,
     USER_SIGNIN,
     USER_SIGNUP,
-    SELECT_ROLE, UPDATE_USER, CLEAR_SUCCESS,
+    SELECT_ROLE,
+    UPDATE_USER,
+    CLEAR_SUCCESS,
+    CHANGE_ROLE_DONT_HAVE_PROFILE_CUSTOMER,
+    CHANGE_ROLE_HAVE_PROFILE_CUSTOMER,
+    CHANGE_ROLE_DONT_HAVE_PROFILE_AUDITOR, CHANGE_ROLE_HAVE_PROFILE_AUDITOR,
 } from "./types.js";
 
 const API_URL = import.meta.env.VITE_API_BASE_URL;
@@ -96,6 +101,87 @@ export const changeRole = (value, id) => {
         );
       });
   };
+};
+
+export const changeRolePublicCustomer = (value, id, currentRole) => {
+    return (dispatch) => {
+        axios
+            .patch(
+                `${API_URL}/user/${id}`,
+                { current_role: value },
+                {
+                    headers: {
+                        Authorization: "Bearer " + Cookies.get("token"),
+                        "Content-Type": "application/json",
+                    },
+                }
+            )
+            .then(({ data }) => {
+                if (currentRole.firts_name || currentRole.last_name){
+                    dispatch({ type: CHANGE_ROLE_HAVE_PROFILE_CUSTOMER, payload: data });
+                } else {
+                    dispatch({ type: CHANGE_ROLE_DONT_HAVE_PROFILE_CUSTOMER, payload: data });
+                }
+                localStorage.setItem("user", JSON.stringify(data));
+                history.push(
+                    { pathname: `/profile/user-info` },
+                    {
+                        some: true,
+                    }
+                );
+            });
+    };
+};
+
+
+export const changeRolePublicAuditor = (value, id, currentRole) => {
+    return (dispatch) => {
+        axios
+            .patch(
+                `${API_URL}/user/${id}`,
+                { current_role: value },
+                {
+                    headers: {
+                        Authorization: "Bearer " + Cookies.get("token"),
+                        "Content-Type": "application/json",
+                    },
+                }
+            )
+            .then(({ data }) => {
+                if (currentRole.firts_name || currentRole.last_name){
+                    dispatch({ type: CHANGE_ROLE_HAVE_PROFILE_AUDITOR, payload: data });
+                } else {
+                    dispatch({ type: CHANGE_ROLE_DONT_HAVE_PROFILE_AUDITOR, payload: data });
+                }
+                localStorage.setItem("user", JSON.stringify(data));
+                history.push(
+                    { pathname: `/profile/user-info` },
+                    {
+                        some: true,
+                    }
+                );
+            });
+    };
+};
+
+export const changeRolePublicAuditorNoRedirect = (value, id, currentRole) => {
+    return (dispatch) => {
+        axios
+            .patch(
+                `${API_URL}/user/${id}`,
+                { current_role: value },
+                {
+                    headers: {
+                        Authorization: "Bearer " + Cookies.get("token"),
+                        "Content-Type": "application/json",
+                    },
+                }
+            )
+            .then(({ data }) => {
+                dispatch({ type: SELECT_ROLE, payload: data });
+                localStorage.setItem("user", JSON.stringify(data));
+            });
+    };
 };
 
 export const changePassword = (value) => {
