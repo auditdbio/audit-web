@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import {Avatar, Box, Button, Modal, Snackbar, Stack, Typography} from "@mui/material";
-import AuditRequestInfo from "./audit-request-info.jsx";
 import TagsList from "./tagsList.jsx";
 import CircleIcon from "@mui/icons-material/Circle";
 import theme from "../styles/themes.js";

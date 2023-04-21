@@ -124,7 +124,7 @@ export const searchProjects = (values) => {
     }
   return (dispatch) => {
     axios
-        .get(`${API_URL}/search?query=${searchValues.query}&tags=${searchValues.tags.map(tag => tag + ',')}${searchValues.ready_to_wait && "&ready_to_wait="`${searchValues.ready_to_wait}`}&sort_by=price&priceFrom=${searchValues.priceFrom}&priceTo=${searchValues.priceTo}&dateFrom=${searchValues.dateFrom}&dateTo=${searchValues.dateTo}&sort_order=${searchValues.sort}&page=0&per_page=0&kind=project`)
+        .get(`${API_URL}/search?query=${searchValues.query}&tags=${searchValues.tags.join(',')}${searchValues.ready_to_wait && "&ready_to_wait="`${searchValues.ready_to_wait}`}&sort_by=price&priceFrom=${searchValues.priceFrom}&priceTo=${searchValues.priceTo}&dateFrom=${searchValues.dateFrom}&dateTo=${searchValues.dateTo}&sort_order=${searchValues.sort}&page=0&per_page=0&kind=project`)
         // .get(`${API_URL}/search?query=${searchValues.query}&tags=${searchValues.tags.map(tag => tag + ',')}&${searchValues.ready_to_wait && "&ready_to_wait="`${searchValues.ready_to_wait}`}&sort_by=price&priceFrom=${searchValues.priceFrom}&priceTo=${searchValues.priceTo}&sort_order=1&page=0&per_page=0&kind=project`)
         .then(({ data }) => {
           dispatch({ type: SEARCH_PROJECTS, payload: data });

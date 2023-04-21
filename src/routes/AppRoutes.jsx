@@ -9,7 +9,6 @@ import { authenticate } from "../redux/actions/userAction.js";
 import { isAuth } from "../lib/helper.js";
 import EditProfile from "../pages/edit-profile.jsx";
 import AuditInfo from "../pages/audit-info.jsx";
-import AuditRequestInfo from "../components/audit-request-info.jsx";
 import AuditOffer from "../pages/audit-offer.jsx";
 import CreateProject from "../pages/CreateProject.jsx";
 import ProfilePage from "../pages/profile-page.jsx";

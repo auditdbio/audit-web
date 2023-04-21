@@ -9,6 +9,7 @@ import {useNavigate, useSearchParams} from "react-router-dom/dist";
 import AuditorListCard from "../components/AuditorListCard.jsx";
 import {getAuditors, searchAuditor} from "../redux/actions/auditorAction.js";
 import theme from "../styles/themes.js";
+import {searchProjects} from "../redux/actions/projectAction.js";
 
 const AuditorsPage = () => {
   const dispatch = useDispatch();
@@ -23,25 +24,26 @@ const AuditorsPage = () => {
       return {
         ...data,
 
+        sort: filter.sort || '',
         search: filter.search || '',
         tags: filter.tags.map((tag) => tag),
         dateFrom: filter.dateFrom || '',
         dateTo: filter.dateTo || '',
         from: filter.price.from || '',
         to: filter.price.to || '',
-        sort: filter.sort || '',
-        readyToWait: filter.readyToWait || false,
+        readyToWait: filter.readyToWait || '',
       }
     })
+    dispatch(searchProjects(filter))
   }
 
   const initialFilter = {
     search: searchParams.get('search') || '',
     tags: searchParams.getAll('tags') || [],
-    dateFrom: searchParams.get('dateFrom') || '',
-    dateTo: searchParams.get('dateTo') || '',
-    readyToWait: searchParams.get('readyToWait') || false,
+    dateFrom: searchParams.get('dateFrom') || new Date(),
+    dateTo: searchParams.get('dateTo') || new Date(),
     sort: searchParams.get('sort') || '',
+    readyToWait: searchParams.get('readyToWait') || '',
     price: {
       from: searchParams.get('from') || 0,
       to: searchParams.get('to') || 0

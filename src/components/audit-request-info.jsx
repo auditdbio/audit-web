@@ -22,7 +22,7 @@ import SalarySlider from "./forms/salary-slider/salary-slider.jsx";
 import {Form, Formik, Field} from "formik";
 import * as Yup from "yup";
 import {useDispatch, useSelector} from "react-redux";
-import {clearMessage, createRequest} from "../redux/actions/auditAction.js";
+import {clearMessage, createRequest, deleteAuditRequest} from "../redux/actions/auditAction.js";
 import dayjs from "dayjs";
 import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs";
 import {DatePicker} from "@mui/x-date-pickers/DatePicker";
@@ -32,7 +32,7 @@ import {isAuth} from "../lib/helper.js";
 import {AUDITOR} from "../redux/actions/types.js";
 import {changeRolePublicAuditor, changeRolePublicAuditorNoRedirect} from "../redux/actions/userAction.js";
 
-const AuditRequestInfo = ({project, onClose, handleError, redirect}) => {
+const AuditRequestInfo = ({project, onClose, handleError, redirect, isModal}) => {
     const navigate = useNavigate()
     const matchXs = useMediaQuery(theme.breakpoints.down('xs'))
     const [open, setOpen] = useState(false)
@@ -146,9 +146,17 @@ const AuditRequestInfo = ({project, onClose, handleError, redirect}) => {
                 <Button
                     variant={'contained'}
                     sx={[buttonSx, {backgroundColor: theme.palette.secondary.main}]}
-                    onClick={() => navigate(-1)}
+                    onClick={() => {
+                        if (isModal){
+                            handleBack()
+                        } else {
+                            dispatch(deleteAuditRequest(project.id))
+                        }
+                    }}
                 >
-                    Decline
+                    {
+                        isModal ? 'Cancel' : 'Decline'
+                    }
                 </Button>
                     <Button
                         variant={'contained'}

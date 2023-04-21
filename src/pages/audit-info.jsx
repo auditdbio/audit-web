@@ -155,7 +155,7 @@ const AuditInfo = () => {
                             onClick={handleDecline}
                             sx={[buttonSx, {backgroundColor: theme.palette.secondary.main}]}
                         >
-                                Cancel
+                                Decline
                         </Button>
                     }
 

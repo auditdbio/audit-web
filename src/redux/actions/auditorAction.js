@@ -2,6 +2,7 @@ import Cookies from "js-cookie";
 import axios from "axios";
 import {GET_AUDITOR, GET_AUDITORS, SEARCH_AUDITOR, SEARCH_PROJECTS, UPDATE_AUDITOR} from "./types.js";
 import {history} from "../../services/history.js";
+import dayjs from "dayjs";
 
 const API_URL = import.meta.env.VITE_API_BASE_URL
 
@@ -70,13 +71,18 @@ export const getAuditors = (values='') => {
 export const searchAuditor = (values) => {
     const searchValues = {
         query: values?.search || '',
-        tags: values?.tags || [],
-        order: values?.order || '1',
+        tags: values?.tags || '',
+        ready_to_wait: values?.ready_to_wait || '',
+        dateFrom: dayjs().valueOf(values?.dateFrom) || '',
+        dateTo: dayjs().valueOf(values?.dateTo)  || '',
+        priceFrom: parseInt(values?.price.from) || '',
+        priceTo: parseInt(values?.price.to) || '',
+        sort: values?.sort || 1,
     }
 
     return (dispatch) => {
         axios
-            .get(`${API_URL}/search?query=${searchValues.query}&tags=${searchValues.tags.map(tag => tag + ',')}&sort_by=price&sort_order=${searchValues.order}&page=0&per_page=0&kind=auditor`)
+            .get(`${API_URL}/search?query=${searchValues.query}&tags=${searchValues.tags.map(tag => tag).join(',')}${searchValues.ready_to_wait && "&ready_to_wait="`${searchValues.ready_to_wait}`}&sort_by=price&priceFrom=${searchValues.priceFrom}&priceTo=${searchValues.priceTo}&dateFrom=${searchValues.dateFrom}&dateTo=${searchValues.dateTo}&sort_order=${searchValues.sort}&page=0&per_page=0&kind=auditor`)
             .then(({ data }) => {
                 dispatch({ type: SEARCH_AUDITOR, payload: data });
             })
