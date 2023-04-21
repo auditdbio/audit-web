@@ -82,9 +82,7 @@ export const getAllProjects = (values = "") => {
   const token = Cookies.get("token");
   return async (dispatch) => {
     await axios
-      .get(`${API_URL}/search?kind=project&query=&tags=${values.toLowerCase()}&per_page=100&page=0`,
-          // { headers: { Authorization: `Bearer ${token}` },}
-      )
+        .get(`${API_URL}/search?query=${values}&tags=&sort_by=price&priceFrom=&priceTo=&dateFrom=&dateTo=&sort_order=1&page=0&per_page=0&kind=project`)
       .then(({ data }) => {
         dispatch({ type: GET_PROJECTS, payload: data });
       })
