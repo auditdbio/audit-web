@@ -76,7 +76,14 @@ const MyProjects = () => {
                             </Grid>
                         ))}
                     </Grid>
-                    <Button variant={'contained'} sx={submitBtn} onClick={handleOpenView}>Invite to project</Button>
+                    <Button
+                        variant={'contained'}
+                        sx={submitBtn}
+                        onClick={handleOpenView}
+                        disabled={chosen.length === 0}
+                    >
+                        Invite to project
+                    </Button>
                     <AuditorModal
                         open={isOpenView}
                         handleClose={handleCloseView}
