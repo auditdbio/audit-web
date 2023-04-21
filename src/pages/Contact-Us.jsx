@@ -6,9 +6,15 @@ import {Form, Formik, Field} from "formik";
 import SimpleField from "../components/forms/fields/simple-field.jsx";
 import {radiusOfComponents} from "../styles/themes.js";
 import DescriptionField from "../components/forms/create-project/DescriptionField.jsx";
+import {clearFormMessage, sendContactMessage} from "../redux/actions/contactUsAction.js";
+import {useDispatch, useSelector} from "react-redux";
+import {clearMessage} from "../redux/actions/auditAction.js";
 // import Textarea from "@uiw/react-md-editor/lib/components/TextArea/Textarea.js";
 
 const AuditDb = () => {
+    const dispatch = useDispatch()
+    const errorMessage = useSelector(s => s.contactUs.errorMessage)
+    const successMessage = useSelector(s => s.contactUs.successMessage)
 
     const initialValues = {
         email: '',
@@ -18,12 +24,26 @@ const AuditDb = () => {
     }
     return (
         <Layout>
+            <Snackbar
+                autoHideDuration={3000}
+                open={errorMessage || successMessage}
+                anchorOrigin={{ horizontal: 'right', vertical: 'top' }}
+                onClose={() => {
+                    dispatch(clearFormMessage())
+                }}
+            >
+                <Stack sx={{ width: '100%', flexDirection: 'column', gap: 2 }} spacing={2}>
+                    <Alert severity={errorMessage ? 'error' : 'success'}>
+                        <AlertTitle>{errorMessage || successMessage}</AlertTitle>
+                    </Alert>
+                </Stack>
+            </Snackbar>
             <CustomCard>
                 <Formik
                     initialValues={initialValues}
-                    onSubmit={(values) => {
-                        console.log(values)
-                        // dispatch(signIn(values))
+                    onSubmit={(values, {resetForm}) => {
+                        dispatch(sendContactMessage(values))
+                        resetForm()
                     }}
                 >
                     {({handleSubmit}) => {
