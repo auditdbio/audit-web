@@ -103,16 +103,12 @@ const AuditorSection = () => {
       <Grid
         container
         rowSpacing={4}
-        columnSpacing={{
-          zero: 2,
-          xs: 4,
-          md: 12,
-        }}
-        justifyContent="space-between"
+        columnSpacing={4}
+        // justifyContent="space-between"
       >
         {auditorReducer.auditors &&
           auditorReducer.auditors.slice(0, matchSm ? 4 : 3).map((auditor) => (
-            <Grid key={auditor.user_id} item zero="6" xs={4}>
+            <Grid key={auditor.user_id} item sx={gridItemStylePublic}>
               <AuditorCard auditor={auditor} />
             </Grid>
           ))}
@@ -130,6 +126,13 @@ const AuditorSection = () => {
     </Box>
   );
 };
+
+export const gridItemStylePublic = (theme) => ({
+    width: "33.330%",
+  [theme.breakpoints.down("xs")]: {
+    width: "50%",
+  },
+});
 
 const headerWrapper = {
   display: "flex",

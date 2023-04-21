@@ -134,7 +134,7 @@ export const acceptAudit = (values) => {
   return (dispatch) => {
     const token = Cookies.get("token");
     axios
-        .patch(`${API_URL}/audit`, values, {
+        .patch(`${API_URL}/audit/${values.id}`, values, {
           headers: {
             Authorization: `Bearer ${token}`,
           },

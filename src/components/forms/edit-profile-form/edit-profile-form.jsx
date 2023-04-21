@@ -1,6 +1,6 @@
 import React, {useEffect, useMemo, useState} from 'react';
 import {Field, Form, Formik} from "formik";
-import {Avatar, Box, Button, Slider, TextField, Typography, useMediaQuery} from "@mui/material";
+import {Avatar, Box, Button, Checkbox, Slider, TextField, Typography, useMediaQuery} from "@mui/material";
 import SimpleField from "../fields/simple-field.jsx";
 import PasswordField from "../fields/password-field.jsx";
 import TagsArray from "../../tagsArray/index.jsx";
@@ -23,7 +23,6 @@ import {SliderRange} from "../salary-slider/slider-range.jsx";
 const EditProfileForm = ({role}) => {
     const matchSm = useMediaQuery(theme.breakpoints.down('sm'))
     const dispatch = useDispatch()
-
     const customer = useSelector(s => s.customer.customer)
     const auditor = useSelector(s => s.auditor.auditor)
 
@@ -56,6 +55,7 @@ const EditProfileForm = ({role}) => {
                         from: data?.price_range?.from || 0,
                         to: data?.price_range?.to || 0,
                     },
+                    public_contacts: data.public_contacts || false,
                     tags: data?.tags || [],
                 }}
                 validationSchema={EditProfileSchema}
@@ -97,21 +97,47 @@ const EditProfileForm = ({role}) => {
                                         {!matchSm &&
                                             <>
                                                 <SimpleField name={'first_name'} label={'First Name'}/>
-                                                <SimpleField name={'last_name'} label={'Last name'}/>
+                                                {/*<SimpleField name={'last_name'} label={'Last name'}/>*/}
+
                                             </>
                                         }
-                                        <SimpleField name={'contacts.email'} label={'E-mail'}/>
+                                        <SimpleField name={'contacts.telegram'} label={'Telegram'}/>
+                                        <Box>
+                                            <SimpleField name={'contacts.email'} label={'E-mail'}/>
+                                            <Box sx={{display: 'flex', alignItems: 'center', justifyContent: 'flex-end', mt: '5px'}}>
+                                                <Checkbox
+                                                    color={'success'}
+                                                    id={'hide-contacts'}
+                                                    checked={values.public_contacts}
+                                                    onChange={(e) => {
+                                                        setFieldValue('public_contacts', e.target.checked)
+                                                    }}
+                                                />
+                                                <label
+                                                    htmlFor="hide-contacts"
+                                                    style={{
+                                                        width: '134px',
+                                                        display: 'flex',
+                                                        color: role === AUDITOR? theme.palette.secondary.main : theme.palette.primary.main,
+                                                    }}
+                                                >
+                                                    Public contacts
+                                                </label>
+                                            </Box>
+                                        </Box>
                                         <ChangePasswordFormik/>
                                         {!matchSm &&
                                             <TagsField name={'tags'} label={'Tags'}/>
                                         }
                                     </Box>
                                     <Box sx={fieldWrapper}>
+                                        { !matchSm &&
+                                            <SimpleField name={'last_name'} label={'Last name'}/>
+                                        }
                                         {role === CUSTOMER &&
                                             <SimpleField name={'company'} label={'Company'}/>
                                         }
                                         <SimpleField name={'about'} label={'About'}/>
-                                        <SimpleField name={'contacts.telegram'} label={'Telegram'}/>
                                         {role !== CUSTOMER &&
                                             <Box>
                                                 <Typography sx={rateLabel}>
@@ -208,6 +234,9 @@ const fieldWrapper = (theme) => ({
     gap: '18px',
     display: 'flex',
     flexDirection: 'column',
+    '& .tags-array-wrapper': {
+      margin: 'auto 0 0 0'
+    },
     '& .password-wrapper': {
         gap: '12px'
     },

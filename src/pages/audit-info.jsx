@@ -96,11 +96,11 @@ const AuditInfo = () => {
                         <Box sx={userInfoWrapper}>
                             <Box sx={infoWrapper}>
                                 <span>E-mail</span>
-                                <Typography>{audit?.auditor_contacts?.email}</Typography>
+                                <Typography>{audit?.auditor_contacts?.email ? audit?.auditor_contacts?.email : 'Hidden'}</Typography>
                             </Box>
                             <Box sx={infoWrapper}>
                                 <span>Telegram</span>
-                                <Typography>{audit?.auditor_contacts?.telegram}</Typography>
+                                <Typography>{audit?.auditor_contacts?.telegram ? audit?.auditor_contacts?.telegram : 'Hidden'}</Typography>
                             </Box>
                             <Box sx={infoWrapper}>
                                 <span>Price:</span>

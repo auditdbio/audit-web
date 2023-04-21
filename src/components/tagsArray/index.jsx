@@ -8,7 +8,7 @@ const TagsArray = ({ name }) => {
   const [field, meta] = useField(name);
 
   return (
-    <Box sx={{ display: "flex", gap: "15px", flexWrap: "wrap" }}>
+    <Box sx={{ display: "flex", gap: "15px", flexWrap: "wrap" }} className={'tags-array-wrapper'}>
       {meta.error && (
         <Typography
           variant={"body1"}

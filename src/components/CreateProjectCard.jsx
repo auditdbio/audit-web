@@ -37,6 +37,7 @@ const CreateProjectCard = ({projectInfo }) => {
   useEffect(() => {
     dispatch(getAuditsRequest("customer"));
   }, []);
+
   useEffect(() => {
     if (auditReducer.auditRequests && projectInfo) {
       setAuditRequests(
@@ -87,16 +88,16 @@ const CreateProjectCard = ({projectInfo }) => {
   };
 
 
-  const handlePublish = (values) => {
+  const handlePublish = (values, handleSubmit) => {
     setIsPublished(!isPublished)
     const newValue = {...values,
       publish_options: {...values.publish_options,
         publish: !isPublished}
     }
-    if (editMode) {
+    if (values.id) {
       dispatch(changeStatusProject({ ...newValue, id: projectInfo.id }))
     } else {
-      dispatch(createProject(newValue));
+      handleSubmit()
     }
   }
 
@@ -113,7 +114,7 @@ const CreateProjectCard = ({projectInfo }) => {
         }
       }}
     >
-      {({ handleSubmit, values }) => {
+      {({ handleSubmit, values, setFieldValue }) => {
 
         return (
           <Box sx={mainBox}>
@@ -159,9 +160,11 @@ const CreateProjectCard = ({projectInfo }) => {
               <Button
                   variant={"contained"}
                   sx={publishButton}
+                  type={'button'}
                   onClick={() => {
                     if (values.name && values.tags.length > 0 && values.scope.length > 0 && values.description) {
-                      handlePublish(values)
+                      handlePublish(values, handleSubmit)
+                      setFieldValue('publish_options.publish', !isPublished)
                     } else {
                       setError('Please fill all required fields')
                     }

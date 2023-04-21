@@ -15,6 +15,7 @@ import {getAllProjects} from "../../../redux/actions/projectAction.js";
 import MenuItem from "@mui/material/MenuItem";
 import {useNavigate} from "react-router-dom/dist";
 import {clearMessage} from "../../../redux/actions/auditAction.js";
+import {gridItemStylePublic} from "./AuditorSection.jsx";
 
 const ProjectSection = () => {
   const dispatch = useDispatch();
@@ -105,16 +106,12 @@ const ProjectSection = () => {
       <Grid
         container
         rowSpacing={4}
-        columnSpacing={{
-          zero: 2,
-          xs: 4,
-          md: 12,
-        }}
-        justifyContent="space-between"
+        columnSpacing={4}
+        // justifyContent="space-between"
       >
         {projectReducer &&
           projectReducer.slice(0, matchSm ? 4 : 3).map((project) => (
-            <Grid key={project.id} item zero="6" xs={4}>
+            <Grid key={project.id} item sx={gridItemStylePublic}>
               <PublicProjectCard project={project} />
             </Grid>
           ))}

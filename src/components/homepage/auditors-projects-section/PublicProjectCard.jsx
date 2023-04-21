@@ -36,6 +36,7 @@ const PublicProjectCard = ({ project }) => {
               project={project}
               handleError={handleError}
               modal={true}
+              redirect={true}
           />
         </Box>
       </Modal>

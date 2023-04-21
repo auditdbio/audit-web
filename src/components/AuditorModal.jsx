@@ -56,9 +56,6 @@ export default function AuditorModal({ open, handleClose, auditor, isForm, onSub
     }
   }, [open, isForm]);
 
-  const [errorStart, setErrorStart] = React.useState(null);
-  const [errorEnd, setErrorEnd] = React.useState(null);
-
   return (
     <Dialog open={open} onClose={handleClose}>
       {mode === "info" && (
@@ -92,7 +89,7 @@ export default function AuditorModal({ open, handleClose, auditor, isForm, onSub
                 <Box sx={infoWrapper}>
                   <span>Telegram</span>
                   <Typography noWrap={true}>
-                    {auditor.contacts?.telegram}
+                    {auditor?.public_contacts ? auditor.contacts?.telegram : 'Hidden'}
                   </Typography>
                 </Box>
                 <Box sx={infoWrapper}>
@@ -104,7 +101,7 @@ export default function AuditorModal({ open, handleClose, auditor, isForm, onSub
                 <Box sx={infoWrapper}>
                   <span>E-mail</span>
                   <Typography noWrap={true}>
-                    {auditor.contacts?.email}
+                    {auditor?.public_contacts ?  auditor.contacts?.email : 'Hidden'}
                   </Typography>
                 </Box>
                 <TagsList data={auditor.tags} />
