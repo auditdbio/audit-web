@@ -110,10 +110,18 @@ export default function AuditorModal({ open, handleClose, auditor, isForm, onSub
             </Box>
           </Box>
           <Box sx={fieldButtonContainer}>
-            <Button sx={backButton} onClick={handleClose}>
+            <Button
+                variant={'contained'}
+                sx={[findButton, {backgroundColor: theme.palette.secondary.main}]}
+                onClick={handleClose}
+            >
               Back
             </Button>
-            <Button sx={findButton} onClick={handleInvite}>
+            <Button
+                variant={'contained'}
+                sx={findButton}
+                onClick={handleInvite}
+            >
               Invite to project
             </Button>
           </Box>
@@ -240,7 +248,7 @@ export default function AuditorModal({ open, handleClose, auditor, isForm, onSub
   );
 }
 
-const modalWindow = {
+const modalWindow = (theme) => ({
   backgroundColor: theme.palette.background,
 
   width: "600px",
@@ -249,39 +257,40 @@ const modalWindow = {
   flexDirection: "column",
   justifyContent: "center",
   alignItems: "center",
-  padding: {
-    zero: "25px",
-    sm: "25px",
-    md: "45px",
-    lg: "50px",
-  },
+  padding: "45px",
   [theme.breakpoints.down("sm")]: {
+    padding: '25px',
     height: "100%",
     width: "100%",
     gap: "20px",
   },
-};
+  [theme.breakpoints.down('xs')]: {
+    padding: '20px 5px'
+  }
+})
 
-const findButton = {
-  backgroundColor: theme.palette.primary.main,
-  color: theme.palette.background.default,
-  borderRadius: "4px",
-  height: "45px",
-  width: {
-    zero: "100px",
-    sm: "100px",
-    md: "150px",
-    lg: "230px",
+const findButton = (theme) => ({
+  padding: '19px 0',
+  fontSize: '18px',
+  textTransform: 'unset',
+  fontWeight: 600,
+  margin: '0 12px',
+  width: '180px',
+  borderRadius: '10px',
+  [theme.breakpoints.down('md')]: {
+    width: '210px',
+    padding: '11px 0'
   },
-  textTransform: "none",
-  ":hover": {
-    backgroundColor: theme.palette.primary.main,
+  [theme.breakpoints.down('sm')]: {
+    width: '170px'
   },
-  [theme.breakpoints.down("sm")]: {
-    height: "30px",
-    fontSize: "10px",
-  },
-};
+  [theme.breakpoints.down('xs')]: {
+    width: '134px',
+    height: '50px',
+    fontSize: '15px',
+    margin: '0 6px',
+  }
+});
 
 const infoInnerStyle = (theme) => ({
   display: "flex",
@@ -376,10 +385,13 @@ const backButton = {
   },
 };
 
-const fieldButtonContainer = {
+const fieldButtonContainer = (theme) => ({
   display: "flex",
   gap: "10px",
-};
+  [theme.breakpoints.down('xs')]: {
+    gap: '5px'
+  }
+});
 
 const offerDialogStyle = {
   backgroundColor: "white",
