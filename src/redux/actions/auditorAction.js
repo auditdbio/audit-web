@@ -53,12 +53,9 @@ export const updateAuditor = (values) => {
 }
 
 export const getAuditors = (values='') => {
-    const token = Cookies.get("token");
     return (dispatch) => {
         axios
-            .get(`${API_URL}/search?kind=auditor&query=&tags=${values.toLowerCase()}&per_page=100&page=0`, {
-                headers: { Authorization: `Bearer ${token}` },
-            })
+            .get(`${API_URL}/search?query=${values}&tags=&sort_by=price&priceFrom=&priceTo=&dateFrom=1682085604302&dateTo=1682085604302&sort_order=1&page=0&per_page=0&kind=auditor`)
             .then(({ data }) => {
                 dispatch({ type: GET_AUDITORS, payload: data });
             })
