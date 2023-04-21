@@ -31,6 +31,14 @@ const AuditorListCard = ({ auditor }) => {
     setOpenModal(false);
   };
 
+  const handleError = () => {
+    setMessage('Switched to customer role')
+    const delayedFunc = setTimeout(() => {
+      navigate(`/my-projects/${auditor.user_id}`)
+    }, 1000)
+    return () => clearTimeout(delayedFunc)
+  }
+
   const handleInvite = () => {
     if (user.current_role === CUSTOMER && isAuth() && myProjects.length){
       return navigate(`/my-projects/${auditor.user_id}`, )
@@ -38,13 +46,14 @@ const AuditorListCard = ({ auditor }) => {
       dispatch(changeRolePublicCustomer(CUSTOMER, user.id, customerReducer))
     } else if (user.current_role !== CUSTOMER && isAuth() && customerReducer?.first_name && customerReducer?.last_name){
       dispatch(changeRolePublicCustomerNoRedirect(CUSTOMER, user.id, customerReducer))
-      setIsForm(true)
+      handleError()
     } else if (user.current_role === CUSTOMER && isAuth() && !myProjects.length){
       setMessage('No active projects')
     } else {
       navigate('/sign-in')
     }
   };
+
 
   return (
     <Box sx={wrapper}>
@@ -55,7 +64,7 @@ const AuditorListCard = ({ auditor }) => {
             onClose={() => setMessage(null)}
         >
           <Stack sx={{ width: '100%', flexDirection: 'column', gap: 2 }} spacing={2}>
-            <Alert severity={isForm ? 'success' : 'error'}>
+            <Alert severity={(isForm || message) ? 'success' : 'error'}>
               <AlertTitle>{message}</AlertTitle>
             </Alert>
           </Stack>
@@ -65,6 +74,7 @@ const AuditorListCard = ({ auditor }) => {
           handleClose={handleCloseModal}
           auditor={auditor}
           isForm={isForm}
+          handleError={handleError}
       />
       <Box sx={cardLeftSide}>
         <Box sx={avatarDescription}>

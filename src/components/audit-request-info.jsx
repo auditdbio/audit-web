@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {CustomCard} from "./custom/Card.jsx";
 import Layout from "../styles/Layout.jsx";
 import {
@@ -22,7 +22,7 @@ import SalarySlider from "./forms/salary-slider/salary-slider.jsx";
 import {Form, Formik, Field} from "formik";
 import * as Yup from "yup";
 import {useDispatch, useSelector} from "react-redux";
-import {createRequest} from "../redux/actions/auditAction.js";
+import {clearMessage, createRequest} from "../redux/actions/auditAction.js";
 import dayjs from "dayjs";
 import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs";
 import {DatePicker} from "@mui/x-date-pickers/DatePicker";
@@ -32,7 +32,7 @@ import {isAuth} from "../lib/helper.js";
 import {AUDITOR} from "../redux/actions/types.js";
 import {changeRolePublicAuditor, changeRolePublicAuditorNoRedirect} from "../redux/actions/userAction.js";
 
-const AuditRequestInfo = ({project, onClose, handleError}) => {
+const AuditRequestInfo = ({project, onClose, handleError, redirect}) => {
     const navigate = useNavigate()
     const matchXs = useMediaQuery(theme.breakpoints.down('xs'))
     const [open, setOpen] = useState(false)
@@ -199,7 +199,7 @@ const AuditRequestInfo = ({project, onClose, handleError}) => {
                                     from: parseInt(values.price),
                                     to: parseInt(values.price)
                                 }}
-                            dispatch(createRequest(newValue))
+                            dispatch(createRequest(newValue, redirect))
                             handleClose()
                             if (onClose){
                                 onClose()

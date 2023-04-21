@@ -2,13 +2,13 @@ import Cookies from "js-cookie";
 import axios from "axios";
 import {
   AUDIT_REQUEST_CREATE,
-  AUDITOR,
+  AUDITOR, CLEAR_MESSAGES,
   CONFIRM_AUDIT, CUSTOMER,
   DELETE_AUDIT,
   DELETE_REQUEST,
   GET_AUDIT_REQUEST,
   GET_AUDITS,
-  PROJECT_CREATE,
+  PROJECT_CREATE, REQUEST_ERROR,
   SUBMIT_AUDIT,
 } from "./types.js";
 import { history } from "../../services/history.js";
@@ -16,7 +16,7 @@ import dayjs from "dayjs";
 
 const API_URL = import.meta.env.VITE_API_BASE_URL;
 
-export const createRequest = (values) => {
+export const createRequest = (values, redirect) => {
   return (dispatch) => {
     const token = Cookies.get("token");
     const current_role = JSON.parse(localStorage.getItem("user")).current_role;
@@ -34,11 +34,14 @@ export const createRequest = (values) => {
       })
       .then(({ data }) => {
         dispatch(getAuditsRequest(current_role));
-        history.back()
+        if (!redirect){
+          history.back()
+        }
         dispatch({ type: AUDIT_REQUEST_CREATE, payload: data });
       })
       .catch(({ response }) => {
         console.log(response, "res");
+        dispatch({ type: REQUEST_ERROR })
       });
   };
 };
@@ -157,4 +160,8 @@ export const confirmAudit = (values) => {
         dispatch({ type: CONFIRM_AUDIT, payload: data });
       });
   };
+};
+
+export const clearMessage = () => {
+  return {type: CLEAR_MESSAGES}
 };

@@ -1,11 +1,16 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Alert, AlertTitle, Box, Button, Modal, Snackbar, Stack, Typography} from "@mui/material";
 import AuditRequestInfo from "./audit-request-info.jsx";
 import TagsList from "./tagsList.jsx";
+import {useDispatch, useSelector} from "react-redux";
+import {clearMessage} from "../redux/actions/auditAction.js";
 
 const ProjectListCard = ({project}) => {
     const [isOpen, setIsOpen] = useState(false)
     const [message, setMessage] = useState(null)
+    const errorMessage = useSelector(s => s.audits.error)
+    const successMessage = useSelector(s => s.audits.successMessage)
+    const dispatch = useDispatch()
 
     const handleOpen = () => {
         setIsOpen(true)
@@ -23,13 +28,16 @@ const ProjectListCard = ({project}) => {
         <Box sx={wrapper}>
             <Snackbar
                 autoHideDuration={3000}
-                open={!!message}
+                open={!!message || errorMessage || successMessage}
                 anchorOrigin={{ horizontal: 'right', vertical: 'top' }}
-                onClose={() => setMessage(null)}
+                onClose={() => {
+                    setMessage(null)
+                    dispatch(clearMessage())
+                }}
             >
                 <Stack sx={{ width: '100%', flexDirection: 'column', gap: 2 }} spacing={2}>
-                    <Alert severity='success'>
-                        <AlertTitle>{message}</AlertTitle>
+                    <Alert severity={errorMessage ? 'error' : 'success'}>
+                        <AlertTitle>{message || errorMessage || successMessage}</AlertTitle>
                     </Alert>
                 </Stack>
             </Snackbar>
@@ -41,7 +49,7 @@ const ProjectListCard = ({project}) => {
             </Box>
             <Box sx={{display: 'flex', alignItems: 'center', flexDirection: 'column', height: '100%'}}>
                 <Typography>
-                    {project.price} $
+                    ${project.price}
                 </Typography>
                 <Button
                     color={'secondary'}
@@ -64,7 +72,9 @@ const ProjectListCard = ({project}) => {
                         onClose={handleClose}
                         project={project}
                         handleError={handleError}
-                        modal={true}/>
+                        modal={true}
+                        redirect={true}
+                    />
                 </Box>
             </Modal>
         </Box>

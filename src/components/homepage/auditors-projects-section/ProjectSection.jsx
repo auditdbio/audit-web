@@ -14,6 +14,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {getAllProjects} from "../../../redux/actions/projectAction.js";
 import MenuItem from "@mui/material/MenuItem";
 import {useNavigate} from "react-router-dom/dist";
+import {clearMessage} from "../../../redux/actions/auditAction.js";
 
 const ProjectSection = () => {
   const dispatch = useDispatch();
@@ -33,8 +34,9 @@ const ProjectSection = () => {
         }
     }, [searchInput]);
 
-  useEffect(() => {
-  }, [projectReducer]);
+    useEffect(() => {
+        return () => dispatch(clearMessage())
+    },[])
 
   useEffect(() => {
     if (projectReducer && projectReducer.length !== 0) {

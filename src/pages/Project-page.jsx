@@ -8,6 +8,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {useNavigate, useSearchParams} from "react-router-dom/dist";
 import {PROJECTS} from "../redux/actions/types.js";
 import {searchProjects} from "../redux/actions/projectAction.js";
+import {clearMessage} from "../redux/actions/auditAction.js";
 
 const ProjectPage = () => {
     const projects = useSelector(s => s.project.searchProjects)
@@ -69,6 +70,9 @@ const ProjectPage = () => {
         dispatch(searchProjects(initialFilter))
     },[searchParams.toString()])
 
+    useEffect(() => {
+        return () => dispatch(clearMessage())
+    },[])
 
     return (
         <Layout>
