@@ -47,6 +47,7 @@ const MyProjects = () => {
         if (localStorage.getItem('project')){
             setChosen([JSON.parse(localStorage.getItem('project'))])
         }
+        return () => localStorage.removeItem('project')
     }, [myProjects])
 
     const handleOpenView = () => {
