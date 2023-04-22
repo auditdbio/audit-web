@@ -52,7 +52,8 @@ const MyProjectListCard = ({ type, project, setState, state, isChecked }) => {
                     display: "flex",
                     flexDirection: "column",
                     alignItems: "center",
-                    marginTop: '30px',
+                    marginTop: '20px',
+                    height: '100%'
                 }}
             >
                 <Checkbox
@@ -68,6 +69,7 @@ const MyProjectListCard = ({ type, project, setState, state, isChecked }) => {
 export default MyProjectListCard;
 
 const checkBoxSx = (theme) => ({
+    marginTop: 'auto',
     '& .MuiSvgIcon-root': {
         width: '40px',
         height: '40px'
@@ -134,8 +136,6 @@ const cardWrapper = (theme) => ({
         padding: "33px 22px 24px",
     },
     [theme.breakpoints.down("xs")]: {
-        flexDirection: "row",
-        justifyContent: "space-around",
         padding: "15px 10px",
         "& h5": {
             fontSize: "14px",

@@ -117,7 +117,7 @@ const gridItemStyle = (theme) => ({
         width: "33.330%",
     },
     [theme.breakpoints.down("xs")]: {
-        width: "100%",
+        width: "50%",
     },
 });
 
@@ -131,8 +131,11 @@ const wrapper = (theme) => ({
         padding: '38px 44px 60px',
     },
     [theme.breakpoints.down('sm')]: {
-        gap: '40px',
+        gap: '25px',
         padding: '38px 20px 30px',
+        'h6': {
+            marginTop: '16px'
+        }
     },
 })
 

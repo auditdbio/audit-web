@@ -55,7 +55,7 @@ const AuditorListCard = ({ auditor }) => {
       dispatch(changeRolePublicCustomerNoRedirect(CUSTOMER, user.id, customerReducer))
       handleError()
     } else if (user.current_role === CUSTOMER && isAuth() && !myProjects.length){
-      setMessage('No active projects')
+      setErrorMessage('No active projects')
     } else {
       navigate('/sign-in')
     }
