@@ -21,6 +21,8 @@ const AuditorListCard = ({ auditor }) => {
   const [isForm, setIsForm] = useState(false)
   const myProjects = useSelector((state) => state.project.myProjects);
   const dispatch = useDispatch();
+  const userProjects = useSelector(s => s.project.myProjects)
+  const [errorMessage, setErrorMessage] = useState(null)
 
   const handleView = () => {
     setOpenModal(true);
@@ -31,9 +33,15 @@ const AuditorListCard = ({ auditor }) => {
   };
 
   const handleError = () => {
+    setErrorMessage(null)
     setMessage('Switched to customer role')
     const delayedFunc = setTimeout(() => {
-      navigate(`/my-projects/${auditor.user_id}`)
+      if (userProjects.length) {
+        navigate(`/my-projects/${auditor.user_id}`)
+      } else {
+        setMessage(null)
+        setErrorMessage('No active projects')
+      }
     }, 1000)
     return () => clearTimeout(delayedFunc)
   }
@@ -58,13 +66,16 @@ const AuditorListCard = ({ auditor }) => {
     <Box sx={wrapper}>
         <Snackbar
             autoHideDuration={3000}
-            open={!!message}
+            open={!!message || !!errorMessage}
             anchorOrigin={{ horizontal: 'right', vertical: 'top' }}
-            onClose={() => setMessage(null)}
+            onClose={() => {
+              setErrorMessage(null)
+              setMessage(null)
+            }}
         >
           <Stack sx={{ width: '100%', flexDirection: 'column', gap: 2 }} spacing={2}>
             <Alert severity={(isForm || message) ? 'success' : 'error'}>
-              <AlertTitle>{message}</AlertTitle>
+              <AlertTitle>{message || errorMessage}</AlertTitle>
             </Alert>
           </Stack>
         </Snackbar>

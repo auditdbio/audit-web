@@ -7,11 +7,14 @@ import React, { useState } from "react";
 import AuditorModal from "../../AuditorModal.jsx";
 import {ASSET_URL} from "../../../services/urls.js";
 import {useNavigate} from "react-router-dom/dist";
+import {useSelector} from "react-redux";
 
 const AuditorCard = ({ auditor }) => {
   const [openModal, setOpenModal] = useState(false);
   const [message, setMessage] = useState(null)
   const navigate = useNavigate()
+  const userProjects = useSelector(s => s.project.myProjects)
+  const [errorMessage, setErrorMessage] = useState(null)
 
   const handleView = () => {
     setOpenModal(true);
@@ -22,9 +25,15 @@ const AuditorCard = ({ auditor }) => {
   };
 
   const handleError = () => {
+    setErrorMessage(null)
     setMessage('Switched to customer role')
     const delayedFunc = setTimeout(() => {
-      navigate(`/my-projects/${auditor.user_id}`)
+      if (userProjects.length) {
+        navigate(`/my-projects/${auditor.user_id}`)
+      } else {
+        setMessage(null)
+        setErrorMessage('No active projects')
+      }
     }, 1000)
     return () => clearTimeout(delayedFunc)
   }
@@ -39,13 +48,16 @@ const AuditorCard = ({ auditor }) => {
       />
       <Snackbar
           autoHideDuration={3000}
-          open={!!message}
+          open={!!message || !!errorMessage}
           anchorOrigin={{ horizontal: 'right', vertical: 'top' }}
-          onClose={() => setMessage(null)}
+          onClose={() => {
+            setErrorMessage(null)
+            setMessage(null)
+          }}
       >
         <Stack sx={{ width: '100%', flexDirection: 'column', gap: 2 }} spacing={2}>
-          <Alert severity='success'>
-            <AlertTitle>{message}</AlertTitle>
+          <Alert severity={!errorMessage ? 'success' : 'error'}>
+            <AlertTitle>{message || errorMessage}</AlertTitle>
           </Alert>
         </Stack>
       </Snackbar>
