@@ -267,6 +267,7 @@ const Header = () => {
                       <MenuIcon fontSize="large" />
                     </IconButton>
                     <UserMenu
+                        userAvatar={userAvatar}
                       open={isUserMenuOpen}
                       handleClose={handleCloseUserMenu}
                       anchor={anchorElUser}

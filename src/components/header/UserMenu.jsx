@@ -98,14 +98,14 @@ export const UserMenu = ({ open, handleClose, anchor, userAvatar }) => {
               height: "100px",
             }}
           />
-          <Button
-            size="small"
-            startIcon={<EditIcon />}
-            sx={editTextStyle}
-            disableRipple
-          >
-            Edit photo
-          </Button>
+          {/*<Button*/}
+          {/*  size="small"*/}
+          {/*  startIcon={<EditIcon />}*/}
+          {/*  sx={editTextStyle}*/}
+          {/*  disableRipple*/}
+          {/*>*/}
+          {/*  Edit photo*/}
+          {/*</Button>*/}
           <Typography style={mainTextStyle}>{user.fullName}</Typography>
           <Typography style={secondaryTextStyle}>{user.interests}</Typography>
           <Typography style={secondaryTextStyle}>{user.email}</Typography>

@@ -174,9 +174,9 @@ const CreateProjectCard = ({projectInfo }) => {
                     'Hide project' : 'Publish project'
                 }
               </Button>
-              <Button sx={menuButtonSx}>
-                <MenuRoundedIcon sx={menuButtonIconSx} />
-              </Button>
+              {/*<Button sx={menuButtonSx}>*/}
+              {/*  <MenuRoundedIcon sx={menuButtonIconSx} />*/}
+              {/*</Button>*/}
             </Box>
             <Box sx={wrapper}>
               <Form onSubmit={handleSubmit}>
