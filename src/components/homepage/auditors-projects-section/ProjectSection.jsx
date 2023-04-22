@@ -105,8 +105,8 @@ const ProjectSection = () => {
       )}
       <Grid
         container
-        rowSpacing={4}
-        columnSpacing={4}
+        rowSpacing={matchSm ? 2 : 4}
+        columnSpacing={matchSm ? 2 : 4}
         // justifyContent="space-between"
       >
         {projectReducer &&

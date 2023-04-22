@@ -52,8 +52,11 @@ const tabSx = (theme) => ({
     // padding: '15px 40px',
     whiteSpace: 'inherit',
     width: '100%',
+    [theme.breakpoints.down('sm')]: {
+      fontSize: '14px'
+    },
     [theme.breakpoints.down('xs')]: {
-        fontSize: '14px',
+        fontSize: '12px',
         padding: '8px',
         height: '35px',
         minHeight: '35px'

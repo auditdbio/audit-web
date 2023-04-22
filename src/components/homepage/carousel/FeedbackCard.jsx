@@ -5,8 +5,8 @@ const FeedbackCard = ({ info }) => {
 	const isSmallScreen = useMediaQuery("(max-width: 769px)");
 
 	return (
-		<Card sx={cardWrapper(isSmallScreen)}>
-			<Typography style={descriptionStyle}>{info.description}</Typography>
+		<Card sx={cardWrapper}>
+			<Typography sx={descriptionStyle}>{info.description}</Typography>
 			<Box sx={detailsWrapper}>
 				<Box
 					sx={{
@@ -16,8 +16,8 @@ const FeedbackCard = ({ info }) => {
 						justifyContent: "space-around",
 					}}
 				>
-					<Typography style={descriptionStyle}>{info.name}</Typography>
-					<Typography style={interestsStyle}>{info.interests}</Typography>
+					<Typography sx={descriptionStyle}>{info.name}</Typography>
+					<Typography sx={interestsStyle}>{info.interests}</Typography>
 				</Box>
 				<Avatar sx={avatarStyle}></Avatar>
 			</Box>
@@ -25,7 +25,7 @@ const FeedbackCard = ({ info }) => {
 	);
 };
 
-const cardWrapper = (isSmallScreen) => ({
+const cardWrapper = (theme) => ({
 	minHeight: "500px",
 	width: "100%",
 	maxWidth: "380px",
@@ -40,20 +40,28 @@ const cardWrapper = (isSmallScreen) => ({
 		"0px 4.26523px 5.09281px rgba(0, 0, 0, 0.0282725), " +
 		"0px 1.77486px 2.11923px rgba(0, 0, 0, 0.0196802)",
 	marginBottom: "40px",
-	marginLeft: isSmallScreen ? "0%" : "0px",
+	// marginLeft: isSmallScreen ? "0%" : "0px",
 	display: "flex",
 	flexDirection: "column",
 	justifyContent: "space-between",
 	padding: "40px",
 	gap: "3rem",
+	[theme.breakpoints.down('xs')]: {
+		minHeight: "380px",
+		gap: '2rem'
+	}
 });
 
-const descriptionStyle = {
+const descriptionStyle = (theme) => ({
 	fontSize: "20px",
 	fontWeight: 500,
 	lineHeight: "24px",
 	color: "#222222",
-};
+	[theme.breakpoints.down('sm')]: {
+		fontSize: "16px",
+		lineHeight: "19px",
+	}
+});
 
 const detailsWrapper = {
 	display: "flex",

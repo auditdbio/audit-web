@@ -111,12 +111,18 @@ const Carousel = () => {
   );
 };
 
-const carouselTextStyle = {
+const carouselTextStyle = (theme) => ({
   fontSize: "32px",
   fontWeight: "500",
   textAlign: "center",
   marginBottom: "2rem",
-};
+  [theme.breakpoints.down('sm')]: {
+    fontSize: '28px'
+  },
+  [theme.breakpoints.down('xs')]: {
+    fontSize: '24px'
+  },
+});
 
 const items = [
   {

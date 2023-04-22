@@ -497,5 +497,6 @@ const buttonSx = (theme) => ({
     [theme.breakpoints.down('xs')]: {
         width: '140px',
         margin: '0 6px',
+        fontSize: '12px'
     }
 })

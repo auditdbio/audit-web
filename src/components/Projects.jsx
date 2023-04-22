@@ -110,6 +110,9 @@ const buttonSx = (theme) => ({
     padding: "11px 25px",
     height: "40px",
   },
+  [theme.breakpoints.down('xs')]: {
+    fontSize: '12px'
+  }
 });
 
 const buttonAuditorSx = (theme) => ({

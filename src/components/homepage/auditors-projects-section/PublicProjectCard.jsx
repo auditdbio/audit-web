@@ -125,7 +125,8 @@ const cardWrapper = (theme) => ({
       "0px 4.26523px 5.09281px rgba(0, 0, 0, 0.0282725), " +
       "0px 1.77486px 2.11923px rgba(0, 0, 0, 0.0196802)",
   [theme.breakpoints.down("xs")]: {
-    gap: '15px'
+    gap: '15px',
+    padding: '14px'
   },
 })
 
@@ -201,7 +202,7 @@ const auditNameStyle = {
   fontSize: "28px",
   textAlign: "center",
   [theme.breakpoints.down("xs")]: {
-    fontSize: "18px",
+    fontSize: "14px",
   },
 };
 

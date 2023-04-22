@@ -106,7 +106,7 @@ const buttonStyle = {
   },
 };
 
-const cardStyle = {
+const cardStyle = (theme) => ({
   width: "100%",
   height: "100%",
   // maxWidth: "340px",
@@ -118,9 +118,10 @@ const cardStyle = {
   justifyContent: "space-between",
   gap: "2rem",
   [theme.breakpoints.down("sm")]: {
-    // maxWidth: "200px",
+    padding: '14px',
+    gap: '1rem'
   },
-};
+});
 
 const avatarStyle = {
   width: "150px",
@@ -140,12 +141,15 @@ const columnStyle = {
   justifyContent: "space-between",
 };
 
-const badgesStyle = {
+const badgesStyle = (theme) => ({
   display: "flex",
   justifyContent: "space-evenly",
   alignItems: "center",
   gap: "2rem",
-};
+  [theme.breakpoints.down('sm')]: {
+    gap: '10px'
+  }
+});
 
 const infoStyle = {
   display: "flex",
@@ -162,12 +166,15 @@ const badgeFontStyle = {
   },
 };
 
-const mainTextStyle = {
+const mainTextStyle = (theme) => ({
   fontWeight: 500,
   fontSize: "26px",
   textAlign: "center",
   [theme.breakpoints.down("sm")]: {
     fontSize: "15px",
   },
-};
+  [theme.breakpoints.down('xs')]: {
+    fontSize: '12px'
+  }
+});
 export default AuditorCard;

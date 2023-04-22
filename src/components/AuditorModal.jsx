@@ -287,7 +287,7 @@ const findButton = (theme) => ({
   [theme.breakpoints.down('xs')]: {
     width: '134px',
     height: '50px',
-    fontSize: '15px',
+    fontSize: '12px',
     margin: '0 6px',
   }
 });
