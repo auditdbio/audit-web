@@ -7,6 +7,7 @@ import Divider from "@mui/material/Divider";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import { Box } from "@mui/material";
 import {useNavigate} from "react-router-dom/dist";
+import {useSelector} from "react-redux";
 
 const StyledMenu = styled((props) => (
 	<Menu
@@ -55,6 +56,7 @@ export default function CustomMenu({ buttonText, options }) {
 	const [anchorEl, setAnchorEl] = React.useState(null);
 	const open = Boolean(anchorEl);
 	const navigate = useNavigate()
+	const currentRole = useSelector(s => s.user.user.current_role)
 
 	const handleClick = (event) => {
 		setAnchorEl(event.currentTarget);
@@ -111,7 +113,7 @@ export default function CustomMenu({ buttonText, options }) {
 				{/*	AuditDB*/}
 				{/*</MenuItem>*/}
 				{/*<Divider sx={{ my: 0, backgroundColor: "orange", mx: "15px" }} />*/}
-				{menuOptions.map((item) => (
+				{menuOptions.filter((item) => item.role === currentRole).map((item) => (
 					<MenuItem onClick={() => {
 						handleClose()
 						if (item.link.includes('http')) {

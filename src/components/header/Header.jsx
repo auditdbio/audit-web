@@ -408,82 +408,63 @@ const authorizedPages = [
     menuOptions: [
       {
         id: 111,
-        itemName: "Our projects",
-        link: '/projects'
+        role: AUDITOR,
+        itemName: "My audits",
+        link: '/profile/projects'
       },
       {
         id: 112,
-        itemName: "New project",
-        link: '/create-project'
+        role: AUDITOR,
+        itemName: "My audit requests",
+        link: '/profile/audits'
       },
       {
         id: 113,
-        itemName: "My audits",
-        link: '/'
+        role: AUDITOR,
+        itemName: "Search for auditors",
+        link: '/auditors'
       },
       {
         id: 114,
-        itemName: "My audits requests",
-        link: '/'
+        role: CUSTOMER,
+        itemName: "My audits",
+        link: '/profile/audits'
       },
       {
-        id: 115,
-        itemName: "Audits history",
-        link: '/'
+        id: 116,
+        role: CUSTOMER,
+        itemName: "Search for auditors",
+        link: '/auditors'
       },
     ],
   },
   {
     id: 2,
     name: "Projects",
-    role: CUSTOMER,
     menuOptions: [
       {
         id: 221,
-        itemName: "Our projects",
+        role: AUDITOR,
+        itemName: "Search for projects",
         link: '/projects'
       },
       {
         id: 222,
-        itemName: "New project",
-        link: '/create-project'
+        role: CUSTOMER,
+        itemName: "My projects",
+        link: '/profile/projects'
       },
       {
         id: 223,
-        itemName: "My audits",
-        link: '/profile/audits'
+        role: CUSTOMER,
+        itemName: "Create project",
+        link: '/create-project'
       },
       {
         id: 224,
-        itemName: "My audits requests",
-        link: '/profile/audits'
-      },
-      {
-        id: 22331,
-        name: "Projects",
-        role: AUDITOR,
-        menuOptions: [
-          {
-            id: 2231,
-            itemName: "Our projects",
-            link: '/projects'
-          },
-          {
-            id: 2232,
-            itemName: "New project",
-            link: '/create-project'
-          },
-          {
-            id: 2233,
-            itemName: "My audits",
-            link: '/profile/projects'
-          },
-          {
-            id: 2234,
-            itemName: "My audits requests",
-            link: '/profile/audits'
-          },
-        ],
+        role: CUSTOMER,
+        itemName: "Search for projects",
+        link: '/projects'
       },
     ],
   },

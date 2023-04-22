@@ -1,8 +1,10 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Tab, Tabs} from "@mui/material";
 import {useNavigate} from "react-router-dom/dist";
+import {useParams} from "react-router-dom";
 
 const CustomTabs = ({selectedTabSx, name, tabs, setTab, choosenTab}) => {
+    const {tab} = useParams()
     const [tabState, setTabState] = useState(choosenTab)
     const navigate = useNavigate()
     const handleChoose = (value) => {
@@ -10,7 +12,9 @@ const CustomTabs = ({selectedTabSx, name, tabs, setTab, choosenTab}) => {
         setTabState(value)
         setTab(value)
     }
-
+    useEffect(() => {
+        setTabState(tab)
+    }, [tab, tabState])
     return (
         <Tabs
             value={tabState}

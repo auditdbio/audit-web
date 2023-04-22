@@ -81,7 +81,7 @@ export const searchAuditor = (values) => {
         axios
             .get(`${API_URL}/search?query=${searchValues.query}&tags=${searchValues.tags.map(tag => tag).join(',')}${searchValues.ready_to_wait && "&ready_to_wait="`${searchValues.ready_to_wait}`}&sort_by=price&priceFrom=${searchValues.priceFrom}&priceTo=${searchValues.priceTo}&dateFrom=${searchValues.dateFrom}&dateTo=${searchValues.dateTo}&sort_order=${searchValues.sort}&page=0&per_page=0&kind=auditor`)
             .then(({ data }) => {
-                dispatch({ type: SEARCH_AUDITOR, payload: data });
+                dispatch({ type: GET_AUDITORS, payload: data });
             })
             .catch(({ response }) => {
                 console.log(response, "res");

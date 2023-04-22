@@ -139,8 +139,12 @@ export default function AuditorSearchModal({
   };
 
   const handleSearch = () => {
-    handleSubmit()
-    navigate(`/auditors?search=${query}`, );
+    if (inputValue){
+      handleSubmit()
+      navigate(`/auditors?search=${query}`, )
+    } else {
+      navigate(`/auditors?search=`, )
+    }
   }
 
   const [errorStart, setErrorStart] = React.useState(null);
@@ -348,13 +352,16 @@ const searchIcon = {
 };
 
 const searchField = {
+  '& .MuiAutocomplete-listbox': {
+    border: 'none'
+  },
   "& .MuiAutocomplete-input": {
     fontSize: "14px",
     [theme.breakpoints.down("sm")]: {
       fontSize: "11px",
     },
   },
-  "&  .MuiOutlinedInput-root": {
+  "& .MuiOutlinedInput-root": {
     backgroundColor: theme.palette.background.default,
     padding: "0px",
     height: "45px",

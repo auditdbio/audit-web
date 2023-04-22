@@ -21,6 +21,9 @@ const ProfilePage = () => {
     const message = useSelector(s => s.user.success)
     const dispatch = useDispatch()
 
+    useEffect(() => {
+        setChooseTab(tab)
+    }, [tab, chooseTab])
     return (
         <Layout>
             <Snackbar

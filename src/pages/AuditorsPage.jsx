@@ -17,7 +17,7 @@ const AuditorsPage = () => {
   const matchSm = useMediaQuery(theme.breakpoints.down("sm"));
   const [searchParams, setSearchParams] = useSearchParams()
   const [query, setQuery] = useState(undefined)
-  const auditorReducer = useSelector((state) => state.auditor.searchAuditors);
+  const auditorReducer = useSelector((state) => state.auditor.auditors);
   const applyFilter = (filter) => {
     setQuery((query) => {
       const {...data} = (query || {})
