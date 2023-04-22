@@ -140,7 +140,7 @@ export default function AuditorSearchModal({
 
   const handleSearch = () => {
     handleSubmit()
-    navigate(`/auditors?search=${query}`);
+    navigate(`/auditors?search=${query}`, );
   }
 
   const [errorStart, setErrorStart] = React.useState(null);

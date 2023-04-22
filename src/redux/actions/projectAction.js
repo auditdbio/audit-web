@@ -43,6 +43,7 @@ export const createProjectNoRedirect = (values) => {
                 },
             })
             .then(({ data }) => {
+                localStorage.setItem("project", JSON.stringify(data));
                 dispatch({ type: PROJECT_CREATE, payload: data });
             })
             .catch(({ response }) => {
@@ -82,6 +83,7 @@ export const editProjectNoRedirect = (values) => {
                 },
             })
             .then(({ data }) => {
+                localStorage.setItem("project", JSON.stringify(data));
                 dispatch({ type: PROJECT_UPDATE, payload: data });
             })
             .catch(({ response }) => {

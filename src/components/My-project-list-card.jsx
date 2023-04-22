@@ -6,7 +6,7 @@ import theme, { radiusOfComponents } from "../styles/themes.js";
 import {AUDITOR, DONE, SUBMITED} from "../redux/actions/types.js";
 import { useNavigate } from "react-router-dom/dist";
 
-const MyProjectListCard = ({ type, project, setState, state }) => {
+const MyProjectListCard = ({ type, project, setState, state, isChecked }) => {
     const navigate = useNavigate();
     const [isDone, setIsDone] = useState(false);
 
@@ -55,7 +55,11 @@ const MyProjectListCard = ({ type, project, setState, state }) => {
                     marginTop: '30px',
                 }}
             >
-                <Checkbox color={'success'} onChange={handleClick} sx={checkBoxSx}/>
+                <Checkbox
+                    color={'success'}
+                    checked={!!isChecked}
+                    onChange={handleClick}
+                    sx={checkBoxSx}/>
             </Box>
         </Box>
     );

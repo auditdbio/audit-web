@@ -16,7 +16,7 @@ import dayjs from "dayjs";
 
 const API_URL = import.meta.env.VITE_API_BASE_URL;
 
-export const createRequest = (values, redirect) => {
+export const createRequest = (values, redirect, navigateTo) => {
   return (dispatch) => {
     const token = Cookies.get("token");
     const current_role = JSON.parse(localStorage.getItem("user")).current_role;
@@ -36,6 +36,8 @@ export const createRequest = (values, redirect) => {
         dispatch(getAuditsRequest(current_role));
         if (!redirect){
           history.back()
+        } else if (navigateTo){
+          history.push(navigateTo)
         }
         dispatch({ type: AUDIT_REQUEST_CREATE, payload: data });
       })

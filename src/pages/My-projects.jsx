@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import Layout from "../styles/Layout.jsx";
 import {CustomCard} from "../components/custom/Card.jsx";
 import {Box, Button, Grid, Typography} from "@mui/material";
@@ -17,7 +17,6 @@ const MyProjects = () => {
     const dispatch = useDispatch()
     const myProjects = useSelector(state => state.project.myProjects)
     const params = useParams()
-    const [isOpenInvite, setIsOpenInvite] = useState(false);
     const [isOpenView, setIsOpenView] = useState(false);
     const [chosen, setChosen] = useState([])
     const auditor = useSelector(state => state?.auditor?.auditors?.find(auditor => auditor.user_id === params.id))
@@ -39,12 +38,19 @@ const MyProjects = () => {
                     // ...values,
                     project_id: project.id,
                 }
-                dispatch(createRequest(data))
+                dispatch(createRequest(data, true, '/profile/projects'))
             })
         }
     };
 
+    useEffect(() => {
+        if (localStorage.getItem('project')){
+            setChosen([JSON.parse(localStorage.getItem('project'))])
+        }
+    }, [myProjects])
+
     const handleOpenView = () => {
+        localStorage.removeItem('project')
         setIsOpenView(true);
     };
 
@@ -72,7 +78,12 @@ const MyProjects = () => {
                     <Grid container spacing={2}>
                         {myProjects?.map((project) => (
                             <Grid key={project.id} item sx={gridItemStyle}>
-                                <MyProjectListCard setState={setChosen} state={chosen} project={project} />
+                                <MyProjectListCard
+                                    setState={setChosen}
+                                    state={chosen}
+                                    project={project}
+                                    isChecked={chosen?.find(el => el?.id === project.id)}
+                                />
                             </Grid>
                         ))}
                     </Grid>
