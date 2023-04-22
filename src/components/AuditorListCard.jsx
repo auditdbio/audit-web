@@ -143,6 +143,9 @@ const wrapper = (theme) => ({
   gap: "10px",
   height: "100%",
   justifyContent: "space-between",
+  [theme.breakpoints.down('lg')]: {
+    padding: '20px'
+  },
   [theme.breakpoints.down("xs")]: {
     padding: "15px",
   },
@@ -172,6 +175,9 @@ const avatarDescription = (theme) => ({
   display: "flex",
   flexDirection: "row",
   gap: "30px",
+  [theme.breakpoints.down('lg')]: {
+    gap: '20px'
+  },
   [theme.breakpoints.down("xs")]: {
     gap: "10px",
   },
@@ -256,7 +262,12 @@ const viewButtonStyle = (theme) => ({
   width: "200px",
   textTransform: "unset",
   boxShadow: "0",
-
+  [theme.breakpoints.down('lg')]: {
+    width: '160px'
+  },
+  [theme.breakpoints.down('md')]: {
+    width: '130px'
+  },
   [theme.breakpoints.down("sm")]: {
     width: "85px",
     fontSize: "8px",
@@ -267,6 +278,12 @@ const inviteButtonStyle = (theme) => ({
   width: "200px",
   textTransform: "unset",
   boxShadow: "0",
+  [theme.breakpoints.down('lg')]: {
+    width: '160px'
+  },
+  [theme.breakpoints.down('md')]: {
+    width: '130px'
+  },
   [theme.breakpoints.down("sm")]: {
     width: "85px",
     fontSize: "8px",

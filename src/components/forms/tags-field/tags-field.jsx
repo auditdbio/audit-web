@@ -26,6 +26,12 @@ const TagsField = ({name, label, placeholder}) => {
             name={'tag-field'}
             disabled={false}
             value={state || ''}
+            onKeyPress={(e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    handleAddTag()
+                }
+            }}
             onChange={(e) => setState(e.target.value)}
             sx={[fieldSx, meta.error ? errorSx : {}]}
             InputProps={{
