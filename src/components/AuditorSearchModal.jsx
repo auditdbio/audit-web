@@ -36,6 +36,7 @@ export default function AuditorSearchModal({
   open,
   handleClose,
   handleSubmit,
+    setState,
   editMode,
 }) {
   const navigate = useNavigate();
@@ -108,6 +109,7 @@ export default function AuditorSearchModal({
 
   const handleInputChange = (event) => {
     setQuery(event.target.value);
+    setState(event.target.value);
   };
 
   const handleOptionChange = (option) => {
@@ -135,6 +137,11 @@ export default function AuditorSearchModal({
     setSubmitted(true);
     handleClose();
   };
+
+  const handleSearch = () => {
+    handleSubmit()
+    navigate(`/auditors?search=${query}`);
+  }
 
   const [errorStart, setErrorStart] = React.useState(null);
   const [errorEnd, setErrorEnd] = React.useState(null);
@@ -198,7 +205,12 @@ export default function AuditorSearchModal({
                 )}
               />
             )}
-            <Button sx={findButton}>Find</Button>
+            <Button
+                sx={findButton}
+            onClick={handleSearch}
+            >
+              Find
+            </Button>
           </Box>
         </DialogContent>
       )}

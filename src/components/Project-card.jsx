@@ -17,6 +17,10 @@ const ProjectCard = ({ type, project }) => {
     }
   };
 
+  const handleMakeCopy = () => {
+    navigate(`/edit-project/${project.id}?copy=true`);
+  };
+
   return (
     <Box sx={cardWrapper}>
       <Box
@@ -77,7 +81,7 @@ const ProjectCard = ({ type, project }) => {
         >
           {type === AUDITOR ? "Submit" : "Edit"}
         </Button>
-        {project.name && <Button sx={copyBtn}>Make a copy</Button>}
+        {project.name && <Button sx={copyBtn} onClick={handleMakeCopy}>Make a copy</Button>}
       </Box>
     </Box>
   );

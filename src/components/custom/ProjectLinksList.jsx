@@ -25,7 +25,7 @@ export const ProjectLinksList = ({ name }) => {
       <FieldArray
         name={name}
         render={(arrayHelper) =>
-          field.value.map((link, idx) => {
+          field.value?.map((link, idx) => {
             return (
               <Box
                 key={idx}

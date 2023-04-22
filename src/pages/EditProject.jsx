@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, {useMemo, useState} from "react";
 import Layout from "../styles/Layout.jsx";
 import { Box } from "@mui/material";
 import Projects from "../components/Projects.jsx";
@@ -8,10 +8,19 @@ import { CustomCard } from "../components/custom/Card.jsx";
 import {useParams} from "react-router-dom";
 import {useSelector} from "react-redux";
 import Loader from "../components/Loader.jsx";
+import {useSearchParams} from "react-router-dom/dist";
 
 const EditProject = () => {
   const projectId = useParams();
+  const [getSearchParam] = useSearchParams()
   const project = useSelector((s) => s.project?.myProjects?.find((p) => p.id === projectId.id));
+  const myProject = useMemo(() => {
+    if  (!!getSearchParam.get('copy')){
+      return {...project, id: null}
+    } else {
+      return project
+    }
+  },[project, getSearchParam])
 
     return (
       <Layout>
@@ -27,7 +36,7 @@ const EditProject = () => {
                 <Loader/>
               </Box> :
             <CustomCard>
-              <CreateProjectCard projectInfo={project} />
+              <CreateProjectCard projectInfo={myProject} />
             </CustomCard>
           }
         </Box>

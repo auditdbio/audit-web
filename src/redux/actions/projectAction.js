@@ -32,6 +32,25 @@ export const createProject = (values) => {
       });
   };
 };
+
+export const createProjectNoRedirect = (values) => {
+    return async (dispatch) => {
+        const token = Cookies.get("token");
+        await axios
+            .post(`${API_URL}/project`, values, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            })
+            .then(({ data }) => {
+                dispatch({ type: PROJECT_CREATE, payload: data });
+            })
+            .catch(({ response }) => {
+                console.log(response, "res");
+            });
+    };
+};
+
 export const editProject = (values) => {
   return async (dispatch) => {
     const token = Cookies.get("token");
@@ -51,6 +70,24 @@ export const editProject = (values) => {
         console.log(response, "res");
       });
   };
+};
+
+export const editProjectNoRedirect = (values) => {
+    return async (dispatch) => {
+        const token = Cookies.get("token");
+        await axios
+            .patch(`${API_URL}/project/${values.id}`, values, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            })
+            .then(({ data }) => {
+                dispatch({ type: PROJECT_UPDATE, payload: data });
+            })
+            .catch(({ response }) => {
+                console.log(response, "res");
+            });
+    };
 };
 
 export const changeStatusProject = (values) => {

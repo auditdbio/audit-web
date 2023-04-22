@@ -12,8 +12,8 @@ import AuditorSearchModal from "./AuditorSearchModal.jsx";
 import TagsField from "./forms/tags-field/tags-field.jsx";
 import {
   changeStatusProject, clearProjectMessage,
-  createProject,
-  editProject,
+  createProject, createProjectNoRedirect,
+  editProject, editProjectNoRedirect,
   getProjects,
 } from "../redux/actions/projectAction.js";
 import { useDispatch, useSelector } from "react-redux";
@@ -32,7 +32,8 @@ const CreateProjectCard = ({projectInfo }) => {
   const [auditRequests, setAuditRequests] = useState([]);
   const [error, setError] = useState(null);
   const projectMessage = useSelector((state) => state.project.message);
-  const [isPublished, setIsPublished] = useState( projectInfo?.publish_options.publish || false);
+  const [isPublished, setIsPublished] = useState( projectInfo?.publish_options?.publish || false);
+  const [state, setState] = useState('')
 
   useEffect(() => {
     dispatch(getAuditsRequest("customer"));
@@ -51,9 +52,6 @@ const CreateProjectCard = ({projectInfo }) => {
 
   let editMode = !!projectInfo;
 
-  const handleEdit = () => {
-    navigate("/edit-profile");
-  };
 
   const validationSchema = Yup.object().shape({
     tags: Yup.array().min(1, "Please enter at least one tag"),
@@ -94,7 +92,7 @@ const CreateProjectCard = ({projectInfo }) => {
       publish_options: {...values.publish_options,
         publish: !isPublished}
     }
-    if (values.id) {
+    if (values.id && projectInfo.id) {
       dispatch(changeStatusProject({ ...newValue, id: projectInfo.id }))
     } else {
       handleSubmit()
@@ -107,10 +105,18 @@ const CreateProjectCard = ({projectInfo }) => {
       validationSchema={validationSchema}
       onSubmit={(values) => {
         const newValue = {...values, price: parseInt(values.price)}
-        if (editMode) {
-          dispatch(editProject({ ...newValue, id: projectInfo.id }))
+        if (editMode && projectInfo.id){
+          if (!state) {
+            dispatch(editProject({ ...newValue, id: projectInfo.id }))
+          } else {
+            dispatch(editProjectNoRedirect({ ...newValue, id: projectInfo.id }))
+          }
         } else {
-          dispatch(createProject(newValue));
+          if  (!state){
+            dispatch(createProject(newValue));
+          } else {
+            dispatch(createProjectNoRedirect(newValue));
+          }
         }
       }}
     >
@@ -145,6 +151,7 @@ const CreateProjectCard = ({projectInfo }) => {
               editMode={editMode}
               handleClose={handleCloseInviteModal}
               handleSubmit={handleSubmit}
+              setState={setState}
             />
 
             <Box sx={buttonGroup}>
