@@ -175,6 +175,11 @@ export default function AuditorSearchModal({
                 freeSolo
                 onChange={handleOptionChange}
                 options={auditorReducer}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    handleSearch();
+                  }
+                }}
                 filterOptions={(options) => options} // <-- return all options as is
                 getOptionLabel={(option) => option.user_id}
                 renderOption={(props, option) => (

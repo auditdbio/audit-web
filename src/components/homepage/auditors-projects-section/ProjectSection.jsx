@@ -77,6 +77,11 @@ const ProjectSection = () => {
             onChange={(e) => {
               setSearchInput(e.target.value);
             }}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                navigate(`/projects?search=${searchInput}`);
+              }
+            }}
           />
           <IconButton
             type="button"

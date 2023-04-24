@@ -75,6 +75,11 @@ const AuditorSection = () => {
             onChange={(e) => {
               setSearchInput(e.target.value);
             }}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                navigate(`/auditors?search=${searchInput}`);
+              }
+            }}
           />
           <IconButton
             type="button"
