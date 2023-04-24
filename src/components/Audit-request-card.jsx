@@ -22,9 +22,9 @@ const AuditRequestCard = ({ type, request }) => {
         </Typography>
         <Typography sx={categorySx}>{(request || audit)?.tags?.map(el => el).join(', ') ?? ''}</Typography>
         <Box sx={dateWrapper}>
-          <Typography sx={dateStyle}>{dayjs(request?.time?.begin).format('DD.MM.YYYY') }</Typography>
+          <Typography sx={dateStyle}>{dayjs((request || audit)?.time?.from).format('DD.MM.YYYY') }</Typography>
           <Typography variant={'caption'}>-</Typography>
-          <Typography sx={dateStyle}>{dayjs(request?.time?.end).format('DD.MM.YYYY') }</Typography>
+          <Typography sx={dateStyle}>{dayjs((request || audit)?.time?.to).format('DD.MM.YYYY') }</Typography>
         </Box>
         <Box sx={priceWrapper}>
           <Box sx={infoWrapper}>

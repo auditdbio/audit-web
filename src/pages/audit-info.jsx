@@ -110,9 +110,9 @@ const AuditInfo = () => {
                         <Box sx={projectWrapper}>
                             <Typography>Time for project</Typography>
                             <Box sx={{display: 'flex', alignItems: 'center', gap: '10px'}}>
-                                <Box sx={dateWrapper}>{dayjs(audit?.time?.begin).format('DD.MM.YYYY') }</Box>
+                                <Box sx={dateWrapper}>{dayjs(audit?.time?.from).format('DD.MM.YYYY') }</Box>
                                 -
-                                <Box sx={dateWrapper}>{dayjs(audit?.time?.end).format('DD.MM.YYYY') }</Box>
+                                <Box sx={dateWrapper}>{dayjs(audit?.time?.to).format('DD.MM.YYYY') }</Box>
                             </Box>
                             <TagsList/>
                         </Box>

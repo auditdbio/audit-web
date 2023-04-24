@@ -19,9 +19,9 @@ const AuditCard = ({audit}) => {
             <Typography sx={nameTextStyle}>{audit?.auditor_contacts?.email}</Typography>
             <Typography sx={priceTextStyle}>${audit?.price} per line</Typography>
             <Box sx={dateWrapper}>
-                <Typography sx={dateStyle}>{dayjs(audit?.time?.begin).format('DD.MM.YYYY') }</Typography>
+                <Typography sx={dateStyle}>{dayjs(audit?.time?.from).format('DD.MM.YYYY') }</Typography>
                 <Typography variant={'caption'}>-</Typography>
-                <Typography sx={dateStyle}>{dayjs(audit?.time?.end).format('DD.MM.YYYY') }</Typography>
+                <Typography sx={dateStyle}>{dayjs(audit?.time?.to).format('DD.MM.YYYY') }</Typography>
             </Box>
 
             <Box sx={statusWrapper}>

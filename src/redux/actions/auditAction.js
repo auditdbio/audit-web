@@ -24,8 +24,8 @@ export const createRequest = (values, redirect, navigateTo) => {
       .post(`${API_URL}/audit_request`, {
         ...values,
         time: {
-          from: dayjs().valueOf(values.time.from),
-          to: dayjs().valueOf(values.time.to),
+          from: +new Date(values.time.from),
+          to: +new Date(values.time.to),
         }
       }, {
         headers: {
