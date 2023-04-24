@@ -328,8 +328,11 @@ const modalWindow = {
   alignItems: "center",
   [theme.breakpoints.down("sm")]: {
     height: "100%",
-    width: "100%",
+    width: '600px'
   },
+  [theme.breakpoints.down('xs')]: {
+    width: "100%",
+  }
 };
 
 const offerDialogStyle = {
@@ -376,11 +379,14 @@ const searchField = {
     fontSize: "14px !important",
     width: "465px",
     [theme.breakpoints.down("sm")]: {
-      width: "120px",
+      width: "450px",
       height: "30px",
       fontSize: "11px",
       // padding: "0",
     },
+    [theme.breakpoints.down('xs')]: {
+      width: '180px'
+    }
   },
 };
 const customDropdown = {
@@ -404,6 +410,9 @@ const findButton = {
     fontSize: "11px",
     padding: "6px 31px",
   },
+  [theme.breakpoints.down('xs')]: {
+    padding: '6px 18px'
+  }
 };
 const sendButton = {
   backgroundColor: theme.palette.primary.main,
