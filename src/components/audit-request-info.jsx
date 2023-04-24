@@ -243,6 +243,7 @@ const AuditRequestInfo = ({project, onClose, handleError, redirect, isModal}) =>
                                                         setFieldValue('time.from', value.toString())
                                                     }}
                                                     disablePast
+                                                    minDate={new Date()}
                                                 />
                                                 <Typography variant={"caption"}>-</Typography>
                                                 <Field
@@ -253,6 +254,7 @@ const AuditRequestInfo = ({project, onClose, handleError, redirect, isModal}) =>
                                                         const value = new Date(e)
                                                         setFieldValue('time.to', value.toString())
                                                     }}
+                                                    minDate={dayjs(values.time?.from)}
                                                     disablePast
                                                     inputFormat='DD.MM.YYYY'
                                                 />
@@ -287,7 +289,13 @@ const MakeOfferSchema = Yup.object().shape({
     price_range: Yup.object(),
     project_id: Yup.string(),
     scope: Yup.array(),
-    time_frame: Yup.string()
+    time_frame: Yup.string(),
+    time: Yup.object().shape({
+        from: Yup.date(),
+        to: Yup.date()
+            .required()
+            .min(Yup.ref('from'))
+    })
 });
 
 const dateStyle = {

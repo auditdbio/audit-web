@@ -40,7 +40,7 @@ export const createCustomer = (values) => {
 export const updateCustomer = (values) => {
     const token = Cookies.get('token')
     return (dispatch) => {
-        axios.patch(`${API_URL}/customer/${values.userId}`, values, {headers: {"Authorization": `Bearer ${token}`}})
+        axios.patch(`${API_URL}/my_customer`, values, {headers: {"Authorization": `Bearer ${token}`}})
             .then(({data}) => {
                 dispatch({type: 'UPDATE_CUSTOMER', payload: data})
                 history.push({pathname: `/profile/user-info`}, {

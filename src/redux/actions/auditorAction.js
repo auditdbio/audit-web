@@ -39,7 +39,7 @@ export const createAuditor = (values) => {
 export const updateAuditor = (values) => {
     const token = Cookies.get('token')
     return (dispatch) => {
-        axios.patch(`${API_URL}/auditor/${values.userId}`, values, {headers: {"Authorization": `Bearer ${token}`}})
+        axios.patch(`${API_URL}/my_auditor`, values, {headers: {"Authorization": `Bearer ${token}`}})
             .then(({data}) => {
                 dispatch({type: UPDATE_AUDITOR, payload: data})
                 history.push({pathname: `/profile/user-info`}, {

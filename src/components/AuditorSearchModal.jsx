@@ -31,6 +31,7 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import star from "./icons/Star.jsx";
 import { useNavigate } from "react-router-dom";
+import {Field} from "formik";
 
 export default function AuditorSearchModal({
   open,
@@ -57,8 +58,10 @@ export default function AuditorSearchModal({
   const [inputValue, setInputValue] = useState("");
   const [taxInput, setTaxInput] = useState(50);
   const [startTime, setStartTime] = useState(dayjs());
-  const [endTime, setEndTime] = useState(dayjs());
+  const [endTime, setEndTime] = useState(dayjs(+new Date()))
   const [query, setQuery] = useState("");
+  const [errorStart, setErrorStart] = React.useState(null);
+  const [errorEnd, setErrorEnd] = React.useState(null);
 
 
   useEffect(() => {
@@ -118,6 +121,14 @@ export default function AuditorSearchModal({
     setMode("offer");
   };
 
+  useEffect(() => {
+    if  (+new Date(startTime) > +new Date(endTime)){
+      setErrorEnd(true)
+    } else {
+      setErrorEnd(false)
+    }
+  },[endTime, startTime])
+
   const handleSend = async () => {
     const isStartDateValid = dayjs(startTime, "DD.MM.YYYY").isValid();
     const isEndDateValid = dayjs(endTime, "DD.MM.YYYY").isValid();
@@ -133,9 +144,11 @@ export default function AuditorSearchModal({
     } else {
       setErrorEnd(null);
     }
-    handleSubmit();
-    setSubmitted(true);
-    handleClose();
+    if (!errorEnd){
+      handleSubmit();
+      setSubmitted(true);
+      handleClose();
+    }
   };
 
   const handleSearch = () => {
@@ -147,8 +160,6 @@ export default function AuditorSearchModal({
     }
   }
 
-  const [errorStart, setErrorStart] = React.useState(null);
-  const [errorEnd, setErrorEnd] = React.useState(null);
 
   return (
     <Dialog open={open} onClose={handleClose}>
@@ -257,28 +268,36 @@ export default function AuditorSearchModal({
               <Typography style={rateLabel()}>Choose audit timeline</Typography>
               <Box sx={dateWrapper}>
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
-                  <DatePicker
-                    value={startTime}
-                    onChange={handleStartTimeChange}
-                    sx={dateStyle}
-                    disablePast
-                    slotProps={{
-                      textField: {
-                        helperText: errorStart,
-                      },
-                    }}
-                  />
+                    <Field
+                        component={DatePicker}
+                        name={'time.from'}
+                        value={startTime}
+                        sx={dateStyle}
+                        inputFormat='DD.MM.YYYY'
+                        onChange={handleStartTimeChange}
+                        disablePast
+                        slotProps={{
+                            textField: {
+                                helperText: errorStart,
+                            },
+                        }}
+                        minDate={new Date()}
+                    />
                   <Typography variant={"caption"}>-</Typography>
-                  <DatePicker
-                    value={endTime}
-                    onChange={handleEndTimeChange}
-                    sx={dateStyle}
-                    disablePast
-                    slotProps={{
-                      textField: {
-                        helperText: errorEnd,
-                      },
-                    }}
+                  <Field
+                      component={DatePicker}
+                      name={'time.to'}
+                      value={endTime}
+                      sx={[dateStyle, errorEnd ? {'& .fieldset': {borderColor: 'red'} } : {}]}
+                      inputFormat='DD.MM.YYYY'
+                      onChange={handleEndTimeChange}
+                      disablePast
+                      slotProps={{
+                        textField: {
+                          helperText: errorEnd,
+                        },
+                      }}
+                      minDate={startTime}
                   />
                 </LocalizationProvider>
               </Box>
@@ -328,11 +347,8 @@ const modalWindow = {
   alignItems: "center",
   [theme.breakpoints.down("sm")]: {
     height: "100%",
-    width: '600px'
+      width: "100%",
   },
-  [theme.breakpoints.down('xs')]: {
-    width: "100%",
-  }
 };
 
 const offerDialogStyle = {
@@ -379,14 +395,11 @@ const searchField = {
     fontSize: "14px !important",
     width: "465px",
     [theme.breakpoints.down("sm")]: {
-      width: "450px",
+      width: "120px",
       height: "30px",
       fontSize: "11px",
       // padding: "0",
     },
-    [theme.breakpoints.down('xs')]: {
-      width: '180px'
-    }
   },
 };
 const customDropdown = {

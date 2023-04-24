@@ -22,6 +22,7 @@ import {Field, Form, Formik} from "formik";
 import {CUSTOMER} from "../redux/actions/types.js";
 import {changeRolePublicCustomer, changeRolePublicCustomerNoRedirect} from "../redux/actions/userAction.js";
 import {Alert, AlertTitle} from "@mui/lab";
+import * as Yup from "yup";
 
 export default function AuditorModal({ open, handleClose, auditor, isForm, onSubmit, handleError }) {
   const navigate = useNavigate();
@@ -130,6 +131,7 @@ export default function AuditorModal({ open, handleClose, auditor, isForm, onSub
       {mode === "invite" && (
           <Formik
               validator={() => ({})}
+              validationSchema={MakeOfferSchema}
               initialValues={{
                 auditor_id: auditor?.user_id,
                 auditor_contacts: {...auditor?.contacts},
@@ -198,6 +200,7 @@ export default function AuditorModal({ open, handleClose, auditor, isForm, onSub
                             <LocalizationProvider dateAdapter={AdapterDayjs}>
                               <Field
                                   component={DatePicker}
+                                  name={'time.from'}
                                   value={dayjs(values.time?.from)}
                                   sx={dateStyle}
                                   onChange={(e) => {
@@ -206,10 +209,12 @@ export default function AuditorModal({ open, handleClose, auditor, isForm, onSub
                                   }}
                                   disablePast
                                   inputFormat='DD.MM.YYYY'
+                                  minDate={new Date()}
                               />
                               <Typography variant={"caption"}>-</Typography>
                               <Field
                                   component={DatePicker}
+                                  name={'time.to'}
                                   value={dayjs(values.time?.to)}
                                   sx={dateStyle}
                                   onChange={(e) => {
@@ -218,6 +223,7 @@ export default function AuditorModal({ open, handleClose, auditor, isForm, onSub
                                   }}
                                   disablePast
                                   inputFormat='DD.MM.YYYY'
+                                  minDate={dayjs(values.time?.from)}
                               />
                             </LocalizationProvider>
                           </Box>
@@ -247,6 +253,25 @@ export default function AuditorModal({ open, handleClose, auditor, isForm, onSub
     </Dialog>
   );
 }
+
+const MakeOfferSchema = Yup.object().shape({
+  auditor_contacts: Yup.object(),
+  auditor_id: Yup.string(),
+  customer_contacts: Yup.object(),
+  customer_id: Yup.string(),
+  opener: Yup.string(),
+  price: Yup.number(),
+  price_range: Yup.object(),
+  project_id: Yup.string(),
+  scope: Yup.array(),
+  time_frame: Yup.string(),
+  time: Yup.object().shape({
+    from: Yup.date(),
+    to: Yup.date()
+        .required()
+        .min(Yup.ref('from'))
+  })
+});
 
 const modalWindow = (theme) => ({
   backgroundColor: theme.palette.background,
