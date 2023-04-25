@@ -26,7 +26,7 @@ export const userReducer = (state = initialState, action) => {
         case USER_SIGNIN:
             return { token: action.payload.token, isAuth: true, user: action.payload.user }
         case USER_SIGNUP:
-            return {...state, user: action.payload }
+            return {...state, user: action.payload, success: 'An authorization email has been sent to your email address, please check your email' }
         case AUTH_TRUE:
             return {...state, isAuth: true}
         case USER_IS_ALREADY_EXIST:

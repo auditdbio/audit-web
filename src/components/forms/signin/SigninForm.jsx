@@ -6,12 +6,13 @@ import {Form, Formik} from "formik";
 import * as Yup from "yup";
 import SimpleField from "../fields/simple-field.jsx";
 import {useDispatch, useSelector} from "react-redux";
-import {clearUserError, signIn} from "../../../redux/actions/userAction.js";
+import {clearUserError, clearUserSuccess, signIn} from "../../../redux/actions/userAction.js";
 
 
 const SigninForm = () => {
     const dispatch = useDispatch()
     const error = useSelector(s => s.user.error)
+    const successMessage = useSelector(s => s.user.success)
     const initialValues = {
         email: '',
         password: '',
@@ -33,16 +34,17 @@ const SigninForm = () => {
                         <Box sx={formWrapper}
                         >
                             <Snackbar
-                                autoHideDuration={10000}
-                                open={!!error}
+                                autoHideDuration={7000}
+                                open={!!error || !!successMessage}
                                 anchorOrigin={{ horizontal: 'right', vertical: 'top' }}
                                 onClose={() => {
                                     dispatch(clearUserError())
+                                    dispatch(clearUserSuccess())
                                 }}
                             >
                                 <Stack sx={{ width: '100%', flexDirection: 'column', gap: 2 }} spacing={2}>
-                                    <Alert severity='error'>
-                                        <AlertTitle>{error}</AlertTitle>
+                                    <Alert severity={successMessage ? 'success' : 'error'}>
+                                        <AlertTitle>{error || successMessage}</AlertTitle>
                                     </Alert>
                                 </Stack>
                             </Snackbar>
