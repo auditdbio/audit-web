@@ -34,7 +34,7 @@ const AuditorsPage = () => {
         readyToWait: filter.readyToWait || '',
       }
     })
-    dispatch(searchProjects(filter))
+    dispatch(searchAuditor(filter))
   }
 
   const initialFilter = {

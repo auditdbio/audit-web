@@ -176,34 +176,6 @@ const Filter = ({target, submit, initial}) => {
                                                         name={"sort"}
                                                         control={
                                                             // <Checkbox
-                                                            //     onChange={(e) =>
-                                                            //         setFieldValue("sort", e.target.value)
-                                                            //     }
-                                                            //     value={"low-to-height"}
-                                                            //     color={mainColor}
-                                                            //     checked={values.sort === "low-to-height"}
-                                                            // />
-                                                            <Radio
-                                                                onChange={(e) =>
-                                                                    setFieldValue("sort", e.target.value)
-                                                                }
-                                                                value={"1"}
-                                                                sx={{
-                                                                    color: "orange",
-                                                                    "&.Mui-checked": {
-                                                                        color: "orange",
-                                                                    },
-                                                                }}
-                                                                checked={values.sort === "1"}
-                                                            />
-                                                        }
-                                                        color={mainColor}
-                                                        label="Price: Low to Height"
-                                                    />
-                                                    <FormControlLabel
-                                                        name={"sort"}
-                                                        control={
-                                                            // <Checkbox
                                                             //   onChange={(e) =>
                                                             //     setFieldValue("sort", e.target.value)
                                                             //   }
@@ -221,6 +193,26 @@ const Filter = ({target, submit, initial}) => {
                                                             />
                                                         }
                                                         label="Price: Height to Low "
+                                                    />
+                                                    <FormControlLabel
+                                                        name={"sort"}
+                                                        control={
+                                                            <Radio
+                                                                onChange={(e) =>
+                                                                    setFieldValue("sort", e.target.value)
+                                                                }
+                                                                value={"1"}
+                                                                sx={{
+                                                                    color: "orange",
+                                                                    "&.Mui-checked": {
+                                                                        color: "orange",
+                                                                    },
+                                                                }}
+                                                                checked={values.sort === "1"}
+                                                            />
+                                                        }
+                                                        color={mainColor}
+                                                        label="Price: Low to Height"
                                                     />
                                                 </FormGroup>
                                             </Box>
