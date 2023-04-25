@@ -139,11 +139,6 @@ export default function AuditorSearchModal({
     } else {
       setErrorStart(null);
     }
-    if (!isEndDateValid) {
-      setErrorEnd("Enter end date");
-    } else {
-      setErrorEnd(null);
-    }
     if (!errorEnd){
       handleSubmit();
       setSubmitted(true);
