@@ -192,7 +192,7 @@ const Filter = ({target, submit, initial}) => {
                                                                 checked={values.sort === "-1"}
                                                             />
                                                         }
-                                                        label="Price: Height to Low "
+                                                        label="Price: High to Low"
                                                     />
                                                     <FormControlLabel
                                                         name={"sort"}
@@ -212,7 +212,7 @@ const Filter = ({target, submit, initial}) => {
                                                             />
                                                         }
                                                         color={mainColor}
-                                                        label="Price: Low to Height"
+                                                        label="Price: Low to High"
                                                     />
                                                 </FormGroup>
                                             </Box>
