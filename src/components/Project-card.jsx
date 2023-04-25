@@ -86,7 +86,7 @@ const ProjectCard = ({type, project}) => {
                         }
                         <Typography>
                             {
-                                project.publish_options.publish ? 'Publish' : 'Hidden'
+                                project.publish_options.publish ? 'Published' : 'Hidden'
                             }
                         </Typography>
                     </Box>
