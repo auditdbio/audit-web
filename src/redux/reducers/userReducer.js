@@ -30,7 +30,7 @@ export const userReducer = (state = initialState, action) => {
         case AUTH_TRUE:
             return {...state, isAuth: true}
         case USER_IS_ALREADY_EXIST:
-            return {...state, error: 'User is already exist'}
+            return {...state, error: 'User already exists'}
         case CLEAR_ERROR:
             return {...state, error: null}
         case SIGN_IN_ERROR:

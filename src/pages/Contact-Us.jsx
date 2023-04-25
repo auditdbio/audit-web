@@ -9,6 +9,7 @@ import DescriptionField from "../components/forms/create-project/DescriptionFiel
 import {clearFormMessage, sendContactMessage} from "../redux/actions/contactUsAction.js";
 import {useDispatch, useSelector} from "react-redux";
 import {clearMessage} from "../redux/actions/auditAction.js";
+import * as Yup from "yup";
 // import Textarea from "@uiw/react-md-editor/lib/components/TextArea/Textarea.js";
 
 const AuditDb = () => {
@@ -41,6 +42,7 @@ const AuditDb = () => {
             <CustomCard>
                 <Formik
                     initialValues={initialValues}
+                    validationSchema={ContactUsValidationSchema}
                     onSubmit={(values, {resetForm}) => {
                         dispatch(sendContactMessage(values))
                         resetForm()
@@ -134,6 +136,13 @@ const AuditDb = () => {
 };
 
 export default AuditDb;
+
+const ContactUsValidationSchema = Yup.object().shape({
+    name: Yup.string(),
+    email: Yup.string().email('Invalid email').required('required'),
+    message: Yup.string().required('required'),
+    company: Yup.string()
+});
 
 const imgWrapper = (theme) => ({
     gap: '90px',
