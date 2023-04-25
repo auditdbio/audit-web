@@ -29,14 +29,14 @@ const MyProjects = () => {
         if  (chosen.length > 0){
             chosen.map((project) => {
                 const data = {
-                    customer_id: values.customer_id,
-                    auditor_id: values.auditor_id,
-                    price: values.price,
-                    description: project.description,
-                    time: values.time,
+                    customer_id: values?.customer_id,
+                    auditor_id: values?.auditor_id,
+                    price: values?.price,
+                    description: project?.description,
+                    time: values?.time,
                     // ...project,
                     // ...values,
-                    project_id: project.id,
+                    project_id: project?.id,
                 }
                 dispatch(createRequest(data, true, '/profile/projects'))
             })
@@ -54,19 +54,19 @@ const MyProjects = () => {
         localStorage.removeItem('project')
         setIsOpenView(true);
     };
-
-    if  (!auditor) {
-        return <Box sx={{
-            height: '100vh',
-            width: '100%',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center'
-        }}
-        >
-            <Loader/>
-        </Box>
-    } else {
+    // console.log(auditor)
+    // if  (!auditor) {
+    //     return <Box sx={{
+    //         height: '100vh',
+    //         width: '100%',
+    //         display: 'flex',
+    //         justifyContent: 'center',
+    //         alignItems: 'center'
+    //     }}
+    //     >
+    //         <Loader/>
+    //     </Box>
+    // } else {
         return (
             <Layout>
                 <CustomCard sx={wrapper}>
@@ -92,22 +92,25 @@ const MyProjects = () => {
                         variant={'contained'}
                         sx={submitBtn}
                         onClick={handleOpenView}
-                        disabled={chosen.length === 0}
+                        disabled={chosen.length === 0 && !auditor}
                     >
                         Invite to project
                     </Button>
-                    <AuditorModal
+                    { auditor &&
+                        <AuditorModal
                         open={isOpenView}
                         handleClose={handleCloseView}
                         auditor={auditor}
                         isForm={true}
                         onSubmit={handleInviteAuditor}
                     />
+
+                    }
                 </CustomCard>
             </Layout>
         );
     }
-};
+// };
 
 export default MyProjects;
 
