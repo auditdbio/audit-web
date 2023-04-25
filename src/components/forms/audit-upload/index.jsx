@@ -7,7 +7,7 @@ import Cookies from "js-cookie";
 import {useSelector} from "react-redux";
 import {ASSET_URL} from "../../../services/urls.js";
 
-const AuditUpload = ({name, disabled, auditId, auditorId, customerId}) => {
+const AuditUpload = ({name, disabled, auditId, auditorId, customerId, setFieldValue}) => {
     const [field, meta, fieldHelper] = useField(name)
     const formData = new FormData()
     const user = useSelector(state => state.user.user)
@@ -26,11 +26,13 @@ const AuditUpload = ({name, disabled, auditId, auditorId, customerId}) => {
             formData.append('audit', auditId)
             formData.append('auditorId', auditorId)
             formData.append('customerId', customerId)
+            formData.append('report_name', file.name)
             axios.post(ASSET_URL, formData, {
                 headers: {Authorization: "Bearer " + Cookies.get("token")}
             })
                 .then((data) => {
                     fieldHelper.setValue(formData.get('path'))
+                    setFieldValue('report_name', formData.get('report_name'))
                     formData.delete('file')
                     formData.delete('path')
                     formData.delete('original_name')
@@ -38,6 +40,7 @@ const AuditUpload = ({name, disabled, auditId, auditorId, customerId}) => {
                     formData.delete('audit')
                     formData.delete('auditorId')
                     formData.delete('customerId')
+                    formData.delete('report_name')
                 })
                 .catch((err) => {
                     if (err?.code === "ERR_NETWORK"){

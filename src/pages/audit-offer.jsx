@@ -35,13 +35,14 @@ const AuditOffer = () => {
                         id: audit.id,
                         status: 'done',
                         report: audit.report || '',
+                        report_name: audit.report_name || '',
                     }}
                     validationSchema={SubmitValidation}
                     onSubmit={(values) => {
                         dispatch(addReportAudit(values))
                     }}
                 >
-                    {({handleSubmit}) => {
+                    {({handleSubmit, setFieldValue}) => {
                         return (
                             <Form onSubmit={handleSubmit} style={{width: '100%', maxWidth: '1300px'}}>
                                 <CustomCard sx={wrapper}>
@@ -91,6 +92,7 @@ const AuditOffer = () => {
                                                         auditorId={audit.auditor_id}
                                                         customerId={audit.customer_id}
                                                         name={'report'}
+                                                        setFieldValue={setFieldValue}
                                                     />
                                                 </Box>
                                             </Box>
