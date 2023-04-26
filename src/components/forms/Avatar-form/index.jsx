@@ -52,7 +52,6 @@ const AvatarForm = ({role, name}) => {
 
     return (
         <>
-            {/*<Avatar src={`https://dev.auditdb.io/api/files/get/${avatarField.value}`}/>*/}
             <Avatar src={`${ASSET_URL}/${avatarField.value}`}/>
             <Snackbar
                 autoHideDuration={10000}
