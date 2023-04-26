@@ -116,12 +116,12 @@ const EditProfileForm = ({role}) => {
                                                 <label
                                                     htmlFor="hide-contacts"
                                                     style={{
-                                                        width: '134px',
+                                                        width: '174px',
                                                         display: 'flex',
                                                         color: role === AUDITOR? theme.palette.secondary.main : theme.palette.primary.main,
                                                     }}
                                                 >
-                                                    Public contacts
+                                                    Make contacts visible
                                                 </label>
                                             </Box>
                                         </Box>
