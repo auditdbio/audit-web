@@ -116,7 +116,6 @@ export default function AuditorSearchModal({
   };
 
   const handleOptionChange = (option) => {
-    // console.log(option);
     setSelectedAuditor(option);
     setMode("offer");
   };
@@ -132,8 +131,6 @@ export default function AuditorSearchModal({
   const handleSend = async () => {
     const isStartDateValid = dayjs(startTime, "DD.MM.YYYY").isValid();
     const isEndDateValid = dayjs(endTime, "DD.MM.YYYY").isValid();
-    // console.log("start", startTime.format('YYYY-MM-DD'));
-    // console.log("end", endTime.format('YYYY-MM-DD'));
     if (!isStartDateValid) {
       setErrorStart("Enter start date");
     } else {
