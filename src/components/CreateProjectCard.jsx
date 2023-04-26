@@ -71,7 +71,7 @@ const CreateProjectCard = ({projectInfo }) => {
     scope: projectInfo ? projectInfo.scope : [],
     description: projectInfo ? projectInfo.description : "",
     tags: projectInfo ? projectInfo.tags : [],
-    status: projectInfo ? projectInfo.status : "status test",
+    status: '',
     price: projectInfo ? projectInfo.price : 0,
     creator_contacts: customerReducer?.customer?.contacts,
   };
