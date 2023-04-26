@@ -71,7 +71,7 @@ const AvatarForm = ({role, name}) => {
             <Button sx={
                 role === AUDITOR ? {color: theme.palette.secondary.main} : {}
             }>
-                <label htmlFor="file-upload" style={{display: 'flex'}}>
+                <label htmlFor="file-upload" style={{display: 'flex', alignItems: 'center'}}>
                     <EditIcon fontSize={'small'}/>
                     Edit photo
                 </label>
