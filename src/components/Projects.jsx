@@ -12,7 +12,6 @@ const Projects = ({ role }) => {
   const projects = useSelector((state) => state.audits.audits);
   const myProjects = useSelector((state) => state.project.myProjects);
   const customer = useSelector(state => state.customer.customer)
-  const auditor = useSelector(state => state.auditor.auditor)
   const dispatch = useDispatch();
   const [error, setError] = useState(null);
   const projectReducer = useMemo(() => {
@@ -35,11 +34,7 @@ const Projects = ({ role }) => {
         setError("Fill in your profile first")
       }
     } else {
-      if (auditor.user_id || auditor.first_name || auditor.last_name) {
         navigate("/projects");
-      } else {
-        setError("Fill in your profile first")
-      }
     }
   };
 
