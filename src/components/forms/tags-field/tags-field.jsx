@@ -26,7 +26,7 @@ const TagsField = ({name, label, placeholder}) => {
             name={'tag-field'}
             disabled={false}
             value={state || ''}
-            onKeyPress={(e) => {
+            onKeyDown={(e) => {
                 if (e.key === 'Enter') {
                     e.preventDefault();
                     handleAddTag()
