@@ -2,35 +2,25 @@ import * as React from "react";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import theme from "../styles/themes.js";
 import { Box } from "@mui/system";
 import InputAdornment from "@mui/material/InputAdornment";
 import SearchIcon from "@mui/icons-material/Search";
 import Autocomplete from "@mui/material/Autocomplete";
-import { createPortal } from "react-dom";
 import { useEffect, useState } from "react";
-import debounce from "lodash.debounce";
-import Cookies from "js-cookie";
-import axios from "axios";
-import { AUDITOR, GET_AUDITOR } from "../redux/actions/types.js";
 import { Paper, Slider, Typography } from "@mui/material";
 import AuditorSearchListBox from "./custom/AuditorSearchListBox.jsx";
-import SalarySlider from "./forms/salary-slider/salary-slider.jsx";
 import IconButton from "@mui/material/IconButton";
 import { ArrowBack } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
-import { getProjects } from "../redux/actions/projectAction.js";
 import { getAuditors } from "../redux/actions/auditorAction.js";
 import { createRequest } from "../redux/actions/auditAction.js";
-import { customerReducer } from "../redux/reducers/customerReducer.js";
 import dayjs from "dayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers";
-import star from "./icons/Star.jsx";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom/dist";
 import {Field} from "formik";
 
 export default function AuditorSearchModal({
@@ -47,7 +37,6 @@ export default function AuditorSearchModal({
   const projectReducer = useSelector((state) => state.project);
   const customerReducer = useSelector((state) => state.customer);
 
-  const [auditorsList, setAuditorsList] = useState([]);
   const [submitted, setSubmitted] = useState(false);
 
   const [selectedAuditor, setSelectedAuditor] = useState({});
@@ -65,7 +54,6 @@ export default function AuditorSearchModal({
 
 
   useEffect(() => {
-    // console.log("searching...");
     dispatch(getAuditors(query));
   }, [query]);
 
@@ -102,9 +90,6 @@ export default function AuditorSearchModal({
         time_frame: "string",
       };
       dispatch(createRequest(request));
-      // navigate("/edit-project", {
-      //   state: { project: projectReducer.recentProject },
-      // });
       setMode("search");
       setSubmitted(false);
     }
@@ -200,7 +185,6 @@ export default function AuditorSearchModal({
                     {...params}
                     id="name"
                     sx={searchField}
-                    // fullWidth
                     type="text"
                     InputProps={{
                       ...params.InputProps,
@@ -382,7 +366,6 @@ const searchField = {
     padding: "0px",
     height: "45px",
     borderRadius: "4px",
-    // border: "1px solid #434242",
     paddingLeft: "8px",
     fontSize: "14px !important",
     width: "465px",
@@ -390,7 +373,6 @@ const searchField = {
       width: "120px",
       height: "30px",
       fontSize: "11px",
-      // padding: "0",
     },
   },
 };
@@ -494,25 +476,3 @@ const dateStyle = {
     },
   },
 };
-const auditorNames = [
-  {
-    label: "Testov test",
-    status: "Free to audit",
-  },
-  {
-    label: "Ivan Ivanov",
-    status: "Free to audit",
-  },
-  {
-    label: "Akhmet Akhmetov",
-    status: "Free to audit",
-  },
-  {
-    label: "Aket Ahmetov",
-    status: "Free to audit",
-  },
-  {
-    label: "Abraham Linkoln Barrows",
-    status: "Free to audit",
-  },
-];
