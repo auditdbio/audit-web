@@ -31,6 +31,8 @@ import Markdown from "./custom/Markdown.jsx";
 import {isAuth} from "../lib/helper.js";
 import {AUDITOR} from "../redux/actions/types.js";
 import {changeRolePublicAuditor, changeRolePublicAuditorNoRedirect} from "../redux/actions/userAction.js";
+import TelegramIcon from '@mui/icons-material/Telegram';
+import EmailIcon from '@mui/icons-material/Email';
 
 const AuditRequestInfo = ({project, onClose, handleError, redirect, isModal}) => {
     const navigate = useNavigate()
@@ -111,11 +113,11 @@ const AuditRequestInfo = ({project, onClose, handleError, redirect, isModal}) =>
                     </Box>
                     {!matchXs &&
                         <Box sx={{display: 'flex', gap: '25px'}}>
-                            <Typography variant={'caption'}>
-                                {project?.creator_contacts?.email || project?.customer_contacts?.email}
+                            <Typography variant={'caption'} sx={{display: 'flex', alignItems: 'center', gap: '10px'}}>
+                               <EmailIcon/> {project?.creator_contacts?.email || project?.customer_contacts?.email}
                             </Typography>
-                            <Typography variant={'caption'}>
-                                {project?.creator_contacts?.telegram || project?.customer_contacts?.telegram}
+                            <Typography variant={'caption'} sx={{display: 'flex', alignItems: 'center', gap: '10px'}}>
+                               <TelegramIcon/> {project?.creator_contacts?.telegram || project?.customer_contacts?.telegram}
                             </Typography>
                         </Box>
                     }
@@ -123,12 +125,12 @@ const AuditRequestInfo = ({project, onClose, handleError, redirect, isModal}) =>
                 <Box sx={infoWrapper} className={'audit-request-info'}>
                     <Markdown value={project?.description}/>
                     {matchXs &&
-                        <Box sx={{display: 'flex', gap: '25px'}}>
-                            <Typography variant={'caption'}>
-                                {project?.creator_contacts?.email || project?.customer_contacts?.email}
+                        <Box sx={{display: 'flex', gap: '10px', justifyContent: 'center', flexWrap: 'wrap'}}>
+                            <Typography variant={'caption'} sx={{display: 'flex', alignItems: 'center', gap: '10px'}}>
+                                <EmailIcon/> {project?.creator_contacts?.email || project?.customer_contacts?.email}
                             </Typography>
-                            <Typography variant={'caption'}>
-                                {project?.creator_contacts?.telegram || project?.customer_contacts?.telegram}
+                            <Typography variant={'caption'} sx={{display: 'flex', alignItems: 'center', gap: '10px'}}>
+                                <TelegramIcon/> {project?.creator_contacts?.telegram || project?.customer_contacts?.telegram}
                             </Typography>
                         </Box>
                     }

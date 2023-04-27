@@ -17,6 +17,8 @@ import Loader from "../components/Loader.jsx";
 import {AUDITOR, SUBMITED} from "../redux/actions/types.js";
 import * as Yup from "yup";
 import Markdown from "../components/custom/Markdown.jsx";
+import TelegramIcon from '@mui/icons-material/Telegram';
+import EmailIcon from '@mui/icons-material/Email';
 
 const AuditOffer = () => {
     const {id} = useParams()
@@ -74,11 +76,11 @@ const AuditOffer = () => {
                                             </Box>
                                         </Box>
                                         <Box sx={[{display: 'flex', gap: '25px'}, contactWrapper]}>
-                                            <Typography variant={'caption'}>
-                                                {audit?.customer_contacts?.email}
+                                            <Typography variant={'caption'} sx={{display: 'flex', alignItems: 'center', gap: '15px'}}>
+                                                <EmailIcon/> {audit?.customer_contacts?.email}
                                             </Typography>
-                                            <Typography variant={'caption'}>
-                                                {audit?.customer_contacts?.telegram}
+                                            <Typography variant={'caption'} sx={{display: 'flex', alignItems: 'center', gap: '15px'}}>
+                                                <TelegramIcon/> {audit?.customer_contacts?.telegram}
                                             </Typography>
                                         </Box>
                                         <Box sx={infoWrapper}>
