@@ -379,7 +379,7 @@ const infoWrapper = (theme) => ({
       marginRight: "20px",
     },
     "& p": {
-      maxWidth: "190px",
+      maxWidth: "160px",
     },
   },
   [theme.breakpoints.down("xs")]: {

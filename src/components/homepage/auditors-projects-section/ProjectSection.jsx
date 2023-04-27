@@ -97,7 +97,7 @@ const ProjectSection = () => {
         </Box>
       </Box>
 
-      <Box sx={{ height: "2rem" }}></Box>
+      <Box sx={{height: "2rem"}}/>
       {!projectFound && (
         <Box>
           <Typography
