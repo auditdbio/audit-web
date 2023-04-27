@@ -30,7 +30,7 @@ const Carousel = () => {
         maxWidth: "1512px",
       }}
     >
-      <Box sx={carouselTextStyle}>Who’s using AuditDB?</Box>
+      <Box sx={carouselTextStyle}>here will be your opinion about auditDB</Box>
       <Box
         sx={{
           display: "flex",
