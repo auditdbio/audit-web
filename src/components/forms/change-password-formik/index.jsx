@@ -9,6 +9,7 @@ import {useDispatch, useSelector} from "react-redux";
 
 const ChangePasswordFormik = () => {
     const dispatch = useDispatch()
+    const userId = useSelector(s => s.user.user.id)
     const message = useSelector(s => s.user.success)
     const [showPassword, setShowPassword] = useState(false);
     const [passwordState, setPasswordState] = useState('')
@@ -17,7 +18,7 @@ const ChangePasswordFormik = () => {
 
     const handleChangePassword = () => {
             setPasswordState('')
-            dispatch(changePassword(passwordState))
+            dispatch(changePassword(passwordState, userId))
     }
     return (
         <Box>

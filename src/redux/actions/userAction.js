@@ -204,11 +204,11 @@ export const changeRolePublicCustomerNoRedirect = (value, id, currentRole) => {
     };
 };
 
-export const changePassword = (value) => {
+export const changePassword = (value, userId) => {
     return (dispatch) => {
         axios
             .patch(
-                `${API_URL}/users`,
+                `${API_URL}/user/${userId}`,
                 { password: value },
                 {
                     headers: {
