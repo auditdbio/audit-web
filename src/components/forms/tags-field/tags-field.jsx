@@ -24,7 +24,7 @@ const TagsField = ({name, label, placeholder}) => {
             placeholder={placeholder ? placeholder : '● ● ● ● ● ● ●'}
             fullWidth={true}
             name={'tag-field'}
-            disabled={field.value.length === 10 }
+            disabled={false}
             value={state || ''}
             onKeyDown={(e) => {
                 if (e.key === 'Enter') {
