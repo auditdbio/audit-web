@@ -107,7 +107,6 @@ const viewButton = (theme) => ({
 
 const wrapper = (theme) => ({
     padding: '22px 33px 22px 45px',
-    border: '1px solid #B2B3B3',
     display: 'flex',
     justifyContent: 'space-between',
     height: '100%',
