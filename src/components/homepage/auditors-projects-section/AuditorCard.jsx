@@ -158,13 +158,20 @@ const infoStyle = {
   gap: "0.5rem",
 };
 
-const badgeFontStyle = {
-  fontSize: "19px",
+const badgeFontStyle = (theme) => ({
+  fontSize: "19px!important",
   textAlign: "center",
+  display: '-webkit-box',
+  '-webkit-line-clamp': '3',
+  '-webkit-box-orient': 'vertical',
+  'text-overflow': 'ellipsis',
+  height: '86px',
+  overflow: 'hidden',
   [theme.breakpoints.down("sm")]: {
-    fontSize: "10px",
+    fontSize: "10px!important",
+    height: '45px'
   },
-};
+});
 
 const mainTextStyle = (theme) => ({
   fontWeight: 500,

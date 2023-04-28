@@ -105,7 +105,7 @@ export default function AuditorModal({ open, handleClose, auditor, isForm, onSub
                     {auditor?.public_contacts ?  auditor.contacts?.email : 'Hidden'}
                   </Typography>
                 </Box>
-                <TagsList data={auditor.tags} />
+                <TagsList data={auditor.tags} fullView={true} />
               </Box>
               <Box sx={infoInnerStyle}/>
             </Box>

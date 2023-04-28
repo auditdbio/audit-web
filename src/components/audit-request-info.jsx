@@ -112,8 +112,8 @@ const AuditRequestInfo = ({project, onClose, handleError, redirect, isModal}) =>
                         </Box>
                     </Box>
                     {!matchXs &&
-                        <Box sx={{display: 'flex', gap: '25px'}}>
-                            <Typography variant={'caption'} sx={{display: 'flex', alignItems: 'center', gap: '10px'}}>
+                        <Box sx={{display: 'flex', gap: '25px', flexWrap: 'wrap'}}>
+                            <Typography variant={'caption'} sx={contactStyle}>
                                <EmailIcon/> {project?.creator_contacts?.email || project?.customer_contacts?.email}
                             </Typography>
                             <Typography variant={'caption'} sx={{display: 'flex', alignItems: 'center', gap: '10px'}}>
@@ -299,6 +299,12 @@ const MakeOfferSchema = Yup.object().shape({
             .min(Yup.ref('from'))
     })
 });
+
+const contactStyle = (theme) => ({
+    display: 'flex',
+    alignItems: 'center',
+    gap: '10px'
+})
 
 const dateStyle = {
     width: "150px",

@@ -154,8 +154,8 @@ const wrapper = (theme) => ({
 const cardLeftSide = {
   display: "flex",
   flexDirection: "column",
-  justifyContent: "space-around",
-  gap: "24px",
+  justifyContent: "space-between",
+  gap: "12px",
   [theme.breakpoints.down("xs")]: {
     gap: "15px",
   },

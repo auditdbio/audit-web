@@ -150,13 +150,13 @@ const projectTopWrapper = (theme) => ({
 const projectListWrapper = (theme) => ({
     borderRight: '1px solid #B2B3B3',
     borderBottom: '1px solid #B2B3B3',
-    minHeight: '180px',
+    height: '200px',
     overflow: 'hidden',
     width: '50%',
     [theme.breakpoints.down('sm')]: {
         width: '100%',
         borderLeft: '1px solid #B2B3B3',
-        // borderBottom: 'unset',
+        height: '160px'
     }
 })
 

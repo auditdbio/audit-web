@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Alert, AlertTitle, Box, Button, Modal, Snackbar, Stack, Typography} from "@mui/material";
+import {Alert, AlertTitle, Box, Button, Modal, Snackbar, Stack, Tooltip, Typography} from "@mui/material";
 import AuditRequestInfo from "./audit-request-info.jsx";
 import TagsList from "./tagsList.jsx";
 import {useDispatch, useSelector} from "react-redux";
@@ -29,22 +29,26 @@ const ProjectListCard = ({project}) => {
             <Snackbar
                 autoHideDuration={3000}
                 open={!!message || errorMessage || successMessage}
-                anchorOrigin={{ horizontal: 'right', vertical: 'top' }}
+                anchorOrigin={{horizontal: 'right', vertical: 'top'}}
                 onClose={() => {
                     setMessage(null)
                     dispatch(clearMessage())
                 }}
             >
-                <Stack sx={{ width: '100%', flexDirection: 'column', gap: 2 }} spacing={2}>
+                <Stack sx={{width: '100%', flexDirection: 'column', gap: 2}} spacing={2}>
                     <Alert severity={errorMessage ? 'error' : 'success'}>
                         <AlertTitle>{message || errorMessage || successMessage}</AlertTitle>
                     </Alert>
                 </Stack>
             </Snackbar>
             <Box sx={contentWrapper}>
-                <Typography sx={{marginBottom: '33px'}}>
-                    {project.name}
-                </Typography>
+                <Tooltip
+                    title={project.name}
+                    arrow placement={'top'}>
+                    <Typography sx={projectTitleWrapper}>
+                        {project.name}
+                    </Typography>
+                </Tooltip>
                 <TagsList data={project.tags}/>
             </Box>
             <Box sx={{display: 'flex', alignItems: 'center', flexDirection: 'column', height: '100%'}}>
@@ -86,8 +90,25 @@ export default ProjectListCard;
 const contentWrapper = (theme) => ({
     display: 'flex',
     flexDirection: 'column',
-    '& .tagsWrapper': {
+    '& .tagsWrapper': {}
+})
 
+const projectTitleWrapper = (theme) => ({
+    marginBottom: '18px',
+    height: '80px',
+    overflow: 'hidden',
+    '-webkit-line-clamp': '2',
+    '-webkit-box-orient': 'vertical',
+    'text-overflow': 'ellipsis',
+    display: '-webkit-box',
+    [theme.breakpoints.down('lg')]: {
+        height: '70px',
+    },
+    [theme.breakpoints.down('md')]: {
+        height: '60px',
+    },
+    [theme.breakpoints.down('sm')]: {
+        height: '45px',
     }
 })
 
