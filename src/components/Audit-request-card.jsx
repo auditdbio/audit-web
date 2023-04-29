@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Button, Typography } from "@mui/material";
+import {Box, Button, Tooltip, Typography} from "@mui/material";
 import Currency from "./icons/Currency.jsx";
 import Star from "./icons/Star.jsx";
 import theme, { radiusOfComponents } from "../styles/themes.js";
@@ -15,12 +15,17 @@ const AuditRequestCard = ({ type, request }) => {
   return (
     <Box sx={cardWrapper}>
       <Box
-        sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}
+        sx={cardInnerWrapper}
       >
-        <Typography variant={"h5"} textAlign={"center"}>
+        <Tooltip
+            title={request.project_name}
+            arrow placement={'top'}
+        >
+        <Typography variant={"h5"} sx={projectNameSx} textAlign={"center"}>
           {request.project_name}
         </Typography>
-        <Typography sx={categorySx}>{(request || audit)?.tags?.map(el => el).join(', ') ?? ''}</Typography>
+        </Tooltip>
+        {/*<Typography sx={categorySx}>{(request || audit)?.tags?.map(el => el).join(', ') ?? ''}</Typography>*/}
         <Box sx={dateWrapper}>
           <Typography sx={dateStyle}>{dayjs((request || audit)?.time?.from).format('DD.MM.YYYY') }</Typography>
           <Typography variant={'caption'}>-</Typography>
@@ -60,6 +65,16 @@ const AuditRequestCard = ({ type, request }) => {
 
 export default AuditRequestCard;
 
+const cardInnerWrapper = (theme) => ({
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "center",
+  [theme.breakpoints.down('xs')]: {
+    alignItems: 'unset',
+    gap: '10px'
+  }
+})
+
 const buttonWrapper = (theme) => ({
   display: "flex",
   alignItems: "center",
@@ -75,6 +90,19 @@ const buttonWrapper = (theme) => ({
   },
 });
 
+const projectNameSx = (theme) => ({
+  display: '-webkit-box',
+  height: '66px',
+  overflow: 'hidden',
+  '-webkit-line-clamp': '3',
+  '-webkit-box-orient': 'vertical',
+  'text-overflow': 'ellipsis',
+  [theme.breakpoints.down('xs')]: {
+    height: '45px',
+    textAlign: 'unset'
+  }
+})
+
 const priceWrapper = (theme) => ({
   display: "flex",
   gap: "30px",
@@ -84,7 +112,11 @@ const priceWrapper = (theme) => ({
   },
   [theme.breakpoints.down("xs")]: {
     mt: "5px",
+    marginLeft: '35px'
   },
+  [theme.breakpoints.down(450)]: {
+    marginLeft: '28px'
+  }
 });
 
 const copyBtn = (theme) => ({
@@ -193,6 +225,7 @@ const cardWrapper = (theme) => ({
   borderRadius: "25px",
   border: "1px solid rgba(67, 66, 66, 0.1)",
   alignItems: "center",
+  gap: '15px',
   "& h5": {
     fontSize: "18px",
     fontWeight: 500,
@@ -203,8 +236,9 @@ const cardWrapper = (theme) => ({
   },
   [theme.breakpoints.down("xs")]: {
     flexDirection: "row",
-    justifyContent: "space-around",
-    padding: "15px 10px",
+    justifyContent: "space-between",
+    gap: '25px',
+    padding: "15px 20px",
     "& h5": {
       fontSize: "14px",
       fontWeight: 500,

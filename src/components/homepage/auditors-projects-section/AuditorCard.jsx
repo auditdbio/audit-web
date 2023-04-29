@@ -1,4 +1,4 @@
-import {Card, Avatar, Box, Typography, Stack, Alert, AlertTitle, Snackbar} from "@mui/material";
+import {Card, Avatar, Box, Typography, Stack, Alert, AlertTitle, Snackbar, Tooltip} from "@mui/material";
 import theme from "../../../styles/themes";
 import { CustomButton } from "../../custom/Button";
 import Currency from "../../icons/Currency";
@@ -62,10 +62,13 @@ const AuditorCard = ({ auditor }) => {
         </Stack>
       </Snackbar>
       <Avatar src={`${ASSET_URL}/${auditor.avatar}`} sx={avatarStyle} />
-      <Box sx={columnStyle}>
-        <Typography sx={mainTextStyle}>
+      <Box sx={{display: 'grid'}}>
+        <Tooltip title={`${auditor.first_name} ${auditor.last_name}`}
+                 arrow placement={'top'}>
+          <Typography sx={mainTextStyle} noWrap={true}>
           {auditor.first_name} {auditor.last_name}
-        </Typography>
+          </Typography>
+        </Tooltip>
         <Typography sx={badgeFontStyle}>
           {auditor.tags
             .map((item) => item.charAt(0).toUpperCase() + item.slice(1))

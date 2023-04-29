@@ -1,5 +1,5 @@
 import React from "react";
-import {Box, Button, Typography} from "@mui/material";
+import {Box, Button, Tooltip, Typography} from "@mui/material";
 import Currency from "./icons/Currency.jsx";
 import Star from "./icons/Star.jsx";
 import theme, {radiusOfComponents} from "../styles/themes.js";
@@ -26,16 +26,22 @@ const ProjectCard = ({type, project}) => {
     return (
         <Box sx={cardWrapper}>
             <Box
-                sx={{
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                }}
+                sx={cardInnerWrapper}
             >
-                <Typography variant={"h5"} textAlign={"center"}>
+                <Tooltip
+                    title={project.name || project.project_name}
+                    arrow placement={'top'}
+                >
+                <Typography variant={"h5"} textAlign={"center"} sx={projectNameSx}>
                     {project.name || project.project_name}
                 </Typography>
+                </Tooltip>
+                <Tooltip
+                    title={project?.tags?.map(el => el).join(', ') ?? ''}
+                    arrow placement={'top'}
+                >
                 <Typography sx={categorySx}>{project?.tags?.map(el => el).join(', ') ?? ''}</Typography>
+                </Tooltip>
                 <Box sx={priceWrapper}>
                     <Box sx={infoWrapper}>
                         <Currency/>
@@ -117,6 +123,24 @@ const priceWrapper = (theme) => ({
         mt: "5px",
     },
 });
+
+const projectNameSx = (theme) => ({
+    height: '45px',
+    overflow: 'hidden',
+    '-webkit-line-clamp': '2',
+    '-webkit-box-orient': 'vertical',
+    'text-overflow': 'ellipsis',
+    display: '-webkit-box',
+})
+
+const cardInnerWrapper = (theme) => ({
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    [theme.breakpoints.down('xs')]: {
+        alignItems: 'flex-start',
+    }
+})
 
 const copyBtn = (theme) => ({
     textTransform: "none",
@@ -205,19 +229,27 @@ const infoWrapper = (theme) => ({
 
 const categorySx = (theme) => ({
     textAlign: "center",
+    height: '55px',
+    overflow: 'hidden',
+    '-webkit-line-clamp': '3',
+    '-webkit-box-orient': 'vertical',
+    'text-overflow': 'ellipsis',
+    display: '-webkit-box',
     fontSize: "12px!important",
     fontWeight: 500,
     color: "#434242",
     margin: "10px 0 7px",
     [theme.breakpoints.down("xs")]: {
         fontSize: "10px!important",
+        textAlign: "left",
+        height: '40px'
     },
 });
 
 const cardWrapper = (theme) => ({
     display: "flex",
     flexDirection: "column",
-    padding: "31px 48px 37px",
+    padding: "24px 30px 24px",
     height: '100%',
     boxShadow:
         "0px 64.1377px 76.5824px rgba(0, 0, 0, 0.07)," +
@@ -234,12 +266,13 @@ const cardWrapper = (theme) => ({
         lineHeight: "22px",
     },
     [theme.breakpoints.down("md")]: {
-        padding: "33px 22px 24px",
+        padding: "24px 22px 24px",
     },
     [theme.breakpoints.down("xs")]: {
         flexDirection: "row",
-        justifyContent: "space-around",
-        padding: "15px 10px",
+        justifyContent: "space-between",
+        gap: '40px',
+        padding: "15px 20px",
         "& h5": {
             fontSize: "14px",
             fontWeight: 500,

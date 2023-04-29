@@ -51,11 +51,16 @@ const PublicProjectCard = ({project}) => {
                     <Typography noWrap={true} sx={nameTextStyle}>{project.creator_contacts.email}</Typography>
                 </Tooltip>
             </Box>
+            <Tooltip
+                title={project?.tags?.map(el => el).join(', ') ?? ''}
+                arrow placement={'top'}
+            >
             <Typography sx={modalSubheader}>
                 {project.tags
                     .map((item) => item.charAt(0).toUpperCase() + item.slice(1))
                     .join(", ")}
             </Typography>
+            </Tooltip>
             <Snackbar
                 autoHideDuration={3000}
                 open={!!message}
@@ -234,6 +239,12 @@ const dateStyle = {
     },
 };
 const modalSubheader = {
+    height: '110px',
+    overflow: 'hidden',
+    '-webkit-line-clamp': '3',
+    '-webkit-box-orient': 'vertical',
+    'text-overflow': 'ellipsis',
+    display: '-webkit-box',
     textAlign: "center",
     fontSize: {
         zero: "10px",
@@ -242,5 +253,14 @@ const modalSubheader = {
         lg: "25px",
     },
     fontWeight: "400",
+    [theme.breakpoints.down('lg')]: {
+        height: '100px'
+    },
+    [theme.breakpoints.down('md')]: {
+        height: '72px'
+    },
+    [theme.breakpoints.down('sm')]: {
+        height: '45px'
+    },
 };
 export default PublicProjectCard;

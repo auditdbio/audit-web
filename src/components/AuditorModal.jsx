@@ -4,7 +4,7 @@ import Dialog from "@mui/material/Dialog";
 import DialogContent from "@mui/material/DialogContent";
 import theme from "../styles/themes.js";
 import { Box } from "@mui/system";
-import {Avatar, Snackbar, Stack, Typography} from "@mui/material";
+import {Avatar, Snackbar, Stack, Tooltip, Typography} from "@mui/material";
 import TagsList from "./tagsList.jsx";
 import { useEffect, useState } from "react";
 import IconButton from "@mui/material/IconButton";
@@ -89,9 +89,14 @@ export default function AuditorModal({ open, handleClose, auditor, isForm, onSub
                 </Box>
                 <Box sx={infoWrapper}>
                   <span>Telegram</span>
-                  <Typography noWrap={true}>
-                    {auditor?.public_contacts ? auditor.contacts?.telegram : 'Hidden'}
-                  </Typography>
+                  <Box sx={{display: 'grid'}}>
+                    <Tooltip title={auditor?.public_contacts ? auditor.contacts?.telegram : 'Hidden'}
+                             arrow placement={'top'}>
+                    <Typography noWrap={true}>
+                      {auditor?.public_contacts ? auditor.contacts?.telegram : 'Hidden'}
+                    </Typography>
+                    </Tooltip>
+                  </Box>
                 </Box>
                 <Box sx={infoWrapper}>
                   <span>Price:</span>
@@ -101,9 +106,14 @@ export default function AuditorModal({ open, handleClose, auditor, isForm, onSub
                 </Box>
                 <Box sx={infoWrapper}>
                   <span>E-mail</span>
-                  <Typography noWrap={true}>
-                    {auditor?.public_contacts ?  auditor.contacts?.email : 'Hidden'}
-                  </Typography>
+                  <Box sx={{display: 'grid'}}>
+                    <Tooltip title={auditor?.public_contacts ?  auditor.contacts?.email : 'Hidden'}
+                             arrow placement={'top'}>
+                    <Typography noWrap={true}>
+                      {auditor?.public_contacts ?  auditor.contacts?.email : 'Hidden'}
+                    </Typography>
+                    </Tooltip>
+                  </Box>
                 </Box>
                 <TagsList data={auditor.tags} fullView={true} />
               </Box>
@@ -365,7 +375,6 @@ const infoWrapper = (theme) => ({
   color: "#434242",
   "& p": {
     fontSize: "inherit",
-    maxWidth: "250px",
   },
   "& span": {
     width: "125px",
@@ -377,9 +386,6 @@ const infoWrapper = (theme) => ({
     "& span": {
       width: "90px",
       marginRight: "20px",
-    },
-    "& p": {
-      maxWidth: "160px",
     },
   },
   [theme.breakpoints.down("xs")]: {

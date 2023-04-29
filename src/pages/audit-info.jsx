@@ -1,7 +1,7 @@
 import React, {useMemo} from 'react';
 import {CustomCard} from "../components/custom/Card.jsx";
 import Layout from "../styles/Layout.jsx";
-import {Avatar, Box, Button, Typography, Link} from "@mui/material";
+import {Avatar, Box, Button, Typography, Link, Tooltip} from "@mui/material";
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import theme from "../styles/themes.js";
 import {useNavigate} from "react-router-dom/dist";
@@ -96,11 +96,25 @@ const AuditInfo = () => {
                         <Box sx={userInfoWrapper}>
                             <Box sx={infoWrapper}>
                                 <span>E-mail</span>
-                                <Typography>{audit?.auditor_contacts?.email ? audit?.auditor_contacts?.email : 'Hidden'}</Typography>
+                                <Box sx={{display: 'grid'}}>
+                                    <Tooltip title={audit?.auditor_contacts?.email ? audit?.auditor_contacts?.email : 'Hidden'}
+                                             arrow placement={'top'}>
+                                    <Typography noWrap={true} sx={{maxWidth: '200px'}}>
+                                        {audit?.auditor_contacts?.email ? audit?.auditor_contacts?.email : 'Hidden'}
+                                    </Typography>
+                                    </Tooltip>
+                                </Box>
                             </Box>
                             <Box sx={infoWrapper}>
                                 <span>Telegram</span>
-                                <Typography>{audit?.auditor_contacts?.telegram ? audit?.auditor_contacts?.telegram : 'Hidden'}</Typography>
+                                <Box sx={{display: 'grid'}}>
+                                    <Tooltip title={audit?.auditor_contacts?.telegram ? audit?.auditor_contacts?.telegram : 'Hidden'}
+                                             arrow placement={'top'}>
+                                    <Typography noWrap={true} sx={{maxWidth: '200px'}}>
+                                        {audit?.auditor_contacts?.telegram ? audit?.auditor_contacts?.telegram : 'Hidden'}
+                                    </Typography>
+                                    </Tooltip>
+                                </Box>
                             </Box>
                             <Box sx={infoWrapper}>
                                 <span>Price:</span>
@@ -265,7 +279,7 @@ const buttonSx = (theme) => ({
         width: '170px'
     },
     [theme.breakpoints.down('xs')]: {
-        width: '140px'
+        width: '120px'
     }
 })
 
