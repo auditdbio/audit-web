@@ -61,7 +61,7 @@ const AuditorCard = ({ auditor }) => {
           </Alert>
         </Stack>
       </Snackbar>
-      <Avatar src={`${ASSET_URL}/${auditor.avatar}`} sx={avatarStyle} />
+      <Avatar src={auditor.avatar && `${ASSET_URL}/${auditor.avatar}`} sx={avatarStyle} />
       <Box sx={{display: 'grid'}}>
         <Tooltip title={`${auditor.first_name} ${auditor.last_name}`}
                  arrow placement={'top'}>

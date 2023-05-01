@@ -89,7 +89,7 @@ const AuditorListCard = ({auditor}) => {
             <Box sx={cardLeftSide}>
                 <Box sx={avatarDescription}>
                     <Box>
-                        <Avatar src={`${ASSET_URL}/${auditor.avatar}`} sx={avatarStyle}/>
+                        <Avatar src={auditor.avatar && `${ASSET_URL}/${auditor.avatar}`} sx={avatarStyle}/>
                     </Box>
                     <Box sx={descriptionStyle(theme)}>
                         <Box sx={{display: "flex", flexDirection: "column", gap: "5px"}}>

@@ -75,7 +75,7 @@ export default function AuditorModal({ open, handleClose, auditor, isForm, onSub
           </Snackbar>
           <Box sx={contentWrapper}>
             <Box sx={{ display: "flex", justifyContent: "center" }}>
-              <Avatar src={`${ASSET_URL}/${auditor.avatar}`} sx={avatarStyle} />
+              <Avatar src={auditor.avatar && `${ASSET_URL}/${auditor.avatar}`} sx={avatarStyle} />
             </Box>
             <Box sx={infoStyle}>
               <Box sx={infoInnerStyle}>
