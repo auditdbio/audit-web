@@ -129,11 +129,13 @@ const AuditRequestInfo = ({project, onClose, handleError, redirect, isModal}) =>
                                 <TelegramIcon/>
                                 <Box sx={{display: 'grid'}}>
                                     <Tooltip
-                                        title={project?.creator_contacts?.telegram || project?.customer_contacts?.telegram}
+                                        title={project?.public_contacts ? project?.creator_contacts?.telegram : 'Hidden'
+                                            || project?.customer_contacts?.telegram}
                                         arrow placement={'top'}
                                     >
                                         <Typography variant={'caption'} sx={contactStyle} noWrap={true}>
-                                            {project?.creator_contacts?.telegram || project?.customer_contacts?.telegram}
+                                            {project?.public_contacts ? project?.creator_contacts?.telegram : 'Hidden'
+                                                || project?.customer_contacts?.telegram}
                                         </Typography>
                                     </Tooltip>
                                 </Box>
@@ -149,10 +151,12 @@ const AuditRequestInfo = ({project, onClose, handleError, redirect, isModal}) =>
                                 <EmailIcon/>
                                 <Box sx={{display: 'grid'}}>
                                     <Tooltip
-                                        title={project?.creator_contacts?.email || project?.customer_contacts?.email}
+                                        title={project?.public_contacts ? project?.creator_contacts?.email : 'Hidden'
+                                            || project?.customer_contacts?.email}
                                         arrow placement={'top'}>
                                         <Typography variant={'caption'} sx={contactStyle} noWrap={true}>
-                                            {project?.creator_contacts?.email || project?.customer_contacts?.email}
+                                            {project?.public_contacts ? project?.creator_contacts?.email : 'Hidden'
+                                                || project?.customer_contacts?.email}
                                         </Typography>
                                     </Tooltip>
                                 </Box>
@@ -161,11 +165,13 @@ const AuditRequestInfo = ({project, onClose, handleError, redirect, isModal}) =>
                                 <TelegramIcon/>
                                 <Box sx={{display: 'grid'}}>
                                     <Tooltip
-                                        title={project?.creator_contacts?.telegram || project?.customer_contacts?.telegram}
+                                        title={project?.public_contacts ? project?.creator_contacts?.telegram : 'Hidden'
+                                            || project?.customer_contacts?.telegram}
                                         arrow placement={'top'}
                                     >
                                         <Typography variant={'caption'} sx={contactStyle} noWrap={true}>
-                                            {project?.creator_contacts?.telegram || project?.customer_contacts?.telegram}
+                                            {project?.public_contacts ? project?.creator_contacts?.telegram : 'Hidden'
+                                                || project?.customer_contacts?.telegram}
                                         </Typography>
                                     </Tooltip>
                                 </Box>
