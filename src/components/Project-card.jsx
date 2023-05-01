@@ -278,4 +278,7 @@ const cardWrapper = (theme) => ({
             fontWeight: 500,
         },
     },
+    [theme.breakpoints.down(420)]: {
+        gap: '10px'
+    }
 });

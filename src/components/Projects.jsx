@@ -97,6 +97,9 @@ const wrapper = (theme) => ({
   [theme.breakpoints.down("sm")]: {
     padding: "36px 25px 45px",
   },
+  [theme.breakpoints.down("xs")]: {
+    padding: "16px 15px 15px",
+  },
 });
 
 const gridItemStyle = (theme) => ({
