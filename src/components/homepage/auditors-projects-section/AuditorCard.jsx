@@ -85,11 +85,11 @@ const AuditorCard = ({ auditor }) => {
         <Box sx={badgesStyle}>
           <Box sx={infoStyle}>
             <Currency />
-            <Typography sx={badgeFontStyle}>{auditor.price_range.from} - {auditor.price_range.to}</Typography>
+            <Typography sx={priceSx}>{auditor.price_range.from} - {auditor.price_range.to}</Typography>
           </Box>
           <Box sx={infoStyle}>
             <Star />
-            <Typography sx={badgeFontStyle}>150</Typography>
+            <Typography sx={priceSx}>150</Typography>
           </Box>
         </Box>
         <CustomButton sx={buttonStyle} onClick={handleView}>
@@ -125,6 +125,13 @@ const cardStyle = (theme) => ({
     gap: '1rem'
   },
 });
+
+const priceSx = (theme) => ({
+  fontSize: '16px',
+  [theme.breakpoints.down('sm')]: {
+    fontSize: '10px'
+  }
+})
 
 const avatarStyle = {
   width: "150px",
