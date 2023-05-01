@@ -48,6 +48,7 @@ const EditProfileForm = ({role}) => {
                     contacts: {
                         telegram: data?.contacts?.telegram || '',
                         email: data?.contacts?.email || '',
+                        public_contacts: data.public_contacts || false,
                     },
                     about: data?.about || '',
                     company: data?.company || '',
@@ -55,7 +56,6 @@ const EditProfileForm = ({role}) => {
                         from: data?.price_range?.from || 0,
                         to: data?.price_range?.to || 0,
                     },
-                    public_contacts: data.public_contacts || false,
                     tags: data?.tags || [],
                 }}
                 validationSchema={EditProfileSchema}
@@ -108,9 +108,9 @@ const EditProfileForm = ({role}) => {
                                                 <Checkbox
                                                     color={'success'}
                                                     id={'hide-contacts'}
-                                                    checked={values.public_contacts}
+                                                    checked={values.contacts.public_contacts}
                                                     onChange={(e) => {
-                                                        setFieldValue('public_contacts', e.target.checked)
+                                                        setFieldValue('contacts.public_contacts', e.target.checked)
                                                     }}
                                                 />
                                                 <label

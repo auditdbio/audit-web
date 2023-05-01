@@ -90,10 +90,10 @@ export default function AuditorModal({ open, handleClose, auditor, isForm, onSub
                 <Box sx={infoWrapper}>
                   <span>Telegram</span>
                   <Box sx={{display: 'grid'}}>
-                    <Tooltip title={auditor?.public_contacts ? auditor.contacts?.telegram : 'Hidden'}
+                    <Tooltip title={auditor?.contacts?.public_contacts ? auditor.contacts?.telegram : 'Hidden'}
                              arrow placement={'top'}>
                     <Typography noWrap={true}>
-                      {auditor?.public_contacts ? auditor.contacts?.telegram : 'Hidden'}
+                      {auditor?.contacts?.public_contacts ? auditor.contacts?.telegram : 'Hidden'}
                     </Typography>
                     </Tooltip>
                   </Box>
@@ -107,10 +107,10 @@ export default function AuditorModal({ open, handleClose, auditor, isForm, onSub
                 <Box sx={infoWrapper}>
                   <span>E-mail</span>
                   <Box sx={{display: 'grid'}}>
-                    <Tooltip title={auditor?.public_contacts ?  auditor.contacts?.email : 'Hidden'}
+                    <Tooltip title={auditor?.contacts?.public_contacts ?  auditor.contacts?.email : 'Hidden'}
                              arrow placement={'top'}>
                     <Typography noWrap={true}>
-                      {auditor?.public_contacts ?  auditor.contacts?.email : 'Hidden'}
+                      {auditor?.contacts?.public_contacts ?  auditor.contacts?.email : 'Hidden'}
                     </Typography>
                     </Tooltip>
                   </Box>
