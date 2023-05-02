@@ -2,8 +2,8 @@ import {
   PROJECT_CREATE,
   GET_PROJECTS,
   GET_MY_PROJECTS,
-  PROJECT_UPDATE, SEARCH_PROJECTS, PROJECT_UPDATE_STATUS, CLEAR_SUCCESS, CLOSE_THE_PROJECT,
-} from '../actions/types.js'
+  PROJECT_UPDATE, SEARCH_PROJECTS, PROJECT_UPDATE_STATUS, CLEAR_SUCCESS,
+} from "../actions/types.js";
 
 const initialState = {
   projects: null,
@@ -37,17 +37,6 @@ export const projectReducer = (state = initialState, action) => {
       return {
         ...state,
         message: `Project ${action.payload.publish_options?.publish ? 'published' : 'hidden'}`,
-        recentProject: action.payload, myProjects: state.myProjects.map((project) => {
-          if (project.id === action.payload.id) {
-            return action.payload;
-          }
-          return project;
-        }),
-      }
-    case CLOSE_THE_PROJECT:
-      return {
-        ...state,
-        message: 'Project closed',
         recentProject: action.payload, myProjects: state.myProjects.map((project) => {
           if (project.id === action.payload.id) {
             return action.payload;

@@ -1,12 +1,12 @@
 import {
-  CLEAR_SUCCESS, CLOSE_THE_PROJECT,
-  GET_MY_PROJECTS,
-  GET_PROJECTS,
-  PROJECT_CREATE,
-  PROJECT_UPDATE,
-  PROJECT_UPDATE_STATUS,
-  SEARCH_PROJECTS
-} from './types.js'
+    CLEAR_SUCCESS,
+    GET_MY_PROJECTS,
+    GET_PROJECTS,
+    PROJECT_CREATE,
+    PROJECT_UPDATE,
+    PROJECT_UPDATE_STATUS,
+    SEARCH_PROJECTS
+} from "./types.js";
 import axios from "axios";
 import Cookies from "js-cookie";
 import { history } from "../../services/history.js";
@@ -112,24 +112,6 @@ export const changeStatusProject = (values) => {
             });
     };
 };
-
-export const closeProject = (values) => {
-  return async (dispatch) => {
-    const token = Cookies.get("token");
-    await axios
-      .patch(`${API_URL}/project/${values.id}`, values, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-      .then(({ data }) => {
-        dispatch({ type: CLOSE_THE_PROJECT, payload: data });
-      })
-      .catch(({ response }) => {
-        console.log(response, "res");
-      });
-  };
-}
 
 export const clearProjectMessage = () => {
     return {type: CLEAR_SUCCESS}
