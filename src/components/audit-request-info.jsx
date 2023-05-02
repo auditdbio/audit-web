@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import {CustomCard} from "./custom/Card.jsx";
 import Layout from "../styles/Layout.jsx";
 import {
@@ -29,7 +29,7 @@ import {DatePicker} from "@mui/x-date-pickers/DatePicker";
 import {LocalizationProvider} from "@mui/x-date-pickers";
 import Markdown from "./custom/Markdown.jsx";
 import {isAuth} from "../lib/helper.js";
-import {AUDITOR} from "../redux/actions/types.js";
+import {AUDITOR, CUSTOMER} from "../redux/actions/types.js";
 import {changeRolePublicAuditor, changeRolePublicAuditorNoRedirect} from "../redux/actions/userAction.js";
 import TelegramIcon from '@mui/icons-material/Telegram';
 import EmailIcon from '@mui/icons-material/Email';
@@ -116,26 +116,45 @@ const AuditRequestInfo = ({project, onClose, handleError, redirect, isModal}) =>
                             <Box sx={{display: 'flex', alignItems: 'center', gap: '10px'}}>
                                 <EmailIcon/>
                                 <Box sx={{display: 'grid'}}>
-                                    <Tooltip
-                                        title={project?.creator_contacts?.email || project?.customer_contacts?.email}
-                                        arrow placement={'top'}>
-                                        <Typography variant={'caption'} sx={contactStyle} noWrap={true}>
-                                            {project?.creator_contacts?.email || project?.customer_contacts?.email}
-                                        </Typography>
-                                    </Tooltip>
+                                    { project?.creator_contacts ?
+                                        <Tooltip
+                                            title={project?.creator_contacts?.email}
+                                            arrow placement={'top'}>
+                                            <Typography variant={'caption'} sx={contactStyle} noWrap={true}>
+                                                {project?.creator_contacts?.email}
+                                            </Typography>
+                                        </Tooltip>
+                                        :
+                                        <Tooltip
+                                            title={project?.customer_contacts?.public_contacts ? project?.customer_contacts?.email : 'Hidden'}
+                                            arrow placement={'top'}>
+                                            <Typography variant={'caption'} sx={contactStyle} noWrap={true}>
+                                                {project?.customer_contacts?.public_contacts ? project?.customer_contacts?.email : 'Hidden'}
+                                            </Typography>
+                                        </Tooltip>
+                                    }
                                 </Box>
                             </Box>
                             <Box sx={{display: 'flex', alignItems: 'center', gap: '10px'}}>
                                 <TelegramIcon/>
                                 <Box sx={{display: 'grid'}}>
-                                    <Tooltip
-                                        title={project?.creator_contacts?.telegram || project?.customer_contacts?.telegram}
-                                        arrow placement={'top'}
-                                    >
-                                        <Typography variant={'caption'} sx={contactStyle} noWrap={true}>
-                                            {project?.creator_contacts?.telegram || project?.customer_contacts?.telegram}
-                                        </Typography>
-                                    </Tooltip>
+                                    { project?.creator_contacts ?
+                                        <Tooltip
+                                            title={project?.creator_contacts?.telegram}
+                                            arrow placement={'top'}>
+                                            <Typography variant={'caption'} sx={contactStyle} noWrap={true}>
+                                                {project?.creator_contacts?.telegram}
+                                            </Typography>
+                                        </Tooltip>
+                                        :
+                                        <Tooltip
+                                            title={project?.customer_contacts?.public_contacts ? project?.customer_contacts?.telegram : 'Hidden'}
+                                            arrow placement={'top'}>
+                                            <Typography variant={'caption'} sx={contactStyle} noWrap={true}>
+                                                {project?.customer_contacts?.public_contacts ? project?.customer_contacts?.telegram : 'Hidden'}
+                                            </Typography>
+                                        </Tooltip>
+                                    }
                                 </Box>
                             </Box>
                         </Box>
@@ -148,26 +167,45 @@ const AuditRequestInfo = ({project, onClose, handleError, redirect, isModal}) =>
                             <Box sx={{display: 'flex', alignItems: 'center', gap: '10px'}}>
                                 <EmailIcon/>
                                 <Box sx={{display: 'grid'}}>
-                                    <Tooltip
-                                        title={project?.creator_contacts?.email || project?.customer_contacts?.email}
-                                        arrow placement={'top'}>
-                                        <Typography variant={'caption'} sx={contactStyle} noWrap={true}>
-                                            {project?.creator_contacts?.email || project?.customer_contacts?.email}
-                                        </Typography>
-                                    </Tooltip>
+                                    { project?.creator_contacts ?
+                                        <Tooltip
+                                            title={project?.creator_contacts?.email}
+                                            arrow placement={'top'}>
+                                            <Typography variant={'caption'} sx={contactStyle} noWrap={true}>
+                                                {project?.creator_contacts?.email}
+                                            </Typography>
+                                        </Tooltip>
+                                        :
+                                        <Tooltip
+                                            title={project?.customer_contacts?.public_contacts ? project?.customer_contacts?.email : 'Hidden'}
+                                            arrow placement={'top'}>
+                                            <Typography variant={'caption'} sx={contactStyle} noWrap={true}>
+                                                {project?.customer_contacts?.public_contacts ? project?.customer_contacts?.email : 'Hidden'}
+                                            </Typography>
+                                        </Tooltip>
+                                    }
                                 </Box>
                             </Box>
                             <Box sx={{display: 'flex', alignItems: 'center', gap: '10px'}}>
                                 <TelegramIcon/>
                                 <Box sx={{display: 'grid'}}>
-                                    <Tooltip
-                                        title={project?.creator_contacts?.telegram || project?.customer_contacts?.telegram}
-                                        arrow placement={'top'}
-                                    >
-                                        <Typography variant={'caption'} sx={contactStyle} noWrap={true}>
-                                            {project?.creator_contacts?.telegram || project?.customer_contacts?.telegram}
-                                        </Typography>
-                                    </Tooltip>
+                                    { project?.creator_contacts ?
+                                        <Tooltip
+                                            title={project?.creator_contacts?.telegram}
+                                            arrow placement={'top'}>
+                                            <Typography variant={'caption'} sx={contactStyle} noWrap={true}>
+                                                {project?.creator_contacts?.telegram}
+                                            </Typography>
+                                        </Tooltip>
+                                        :
+                                        <Tooltip
+                                            title={project?.customer_contacts?.public_contacts ? project?.customer_contacts?.telegram : 'Hidden'}
+                                            arrow placement={'top'}>
+                                            <Typography variant={'caption'} sx={contactStyle} noWrap={true}>
+                                                {project?.customer_contacts?.public_contacts ? project?.customer_contacts?.telegram : 'Hidden'}
+                                            </Typography>
+                                        </Tooltip>
+                                    }
                                 </Box>
                             </Box>
                         </Box>
