@@ -46,5 +46,6 @@ const infoWrapper = (theme) => ({
     border: '1.42857px solid #E5E5E5',
     width: '100px',
     padding: '15px 0',
-    textAlign: 'center'
+    textAlign: 'center',
+    borderRadius: '5px'
 })
