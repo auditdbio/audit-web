@@ -78,7 +78,6 @@ const EditProfileForm = ({role}) => {
                 }}
             >
                 {({handleSubmit, errors, values, setFieldValue}) => {
-                    console.log(values.contacts.public_contacts)
                     return (
                         <Form onSubmit={handleSubmit}>
                             <Box sx={wrapper}>
