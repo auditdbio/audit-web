@@ -9,6 +9,7 @@ import Vk from "../icons/Vk.jsx";
 import Instagram from "../icons/Instagram.jsx";
 import Discord from "../icons/Discord.jsx";
 import Telegram from "../icons/Telegram.jsx";
+import MediumLogo from "../icons/Medium-logo.jsx";
 
 const Footer = () => {
 	const isMobile = useMediaQuery("(max-width: 768px)");
@@ -25,15 +26,18 @@ const Footer = () => {
 							<Typography style={dbStyles(isMobile)}>DB</Typography>
 						</Box>
 						<Box sx={iconsStyle}>
-							<Link to={"https://twitter.com/auditdbio?t=oOdybhqGYlv129TyT8y-2g&s=09"}>
+							<a target={'_blank'} href={"https://twitter.com/auditdbio?t=oOdybhqGYlv129TyT8y-2g&s=09"}>
 								<TwitterIcon sx={iconStyle} />
-							</Link>
-							<Link to={"https://discord.gg/2Wg6GGs93C"}>
+							</a>
+							<a target={'_blank'} href={"https://discord.gg/2Wg6GGs93C"}>
 								<Discord style={iconStyle} />
-							</Link>
-							<Link to={"https://t.me/+B6deDZFIg3k4Y2Zi"}>
+							</a>
+							<a target={'_blank'} href={"https://t.me/+B6deDZFIg3k4Y2Zi"}>
 								<Telegram style={iconStyle} />
-							</Link>
+							</a>
+							<a target={'_blank'} href={"https://medium.com/auditdb"}>
+								<MediumLogo style={iconStyle} />
+							</a>
 						</Box>
 					</Box>
 					<Box
