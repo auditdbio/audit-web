@@ -48,7 +48,7 @@ const EditProfileForm = ({role}) => {
                     contacts: {
                         telegram: data?.contacts?.telegram || '',
                         email: data?.contacts?.email || '',
-                        public_contacts: data.public_contacts || false,
+                        public_contacts: data.contacts.public_contacts || false,
                     },
                     about: data?.about || '',
                     company: data?.company || '',
@@ -78,6 +78,7 @@ const EditProfileForm = ({role}) => {
                 }}
             >
                 {({handleSubmit, errors, values, setFieldValue}) => {
+                    console.log(values.contacts.public_contacts)
                     return (
                         <Form onSubmit={handleSubmit}>
                             <Box sx={wrapper}>
