@@ -2,20 +2,20 @@ import axios from "axios";
 import Cookies from "js-cookie";
 import { history } from "../../services/history.js";
 import {
-  AUTH_TRUE,
-  CLEAR_ERROR,
-  LOG_OUT,
-  SIGN_IN_ERROR,
-  USER_IS_ALREADY_EXIST,
-  USER_SIGNIN,
-  USER_SIGNUP,
-  SELECT_ROLE,
-  UPDATE_USER,
-  CLEAR_SUCCESS,
-  CHANGE_ROLE_DONT_HAVE_PROFILE_CUSTOMER,
-  CHANGE_ROLE_HAVE_PROFILE_CUSTOMER,
-  CHANGE_ROLE_DONT_HAVE_PROFILE_AUDITOR, CHANGE_ROLE_HAVE_PROFILE_AUDITOR, AUDITOR,
-} from "./types.js"
+    AUTH_TRUE,
+    CLEAR_ERROR,
+    LOG_OUT,
+    SIGN_IN_ERROR,
+    USER_IS_ALREADY_EXIST,
+    USER_SIGNIN,
+    USER_SIGNUP,
+    SELECT_ROLE,
+    UPDATE_USER,
+    CLEAR_SUCCESS,
+    CHANGE_ROLE_DONT_HAVE_PROFILE_CUSTOMER,
+    CHANGE_ROLE_HAVE_PROFILE_CUSTOMER,
+    CHANGE_ROLE_DONT_HAVE_PROFILE_AUDITOR, CHANGE_ROLE_HAVE_PROFILE_AUDITOR,
+} from "./types.js";
 
 const API_URL = import.meta.env.VITE_API_BASE_URL;
 
@@ -28,26 +28,12 @@ export const signIn = (values) => {
         localStorage.setItem("token", JSON.stringify(data.token));
         localStorage.setItem("user", JSON.stringify(data.user));
         dispatch({ type: USER_SIGNIN, payload: data });
-        console.log(data)
-        return data
-      })
-      .then((data) => {
-        const userInfoURL = data.user?.current_role ===  AUDITOR ? 'my_auditor' : 'my_customer'
-        axios.get(`${API_URL}/${userInfoURL}`, {headers: {"Authorization": `Bearer ${data.token}`}})
-          .then(({ data: user }) => {
-            console.log(user)
-            if (!user.first_name || !user.last_name || !user.contacts?.email || !user.tags?.length) {
-              history.push(
-                { pathname: `/edit-profile` },
-                { some: true }
-              )
-            } else {
-              history.push(
-                { pathname: `/profile/user-info` },
-                { some: true }
-              )
-            }
-          })
+        history.push(
+          { pathname: `/profile/user-info` },
+          {
+            some: true,
+          }
+        );
       })
       .catch(({ response }) => {
         dispatch({ type: SIGN_IN_ERROR, payload: response.data });

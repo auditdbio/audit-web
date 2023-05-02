@@ -85,18 +85,12 @@ const AuditInfo = () => {
                         <Box sx={userWrapper}>
                             <Avatar src={audit?.avatar ? `${ASSET_URL}/${audit?.avatar}` : ""}/>
                             <Box>
-                                <Tooltip title={audit?.auditor_contacts?.public_contacts ? audit?.auditor_contacts?.email : 'Hidden'}
-                                         arrow placement={'top'}>
-                                    <Typography noWrap={true} sx={{maxWidth: '200px'}}>
-                                        {audit?.auditor_contacts?.public_contacts ? audit?.auditor_contacts?.email : 'Hidden'}
-                                    </Typography>
-                                </Tooltip>
-                                <Tooltip title={audit?.auditor_contacts?.public_contacts ? audit?.auditor_contacts?.telegram : 'Hidden'}
-                                         arrow placement={'top'}>
-                                    <Typography noWrap={true} sx={{maxWidth: '200px'}}>
-                                        {audit?.auditor_contacts?.public_contacts ? audit?.auditor_contacts?.telegram : 'Hidden'}
-                                    </Typography>
-                                </Tooltip>
+                                <Typography>
+                                    {audit?.auditor_contacts?.public_contacts ? audit?.auditor_contacts?.email : 'Hidden'}
+                                </Typography>
+                                <Typography>
+                                    {audit?.auditor_contacts?.public_contacts ? audit?.auditor_contacts?.telegram : 'Hidden'}
+                                </Typography>
                             </Box>
                         </Box>
                         <Box sx={userInfoWrapper}>
@@ -105,9 +99,9 @@ const AuditInfo = () => {
                                 <Box sx={{display: 'grid'}}>
                                     <Tooltip title={audit?.auditor_contacts?.public_contacts ? audit?.auditor_contacts?.email : 'Hidden'}
                                              arrow placement={'top'}>
-                                        <Typography noWrap={true} sx={{maxWidth: '200px'}}>
+                                    <Typography noWrap={true} sx={{maxWidth: '200px'}}>
                                         {audit?.auditor_contacts?.public_contacts ? audit?.auditor_contacts?.email : 'Hidden'}
-                                        </Typography>
+                                    </Typography>
                                     </Tooltip>
                                 </Box>
                             </Box>

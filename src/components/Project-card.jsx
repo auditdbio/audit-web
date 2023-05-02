@@ -83,18 +83,16 @@ const ProjectCard = ({type, project}) => {
                             }
                         </Typography>
                     </Box>
-                    : <Box sx={statusWrapper}>
-                        {project.status === DONE
-                            ?   <Box sx={{backgroundColor: '#FF4444'}}/>
-                            :   project.publish_options.publish
-                                ? <Box sx={{backgroundColor: '#09C010'}}/>
-                                : <Box sx={{backgroundColor: '#FF9900'}}/>
+                    :
+                    <Box sx={statusWrapper}>
+                        {!project.publish_options.publish ?
+                                    <Box sx={{backgroundColor: '#FF9900'}}/>
+                                :
+                                    <Box sx={{backgroundColor: '#09C010'}}/>
                         }
                         <Typography>
                             {
-                                project.status === DONE
-                                  ? "Project closed"
-                                  : project.publish_options.publish ? 'Published' : 'Hidden'
+                                project.publish_options.publish ? 'Published' : 'Hidden'
                             }
                         </Typography>
                     </Box>

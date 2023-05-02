@@ -4,7 +4,7 @@ import ProjectCard from "./Project-card.jsx";
 import { useNavigate } from "react-router-dom/dist";
 import { useDispatch, useSelector } from "react-redux";
 import { getProjects } from "../redux/actions/projectAction.js";
-import { AUDITOR, CUSTOMER, DONE } from '../redux/actions/types.js'
+import { AUDITOR, CUSTOMER } from "../redux/actions/types.js";
 import Loader from "./Loader.jsx";
 
 const Projects = ({ role }) => {
@@ -18,7 +18,7 @@ const Projects = ({ role }) => {
     if (role === AUDITOR) {
       return projects;
     } else {
-      return myProjects && [...myProjects].sort((project) => project.status === DONE ? 1 : -1);
+      return myProjects;
     }
   }, [role, projects, myProjects]);
 

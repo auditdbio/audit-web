@@ -6,14 +6,11 @@
 
 html,
 body {
-	font-family: "Montserrat";
-}
-
-#root {
-	background-image: url(../public/welcome_page/background_img.webp);
+	background-image: url(../public/welcome_page/background_img.svg);
 	background-position: center;
 	background-repeat: no-repeat;
 	background-size: cover;
+	font-family: "Montserrat";
 }
 
 a {
