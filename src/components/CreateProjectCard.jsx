@@ -24,6 +24,7 @@ import { AuditRequestsArray } from "./custom/AuditRequestsArray.jsx";
 import Markdown from "./custom/Markdown-editor.jsx";
 import SalarySlider from "./forms/salary-slider/salary-slider.jsx";
 import CloseProjectModal from './CloseProjectModal.jsx'
+import { DONE } from '../redux/actions/types.js'
 
 const CreateProjectCard = ({projectInfo }) => {
   const navigate = useNavigate();
@@ -34,7 +35,7 @@ const CreateProjectCard = ({projectInfo }) => {
   const [error, setError] = useState(null);
   const projectMessage = useSelector((state) => state.project.message);
   const [isPublished, setIsPublished] = useState( projectInfo?.publish_options?.publish || false);
-  const [isClosed, setIsClosed] = useState(projectInfo?.status === 'Closed' || false);
+  const [isClosed, setIsClosed] = useState(projectInfo?.status === DONE || false);
   const [closeConfirmIsOpen, setCloseConfirmIsOpen] = useState(false);
   const [state, setState] = useState('')
 

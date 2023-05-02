@@ -3,6 +3,7 @@ import { useDispatch } from 'react-redux'
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material'
 import { closeProject } from '../redux/actions/projectAction.js'
 import theme from '../styles/themes.js'
+import { DONE } from '../redux/actions/types.js'
 
 const CloseProjectModal = ({ isOpen, setIsOpen, handleSubmit, values, setIsClosed, projectInfo }) => {
   const dispatch = useDispatch()
@@ -13,11 +14,11 @@ const CloseProjectModal = ({ isOpen, setIsOpen, handleSubmit, values, setIsClose
 
   const handleAgree = (values, handleSubmit) => {
     setIsClosed(true)
-    const newValue = {...values, status: "Closed"}
+    const newValue = {...values, status: DONE}
     if (values.id && projectInfo.id) {
       dispatch(closeProject({ ...newValue, id: projectInfo.id }))
     } else {
-      // handleSubmit()
+      handleSubmit()
     }
     setIsOpen(false)
   }
