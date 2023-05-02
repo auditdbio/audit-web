@@ -18,10 +18,12 @@ const AuditCard = ({audit}) => {
             <Typography sx={auditNameStyle}>{audit.project_name}</Typography>
             <Box sx={{display: 'grid'}}>
                 <Tooltip
-                    title={audit?.auditor_contacts?.email}
+                    title={audit?.auditor_contacts.public_contacts ? audit?.auditor_contacts?.email : 'Hidden'}
                     arrow placement={'top'}
                 >
-                <Typography sx={nameTextStyle} noWrap={true}>{audit?.auditor_contacts?.email}</Typography>
+                <Typography sx={nameTextStyle} noWrap={true}>
+                    {audit?.auditor_contacts.public_contacts ? audit?.auditor_contacts?.email : 'Hidden'}
+                </Typography>
                 </Tooltip>
             </Box>
             <Typography sx={priceTextStyle}>${audit?.price} per line</Typography>
