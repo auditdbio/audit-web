@@ -188,13 +188,13 @@ export default EditProfileForm;
 
 const EditProfileSchema = Yup.object().shape({
     first_name: Yup.string().required('Required'),
-    last_name: Yup.string().required('Required'),
+    last_name: Yup.string(),
     contacts: Yup.object().shape({
         email: Yup.string().email('Invalid email').required('required'),
         telegram: Yup.string()
     }),
     about: Yup.string(),
-    tags: Yup.array().min(1)
+    tags: Yup.array()
 });
 
 const PasswordValidation = Yup.object().shape({
