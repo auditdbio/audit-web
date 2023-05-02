@@ -23,6 +23,7 @@ import {SliderRange} from "../salary-slider/slider-range.jsx";
 const EditProfileForm = ({role}) => {
     const matchSm = useMediaQuery(theme.breakpoints.down('sm'))
     const dispatch = useDispatch()
+    const { user } = useSelector(s => s.user)
     const customer = useSelector(s => s.customer.customer)
     const auditor = useSelector(s => s.auditor.auditor)
 
@@ -43,11 +44,11 @@ const EditProfileForm = ({role}) => {
                     userId: data.user_id || '',
                     avatar: data.avatar || '',
                     free_at: '',
-                    first_name: data?.first_name || '',
-                    last_name: data?.last_name || '',
+                    first_name: data?.first_name || user?.name?.split(' ')[0] || '',
+                    last_name: data?.last_name || user?.name?.split(' ')[1] || '',
                     contacts: {
                         telegram: data?.contacts?.telegram || '',
-                        email: data?.contacts?.email || '',
+                        email: data?.contacts?.email || user?.email || '',
                         public_contacts: data.contacts?.public_contacts || false,
                     },
                     about: data?.about || '',
