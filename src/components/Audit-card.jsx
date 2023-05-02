@@ -15,7 +15,9 @@ const AuditCard = ({audit}) => {
 
     return (
         <Card sx={cardWrapper}>
-            <Typography sx={auditNameStyle}>{audit.project_name}</Typography>
+            <Tooltip title={audit.project_name} arrow placement={'top'}>
+                <Typography sx={auditNameStyle}>{audit.project_name}</Typography>
+            </Tooltip>
             <Box sx={{display: 'grid'}}>
                 <Tooltip
                     title={audit?.auditor_contacts.public_contacts ? audit?.auditor_contacts?.email : 'Hidden'}
@@ -183,6 +185,7 @@ const dateWrapper = {
     flexDirection: "row",
     gap: "0.5rem",
     alignItems: "center",
+    width: '100%',
     [theme.breakpoints.down('sm')]: {
         gap: '5px',
         '& span': {
@@ -197,6 +200,8 @@ const dateStyle = {
     color: "#434242",
     border: "1.8px #E5E5E5 solid",
     padding: "1rem",
+    width: '100%',
+    textAlign: 'center',
     [theme.breakpoints.down("sm")]: {
         fontSize: "9px!important",
         padding: '10px'
