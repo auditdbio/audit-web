@@ -66,7 +66,7 @@ const AuditInfo = () => {
             link.click();
         })
     }
-    console.log(audit)
+
     return (
         <Layout>
             <CustomCard sx={wrapper}>
