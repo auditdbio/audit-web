@@ -121,10 +121,7 @@ const cardWrapper = (theme) => ({
     background: "#FFFFFF",
     width: "100%",
     height: "100%",
-    // maxWidth: "340px",
-    // maxHeight: "450px",
-    gap: "1.5rem",
-    // marginY: "1.5rem",
+    gap: "12px",
     borderRadius: "1.5rem",
     boxShadow:
         "0px 64.1377px 76.5824px rgba(0, 0, 0, 0.07)," +
@@ -207,15 +204,26 @@ const priceTextStyle = {
 
 const auditNameStyle = (theme) => ({
     display: "-webkit-box",
-    "-webkit-line-clamp": '1',
+    "-webkit-line-clamp": '2',
+    height: '84px',
     "-webkit-box-orient": "vertical",
     textOverflow: "ellipsis",
     overflow: "hidden",
     fontWeight: "500",
     fontSize: "28px",
     textAlign: "center",
+    [theme.breakpoints.down('lg')]: {
+      height: '65px'
+    },
+    [theme.breakpoints.down('md')]: {
+        height: '60px'
+    },
+    [theme.breakpoints.down('sm')]: {
+      height: '45px'
+    },
     [theme.breakpoints.down("xs")]: {
         fontSize: "14px",
+        height: '40px'
     },
 })
 
