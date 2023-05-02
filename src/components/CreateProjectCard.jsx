@@ -11,11 +11,11 @@ import MenuRoundedIcon from "@mui/icons-material/MenuRounded";
 import AuditorSearchModal from "./AuditorSearchModal.jsx";
 import TagsField from "./forms/tags-field/tags-field.jsx";
 import {
-  changeStatusProject, clearProjectMessage,
+  changeStatusProject, clearProjectMessage, closeProject,
   createProject, createProjectNoRedirect,
   editProject, editProjectNoRedirect,
   getProjects,
-} from "../redux/actions/projectAction.js";
+} from '../redux/actions/projectAction.js'
 import { useDispatch, useSelector } from "react-redux";
 import * as Yup from "yup";
 import { useLocation } from "react-router-dom";
@@ -23,6 +23,8 @@ import { getAuditsRequest } from "../redux/actions/auditAction.js";
 import { AuditRequestsArray } from "./custom/AuditRequestsArray.jsx";
 import Markdown from "./custom/Markdown-editor.jsx";
 import SalarySlider from "./forms/salary-slider/salary-slider.jsx";
+import CloseProjectModal from './CloseProjectModal.jsx'
+import { DONE } from '../redux/actions/types.js'
 
 const CreateProjectCard = ({projectInfo }) => {
   const navigate = useNavigate();
@@ -33,6 +35,8 @@ const CreateProjectCard = ({projectInfo }) => {
   const [error, setError] = useState(null);
   const projectMessage = useSelector((state) => state.project.message);
   const [isPublished, setIsPublished] = useState( projectInfo?.publish_options?.publish || false);
+  const [isClosed, setIsClosed] = useState(projectInfo?.status === DONE || false);
+  const [closeConfirmIsOpen, setCloseConfirmIsOpen] = useState(false);
   const [state, setState] = useState('')
 
   useEffect(() => {
@@ -121,7 +125,6 @@ const CreateProjectCard = ({projectInfo }) => {
       }}
     >
       {({ handleSubmit, values, setFieldValue }) => {
-
         return (
           <Box sx={mainBox}>
             <Button
@@ -154,6 +157,15 @@ const CreateProjectCard = ({projectInfo }) => {
               setState={setState}
             />
 
+            <CloseProjectModal
+              isOpen={closeConfirmIsOpen}
+              setIsOpen={setCloseConfirmIsOpen}
+              handleSubmit={handleSubmit}
+              values={values}
+              setIsClosed={setIsClosed}
+              projectInfo={projectInfo}
+            />
+
             <Box sx={buttonGroup}>
               <Button
                 variant={"contained"}
@@ -179,6 +191,16 @@ const CreateProjectCard = ({projectInfo }) => {
               >
                 { isPublished ?
                     'Hide project' : 'Publish project'
+                }
+              </Button>
+              <Button
+                variant={"contained"}
+                sx={publishButton}
+                disabled={isClosed}
+                onClick={() => setCloseConfirmIsOpen(true)}
+              >
+                { isClosed ?
+                  'Project closed' : 'Close the project'
                 }
               </Button>
               {/*<Button sx={menuButtonSx}>*/}
@@ -289,6 +311,9 @@ const buttonGroup = {
   [theme.breakpoints.down("sm")]: {
     gap: "10px",
   },
+  [theme.breakpoints.down("xs")]: {
+    flexWrap: "wrap",
+  }
 };
 
 const inviteButton = {
