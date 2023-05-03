@@ -22,7 +22,7 @@ const TagsField = ({name, label, placeholder}) => {
                     setError('The maximum number of tags that can be added is 20')
                 }
             } else {
-                setError('This tag must be at least 30 characters long')
+                setError('Tag length is limited to 30 characters')
             }
         } else {
             if  (field.value.length < 20){
