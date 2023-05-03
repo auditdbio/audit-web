@@ -37,7 +37,7 @@ const CreateProjectCard = ({projectInfo }) => {
   const [isPublished, setIsPublished] = useState( projectInfo?.publish_options?.publish || false);
   const [isClosed, setIsClosed] = useState(projectInfo?.status === DONE || false);
   const [closeConfirmIsOpen, setCloseConfirmIsOpen] = useState(false);
-  const [state, setState] = useState('')
+  const [state, setState] = useState(false)
 
   useEffect(() => {
     dispatch(getAuditsRequest("customer"));

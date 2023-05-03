@@ -22,7 +22,6 @@ import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs";
 import {LocalizationProvider} from "@mui/x-date-pickers";
 import {useNavigate} from "react-router-dom/dist";
 import {Field, Formik, Form} from "formik";
-import {signUp} from "../redux/actions/userAction.js";
 import SalarySlider from "./forms/salary-slider/salary-slider.jsx";
 import * as Yup from "yup";
 
@@ -46,12 +45,12 @@ export default function AuditorSearchModal({
     const [query, setQuery] = useState("");
 
     useEffect(() => {
+        setState(true)
         dispatch(getAuditors(query));
     }, [query]);
 
     const handleInputChange = (event) => {
         setQuery(event.target.value);
-        setState(event.target.value);
     };
 
     const handleOptionChange = (option) => {
@@ -60,12 +59,13 @@ export default function AuditorSearchModal({
     };
 
 
-    const handleSearch = () => {
+    const handleSearch = async () => {
         if (inputValue) {
             handleSubmit()
-            navigate(`/auditors?search=${query}`,)
+           await navigate(`/auditors?search=${query}`,)
         } else {
-            navigate(`/auditors?search=`,)
+            handleSubmit()
+           await navigate(`/auditors?search=`)
         }
     }
 
