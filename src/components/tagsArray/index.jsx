@@ -27,15 +27,7 @@ const TagsArray = ({name}) => {
                                 title={tag}
                                 arrow placement={'top'}>
                                 <Chip
-                                    sx={{
-                                        border: "2px solid #E5E5E5",
-                                        borderRadius: "5px",
-                                        color: "#434242",
-                                        fontWeight: 500,
-                                        '& span': {
-                                            maxWidth: '200px'
-                                        }
-                                    }}
+                                    sx={chipSx}
                                     label={tag}
                                     variant="outlined"
                                     onDelete={() => arrayHelper.remove(idx)}
@@ -59,3 +51,13 @@ const iconSx = (theme) => ({
         fill: "#52176D",
     },
 });
+
+const chipSx = (theme) => ({
+    border: "2px solid #E5E5E5",
+    borderRadius: "5px",
+    color: "#434242",
+    fontWeight: 500,
+    '& span': {
+        maxWidth: '200px'
+    }
+})
