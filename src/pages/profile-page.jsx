@@ -24,6 +24,7 @@ const ProfilePage = () => {
     useEffect(() => {
         setChooseTab(tab)
     }, [tab, chooseTab])
+
     return (
         <Layout>
             <Snackbar
