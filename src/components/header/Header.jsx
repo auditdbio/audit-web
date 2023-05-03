@@ -59,7 +59,8 @@ const Header = () => {
   //   setIsRoleMenuOpen(!isUserMenuOpen);
   // };
 
-  const handleCloseNavMenu = () => {
+  const handleCloseNavMenu = (el) => {
+    navigate()
     setAnchorElNav(null);
   };
 
@@ -83,6 +84,10 @@ const Header = () => {
     }
 
   }, [reduxUser.current_role, customer?.avatar, auditor?.avatar]);
+
+  const handleNavigate = (path) => {
+    navigate(path);
+  };
 
   return (
     <AppBar position="static" color="transparent" elevation={0}>
@@ -172,29 +177,27 @@ const Header = () => {
                             </CustomButton>
                           </Box>
                         </MenuItem>
-                        {pages.map((page) => (
-                          <MenuItem
-                            key={page.id}
-                            onClick={handleCloseNavMenu}
-                            sx={{
-                              ":active": {
-                                backgroundColor: "orange",
-                                color: "color",
-                              },
-                            }}
-                          >
-                            <Box
-                              textAlign="center"
-                              sx={{
-                                marginX: "1rem",
-                                fontSize: "22px",
-                                fontWeight: "500",
-                              }}
-                            >
-                              {page.name}
-                            </Box>
-                          </MenuItem>
-                        ))}
+                        {pages.map((page) =>
+                          page.menuOptions.map(el =>
+                              <MenuItem
+                                  key={el.id}
+                                  onClick={() => handleNavigate(el.link)}
+                                  sx={{
+                                    ":active": {
+                                      backgroundColor: "orange",
+                                      color: "color",
+                                    },
+                                  }}
+                              >
+                                <Box
+                                    textAlign="center"
+                                    sx={popupLinkSx}
+                                >
+                                  {el.itemName}
+                                </Box>
+                              </MenuItem>
+                          )
+                        )}
                       </Menu>
                     </Box>
                   </>
@@ -267,6 +270,7 @@ const Header = () => {
                       <MenuIcon fontSize="large" />
                     </IconButton>
                     <UserMenu
+                        pages={authorizedPages}
                         userAvatar={userAvatar}
                       open={isUserMenuOpen}
                       handleClose={handleCloseUserMenu}
@@ -470,6 +474,15 @@ const authorizedPages = [
   },
 ];
 
+const popupLinkSx = (theme) => ({
+  marginX: "1rem",
+  fontSize: "22px",
+  fontWeight: "500",
+  [theme.breakpoints.down('xs')]: {
+    fontSize: '16px'
+  }
+})
+
 const userGreeting = (theme) => ({
   display: "flex",
   alignItems: "center",
@@ -485,6 +498,9 @@ const signInButton = {
     backgroundColor: "orange",
     color: "white",
   },
+  [theme.breakpoints.down('xs')]: {
+    fontSize: '16px'
+  }
 };
 
 const signUpButton = {
@@ -495,6 +511,9 @@ const signUpButton = {
     backgroundColor: "transparent",
     color: "black",
   },
+  [theme.breakpoints.down('xs')]: {
+    fontSize: '16px'
+  }
 };
 
 const linkStyle = {

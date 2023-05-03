@@ -40,7 +40,7 @@ export const userReducer = (state = initialState, action) => {
         case SELECT_ROLE:
             return {...state, user: action.payload}
         case UPDATE_USER:
-            return {...state, user: action.payload, success: 'Success! Your password is changed'}
+            return {...state, user: action.payload, success: 'Success! Your password has been changed'}
         case CLEAR_SUCCESS:
             return {...state, success: null}
         case CHANGE_ROLE_HAVE_PROFILE_CUSTOMER:

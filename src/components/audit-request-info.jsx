@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import {CustomCard} from "./custom/Card.jsx";
 import Layout from "../styles/Layout.jsx";
 import {
@@ -12,7 +12,7 @@ import {
     TextField,
     Stack,
     Alert,
-    AlertTitle, Snackbar
+    AlertTitle, Snackbar, Tooltip
 } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack.js";
 import GitHubIcon from '@mui/icons-material/GitHub';
@@ -29,27 +29,29 @@ import {DatePicker} from "@mui/x-date-pickers/DatePicker";
 import {LocalizationProvider} from "@mui/x-date-pickers";
 import Markdown from "./custom/Markdown.jsx";
 import {isAuth} from "../lib/helper.js";
-import {AUDITOR} from "../redux/actions/types.js";
+import {AUDITOR, CUSTOMER} from "../redux/actions/types.js";
 import {changeRolePublicAuditor, changeRolePublicAuditorNoRedirect} from "../redux/actions/userAction.js";
+import TelegramIcon from '@mui/icons-material/Telegram';
+import EmailIcon from '@mui/icons-material/Email';
 
 const AuditRequestInfo = ({project, onClose, handleError, redirect, isModal}) => {
     const navigate = useNavigate()
     const matchXs = useMediaQuery(theme.breakpoints.down('xs'))
     const [open, setOpen] = useState(false)
-    const auditor = useSelector(s=> s.auditor.auditor)
-    const user = useSelector(s=> s.user.user)
+    const auditor = useSelector(s => s.auditor.auditor)
+    const user = useSelector(s => s.user.user)
     const dispatch = useDispatch()
 
     const handleOpen = () => {
-        if (user.current_role === AUDITOR && isAuth() && auditor?.first_name && auditor?.last_name){
+        if (user.current_role === AUDITOR && isAuth() && auditor?.first_name) {
             setOpen(true);
-        } else if (user.current_role !== AUDITOR && isAuth() && auditor?.first_name && auditor?.last_name){
+        } else if (user.current_role !== AUDITOR && isAuth() && auditor?.first_name) {
             dispatch(changeRolePublicAuditorNoRedirect(AUDITOR, user.id, auditor))
             handleError()
             setOpen(true)
-        } else if (!auditor?.first_name && !auditor?.last_name && user.current_role === AUDITOR && isAuth()){
+        } else if (!auditor?.first_name && user.current_role === AUDITOR && isAuth()) {
             dispatch(changeRolePublicAuditor(AUDITOR, user.id, auditor))
-        } else if (user.current_role !== AUDITOR && isAuth() && !auditor?.first_name && !auditor?.last_name){
+        } else if (user.current_role !== AUDITOR && isAuth() && !auditor?.first_name) {
             dispatch(changeRolePublicAuditor(AUDITOR, user.id, auditor))
             handleError()
             setOpen(true)
@@ -63,7 +65,7 @@ const AuditRequestInfo = ({project, onClose, handleError, redirect, isModal}) =>
     };
 
     const handleBack = () => {
-        if (onClose){
+        if (onClose) {
             onClose()
         } else {
             navigate(-1)
@@ -110,26 +112,102 @@ const AuditRequestInfo = ({project, onClose, handleError, redirect, isModal}) =>
                         </Box>
                     </Box>
                     {!matchXs &&
-                        <Box sx={{display: 'flex', gap: '25px'}}>
-                            <Typography variant={'caption'}>
-                                {project?.creator_contacts?.email || project?.customer_contacts?.email}
-                            </Typography>
-                            <Typography variant={'caption'}>
-                                {project?.creator_contacts?.telegram || project?.customer_contacts?.telegram}
-                            </Typography>
+                        <Box sx={{display: 'flex', gap: '25px', flexWrap: 'wrap'}}>
+                            <Box sx={{display: 'flex', alignItems: 'center', gap: '10px'}}>
+                                <EmailIcon/>
+                                <Box sx={{display: 'grid'}}>
+                                    { project?.creator_contacts ?
+                                        <Tooltip
+                                            title={project?.creator_contacts?.email}
+                                            arrow placement={'top'}>
+                                            <Typography variant={'caption'} sx={contactStyle} noWrap={true}>
+                                                {project?.creator_contacts?.email}
+                                            </Typography>
+                                        </Tooltip>
+                                        :
+                                        <Tooltip
+                                            title={project?.customer_contacts?.public_contacts ? project?.customer_contacts?.email : 'Hidden'}
+                                            arrow placement={'top'}>
+                                            <Typography variant={'caption'} sx={contactStyle} noWrap={true}>
+                                                {project?.customer_contacts?.public_contacts ? project?.customer_contacts?.email : 'Hidden'}
+                                            </Typography>
+                                        </Tooltip>
+                                    }
+                                </Box>
+                            </Box>
+                            <Box sx={{display: 'flex', alignItems: 'center', gap: '10px'}}>
+                                <TelegramIcon/>
+                                <Box sx={{display: 'grid'}}>
+                                    { project?.creator_contacts ?
+                                        <Tooltip
+                                            title={project?.creator_contacts?.telegram}
+                                            arrow placement={'top'}>
+                                            <Typography variant={'caption'} sx={contactStyle} noWrap={true}>
+                                                {project?.creator_contacts?.telegram}
+                                            </Typography>
+                                        </Tooltip>
+                                        :
+                                        <Tooltip
+                                            title={project?.customer_contacts?.public_contacts ? project?.customer_contacts?.telegram : 'Hidden'}
+                                            arrow placement={'top'}>
+                                            <Typography variant={'caption'} sx={contactStyle} noWrap={true}>
+                                                {project?.customer_contacts?.public_contacts ? project?.customer_contacts?.telegram : 'Hidden'}
+                                            </Typography>
+                                        </Tooltip>
+                                    }
+                                </Box>
+                            </Box>
                         </Box>
                     }
                 </Box>
                 <Box sx={infoWrapper} className={'audit-request-info'}>
                     <Markdown value={project?.description}/>
                     {matchXs &&
-                        <Box sx={{display: 'flex', gap: '25px'}}>
-                            <Typography variant={'caption'}>
-                                {project?.creator_contacts?.email || project?.customer_contacts?.email}
-                            </Typography>
-                            <Typography variant={'caption'}>
-                                {project?.creator_contacts?.telegram || project?.customer_contacts?.telegram}
-                            </Typography>
+                        <Box sx={{display: 'flex', gap: '10px', flexWrap: 'wrap', justifyContent: 'center',}}>
+                            <Box sx={{display: 'flex', alignItems: 'center', gap: '10px'}}>
+                                <EmailIcon/>
+                                <Box sx={{display: 'grid'}}>
+                                    { project?.creator_contacts ?
+                                        <Tooltip
+                                            title={project?.creator_contacts?.email}
+                                            arrow placement={'top'}>
+                                            <Typography variant={'caption'} sx={contactStyle} noWrap={true}>
+                                                {project?.creator_contacts?.email}
+                                            </Typography>
+                                        </Tooltip>
+                                        :
+                                        <Tooltip
+                                            title={project?.customer_contacts?.public_contacts ? project?.customer_contacts?.email : 'Hidden'}
+                                            arrow placement={'top'}>
+                                            <Typography variant={'caption'} sx={contactStyle} noWrap={true}>
+                                                {project?.customer_contacts?.public_contacts ? project?.customer_contacts?.email : 'Hidden'}
+                                            </Typography>
+                                        </Tooltip>
+                                    }
+                                </Box>
+                            </Box>
+                            <Box sx={{display: 'flex', alignItems: 'center', gap: '10px'}}>
+                                <TelegramIcon/>
+                                <Box sx={{display: 'grid'}}>
+                                    { project?.creator_contacts ?
+                                        <Tooltip
+                                            title={project?.creator_contacts?.telegram}
+                                            arrow placement={'top'}>
+                                            <Typography variant={'caption'} sx={contactStyle} noWrap={true}>
+                                                {project?.creator_contacts?.telegram}
+                                            </Typography>
+                                        </Tooltip>
+                                        :
+                                        <Tooltip
+                                            title={project?.customer_contacts?.public_contacts ? project?.customer_contacts?.telegram : 'Hidden'}
+                                            arrow placement={'top'}>
+                                            <Typography variant={'caption'} sx={contactStyle} noWrap={true}>
+                                                {project?.customer_contacts?.public_contacts ? project?.customer_contacts?.telegram : 'Hidden'}
+                                            </Typography>
+                                        </Tooltip>
+                                    }
+                                </Box>
+                            </Box>
                         </Box>
                     }
                     <Box sx={linkWrapper} className={'audit-request-links'}>
@@ -147,7 +225,7 @@ const AuditRequestInfo = ({project, onClose, handleError, redirect, isModal}) =>
                     variant={'contained'}
                     sx={[buttonSx, {backgroundColor: theme.palette.secondary.main}]}
                     onClick={() => {
-                        if (isModal){
+                        if (isModal) {
                             handleBack()
                         } else {
                             dispatch(deleteAuditRequest(project.id))
@@ -158,13 +236,13 @@ const AuditRequestInfo = ({project, onClose, handleError, redirect, isModal}) =>
                         isModal ? 'Cancel' : 'Decline'
                     }
                 </Button>
-                    <Button
-                        variant={'contained'}
-                        sx={buttonSx}
-                        onClick={handleOpen}
-                    >
-                        Make offer
-                    </Button>
+                <Button
+                    variant={'contained'}
+                    sx={buttonSx}
+                    onClick={handleOpen}
+                >
+                    Make offer
+                </Button>
             </Box>
             <Modal
                 open={open}
@@ -201,15 +279,17 @@ const AuditRequestInfo = ({project, onClose, handleError, redirect, isModal}) =>
                             time_frame: ''
                         }}
                         onSubmit={(values) => {
-                            const newValue = {...values,
+                            const newValue = {
+                                ...values,
                                 price: parseInt(values.price),
                                 price_range: {
                                     from: parseInt(values.price),
                                     to: parseInt(values.price)
-                                }}
+                                }
+                            }
                             dispatch(createRequest(newValue, redirect))
                             handleClose()
-                            if (onClose){
+                            if (onClose) {
                                 onClose()
                             }
                         }}
@@ -230,7 +310,12 @@ const AuditRequestInfo = ({project, onClose, handleError, redirect, isModal}) =>
                                         <Typography variant={'caption'}>
                                             Time frame
                                         </Typography>
-                                        <Box sx={{display: 'flex', gap: '20px', marginTop: '15px', alignItems: 'center'}}>
+                                        <Box sx={{
+                                            display: 'flex',
+                                            gap: '20px',
+                                            marginTop: '15px',
+                                            alignItems: 'center'
+                                        }}>
                                             <LocalizationProvider dateAdapter={AdapterDayjs}>
                                                 <Field
                                                     component={DatePicker}
@@ -297,6 +382,12 @@ const MakeOfferSchema = Yup.object().shape({
             .min(Yup.ref('from'))
     })
 });
+
+const contactStyle = (theme) => ({
+    // display: 'flex',
+    // alignItems: 'center',
+    // gap: '10px'
+})
 
 const dateStyle = {
     width: "150px",
@@ -368,7 +459,7 @@ const wrapper = (theme) => ({
     alignItems: 'center',
     gap: '20px',
     '& h3': {
-      fontSize: '37px',
+        fontSize: '37px',
         fontWeight: 500,
     },
     [theme.breakpoints.down('md')]: {
@@ -383,9 +474,7 @@ const wrapper = (theme) => ({
     },
 })
 
-const backButtonConfirm = (theme) => ({
-
-})
+const backButtonConfirm = (theme) => ({})
 
 const submitBtn = (theme) => ({
     textTransform: 'unset',

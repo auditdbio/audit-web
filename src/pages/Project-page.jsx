@@ -38,7 +38,7 @@ const ProjectPage = () => {
 
     const clearFilter = () => {
         setQuery((query) => {
-            const { ...data } = (query || {})
+            const {...data} = (query || {})
             return {}
         })
     }
@@ -68,11 +68,11 @@ const ProjectPage = () => {
 
     useEffect(() => {
         dispatch(searchProjects(initialFilter))
-    },[searchParams.toString()])
+    }, [searchParams.toString()])
 
     useEffect(() => {
         return () => dispatch(clearMessage())
-    },[])
+    }, [])
 
     return (
         <Layout>
@@ -88,8 +88,12 @@ const ProjectPage = () => {
                 <Box sx={contentWrapper}>
                     <Box sx={{    display: 'flex',
                         flexWrap: 'wrap',}}>
-                        {projects?.map(project =>
-                            <Box sx={projectListWrapper} key={project.id}>
+                        {projects?.map((project, idx) =>
+                            <Box sx={[projectListWrapper,
+                                idx % 2 === 0 ? borderLeft : {},
+                                idx === 0 || idx === 1 ? borderTop : {},
+                                idx === 0 ? mobileStyle : {}
+                            ]} key={project.id}>
                                 <ProjectListCard project={project}/>
                             </Box>
                         )}
@@ -112,6 +116,23 @@ const contentWrapper = (theme) => ({
     }
 })
 
+const mobileStyle = (theme) => ({
+    [theme.breakpoints.down('sm')]: {
+        borderTop: '1px solid #B2B3B3',
+    }
+})
+
+const borderTop = (theme) => ({
+    borderTop: '1px solid #B2B3B3',
+    [theme.breakpoints.down('sm')]: {
+        borderTop: 'unset',
+    }
+})
+
+const borderLeft = (theme) => ({
+    borderLeft: '1px solid #B2B3B3',
+})
+
 const projectTopWrapper = (theme) => ({
     display: 'flex',
     justifyContent: 'space-between',
@@ -127,9 +148,15 @@ const projectTopWrapper = (theme) => ({
 })
 
 const projectListWrapper = (theme) => ({
+    borderRight: '1px solid #B2B3B3',
+    borderBottom: '1px solid #B2B3B3',
+    height: '200px',
+    overflow: 'hidden',
     width: '50%',
     [theme.breakpoints.down('sm')]: {
-        width: '100%'
+        width: '100%',
+        borderLeft: '1px solid #B2B3B3',
+        height: '160px'
     }
 })
 

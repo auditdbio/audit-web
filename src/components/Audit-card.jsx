@@ -1,4 +1,4 @@
-import {Box, Card, Typography} from "@mui/material";
+import {Box, Card, Tooltip, Typography} from "@mui/material";
 import theme from "../styles/themes.js";
 import {CustomButton} from "./custom/Button.jsx";
 import {useNavigate} from "react-router-dom/dist";
@@ -15,8 +15,19 @@ const AuditCard = ({audit}) => {
 
     return (
         <Card sx={cardWrapper}>
-            <Typography sx={auditNameStyle}>{audit.project_name}</Typography>
-            <Typography sx={nameTextStyle}>{audit?.auditor_contacts?.email}</Typography>
+            <Tooltip title={audit.project_name} arrow placement={'top'}>
+                <Typography sx={auditNameStyle}>{audit.project_name}</Typography>
+            </Tooltip>
+            <Box sx={{display: 'grid'}}>
+                <Tooltip
+                    title={audit?.auditor_contacts.public_contacts ? audit?.auditor_contacts?.email : 'Hidden'}
+                    arrow placement={'top'}
+                >
+                <Typography sx={nameTextStyle} noWrap={true}>
+                    {audit?.auditor_contacts.public_contacts ? audit?.auditor_contacts?.email : 'Hidden'}
+                </Typography>
+                </Tooltip>
+            </Box>
             <Typography sx={priceTextStyle}>${audit?.price} per line</Typography>
             <Box sx={dateWrapper}>
                 <Typography sx={dateStyle}>{dayjs(audit?.time?.from).format('DD.MM.YYYY') }</Typography>
@@ -63,7 +74,7 @@ const cardWrapper = {
     justifyContent: "space-between",
     alignItems: "center",
     background: "#FFFFFF",
-    padding: '34px 18px 25px',
+    padding: '24px 18px 24px',
     borderRadius: "1.5rem",
     gap: '15px',
     boxShadow:
@@ -155,10 +166,17 @@ const priceTextStyle = {
 };
 
 const auditNameStyle = {
+    height: '55px',
+    overflow: 'hidden',
+    '-webkit-line-clamp': '2',
+    '-webkit-box-orient': 'vertical',
+    'text-overflow': 'ellipsis',
+    display: '-webkit-box',
     fontWeight: "500",
     fontSize: "18px!important",
     [theme.breakpoints.down("sm")]: {
         fontSize: "14px!important",
+        height: '45px'
     },
 };
 
@@ -167,6 +185,7 @@ const dateWrapper = {
     flexDirection: "row",
     gap: "0.5rem",
     alignItems: "center",
+    width: '100%',
     [theme.breakpoints.down('sm')]: {
         gap: '5px',
         '& span': {
@@ -181,6 +200,8 @@ const dateStyle = {
     color: "#434242",
     border: "1.8px #E5E5E5 solid",
     padding: "1rem",
+    width: '100%',
+    textAlign: 'center',
     [theme.breakpoints.down("sm")]: {
         fontSize: "9px!important",
         padding: '10px'

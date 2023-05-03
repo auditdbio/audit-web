@@ -1,5 +1,6 @@
 import { Avatar, Box, Card, Typography } from "@mui/material";
 import { useMediaQuery } from "@mui/material";
+import AuditLogo from '../../icons/Company-logo.jsx'
 
 const FeedbackCard = ({ info }) => {
 	const isSmallScreen = useMediaQuery("(max-width: 769px)");
@@ -10,16 +11,17 @@ const FeedbackCard = ({ info }) => {
 			<Box sx={detailsWrapper}>
 				<Box
 					sx={{
-						maxWidth: "100px",
+						maxWidth: "190px",
 						display: "flex",
 						flexDirection: "column",
-						justifyContent: "space-around",
+						justifyContent: "center",
+						gap: '20px',
 					}}
 				>
-					<Typography sx={descriptionStyle}>{info.name}</Typography>
+					<Typography sx={interestsStyle}>{info.name}</Typography>
 					<Typography sx={interestsStyle}>{info.interests}</Typography>
 				</Box>
-				<Avatar sx={avatarStyle}></Avatar>
+				<AuditLogo width={'100px'} />
 			</Box>
 		</Card>
 	);
@@ -55,11 +57,12 @@ const cardWrapper = (theme) => ({
 const descriptionStyle = (theme) => ({
 	fontSize: "20px",
 	fontWeight: 500,
-	lineHeight: "24px",
+	marginY: 'auto',
+	// lineHeight: "24px",
 	color: "#222222",
 	[theme.breakpoints.down('sm')]: {
-		fontSize: "16px",
-		lineHeight: "19px",
+		fontSize: "18px",
+		// lineHeight: "19px",
 	}
 });
 
@@ -76,9 +79,9 @@ const avatarStyle = {
 };
 
 const interestsStyle = {
-	fontSize: "14px",
+	fontSize: "22px",
 	fontWeight: 500,
-	lineHeight: "17px",
+	// lineHeight: "17px",
 	color: "#434242",
 	wordWrap: "break-word",
 };

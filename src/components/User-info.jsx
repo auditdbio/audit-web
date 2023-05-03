@@ -71,7 +71,7 @@ const UserInfo = ({role}) => {
                                 <span>E-mail</span>
                                 <Typography noWrap={true}>{data.contacts?.email}</Typography>
                             </Box>
-                            <TagsList data={data.tags}/>
+                            <TagsList data={data.tags} fullView={true}/>
                         </Box>
                     </Box>
                 </Box>
@@ -110,8 +110,15 @@ const wrapper = (theme) => ({
 const infoInnerStyle = (theme) => ({
     display: 'flex',
     flexDirection: 'column',
-    gap: '16px'
-
+    gap: '16px',
+    '& .tagsWrapper': {
+        width: '360px'
+    },
+    [theme.breakpoints.down('xs')]: {
+        '& .tagsWrapper': {
+            width: '290px'
+        },
+    }
 })
 
 const infoStyle = (theme) => ({

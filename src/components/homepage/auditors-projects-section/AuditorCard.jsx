@@ -1,4 +1,4 @@
-import {Card, Avatar, Box, Typography, Stack, Alert, AlertTitle, Snackbar} from "@mui/material";
+import {Card, Avatar, Box, Typography, Stack, Alert, AlertTitle, Snackbar, Tooltip} from "@mui/material";
 import theme from "../../../styles/themes";
 import { CustomButton } from "../../custom/Button";
 import Currency from "../../icons/Currency";
@@ -61,11 +61,14 @@ const AuditorCard = ({ auditor }) => {
           </Alert>
         </Stack>
       </Snackbar>
-      <Avatar src={`${ASSET_URL}/${auditor.avatar}`} sx={avatarStyle} />
-      <Box sx={columnStyle}>
-        <Typography sx={mainTextStyle}>
+      <Avatar src={auditor.avatar && `${ASSET_URL}/${auditor.avatar}`} sx={avatarStyle} />
+      <Box sx={{display: 'grid'}}>
+        <Tooltip title={`${auditor.first_name} ${auditor.last_name}`}
+                 arrow placement={'top'}>
+          <Typography sx={mainTextStyle} noWrap={true}>
           {auditor.first_name} {auditor.last_name}
-        </Typography>
+          </Typography>
+        </Tooltip>
         <Typography sx={badgeFontStyle}>
           {auditor.tags
             .map((item) => item.charAt(0).toUpperCase() + item.slice(1))
@@ -82,11 +85,11 @@ const AuditorCard = ({ auditor }) => {
         <Box sx={badgesStyle}>
           <Box sx={infoStyle}>
             <Currency />
-            <Typography sx={badgeFontStyle}>{auditor.price_range.from} - {auditor.price_range.to}</Typography>
+            <Typography sx={priceSx}>{auditor.price_range.from} - {auditor.price_range.to}</Typography>
           </Box>
           <Box sx={infoStyle}>
             <Star />
-            <Typography sx={badgeFontStyle}>150</Typography>
+            <Typography sx={priceSx}>150</Typography>
           </Box>
         </Box>
         <CustomButton sx={buttonStyle} onClick={handleView}>
@@ -123,6 +126,13 @@ const cardStyle = (theme) => ({
   },
 });
 
+const priceSx = (theme) => ({
+  fontSize: '16px',
+  [theme.breakpoints.down('sm')]: {
+    fontSize: '10px'
+  }
+})
+
 const avatarStyle = {
   width: "150px",
   height: "150px",
@@ -158,13 +168,20 @@ const infoStyle = {
   gap: "0.5rem",
 };
 
-const badgeFontStyle = {
-  fontSize: "19px",
+const badgeFontStyle = (theme) => ({
+  fontSize: "19px!important",
   textAlign: "center",
+  display: '-webkit-box',
+  '-webkit-line-clamp': '3',
+  '-webkit-box-orient': 'vertical',
+  'text-overflow': 'ellipsis',
+  height: '86px',
+  overflow: 'hidden',
   [theme.breakpoints.down("sm")]: {
-    fontSize: "10px",
+    fontSize: "10px!important",
+    height: '45px'
   },
-};
+});
 
 const mainTextStyle = (theme) => ({
   fontWeight: 500,

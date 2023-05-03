@@ -52,7 +52,7 @@ const AvatarForm = ({role, name}) => {
 
     return (
         <>
-            <Avatar src={`${ASSET_URL}/${avatarField.value}`}/>
+            <Avatar src={avatarField.value && `${ASSET_URL}/${avatarField.value}`}/>
             <Snackbar
                 autoHideDuration={10000}
                 open={!!error}

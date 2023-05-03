@@ -2,7 +2,7 @@ import Avatar from "@mui/material/Avatar";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import Divider from "@mui/material/Divider";
-import { Box, Button, Tab, Tabs, Typography } from "@mui/material";
+import {Box, Button, Tab, Tabs, Typography, useMediaQuery} from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import { changeRole, logout } from "../../redux/actions/userAction.js";
 import { useDispatch } from "react-redux";
@@ -11,13 +11,16 @@ import { useSelector } from "react-redux";
 import React, {useMemo, useState} from "react";
 import {AUDITOR, CUSTOMER} from "../../redux/actions/types.js";
 import {ASSET_URL} from "../../services/urls.js";
+import theme from "../../styles/themes.js";
 
-export const UserMenu = ({ open, handleClose, anchor, userAvatar }) => {
+export const UserMenu = ({ open, handleClose, anchor, userAvatar, pages }) => {
   const dispatch = useDispatch();
   const reduxUser = useSelector((state) => state.user.user);
   const navigate = useNavigate()
   const auditor = useSelector((state) => state.auditor.auditor);
   const customer = useSelector((state) => state.customer.customer);
+  const matchSm = useMediaQuery(theme.breakpoints.down('sm'))
+  const currentRole = useSelector(s => s.user.user.current_role)
 
 
   const user = {
@@ -48,6 +51,8 @@ export const UserMenu = ({ open, handleClose, anchor, userAvatar }) => {
           boxShadow:
             "0px 67px 80px rgba(0, 0, 0, 0.07), 0px 14.9653px 17.869px rgba(0, 0, 0, 0.0417275), 0px 8.38944px 10.0172px rgba(0, 0, 0, 0.035), 0px 4.45557px 5.32008px rgba(0, 0, 0, 0.0282725), 0px 1.85406px 2.21381px rgba(0, 0, 0, 0.0196802)",
           mt: "2rem",
+          overflowY: "auto",
+          maxHeight: '80%',
           borderRadius: "26px",
           paddingTop: "1rem",
           paddingX: "1.5rem",
@@ -89,14 +94,12 @@ export const UserMenu = ({ open, handleClose, anchor, userAvatar }) => {
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
+            gap: '10px'
           }}
         >
           <Avatar
               src={userAvatar ? `${ASSET_URL}/${userAvatar}` : ''}
-            sx={{
-              width: "100px",
-              height: "100px",
-            }}
+            sx={avatarSx}
           />
           {/*<Button*/}
           {/*  size="small"*/}
@@ -106,9 +109,9 @@ export const UserMenu = ({ open, handleClose, anchor, userAvatar }) => {
           {/*>*/}
           {/*  Edit photo*/}
           {/*</Button>*/}
-          <Typography style={mainTextStyle}>{user.fullName}</Typography>
-          <Typography style={secondaryTextStyle}>{user.interests}</Typography>
-          <Typography style={secondaryTextStyle}>{user.email}</Typography>
+          <Typography sx={mainTextStyle}>{user.fullName}</Typography>
+          {/*<Typography sx={secondaryTextStyle}>{user.interests}</Typography>*/}
+          <Typography sx={secondaryTextStyle}>{user.email}</Typography>
         </Box>
       </MenuItem>
       <Tabs
@@ -151,20 +154,29 @@ export const UserMenu = ({ open, handleClose, anchor, userAvatar }) => {
         },
       }} />
       <MenuItem onClick={handleClose}>
-        <Typography style={mainTextStyle} onClick={handleMyAccountClick}>
+        <Button sx={popupLinkSx} onClick={handleMyAccountClick}>
           My Account
-        </Typography>
+        </Button>
       </MenuItem>
-      <Divider
-      />
-      <MenuItem onClick={handleClose}>
+      {
+        matchSm && pages.map(el => el.menuOptions.filter((item) => item.role === currentRole).map((page, index) => (
+            <MenuItem key={index} onClick={handleClose}>
+              <Button sx={popupLinkSx} onClick={() => navigate(page.link)}>
+                {page.itemName}
+              </Button>
+            </MenuItem>
+        )))
+      }
+      {/*<Divider/>*/}
+      <MenuItem
+          onClick={handleClose}>
         <Button
           onClick={handleLogout}
-          style={mainTextStyle}
-          sx={{
+          sx={[{
             width: "100%",
             textTransform: "none",
-          }}
+            borderBottom: 'unset!important'
+          }, popupLinkSx]}
           disableRipple
         >
           Logout
@@ -180,18 +192,43 @@ const editTextStyle = {
   textTransform: "none",
 };
 
-
-
-const mainTextStyle = {
+const popupLinkSx = {
   fontSize: "26px",
   fontWeight: "500",
   color: "#222222",
+  textTransform: "none",
+  width: "100%",
+  borderBottom: '1px solid #ffa500',
+  [theme.breakpoints.down('sm')]: {
+    fontSize: "18px",
+  },
 };
 
-const secondaryTextStyle = {
+const avatarSx = (theme) => ({
+  width: "100px",
+  height: "100px",
+  [theme.breakpoints.down("sm")]: {
+    width: "80px",
+    height: "80px",
+  },
+})
+
+const mainTextStyle = (theme) => ({
+  fontSize: "26px",
+  fontWeight: "500",
+  color: "#222222",
+  [theme.breakpoints.down('sm')]: {
+    fontSize: "18px",
+  },
+})
+
+const secondaryTextStyle = (theme) => ({
   fontSize: "18px",
   color: "#222222",
-};
+  [theme.breakpoints.down('sm')]: {
+    fontSize: "14px",
+  },
+})
 
 const tabsSx = {
   display: {

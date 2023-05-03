@@ -23,6 +23,7 @@ import {SliderRange} from "../salary-slider/slider-range.jsx";
 const EditProfileForm = ({role}) => {
     const matchSm = useMediaQuery(theme.breakpoints.down('sm'))
     const dispatch = useDispatch()
+    const { user } = useSelector(s => s.user)
     const customer = useSelector(s => s.customer.customer)
     const auditor = useSelector(s => s.auditor.auditor)
 
@@ -43,11 +44,12 @@ const EditProfileForm = ({role}) => {
                     userId: data.user_id || '',
                     avatar: data.avatar || '',
                     free_at: '',
-                    first_name: data?.first_name || '',
-                    last_name: data?.last_name || '',
+                    first_name: data?.first_name || user?.name?.split(' ')[0] || '',
+                    last_name: data?.last_name || user?.name?.split(' ')[1] || '',
                     contacts: {
                         telegram: data?.contacts?.telegram || '',
-                        email: data?.contacts?.email || '',
+                        email: data?.contacts?.email || user?.email || '',
+                        public_contacts: data.contacts?.public_contacts || false,
                     },
                     about: data?.about || '',
                     company: data?.company || '',
@@ -55,7 +57,6 @@ const EditProfileForm = ({role}) => {
                         from: data?.price_range?.from || 0,
                         to: data?.price_range?.to || 0,
                     },
-                    public_contacts: data.public_contacts || false,
                     tags: data?.tags || [],
                 }}
                 validationSchema={EditProfileSchema}
@@ -108,9 +109,9 @@ const EditProfileForm = ({role}) => {
                                                 <Checkbox
                                                     color={'success'}
                                                     id={'hide-contacts'}
-                                                    checked={values.public_contacts}
+                                                    checked={values.contacts?.public_contacts}
                                                     onChange={(e) => {
-                                                        setFieldValue('public_contacts', e.target.checked)
+                                                        setFieldValue('contacts.public_contacts', e.target.checked)
                                                     }}
                                                 />
                                                 <label
@@ -187,13 +188,13 @@ export default EditProfileForm;
 
 const EditProfileSchema = Yup.object().shape({
     first_name: Yup.string().required('Required'),
-    last_name: Yup.string().required('Required'),
+    last_name: Yup.string(),
     contacts: Yup.object().shape({
         email: Yup.string().email('Invalid email').required('required'),
         telegram: Yup.string()
     }),
     about: Yup.string(),
-    tags: Yup.array().min(1)
+    tags: Yup.array()
 });
 
 const PasswordValidation = Yup.object().shape({

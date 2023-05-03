@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {Box, Button, Checkbox, Typography} from "@mui/material";
+import {Box, Button, Checkbox, Tooltip, Typography} from "@mui/material";
 import Currency from "./icons/Currency.jsx";
 import Star from "./icons/Star.jsx";
 import theme, { radiusOfComponents } from "../styles/themes.js";
@@ -32,10 +32,20 @@ const MyProjectListCard = ({ type, project, setState, state, isChecked }) => {
                     gap: '20px'
                 }}
             >
-                <Typography variant={"h5"} textAlign={"center"}>
+                <Tooltip
+                    title={project.name || project.project_name}
+                    arrow placement={'top'}
+                >
+                <Typography variant={"h5"} textAlign={"center"} sx={projectNameSx}>
                     {project.name || project.project_name}
                 </Typography>
+                </Tooltip>
+                <Tooltip
+                    title={project?.tags?.map(el => el).join(', ') ?? ''}
+                    arrow placement={'top'}
+                >
                 <Typography sx={categorySx}>{project?.tags?.map(el => el).join(', ') ?? ''}</Typography>
+                </Tooltip>
                 <Box sx={priceWrapper}>
                     <Box sx={infoWrapper}>
                         <Currency />
@@ -67,6 +77,18 @@ const MyProjectListCard = ({ type, project, setState, state, isChecked }) => {
 };
 
 export default MyProjectListCard;
+
+const projectNameSx = (theme) => ({
+    height: '45px',
+    overflow: 'hidden',
+    '-webkit-line-clamp': '2',
+    '-webkit-box-orient': 'vertical',
+    'text-overflow': 'ellipsis',
+    display: '-webkit-box',
+    [theme.breakpoints.down('xs')]: {
+        height: '42px'
+    }
+})
 
 const checkBoxSx = (theme) => ({
     marginTop: 'auto',
@@ -104,12 +126,19 @@ const infoWrapper = (theme) => ({
 });
 
 const categorySx = (theme) => ({
+    height: '55px',
+    overflow: 'hidden',
+    '-webkit-line-clamp': '3',
+    '-webkit-box-orient': 'vertical',
+    'text-overflow': 'ellipsis',
+    display: '-webkit-box',
     textAlign: "center",
     fontSize: "12px!important",
     fontWeight: 500,
     color: "#434242",
     [theme.breakpoints.down("xs")]: {
         fontSize: "10px!important",
+        height: '45px'
     },
 });
 

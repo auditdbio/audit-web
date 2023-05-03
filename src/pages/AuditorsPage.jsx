@@ -132,14 +132,18 @@ const wrapper = (theme) => ({
   minHeight: "1000px",
 });
 
-const auditorContainerStyle = {
+const auditorContainerStyle = (theme) => ({
+  height: '200px',
   width: {
     zero: "100%",
     sm: "50%",
     md: "50%",
     lg: "50%",
   },
-};
+  [theme.breakpoints.down('xs')]: {
+    height: '130px'
+  }
+});
 
 const fakeContainerStyle = {
   width: {

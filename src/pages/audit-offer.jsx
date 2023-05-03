@@ -1,7 +1,7 @@
 import React, {useEffect} from 'react';
 import {CustomCard} from "../components/custom/Card.jsx";
 import Layout from "../styles/Layout.jsx";
-import {Avatar, Box, Button, Typography, Link, useMediaQuery, TextField} from "@mui/material";
+import {Avatar, Box, Button, Typography, Link, useMediaQuery, TextField, Tooltip} from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack.js";
 import GitHubIcon from '@mui/icons-material/GitHub';
 import theme from "../styles/themes.js";
@@ -17,6 +17,8 @@ import Loader from "../components/Loader.jsx";
 import {AUDITOR, SUBMITED} from "../redux/actions/types.js";
 import * as Yup from "yup";
 import Markdown from "../components/custom/Markdown.jsx";
+import TelegramIcon from '@mui/icons-material/Telegram';
+import EmailIcon from '@mui/icons-material/Email';
 
 const AuditOffer = () => {
     const {id} = useParams()
@@ -74,12 +76,31 @@ const AuditOffer = () => {
                                             </Box>
                                         </Box>
                                         <Box sx={[{display: 'flex', gap: '25px'}, contactWrapper]}>
-                                            <Typography variant={'caption'}>
-                                                {audit?.customer_contacts?.email}
-                                            </Typography>
-                                            <Typography variant={'caption'}>
-                                                {audit?.customer_contacts?.telegram}
-                                            </Typography>
+                                            <Box sx={{display: 'flex', alignItems: 'center', gap: '10px'}}>
+                                                <EmailIcon/>
+                                                <Box sx={{display: 'grid'}}>
+                                                    <Tooltip
+                                                        title={audit?.customer_contacts?.email}
+                                                        arrow placement={'top'}>
+                                                        <Typography variant={'caption'} noWrap={true}>
+                                                            {audit?.customer_contacts?.email}
+                                                        </Typography>
+                                                    </Tooltip>
+                                                </Box>
+                                            </Box>
+                                            <Box sx={{display: 'flex', alignItems: 'center', gap: '10px'}}>
+                                                <TelegramIcon/>
+                                                <Box sx={{display: 'grid'}}>
+                                                    <Tooltip
+                                                        title={audit?.customer_contacts?.telegram}
+                                                        arrow placement={'top'}
+                                                    >
+                                                        <Typography variant={'caption'} noWrap={true}>
+                                                            {audit?.customer_contacts?.telegram}
+                                                        </Typography>
+                                                    </Tooltip>
+                                                </Box>
+                                            </Box>
                                         </Box>
                                         <Box sx={infoWrapper}>
                                             <Markdown value={audit?.description} />
@@ -163,7 +184,7 @@ const buttonWrapper = (theme) => ({
 })
 
 const contactWrapper = (theme) => ({
-    width: '370px',
+    maxWidth: '500px',
     margin: '15px auto 0',
     justifyContent: 'space-between',
     '& span': {

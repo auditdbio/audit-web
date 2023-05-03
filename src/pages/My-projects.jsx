@@ -54,19 +54,7 @@ const MyProjects = () => {
         localStorage.removeItem('project')
         setIsOpenView(true);
     };
-    // console.log(auditor)
-    // if  (!auditor) {
-    //     return <Box sx={{
-    //         height: '100vh',
-    //         width: '100%',
-    //         display: 'flex',
-    //         justifyContent: 'center',
-    //         alignItems: 'center'
-    //     }}
-    //     >
-    //         <Loader/>
-    //     </Box>
-    // } else {
+
         return (
             <Layout>
                 <CustomCard sx={wrapper}>
