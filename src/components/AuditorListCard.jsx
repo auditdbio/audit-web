@@ -51,6 +51,7 @@ const AuditorListCard = ({auditor}) => {
             return navigate(`/my-projects/${auditor.user_id}`,)
         } else if (user.current_role !== CUSTOMER && isAuth() && !customerReducer?.first_name) {
             dispatch(changeRolePublicCustomer(CUSTOMER, user.id, customerReducer))
+            handleError()
         } else if (user.current_role !== CUSTOMER && isAuth() && customerReducer?.first_name) {
             dispatch(changeRolePublicCustomerNoRedirect(CUSTOMER, user.id, customerReducer))
             handleError()

@@ -281,6 +281,8 @@ const AuditRequestInfo = ({project, onClose, handleError, redirect, isModal}) =>
                         onSubmit={(values) => {
                             const newValue = {
                                 ...values,
+                                auditor_id: auditor?.user_id,
+                                auditor_contacts: {...auditor?.contacts},
                                 price: parseInt(values.price),
                                 price_range: {
                                     from: parseInt(values.price),

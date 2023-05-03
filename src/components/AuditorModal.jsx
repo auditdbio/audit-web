@@ -37,9 +37,10 @@ export default function AuditorModal({ open, handleClose, auditor, isForm, onSub
   const handleInvite = () => {
     if (user.current_role === CUSTOMER && isAuth() && myProjects.length){
       return navigate(`/my-projects/${auditor.user_id}` )
-    } else if (user.current_role !== CUSTOMER && isAuth() && !customerReducer?.first_name && !customerReducer?.last_name){
+    } else if (user.current_role !== CUSTOMER && isAuth() && !customerReducer?.first_name && handleError){
       dispatch(changeRolePublicCustomer(CUSTOMER, user.id, customerReducer))
-    } else if (user.current_role !== CUSTOMER && isAuth() && customerReducer?.first_name && customerReducer?.last_name && handleError){
+      handleError()
+    } else if (user.current_role !== CUSTOMER && isAuth() && customerReducer?.first_name && handleError){
       dispatch(changeRolePublicCustomerNoRedirect(CUSTOMER, user.id, customerReducer))
       handleError()
     } else if (user.current_role === CUSTOMER && isAuth() && !myProjects.length){
