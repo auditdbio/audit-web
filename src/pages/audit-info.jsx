@@ -85,16 +85,14 @@ const AuditInfo = () => {
                         <Box sx={userWrapper}>
                             <Avatar src={audit?.avatar ? `${ASSET_URL}/${audit?.avatar}` : ""}/>
                             <Box>
-                                <Tooltip title={audit?.auditor_contacts?.public_contacts ? audit?.auditor_contacts?.email : 'Hidden'}
-                                         arrow placement={'top'}>
+                                <Tooltip title={audit?.auditor_contacts?.email || 'Hidden'} arrow placement={'top'}>
                                     <Typography noWrap={true} sx={{maxWidth: '200px'}}>
-                                        {audit?.auditor_contacts?.public_contacts ? audit?.auditor_contacts?.email : 'Hidden'}
+                                        {audit?.auditor_contacts?.email || 'Hidden'}
                                     </Typography>
                                 </Tooltip>
-                                <Tooltip title={audit?.auditor_contacts?.public_contacts ? audit?.auditor_contacts?.telegram : 'Hidden'}
-                                         arrow placement={'top'}>
+                                <Tooltip title={audit?.auditor_contacts?.telegram || 'Hidden'} arrow placement={'top'}>
                                     <Typography noWrap={true} sx={{maxWidth: '200px'}}>
-                                        {audit?.auditor_contacts?.public_contacts ? audit?.auditor_contacts?.telegram : 'Hidden'}
+                                        {audit?.auditor_contacts?.telegram || 'Hidden'}
                                     </Typography>
                                 </Tooltip>
                             </Box>
@@ -103,10 +101,9 @@ const AuditInfo = () => {
                             <Box sx={infoWrapper}>
                                 <span>E-mail</span>
                                 <Box sx={{display: 'grid'}}>
-                                    <Tooltip title={audit?.auditor_contacts?.public_contacts ? audit?.auditor_contacts?.email : 'Hidden'}
-                                             arrow placement={'top'}>
+                                    <Tooltip title={audit?.auditor_contacts?.email || 'Hidden'} arrow placement={'top'}>
                                         <Typography noWrap={true} sx={{maxWidth: '200px'}}>
-                                        {audit?.auditor_contacts?.public_contacts ? audit?.auditor_contacts?.email : 'Hidden'}
+                                        {audit?.auditor_contacts?.email || 'Hidden'}
                                         </Typography>
                                     </Tooltip>
                                 </Box>
@@ -114,10 +111,9 @@ const AuditInfo = () => {
                             <Box sx={infoWrapper}>
                                 <span>Telegram</span>
                                 <Box sx={{display: 'grid'}}>
-                                    <Tooltip title={audit?.auditor_contacts?.public_contacts ? audit?.auditor_contacts?.telegram : 'Hidden'}
-                                             arrow placement={'top'}>
+                                    <Tooltip title={audit?.auditor_contacts?.telegram || 'Hidden'} arrow placement={'top'}>
                                     <Typography noWrap={true} sx={{maxWidth: '200px'}}>
-                                        {audit?.auditor_contacts?.public_contacts ? audit?.auditor_contacts?.telegram : 'Hidden'}
+                                        {audit?.auditor_contacts?.telegram || 'Hidden'}
                                     </Typography>
                                     </Tooltip>
                                 </Box>

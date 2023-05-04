@@ -27,8 +27,8 @@ export const createProject = (values) => {
         dispatch({ type: PROJECT_CREATE, payload: data });
         history.push("/profile/projects");
       })
-      .catch(({ response }) => {
-        console.log(response, "res");
+      .catch(( e ) => {
+        console.log(e, "res");
       });
   };
 };

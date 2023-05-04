@@ -38,9 +38,7 @@ const AppRoutes = () => {
     const dispatch = useDispatch()
 
     useEffect(() => {
-        dispatch(getAllProjects())
         if (isAuth()) {
-            dispatch(getAuditors())
             dispatch(getProjects())
             if (currentRole){
                 dispatch(getAuditsRequest(currentRole))

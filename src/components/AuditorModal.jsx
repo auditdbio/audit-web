@@ -286,7 +286,7 @@ const MakeOfferSchema = Yup.object().shape({
 
 const modalWindow = (theme) => ({
   backgroundColor: theme.palette.background,
-
+  overflow: 'unset',
   width: "600px",
   display: "flex",
   gap: "50px",

@@ -111,6 +111,7 @@ const AuditOffer = () => {
                                                         disabled={audit.status === SUBMITED}
                                                         auditId={audit.id}
                                                         auditorId={audit.auditor_id}
+                                                        auditReportName={audit.report_name}
                                                         customerId={audit.customer_id}
                                                         name={'report'}
                                                         setFieldValue={setFieldValue}

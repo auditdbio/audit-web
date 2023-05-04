@@ -1,5 +1,5 @@
 import React, {useEffect, useMemo} from 'react';
-import {Avatar, Box, Button, Chip, Typography} from "@mui/material";
+import {Avatar, Box, Button, Chip, Typography, useMediaQuery} from "@mui/material";
 import theme, {radiusOfComponents} from "../styles/themes.js";
 import ClearIcon from '@mui/icons-material/Clear';
 import {useNavigate} from "react-router-dom/dist";
@@ -11,11 +11,14 @@ import Loader from "./Loader.jsx";
 import {AUDITOR} from "../redux/actions/types.js";
 import TagsList from "./tagsList";
 import {ASSET_URL} from "../services/urls.js";
+import MobileTagsList from "./MobileTagsList/index.jsx";
 
 const UserInfo = ({role}) => {
     const navigate = useNavigate()
     const customer = useSelector(s => s.customer.customer)
     const auditor = useSelector(s => s.auditor.auditor)
+    const matchXs = useMediaQuery(theme.breakpoints.down('xs'))
+
 
     const handleEdit = () => {
         navigate('/edit-profile')
@@ -71,10 +74,15 @@ const UserInfo = ({role}) => {
                                 <span>E-mail</span>
                                 <Typography noWrap={true}>{data.contacts?.email}</Typography>
                             </Box>
-                            <TagsList data={data.tags} fullView={true}/>
                         </Box>
+                        {!matchXs &&
+                            <TagsList data={data.tags} fullView={true}/>
+                        }
                     </Box>
                 </Box>
+                {matchXs &&
+                    <MobileTagsList data={data.tags}/>
+                }
                 <Button
                     sx={[buttonSx, role === 'auditor' ? submitAuditor : {}]}
                     variant={'contained'}
@@ -90,9 +98,16 @@ const UserInfo = ({role}) => {
 export default UserInfo;
 
 const wrapper = (theme) => ({
+    width: '100%',
+    minHeight: '520px',
     display: 'flex',
     flexDirection: 'column',
-    gap: '70px',
+    padding: '100px 100px 60px',
+    gap: '50px',
+    justifyContent: 'space-between',
+    [theme.breakpoints.down('lg')]: {
+        padding: '60px 40px 40px'
+    },
     [theme.breakpoints.down('md')]: {
         gap: '50px'
     },
@@ -111,28 +126,27 @@ const infoInnerStyle = (theme) => ({
     display: 'flex',
     flexDirection: 'column',
     gap: '16px',
-    '& .tagsWrapper': {
-        width: '360px'
-    },
-    [theme.breakpoints.down('xs')]: {
-        '& .tagsWrapper': {
-            width: '290px'
-        },
-    }
 })
 
 const infoStyle = (theme) => ({
     display: 'flex',
     margin: '0 0 50px',
     flexDirection: 'row',
+    flexWrap: 'wrap',
     gap: '40px',
+    '& .tagsWrapper': {
+        width: '100%'
+    },
     [theme.breakpoints.down('md')]: {
         gap: '10px',
     },
     [theme.breakpoints.down('sm')]: {
         flexDirection: 'column',
         gap: '16px',
-        margin: 0
+        margin: 0,
+        '& .tagsWrapper': {
+            width: '520px'
+        },
     },
 })
 
@@ -148,11 +162,13 @@ const avatarStyle = (theme) => ({
 const contentWrapper = (theme) => ({
     display: 'flex',
     gap: '70px',
+    justifyContent: 'space-between',
     [theme.breakpoints.down('md')]: {
         gap: '50px'
     },
     [theme.breakpoints.down('sm')]: {
         flexDirection: 'column',
+        alignItems: 'center',
         gap: '40px'
     }
 })
@@ -203,7 +219,17 @@ const infoWrapper = (theme) => ({
             maxWidth: '190px'
         }
     },
+    [theme.breakpoints.down('sm')]: {
+        '& p': {
+            maxWidth: '240px'
+        }
+    },
     [theme.breakpoints.down('xs')]: {
-        fontSize: '12px'
+        fontSize: '12px',
+    },
+    [theme.breakpoints.down(450)]: {
+        '& p': {
+            maxWidth: '190px'
+        }
     }
 })
