@@ -2,20 +2,20 @@ import axios from "axios";
 import Cookies from "js-cookie";
 import { history } from "../../services/history.js";
 import {
-    AUTH_TRUE,
-    CLEAR_ERROR,
-    LOG_OUT,
-    SIGN_IN_ERROR,
-    USER_IS_ALREADY_EXIST,
-    USER_SIGNIN,
-    USER_SIGNUP,
-    SELECT_ROLE,
-    UPDATE_USER,
-    CLEAR_SUCCESS,
-    CHANGE_ROLE_DONT_HAVE_PROFILE_CUSTOMER,
-    CHANGE_ROLE_HAVE_PROFILE_CUSTOMER,
-    CHANGE_ROLE_DONT_HAVE_PROFILE_AUDITOR, CHANGE_ROLE_HAVE_PROFILE_AUDITOR,
-} from "./types.js";
+  AUTH_TRUE,
+  CLEAR_ERROR,
+  LOG_OUT,
+  SIGN_IN_ERROR,
+  USER_IS_ALREADY_EXIST,
+  USER_SIGNIN,
+  USER_SIGNUP,
+  SELECT_ROLE,
+  UPDATE_USER,
+  CLEAR_SUCCESS,
+  CHANGE_ROLE_DONT_HAVE_PROFILE_CUSTOMER,
+  CHANGE_ROLE_HAVE_PROFILE_CUSTOMER,
+  CHANGE_ROLE_DONT_HAVE_PROFILE_AUDITOR, CHANGE_ROLE_HAVE_PROFILE_AUDITOR, GET_CUSTOMER, GET_AUDITOR,
+} from "./types.js"
 
 const API_URL = import.meta.env.VITE_API_BASE_URL;
 
@@ -116,6 +116,7 @@ export const changeRole = (value, id) => {
 };
 
 export const changeRolePublicCustomer = (value, id, currentRole) => {
+    const token = Cookies.get('token')
     return (dispatch) => {
         axios
             .patch(
@@ -123,30 +124,38 @@ export const changeRolePublicCustomer = (value, id, currentRole) => {
                 { current_role: value },
                 {
                     headers: {
-                        Authorization: "Bearer " + Cookies.get("token"),
+                        Authorization: "Bearer " + token,
                         "Content-Type": "application/json",
                     },
                 }
             )
-            .then(({ data }) => {
-                if (currentRole.firts_name || currentRole.last_name){
-                    dispatch({ type: CHANGE_ROLE_HAVE_PROFILE_CUSTOMER, payload: data });
-                } else {
-                    dispatch({ type: CHANGE_ROLE_DONT_HAVE_PROFILE_CUSTOMER, payload: data });
-                }
-                localStorage.setItem("user", JSON.stringify(data));
-                history.push(
-                    { pathname: `/profile/user-info` },
-                    {
-                        some: true,
-                    }
-                );
-            });
+          .then(({ data: user }) => {
+            axios.get(`${API_URL}/my_customer`, { headers: {"Authorization": `Bearer ${ token }`} })
+              .then(({ data: customer }) => {
+                dispatch({type: GET_CUSTOMER, payload: customer})
+                return { customer, user }
+              })
+              .then(({ customer, user }) => {
+                  if (customer?.first_name || customer?.last_name){
+                      dispatch({ type: CHANGE_ROLE_HAVE_PROFILE_CUSTOMER, payload: user });
+                  } else {
+                      dispatch({ type: CHANGE_ROLE_DONT_HAVE_PROFILE_CUSTOMER, payload: user });
+                      history.push(
+                        { pathname: `/profile/user-info` },
+                        { some: true }
+                      );
+                  }
+                  localStorage.setItem("user", JSON.stringify(user));
+              });
+          })
+
+
     };
 };
 
 
 export const changeRolePublicAuditor = (value, id, currentRole) => {
+    const token = Cookies.get('token')
     return (dispatch) => {
         axios
             .patch(
@@ -154,25 +163,30 @@ export const changeRolePublicAuditor = (value, id, currentRole) => {
                 { current_role: value },
                 {
                     headers: {
-                        Authorization: "Bearer " + Cookies.get("token"),
+                        Authorization: "Bearer " + token,
                         "Content-Type": "application/json",
                     },
                 }
             )
-            .then(({ data }) => {
-                if (currentRole.firts_name || currentRole.last_name){
-                    dispatch({ type: CHANGE_ROLE_HAVE_PROFILE_AUDITOR, payload: data });
+          .then(({ data: user }) => {
+            axios.get(`${API_URL}/my_auditor`, { headers: {"Authorization": `Bearer ${ token }`} })
+              .then(({ data: auditor }) => {
+                dispatch({ type: GET_AUDITOR, payload: auditor })
+                return { auditor, user }
+              })
+              .then(({ auditor, user }) => {
+                if (auditor?.first_name || auditor?.last_name){
+                  dispatch({ type: CHANGE_ROLE_HAVE_PROFILE_AUDITOR, payload: user });
                 } else {
-                    dispatch({ type: CHANGE_ROLE_DONT_HAVE_PROFILE_AUDITOR, payload: data });
-                }
-                localStorage.setItem("user", JSON.stringify(data));
-                history.push(
+                  dispatch({ type: CHANGE_ROLE_DONT_HAVE_PROFILE_AUDITOR, payload: user });
+                  history.push(
                     { pathname: `/profile/user-info` },
-                    {
-                        some: true,
-                    }
-                );
-            });
+                    { some: true }
+                  )
+                }
+                localStorage.setItem("user", JSON.stringify(user));
+              });
+          })
     };
 };
 

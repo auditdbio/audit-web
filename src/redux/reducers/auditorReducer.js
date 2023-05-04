@@ -2,6 +2,7 @@ import {
   GET_AUDITOR,
   GET_AUDITORS, SEARCH_AUDITOR,
   UPDATE_AUDITOR,
+  LOG_OUT
 } from "../actions/types.js";
 
 const initialState = {
@@ -20,6 +21,8 @@ export const auditorReducer = (state = initialState, action) => {
       return { ...state, searchAuditors: action.payload };
     case GET_AUDITORS:
       return { ...state, auditors: action.payload };
+    case LOG_OUT:
+      return { ...state, auditor: null }
     default:
       return state;
   }

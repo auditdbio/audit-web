@@ -43,15 +43,15 @@ const AuditRequestInfo = ({project, onClose, handleError, redirect, isModal}) =>
     const dispatch = useDispatch()
 
     const handleOpen = () => {
-        if (user.current_role === AUDITOR && isAuth() && auditor?.first_name && auditor?.last_name) {
+        if (user.current_role === AUDITOR && isAuth() && auditor?.first_name) {
             setOpen(true);
-        } else if (user.current_role !== AUDITOR && isAuth() && auditor?.first_name && auditor?.last_name) {
+        } else if (user.current_role !== AUDITOR && isAuth() && auditor?.first_name) {
             dispatch(changeRolePublicAuditorNoRedirect(AUDITOR, user.id, auditor))
             handleError()
             setOpen(true)
-        } else if (!auditor?.first_name && !auditor?.last_name && user.current_role === AUDITOR && isAuth()) {
+        } else if (!auditor?.first_name && user.current_role === AUDITOR && isAuth()) {
             dispatch(changeRolePublicAuditor(AUDITOR, user.id, auditor))
-        } else if (user.current_role !== AUDITOR && isAuth() && !auditor?.first_name && !auditor?.last_name) {
+        } else if (user.current_role !== AUDITOR && isAuth() && !auditor?.first_name) {
             dispatch(changeRolePublicAuditor(AUDITOR, user.id, auditor))
             handleError()
             setOpen(true)
@@ -281,6 +281,8 @@ const AuditRequestInfo = ({project, onClose, handleError, redirect, isModal}) =>
                         onSubmit={(values) => {
                             const newValue = {
                                 ...values,
+                                auditor_id: auditor?.user_id,
+                                auditor_contacts: {...auditor?.contacts},
                                 price: parseInt(values.price),
                                 price_range: {
                                     from: parseInt(values.price),

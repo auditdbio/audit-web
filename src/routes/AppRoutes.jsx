@@ -33,11 +33,12 @@ import MyProjects from "../pages/My-projects.jsx";
 const AppRoutes = () => {
     const token = useSelector(s => s.user.token)
     const currentRole = useSelector(s => s.user.user.current_role)
+    const customer = useSelector(s => s.customer.customer)
+    const auditor = useSelector(s => s.auditor.auditor)
     const dispatch = useDispatch()
+
     useEffect(() => {
         if (isAuth()) {
-            dispatch(getAuditor())
-            dispatch(getCustomer())
             dispatch(getProjects())
             if (currentRole){
                 dispatch(getAuditsRequest(currentRole))
@@ -45,6 +46,16 @@ const AppRoutes = () => {
             }
         }
     }, [token, currentRole, isAuth])
+
+    useEffect(() => {
+      if (isAuth()) {
+        if (currentRole === 'auditor' && !auditor) {
+          dispatch(getAuditor())
+        } else if (currentRole === 'customer' && !customer) {
+          dispatch(getCustomer())
+        }
+      }
+    }, [currentRole, isAuth, customer, auditor])
 
     return (
         <>
