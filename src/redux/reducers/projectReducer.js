@@ -6,7 +6,7 @@ import {
 } from '../actions/types.js'
 
 const initialState = {
-  projects: null,
+  projects: [],
   myProjects: null,
   recentProject: null,
   error: null,

@@ -45,7 +45,6 @@ export default function AuditorSearchModal({
     const [query, setQuery] = useState("");
 
     useEffect(() => {
-        setState(true)
         dispatch(getAuditors(query));
     }, [query]);
 
@@ -60,13 +59,13 @@ export default function AuditorSearchModal({
 
 
     const handleSearch = async () => {
-        if (inputValue) {
+           await setState(true)
             handleSubmit()
            await navigate(`/auditors?search=${query}`,)
-        } else {
-            handleSubmit()
-           await navigate(`/auditors?search=`)
-        }
+        // } else {
+        //     handleSubmit()
+        //    await navigate(`/auditors?search=`)
+        // }
     }
 
 
