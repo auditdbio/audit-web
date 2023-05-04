@@ -18,7 +18,7 @@ import {
 } from '../redux/actions/projectAction.js'
 import { useDispatch, useSelector } from "react-redux";
 import * as Yup from "yup";
-import { useLocation } from "react-router-dom";
+import { useLocation, useSearchParams } from "react-router-dom"
 import { getAuditsRequest } from "../redux/actions/auditAction.js";
 import { AuditRequestsArray } from "./custom/AuditRequestsArray.jsx";
 import Markdown from "./custom/Markdown-editor.jsx";
@@ -29,6 +29,7 @@ import { DONE } from '../redux/actions/types.js'
 const CreateProjectCard = ({projectInfo }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const [getSearchParam] = useSearchParams();
   const customerReducer = useSelector((state) => state.customer);
   const auditReducer = useSelector((state) => state.audits);
   const [auditRequests, setAuditRequests] = useState([]);
@@ -75,7 +76,7 @@ const CreateProjectCard = ({projectInfo }) => {
     scope: projectInfo ? projectInfo.scope : [],
     description: projectInfo ? projectInfo.description : "",
     tags: projectInfo ? projectInfo.tags : [],
-    status: '',
+    status: projectInfo?.status === DONE ? DONE : "",
     price: projectInfo ? projectInfo.price : 0,
     creator_contacts: customerReducer?.customer?.contacts,
   };
@@ -92,9 +93,10 @@ const CreateProjectCard = ({projectInfo }) => {
 
   const handlePublish = (values, handleSubmit) => {
     setIsPublished(!isPublished)
-    const newValue = {...values,
-      publish_options: {...values.publish_options,
-        publish: !isPublished}
+    const newValue = {
+      ...values,
+      publish_options: { ...values.publish_options, publish: !isPublished },
+      status: isClosed ? DONE : ''
     }
     if (values.id && projectInfo.id) {
       dispatch(changeStatusProject({ ...newValue, id: projectInfo.id }))
@@ -111,7 +113,11 @@ const CreateProjectCard = ({projectInfo }) => {
         const newValue = {...values, price: parseInt(values.price)}
         if (editMode && projectInfo.id){
           if (!state) {
-            dispatch(editProject({ ...newValue, id: projectInfo.id }))
+            dispatch(editProject({
+              ...newValue,
+              id: projectInfo.id,
+              status: projectInfo?.status === DONE ? DONE : ""
+            }))
           } else {
             dispatch(editProjectNoRedirect({ ...newValue, id: projectInfo.id }))
           }
@@ -196,7 +202,7 @@ const CreateProjectCard = ({projectInfo }) => {
               <Button
                 variant={"contained"}
                 sx={publishButton}
-                disabled={isClosed}
+                disabled={isClosed || !projectInfo || !!getSearchParam.get('copy')}
                 onClick={() => setCloseConfirmIsOpen(true)}
               >
                 { isClosed ?

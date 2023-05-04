@@ -16,7 +16,7 @@ const EditProject = () => {
   const project = useSelector((s) => s.project?.myProjects?.find((p) => p.id === projectId.id));
   const myProject = useMemo(() => {
     if  (!!getSearchParam.get('copy')){
-      return {...project, id: null}
+      return { ...project, id: null, status: '' }
     } else {
       return project
     }
