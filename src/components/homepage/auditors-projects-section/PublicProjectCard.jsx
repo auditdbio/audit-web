@@ -97,11 +97,10 @@ const modalWrapper = (theme) => ({
     transform: 'translate(-50%, -50%)',
     width: 700,
     height: '90%',
-    overflow: 'auto',
     borderRadius: '14px',
     '& .audit-request-wrapper': {
         gap: '5px',
-        paddingX: '44px',
+        paddingX: '35px',
     },
     [theme.breakpoints.down('md')]: {
         '& .audit-request-wrapper': {
@@ -209,6 +208,7 @@ const auditNameStyle = (theme) => ({
     "-webkit-box-orient": "vertical",
     textOverflow: "ellipsis",
     overflow: "hidden",
+    wordBreak: 'break-word',
     fontWeight: "500",
     fontSize: "28px",
     textAlign: "center",

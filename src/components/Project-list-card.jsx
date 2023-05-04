@@ -97,6 +97,7 @@ const projectTitleWrapper = (theme) => ({
     marginBottom: '18px',
     height: '80px',
     overflow: 'hidden',
+    wordBreak: 'break-word',
     '-webkit-line-clamp': '2',
     '-webkit-box-orient': 'vertical',
     'text-overflow': 'ellipsis',
@@ -147,7 +148,6 @@ export const modalWrapper = (theme) => ({
     transform: 'translate(-50%, -50%)',
     width: 700,
     height: '90%',
-    overflow: 'auto',
     borderRadius: '14px',
     '& .audit-request-wrapper': {
         gap: '100px',

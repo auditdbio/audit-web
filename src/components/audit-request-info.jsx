@@ -79,7 +79,10 @@ const AuditRequestInfo = ({project, onClose, handleError, redirect, isModal}) =>
                         onClick={handleBack}>
                     <ArrowBackIcon color={'secondary'}/>
                 </Button>
-                <Typography variant={'h3'} sx={{width: '100%', textAlign: 'center'}}>
+                <Typography
+                  variant={'h3'}
+                  sx={{width: '100%', textAlign: 'center', wordBreak: 'break-word', px: '10px'}}
+                >
                     {project?.name || project?.project_name}
                 </Typography>
             </Box>
@@ -455,6 +458,8 @@ const modalWrapper = (theme) => ({
 })
 
 const wrapper = (theme) => ({
+    overflowY: 'auto',
+    height: '100%',
     padding: '48px 74px 80px',
     display: 'flex',
     flexDirection: 'column',
