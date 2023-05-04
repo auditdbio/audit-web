@@ -7,8 +7,9 @@ import Cookies from "js-cookie";
 import {useSelector} from "react-redux";
 import {ASSET_URL} from "../../../services/urls.js";
 
-const AuditUpload = ({name, disabled, auditId, auditorId, customerId, setFieldValue}) => {
+const AuditUpload = ({ name, disabled, auditId, auditorId, auditReportName, customerId, setFieldValue }) => {
     const [field, meta, fieldHelper] = useField(name)
+    const [originalFileName, setOriginalFileName] = useState(auditReportName || '')
     const formData = new FormData()
     const user = useSelector(state => state.user.user)
     const [error, setError] = useState(null)
@@ -31,6 +32,7 @@ const AuditUpload = ({name, disabled, auditId, auditorId, customerId, setFieldVa
                 headers: {Authorization: "Bearer " + Cookies.get("token")}
             })
                 .then((data) => {
+                    setOriginalFileName(file.name)
                     fieldHelper.setValue(formData.get('path'))
                     setFieldValue('report_name', formData.get('report_name'))
                     formData.delete('file')
@@ -60,7 +62,9 @@ const AuditUpload = ({name, disabled, auditId, auditorId, customerId, setFieldVa
     }
     return (
         <>
-            <Box sx={[inputWrapper, meta.error ? {borderColor: '#f44336'} : {}]}>{field?.value}</Box>
+            <Box sx={[inputWrapper, meta.error ? {borderColor: '#f44336'} : {}]}>
+              {originalFileName}
+            </Box>
             <Snackbar
                 autoHideDuration={10000}
                 open={!!error}
