@@ -35,9 +35,7 @@ const AppRoutes = () => {
     const currentRole = useSelector(s => s.user.user.current_role)
     const dispatch = useDispatch()
     useEffect(() => {
-        dispatch(getAllProjects())
         if (isAuth()) {
-            dispatch(getAuditors())
             dispatch(getAuditor())
             dispatch(getCustomer())
             dispatch(getProjects())
