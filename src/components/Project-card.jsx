@@ -129,6 +129,7 @@ const priceWrapper = (theme) => ({
 const projectNameSx = (theme) => ({
     height: '45px',
     overflow: 'hidden',
+    wordBreak: 'break-word',
     '-webkit-line-clamp': '2',
     '-webkit-box-orient': 'vertical',
     'text-overflow': 'ellipsis',
