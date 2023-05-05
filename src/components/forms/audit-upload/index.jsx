@@ -1,11 +1,12 @@
 import React, {useState} from 'react';
-import {Alert, AlertTitle, Box, Button, Snackbar, Stack} from "@mui/material";
+import {Box, Button} from "@mui/material";
 import CreateNewFolderOutlinedIcon from "@mui/icons-material/CreateNewFolderOutlined.js";
 import {useField} from "formik";
 import axios from "axios";
 import Cookies from "js-cookie";
 import {useSelector} from "react-redux";
 import {ASSET_URL} from "../../../services/urls.js";
+import CustomSnackbar from "../../custom/CustomSnackbar.jsx";
 
 const AuditUpload = ({ name, disabled, auditId, auditorId, auditReportName, customerId, setFieldValue }) => {
     const [field, meta, fieldHelper] = useField(name)
@@ -65,20 +66,14 @@ const AuditUpload = ({ name, disabled, auditId, auditorId, auditReportName, cust
             <Box sx={[inputWrapper, meta.error ? {borderColor: '#f44336'} : {}]}>
               {originalFileName}
             </Box>
-            <Snackbar
-                autoHideDuration={10000}
-                open={!!error}
-                anchorOrigin={{ horizontal: 'right', vertical: 'top' }}
-                onClose={() => {
-                    setError(null)
-                }}
-            >
-                <Stack sx={{ width: '100%', flexDirection: 'column', gap: 2 }} spacing={2}>
-                    <Alert severity='error'>
-                        <AlertTitle>{error}</AlertTitle>
-                    </Alert>
-                </Stack>
-            </Snackbar>
+            <CustomSnackbar
+              autoHideDuration={10000}
+              open={!!error}
+              onClose={() => setError(null)}
+              severity='error'
+              text={error}
+            />
+
             <Button disabled={disabled}>
                 <label htmlFor="audit-upload">
                     <CreateNewFolderOutlinedIcon fontSize={'large'} color={'disabled'}/>

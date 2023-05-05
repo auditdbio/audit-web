@@ -1,10 +1,11 @@
-import {Alert, AlertTitle, Box, Card, Modal, Snackbar, Stack, Tooltip, Typography} from "@mui/material";
+import {Box, Card, Modal, Tooltip, Typography} from "@mui/material";
 import theme from "../../../styles/themes";
 import {CustomButton} from "../../custom/Button";
 import {useNavigate} from "react-router-dom";
 import React, {useState} from "react";
 import ProjectModal from "../../ProjectModal.jsx";
 import AuditRequestInfo from "../../audit-request-info.jsx";
+import CustomSnackbar from "../../custom/CustomSnackbar.jsx";
 
 const PublicProjectCard = ({project}) => {
     const navigate = useNavigate();
@@ -61,18 +62,15 @@ const PublicProjectCard = ({project}) => {
                     .join(", ")}
             </Typography>
             </Tooltip>
-            <Snackbar
-                autoHideDuration={3000}
-                open={!!message}
-                anchorOrigin={{horizontal: 'right', vertical: 'top'}}
-                onClose={() => setMessage(null)}
-            >
-                <Stack sx={{width: '100%', flexDirection: 'column', gap: 2}} spacing={2}>
-                    <Alert severity='success'>
-                        <AlertTitle>{message}</AlertTitle>
-                    </Alert>
-                </Stack>
-            </Snackbar>
+
+            <CustomSnackbar
+              autoHideDuration={3000}
+              open={!!message}
+              onClose={() => setMessage(null)}
+              severity='success'
+              text={message}
+            />
+
             <Box sx={statusWrapper}>
                 <Box/>
                 <Typography>{project.publish_options.publish ? 'Published' : 'Private'}</Typography>

@@ -1,13 +1,14 @@
-import React, {useEffect, useState} from 'react';
-import {Alert, AlertTitle, Avatar, Button, Snackbar, Stack} from "@mui/material";
-import {AUDITOR} from "../../../redux/actions/types.js";
-import theme from "../../../styles/themes.js";
-import EditIcon from "@mui/icons-material/Edit.js";
+import React, {useState} from 'react';
 import {useField} from "formik";
 import axios from "axios";
 import Cookies from "js-cookie";
 import {useSelector} from "react-redux";
+import {Avatar, Button} from "@mui/material";
+import EditIcon from "@mui/icons-material/Edit.js";
+import {AUDITOR} from "../../../redux/actions/types.js";
+import theme from "../../../styles/themes.js";
 import {ASSET_URL} from "../../../services/urls.js";
+import CustomSnackbar from "../../custom/CustomSnackbar.jsx";
 
 
 const AvatarForm = ({role, name}) => {
@@ -53,20 +54,15 @@ const AvatarForm = ({role, name}) => {
     return (
         <>
             <Avatar src={avatarField.value && `${ASSET_URL}/${avatarField.value}`}/>
-            <Snackbar
-                autoHideDuration={10000}
-                open={!!error}
-                anchorOrigin={{ horizontal: 'right', vertical: 'top' }}
-                onClose={() => {
-                    setError(null)
-                }}
-            >
-                <Stack sx={{ width: '100%', flexDirection: 'column', gap: 2 }} spacing={2}>
-                    <Alert severity='error'>
-                        <AlertTitle>{error}</AlertTitle>
-                    </Alert>
-                </Stack>
-            </Snackbar>
+
+            <CustomSnackbar
+              autoHideDuration={10000}
+              open={!!error}
+              onClose={() => setError(null)}
+              severity='error'
+              text={error}
+            />
+
             <Button sx={
                 role === AUDITOR ? {color: theme.palette.secondary.main} : {}
             }>

@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import Layout from "../styles/Layout.jsx";
-import {Alert, AlertTitle, Box, Snackbar, Stack, Tab, Tabs} from "@mui/material";
+import {Box} from "@mui/material";
 import CustomTabs from "../components/custom/CustomTabs.jsx";
 import InfoCard from "../components/custom/info-card.jsx";
 import UserInfo from "../components/User-info.jsx";
@@ -13,6 +13,7 @@ import {AUDITOR, CUSTOMER} from "../redux/actions/types.js";
 import AuditRequest from "../components/Audit-request.jsx";
 import {useParams} from "react-router-dom";
 import {clearUserSuccess} from "../redux/actions/userAction.js";
+import CustomSnackbar from "../components/custom/CustomSnackbar.jsx";
 
 const ProfilePage = () => {
     const {tab} = useParams()
@@ -26,18 +27,14 @@ const ProfilePage = () => {
     }, [tab, chooseTab])
     return (
         <Layout>
-            <Snackbar
-                autoHideDuration={3000}
-                open={!!message}
-                anchorOrigin={{ horizontal: 'right', vertical: 'top' }}
-                onClose={() => dispatch(clearUserSuccess())}
-            >
-                <Stack sx={{ width: '100%', flexDirection: 'column', gap: 2 }} spacing={2}>
-                    <Alert severity='success'>
-                        <AlertTitle>{message}</AlertTitle>
-                    </Alert>
-                </Stack>
-            </Snackbar>
+            <CustomSnackbar
+              autoHideDuration={3000}
+              open={!!message}
+              onClose={() => dispatch(clearUserSuccess())}
+              severity='success'
+              text={message}
+            />
+
             <Box sx={wrapper}>
                 <CustomTabs
                     selectedTabSx={currentRole === AUDITOR ? auditorTabSx : customerTabSx}

@@ -1,4 +1,4 @@
-import {Card, Avatar, Box, Typography, Stack, Alert, AlertTitle, Snackbar, Tooltip} from "@mui/material";
+import {Card, Avatar, Box, Typography, Tooltip} from "@mui/material";
 import theme from "../../../styles/themes";
 import { CustomButton } from "../../custom/Button";
 import Currency from "../../icons/Currency";
@@ -8,6 +8,7 @@ import AuditorModal from "../../AuditorModal.jsx";
 import {ASSET_URL} from "../../../services/urls.js";
 import {useNavigate} from "react-router-dom/dist";
 import {useSelector} from "react-redux";
+import CustomSnackbar from "../../custom/CustomSnackbar.jsx";
 
 const AuditorCard = ({ auditor }) => {
   const [openModal, setOpenModal] = useState(false);
@@ -46,21 +47,17 @@ const AuditorCard = ({ auditor }) => {
         auditor={auditor}
         handleError={handleError}
       />
-      <Snackbar
-          autoHideDuration={3000}
-          open={!!message || !!errorMessage}
-          anchorOrigin={{ horizontal: 'right', vertical: 'top' }}
-          onClose={() => {
-            setErrorMessage(null)
-            setMessage(null)
-          }}
-      >
-        <Stack sx={{ width: '100%', flexDirection: 'column', gap: 2 }} spacing={2}>
-          <Alert severity={!errorMessage ? 'success' : 'error'}>
-            <AlertTitle>{message || errorMessage}</AlertTitle>
-          </Alert>
-        </Stack>
-      </Snackbar>
+      <CustomSnackbar
+        autoHideDuration={3000}
+        open={!!message || !!errorMessage}
+        onClose={() => {
+          setErrorMessage(null)
+          setMessage(null)
+        }}
+        severity={!errorMessage ? 'success' : 'error'}
+        text={message || errorMessage}
+      />
+
       <Avatar src={auditor.avatar && `${ASSET_URL}/${auditor.avatar}`} sx={avatarStyle} />
       <Box sx={{display: 'grid'}}>
         <Tooltip title={`${auditor.first_name} ${auditor.last_name}`}

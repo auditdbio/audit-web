@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import {Avatar, Box, Button, Modal, Snackbar, Stack, Tooltip, Typography} from "@mui/material";
+import {Avatar, Box, Button, Tooltip, Typography} from "@mui/material";
 import TagsList from "./tagsList.jsx";
 import CircleIcon from "@mui/icons-material/Circle";
 import theme from "../styles/themes.js";
@@ -10,7 +10,7 @@ import {ASSET_URL} from "../services/urls.js";
 import {useDispatch, useSelector} from "react-redux";
 import {CUSTOMER} from "../redux/actions/types.js";
 import {changeRolePublicCustomer, changeRolePublicCustomerNoRedirect} from "../redux/actions/userAction.js";
-import {Alert, AlertTitle} from "@mui/lab";
+import CustomSnackbar from "./custom/CustomSnackbar.jsx";
 
 const AuditorListCard = ({auditor}) => {
     const navigate = useNavigate();
@@ -65,21 +65,17 @@ const AuditorListCard = ({auditor}) => {
 
     return (
         <Box sx={wrapper}>
-            <Snackbar
-                autoHideDuration={3000}
-                open={!!message || !!errorMessage}
-                anchorOrigin={{horizontal: 'right', vertical: 'top'}}
-                onClose={() => {
-                    setErrorMessage(null)
-                    setMessage(null)
-                }}
-            >
-                <Stack sx={{width: '100%', flexDirection: 'column', gap: 2}} spacing={2}>
-                    <Alert severity={(isForm || message) ? 'success' : 'error'}>
-                        <AlertTitle>{message || errorMessage}</AlertTitle>
-                    </Alert>
-                </Stack>
-            </Snackbar>
+            <CustomSnackbar
+              autoHideDuration={3000}
+              open={!!message || !!errorMessage}
+              onClose={() => {
+                  setErrorMessage(null)
+                  setMessage(null)
+              }}
+              severity={(isForm || message) ? 'success' : 'error'}
+              text={message || errorMessage}
+            />
+
             <AuditorModal
                 open={openModal}
                 handleClose={handleCloseModal}

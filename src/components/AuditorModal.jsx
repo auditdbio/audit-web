@@ -4,7 +4,7 @@ import Dialog from "@mui/material/Dialog";
 import DialogContent from "@mui/material/DialogContent";
 import theme from "../styles/themes.js";
 import { Box } from "@mui/system";
-import {Avatar, Snackbar, Stack, Tooltip, Typography} from "@mui/material";
+import {Avatar, Tooltip, Typography} from "@mui/material";
 import TagsList from "./tagsList.jsx";
 import { useEffect, useState } from "react";
 import IconButton from "@mui/material/IconButton";
@@ -21,8 +21,8 @@ import SalarySlider from "./forms/salary-slider/salary-slider.jsx";
 import {Field, Form, Formik} from "formik";
 import {CUSTOMER} from "../redux/actions/types.js";
 import {changeRolePublicCustomer, changeRolePublicCustomerNoRedirect} from "../redux/actions/userAction.js";
-import {Alert, AlertTitle} from "@mui/lab";
 import * as Yup from "yup";
+import CustomSnackbar from "./custom/CustomSnackbar.jsx";
 
 export default function AuditorModal({ open, handleClose, auditor, isForm, onSubmit, handleError }) {
   const navigate = useNavigate();
@@ -62,18 +62,13 @@ export default function AuditorModal({ open, handleClose, auditor, isForm, onSub
     <Dialog open={open} onClose={handleClose}>
       {mode === "info" && (
         <DialogContent sx={modalWindow}>
-          <Snackbar
-              autoHideDuration={10000}
-              open={!!message}
-              anchorOrigin={{ horizontal: 'right', vertical: 'top' }}
-              onClose={() => setMessage(null)}
-          >
-            <Stack sx={{ width: '100%', flexDirection: 'column', gap: 2 }} spacing={2}>
-              <Alert severity='error'>
-                <AlertTitle>{message}</AlertTitle>
-              </Alert>
-            </Stack>
-          </Snackbar>
+          <CustomSnackbar
+            autoHideDuration={10000}
+            open={!!message}
+            onClose={() => setMessage(null)}
+            severity='error'
+            text={message}
+          />
           <Box sx={contentWrapper}>
             <Box sx={{ display: "flex", justifyContent: "center" }}>
               <Avatar src={auditor.avatar && `${ASSET_URL}/${auditor.avatar}`} sx={avatarStyle} />
