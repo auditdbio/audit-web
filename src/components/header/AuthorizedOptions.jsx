@@ -11,8 +11,9 @@ import CustomMenu from "../custom/CustomMenu.jsx";
 import CustomBadge from "../customBudge";
 import { UserMenu } from "./UserMenu.jsx";
 import RoleMenuDropdown from "./RoleMenuDropdown.jsx";
+import { authorizedPages } from "./constants.js"
 
-const HeaderAuthorizedOptions = () => {
+const AuthorizedOptions = () => {
   const matchSm = useMediaQuery(theme.breakpoints.down("sm"));
 
   const reduxUser = useSelector((state) => state.user.user);
@@ -127,75 +128,6 @@ const HeaderAuthorizedOptions = () => {
 }
 
 
-const authorizedPages = [
-  {
-    id: 1,
-    name: "Audits",
-    menuOptions: [
-      {
-        id: 111,
-        role: AUDITOR,
-        itemName: "My audits",
-        link: '/profile/projects'
-      },
-      {
-        id: 112,
-        role: AUDITOR,
-        itemName: "My audit requests",
-        link: '/profile/audits'
-      },
-      {
-        id: 113,
-        role: AUDITOR,
-        itemName: "Search for auditors",
-        link: '/auditors'
-      },
-      {
-        id: 114,
-        role: CUSTOMER,
-        itemName: "My audits",
-        link: '/profile/audits'
-      },
-      {
-        id: 116,
-        role: CUSTOMER,
-        itemName: "Search for auditors",
-        link: '/auditors'
-      },
-    ],
-  },
-  {
-    id: 2,
-    name: "Projects",
-    menuOptions: [
-      {
-        id: 221,
-        role: AUDITOR,
-        itemName: "Search for projects",
-        link: '/projects'
-      },
-      {
-        id: 222,
-        role: CUSTOMER,
-        itemName: "My projects",
-        link: '/profile/projects'
-      },
-      {
-        id: 223,
-        role: CUSTOMER,
-        itemName: "Create project",
-        link: '/create-project'
-      },
-      {
-        id: 224,
-        role: CUSTOMER,
-        itemName: "Search for projects",
-        link: '/projects'
-      },
-    ],
-  },
-];
-
 const mobileWrapper = {
   flexGrow: 0,
   display: "flex",
@@ -207,7 +139,7 @@ const desktopWrapper = {
   display: "flex",
   alignItems: "center",
   gap: "15px",
-}
+};
 
 const userGreeting = {
   display: "flex",
@@ -215,7 +147,7 @@ const userGreeting = {
   fontSize: "26px",
   fontWeight: "500",
   whiteSpace: "nowrap",
-}
+};
 
 const avatarStyle = (theme) => ({
   width: "100px",
@@ -226,4 +158,4 @@ const avatarStyle = (theme) => ({
   }
 });
 
-export default HeaderAuthorizedOptions
+export default AuthorizedOptions;
