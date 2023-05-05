@@ -1,327 +1,29 @@
-import {useMemo, useState} from "react";
+import React from "react";
+import { Link } from "react-router-dom/dist";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
-import IconButton from "@mui/material/IconButton";
-import Menu from "@mui/material/Menu";
-import MenuIcon from "@mui/icons-material/Menu";
 import Container from "@mui/material/Container";
-import MenuItem from "@mui/material/MenuItem";
-import CustomMenu from "../custom/CustomMenu.jsx";
 import theme from "../../styles/themes.js";
-import { CustomButton } from "../custom/Button.jsx";
-import { useNavigate, Link } from "react-router-dom/dist";
-import { Typography, useMediaQuery, Avatar } from "@mui/material";
-import { isAuth } from "../../lib/helper.js";
-import CustomBadge from "../customBudge";
-import NotificationsIcon from "@mui/icons-material/Notifications";
-import { UserMenu } from "./UserMenu.jsx";
-import RoleMenuDropdown from "./RoleMenuDropdown.jsx";
-import { useSelector } from "react-redux";
-import {AUDITOR, CUSTOMER} from "../../redux/actions/types.js";
 import Logo from "../icons/Logo.jsx";
-import {ASSET_URL} from "../../services/urls.js";
+import AuthorizedOptions from "./AuthorizedOptions.jsx"
+import UnauthorizedOptions from "./UnauthorizedOptions.jsx"
+import { isAuth } from "../../lib/helper.js"
+
 
 const Header = () => {
-  const reduxUser = useSelector((state) => state.user.user);
-  const [currentUsername] = useState(reduxUser.name || 'User');
-  const auditor = useSelector((state) => state.auditor.auditor);
-  const customer = useSelector((state) => state.customer.customer);
-
-  const navigate = useNavigate();
-  const matchSm = useMediaQuery(theme.breakpoints.down("sm"));
-
-  const handleSignIn = () => {
-    navigate("/sign-in");
-  };
-
-  const handleSignUp = () => {
-    navigate("/sign-up");
-  };
-
-  const [anchorElNav, setAnchorElNav] = useState(null);
-  const [anchorElUser, setAnchorElUser] = useState(null);
-  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
-  const [anchorElRole, setAnchorElRole] = useState(null);
-  const [isRoleMenuOpen, setIsRoleMenuOpen] = useState(false);
-  // const [isAuditor, setIsAudito] = useState(false)
-
-  const handleOpenNavMenu = (event) => {
-    setAnchorElNav(event.currentTarget);
-  };
-  const handleOpenUserMenu = (event) => {
-    setAnchorElUser(event.currentTarget);
-    setIsUserMenuOpen(!isUserMenuOpen);
-  };
-
-  // const handleOpenRoleMenu = (event) => {
-  //   setAnchorElRole(event.currentTarget);
-  //   setIsRoleMenuOpen(!isUserMenuOpen);
-  // };
-
-  const handleCloseNavMenu = (el) => {
-    navigate()
-    setAnchorElNav(null);
-  };
-
-  const handleCloseUserMenu = () => {
-    setIsUserMenuOpen(false);
-    setAnchorElUser(null);
-  };
-
-  const handleCloseRoleMenu = () => {
-    setIsRoleMenuOpen(false);
-    setAnchorElRole(null);
-  };
-
-  const userAvatar = useMemo(() => {
-    if (reduxUser.current_role === AUDITOR && !!auditor?.avatar){
-      return auditor.avatar;
-    } else if (reduxUser.current_role === CUSTOMER && !!customer?.avatar){
-      return customer.avatar;
-    } else {
-      return null
-    }
-
-  }, [reduxUser.current_role, customer?.avatar, auditor?.avatar]);
-
-  const handleNavigate = (path) => {
-    navigate(path);
-  };
-
   return (
     <AppBar position="static" color="transparent" elevation={0}>
-      <Container
-        // maxWidth="xl"
-        sx={{
-          maxWidth: "1512px",
-          paddingTop: "60px",
-          [theme.breakpoints.down("xs")]: {
-            paddingTop: "20px",
-          },
-        }}
-      >
+      <Container sx={container}>
         <Toolbar disableGutters>
-          <Box
-            sx={{
-              width: "100%",
-              display: "flex",
-              flexDirection: "row",
-              justifyContent: "space-between",
-              gap: "1rem",
-            }}
-          >
+          <Box sx={wrapper}>
             <Link to={"/"} style={linkStyle}>
               <Box sx={logoStyle}>
                 <Logo />
               </Box>
             </Link>
-
-            {/* For Unauthorized user */}
-            {!isAuth() && (
-              <>
-                {matchSm && (
-                  <>
-                    <Box sx={{ flexGrow: 0, display: "flex" }}>
-                      <IconButton
-                        aria-label="account of current user"
-                        aria-controls="menu-appbar"
-                        aria-haspopup="true"
-                        onClick={handleOpenNavMenu}
-                        color="inherit"
-                      >
-                        <MenuIcon fontSize="large" />
-                      </IconButton>
-                      <Menu
-                        id="menu-appbar"
-                        anchorEl={anchorElNav}
-                        anchorOrigin={{
-                          vertical: "bottom",
-                          horizontal: "left",
-                        }}
-                        keepMounted
-                        transformOrigin={{
-                          vertical: "top",
-                          horizontal: "left",
-                        }}
-                        open={Boolean(anchorElNav)}
-                        onClose={handleCloseNavMenu}
-                        sx={{
-                          display: "block",
-                        }}
-                        PaperProps={{
-                          sx: { width: "300px", borderRadius: "15px" },
-                        }}
-                      >
-                        <MenuItem sx={{ marginTop: "1rem" }}>
-                          <Box
-                            sx={{
-                              display: "flex",
-                              flexDirection: "column",
-                              width: "100%",
-                              gap: "1rem",
-                              marginX: "1rem",
-                            }}
-                          >
-                            <CustomButton
-                              sx={signInButton}
-                              onClick={handleSignIn}
-                            >
-                              Sign In
-                            </CustomButton>
-                            <CustomButton
-                              sx={signUpButton}
-                              onClick={handleSignUp}
-                            >
-                              Sign Up
-                            </CustomButton>
-                          </Box>
-                        </MenuItem>
-                        {pages.map((page) =>
-                          page.menuOptions.map(el =>
-                              <MenuItem
-                                  key={el.id}
-                                  onClick={() => handleNavigate(el.link)}
-                                  sx={{
-                                    ":active": {
-                                      backgroundColor: "orange",
-                                      color: "color",
-                                    },
-                                  }}
-                              >
-                                <Box
-                                    textAlign="center"
-                                    sx={popupLinkSx}
-                                >
-                                  {el.itemName}
-                                </Box>
-                              </MenuItem>
-                          )
-                        )}
-                      </Menu>
-                    </Box>
-                  </>
-                )}
-                {!matchSm && (
-                  <>
-                    <Box
-                      sx={{
-                        display: "flex",
-                        gap: "0.5rem",
-                      }}
-                    >
-                      {pages.map((page) => (
-                        <CustomMenu
-                          key={page.id}
-                          options={page.menuOptions}
-                          buttonText={page.name}
-                        />
-                      ))}
-                    </Box>
-                    <Box
-                      sx={{
-                        flexGrow: 1,
-                        maxWidth: "500px",
-                        display: "flex",
-                        gap: "1rem",
-                      }}
-                    >
-                      <CustomButton sx={signInButton} onClick={handleSignIn}>
-                        Sign In
-                      </CustomButton>
-                      <CustomButton sx={signUpButton} onClick={handleSignUp}>
-                        Sign Up
-                      </CustomButton>
-                    </Box>
-                  </>
-                )}
-              </>
-            )}
-
-            {/* For Authorized user */}
-            {isAuth() && (
-              <>
-                {/*   Mobile Screen  */}
-                {matchSm && (
-                  <Box
-                    sx={{
-                      flexGrow: 0,
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "1rem",
-                    }}
-                  >
-                    <CustomBadge />
-                    <Avatar
-                        src={userAvatar ? `${ASSET_URL}/${userAvatar}` : ""}
-                      style={{
-                        width: "35px",
-                        height: "35px",
-                      }}
-                    />
-                    <IconButton
-                      aria-label="account of current user"
-                      aria-controls="menu-appbar"
-                      aria-haspopup="true"
-                      onClick={handleOpenUserMenu}
-                      color="inherit"
-                      sx={{ padding: 0 }}
-                    >
-                      <MenuIcon fontSize="large" />
-                    </IconButton>
-                    <UserMenu
-                        pages={authorizedPages}
-                        userAvatar={userAvatar}
-                      open={isUserMenuOpen}
-                      handleClose={handleCloseUserMenu}
-                      anchor={anchorElUser}
-                    />
-                  </Box>
-                )}
-                {/* //   Desktop Screen  */}
-                {!matchSm && (
-                  <Box
-                    sx={{ display: "flex", alignItems: "center", gap: "15px" }}
-                  >
-                    {authorizedPages.map((page) => (
-                      <CustomMenu
-                        key={page.id}
-                        options={page.menuOptions}
-                        buttonText={page.name}
-                      />
-                    ))}
-                    <CustomBadge />
-                    <Typography sx={userGreeting}>
-                      Hello, {currentUsername}!
-                    </Typography>
-                    <IconButton
-                      onClick={handleOpenUserMenu}
-                      sx={{ ml: 1 }}
-                      aria-controls={anchorElUser ? "account-menu" : undefined}
-                      aria-haspopup="true"
-                      aria-expanded={anchorElUser ? "true" : undefined}
-                      disableRipple
-                    >
-                      <Avatar
-                          src={userAvatar ? `${ASSET_URL}/${userAvatar}` : ""}
-                        sx={avatarStyle}
-                      />
-                      <UserMenu
-                        open={isUserMenuOpen}
-                        userAvatar={userAvatar}
-                        handleClose={handleCloseUserMenu}
-                        anchor={anchorElUser}
-                      />
-                    </IconButton>
-                    <RoleMenuDropdown
-                      open={isRoleMenuOpen}
-                      handleClose={handleCloseRoleMenu}
-                      anchor={anchorElRole}
-                    />
-                  </Box>
-                )}
-              </>
-            )}
+            {!isAuth() && <UnauthorizedOptions />}
+            {isAuth() && <AuthorizedOptions />}
           </Box>
         </Toolbar>
       </Container>
@@ -329,191 +31,21 @@ const Header = () => {
   );
 };
 
-const pages = [
-  {
-    id: 1,
-    name: "Product",
-    menuOptions: [
-      {
-        id: 11,
-        itemName: "AuditDB",
-        link: "/audit-db",
-      },
-      {
-        id: 12,
-        itemName: "For customers",
-        link: "/for-customers",
-      },
-      {
-        id: 13,
-        itemName: "For auditors",
-        link: "/for-auditors",
-      },
-      // {
-      //   id: 4,
-      //   itemName: "Our projects",
-      //   link: "/projects",
-      // },
-    ],
-  },
-  {
-    id: 2,
-    name: "About Us",
-    menuOptions: [
-      {
-        id: 23,
-        itemName: "Contact us",
-        link: "/contact-us",
-      },
-      {
-        id: 24,
-        itemName: "FAQ",
-        link: "/FAQ",
-      },
-      {
-        id: 25,
-        itemName: "Screencast",
-        link: "https://youtu.be/J7L4yAhS6Rw",
-      },
-      // {
-      //   id: 5,
-      //   itemName: "Our auditors",
-      //   link: '/auditors'
-      // },
-    ],
-  },
-  // {
-  //   id: 3,
-  //   name: "Community",
-  //   menuOptions: [
-  //     {
-  //       id: 2,
-  //       itemName: "Contact",
-  //       link: "/",
-  //     },
-  //     {
-  //       id: 3,
-  //       itemName: "Our team",
-  //       link: "/",
-  //     },
-  //     {
-  //       id: 4,
-  //       itemName: "Our projects",
-  //       link: "/projects",
-  //     },
-  //   ],
-  // },
-];
 
-const authorizedPages = [
-  {
-    id: 1,
-    name: "Audits",
-    menuOptions: [
-      {
-        id: 111,
-        role: AUDITOR,
-        itemName: "My audits",
-        link: '/profile/projects'
-      },
-      {
-        id: 112,
-        role: AUDITOR,
-        itemName: "My audit requests",
-        link: '/profile/audits'
-      },
-      {
-        id: 113,
-        role: AUDITOR,
-        itemName: "Search for auditors",
-        link: '/auditors'
-      },
-      {
-        id: 114,
-        role: CUSTOMER,
-        itemName: "My audits",
-        link: '/profile/audits'
-      },
-      {
-        id: 116,
-        role: CUSTOMER,
-        itemName: "Search for auditors",
-        link: '/auditors'
-      },
-    ],
+const container = {
+  maxWidth: "1512px",
+  paddingTop: "60px",
+  [theme.breakpoints.down("xs")]: {
+    paddingTop: "20px",
   },
-  {
-    id: 2,
-    name: "Projects",
-    menuOptions: [
-      {
-        id: 221,
-        role: AUDITOR,
-        itemName: "Search for projects",
-        link: '/projects'
-      },
-      {
-        id: 222,
-        role: CUSTOMER,
-        itemName: "My projects",
-        link: '/profile/projects'
-      },
-      {
-        id: 223,
-        role: CUSTOMER,
-        itemName: "Create project",
-        link: '/create-project'
-      },
-      {
-        id: 224,
-        role: CUSTOMER,
-        itemName: "Search for projects",
-        link: '/projects'
-      },
-    ],
-  },
-];
-
-const popupLinkSx = (theme) => ({
-  marginX: "1rem",
-  fontSize: "22px",
-  fontWeight: "500",
-  [theme.breakpoints.down('xs')]: {
-    fontSize: '16px'
-  }
-})
-
-const userGreeting = (theme) => ({
-  display: "flex",
-  alignItems: "center",
-  fontSize: "26px",
-  fontWeight: "500",
-  whiteSpace: "nowrap",
-})
-
-const signInButton = {
-  backgroundColor: "orange",
-  color: "white",
-  ":hover": {
-    backgroundColor: "orange",
-    color: "white",
-  },
-  [theme.breakpoints.down('xs')]: {
-    fontSize: '16px'
-  }
 };
 
-const signUpButton = {
-  backgroundColor: "transparent",
-  color: "#222222",
-  border: "3px solid #52176D",
-  ":hover": {
-    backgroundColor: "transparent",
-    color: "black",
-  },
-  [theme.breakpoints.down('xs')]: {
-    fontSize: '16px'
-  }
+const wrapper = {
+  width: "100%",
+  display: "flex",
+  flexDirection: "row",
+  justifyContent: "space-between",
+  gap: "1rem",
 };
 
 const linkStyle = {
@@ -525,10 +57,6 @@ const linkStyle = {
 const logoStyle = {
   height: "50px",
   width: "200px",
-  // backgroundImage: "url(/welcome_page/logo.svg)",
-  // backgroundSize: "contain",
-  // backgroundPosition: "center",
-  // backgroundRepeat: "no-repeat",
   marginY: "auto",
   [theme.breakpoints.down("sm")]: {
     height: "40px",
@@ -536,13 +64,5 @@ const logoStyle = {
   },
 };
 
-const avatarStyle = (theme) => ({
-  width: "100px",
-  height: "100px",
-  [theme.breakpoints.down('lg')]: {
-    width: '60px',
-    height: '60px',
-  }
-});
 
 export default Header;
