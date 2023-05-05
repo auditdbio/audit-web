@@ -109,7 +109,7 @@ export default ProjectPage;
 const contentWrapper = (theme) => ({
     paddingRight: '20px',
     height: '90%',
-    overflow: 'scroll',
+    overflowY: 'scroll',
     [theme.breakpoints.down('sm')]: {
         flexDirection: 'column',
         flexWrap: 'unset'
