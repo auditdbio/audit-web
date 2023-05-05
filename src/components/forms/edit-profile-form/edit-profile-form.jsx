@@ -35,6 +35,13 @@ const EditProfileForm = ({role}) => {
         }
     }, [role, customer, auditor])
 
+    const getPrefilledLastName = () => {
+        const usernameParts = user?.name?.split(' ')
+        return usernameParts && usernameParts.length > 1
+          ? usernameParts.at(-1)
+          : ''
+    }
+
     if (!data) {
         return <Loader/>
     } else {
@@ -45,7 +52,7 @@ const EditProfileForm = ({role}) => {
                     avatar: data.avatar || '',
                     free_at: '',
                     first_name: data?.first_name || user?.name?.split(' ')[0] || '',
-                    last_name: data?.last_name || user?.name?.split(' ')[1] || '',
+                    last_name: data?.last_name || getPrefilledLastName(),
                     contacts: {
                         telegram: data?.contacts?.telegram || '',
                         email: data?.contacts?.email || user?.email || '',
