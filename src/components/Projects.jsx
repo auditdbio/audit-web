@@ -1,11 +1,12 @@
 import React, { useEffect, useMemo, useState } from "react";
-import {Alert, AlertTitle, Box, Button, Grid, Snackbar, Stack, useMediaQuery} from "@mui/material";
-import ProjectCard from "./Project-card.jsx";
 import { useNavigate } from "react-router-dom/dist";
 import { useDispatch, useSelector } from "react-redux";
+import { Box, Button, Grid } from "@mui/material";
+import ProjectCard from "./Project-card.jsx";
 import { getProjects } from "../redux/actions/projectAction.js";
-import { AUDITOR, CUSTOMER, DONE } from '../redux/actions/types.js'
+import { AUDITOR, CUSTOMER, DONE } from '../redux/actions/types.js';
 import Loader from "./Loader.jsx";
+import CustomSnackbar from "./custom/CustomSnackbar.jsx";
 
 const Projects = ({ role }) => {
   const navigate = useNavigate();
@@ -52,18 +53,15 @@ const Projects = ({ role }) => {
             {role === "auditor" ? "+ New audit" : "+ New project"}
           </Button>
         </Box>
-        <Snackbar
-            autoHideDuration={5000}
-            open={!!error}
-            anchorOrigin={{ horizontal: 'right', vertical: 'top' }}
-            onClose={() => setError(null)}
-        >
-          <Stack sx={{ width: '100%', flexDirection: 'column', gap: 2 }} spacing={2}>
-            <Alert severity='warning'>
-              <AlertTitle>{error}</AlertTitle>
-            </Alert>
-          </Stack>
-        </Snackbar>
+
+        <CustomSnackbar
+          autoHideDuration={5000}
+          open={!!error}
+          onClose={() => setError(null)}
+          severity='warning'
+          text={error}
+        />
+
         <Grid container spacing={2}>
           {projectReducer?.map((project) => (
             <Grid key={project.id} item sx={gridItemStyle}>

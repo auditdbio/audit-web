@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {Alert, AlertTitle, Box, Button, Snackbar, Stack} from "@mui/material";
+import {Box, Button} from "@mui/material";
 import theme, { radiusOfComponents } from "../styles/themes.js";
 import { useNavigate } from "react-router-dom/dist";
 import TagsArray from "./tagsArray/index.jsx";
@@ -23,8 +23,9 @@ import { getAuditsRequest } from "../redux/actions/auditAction.js";
 import { AuditRequestsArray } from "./custom/AuditRequestsArray.jsx";
 import Markdown from "./custom/Markdown-editor.jsx";
 import SalarySlider from "./forms/salary-slider/salary-slider.jsx";
-import CloseProjectModal from './CloseProjectModal.jsx'
-import { DONE } from '../redux/actions/types.js'
+import CloseProjectModal from './CloseProjectModal.jsx';
+import { DONE } from '../redux/actions/types.js';
+import CustomSnackbar from "./custom/CustomSnackbar.jsx";
 
 const CreateProjectCard = ({projectInfo }) => {
   const navigate = useNavigate();
@@ -139,21 +140,17 @@ const CreateProjectCard = ({projectInfo }) => {
             >
               <ArrowBackIcon />
             </Button>
-            <Snackbar
-                autoHideDuration={3000}
-                open={!!error || projectMessage}
-                anchorOrigin={{ horizontal: 'right', vertical: 'top' }}
-                onClose={() => {
-                  setError(null)
-                  dispatch(clearProjectMessage())
-                }}
-            >
-              <Stack sx={{ width: '100%', flexDirection: 'column', gap: 2 }} spacing={2}>
-                <Alert severity={!projectMessage ? 'error' : 'success'}>
-                  <AlertTitle>{error || projectMessage}</AlertTitle>
-                </Alert>
-              </Stack>
-            </Snackbar>
+
+            <CustomSnackbar
+              autoHideDuration={3000}
+              open={!!error || projectMessage}
+              onClose={() => {
+                setError(null)
+                dispatch(clearProjectMessage())
+              }}
+              severity={!projectMessage ? 'error' : 'success'}
+              text={error || projectMessage}
+            />
 
             <AuditorSearchModal
               open={openInvite}

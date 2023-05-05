@@ -1,9 +1,10 @@
-import React, {useEffect, useState} from 'react';
-import {Alert, AlertTitle, Box, Button, Modal, Snackbar, Stack, Tooltip, Typography} from "@mui/material";
+import React, {useState} from 'react';
+import {useDispatch, useSelector} from "react-redux";
+import {Box, Button, Modal, Tooltip, Typography} from "@mui/material";
 import AuditRequestInfo from "./audit-request-info.jsx";
 import TagsList from "./tagsList.jsx";
-import {useDispatch, useSelector} from "react-redux";
 import {clearMessage} from "../redux/actions/auditAction.js";
+import CustomSnackbar from "./custom/CustomSnackbar.jsx";
 
 const ProjectListCard = ({project}) => {
     const [isOpen, setIsOpen] = useState(false)
@@ -26,21 +27,17 @@ const ProjectListCard = ({project}) => {
 
     return (
         <Box sx={wrapper}>
-            <Snackbar
-                autoHideDuration={3000}
-                open={!!message || errorMessage || successMessage}
-                anchorOrigin={{horizontal: 'right', vertical: 'top'}}
-                onClose={() => {
-                    setMessage(null)
-                    dispatch(clearMessage())
-                }}
-            >
-                <Stack sx={{width: '100%', flexDirection: 'column', gap: 2}} spacing={2}>
-                    <Alert severity={errorMessage ? 'error' : 'success'}>
-                        <AlertTitle>{message || errorMessage || successMessage}</AlertTitle>
-                    </Alert>
-                </Stack>
-            </Snackbar>
+            <CustomSnackbar
+              autoHideDuration={3000}
+              open={!!message || errorMessage || successMessage}
+              onClose={() => {
+                  setMessage(null)
+                  dispatch(clearMessage())
+              }}
+              severity={errorMessage ? 'error' : 'success'}
+              text={message || errorMessage || successMessage}
+            />
+
             <Box sx={contentWrapper}>
                 <Tooltip
                     title={project.name}

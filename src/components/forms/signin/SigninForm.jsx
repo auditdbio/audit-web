@@ -1,5 +1,5 @@
 import React from 'react';
-import {Box, Button, Stack, Alert, AlertTitle, Snackbar} from "@mui/material";
+import {Box, Button} from "@mui/material";
 import {radiusOfComponents} from "../../../styles/themes.js";
 import PasswordField from "../fields/password-field.jsx";
 import {Form, Formik} from "formik";
@@ -7,6 +7,7 @@ import * as Yup from "yup";
 import SimpleField from "../fields/simple-field.jsx";
 import {useDispatch, useSelector} from "react-redux";
 import {clearUserError, clearUserSuccess, signIn} from "../../../redux/actions/userAction.js";
+import CustomSnackbar from "../../custom/CustomSnackbar.jsx";
 
 
 const SigninForm = () => {
@@ -33,21 +34,17 @@ const SigninForm = () => {
                     <Form onSubmit={handleSubmit}>
                         <Box sx={formWrapper}
                         >
-                            <Snackbar
-                                autoHideDuration={7000}
-                                open={!!error || !!successMessage}
-                                anchorOrigin={{ horizontal: 'right', vertical: 'top' }}
-                                onClose={() => {
-                                    dispatch(clearUserError())
-                                    dispatch(clearUserSuccess())
-                                }}
-                            >
-                                <Stack sx={{ width: '100%', flexDirection: 'column', gap: 2 }} spacing={2}>
-                                    <Alert severity={successMessage ? 'success' : 'error'}>
-                                        <AlertTitle>{error || successMessage}</AlertTitle>
-                                    </Alert>
-                                </Stack>
-                            </Snackbar>
+                            <CustomSnackbar
+                              autoHideDuration={7000}
+                              open={!!error || !!successMessage}
+                              onClose={() => {
+                                dispatch(clearUserError())
+                                dispatch(clearUserSuccess())
+                              }}
+                              severity={successMessage ? 'success' : 'error'}
+                              text={error || successMessage}
+                            />
+
                             <Box sx={fieldWrapper}>
                                 <SimpleField name={'email'} label={'E-mail'}/>
                                 <PasswordField name={'password'} label={'Password'}/>

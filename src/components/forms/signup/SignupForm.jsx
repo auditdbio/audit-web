@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {Box, Tabs, Tab, Typography, Button, Snackbar, Stack, Alert, AlertTitle} from "@mui/material";
+import {Box, Tabs, Tab, Typography, Button} from "@mui/material";
 import {radiusOfComponents} from "../../../styles/themes.js";
 import PasswordField from "../fields/password-field.jsx";
 import {Form, Formik} from 'formik';
@@ -7,6 +7,7 @@ import * as Yup from 'yup'
 import SimpleField from "../fields/simple-field.jsx";
 import {useDispatch, useSelector} from "react-redux";
 import {clearUserError, signUp} from "../../../redux/actions/userAction.js";
+import CustomSnackbar from "../../custom/CustomSnackbar.jsx";
 
 const SignupForm = () => {
     const [isAuditor, setIsAuditor] = useState('auditor')
@@ -37,20 +38,13 @@ const SignupForm = () => {
                         <Typography sx={titleStyle}>
                             Choose who you want to be
                         </Typography>
-                        <Snackbar
-                            autoHideDuration={10000}
-                            open={!!error}
-                            anchorOrigin={{horizontal: 'right', vertical: 'top'}}
-                            onClose={() => {
-                                dispatch(clearUserError())
-                            }}
-                        >
-                            <Stack sx={{width: '100%', flexDirection: 'column', gap: 2}} spacing={2}>
-                                <Alert severity='error'>
-                                    <AlertTitle>{error}</AlertTitle>
-                                </Alert>
-                            </Stack>
-                        </Snackbar>
+                        <CustomSnackbar
+                          autoHideDuration={10000}
+                          open={!!error}
+                          onClose={() => dispatch(clearUserError())}
+                          severity='error'
+                          text={error}
+                        />
                         <Tabs
                             value={isAuditor}
                             onChange={(e, newValue) => {

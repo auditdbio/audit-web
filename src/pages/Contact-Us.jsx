@@ -1,6 +1,6 @@
 import React from 'react';
 import Layout from "../styles/Layout.jsx";
-import {Alert, AlertTitle, Box, Button, Snackbar, Stack, TextField, Typography} from "@mui/material";
+import {Box, Button, Typography} from "@mui/material";
 import {CustomCard} from "../components/custom/Card.jsx";
 import {Form, Formik, Field} from "formik";
 import SimpleField from "../components/forms/fields/simple-field.jsx";
@@ -11,6 +11,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {clearMessage} from "../redux/actions/auditAction.js";
 import * as Yup from "yup";
 // import Textarea from "@uiw/react-md-editor/lib/components/TextArea/Textarea.js";
+import CustomSnackbar from "../components/custom/CustomSnackbar.jsx";
 
 const AuditDb = () => {
     const dispatch = useDispatch()
@@ -25,20 +26,14 @@ const AuditDb = () => {
     }
     return (
         <Layout>
-            <Snackbar
-                autoHideDuration={3000}
-                open={errorMessage || successMessage}
-                anchorOrigin={{ horizontal: 'right', vertical: 'top' }}
-                onClose={() => {
-                    dispatch(clearFormMessage())
-                }}
-            >
-                <Stack sx={{ width: '100%', flexDirection: 'column', gap: 2 }} spacing={2}>
-                    <Alert severity={errorMessage ? 'error' : 'success'}>
-                        <AlertTitle>{errorMessage || successMessage}</AlertTitle>
-                    </Alert>
-                </Stack>
-            </Snackbar>
+            <CustomSnackbar
+              autoHideDuration={3000}
+              open={errorMessage || successMessage}
+              onClose={() => dispatch(clearFormMessage())}
+              severity={errorMessage ? 'error' : 'success'}
+              text={errorMessage || successMessage}
+            />
+
             <CustomCard>
                 <Formik
                     initialValues={initialValues}

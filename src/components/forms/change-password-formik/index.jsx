@@ -1,11 +1,12 @@
 import React, {useState} from 'react';
 import PasswordField from "../fields/password-field.jsx";
-import {Box, Button, InputAdornment, Typography, TextField, Stack, Alert, AlertTitle, Snackbar} from "@mui/material";
+import {Box, Button, InputAdornment, Typography, TextField} from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit.js";
 import RemovedEyeIcon from "../../icons/removed-eye-icon.jsx";
 import EyeIcon from "../../icons/eye-icon.jsx";
 import {changePassword, clearUserError, clearUserSuccess} from "../../../redux/actions/userAction.js";
 import {useDispatch, useSelector} from "react-redux";
+import CustomSnackbar from "../../custom/CustomSnackbar.jsx";
 
 const ChangePasswordFormik = () => {
     const dispatch = useDispatch()
@@ -22,20 +23,14 @@ const ChangePasswordFormik = () => {
     }
     return (
         <Box>
-            <Snackbar
-                autoHideDuration={10000}
-                open={!!message}
-                anchorOrigin={{ horizontal: 'right', vertical: 'top' }}
-                onClose={() => {
-                    dispatch(clearUserSuccess())
-                }}
-            >
-                <Stack sx={{ width: '100%', flexDirection: 'column', gap: 2 }} spacing={2}>
-                    <Alert severity='success'>
-                        <AlertTitle>{message}</AlertTitle>
-                    </Alert>
-                </Stack>
-            </Snackbar>
+            <CustomSnackbar
+              autoHideDuration={10000}
+              open={!!message}
+              onClose={() => dispatch(clearUserSuccess())}
+              severity='success'
+              text={message}
+            />
+
             <Box sx={wrapper} className={'password-wrapper'}>
                 <Typography sx={formLabelSx} variant={'body2'}>{'Password'}</Typography>
                 <TextField
