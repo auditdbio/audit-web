@@ -36,7 +36,7 @@ export const userReducer = (state = initialState, action) => {
         case SIGN_IN_ERROR:
             return {...state, error: action.payload}
         case LOG_OUT:
-            return initialState
+            return { ...initialState, token: '', user: {} }
         case SELECT_ROLE:
             return {...state, user: action.payload}
         case UPDATE_USER:
