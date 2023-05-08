@@ -18,7 +18,7 @@ const MyProjectListCard = ({ type, project, setState, state, isChecked }) => {
         if (isDone) {
             setState([...state, project]);
         } else {
-            setState(state.filter(el => el.id !== project.id));
+            setState(state.filter(el => el?.id !== project.id));
         }
     }, [isDone]);
 
@@ -81,6 +81,7 @@ export default MyProjectListCard;
 const projectNameSx = (theme) => ({
     height: '45px',
     overflow: 'hidden',
+    wordBreak: 'break-word',
     '-webkit-line-clamp': '2',
     '-webkit-box-orient': 'vertical',
     'text-overflow': 'ellipsis',

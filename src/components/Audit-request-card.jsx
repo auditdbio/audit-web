@@ -94,6 +94,7 @@ const projectNameSx = theme => ({
   display: '-webkit-box',
   height: '66px',
   overflow: 'hidden',
+  wordBreak: 'break-word',
   '-webkit-line-clamp': '3',
   '-webkit-box-orient': 'vertical',
   'text-overflow': 'ellipsis',

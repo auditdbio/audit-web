@@ -12,7 +12,7 @@ import {CUSTOMER} from "../redux/actions/types.js";
 import {changeRolePublicCustomer, changeRolePublicCustomerNoRedirect} from "../redux/actions/userAction.js";
 import CustomSnackbar from "./custom/CustomSnackbar.jsx";
 
-const AuditorListCard = ({auditor}) => {
+const AuditorListCard = ({ auditor, projectIdToInvite }) => {
     const navigate = useNavigate();
     const user = useSelector((state) => state.user.user);
     const [openModal, setOpenModal] = useState(false);
@@ -48,7 +48,11 @@ const AuditorListCard = ({auditor}) => {
 
     const handleInvite = () => {
         if (user.current_role === CUSTOMER && isAuth() && myProjects.length) {
-            return navigate(`/my-projects/${auditor.user_id}`,)
+            if (projectIdToInvite) {
+                return navigate(`/my-projects/${auditor.user_id}?projectIdToInvite=${projectIdToInvite}`)
+            } else {
+                return navigate(`/my-projects/${auditor.user_id}`)
+            }
         } else if (user.current_role !== CUSTOMER && isAuth() && !customerReducer?.first_name) {
             dispatch(changeRolePublicCustomer(CUSTOMER, user.id, customerReducer))
             handleError()
