@@ -1,37 +1,46 @@
-import React from 'react'
-import { useDispatch } from 'react-redux'
-import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material'
-import { closeProject } from '../redux/actions/projectAction.js'
-import theme from '../styles/themes.js'
-import { DONE } from '../redux/actions/types.js'
+import React from 'react';
+import { useDispatch } from 'react-redux';
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+} from '@mui/material';
+import { closeProject } from '../redux/actions/projectAction.js';
+import theme from '../styles/themes.js';
+import { DONE } from '../redux/actions/types.js';
 
-const CloseProjectModal = ({ isOpen, setIsOpen, handleSubmit, values, setIsClosed, projectInfo }) => {
-  const dispatch = useDispatch()
+const CloseProjectModal = ({
+  isOpen,
+  setIsOpen,
+  handleSubmit,
+  values,
+  setIsClosed,
+  projectInfo,
+}) => {
+  const dispatch = useDispatch();
 
   const handleDisagree = () => {
-    setIsOpen(false)
-  }
+    setIsOpen(false);
+  };
 
   const handleAgree = (values, handleSubmit) => {
-    setIsClosed(true)
-    const newValue = {...values, status: DONE}
+    setIsClosed(true);
+    const newValue = { ...values, status: DONE };
     if (values.id && projectInfo.id) {
-      dispatch(closeProject({ ...newValue, id: projectInfo.id }))
+      dispatch(closeProject({ ...newValue, id: projectInfo.id }));
     } else {
-      handleSubmit()
+      handleSubmit();
     }
-    setIsOpen(false)
-  }
+    setIsOpen(false);
+  };
 
   return (
     <div>
-      <Dialog
-        open={isOpen}
-        onClose={handleDisagree}
-      >
-        <DialogTitle>
-          Are you sure you want to close the project?
-        </DialogTitle>
+      <Dialog open={isOpen} onClose={handleDisagree}>
+        <DialogTitle>Are you sure you want to close the project?</DialogTitle>
         <DialogActions>
           <Button onClick={handleDisagree} variant={'contained'}>
             Disagree
@@ -47,10 +56,10 @@ const CloseProjectModal = ({ isOpen, setIsOpen, handleSubmit, values, setIsClose
         </DialogActions>
       </Dialog>
     </div>
-  )
-}
+  );
+};
 
-export default CloseProjectModal
+export default CloseProjectModal;
 
 const agreeButton = {
   backgroundColor: theme.palette.secondary.main,
@@ -59,5 +68,4 @@ const agreeButton = {
     backgroundColor: theme.palette.secondary.main,
     filter: 'brightness(70%)',
   },
-
-}
+};
