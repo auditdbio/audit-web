@@ -8,20 +8,28 @@ import { useDispatch, useSelector } from 'react-redux';
 import ProjectCard from '../components/Project-card.jsx';
 import MyProjectListCard from '../components/My-project-list-card.jsx';
 import AuditorModal from '../components/AuditorModal.jsx';
-import { useParams } from 'react-router-dom';
+import { useParams, useSearchParams } from 'react-router-dom';
 import Loader from '../components/Loader.jsx';
 import { createRequest } from '../redux/actions/auditAction.js';
+import { getAuditors } from "../redux/actions/auditorAction.js";
 
 const MyProjects = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const myProjects = useSelector(state => state.project.myProjects);
   const params = useParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [isOpenView, setIsOpenView] = useState(false);
   const [chosen, setChosen] = useState([]);
   const auditor = useSelector(state =>
     state?.auditor?.auditors?.find(auditor => auditor.user_id === params.id),
   );
+
+  useEffect(() => {
+    if (!auditor) {
+      dispatch(getAuditors());
+    }
+  }, []);
 
   const handleCloseView = () => {
     setIsOpenView(false);
@@ -44,8 +52,10 @@ const MyProjects = () => {
   };
 
   useEffect(() => {
-    if (localStorage.getItem('project')) {
-      setChosen([JSON.parse(localStorage.getItem('project'))]);
+    const chosenProject = searchParams.get('projectIdToInvite')
+    if (chosenProject && chosenProject !== 'null') {
+      const currentProject = myProjects?.find((project) => project.id === chosenProject)
+      setChosen([currentProject]);
     }
     return () => localStorage.removeItem('project');
   }, [myProjects]);
@@ -89,7 +99,7 @@ const MyProjects = () => {
           variant={'contained'}
           sx={submitBtn}
           onClick={handleOpenView}
-          disabled={chosen.length === 0 && !auditor}
+          disabled={chosen.length === 0 || !auditor}
         >
           Invite to project
         </Button>

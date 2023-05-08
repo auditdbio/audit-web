@@ -197,6 +197,7 @@ const priceTextStyle = {
 const auditNameStyle = {
   height: '55px',
   overflow: 'hidden',
+  wordBreak: 'break-word',
   '-webkit-line-clamp': '2',
   '-webkit-box-orient': 'vertical',
   'text-overflow': 'ellipsis',
