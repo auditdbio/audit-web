@@ -65,7 +65,7 @@ export default function CustomMenu({ buttonText, options }) {
   const handleClose = () => {
     setAnchorEl(null);
   };
-  console.log(currentRole);
+
   return (
     <Box
       sx={{

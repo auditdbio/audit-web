@@ -17,6 +17,7 @@ const AuditorsPage = () => {
   const matchSm = useMediaQuery(theme.breakpoints.down("sm"));
   const [searchParams, setSearchParams] = useSearchParams()
   const [query, setQuery] = useState(undefined)
+  const [projectIdToInvite, setProjectIdToInvite] = useState(() => searchParams.get('projectIdToInvite'))
   const auditorReducer = useSelector((state) => state.auditor.auditors);
   const applyFilter = (filter) => {
     setQuery((query) => {
@@ -89,7 +90,7 @@ const AuditorsPage = () => {
           >
             {auditorReducer?.map((auditor) => (
               <Box sx={auditorContainerStyle} key={auditor.user_id}>
-                <AuditorListCard auditor={auditor} />
+                <AuditorListCard auditor={auditor} projectIdToInvite={projectIdToInvite} />
               </Box>
             ))}
             {!matchSm && auditorReducer?.length % 2 === 1 && (

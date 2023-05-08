@@ -24,6 +24,7 @@ import {useNavigate} from "react-router-dom/dist";
 import {Field, Formik, Form} from "formik";
 import SalarySlider from "./forms/salary-slider/salary-slider.jsx";
 import * as Yup from "yup";
+import { useParams } from "react-router-dom"
 
 export default function AuditorSearchModal({
                                                open,
@@ -32,6 +33,7 @@ export default function AuditorSearchModal({
                                                setState,
                                            }) {
     const navigate = useNavigate();
+    const { id } = useParams();
     const dispatch = useDispatch();
     const auditorReducer = useSelector((state) => state.auditor.auditors);
     const projectReducer = useSelector((state) => state.project);
@@ -57,11 +59,10 @@ export default function AuditorSearchModal({
         setMode("offer");
     };
 
-
     const handleSearch = async () => {
-           await setState(true)
-            handleSubmit()
-           await navigate(`/auditors?search=${query}`,)
+        await setState(true)
+        handleSubmit()
+        await navigate(`/auditors?search=${query}&projectIdToInvite=${id}`)
         // } else {
         //     handleSubmit()
         //    await navigate(`/auditors?search=`)
