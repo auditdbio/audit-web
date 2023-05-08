@@ -1,6 +1,6 @@
-import axios from "axios";
-import Cookies from "js-cookie";
-import { history } from "../../services/history.js";
+import axios from 'axios';
+import Cookies from 'js-cookie';
+import { history } from '../../services/history.js';
 import {
   AUTH_TRUE,
   CLEAR_ERROR,
@@ -14,37 +14,34 @@ import {
   CLEAR_SUCCESS,
   CHANGE_ROLE_DONT_HAVE_PROFILE_CUSTOMER,
   CHANGE_ROLE_HAVE_PROFILE_CUSTOMER,
-  CHANGE_ROLE_DONT_HAVE_PROFILE_AUDITOR, CHANGE_ROLE_HAVE_PROFILE_AUDITOR, GET_CUSTOMER, GET_AUDITOR,
-} from "./types.js"
+  CHANGE_ROLE_DONT_HAVE_PROFILE_AUDITOR,
+  CHANGE_ROLE_HAVE_PROFILE_AUDITOR,
+  GET_CUSTOMER,
+  GET_AUDITOR,
+} from './types.js';
 
 const API_URL = import.meta.env.VITE_API_BASE_URL;
 
-export const signIn = (values) => {
-  return (dispatch) => {
+export const signIn = values => {
+  return dispatch => {
     axios
       .post(`${API_URL}/auth/login`, values)
       .then(({ data }) => {
-        Cookies.set("token", data.token, { expires: 1 });
-        localStorage.setItem("token", JSON.stringify(data.token));
-        localStorage.setItem("user", JSON.stringify(data.user));
+        Cookies.set('token', data.token, { expires: 1 });
+        localStorage.setItem('token', JSON.stringify(data.token));
+        localStorage.setItem('user', JSON.stringify(data.user));
         dispatch({ type: USER_SIGNIN, payload: data });
 
         axios.patch(
           `${API_URL}/user/${data.user?.id}`,
           { is_new: false },
-          { headers: { "Authorization": `Bearer ${ data.token }`} }
-        )
+          { headers: { Authorization: `Bearer ${data.token}` } },
+        );
 
         if (data.user?.is_new) {
-          history.push(
-            { pathname: `/edit-profile` },
-            { some: true }
-          )
+          history.push({ pathname: `/edit-profile` }, { some: true });
         } else {
-          history.push(
-            { pathname: `/profile/user-info` },
-            { some: true }
-          )
+          history.push({ pathname: `/profile/user-info` }, { some: true });
         }
       })
       .catch(({ response }) => {
@@ -58,16 +55,16 @@ export const clearUserError = () => {
 };
 
 export const clearUserSuccess = () => {
-    return {type: CLEAR_SUCCESS}
-}
+  return { type: CLEAR_SUCCESS };
+};
 
-export const signUp = (values) => {
-  return (dispatch) => {
+export const signUp = values => {
+  return dispatch => {
     axios
       .post(`${API_URL}/user`, values)
       .then(({ data }) => {
         dispatch({ type: USER_SIGNUP, payload: data });
-        history.push("/sign-in", {
+        history.push('/sign-in', {
           some: true,
         });
       })
@@ -82,169 +79,178 @@ export const authenticate = () => {
 };
 
 export const logout = () => {
-  history.push("/");
-  Cookies.remove("token");
-  localStorage.removeItem("token");
-  localStorage.removeItem("user");
+  history.push('/');
+  Cookies.remove('token');
+  localStorage.removeItem('token');
+  localStorage.removeItem('user');
   return { type: LOG_OUT };
 };
 
 export const changeRole = (value, id) => {
-  return (dispatch) => {
+  return dispatch => {
     axios
       .patch(
         `${API_URL}/user/${id}`,
         { current_role: value },
         {
           headers: {
-            Authorization: "Bearer " + Cookies.get("token"),
-            "Content-Type": "application/json",
+            Authorization: 'Bearer ' + Cookies.get('token'),
+            'Content-Type': 'application/json',
           },
-        }
+        },
       )
       .then(({ data }) => {
         dispatch({ type: SELECT_ROLE, payload: data });
-        localStorage.setItem("user", JSON.stringify(data));
+        localStorage.setItem('user', JSON.stringify(data));
         history.push(
           { pathname: `/profile/user-info` },
           {
             some: true,
-          }
+          },
         );
       });
   };
 };
 
 export const changeRolePublicCustomer = (value, id, currentRole) => {
-    const token = Cookies.get('token')
-    return (dispatch) => {
+  const token = Cookies.get('token');
+  return dispatch => {
+    axios
+      .patch(
+        `${API_URL}/user/${id}`,
+        { current_role: value },
+        {
+          headers: {
+            Authorization: 'Bearer ' + token,
+            'Content-Type': 'application/json',
+          },
+        },
+      )
+      .then(({ data: user }) => {
         axios
-            .patch(
-                `${API_URL}/user/${id}`,
-                { current_role: value },
-                {
-                    headers: {
-                        Authorization: "Bearer " + token,
-                        "Content-Type": "application/json",
-                    },
-                }
-            )
-          .then(({ data: user }) => {
-            axios.get(`${API_URL}/my_customer`, { headers: {"Authorization": `Bearer ${ token }`} })
-              .then(({ data: customer }) => {
-                dispatch({type: GET_CUSTOMER, payload: customer})
-                return { customer, user }
-              })
-              .then(({ customer, user }) => {
-                  if (customer?.first_name || customer?.last_name){
-                      dispatch({ type: CHANGE_ROLE_HAVE_PROFILE_CUSTOMER, payload: user });
-                  } else {
-                      dispatch({ type: CHANGE_ROLE_DONT_HAVE_PROFILE_CUSTOMER, payload: user });
-                      history.push(
-                        { pathname: `/profile/user-info` },
-                        { some: true }
-                      );
-                  }
-                  localStorage.setItem("user", JSON.stringify(user));
-              });
+          .get(`${API_URL}/my_customer`, {
+            headers: { Authorization: `Bearer ${token}` },
           })
-
-
-    };
+          .then(({ data: customer }) => {
+            dispatch({ type: GET_CUSTOMER, payload: customer });
+            return { customer, user };
+          })
+          .then(({ customer, user }) => {
+            if (customer?.first_name || customer?.last_name) {
+              dispatch({
+                type: CHANGE_ROLE_HAVE_PROFILE_CUSTOMER,
+                payload: user,
+              });
+            } else {
+              dispatch({
+                type: CHANGE_ROLE_DONT_HAVE_PROFILE_CUSTOMER,
+                payload: user,
+              });
+              history.push({ pathname: `/profile/user-info` }, { some: true });
+            }
+            localStorage.setItem('user', JSON.stringify(user));
+          });
+      });
+  };
 };
 
-
 export const changeRolePublicAuditor = (value, id, currentRole) => {
-    const token = Cookies.get('token')
-    return (dispatch) => {
+  const token = Cookies.get('token');
+  return dispatch => {
+    axios
+      .patch(
+        `${API_URL}/user/${id}`,
+        { current_role: value },
+        {
+          headers: {
+            Authorization: 'Bearer ' + token,
+            'Content-Type': 'application/json',
+          },
+        },
+      )
+      .then(({ data: user }) => {
         axios
-            .patch(
-                `${API_URL}/user/${id}`,
-                { current_role: value },
-                {
-                    headers: {
-                        Authorization: "Bearer " + token,
-                        "Content-Type": "application/json",
-                    },
-                }
-            )
-          .then(({ data: user }) => {
-            axios.get(`${API_URL}/my_auditor`, { headers: {"Authorization": `Bearer ${ token }`} })
-              .then(({ data: auditor }) => {
-                dispatch({ type: GET_AUDITOR, payload: auditor })
-                return { auditor, user }
-              })
-              .then(({ auditor, user }) => {
-                if (auditor?.first_name || auditor?.last_name){
-                  dispatch({ type: CHANGE_ROLE_HAVE_PROFILE_AUDITOR, payload: user });
-                } else {
-                  dispatch({ type: CHANGE_ROLE_DONT_HAVE_PROFILE_AUDITOR, payload: user });
-                  history.push(
-                    { pathname: `/profile/user-info` },
-                    { some: true }
-                  )
-                }
-                localStorage.setItem("user", JSON.stringify(user));
-              });
+          .get(`${API_URL}/my_auditor`, {
+            headers: { Authorization: `Bearer ${token}` },
           })
-    };
+          .then(({ data: auditor }) => {
+            dispatch({ type: GET_AUDITOR, payload: auditor });
+            return { auditor, user };
+          })
+          .then(({ auditor, user }) => {
+            if (auditor?.first_name || auditor?.last_name) {
+              dispatch({
+                type: CHANGE_ROLE_HAVE_PROFILE_AUDITOR,
+                payload: user,
+              });
+            } else {
+              dispatch({
+                type: CHANGE_ROLE_DONT_HAVE_PROFILE_AUDITOR,
+                payload: user,
+              });
+              history.push({ pathname: `/profile/user-info` }, { some: true });
+            }
+            localStorage.setItem('user', JSON.stringify(user));
+          });
+      });
+  };
 };
 
 export const changeRolePublicAuditorNoRedirect = (value, id, currentRole) => {
-    return (dispatch) => {
-        axios
-            .patch(
-                `${API_URL}/user/${id}`,
-                { current_role: value },
-                {
-                    headers: {
-                        Authorization: "Bearer " + Cookies.get("token"),
-                        "Content-Type": "application/json",
-                    },
-                }
-            )
-            .then(({ data }) => {
-                dispatch({ type: SELECT_ROLE, payload: data });
-                localStorage.setItem("user", JSON.stringify(data));
-            });
-    };
+  return dispatch => {
+    axios
+      .patch(
+        `${API_URL}/user/${id}`,
+        { current_role: value },
+        {
+          headers: {
+            Authorization: 'Bearer ' + Cookies.get('token'),
+            'Content-Type': 'application/json',
+          },
+        },
+      )
+      .then(({ data }) => {
+        dispatch({ type: SELECT_ROLE, payload: data });
+        localStorage.setItem('user', JSON.stringify(data));
+      });
+  };
 };
 
 export const changeRolePublicCustomerNoRedirect = (value, id, currentRole) => {
-    return (dispatch) => {
-        axios
-            .patch(
-                `${API_URL}/user/${id}`,
-                { current_role: value },
-                {
-                    headers: {
-                        Authorization: "Bearer " + Cookies.get("token"),
-                        "Content-Type": "application/json",
-                    },
-                }
-            )
-            .then(({ data }) => {
-                dispatch({ type: SELECT_ROLE, payload: data });
-                localStorage.setItem("user", JSON.stringify(data));
-            })
-    };
+  return dispatch => {
+    axios
+      .patch(
+        `${API_URL}/user/${id}`,
+        { current_role: value },
+        {
+          headers: {
+            Authorization: 'Bearer ' + Cookies.get('token'),
+            'Content-Type': 'application/json',
+          },
+        },
+      )
+      .then(({ data }) => {
+        dispatch({ type: SELECT_ROLE, payload: data });
+        localStorage.setItem('user', JSON.stringify(data));
+      });
+  };
 };
 
 export const changePassword = (value, userId) => {
-    return (dispatch) => {
-        axios
-            .patch(
-                `${API_URL}/user/${userId}`,
-                { password: value },
-                {
-                    headers: {
-                        Authorization: "Bearer " + Cookies.get("token"),
-                        "Content-Type": "application/json",
-                    },
-                }
-            )
-            .then(({ data }) => {
-                dispatch({ type: UPDATE_USER, payload: data });
-            });
-    }
-}
+  return dispatch => {
+    axios
+      .patch(
+        `${API_URL}/user/${userId}`,
+        { password: value },
+        {
+          headers: {
+            Authorization: 'Bearer ' + Cookies.get('token'),
+            'Content-Type': 'application/json',
+          },
+        },
+      )
+      .then(({ data }) => {
+        dispatch({ type: UPDATE_USER, payload: data });
+      });
+  };
+};

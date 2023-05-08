@@ -1,15 +1,14 @@
-import React from "react";
-import { Link } from "react-router-dom/dist";
-import AppBar from "@mui/material/AppBar";
-import Box from "@mui/material/Box";
-import Toolbar from "@mui/material/Toolbar";
-import Container from "@mui/material/Container";
-import theme from "../../styles/themes.js";
-import Logo from "../icons/Logo.jsx";
-import AuthorizedOptions from "./AuthorizedOptions.jsx"
-import UnauthorizedOptions from "./UnauthorizedOptions.jsx"
-import { isAuth } from "../../lib/helper.js"
-
+import React from 'react';
+import { Link } from 'react-router-dom/dist';
+import AppBar from '@mui/material/AppBar';
+import Box from '@mui/material/Box';
+import Toolbar from '@mui/material/Toolbar';
+import Container from '@mui/material/Container';
+import theme from '../../styles/themes.js';
+import Logo from '../icons/Logo.jsx';
+import AuthorizedOptions from './AuthorizedOptions.jsx';
+import UnauthorizedOptions from './UnauthorizedOptions.jsx';
+import { isAuth } from '../../lib/helper.js';
 
 const Header = () => {
   return (
@@ -17,7 +16,7 @@ const Header = () => {
       <Container sx={container}>
         <Toolbar disableGutters>
           <Box sx={wrapper}>
-            <Link to={"/"} style={linkStyle}>
+            <Link to={'/'} style={linkStyle}>
               <Box sx={logoStyle}>
                 <Logo />
               </Box>
@@ -31,38 +30,36 @@ const Header = () => {
   );
 };
 
-
 const container = {
-  maxWidth: "1512px",
-  paddingTop: "60px",
-  [theme.breakpoints.down("xs")]: {
-    paddingTop: "20px",
+  maxWidth: '1512px',
+  paddingTop: '60px',
+  [theme.breakpoints.down('xs')]: {
+    paddingTop: '20px',
   },
 };
 
 const wrapper = {
-  width: "100%",
-  display: "flex",
-  flexDirection: "row",
-  justifyContent: "space-between",
-  gap: "1rem",
+  width: '100%',
+  display: 'flex',
+  flexDirection: 'row',
+  justifyContent: 'space-between',
+  gap: '1rem',
 };
 
 const linkStyle = {
-  display: "flex",
-  flexDirection: "column",
-  justifyContent: "center",
+  display: 'flex',
+  flexDirection: 'column',
+  justifyContent: 'center',
 };
 
 const logoStyle = {
-  height: "50px",
-  width: "200px",
-  marginY: "auto",
-  [theme.breakpoints.down("sm")]: {
-    height: "40px",
-    width: "160px",
+  height: '50px',
+  width: '200px',
+  marginY: 'auto',
+  [theme.breakpoints.down('sm')]: {
+    height: '40px',
+    width: '160px',
   },
 };
-
 
 export default Header;

@@ -1,14 +1,14 @@
-import "swiper/css/bundle";
-import { Button, Box } from "@mui/material";
-import { Swiper, SwiperSlide } from "swiper/react";
-import { useRef } from "react";
-import { Navigation, Pagination } from "swiper";
-import FeedbackCard from "./FeedbackCard";
-import useMediaQuery from "@mui/material/useMediaQuery";
+import 'swiper/css/bundle';
+import { Button, Box } from '@mui/material';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { useRef } from 'react';
+import { Navigation, Pagination } from 'swiper';
+import FeedbackCard from './FeedbackCard';
+import useMediaQuery from '@mui/material/useMediaQuery';
 
 const Carousel = () => {
   const swiperRef = useRef(null);
-  const isMobile = useMediaQuery("(max-width: 768px)");
+  const isMobile = useMediaQuery('(max-width: 768px)');
 
   function handleNextClick() {
     swiperRef.current.slideNext();
@@ -18,32 +18,32 @@ const Carousel = () => {
     swiperRef.current.slidePrev();
   }
 
-  const nextBtnClass = "swiper-button-next";
-  const prevBtnClass = "swiper-button-prev";
+  const nextBtnClass = 'swiper-button-next';
+  const prevBtnClass = 'swiper-button-prev';
 
   return (
     <Box
       sx={{
-        paddingTop: "2rem",
-        width: "100%",
-        marginBottom: "2rem",
-        maxWidth: "1512px",
+        paddingTop: '2rem',
+        width: '100%',
+        marginBottom: '2rem',
+        maxWidth: '1512px',
       }}
     >
       {/*here will be your opinion about auditDB*/}
       <Box sx={carouselTextStyle}>Who’s using AuditDB?</Box>
       <Box
         sx={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
           zIndex: 100,
-          margin: "0 auto",
-          gap: "10px",
+          margin: '0 auto',
+          gap: '10px',
           flexGrow: 0,
           '& .swiper-slide': {
             display: 'flex',
-            justifyContent: 'center'
+            justifyContent: 'center',
           },
         }}
       >
@@ -57,14 +57,14 @@ const Carousel = () => {
         <Swiper
           slidesPerView={1}
           spaceBetween={20}
-          onSlideChange={() => console.log("slide change")}
-          onSwiper={(swiper) => {
+          onSlideChange={() => console.log('slide change')}
+          onSwiper={swiper => {
             swiperRef.current = swiper;
           }}
           modules={[Pagination, Navigation]}
           loop={true}
         >
-          {items.map((item) => (
+          {items.map(item => (
             <SwiperSlide key={item.id}>
               <FeedbackCard info={item} />
             </SwiperSlide>
@@ -82,9 +82,9 @@ const Carousel = () => {
         <Box
           className="mobile-buttons"
           sx={{
-            display: "flex",
-            justifyContent: "center",
-            gap: "1rem",
+            display: 'flex',
+            justifyContent: 'center',
+            gap: '1rem',
           }}
         >
           <Button
@@ -103,31 +103,31 @@ const Carousel = () => {
   );
 };
 
-const carouselTextStyle = (theme) => ({
-  fontSize: "32px",
-  fontWeight: "500",
-  textAlign: "center",
-  marginBottom: "2rem",
+const carouselTextStyle = theme => ({
+  fontSize: '32px',
+  fontWeight: '500',
+  textAlign: 'center',
+  marginBottom: '2rem',
   [theme.breakpoints.down('sm')]: {
-    fontSize: '28px'
+    fontSize: '28px',
   },
   [theme.breakpoints.down('xs')]: {
-    fontSize: '24px'
+    fontSize: '24px',
   },
 });
 
 const items = [
   {
     id: 1,
-    name: "Your name",
-    interests: "Your company",
-    description: 'Here will be your opinion about auditDB'
+    name: 'Your name',
+    interests: 'Your company',
+    description: 'Here will be your opinion about auditDB',
   },
   {
     id: 2,
-    name: "Your name",
-    interests: "Your company",
-    description: 'Here will be your opinion about auditDB'
-  }
+    name: 'Your name',
+    interests: 'Your company',
+    description: 'Here will be your opinion about auditDB',
+  },
 ];
 export default Carousel;

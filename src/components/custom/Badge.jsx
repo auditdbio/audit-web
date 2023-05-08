@@ -1,10 +1,10 @@
-import Badge from "@mui/material/Badge";
-import { styled } from "@mui/material/styles";
+import Badge from '@mui/material/Badge';
+import { styled } from '@mui/material/styles';
 
 export const CustomBadge = styled(Badge)(({ theme }) => ({
-  "& .MuiBadge-badge": {
+  '& .MuiBadge-badge': {
     border: `2px solid ${theme.palette.background.paper}`,
-    padding: "0 4px",
-    background: "orange",
+    padding: '0 4px',
+    background: 'orange',
   },
 }));

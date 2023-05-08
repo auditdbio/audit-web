@@ -24,7 +24,7 @@ import { useNavigate } from 'react-router-dom/dist';
 import { Field, Formik, Form } from 'formik';
 import SalarySlider from './forms/salary-slider/salary-slider.jsx';
 import * as Yup from 'yup';
-import { useParams } from "react-router-dom";
+import { useParams } from 'react-router-dom';
 
 export default function AuditorSearchModal({
   open,

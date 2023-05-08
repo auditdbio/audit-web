@@ -11,7 +11,7 @@ import AuditorModal from '../components/AuditorModal.jsx';
 import { useParams, useSearchParams } from 'react-router-dom';
 import Loader from '../components/Loader.jsx';
 import { createRequest } from '../redux/actions/auditAction.js';
-import { getAuditors } from "../redux/actions/auditorAction.js";
+import { getAuditors } from '../redux/actions/auditorAction.js';
 
 const MyProjects = () => {
   const navigate = useNavigate();
@@ -52,9 +52,11 @@ const MyProjects = () => {
   };
 
   useEffect(() => {
-    const chosenProject = searchParams.get('projectIdToInvite')
+    const chosenProject = searchParams.get('projectIdToInvite');
     if (chosenProject && chosenProject !== 'null') {
-      const currentProject = myProjects?.find((project) => project.id === chosenProject)
+      const currentProject = myProjects?.find(
+        project => project.id === chosenProject,
+      );
       setChosen([currentProject]);
     }
     return () => localStorage.removeItem('project');

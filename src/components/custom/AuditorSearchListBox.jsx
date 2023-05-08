@@ -1,16 +1,15 @@
-import React, { useState } from "react";
-import { Box, Button, Typography } from "@mui/material";
-import CircleIcon from "@mui/icons-material/Circle";
-import theme from "../../styles/themes.js";
+import React, { useState } from 'react';
+import { Box, Button, Typography } from '@mui/material';
+import CircleIcon from '@mui/icons-material/Circle';
+import theme from '../../styles/themes.js';
 
 const AuditorSearchListBox = ({ auditor, handleSelectOption }) => {
   return (
-    <Box
-      sx={mainContainer}
-      onClick={handleSelectOption}
-    >
+    <Box sx={mainContainer} onClick={handleSelectOption}>
       <Box>
-        <Typography sx={nameStyle(theme)}>{auditor.first_name} {auditor.last_name}</Typography>
+        <Typography sx={nameStyle(theme)}>
+          {auditor.first_name} {auditor.last_name}
+        </Typography>
       </Box>
 
       <Box sx={statusContainer}>
@@ -25,75 +24,75 @@ const AuditorSearchListBox = ({ auditor, handleSelectOption }) => {
 export default AuditorSearchListBox;
 
 const mainContainer = {
-  display: "flex",
-  alignItems: "start",
-  height: "60px",
-  gap: "120px",
-  padding: "12px 12px 0px 30px",
-  fontWeight: "600",
-  borderBottom: "1px solid #434242",
-  [theme.breakpoints.down("sm")]: {
-    height: "35px",
-    padding: "10px",
-    gap: "10px",
-    width: "120px",
+  display: 'flex',
+  alignItems: 'start',
+  height: '60px',
+  gap: '120px',
+  padding: '12px 12px 0px 30px',
+  fontWeight: '600',
+  borderBottom: '1px solid #434242',
+  [theme.breakpoints.down('sm')]: {
+    height: '35px',
+    padding: '10px',
+    gap: '10px',
+    width: '120px',
   },
 };
 
 const statusContainer = {
-  display: "flex",
-  alignItems: "center",
-  gap: "12px",
-  [theme.breakpoints.down("sm")]: {
-    gap: "10px",
+  display: 'flex',
+  alignItems: 'center',
+  gap: '12px',
+  [theme.breakpoints.down('sm')]: {
+    gap: '10px',
   },
 };
 
-const nameStyle = (theme) => ({
+const nameStyle = theme => ({
   // fontSize: "14px",
-  fontWeight: "500px",
+  fontWeight: '500px',
   width: {
-    zero: "100%",
-    sm: "150px",
-    md: "150px",
-    lg: "180px",
+    zero: '100%',
+    sm: '150px',
+    md: '150px',
+    lg: '180px',
   },
 
   fontSize: {
-    zero: "9px",
-    sm: "14px",
-    md: "14px",
-    lg: "14px",
+    zero: '9px',
+    sm: '14px',
+    md: '14px',
+    lg: '14px',
   },
 });
 
-const statusStyle = (theme) => ({
+const statusStyle = theme => ({
   // fontSize: "10px",
-  fontWeight: "500",
-  color: "#434242",
+  fontWeight: '500',
+  color: '#434242',
 
   display: {
-    zero: "none",
-    sm: "none",
-    md: "flex",
-    lg: "flex",
+    zero: 'none',
+    sm: 'none',
+    md: 'flex',
+    lg: 'flex',
   },
   fontSize: {
-    zero: "8px",
-    sm: "8px",
-    md: "10px",
-    lg: "10px",
+    zero: '8px',
+    sm: '8px',
+    md: '10px',
+    lg: '10px',
   },
 });
 
-const circleStyle = (theme) => ({
-  fontSize: "10px",
-  color: "#09C010",
+const circleStyle = theme => ({
+  fontSize: '10px',
+  color: '#09C010',
 
   display: {
-    zero: "none",
-    sm: "none",
-    md: "flex",
-    lg: "flex",
+    zero: 'none',
+    sm: 'none',
+    md: 'flex',
+    lg: 'flex',
   },
 });
