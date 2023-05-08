@@ -24,9 +24,9 @@ const mdParser = new MarkdownIt({
 
 const config = {
   view: {
-    menu: false, // отключаем меню
-    md: false, // отключаем редактор
-    html: true, // включаем только превью
+    menu: false,
+    md: false,
+    html: true,
   },
 };
 

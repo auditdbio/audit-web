@@ -20,7 +20,7 @@ const mdParser = new MarkdownIt({
       } catch (__) {}
     }
 
-    return ''; // use external default escaping
+    return '';
   },
 }).use(markdownItKatex);
 
