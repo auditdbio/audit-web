@@ -9,7 +9,7 @@ const AuditDb = () => {
       <CustomCard sx={wrapper}>
         <Typography variant={'h3'}>AuditDB</Typography>
         <Typography>
-          AuditDb is a revolutionary platform that facilitates the seamless
+          AuditDB is a revolutionary platform that facilitates the seamless
           connection between web3 auditors and clients seeking their services.
           The platform fills a crucial gap in the market, as there was
           previously no comprehensive, user-friendly solution for auditors and
@@ -18,7 +18,7 @@ const AuditDb = () => {
         <Typography>
           We recognize the pivotal role of security and reliability in
           blockchain projects, and our mission is to make the audit market more
-          transparent and accessible. At AuditDb, you can utilize various search
+          transparent and accessible. At AuditDB, you can utilize various search
           options such as hashtag search, price range search, and deadline
           search to locate precisely what you require. Customers could easy sent
           one project for different auditers for several independent audits.
@@ -38,7 +38,7 @@ const AuditDb = () => {
           >
             screencast
           </a>{' '}
-          to see AuditDb in action!
+          to see AuditDB in action!
         </Typography>
       </CustomCard>
     </Layout>

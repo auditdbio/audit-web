@@ -121,13 +121,13 @@ const items = [
     id: 1,
     name: 'Your name',
     interests: 'Your company',
-    description: 'Here will be your opinion about auditDB',
+    description: 'Here will be your opinion about AuditDB',
   },
   {
     id: 2,
     name: 'Your name',
     interests: 'Your company',
-    description: 'Here will be your opinion about auditDB',
+    description: 'Here will be your opinion about AuditDB',
   },
 ];
 export default Carousel;
