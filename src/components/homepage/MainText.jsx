@@ -122,7 +122,7 @@ const paragraphStyle = {
 
 const headingText = 'Start your project right now or audit like expert';
 const paragraphText =
-  "AuditDb is a blockchain-based jobs platform that helps clients and freelancers connect. We provide efficient transactions with cryptocurrency, and robust protection through smart contracts - wherever you're based!";
+  "AuditDB is a blockchain-based jobs platform that helps clients and freelancers connect. We provide efficient transactions with cryptocurrency, and robust protection through smart contracts - wherever you're based!";
 
 const auditorButton = {
   backgroundColor: '#52176D',
