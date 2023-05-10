@@ -17,19 +17,20 @@ const AuditorsPage = () => {
   const matchSm = useMediaQuery(theme.breakpoints.down('sm'));
   const [searchParams, setSearchParams] = useSearchParams();
   const [query, setQuery] = useState(undefined);
+  const auditors = useSelector(s => s.auditor.auditors);
+  const totalAuditors = useSelector(s => s.auditor.auditors?.length) || 0;
   const [projectIdToInvite, setProjectIdToInvite] = useState(() =>
     searchParams.get('projectIdToInvite'),
   );
-  const auditorReducer = useSelector(state => state.auditor.auditors);
+
   const applyFilter = filter => {
     setQuery(query => {
       const { ...data } = query || {};
       return {
         ...data,
-
         sort: filter.sort || '',
         search: filter.search || '',
-        tags: filter.tags.map(tag => tag),
+        tags: filter.tags || [],
         dateFrom: filter.dateFrom || '',
         dateTo: filter.dateTo || '',
         from: filter.price.from || '',
@@ -67,6 +68,10 @@ const AuditorsPage = () => {
   }, [query]);
 
   useEffect(() => {
+    dispatch(getAuditors());
+  }, []);
+
+  useEffect(() => {
     dispatch(searchAuditor(initialFilter));
   }, [searchParams.toString()]);
 
@@ -85,16 +90,9 @@ const AuditorsPage = () => {
             />
           </Box>
         </Box>
-        {auditorReducer?.length > 0 && (
-          <Box
-            sx={{
-              display: 'flex',
-              flexWrap: 'wrap',
-              marginTop: '70px',
-              border: '0.5px solid #B2B3B3',
-            }}
-          >
-            {auditorReducer?.map(auditor => (
+        {auditors?.length > 0 && (
+          <Box sx={contentWrapper}>
+            {auditors?.map(auditor => (
               <Box sx={auditorContainerStyle} key={auditor.user_id}>
                 <AuditorListCard
                   auditor={auditor}
@@ -102,12 +100,12 @@ const AuditorsPage = () => {
                 />
               </Box>
             ))}
-            {!matchSm && auditorReducer?.length % 2 === 1 && (
+            {!matchSm && auditors?.length % 2 === 1 && (
               <Box sx={fakeContainerStyle} />
             )}
           </Box>
         )}
-        {auditorReducer?.length === 0 && (
+        {auditors?.length === 0 && (
           <Box
             sx={{
               paddingTop: '70px',
@@ -141,6 +139,13 @@ const wrapper = theme => ({
   borderRadius: '10.7143px',
   minHeight: '1000px',
 });
+
+const contentWrapper = {
+  display: 'flex',
+  flexWrap: 'wrap',
+  marginTop: '70px',
+  border: '0.5px solid #B2B3B3',
+};
 
 const auditorContainerStyle = theme => ({
   height: '200px',

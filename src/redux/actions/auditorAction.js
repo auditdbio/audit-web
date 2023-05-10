@@ -106,28 +106,42 @@ export const searchAuditor = values => {
     sort: values?.sort || 1,
   };
 
+  const queryParams = [
+    `query=${searchValues.query}`,
+    `tags=${searchValues.tags?.join(' ')}`,
+    `sort_order=${searchValues.sort}`,
+    `sort_by=price`,
+    `page=0`,
+    `per_page=0`,
+    `kind=auditor`,
+  ];
+
+  if (searchValues.ready_to_wait) {
+    queryParams.push(`ready_to_wait=${searchValues.ready_to_wait}`);
+  }
+  if (searchValues.priceFrom) {
+    queryParams.push(`price_from=${searchValues.priceFrom}`);
+  }
+  if (searchValues.priceTo) {
+    queryParams.push(`price_to=${searchValues.priceTo}`);
+  }
+  if (searchValues.dateFrom) {
+    queryParams.push(`date_from=${searchValues.dateFrom}`);
+  }
+  if (searchValues.dateTo) {
+    queryParams.push(`date_to=${searchValues.dateTo}`);
+  }
+
+  const queryString = queryParams.join('&');
+
   return dispatch => {
     axios
-      .get(
-        `${API_URL}/search?query=${searchValues.query}&tags=${searchValues.tags
-          .map(tag => tag)
-          .join(',')}${
-          searchValues.ready_to_wait
-            ? `&ready_to_wait=${searchValues.ready_to_wait}`
-            : ''
-        }&sort_by=price${
-          searchValues.priceFrom ? `&price_from=${searchValues.priceFrom}` : ''
-        }${searchValues.priceTo ? `&price_to=${searchValues.priceTo}` : ''}${
-          searchValues.date_from ? `&date_from=${searchValues.dateFrom}` : ''
-        }${
-          searchValues.dateTo ? `&date_to=${searchValues.dateTo}` : ''
-        }&sort_order=${searchValues.sort}&page=0&per_page=0&kind=auditor`,
-      )
+      .get(`${API_URL}/search?${queryString}`)
       .then(({ data }) => {
         dispatch({ type: GET_AUDITORS, payload: data });
       })
       .catch(({ response }) => {
-        console.log(response, 'res');
+        console.error(response, 'res');
       });
   };
 };

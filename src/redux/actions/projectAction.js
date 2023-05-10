@@ -137,7 +137,6 @@ export const clearProjectMessage = () => {
 };
 
 export const getAllProjects = (values = '') => {
-  const token = Cookies.get('token');
   return async dispatch => {
     await axios
       .get(
@@ -184,30 +183,45 @@ export const searchProjects = values => {
     priceFrom: parseInt(values?.price.from) || '',
     priceTo: parseInt(values?.price.to) || '',
     sort: values?.sort || 1,
+    page: values?.page || 0,
   };
+
+  const queryParams = [
+    `query=${searchValues.query}`,
+    `tags=${searchValues.tags?.join(' ')}`,
+    `sort_order=${searchValues.sort}`,
+    `page=${searchValues.page}`,
+    `sort_by=price`,
+    `per_page=10`,
+    `kind=project`,
+  ];
+
+  if (searchValues.ready_to_wait) {
+    queryParams.push(`ready_to_wait=${searchValues.ready_to_wait}`);
+  }
+  if (searchValues.priceFrom) {
+    queryParams.push(`price_from=${searchValues.priceFrom}`);
+  }
+  if (searchValues.priceTo) {
+    queryParams.push(`price_to=${searchValues.priceTo}`);
+  }
+  if (searchValues.dateFrom) {
+    queryParams.push(`date_from=${searchValues.dateFrom}`);
+  }
+  if (searchValues.dateTo) {
+    queryParams.push(`date_to=${searchValues.dateTo}`);
+  }
+
+  const queryString = queryParams.join('&');
+
   return dispatch => {
     axios
-      .get(
-        `${API_URL}/search?query=${searchValues.query}&tags=${searchValues.tags
-          .map(tag => tag)
-          .join(',')}${
-          searchValues.ready_to_wait
-            ? `&ready_to_wait=${searchValues.ready_to_wait}`
-            : ''
-        }&sort_by=price${
-          searchValues.priceFrom ? `&price_from=${searchValues.priceFrom}` : ''
-        }${searchValues.priceTo ? `&price_to=${searchValues.priceTo}` : ''}${
-          searchValues.date_from ? `&date_from=${searchValues.dateFrom}` : ''
-        }${
-          searchValues.dateTo ? `&date_to=${searchValues.dateTo}` : ''
-        }&sort_order=${searchValues.sort}&page=0&per_page=0&kind=project`,
-      )
-      // .get(`${API_URL}/search?query=${searchValues.query}&tags=${searchValues.tags.map(tag => tag + ',')}&${searchValues.ready_to_wait && "&ready_to_wait="`${searchValues.ready_to_wait}`}&sort_by=price&priceFrom=${searchValues.priceFrom}&priceTo=${searchValues.priceTo}&sort_order=1&page=0&per_page=0&kind=project`)
+      .get(`${API_URL}/search?${queryString}`)
       .then(({ data }) => {
         dispatch({ type: SEARCH_PROJECTS, payload: data });
       })
       .catch(({ response }) => {
-        console.log(response, 'res');
+        console.error(response, 'res');
       });
   };
 };
