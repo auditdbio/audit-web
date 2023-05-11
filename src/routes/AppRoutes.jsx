@@ -28,6 +28,7 @@ import AuditDb from '../pages/AuditDb.jsx';
 import Faq from '../pages/Faq.jsx';
 import ContactUs from '../pages/Contact-Us.jsx';
 import MyProjects from '../pages/My-projects.jsx';
+import RestorePasswordPage from '../pages/RestorePasswordPage.jsx';
 
 const AppRoutes = () => {
   const token = useSelector(s => s.user.token);
@@ -62,6 +63,10 @@ const AppRoutes = () => {
         <Route path={'/'} element={<HomePage />} />
         <Route path={'/sign-up'} element={<SignupPage />} />
         <Route path={'/sign-in'} element={<SigninPage />} />
+        <Route
+          path={'/restore-password/:token'}
+          element={<RestorePasswordPage />}
+        />
         <Route path={'/projects'} element={<ProjectPage />} />
         <Route path={'/for-customers'} element={<ForCustomer />} />
         <Route path={'/for-auditors'} element={<ForAuditor />} />

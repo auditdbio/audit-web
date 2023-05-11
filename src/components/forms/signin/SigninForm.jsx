@@ -1,5 +1,5 @@
-import React from 'react';
-import { Box, Button } from '@mui/material';
+import React, { useState } from 'react';
+import { Box, Button, Modal } from '@mui/material';
 import { radiusOfComponents } from '../../../styles/themes.js';
 import PasswordField from '../fields/password-field.jsx';
 import { Form, Formik } from 'formik';
@@ -12,14 +12,19 @@ import {
   signIn,
 } from '../../../redux/actions/userAction.js';
 import CustomSnackbar from '../../custom/CustomSnackbar.jsx';
+import RestorePassword from '../../RestorePassword.jsx';
 
 const SigninForm = () => {
   const dispatch = useDispatch();
   const error = useSelector(s => s.user.error);
+  const [open, setOpen] = useState(false);
   const successMessage = useSelector(s => s.user.success);
   const initialValues = {
     email: '',
     password: '',
+  };
+  const handleClose = () => {
+    setOpen(false);
   };
 
   return (
@@ -46,14 +51,39 @@ const SigninForm = () => {
                 severity={successMessage ? 'success' : 'error'}
                 text={error || successMessage}
               />
-
+              <Modal
+                open={open}
+                onClose={handleClose}
+                aria-labelledby="modal-modal-title"
+                aria-describedby="modal-modal-description"
+              >
+                <Box sx={modalWrapper}>
+                  <RestorePassword onClose={handleClose} />
+                </Box>
+              </Modal>
               <Box sx={fieldWrapper}>
                 <SimpleField name={'email'} label={'E-mail'} />
                 <PasswordField name={'password'} label={'Password'} />
               </Box>
-              <Button type={'submit'} variant={'contained'} sx={submitButton}>
-                Sing in
-              </Button>
+              <Box
+                sx={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                }}
+              >
+                <Button type={'submit'} variant={'contained'} sx={submitButton}>
+                  Sing in
+                </Button>
+                <Button
+                  type={'button'}
+                  variant={'text'}
+                  sx={{ textTransform: 'unset', mt: '25px', fontSize: '12px' }}
+                  onClick={() => setOpen(true)}
+                >
+                  Forgot password
+                </Button>
+              </Box>
             </Box>
           </Form>
         );
@@ -67,6 +97,21 @@ export default SigninForm;
 const SigninSchema = Yup.object().shape({
   password: Yup.string().min(2, 'Too Short!').required('required'),
   email: Yup.string().email('Invalid email').required('required'),
+});
+
+const modalWrapper = theme => ({
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: 400,
+  backgroundColor: 'background.paper',
+  boxShadow: 24,
+  borderRadius: '10px',
+  p: 4,
+  [theme.breakpoints.down('xs')]: {
+    width: '330px',
+  },
 });
 
 const formWrapper = theme => ({

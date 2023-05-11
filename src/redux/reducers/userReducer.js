@@ -14,6 +14,8 @@ import {
   CHANGE_ROLE_DONT_HAVE_PROFILE_CUSTOMER,
   CHANGE_ROLE_HAVE_PROFILE_AUDITOR,
   CHANGE_ROLE_DONT_HAVE_PROFILE_AUDITOR,
+  RESTORE_PASSWORD,
+  SEND_EMAIL,
 } from '../actions/types.js';
 
 const initialState = {
@@ -55,6 +57,17 @@ export const userReducer = (state = initialState, action) => {
         ...state,
         user: action.payload,
         success: 'Success! Your password has been changed',
+      };
+    case RESTORE_PASSWORD:
+      return {
+        ...state,
+        success: 'Success! Your password has been changed',
+      };
+    case SEND_EMAIL:
+      return {
+        ...state,
+        success:
+          'Success! The letter was sent to your email, please check your email',
       };
     case CLEAR_SUCCESS:
       return { ...state, success: null };

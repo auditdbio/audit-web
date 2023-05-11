@@ -18,6 +18,8 @@ import {
   CHANGE_ROLE_HAVE_PROFILE_AUDITOR,
   GET_CUSTOMER,
   GET_AUDITOR,
+  RESTORE_PASSWORD,
+  SEND_EMAIL,
 } from './types.js';
 
 const API_URL = import.meta.env.VITE_API_BASE_URL;
@@ -70,6 +72,35 @@ export const signUp = values => {
       })
       .catch(({ response }) => {
         dispatch({ type: USER_IS_ALREADY_EXIST });
+      });
+  };
+};
+
+export const restorePassword = values => {
+  return dispatch => {
+    axios
+      .post(`${API_URL}/auth/reset_password`, values)
+      .then(({ data }) => {
+        dispatch({ type: RESTORE_PASSWORD, payload: data });
+        history.push('/sign-in', {
+          some: true,
+        });
+      })
+      .catch(e => {
+        console.log(e);
+      });
+  };
+};
+
+export const sendRestoreMessage = values => {
+  return dispatch => {
+    axios
+      .get(`${API_URL}/auth/forgot_password/${values.email}`)
+      .then(({ data }) => {
+        dispatch({ type: SEND_EMAIL, payload: data });
+      })
+      .catch(e => {
+        console.log(e);
       });
   };
 };
