@@ -21,12 +21,13 @@ const RestorePasswordPage = () => {
   const error = useSelector(s => s.user.error);
   const successMessage = useSelector(s => s.user.success);
   const params = useParams();
-  console.log(params);
+
   const initialValues = {
     code: params.token || '',
     confirmPassword: '',
     password: '',
   };
+
   return (
     <Layout>
       <CustomCard sx={cardWrapper}>
