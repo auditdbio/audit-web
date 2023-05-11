@@ -16,7 +16,7 @@ const Header = () => {
       <Container sx={container}>
         <Toolbar disableGutters>
           <Box sx={wrapper}>
-            <Link to={'/'} style={linkStyle}>
+            <Link to={'/'} style={linkStyle} aria-label="Homepage">
               <Box sx={logoStyle}>
                 <Logo />
               </Box>
@@ -32,7 +32,7 @@ const Header = () => {
 
 const container = {
   maxWidth: '1512px',
-  paddingTop: '60px',
+  paddingTop: '20px',
   [theme.breakpoints.down('xs')]: {
     paddingTop: '20px',
   },

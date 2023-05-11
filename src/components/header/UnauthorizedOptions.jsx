@@ -149,6 +149,8 @@ const signInButton = {
   color: 'white',
   ':hover': {
     backgroundColor: 'orange',
+    transition: '0.2s',
+    filter: 'brightness(90%)',
     color: 'white',
   },
   [theme.breakpoints.down('xs')]: {
@@ -161,7 +163,7 @@ const signUpButton = {
   color: '#222222',
   border: '3px solid #52176D',
   ':hover': {
-    backgroundColor: 'transparent',
+    backgroundColor: 'rgba(0, 0, 0, .1)',
     color: 'black',
   },
   [theme.breakpoints.down('xs')]: {

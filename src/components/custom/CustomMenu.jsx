@@ -1,13 +1,12 @@
-import * as React from 'react';
-import { styled, alpha } from '@mui/material/styles';
+import React, { useId } from 'react';
+import { useNavigate } from 'react-router-dom/dist';
+import { useSelector } from 'react-redux';
+import { styled } from '@mui/material/styles';
 import Button from '@mui/material/Button';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
-import Divider from '@mui/material/Divider';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import { Box } from '@mui/material';
-import { useNavigate } from 'react-router-dom/dist';
-import { useSelector } from 'react-redux';
 import { isAuth } from '../../lib/helper.js';
 
 const StyledMenu = styled(props => (
@@ -53,6 +52,7 @@ const StyledMenu = styled(props => (
 }));
 
 export default function CustomMenu({ buttonText, options }) {
+  const styledMenuId = useId();
   const menuOptions = options;
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
@@ -67,16 +67,9 @@ export default function CustomMenu({ buttonText, options }) {
   };
 
   return (
-    <Box
-      sx={{
-        display: 'flex',
-        justifyContent: 'center',
-        flexDirection: 'column',
-      }}
-    >
+    <Box sx={wrapper}>
       <Button
-        id="demo-customized-button-1"
-        aria-controls={open ? 'demo-customized-menu-1' : undefined}
+        aria-controls={open ? styledMenuId : undefined}
         aria-haspopup="true"
         aria-expanded={open ? 'true' : undefined}
         variant="contained"
@@ -84,27 +77,13 @@ export default function CustomMenu({ buttonText, options }) {
         onClick={handleClick}
         endIcon={<KeyboardArrowDownIcon />}
         disableRipple
-        sx={{
-          background: 'transparent',
-          color: BLACK_COLOR,
-          fontSize: '26px',
-          fontWeight: '400',
-          fontFamily: 'Montserrat',
-          ':hover': {
-            backgroundColor: 'transparent', // theme.palette.primary.main
-            color: ORANGE_COLOR,
-          },
-          textTransform: 'none',
-          marginY: 'auto',
-        }}
+        sx={menuButton}
       >
         {buttonText}
       </Button>
       <StyledMenu
-        id="demo-customized-menu-1"
-        MenuListProps={{
-          'aria-labelledby': 'demo-customized-button',
-        }}
+        id={styledMenuId}
+        MenuListProps={{ 'aria-labelledby': 'demo-customized-button' }}
         anchorEl={anchorEl}
         open={open}
         onClose={handleClose}
@@ -141,3 +120,27 @@ export default function CustomMenu({ buttonText, options }) {
 
 const ORANGE_COLOR = '#FF9900';
 const BLACK_COLOR = '#222222';
+
+const wrapper = {
+  display: 'flex',
+  justifyContent: 'center',
+  flexDirection: 'column',
+};
+
+const menuButton = {
+  background: 'transparent',
+  color: BLACK_COLOR,
+  fontSize: '26px',
+  fontWeight: '400',
+  fontFamily: 'Montserrat',
+  ':hover': {
+    backgroundColor: 'transparent', // theme.palette.primary.main
+    color: ORANGE_COLOR,
+  },
+  ':focus-visible': {
+    backgroundColor: 'transparent', // theme.palette.primary.main
+    color: ORANGE_COLOR,
+  },
+  textTransform: 'none',
+  marginY: 'auto',
+};
