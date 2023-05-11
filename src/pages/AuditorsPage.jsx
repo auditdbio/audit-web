@@ -10,6 +10,7 @@ import AuditorListCard from '../components/AuditorListCard.jsx';
 import { getAuditors, searchAuditor } from '../redux/actions/auditorAction.js';
 import theme from '../styles/themes.js';
 import { searchProjects } from '../redux/actions/projectAction.js';
+import CustomPagination from '../components/custom/CustomPagination.jsx';
 
 const AuditorsPage = () => {
   const dispatch = useDispatch();
@@ -17,19 +18,25 @@ const AuditorsPage = () => {
   const matchSm = useMediaQuery(theme.breakpoints.down('sm'));
   const [searchParams, setSearchParams] = useSearchParams();
   const [query, setQuery] = useState(undefined);
+  const auditors = useSelector(s => s.auditor.auditors);
+  const totalAuditors = useSelector(s => s.auditor.searchTotalAuditors);
   const [projectIdToInvite, setProjectIdToInvite] = useState(() =>
     searchParams.get('projectIdToInvite'),
   );
-  const auditorReducer = useSelector(state => state.auditor.auditors);
+  const [currentPage, setCurrentPage] = useState(
+    +searchParams.get('page') || 1,
+  );
+
   const applyFilter = filter => {
     setQuery(query => {
       const { ...data } = query || {};
+      setCurrentPage(1);
       return {
         ...data,
-
+        page: 1,
         sort: filter.sort || '',
         search: filter.search || '',
-        tags: filter.tags.map(tag => tag),
+        tags: filter.tags || [],
         dateFrom: filter.dateFrom || '',
         dateTo: filter.dateTo || '',
         from: filter.price.from || '',
@@ -41,6 +48,7 @@ const AuditorsPage = () => {
   };
 
   const initialFilter = {
+    page: searchParams.get('page') || 1,
     search: searchParams.get('search') || '',
     tags: searchParams.getAll('tags') || [],
     dateFrom: searchParams.get('dateFrom') || new Date(),
@@ -60,6 +68,18 @@ const AuditorsPage = () => {
     });
   };
 
+  const getNumberOfPages = () => {
+    return Math.ceil(totalAuditors / 10);
+  };
+
+  const handleChangePage = (e, page) => {
+    setCurrentPage(page);
+    setQuery(prev => {
+      const { ...data } = prev || initialFilter;
+      return { ...data, page };
+    });
+  };
+
   useEffect(() => {
     if (query) {
       setSearchParams({ ...query });
@@ -68,6 +88,10 @@ const AuditorsPage = () => {
 
   useEffect(() => {
     dispatch(searchAuditor(initialFilter));
+  }, [searchParams.toString()]);
+
+  useEffect(() => {
+    setCurrentPage(+searchParams.get('page') || 1);
   }, [searchParams.toString()]);
 
   return (
@@ -85,16 +109,16 @@ const AuditorsPage = () => {
             />
           </Box>
         </Box>
-        {auditorReducer?.length > 0 && (
-          <Box
-            sx={{
-              display: 'flex',
-              flexWrap: 'wrap',
-              marginTop: '70px',
-              border: '0.5px solid #B2B3B3',
-            }}
-          >
-            {auditorReducer?.map(auditor => (
+        <CustomPagination
+          show={auditors?.length > 0}
+          count={getNumberOfPages()}
+          sx={{ mb: '20px' }}
+          page={currentPage}
+          onChange={handleChangePage}
+        />
+        {auditors?.length > 0 && (
+          <Box sx={contentWrapper}>
+            {auditors?.map(auditor => (
               <Box sx={auditorContainerStyle} key={auditor.user_id}>
                 <AuditorListCard
                   auditor={auditor}
@@ -102,23 +126,19 @@ const AuditorsPage = () => {
                 />
               </Box>
             ))}
-            {!matchSm && auditorReducer?.length % 2 === 1 && (
+            {!matchSm && auditors?.length % 2 === 1 && (
               <Box sx={fakeContainerStyle} />
             )}
           </Box>
         )}
-        {auditorReducer?.length === 0 && (
-          <Box
-            sx={{
-              paddingTop: '70px',
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}
-          >
-            No results
-          </Box>
-        )}
+        {auditors?.length === 0 && <Box sx={noResults}>No results</Box>}
+        <CustomPagination
+          show={auditors?.length > 0}
+          count={getNumberOfPages()}
+          sx={{ display: 'flex', justifyContent: 'flex-end' }}
+          page={currentPage}
+          onChange={handleChangePage}
+        />
       </Box>
     </Layout>
   );
@@ -142,6 +162,13 @@ const wrapper = theme => ({
   minHeight: '1000px',
 });
 
+const contentWrapper = {
+  display: 'flex',
+  flexWrap: 'wrap',
+  mb: '20px',
+  border: '0.5px solid #B2B3B3',
+};
+
 const auditorContainerStyle = theme => ({
   height: '200px',
   width: {
@@ -163,4 +190,11 @@ const fakeContainerStyle = {
     lg: '50%',
   },
   border: '0.5px solid #B2B3B3',
+};
+
+const noResults = {
+  paddingTop: '70px',
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
 };

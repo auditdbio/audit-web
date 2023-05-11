@@ -9,10 +9,15 @@ import { useNavigate, useSearchParams } from 'react-router-dom/dist';
 import { PROJECTS } from '../redux/actions/types.js';
 import { searchProjects } from '../redux/actions/projectAction.js';
 import { clearMessage } from '../redux/actions/auditAction.js';
+import CustomPagination from '../components/custom/CustomPagination.jsx';
 
 const ProjectPage = () => {
-  const projects = useSelector(s => s.project.searchProjects);
   const [searchParams, setSearchParams] = useSearchParams();
+  const projects = useSelector(s => s.project.searchProjects);
+  const totalProjects = useSelector(s => s.project.searchTotalProjects);
+  const [currentPage, setCurrentPage] = useState(
+    +searchParams.get('page') || 1,
+  );
   const [query, setQuery] = useState(undefined);
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -20,12 +25,13 @@ const ProjectPage = () => {
   const applyFilter = filter => {
     setQuery(query => {
       const { ...data } = query || {};
+      setCurrentPage(1);
       return {
         ...data,
-
+        page: 1,
         sort: filter.sort || '',
         search: filter.search || '',
-        tags: filter.tags.map(tag => tag),
+        tags: filter.tags || [],
         dateFrom: filter.dateFrom || '',
         dateTo: filter.dateTo || '',
         from: filter.price.from || '',
@@ -44,6 +50,7 @@ const ProjectPage = () => {
   };
 
   const initialFilter = {
+    page: searchParams.get('page') || 1,
     search: searchParams.get('search') || '',
     tags: searchParams.getAll('tags') || [],
     dateFrom: searchParams.get('dateFrom') || new Date(),
@@ -60,6 +67,18 @@ const ProjectPage = () => {
     navigate(-1);
   };
 
+  const getNumberOfPages = () => {
+    return Math.ceil(totalProjects / 10);
+  };
+
+  const handleChangePage = (e, page) => {
+    setCurrentPage(page);
+    setQuery(prev => {
+      const { ...data } = prev || initialFilter;
+      return { ...data, page };
+    });
+  };
+
   useEffect(() => {
     if (query) {
       setSearchParams({ ...query });
@@ -68,6 +87,10 @@ const ProjectPage = () => {
 
   useEffect(() => {
     dispatch(searchProjects(initialFilter));
+  }, [searchParams.toString()]);
+
+  useEffect(() => {
+    setCurrentPage(+searchParams.get('page') || 1);
   }, [searchParams.toString()]);
 
   useEffect(() => {
@@ -89,6 +112,13 @@ const ProjectPage = () => {
             />
           </Box>
         </Box>
+        <CustomPagination
+          show={projects?.length > 0}
+          count={getNumberOfPages()}
+          sx={{ mb: '20px' }}
+          page={currentPage}
+          onChange={handleChangePage}
+        />
         <Box sx={contentWrapper}>
           <Box sx={{ display: 'flex', flexWrap: 'wrap' }}>
             {projects?.map((project, idx) => (
@@ -106,6 +136,14 @@ const ProjectPage = () => {
             ))}
           </Box>
         </Box>
+        {projects?.length === 0 && <Box sx={noResults}>No results</Box>}
+        <CustomPagination
+          show={projects?.length > 0}
+          count={getNumberOfPages()}
+          sx={{ display: 'flex', justifyContent: 'flex-end' }}
+          page={currentPage}
+          onChange={handleChangePage}
+        />
       </Box>
     </Layout>
   );
@@ -114,9 +152,7 @@ const ProjectPage = () => {
 export default ProjectPage;
 
 const contentWrapper = theme => ({
-  paddingRight: '20px',
-  height: '90%',
-  overflowY: 'scroll',
+  mb: '20px',
   [theme.breakpoints.down('sm')]: {
     flexDirection: 'column',
     flexWrap: 'unset',
@@ -143,8 +179,7 @@ const borderLeft = theme => ({
 const projectTopWrapper = theme => ({
   display: 'flex',
   justifyContent: 'space-between',
-  mb: '60px',
-  paddingRight: '20px',
+  mb: '20px',
   alignItems: 'center',
   [theme.breakpoints.down('xs')]: {
     '& button': {
@@ -169,7 +204,7 @@ const projectListWrapper = theme => ({
 
 const wrapper = theme => ({
   width: '100%',
-  padding: '43px 0 44px 32px',
+  padding: '43px 20px 44px 20px',
   backgroundColor: '#FCFAF6',
   border: '1.42857px solid #D9D9D9',
   boxShadow:
@@ -180,9 +215,16 @@ const wrapper = theme => ({
     '0px 4.75007px 3.80006px rgba(0, 0, 0, 0.0282725), ' +
     '0px 1.97661px 1.58129px rgba(0, 0, 0, 0.0196802)',
   borderRadius: '10.7143px',
-  height: '1300px',
+  minHeight: '1000px',
   [theme.breakpoints.down('sm')]: {
     paddingLeft: '20px',
     paddingTop: '22px',
   },
 });
+
+const noResults = {
+  paddingTop: '70px',
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+};
