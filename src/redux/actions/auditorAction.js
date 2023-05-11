@@ -104,15 +104,16 @@ export const searchAuditor = values => {
     priceFrom: parseInt(values?.price.from) || '',
     priceTo: parseInt(values?.price.to) || '',
     sort: values?.sort || 1,
+    page: values?.page || 0,
   };
 
   const queryParams = [
     `query=${searchValues.query}`,
     `tags=${searchValues.tags?.join(' ')}`,
     `sort_order=${searchValues.sort}`,
+    `page=${searchValues.page}`,
     `sort_by=price`,
-    `page=0`,
-    `per_page=0`,
+    `per_page=10`,
     `kind=auditor`,
   ];
 

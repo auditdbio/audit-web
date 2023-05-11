@@ -10,6 +10,7 @@ const initialState = {
   auditor: null,
   auditors: null,
   searchAuditors: null,
+  searchTotalAuditors: 0,
   error: null,
 };
 export const auditorReducer = (state = initialState, action) => {
@@ -21,7 +22,11 @@ export const auditorReducer = (state = initialState, action) => {
     case SEARCH_AUDITOR:
       return { ...state, searchAuditors: action.payload };
     case GET_AUDITORS:
-      return { ...state, auditors: action.payload };
+      return {
+        ...state,
+        auditors: action.payload.result,
+        searchTotalAuditors: action.payload.totalDocuments,
+      };
     case LOG_OUT:
       return { ...state, auditor: null };
     default:

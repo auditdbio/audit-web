@@ -1,23 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import Layout from '../styles/Layout.jsx';
-import { Box, Button, Pagination } from '@mui/material';
+import { Box, Button } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack.js';
 import Filter from '../components/forms/filter/index.jsx';
 import ProjectListCard from '../components/Project-list-card.jsx';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useSearchParams } from 'react-router-dom/dist';
 import { PROJECTS } from '../redux/actions/types.js';
-import {
-  getAllProjects,
-  searchProjects,
-} from '../redux/actions/projectAction.js';
+import { searchProjects } from '../redux/actions/projectAction.js';
 import { clearMessage } from '../redux/actions/auditAction.js';
 import CustomPagination from '../components/custom/CustomPagination.jsx';
 
 const ProjectPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const projects = useSelector(s => s.project.searchProjects);
-  const totalProjects = useSelector(s => s.project.projects?.length) || 0;
+  const totalProjects = useSelector(s => s.project.searchTotalProjects);
   const [currentPage, setCurrentPage] = useState(
     +searchParams.get('page') || 1,
   );
@@ -76,13 +73,9 @@ const ProjectPage = () => {
 
   const handleChangePage = (e, page) => {
     setCurrentPage(page);
-    setQuery(() => {
-      const { ...data } = query || {};
-      return {
-        ...data,
-        page,
-        search: searchParams.get('search') || '',
-      };
+    setQuery(prev => {
+      const { ...data } = prev || initialFilter;
+      return { ...data, page };
     });
   };
 
@@ -93,11 +86,11 @@ const ProjectPage = () => {
   }, [query]);
 
   useEffect(() => {
-    dispatch(getAllProjects(searchParams.get('search') || ''));
-  }, []);
+    dispatch(searchProjects(initialFilter));
+  }, [searchParams.toString()]);
 
   useEffect(() => {
-    dispatch(searchProjects(initialFilter));
+    setCurrentPage(+searchParams.get('page') || 1);
   }, [searchParams.toString()]);
 
   useEffect(() => {
@@ -143,6 +136,7 @@ const ProjectPage = () => {
             ))}
           </Box>
         </Box>
+        {projects?.length === 0 && <Box sx={noResults}>No results</Box>}
         <CustomPagination
           show={projects?.length > 0}
           count={getNumberOfPages()}
@@ -227,3 +221,10 @@ const wrapper = theme => ({
     paddingTop: '22px',
   },
 });
+
+const noResults = {
+  paddingTop: '70px',
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+};
