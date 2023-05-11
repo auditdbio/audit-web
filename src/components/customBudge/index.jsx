@@ -16,14 +16,7 @@ const CustomBudge = () => {
       disableRipple
       aria-label="message"
       onClick={() => setIsOpen(!isOpen)}
-      sx={{
-        width: '35px',
-        height: '35px',
-        backgroundColor: '#D9D9D9',
-        borderRadius: '50px',
-        marginY: 'auto',
-        position: 'relative',
-      }}
+      sx={iconButtonStyle}
     >
       {isOpen && (
         <ClickAwayListener onClickAway={() => setIsOpen(false)}>
@@ -41,10 +34,23 @@ const CustomBudge = () => {
 
 export default CustomBudge;
 
-const titleStyle = theme => ({
+const iconButtonStyle = {
+  width: '35px',
+  height: '35px',
+  backgroundColor: '#D9D9D9',
+  borderRadius: '50px',
+  marginY: 'auto',
+  position: 'relative',
+  ':hover': {
+    transition: '0.3s',
+    backgroundColor: '#B9B9B9',
+  },
+};
+
+const titleStyle = {
   color: '#000',
   fontSize: '16px!important',
-});
+};
 
 const modalWrapper = (role, theme) => ({
   position: 'absolute',

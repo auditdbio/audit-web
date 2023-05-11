@@ -10,7 +10,6 @@ import { ASSET_URL } from '../../services/urls.js';
 import CustomMenu from '../custom/CustomMenu.jsx';
 import CustomBadge from '../customBudge';
 import { UserMenu } from './UserMenu.jsx';
-import RoleMenuDropdown from './RoleMenuDropdown.jsx';
 import { authorizedPages } from './constants.js';
 
 const AuthorizedOptions = () => {
@@ -23,8 +22,6 @@ const AuthorizedOptions = () => {
   const [currentUsername] = useState(reduxUser.name || 'User');
   const [anchorElUser, setAnchorElUser] = useState(null);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
-  const [anchorElRole, setAnchorElRole] = useState(null);
-  const [isRoleMenuOpen, setIsRoleMenuOpen] = useState(false);
 
   const handleOpenUserMenu = event => {
     setAnchorElUser(event.currentTarget);
@@ -34,11 +31,6 @@ const AuthorizedOptions = () => {
   const handleCloseUserMenu = () => {
     setIsUserMenuOpen(false);
     setAnchorElUser(null);
-  };
-
-  const handleCloseRoleMenu = () => {
-    setIsRoleMenuOpen(false);
-    setAnchorElRole(null);
   };
 
   const userAvatar = useMemo(() => {
@@ -95,15 +87,16 @@ const AuthorizedOptions = () => {
           <Typography sx={userGreeting}>Hello, {currentUsername}!</Typography>
           <IconButton
             onClick={handleOpenUserMenu}
-            sx={{ ml: 1 }}
             aria-controls={anchorElUser ? 'account-menu' : undefined}
             aria-haspopup="true"
             aria-expanded={anchorElUser ? 'true' : undefined}
+            aria-label="User menu"
             disableRipple
           >
             <Avatar
               src={userAvatar ? `${ASSET_URL}/${userAvatar}` : ''}
-              sx={avatarStyle}
+              sx={avatarStyle(reduxUser.current_role)}
+              alt="User photo"
             />
             <UserMenu
               open={isUserMenuOpen}
@@ -112,11 +105,6 @@ const AuthorizedOptions = () => {
               anchor={anchorElUser}
             />
           </IconButton>
-          <RoleMenuDropdown
-            open={isRoleMenuOpen}
-            handleClose={handleCloseRoleMenu}
-            anchor={anchorElRole}
-          />
         </Box>
       )}
     </>
@@ -144,13 +132,16 @@ const userGreeting = {
   whiteSpace: 'nowrap',
 };
 
-const avatarStyle = theme => ({
-  width: '100px',
-  height: '100px',
-  [theme.breakpoints.down('lg')]: {
-    width: '60px',
-    height: '60px',
+const avatarStyle = role => ({
+  width: '60px',
+  height: '60px',
+  transition: 'filter 0.3s',
+  '&:hover': {
+    filter: 'brightness(85%)',
   },
+  border: `3px solid ${
+    role === AUDITOR ? theme.palette.secondary.main : theme.palette.primary.main
+  }`,
 });
 
 export default AuthorizedOptions;
