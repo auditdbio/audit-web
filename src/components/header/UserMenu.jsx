@@ -55,6 +55,7 @@ export const UserMenu = ({ open, handleClose, anchor, userAvatar, pages }) => {
           <Avatar
             src={userAvatar ? `${ASSET_URL}/${userAvatar}` : ''}
             sx={avatarSx}
+            alt="User photo"
           />
           {/*<Button*/}
           {/*  size="small"*/}

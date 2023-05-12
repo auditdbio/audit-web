@@ -90,7 +90,11 @@ const AuditInfo = () => {
   return (
     <Layout>
       <CustomCard sx={wrapper}>
-        <Button sx={backButtonSx} onClick={() => navigate(-1)}>
+        <Button
+          sx={backButtonSx}
+          onClick={() => navigate(-1)}
+          aria-label="Go back"
+        >
           <ArrowBackIcon />
         </Button>
         <Box sx={{ display: 'flex', width: '100%' }}>
@@ -105,6 +109,7 @@ const AuditInfo = () => {
             <Box sx={userWrapper}>
               <Avatar
                 src={audit?.avatar ? `${ASSET_URL}/${audit?.avatar}` : ''}
+                alt="auditor photo"
               />
               <Box sx={{ display: 'grid' }}>
                 <Tooltip

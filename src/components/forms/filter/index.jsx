@@ -60,10 +60,16 @@ const Filter = ({ target, submit, initial }) => {
                   name={'search'}
                   disabled={false}
                   size={'small'}
+                  label="Search"
                   InputProps={{
                     endAdornment: (
                       <InputAdornment position="end">
-                        <IconButton edge="end" type={'submit'} color="disabled">
+                        <IconButton
+                          edge="end"
+                          type={'submit'}
+                          color="disabled"
+                          aria-label="Search"
+                        >
                           <SearchOutlinedIcon />
                         </IconButton>
                       </InputAdornment>

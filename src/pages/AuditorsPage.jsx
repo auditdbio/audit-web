@@ -98,7 +98,7 @@ const AuditorsPage = () => {
     <Layout>
       <Box sx={wrapper}>
         <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-          <Button onClick={() => navigate(-1)}>
+          <Button onClick={() => navigate(-1)} aria-label="Go back">
             <ArrowBackIcon color={'secondary'} />
           </Button>
           <Box>

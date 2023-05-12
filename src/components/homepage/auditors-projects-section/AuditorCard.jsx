@@ -60,6 +60,7 @@ const AuditorCard = ({ auditor }) => {
 
       <Avatar
         src={auditor.avatar && `${ASSET_URL}/${auditor.avatar}`}
+        alt={`${auditor?.first_name} photo`}
         sx={avatarStyle}
       />
       <Box sx={{ display: 'grid' }}>

@@ -101,7 +101,7 @@ const ProjectPage = () => {
     <Layout>
       <Box sx={wrapper}>
         <Box sx={projectTopWrapper}>
-          <Button onClick={handleGoBack}>
+          <Button onClick={handleGoBack} aria-label="Go back">
             <ArrowBackIcon color={'secondary'} />
           </Button>
           <Box>

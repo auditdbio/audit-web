@@ -15,7 +15,7 @@ const Footer = () => {
   const isMobile = useMediaQuery('(max-width: 768px)');
 
   return (
-    <Box sx={footerContainerStyles}>
+    <Box sx={footerContainerStyles} component="footer">
       <Box sx={mainFooterStyles(isMobile)}>
         <Box sx={footerStyle(isMobile)}>
           <Box sx={logoIconsStyle(isMobile)}>
@@ -25,25 +25,36 @@ const Footer = () => {
             </Box>
             <Box sx={iconsStyle}>
               <a
-                target={'_blank'}
-                href={
-                  'https://twitter.com/auditdbio?t=oOdybhqGYlv129TyT8y-2g&s=09'
-                }
+                target="_blank"
+                href="https://twitter.com/auditdbio?t=oOdybhqGYlv129TyT8y-2g&s=09"
+                aria-label="Twitter"
               >
                 <TwitterIcon sx={iconStyle} />
               </a>
-              <a target={'_blank'} href={'https://discord.gg/2Wg6GGs93C'}>
+              <a
+                target="_blank"
+                href="https://discord.gg/2Wg6GGs93C"
+                aria-label="Discord"
+              >
                 <Discord style={iconStyle} />
               </a>
-              <a target={'_blank'} href={'https://t.me/+B6deDZFIg3k4Y2Zi'}>
+              <a
+                target="_blank"
+                href="https://t.me/+B6deDZFIg3k4Y2Zi"
+                aria-label="Telegram"
+              >
                 <Telegram style={iconStyle} />
               </a>
-              <a target={'_blank'} href={'https://medium.com/auditdb'}>
+              <a
+                target="_blank"
+                href="https://medium.com/auditdb"
+                aria-label="Medium"
+              >
                 <MediumLogo style={iconStyle} />
               </a>
             </Box>
           </Box>
-          <Box sx={menuItems}>
+          <Box sx={menuItems} component="ul" role="menu">
             {pages.map(page => (
               <MenuItem
                 sx={menuItemWrap(isMobile)}

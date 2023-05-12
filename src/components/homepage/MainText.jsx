@@ -35,7 +35,10 @@ const MainText = () => {
   };
 
   return (
-    <Box sx={{ width: '100%', paddingBottom: '5rem', maxWidth: '1512px' }}>
+    <Box
+      sx={{ width: '100%', paddingBottom: '5rem', maxWidth: '1512px' }}
+      component="section"
+    >
       <Box
         sx={{
           display: 'flex',

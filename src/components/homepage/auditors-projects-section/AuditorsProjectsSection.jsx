@@ -9,7 +9,7 @@ const AuditorsProjectsSection = () => {
   const isMobile = useMediaQuery('(max-width: 768px)');
 
   return (
-    <Box sx={wrapperStyle}>
+    <Box sx={wrapperStyle} component="section">
       <Box sx={AuditorsProjectsSectionStyle(isMobile)}>
         <AuditorSection />
         <Divider

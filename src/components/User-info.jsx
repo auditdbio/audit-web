@@ -48,6 +48,7 @@ const UserInfo = ({ role }) => {
             <Avatar
               src={data.avatar && `${ASSET_URL}/${data.avatar}`}
               sx={avatarStyle}
+              alt="User photo"
             />
           </Box>
           <Box sx={infoStyle}>
