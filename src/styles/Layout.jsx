@@ -8,7 +8,9 @@ const Layout = ({ children, sx }) => {
   return (
     <ContentWrapper>
       <Header />
-      <Box sx={[layoutStyle, sx]}>{children}</Box>
+      <Box sx={[layoutStyle, sx]} component="main">
+        {children}
+      </Box>
       <Footer />
     </ContentWrapper>
   );

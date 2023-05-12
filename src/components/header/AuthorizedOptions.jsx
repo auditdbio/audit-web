@@ -52,6 +52,7 @@ const AuthorizedOptions = () => {
           <Avatar
             src={userAvatar ? `${ASSET_URL}/${userAvatar}` : ''}
             style={{ width: '35px', height: '35px' }}
+            alt="User photo"
           />
           <IconButton
             aria-label="account of current user"

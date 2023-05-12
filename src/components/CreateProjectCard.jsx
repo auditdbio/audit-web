@@ -149,6 +149,7 @@ const CreateProjectCard = ({ projectInfo }) => {
             <Button
               sx={backButtonSx}
               onClick={() => navigate('/profile/projects')}
+              aria-label="Ga back"
             >
               <ArrowBackIcon />
             </Button>

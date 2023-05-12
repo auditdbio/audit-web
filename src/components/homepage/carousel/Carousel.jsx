@@ -29,6 +29,7 @@ const Carousel = () => {
         marginBottom: '2rem',
         maxWidth: '1512px',
       }}
+      component="section"
     >
       {/*here will be your opinion about auditDB*/}
       <Box sx={carouselTextStyle}>Who’s using AuditDB?</Box>
@@ -52,7 +53,8 @@ const Carousel = () => {
             className={prevBtnClass}
             onClick={handlePrevClick}
             disableRipple
-          ></Button>
+            aria-label="previous slide"
+          />
         )}
         <Swiper
           slidesPerView={1}
@@ -75,7 +77,8 @@ const Carousel = () => {
             className={nextBtnClass}
             disableRipple
             onClick={handleNextClick}
-          ></Button>
+            aria-label="next slide"
+          />
         )}
       </Box>
       {isMobile && (
@@ -91,12 +94,14 @@ const Carousel = () => {
             className={prevBtnClass}
             onClick={handlePrevClick}
             disableRipple
-          ></Button>
+            aria-label="previous slide"
+          />
           <Button
             className={nextBtnClass}
             disableRipple
             onClick={handleNextClick}
-          ></Button>
+            aria-label="next slide"
+          />
         </Box>
       )}
     </Box>

@@ -100,6 +100,7 @@ export default function AuditorModal({
               <Avatar
                 src={auditor.avatar && `${ASSET_URL}/${auditor.avatar}`}
                 sx={avatarStyle}
+                alt={`${auditor.first_name} photo`}
               />
             </Box>
             <Box sx={infoStyle}>
