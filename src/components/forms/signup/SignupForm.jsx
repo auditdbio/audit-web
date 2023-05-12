@@ -8,6 +8,7 @@ import SimpleField from '../fields/simple-field.jsx';
 import { useDispatch, useSelector } from 'react-redux';
 import { clearUserError, signUp } from '../../../redux/actions/userAction.js';
 import CustomSnackbar from '../../custom/CustomSnackbar.jsx';
+import { addTestsLabel } from '../../../lib/helper.js';
 
 const SignupForm = () => {
   const [isAuditor, setIsAuditor] = useState('auditor');
@@ -61,6 +62,7 @@ const SignupForm = () => {
                   tabSx,
                 ]}
                 label="Auditor"
+                {...addTestsLabel('auditor-button')}
               />
               <Tab
                 value={'customer'}
@@ -71,6 +73,7 @@ const SignupForm = () => {
                   tabSx,
                 ]}
                 label="Customer"
+                {...addTestsLabel('customer-button')}
               />
             </Tabs>
             <Box sx={fieldsWrapper}>
@@ -86,7 +89,12 @@ const SignupForm = () => {
                 />
               </Box>
             </Box>
-            <Button type={'submit'} sx={submitButton} variant={'contained'}>
+            <Button
+              type={'submit'}
+              sx={submitButton}
+              variant={'contained'}
+              {...addTestsLabel('sign-up-button')}
+            >
               Sing up
             </Button>
           </Box>

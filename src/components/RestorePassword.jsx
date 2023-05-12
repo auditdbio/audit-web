@@ -7,6 +7,7 @@ import * as Yup from 'yup';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import { useParams } from 'react-router-dom';
 import { sendRestoreMessage } from '../redux/actions/userAction.js';
+import { addTestsLabel } from '../lib/helper.js';
 
 const RestorePassword = ({ onClose }) => {
   const dispatch = useDispatch();
@@ -57,6 +58,7 @@ const RestorePassword = ({ onClose }) => {
                 }}
                 type={'submit'}
                 variant={'contained'}
+                {...addTestsLabel('submit-button')}
               >
                 Submit
               </Button>

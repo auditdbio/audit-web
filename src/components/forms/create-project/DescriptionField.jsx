@@ -2,6 +2,7 @@ import React from 'react';
 import { Box, Typography } from '@mui/material';
 import { Field } from 'formik';
 import { TextField } from 'formik-mui';
+import { addTestsLabel } from '../../../lib/helper.js';
 
 const DescriptionField = ({ name, label }) => {
   return (
@@ -20,6 +21,9 @@ const DescriptionField = ({ name, label }) => {
         fullWidth={true}
         disabled={false}
         sx={fieldSx}
+        inputProps={{
+          ...addTestsLabel(`${name}-input`),
+        }}
       />
     </Box>
   );

@@ -7,7 +7,7 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import { Box } from '@mui/material';
-import { isAuth } from '../../lib/helper.js';
+import { addTestsLabel, isAuth } from '../../lib/helper.js';
 
 const StyledMenu = styled(props => (
   <Menu
@@ -78,6 +78,7 @@ export default function CustomMenu({ buttonText, options }) {
         endIcon={<KeyboardArrowDownIcon />}
         disableRipple
         sx={menuButton}
+        {...addTestsLabel(`header_dropdown-${buttonText}`)}
       >
         {buttonText}
       </Button>
@@ -108,6 +109,7 @@ export default function CustomMenu({ buttonText, options }) {
                 }}
                 key={item.id}
                 disableRipple
+                {...addTestsLabel(`header_dropdown-item-${item.itemName}`)}
               >
                 {item.itemName}
               </MenuItem>

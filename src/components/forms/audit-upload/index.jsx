@@ -7,6 +7,7 @@ import Cookies from 'js-cookie';
 import { useSelector } from 'react-redux';
 import { ASSET_URL } from '../../../services/urls.js';
 import CustomSnackbar from '../../custom/CustomSnackbar.jsx';
+import { addTestsLabel } from '../../../lib/helper.js';
 
 const AuditUpload = ({
   name,
@@ -85,7 +86,7 @@ const AuditUpload = ({
         text={error}
       />
 
-      <Button disabled={disabled}>
+      <Button disabled={disabled} {...addTestsLabel('upload-audit-button')}>
         <label htmlFor="audit-upload">
           <CreateNewFolderOutlinedIcon fontSize={'large'} color={'disabled'} />
         </label>

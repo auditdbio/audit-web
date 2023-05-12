@@ -9,6 +9,7 @@ import { AUDITOR } from '../../../redux/actions/types.js';
 import theme from '../../../styles/themes.js';
 import { ASSET_URL } from '../../../services/urls.js';
 import CustomSnackbar from '../../custom/CustomSnackbar.jsx';
+import { addTestsLabel } from '../../../lib/helper.js';
 
 const AvatarForm = ({ role, name }) => {
   const user = useSelector(state => state.user.user);
@@ -65,6 +66,7 @@ const AvatarForm = ({ role, name }) => {
 
       <Button
         sx={role === AUDITOR ? { color: theme.palette.secondary.main } : {}}
+        {...addTestsLabel('edit-photo-button')}
       >
         <label
           htmlFor="file-upload"

@@ -5,6 +5,7 @@ import Star from './icons/Star.jsx';
 import theme, { radiusOfComponents } from '../styles/themes.js';
 import { AUDITOR, DONE, SUBMITED } from '../redux/actions/types.js';
 import { useNavigate } from 'react-router-dom/dist';
+import { addTestsLabel } from '../lib/helper.js';
 
 const MyProjectListCard = ({ type, project, setState, state, isChecked }) => {
   const navigate = useNavigate();
@@ -75,6 +76,7 @@ const MyProjectListCard = ({ type, project, setState, state, isChecked }) => {
           checked={!!isChecked}
           onChange={handleClick}
           sx={checkBoxSx}
+          inputProps={{ ...addTestsLabel('check-project-button') }}
         />
       </Box>
     </Box>

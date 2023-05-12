@@ -10,6 +10,7 @@ import Instagram from '../icons/Instagram.jsx';
 import Discord from '../icons/Discord.jsx';
 import Telegram from '../icons/Telegram.jsx';
 import MediumLogo from '../icons/Medium-logo.jsx';
+import { addTestsLabel } from '../../lib/helper.js';
 
 const Footer = () => {
   const isMobile = useMediaQuery('(max-width: 768px)');
@@ -28,6 +29,7 @@ const Footer = () => {
                 target="_blank"
                 href="https://twitter.com/auditdbio?t=oOdybhqGYlv129TyT8y-2g&s=09"
                 aria-label="Twitter"
+                {...addTestsLabel('footer_twitter-link')}
               >
                 <TwitterIcon sx={iconStyle} />
               </a>
@@ -35,6 +37,7 @@ const Footer = () => {
                 target="_blank"
                 href="https://discord.gg/2Wg6GGs93C"
                 aria-label="Discord"
+                {...addTestsLabel('footer_discord-link')}
               >
                 <Discord style={iconStyle} />
               </a>
@@ -42,6 +45,7 @@ const Footer = () => {
                 target="_blank"
                 href="https://t.me/+B6deDZFIg3k4Y2Zi"
                 aria-label="Telegram"
+                {...addTestsLabel('footer_telegram-link')}
               >
                 <Telegram style={iconStyle} />
               </a>
@@ -49,6 +53,7 @@ const Footer = () => {
                 target="_blank"
                 href="https://medium.com/auditdb"
                 aria-label="Medium"
+                {...addTestsLabel('footer_medium-link')}
               >
                 <MediumLogo style={iconStyle} />
               </a>
@@ -63,7 +68,12 @@ const Footer = () => {
                 key={page.id}
               >
                 {/*<Box sx={menuItem(isMobile)}>*/}
-                <Link to={page.path}>{page.name}</Link>
+                <Link
+                  to={page.path}
+                  {...addTestsLabel(`footer_${page.name}-link`)}
+                >
+                  {page.name}
+                </Link>
                 {/*</Box>*/}
               </MenuItem>
             ))}

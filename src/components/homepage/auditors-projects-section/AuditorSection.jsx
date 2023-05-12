@@ -15,6 +15,7 @@ import { getAuditors } from '../../../redux/actions/auditorAction.js';
 import { auditorReducer } from '../../../redux/reducers/auditorReducer.js';
 import { getAllProjects } from '../../../redux/actions/projectAction.js';
 import { useNavigate } from 'react-router-dom/dist';
+import { addTestsLabel } from '../../../lib/helper.js';
 
 const AuditorSection = () => {
   const dispatch = useDispatch();
@@ -70,6 +71,7 @@ const AuditorSection = () => {
                 lineHeight: '26px',
                 padding: '0',
               },
+              ...addTestsLabel('homepage_auditors-search-input'),
             }}
             value={searchInput}
             onChange={e => {
@@ -89,6 +91,7 @@ const AuditorSection = () => {
             onClick={() => {
               navigate(`/auditors?search=${searchInput}`);
             }}
+            {...addTestsLabel('homepage_auditors-search-button')}
           >
             <SearchIcon />
           </IconButton>

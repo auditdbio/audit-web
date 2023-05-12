@@ -13,6 +13,7 @@ import {
 } from '../../../redux/actions/userAction.js';
 import CustomSnackbar from '../../custom/CustomSnackbar.jsx';
 import RestorePassword from '../../RestorePassword.jsx';
+import { addTestsLabel } from '../../../lib/helper.js';
 
 const SigninForm = () => {
   const dispatch = useDispatch();
@@ -72,7 +73,12 @@ const SigninForm = () => {
                   alignItems: 'center',
                 }}
               >
-                <Button type={'submit'} variant={'contained'} sx={submitButton}>
+                <Button
+                  type={'submit'}
+                  variant={'contained'}
+                  sx={submitButton}
+                  {...addTestsLabel('sign-in-button')}
+                >
                   Sing in
                 </Button>
                 <Button
@@ -80,6 +86,7 @@ const SigninForm = () => {
                   variant={'text'}
                   sx={{ textTransform: 'unset', mt: '25px', fontSize: '12px' }}
                   onClick={() => setOpen(true)}
+                  {...addTestsLabel('forgot-password-button')}
                 >
                   Forgot password
                 </Button>

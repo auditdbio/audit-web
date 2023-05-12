@@ -7,6 +7,7 @@ import IconButton from '@mui/material/IconButton';
 import { useSelector } from 'react-redux';
 import { AUDITOR } from '../../redux/actions/types.js';
 import theme from '../../styles/themes.js';
+import { addTestsLabel } from '../../lib/helper.js';
 
 const CustomBudge = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -17,6 +18,7 @@ const CustomBudge = () => {
       aria-label="message"
       onClick={() => setIsOpen(!isOpen)}
       sx={iconButtonStyle}
+      {...addTestsLabel(`header_notification-button`)}
     >
       {isOpen && (
         <ClickAwayListener onClickAway={() => setIsOpen(false)}>

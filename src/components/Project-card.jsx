@@ -6,6 +6,7 @@ import theme, { radiusOfComponents } from '../styles/themes.js';
 import { AUDITOR, DONE, SUBMITED } from '../redux/actions/types.js';
 import { useNavigate } from 'react-router-dom/dist';
 import { useSelector } from 'react-redux';
+import { addTestsLabel } from '../lib/helper.js';
 
 const ProjectCard = ({ type, project }) => {
   const navigate = useNavigate();
@@ -112,11 +113,16 @@ const ProjectCard = ({ type, project }) => {
           variant={'contained'}
           sx={[editButton, type === 'auditor' ? editAuditor : {}]}
           onClick={handleClick}
+          {...addTestsLabel(type === AUDITOR ? 'submit-button' : 'edit-button')}
         >
           {type === AUDITOR ? 'Submit' : 'Edit'}
         </Button>
         {project.name && (
-          <Button sx={copyBtn} onClick={handleMakeCopy}>
+          <Button
+            sx={copyBtn}
+            onClick={handleMakeCopy}
+            {...addTestsLabel('make-copy-button')}
+          >
             Make a copy
           </Button>
         )}

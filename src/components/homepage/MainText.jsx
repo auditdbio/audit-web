@@ -4,7 +4,7 @@ import { Typography } from '@mui/material';
 import { CustomButton } from '../custom/Button';
 import { useNavigate } from 'react-router-dom';
 import { useMediaQuery } from '@mui/material';
-import { isAuth } from '../../lib/helper.js';
+import { addTestsLabel, isAuth } from '../../lib/helper.js';
 import { useDispatch, useSelector } from 'react-redux';
 import { changeRole } from '../../redux/actions/userAction.js';
 
@@ -63,12 +63,14 @@ const MainText = () => {
             <CustomButton
               sx={auditorButton}
               onClick={isAuth() ? handleBecomeAuditor : handleSignUp}
+              {...addTestsLabel('hero_become-auditor-button')}
             >
               Become auditor
             </CustomButton>
             <CustomButton
               sx={projectButton}
               onClick={isAuth() ? handleShowProject : handleSignUp}
+              {...addTestsLabel('hero_show-project-button')}
             >
               Show your project
             </CustomButton>

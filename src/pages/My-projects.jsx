@@ -12,6 +12,7 @@ import { useParams, useSearchParams } from 'react-router-dom';
 import Loader from '../components/Loader.jsx';
 import { createRequest } from '../redux/actions/auditAction.js';
 import { getAuditors } from '../redux/actions/auditorAction.js';
+import { addTestsLabel } from '../lib/helper.js';
 
 const MyProjects = () => {
   const navigate = useNavigate();
@@ -78,7 +79,11 @@ const MyProjects = () => {
             position: 'relative',
           }}
         >
-          <Button sx={backButtonSx} onClick={() => navigate(-1)}>
+          <Button
+            sx={backButtonSx}
+            onClick={() => navigate(-1)}
+            {...addTestsLabel('go-back-button')}
+          >
             <ArrowBackIcon />
           </Button>
           <Typography variant={'h6'}>
@@ -102,6 +107,7 @@ const MyProjects = () => {
           sx={submitBtn}
           onClick={handleOpenView}
           disabled={chosen.length === 0 || !auditor}
+          {...addTestsLabel('invite-button')}
         >
           Invite to project
         </Button>

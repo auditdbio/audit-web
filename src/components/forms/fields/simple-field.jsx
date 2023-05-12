@@ -2,6 +2,7 @@ import React from 'react';
 import { Box, Typography } from '@mui/material';
 import { Field, FastField } from 'formik';
 import { TextField } from 'formik-mui';
+import { addTestsLabel } from '../../../lib/helper.js';
 
 const SimpleField = ({ name, label, emptyPH = false }) => {
   return (
@@ -16,6 +17,9 @@ const SimpleField = ({ name, label, emptyPH = false }) => {
         fullWidth={true}
         disabled={false}
         sx={fieldSx}
+        inputProps={{
+          ...addTestsLabel(`${name}-input`),
+        }}
       />
     </Box>
   );

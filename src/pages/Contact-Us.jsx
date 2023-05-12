@@ -15,6 +15,7 @@ import { clearMessage } from '../redux/actions/auditAction.js';
 import * as Yup from 'yup';
 // import Textarea from "@uiw/react-md-editor/lib/components/TextArea/Textarea.js";
 import CustomSnackbar from '../components/custom/CustomSnackbar.jsx';
+import { addTestsLabel } from '../lib/helper.js';
 
 const AuditDb = () => {
   const dispatch = useDispatch();
@@ -167,6 +168,7 @@ const AuditDb = () => {
                     color={'primary'}
                     variant={'contained'}
                     sx={submitButton}
+                    {...addTestsLabel('send-button')}
                   >
                     Send
                   </Button>

@@ -10,6 +10,7 @@ import theme from '../../styles/themes.js';
 import CustomMenu from '../custom/CustomMenu.jsx';
 import { CustomButton } from '../custom/Button.jsx';
 import { pages } from './constants.js';
+import { addTestsLabel } from '../../lib/helper.js';
 
 const UnauthorizedOptions = () => {
   const navigate = useNavigate();
@@ -107,10 +108,18 @@ const UnauthorizedOptions = () => {
             ))}
           </Box>
           <Box sx={desktopAuthBlock}>
-            <CustomButton sx={signInButton} onClick={handleSignIn}>
+            <CustomButton
+              sx={signInButton}
+              onClick={handleSignIn}
+              {...addTestsLabel('header_sign-in-button')}
+            >
               Sign In
             </CustomButton>
-            <CustomButton sx={signUpButton} onClick={handleSignUp}>
+            <CustomButton
+              sx={signUpButton}
+              onClick={handleSignUp}
+              {...addTestsLabel('header_sign-up-button')}
+            >
               Sign Up
             </CustomButton>
           </Box>

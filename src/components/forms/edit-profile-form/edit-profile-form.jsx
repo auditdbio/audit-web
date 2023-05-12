@@ -36,6 +36,7 @@ import { changePassword } from '../../../redux/actions/userAction.js';
 import ChangePasswordFormik from '../change-password-formik/index.jsx';
 import AvatarForm from '../Avatar-form/index.jsx';
 import { SliderRange } from '../salary-slider/slider-range.jsx';
+import { addTestsLabel } from '../../../lib/helper.js';
 
 const EditProfileForm = ({ role }) => {
   const matchSm = useMediaQuery(theme.breakpoints.down('sm'));
@@ -155,6 +156,9 @@ const EditProfileForm = ({ role }) => {
                               e.target.checked,
                             );
                           }}
+                          inputProps={{
+                            ...addTestsLabel('make-contacts-visible'),
+                          }}
                         />
                         <label
                           htmlFor="hide-contacts"
@@ -220,6 +224,7 @@ const EditProfileForm = ({ role }) => {
                     ? { backgroundColor: theme.palette.secondary.main }
                     : {},
                 ]}
+                {...addTestsLabel('save-button')}
               >
                 Save changes
               </Button>

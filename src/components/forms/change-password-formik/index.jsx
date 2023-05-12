@@ -17,6 +17,7 @@ import {
 } from '../../../redux/actions/userAction.js';
 import { useDispatch, useSelector } from 'react-redux';
 import CustomSnackbar from '../../custom/CustomSnackbar.jsx';
+import { addTestsLabel } from '../../../lib/helper.js';
 
 const ChangePasswordFormik = () => {
   const dispatch = useDispatch();
@@ -52,6 +53,7 @@ const ChangePasswordFormik = () => {
           disabled={false}
           onChange={e => setPasswordState(e.target.value)}
           type={showPassword ? 'text' : 'password'}
+          inputProps={{ ...addTestsLabel('password-input') }}
           InputProps={{
             endAdornment: (
               <InputAdornment
@@ -70,6 +72,7 @@ const ChangePasswordFormik = () => {
         sx={passwordButtonSx}
         onClick={handleChangePassword}
         disabled={passwordState.length < 6}
+        {...addTestsLabel('change-password-button')}
       >
         <EditIcon />
         Change password

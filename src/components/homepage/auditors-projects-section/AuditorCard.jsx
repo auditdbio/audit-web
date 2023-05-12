@@ -9,6 +9,7 @@ import { ASSET_URL } from '../../../services/urls.js';
 import { useNavigate } from 'react-router-dom/dist';
 import { useSelector } from 'react-redux';
 import CustomSnackbar from '../../custom/CustomSnackbar.jsx';
+import { addTestsLabel } from '../../../lib/helper.js';
 
 const AuditorCard = ({ auditor }) => {
   const [openModal, setOpenModal] = useState(false);
@@ -98,7 +99,11 @@ const AuditorCard = ({ auditor }) => {
             <Typography sx={priceSx}>150</Typography>
           </Box>
         </Box>
-        <CustomButton sx={buttonStyle} onClick={handleView}>
+        <CustomButton
+          sx={buttonStyle}
+          onClick={handleView}
+          {...addTestsLabel('auditor_more-info-button')}
+        >
           More info
         </CustomButton>
       </Box>

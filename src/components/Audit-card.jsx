@@ -7,6 +7,7 @@ import { confirmAudit } from '../redux/actions/auditAction.js';
 import { useMemo } from 'react';
 import { CUSTOMER, DONE, SUBMITED } from '../redux/actions/types.js';
 import dayjs from 'dayjs';
+import { addTestsLabel } from '../lib/helper.js';
 
 const AuditCard = ({ audit }) => {
   const navigate = useNavigate();
@@ -80,6 +81,7 @@ const AuditCard = ({ audit }) => {
           ]}
           disabled={audit?.last_changer.toLowerCase() === CUSTOMER}
           onClick={() => dispatch(confirmAudit(audit))}
+          {...addTestsLabel('audits_accept-button')}
         >
           Accept
         </CustomButton>
@@ -87,6 +89,7 @@ const AuditCard = ({ audit }) => {
       <CustomButton
         sx={viewButtonStyle}
         onClick={() => navigate(`/audit-info/${audit.id}`)}
+        {...addTestsLabel('audits_view-button')}
       >
         View
       </CustomButton>

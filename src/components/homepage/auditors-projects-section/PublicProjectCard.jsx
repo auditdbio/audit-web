@@ -6,6 +6,7 @@ import React, { useState } from 'react';
 import ProjectModal from '../../ProjectModal.jsx';
 import AuditRequestInfo from '../../audit-request-info.jsx';
 import CustomSnackbar from '../../custom/CustomSnackbar.jsx';
+import { addTestsLabel } from '../../../lib/helper.js';
 
 const PublicProjectCard = ({ project }) => {
   const navigate = useNavigate();
@@ -82,6 +83,7 @@ const PublicProjectCard = ({ project }) => {
         sx={viewButtonStyle}
         // onClick={() => navigate(`/audit-request/${project.id}`)}
         onClick={handleView}
+        {...addTestsLabel('project_view-button')}
       >
         {' '}
         View{' '}

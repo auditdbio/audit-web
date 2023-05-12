@@ -30,6 +30,7 @@ import SalarySlider from './forms/salary-slider/salary-slider.jsx';
 import CloseProjectModal from './CloseProjectModal.jsx';
 import { DONE } from '../redux/actions/types.js';
 import CustomSnackbar from './custom/CustomSnackbar.jsx';
+import { addTestsLabel } from '../lib/helper.js';
 
 const CreateProjectCard = ({ projectInfo }) => {
   const navigate = useNavigate();
@@ -150,6 +151,7 @@ const CreateProjectCard = ({ projectInfo }) => {
               sx={backButtonSx}
               onClick={() => navigate('/profile/projects')}
               aria-label="Ga back"
+              {...addTestsLabel('go-back-button')}
             >
               <ArrowBackIcon />
             </Button>
@@ -189,6 +191,7 @@ const CreateProjectCard = ({ projectInfo }) => {
                 onClick={() => {
                   handleInviteModal();
                 }}
+                {...addTestsLabel('invite-button')}
               >
                 Invite auditor
               </Button>
@@ -209,6 +212,7 @@ const CreateProjectCard = ({ projectInfo }) => {
                     setError('Please fill all required fields');
                   }
                 }}
+                {...addTestsLabel('hide-publish-button')}
               >
                 {isPublished ? 'Hide project' : 'Publish project'}
               </Button>
@@ -219,6 +223,7 @@ const CreateProjectCard = ({ projectInfo }) => {
                   isClosed || !projectInfo || !!getSearchParam.get('copy')
                 }
                 onClick={() => setCloseConfirmIsOpen(true)}
+                {...addTestsLabel('close-project-button')}
               >
                 {isClosed ? 'Project closed' : 'Close the project'}
               </Button>
@@ -254,6 +259,7 @@ const CreateProjectCard = ({ projectInfo }) => {
                     type={'submit'}
                     variant={'contained'}
                     sx={submitButton}
+                    {...addTestsLabel(`${editMode ? 'save' : 'create'}-button`)}
                   >
                     {editMode ? 'Save changes' : 'Create'}
                   </Button>

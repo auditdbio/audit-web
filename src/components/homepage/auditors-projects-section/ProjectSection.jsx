@@ -16,6 +16,7 @@ import MenuItem from '@mui/material/MenuItem';
 import { useNavigate } from 'react-router-dom/dist';
 import { clearMessage } from '../../../redux/actions/auditAction.js';
 import { gridItemStylePublic } from './AuditorSection.jsx';
+import { addTestsLabel } from '../../../lib/helper.js';
 
 const ProjectSection = () => {
   const dispatch = useDispatch();
@@ -71,6 +72,7 @@ const ProjectSection = () => {
                 lineHeight: '26px',
                 padding: '0',
               },
+              ...addTestsLabel('homepage_projects-search-input'),
             }}
             value={searchInput}
             onChange={e => {
@@ -90,6 +92,7 @@ const ProjectSection = () => {
             onClick={() => {
               navigate(`/projects?search=${searchInput}`);
             }}
+            {...addTestsLabel('homepage_projects-search-button')}
           >
             <SearchIcon />
           </IconButton>

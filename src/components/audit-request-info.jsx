@@ -30,7 +30,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import Markdown from './custom/Markdown.jsx';
-import { isAuth } from '../lib/helper.js';
+import { addTestsLabel, isAuth } from '../lib/helper.js';
 import { AUDITOR, CUSTOMER } from '../redux/actions/types.js';
 import {
   changeRolePublicAuditor,
@@ -102,6 +102,7 @@ const AuditRequestInfo = ({
           sx={backButtonSx}
           className={'audit-request-back-btn'}
           onClick={handleBack}
+          {...addTestsLabel('go-back-button')}
         >
           <ArrowBackIcon color={'secondary'} />
         </Button>
@@ -357,10 +358,16 @@ const AuditRequestInfo = ({
               dispatch(deleteAuditRequest(project.id));
             }
           }}
+          {...addTestsLabel('project-modal_cancel-button')}
         >
           {isModal ? 'Cancel' : 'Decline'}
         </Button>
-        <Button variant={'contained'} sx={buttonSx} onClick={handleOpen}>
+        <Button
+          variant={'contained'}
+          sx={buttonSx}
+          onClick={handleOpen}
+          {...addTestsLabel('project-modal_make-offer-button')}
+        >
           Make offer
         </Button>
       </Box>
@@ -376,6 +383,7 @@ const AuditRequestInfo = ({
             sx={backButtonConfirm}
             className={'audit-request-back-btn'}
             onClick={handleClose}
+            {...addTestsLabel('go-back-button')}
           >
             <ArrowBackIcon color={'secondary'} />
           </Button>
@@ -480,6 +488,7 @@ const AuditRequestInfo = ({
                     sx={submitBtn}
                     type={'submit'}
                     color={'secondary'}
+                    {...addTestsLabel('send-offer-button')}
                   >
                     Send offer
                   </Button>

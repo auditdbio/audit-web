@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom/dist';
 import { useDispatch } from 'react-redux';
 import { deleteAuditRequest } from '../redux/actions/auditAction.js';
 import dayjs from 'dayjs';
+import { addTestsLabel } from '../lib/helper.js';
 
 const AuditRequestCard = ({ type, request }) => {
   const navigate = useNavigate();
@@ -46,6 +47,7 @@ const AuditRequestCard = ({ type, request }) => {
           variant={'contained'}
           sx={[actionButton, type === 'auditor' ? editAuditor : {}]}
           onClick={() => navigate(`/audit-request/${request.id}`)}
+          {...addTestsLabel('audit-req_view-button')}
         >
           View
         </Button>
@@ -53,6 +55,7 @@ const AuditRequestCard = ({ type, request }) => {
           sx={[actionButton, copyBtn]}
           onClick={() => dispatch(deleteAuditRequest(request.id))}
           variant={'contained'}
+          {...addTestsLabel('audit-req_decline-button')}
         >
           Decline
         </Button>

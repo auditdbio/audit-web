@@ -27,6 +27,7 @@ import theme from '../../../styles/themes.js';
 import { SliderRange } from '../salary-slider/slider-range.jsx';
 import { PROJECTS } from '../../../redux/actions/types.js';
 import { useEffect } from 'react';
+import { addTestsLabel } from '../../../lib/helper.js';
 
 const Filter = ({ target, submit, initial }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -61,6 +62,7 @@ const Filter = ({ target, submit, initial }) => {
                   disabled={false}
                   size={'small'}
                   label="Search"
+                  inputProps={{ ...addTestsLabel('search-input') }}
                   InputProps={{
                     endAdornment: (
                       <InputAdornment position="end">
@@ -69,6 +71,7 @@ const Filter = ({ target, submit, initial }) => {
                           type={'submit'}
                           color="disabled"
                           aria-label="Search"
+                          {...addTestsLabel('search-button')}
                         >
                           <SearchOutlinedIcon />
                         </IconButton>
@@ -82,6 +85,7 @@ const Filter = ({ target, submit, initial }) => {
                   type={'button'}
                   sx={filterButton}
                   onClick={() => setIsOpen(!isOpen)}
+                  {...addTestsLabel('filters-button')}
                 >
                   All filters
                 </Button>
@@ -90,7 +94,11 @@ const Filter = ({ target, submit, initial }) => {
                 <Box sx={modalBg}>
                   <ClickAwayListener onClickAway={() => setIsOpen(false)}>
                     <Box sx={modalWrapper(theme, mainColor)}>
-                      <Button sx={backButtonSx} onClick={handleClose}>
+                      <Button
+                        sx={backButtonSx}
+                        onClick={handleClose}
+                        {...addTestsLabel('filter_go-back-button')}
+                      >
                         <ArrowBack color={mainColor} />
                       </Button>
                       <TagsField
@@ -171,6 +179,9 @@ const Filter = ({ target, submit, initial }) => {
                                   setFieldValue('readyToWait', e.target.checked)
                                 }
                                 color={mainColor}
+                                inputProps={{
+                                  ...addTestsLabel('ready-to-wait-button'),
+                                }}
                               />
                             }
                             label="Ready to wait"
@@ -198,6 +209,9 @@ const Filter = ({ target, submit, initial }) => {
                                 value={'-1'}
                                 color={mainColor}
                                 checked={values.sort === '-1'}
+                                inputProps={{
+                                  ...addTestsLabel('price-high'),
+                                }}
                               />
                             }
                             label="Price: High to Low"
@@ -217,6 +231,9 @@ const Filter = ({ target, submit, initial }) => {
                                   },
                                 }}
                                 checked={values.sort === '1'}
+                                inputProps={{
+                                  ...addTestsLabel('price-low'),
+                                }}
                               />
                             }
                             color={mainColor}
@@ -229,6 +246,7 @@ const Filter = ({ target, submit, initial }) => {
                         type={'submit'}
                         variant={'contained'}
                         sx={submitButton}
+                        {...addTestsLabel('find-button')}
                       >
                         Find
                       </Button>

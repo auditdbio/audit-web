@@ -17,6 +17,7 @@ import React from 'react';
 import { AUDITOR, CUSTOMER } from '../../redux/actions/types.js';
 import { ASSET_URL } from '../../services/urls.js';
 import theme from '../../styles/themes.js';
+import { addTestsLabel } from '../../lib/helper.js';
 
 export const UserMenu = ({ open, handleClose, anchor, userAvatar, pages }) => {
   const dispatch = useDispatch();
@@ -86,6 +87,7 @@ export const UserMenu = ({ open, handleClose, anchor, userAvatar, pages }) => {
             tabSx,
           ]}
           label="Auditor"
+          {...addTestsLabel('header_auditor-button')}
         />
         <Tab
           value={CUSTOMER}
@@ -94,6 +96,7 @@ export const UserMenu = ({ open, handleClose, anchor, userAvatar, pages }) => {
             tabSx,
           ]}
           label="Customer"
+          {...addTestsLabel('header_customer-button')}
         />
       </Tabs>
 
@@ -101,6 +104,7 @@ export const UserMenu = ({ open, handleClose, anchor, userAvatar, pages }) => {
         <Button
           sx={popupLinkSx(reduxUser.current_role)}
           onClick={handleMyAccountClick}
+          {...addTestsLabel('header_my-account')}
         >
           My Account
         </Button>
@@ -114,6 +118,7 @@ export const UserMenu = ({ open, handleClose, anchor, userAvatar, pages }) => {
                 <Button
                   sx={popupLinkSx(reduxUser.current_role)}
                   onClick={() => navigate(page.link)}
+                  {...addTestsLabel(`header_usermenu-${page.itemName}`)}
                 >
                   {page.itemName}
                 </Button>
@@ -132,6 +137,7 @@ export const UserMenu = ({ open, handleClose, anchor, userAvatar, pages }) => {
             popupLinkSx(reduxUser.current_role),
           ]}
           disableRipple
+          {...addTestsLabel('header_logout-button')}
         >
           Logout
         </Button>

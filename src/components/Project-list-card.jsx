@@ -5,6 +5,7 @@ import AuditRequestInfo from './audit-request-info.jsx';
 import TagsList from './tagsList.jsx';
 import { clearMessage } from '../redux/actions/auditAction.js';
 import CustomSnackbar from './custom/CustomSnackbar.jsx';
+import { addTestsLabel } from '../lib/helper.js';
 
 const ProjectListCard = ({ project }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -59,6 +60,7 @@ const ProjectListCard = ({ project }) => {
           sx={viewButton}
           variant={'contained'}
           onClick={handleOpen}
+          {...addTestsLabel('projects_view-more-button')}
         >
           View more
         </Button>
