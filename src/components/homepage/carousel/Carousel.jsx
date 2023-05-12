@@ -5,6 +5,7 @@ import { useRef } from 'react';
 import { Navigation, Pagination } from 'swiper';
 import FeedbackCard from './FeedbackCard';
 import useMediaQuery from '@mui/material/useMediaQuery';
+import { addTestsLabel } from '../../../lib/helper.js';
 
 const Carousel = () => {
   const swiperRef = useRef(null);
@@ -54,6 +55,7 @@ const Carousel = () => {
             onClick={handlePrevClick}
             disableRipple
             aria-label="previous slide"
+            {...addTestsLabel('carousel_previous-slide')}
           />
         )}
         <Swiper
@@ -78,6 +80,7 @@ const Carousel = () => {
             disableRipple
             onClick={handleNextClick}
             aria-label="next slide"
+            {...addTestsLabel('carousel_next-slide')}
           />
         )}
       </Box>
@@ -95,12 +98,14 @@ const Carousel = () => {
             onClick={handlePrevClick}
             disableRipple
             aria-label="previous slide"
+            {...addTestsLabel('carousel_previous-slide')}
           />
           <Button
             className={nextBtnClass}
             disableRipple
             onClick={handleNextClick}
             aria-label="next slide"
+            {...addTestsLabel('carousel_next-slide')}
           />
         </Box>
       )}

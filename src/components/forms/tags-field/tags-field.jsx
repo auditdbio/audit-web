@@ -6,6 +6,7 @@ import AddIcon from '@mui/icons-material/Add';
 import { useSelector } from 'react-redux';
 import { AUDITOR } from '../../../redux/actions/types.js';
 import CustomSnackbar from '../../custom/CustomSnackbar.jsx';
+import { addTestsLabel } from '../../../lib/helper.js';
 
 const TagsField = ({ name, label, placeholder }) => {
   const role = useSelector(s => s.user.user.current_role);
@@ -63,6 +64,7 @@ const TagsField = ({ name, label, placeholder }) => {
         }}
         onChange={e => setState(e.target.value)}
         sx={[fieldSx, meta.error ? errorSx : {}]}
+        inputProps={{ ...addTestsLabel('tags-input') }}
         InputProps={{
           endAdornment: (
             <InputAdornment position="end">
@@ -70,6 +72,7 @@ const TagsField = ({ name, label, placeholder }) => {
                 edge="end"
                 color={role !== AUDITOR ? 'primary' : 'secondary'}
                 onClick={handleAddTag}
+                {...addTestsLabel('add-tag-button')}
               >
                 <AddIcon />
               </IconButton>

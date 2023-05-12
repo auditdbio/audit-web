@@ -11,6 +11,7 @@ import {
 import { closeProject } from '../redux/actions/projectAction.js';
 import theme from '../styles/themes.js';
 import { DONE } from '../redux/actions/types.js';
+import { addTestsLabel } from '../lib/helper.js';
 
 const CloseProjectModal = ({
   isOpen,
@@ -42,7 +43,11 @@ const CloseProjectModal = ({
       <Dialog open={isOpen} onClose={handleDisagree}>
         <DialogTitle>Are you sure you want to close the project?</DialogTitle>
         <DialogActions>
-          <Button onClick={handleDisagree} variant={'contained'}>
+          <Button
+            onClick={handleDisagree}
+            variant={'contained'}
+            {...addTestsLabel('close-disagree-button')}
+          >
             Disagree
           </Button>
           <Button
@@ -50,6 +55,7 @@ const CloseProjectModal = ({
             variant={'contained'}
             sx={agreeButton}
             autoFocus
+            {...addTestsLabel('close-agree-button')}
           >
             Agree
           </Button>

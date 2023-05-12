@@ -20,6 +20,7 @@ import Markdown from '../components/custom/Markdown.jsx';
 import axios from 'axios';
 import Cookies from 'js-cookie';
 import { ASSET_URL } from '../services/urls.js';
+import { addTestsLabel } from '../lib/helper.js';
 
 const AuditInfo = () => {
   const navigate = useNavigate();
@@ -94,6 +95,7 @@ const AuditInfo = () => {
           sx={backButtonSx}
           onClick={() => navigate(-1)}
           aria-label="Go back"
+          {...addTestsLabel('go-back-button')}
         >
           <ArrowBackIcon />
         </Button>
@@ -186,6 +188,7 @@ const AuditInfo = () => {
               <Button
                 onClick={handleOpenReport}
                 sx={{ margin: '15px auto 0', display: 'block' }}
+                {...addTestsLabel('report-button')}
               >
                 Report
               </Button>
@@ -199,6 +202,7 @@ const AuditInfo = () => {
               sx={buttonSx}
               disabled={audit?.last_changer.toLowerCase() === CUSTOMER}
               onClick={handleConfirm}
+              {...addTestsLabel('accept-button')}
             >
               Accept
             </Button>
@@ -208,6 +212,7 @@ const AuditInfo = () => {
               variant={'contained'}
               sx={buttonSx}
               onClick={handleAcceptAudit}
+              {...addTestsLabel('confirm-button')}
             >
               Confirm
             </Button>
@@ -217,6 +222,7 @@ const AuditInfo = () => {
               variant={'contained'}
               onClick={handleDecline}
               sx={[buttonSx, { backgroundColor: theme.palette.secondary.main }]}
+              {...addTestsLabel('decline-button')}
             >
               Decline
             </Button>

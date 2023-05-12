@@ -15,7 +15,7 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs from 'dayjs';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { isAuth } from '../lib/helper.js';
+import { addTestsLabel, isAuth } from '../lib/helper.js';
 import { ASSET_URL } from '../services/urls.js';
 import SalarySlider from './forms/salary-slider/salary-slider.jsx';
 import { Field, Form, Formik } from 'formik';
@@ -175,6 +175,7 @@ export default function AuditorModal({
                 { backgroundColor: theme.palette.secondary.main },
               ]}
               onClick={handleClose}
+              {...addTestsLabel('auditor-modal_back-button')}
             >
               Back
             </Button>
@@ -182,6 +183,7 @@ export default function AuditorModal({
               variant={'contained'}
               sx={findButton}
               onClick={handleInvite}
+              {...addTestsLabel('auditor-modal_invite-button')}
             >
               Invite to project
             </Button>
@@ -241,6 +243,7 @@ export default function AuditorModal({
                         onClick={() => {
                           handleClose();
                         }}
+                        {...addTestsLabel('go-back-button')}
                       >
                         <ArrowBack style={{ color: 'orange' }} />
                       </IconButton>
@@ -302,7 +305,11 @@ export default function AuditorModal({
                         <SalarySlider name={'price'} />
                       </Box>
                       <Box sx={{ justifyContent: 'center', display: 'flex' }}>
-                        <Button sx={sendButton} type={'submit'}>
+                        <Button
+                          sx={sendButton}
+                          type={'submit'}
+                          {...addTestsLabel('send-button')}
+                        >
                           Send
                         </Button>
                       </Box>

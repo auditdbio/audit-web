@@ -4,7 +4,7 @@ import TagsList from './tagsList.jsx';
 import CircleIcon from '@mui/icons-material/Circle';
 import theme from '../styles/themes.js';
 import AuditorModal from './AuditorModal.jsx';
-import { isAuth } from '../lib/helper.js';
+import { addTestsLabel, isAuth } from '../lib/helper.js';
 import { useNavigate } from 'react-router-dom';
 import { ASSET_URL } from '../services/urls.js';
 import { useDispatch, useSelector } from 'react-redux';
@@ -149,6 +149,7 @@ const AuditorListCard = ({ auditor, projectIdToInvite }) => {
           sx={viewButtonStyle}
           variant={'contained'}
           onClick={handleView}
+          {...addTestsLabel('view-more-button')}
         >
           View more
         </Button>
@@ -158,6 +159,7 @@ const AuditorListCard = ({ auditor, projectIdToInvite }) => {
           sx={inviteButtonStyle(theme)}
           variant={'contained'}
           onClick={handleInvite}
+          {...addTestsLabel('invite-button')}
         >
           Invite to project
         </Button>

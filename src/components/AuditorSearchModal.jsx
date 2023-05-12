@@ -25,6 +25,7 @@ import { Field, Formik, Form } from 'formik';
 import SalarySlider from './forms/salary-slider/salary-slider.jsx';
 import * as Yup from 'yup';
 import { useParams } from 'react-router-dom';
+import { addTestsLabel } from '../lib/helper.js';
 
 export default function AuditorSearchModal({
   open,
@@ -128,7 +129,11 @@ export default function AuditorSearchModal({
                 )}
               />
             )}
-            <Button sx={findButton} onClick={handleSearch}>
+            <Button
+              sx={findButton}
+              onClick={handleSearch}
+              {...addTestsLabel('auditor-find-button')}
+            >
               Find
             </Button>
           </Box>
@@ -193,6 +198,7 @@ export default function AuditorSearchModal({
                         onClick={() => {
                           setMode('search');
                         }}
+                        {...addTestsLabel('go-back-button')}
                       >
                         <ArrowBack style={{ color: 'orange' }} />
                       </IconButton>
@@ -254,7 +260,11 @@ export default function AuditorSearchModal({
                         <SalarySlider name={'price'} />
                       </Box>
                       <Box sx={{ justifyContent: 'center', display: 'flex' }}>
-                        <Button sx={sendButton} type={'submit'}>
+                        <Button
+                          sx={sendButton}
+                          type={'submit'}
+                          {...addTestsLabel('send-button')}
+                        >
                           Send
                         </Button>
                       </Box>

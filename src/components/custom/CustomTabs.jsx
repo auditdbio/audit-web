@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Tab, Tabs } from '@mui/material';
 import { useNavigate } from 'react-router-dom/dist';
 import { useParams } from 'react-router-dom';
+import { addTestsLabel } from '../../lib/helper.js';
 
 const CustomTabs = ({ selectedTabSx, name, tabs, setTab, choosenTab }) => {
   const { tab } = useParams();
@@ -30,6 +31,7 @@ const CustomTabs = ({ selectedTabSx, name, tabs, setTab, choosenTab }) => {
           value={tab.value}
           sx={[tab.value === tabState ? selectedTabSx : simpleTab, tabSx]}
           label={tab.label}
+          {...addTestsLabel(`${tab.value}-tab`)}
         />
       ))}
     </Tabs>

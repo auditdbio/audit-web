@@ -11,6 +11,7 @@ import CustomMenu from '../custom/CustomMenu.jsx';
 import CustomBadge from '../customBudge';
 import { UserMenu } from './UserMenu.jsx';
 import { authorizedPages } from './constants.js';
+import { addTestsLabel } from '../../lib/helper.js';
 
 const AuthorizedOptions = () => {
   const matchSm = useMediaQuery(theme.breakpoints.down('sm'));
@@ -93,6 +94,7 @@ const AuthorizedOptions = () => {
             aria-expanded={anchorElUser ? 'true' : undefined}
             aria-label="User menu"
             disableRipple
+            {...addTestsLabel('header_usermenu-button')}
           >
             <Avatar
               src={userAvatar ? `${ASSET_URL}/${userAvatar}` : ''}

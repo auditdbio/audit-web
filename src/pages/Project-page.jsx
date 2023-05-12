@@ -10,6 +10,7 @@ import { PROJECTS } from '../redux/actions/types.js';
 import { searchProjects } from '../redux/actions/projectAction.js';
 import { clearMessage } from '../redux/actions/auditAction.js';
 import CustomPagination from '../components/custom/CustomPagination.jsx';
+import { addTestsLabel } from '../lib/helper.js';
 
 const ProjectPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -101,7 +102,11 @@ const ProjectPage = () => {
     <Layout>
       <Box sx={wrapper}>
         <Box sx={projectTopWrapper}>
-          <Button onClick={handleGoBack} aria-label="Go back">
+          <Button
+            onClick={handleGoBack}
+            aria-label="Go back"
+            {...addTestsLabel('projects_back-button')}
+          >
             <ArrowBackIcon color={'secondary'} />
           </Button>
           <Box>

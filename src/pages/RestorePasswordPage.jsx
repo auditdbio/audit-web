@@ -15,6 +15,7 @@ import * as Yup from 'yup';
 import { radiusOfComponents } from '../styles/themes.js';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
+import { addTestsLabel } from '../lib/helper.js';
 
 const RestorePasswordPage = () => {
   const dispatch = useDispatch();
@@ -66,6 +67,7 @@ const RestorePasswordPage = () => {
                     type={'submit'}
                     variant={'contained'}
                     sx={submitButton}
+                    {...addTestsLabel('change-password-button')}
                   >
                     Change password
                   </Button>

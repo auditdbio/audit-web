@@ -8,7 +8,7 @@ import theme from '../../styles/themes.js';
 import Logo from '../icons/Logo.jsx';
 import AuthorizedOptions from './AuthorizedOptions.jsx';
 import UnauthorizedOptions from './UnauthorizedOptions.jsx';
-import { isAuth } from '../../lib/helper.js';
+import { addTestsLabel, isAuth } from '../../lib/helper.js';
 
 const Header = () => {
   return (
@@ -16,7 +16,12 @@ const Header = () => {
       <Container sx={container}>
         <Toolbar disableGutters>
           <Box sx={wrapper}>
-            <Link to={'/'} style={linkStyle} aria-label="Homepage">
+            <Link
+              to={'/'}
+              style={linkStyle}
+              aria-label="Homepage"
+              {...addTestsLabel('header_logo-link')}
+            >
               <Box sx={logoStyle}>
                 <Logo />
               </Box>

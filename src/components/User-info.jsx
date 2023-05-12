@@ -19,6 +19,7 @@ import { AUDITOR } from '../redux/actions/types.js';
 import TagsList from './tagsList';
 import { ASSET_URL } from '../services/urls.js';
 import MobileTagsList from './MobileTagsList/index.jsx';
+import { addTestsLabel } from '../lib/helper.js';
 
 const UserInfo = ({ role }) => {
   const navigate = useNavigate();
@@ -97,6 +98,7 @@ const UserInfo = ({ role }) => {
           sx={[buttonSx, role === 'auditor' ? submitAuditor : {}]}
           variant={'contained'}
           onClick={handleEdit}
+          {...addTestsLabel('user_edit-button')}
         >
           Edit
         </Button>

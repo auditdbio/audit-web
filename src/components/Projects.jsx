@@ -7,6 +7,7 @@ import { getProjects } from '../redux/actions/projectAction.js';
 import { AUDITOR, CUSTOMER, DONE } from '../redux/actions/types.js';
 import Loader from './Loader.jsx';
 import CustomSnackbar from './custom/CustomSnackbar.jsx';
+import { addTestsLabel } from '../lib/helper.js';
 
 const Projects = ({ role }) => {
   const navigate = useNavigate();
@@ -52,6 +53,7 @@ const Projects = ({ role }) => {
             sx={[buttonSx, role === 'auditor' ? buttonAuditorSx : {}]}
             variant={'contained'}
             onClick={handleNavigate}
+            {...addTestsLabel('add-new-button')}
           >
             {role === 'auditor' ? '+ New audit' : '+ New project'}
           </Button>

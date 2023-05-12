@@ -28,6 +28,7 @@ import * as Yup from 'yup';
 import Markdown from '../components/custom/Markdown.jsx';
 import TelegramIcon from '@mui/icons-material/Telegram';
 import EmailIcon from '@mui/icons-material/Email';
+import { addTestsLabel } from '../lib/helper.js';
 
 const AuditOffer = () => {
   const { id } = useParams();
@@ -69,7 +70,11 @@ const AuditOffer = () => {
                       position: 'relative',
                     }}
                   >
-                    <Button sx={backButtonSx} onClick={() => navigate(-1)}>
+                    <Button
+                      sx={backButtonSx}
+                      onClick={() => navigate(-1)}
+                      {...addTestsLabel('go-back-button')}
+                    >
                       <ArrowBackIcon color={'secondary'} />
                     </Button>
                     <Typography
@@ -213,6 +218,7 @@ const AuditOffer = () => {
                           buttonSx,
                           { backgroundColor: theme.palette.secondary.main },
                         ]}
+                        {...addTestsLabel('send-button')}
                       >
                         Send to customer
                       </Button>

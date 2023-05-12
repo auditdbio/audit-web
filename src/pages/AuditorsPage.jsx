@@ -11,6 +11,7 @@ import { getAuditors, searchAuditor } from '../redux/actions/auditorAction.js';
 import theme from '../styles/themes.js';
 import { searchProjects } from '../redux/actions/projectAction.js';
 import CustomPagination from '../components/custom/CustomPagination.jsx';
+import { addTestsLabel } from '../lib/helper.js';
 
 const AuditorsPage = () => {
   const dispatch = useDispatch();
@@ -98,7 +99,11 @@ const AuditorsPage = () => {
     <Layout>
       <Box sx={wrapper}>
         <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-          <Button onClick={() => navigate(-1)} aria-label="Go back">
+          <Button
+            onClick={() => navigate(-1)}
+            aria-label="Go back"
+            {...addTestsLabel('go-back-button')}
+          >
             <ArrowBackIcon color={'secondary'} />
           </Button>
           <Box>
