@@ -55,7 +55,9 @@ const RestorePasswordPage = () => {
                     severity={successMessage ? 'success' : 'error'}
                     text={error || successMessage}
                   />
-                  <Typography variant={'h5'}>Set a new password</Typography>
+                  <Typography variant={'h5'} sx={{ fontWeight: 600 }}>
+                    Set a new password
+                  </Typography>
                   <Box sx={fieldWrapper}>
                     <PasswordField name={'password'} label={'New password'} />
                     <PasswordField
