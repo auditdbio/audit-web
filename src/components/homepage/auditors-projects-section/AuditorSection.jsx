@@ -12,8 +12,6 @@ import theme from '../../../styles/themes';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getAuditors } from '../../../redux/actions/auditorAction.js';
-import { auditorReducer } from '../../../redux/reducers/auditorReducer.js';
-import { getAllProjects } from '../../../redux/actions/projectAction.js';
 import { useNavigate } from 'react-router-dom/dist';
 import { addTestsLabel } from '../../../lib/helper.js';
 
@@ -30,9 +28,9 @@ const AuditorSection = () => {
 
   useEffect(() => {
     if (searchInput) {
-      dispatch(getAuditors(searchInput));
+      dispatch(getAuditors(searchInput, 4));
     } else {
-      dispatch(getAuditors(''));
+      dispatch(getAuditors('', 4));
     }
   }, [searchInput]);
 

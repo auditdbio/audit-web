@@ -136,11 +136,13 @@ export const clearProjectMessage = () => {
   return { type: CLEAR_SUCCESS };
 };
 
-export const getAllProjects = (values = '') => {
+export const getAllProjects = (values = '', amount) => {
   return async dispatch => {
     await axios
       .get(
-        `${API_URL}/search?query=${values}&tags=&sort_order=1&page=0&per_page=0&kind=project`,
+        `${API_URL}/search?query=${values}&tags=&sort_by=price&sort_order=1&page=1&per_page=${
+          amount ? amount : 0
+        }&kind=project`,
       )
       .then(({ data }) => {
         dispatch({ type: GET_PROJECTS, payload: data });

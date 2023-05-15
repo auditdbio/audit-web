@@ -29,9 +29,9 @@ const ProjectSection = () => {
 
   useEffect(() => {
     if (searchInput) {
-      dispatch(getAllProjects(searchInput));
+      dispatch(getAllProjects(searchInput, 4));
     } else {
-      dispatch(getAllProjects(''));
+      dispatch(getAllProjects('', 4));
     }
   }, [searchInput]);
 
