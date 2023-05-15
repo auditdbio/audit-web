@@ -12,6 +12,9 @@ const HomePage = () => {
         flexDirection: 'column',
         padding: '0',
         paddingTop: '100px',
+        [theme.breakpoints.down('md')]: {
+          padding: 0,
+        },
         [theme.breakpoints.down('sm')]: {
           paddingTop: '60px',
           padding: '0',
