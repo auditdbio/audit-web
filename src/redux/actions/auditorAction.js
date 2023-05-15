@@ -73,11 +73,13 @@ export const updateAuditor = values => {
   };
 };
 
-export const getAuditors = (values = '') => {
+export const getAuditors = (values = '', amount) => {
   return dispatch => {
     axios
       .get(
-        `${API_URL}/search?query=${values}&tags=&sort_order=1&page=0&per_page=0&kind=auditor`,
+        `${API_URL}/search?query=${values}&sort_by=price&tags=&sort_order=1&page=1&per_page=${
+          amount ? amount : 0
+        }&kind=auditor`,
       )
       .then(({ data }) => {
         dispatch({ type: GET_AUDITORS, payload: data });

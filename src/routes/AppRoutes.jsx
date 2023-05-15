@@ -18,7 +18,7 @@ import { getCustomer } from '../redux/actions/customerAction.js';
 import Projects from '../components/Projects.jsx';
 import ProjectPage from '../pages/Project-page.jsx';
 import AuditRequestPage from '../pages/Audit-Request-Page.jsx';
-import { getAllProjects, getProjects } from '../redux/actions/projectAction.js';
+import { getProjects } from '../redux/actions/projectAction.js';
 import { getAudits, getAuditsRequest } from '../redux/actions/auditAction.js';
 import EditProject from '../pages/EditProject.jsx';
 import ForCustomer from '../pages/For-customer.jsx';
