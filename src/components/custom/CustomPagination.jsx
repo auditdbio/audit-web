@@ -2,7 +2,7 @@ import React from 'react';
 import { Box, Pagination } from '@mui/material';
 
 const CustomPagination = ({
-  show,
+  show = true,
   count,
   onChange,
   sx,

@@ -29,6 +29,8 @@ import Faq from '../pages/Faq.jsx';
 import ContactUs from '../pages/Contact-Us.jsx';
 import MyProjects from '../pages/My-projects.jsx';
 import RestorePasswordPage from '../pages/RestorePasswordPage.jsx';
+import AuditIssues from '../pages/AuditIssues.jsx';
+import AuditIssueDetails from '../pages/AuditIssueDetails.jsx';
 
 const AppRoutes = () => {
   const token = useSelector(s => s.user.token);
@@ -119,6 +121,22 @@ const AppRoutes = () => {
           element={
             <PrivateRoute auth={{ isAuthenticated: isAuth() }}>
               <AuditOffer />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/audit-issue/:auditId"
+          element={
+            <PrivateRoute auth={{ isAuthenticated: isAuth() }}>
+              <AuditIssues />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/audit-issue/:auditId/:issueId"
+          element={
+            <PrivateRoute auth={{ isAuthenticated: isAuth() }}>
+              <AuditIssueDetails />
             </PrivateRoute>
           }
         />

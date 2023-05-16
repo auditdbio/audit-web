@@ -39,6 +39,10 @@ const AuditOffer = () => {
     s.audits.audits?.find(audit => audit.id === id),
   );
 
+  const goToIssues = () => {
+    navigate(`/audit-issue/${id}`);
+  };
+
   if (!audit) {
     return <Loader />;
   } else {
@@ -211,17 +215,33 @@ const AuditOffer = () => {
                   </Box>
                   <Box sx={buttonWrapper}>
                     {audit.status !== SUBMITED && (
-                      <Button
-                        variant={'contained'}
-                        type={'submit'}
-                        sx={[
-                          buttonSx,
-                          { backgroundColor: theme.palette.secondary.main },
-                        ]}
-                        {...addTestsLabel('send-button')}
-                      >
-                        Send to customer
-                      </Button>
+                      <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+                        <Button
+                          variant="contained"
+                          type="submit"
+                          sx={[
+                            buttonSx,
+                            {
+                              backgroundColor: theme.palette.secondary.main,
+                              mb: '15px',
+                            },
+                          ]}
+                          {...addTestsLabel('send-button')}
+                        >
+                          Send to customer
+                        </Button>
+                        <Button
+                          variant="contained"
+                          type="button"
+                          onClick={goToIssues}
+                          sx={[
+                            buttonSx,
+                            { backgroundColor: theme.palette.primary.main },
+                          ]}
+                        >
+                          Issues
+                        </Button>
+                      </Box>
                     )}
                   </Box>
                 </CustomCard>

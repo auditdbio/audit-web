@@ -17,10 +17,9 @@ import {
 import { CUSTOMER, DONE, SUBMITED } from '../redux/actions/types.js';
 import dayjs from 'dayjs';
 import Markdown from '../components/custom/Markdown.jsx';
-import axios from 'axios';
-import Cookies from 'js-cookie';
 import { ASSET_URL } from '../services/urls.js';
 import { addTestsLabel } from '../lib/helper.js';
+import { handleOpenReport } from '../lib/openReport.js';
 
 const AuditInfo = () => {
   const navigate = useNavigate();
@@ -60,32 +59,6 @@ const AuditInfo = () => {
         status: SUBMITED,
       }),
     );
-  };
-
-  const handleOpenReport = () => {
-    axios
-      .get(`${ASSET_URL}/${audit?.report}`, {
-        responseType: 'blob',
-        withCredentials: true,
-        headers: {
-          Authorization: `Bearer ${Cookies.get('token')}`,
-        },
-      })
-      .then(response => {
-        const url = window.URL.createObjectURL(new Blob([response.data]));
-        const link = document.createElement('a');
-        link.href = url;
-        link.setAttribute(
-          'download',
-          `${
-            audit?.report_name
-              ? audit?.report_name
-              : audit?.project_name + '.pdf'
-          }`,
-        );
-        document.body.appendChild(link);
-        link.click();
-      });
   };
 
   return (
@@ -186,7 +159,7 @@ const AuditInfo = () => {
           {(audit?.status === DONE || audit?.status === SUBMITED) && (
             <Box sx={{ display: 'flex', justifyContent: 'center' }}>
               <Button
-                onClick={handleOpenReport}
+                onClick={() => handleOpenReport(audit)}
                 sx={{ margin: '15px auto 0', display: 'block' }}
                 {...addTestsLabel('report-button')}
               >
