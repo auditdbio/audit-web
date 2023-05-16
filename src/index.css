@@ -6,11 +6,14 @@
 
 html,
 body {
-	background-image: url(../public/welcome_page/background_img.svg);
+	font-family: "Montserrat", sans-serif;
+}
+
+#root {
+	background-image: url(../public/welcome_page/background_img.webp);
 	background-position: center;
 	background-repeat: no-repeat;
 	background-size: cover;
-	font-family: "Montserrat";
 }
 
 a {
@@ -32,4 +35,35 @@ a {
 	border-radius: 15px !important;
 	/*transform: unset;*/
 	border: none!important;
+}
+
+
+*::-webkit-scrollbar {
+	width: 14px;
+	height: 14px;
+}
+
+*::-webkit-scrollbar-track {
+	box-shadow: 5px 5px 5px -5px rgba(35, 55, 75, .3);
+	background-color: transparent;
+	border-radius: 10px;
+}
+
+*::-webkit-scrollbar-thumb {
+	background: linear-gradient(180deg, #8a9a9a, #6a737d);
+	border-radius: 10px;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+	background: linear-gradient(180deg, #6a737d, #6a737d);
+}
+
+* {
+	/* Scrollbar */
+	/* IE */
+	scrollbar-base-color: #6a737d;
+	scrollbar-arrow-color: white;
+	/* Mozilla Firefox */
+	scrollbar-width: 14px;
+	scrollbar-color: #6a737d transparent;
 }

@@ -1,11 +1,11 @@
-import { Box, Typography } from "@mui/material";
+import { Box, Typography } from '@mui/material';
 
 export const AuditRequestsArray = ({ requests }) => {
   return (
     <Box
       sx={{
-        display: "flex",
-        flexDirection: "column",
+        display: 'flex',
+        flexDirection: 'column',
       }}
     >
       {requests.length > 0 && (
@@ -15,11 +15,11 @@ export const AuditRequestsArray = ({ requests }) => {
         <Box
           key={index}
           sx={{
-            display: "flex",
+            display: 'flex',
             // justifyContent: "space-between",
           }}
         >
-          <Typography style={nameStyle}>{"Auditor name "}</Typography>
+          <Typography style={nameStyle}>{'Auditor name '}</Typography>
           <Typography
             style={textStyle}
           >{`---request id: ${req.id}`}</Typography>
@@ -31,12 +31,12 @@ export const AuditRequestsArray = ({ requests }) => {
 };
 
 const textStyle = {
-  fontSize: "14px",
+  fontSize: '14px',
 };
 const nameStyle = {
-  fontSize: "14px",
-  color: "#FF9900",
+  fontSize: '14px',
+  color: '#FF9900',
 };
 const headerText = {
-  fontSize: "14px",
+  fontSize: '14px',
 };

@@ -1,12 +1,13 @@
-import React from "react";
-import { Box, Typography } from "@mui/material";
-import { Field } from "formik";
-import { TextField } from "formik-mui";
+import React from 'react';
+import { Box, Typography } from '@mui/material';
+import { Field } from 'formik';
+import { TextField } from 'formik-mui';
+import { addTestsLabel } from '../../../lib/helper.js';
 
 const DescriptionField = ({ name, label }) => {
   return (
-    <Box sx={wrapper} className={"field-wrapper"}>
-      <Typography variant={"body2"} sx={formLabelSx}>
+    <Box sx={wrapper} className={'field-wrapper'}>
+      <Typography variant={'body2'} sx={formLabelSx}>
         {label}
       </Typography>
       <Field
@@ -16,10 +17,13 @@ const DescriptionField = ({ name, label }) => {
         minRows="4"
         multiline
         name={name}
-        placeholder={""}
+        placeholder={''}
         fullWidth={true}
         disabled={false}
         sx={fieldSx}
+        inputProps={{
+          ...addTestsLabel(`${name}-input`),
+        }}
       />
     </Box>
   );
@@ -27,39 +31,39 @@ const DescriptionField = ({ name, label }) => {
 
 export default DescriptionField;
 
-const wrapper = (theme) => ({
-  display: "flex",
-  gap: "28px",
-  flexDirection: "column",
-  "& p.Mui-error": {
-    display: "none",
+const wrapper = theme => ({
+  display: 'flex',
+  gap: '28px',
+  flexDirection: 'column',
+  '& p.Mui-error': {
+    display: 'none',
   },
-  height: "100%",
-  "& .MuiInputBase-root": {
-    height: "100%",
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "start",
+  height: '100%',
+  '& .MuiInputBase-root': {
+    height: '100%',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'start',
   },
 });
 
-const formLabelSx = (theme) => ({
+const formLabelSx = theme => ({
   fontWeight: 500,
-  fontSize: "14px",
-  lineHeight: "24px",
-  color: "#434242",
-  [theme.breakpoints.down("lg")]: {
-    fontSize: "14px",
+  fontSize: '14px',
+  lineHeight: '24px',
+  color: '#434242',
+  [theme.breakpoints.down('lg')]: {
+    fontSize: '14px',
   },
 });
 
-const fieldSx = (theme) => ({
-  "& div": {
-    paddingLeft: "15px",
-    paddingRight: '5px'
+const fieldSx = theme => ({
+  '& div': {
+    paddingLeft: '15px',
+    paddingRight: '5px',
   },
   '& textarea': {
-    paddingRight: '10px'
+    paddingRight: '10px',
   },
-  height: "100%",
+  height: '100%',
 });
