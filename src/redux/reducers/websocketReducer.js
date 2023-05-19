@@ -1,5 +1,6 @@
 import {
   RECEIVE_MESSAGE,
+  RECEIVE_MESSAGES,
   WEBSOCKET_CONNECT,
   WEBSOCKET_CONNECTED,
   WEBSOCKET_DISCONNECT,
@@ -18,6 +19,8 @@ export const websocketReducer = (state = initialState, action) => {
       return { ...state, connected: false };
     case RECEIVE_MESSAGE:
       return { ...state, messages: [...state.messages, action.payload] };
+    case RECEIVE_MESSAGES:
+      return { ...state, messages: action.payload };
     default:
       return state;
   }

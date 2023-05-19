@@ -1,7 +1,7 @@
 import React from 'react';
 import Box from '@mui/material/Box';
 import { Button, Modal, Typography } from '@mui/material';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { AUDITOR, CUSTOMER } from '../../redux/actions/types.js';
 import theme from '../../styles/themes.js';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
@@ -9,7 +9,10 @@ import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 const CustomMessage = ({ message }) => {
   const role = useSelector(s => s.user.user.current_role);
   const [open, setOpen] = React.useState(false);
-  const handleClose = () => setOpen(false);
+  const dispatch = useDispatch();
+  const handleClose = () => {
+    setOpen(false);
+  };
   const handleOpen = () => {
     setOpen(true);
   };

@@ -7,7 +7,7 @@ import {
 } from '../actions/types.js';
 import { w3cwebsocket as WebSocket } from 'websocket';
 import Cookies from 'js-cookie';
-import { receiveMessage } from '../actions/websocketAction.js';
+import { receiveMessage, receiveMessages } from '../actions/websocketAction.js';
 
 const API_URL = import.meta.env.VITE_API_WS_BASE_URL;
 
@@ -30,6 +30,8 @@ const websocketMiddleware = () => {
             const message = JSON.parse(event.data);
             if (message.user_id) {
               store.dispatch(receiveMessage(message));
+            } else {
+              store.dispatch(receiveMessages(message));
             }
           };
         }
