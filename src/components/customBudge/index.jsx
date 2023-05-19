@@ -41,7 +41,7 @@ const CustomBudge = () => {
         >
           <CustomBadge
             badgeContent={messages.length}
-            color="secondary"
+            color={currentRole === AUDITOR ? 'secondary' : 'primary'}
             sx={{ color: 'black' }}
           >
             <NotificationsIcon />

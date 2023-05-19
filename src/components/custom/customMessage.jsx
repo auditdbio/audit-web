@@ -43,7 +43,9 @@ const CustomMessage = ({ message }) => {
             }}
             sx={{ minWidth: '36px', position: 'absolute', right: 0, top: 0 }}
           >
-            <CloseRoundedIcon />
+            <CloseRoundedIcon
+              color={role === AUDITOR ? 'secondary' : 'primary'}
+            />
           </Button>
           <Typography id="modal-modal-description">
             {message.inner.message}
