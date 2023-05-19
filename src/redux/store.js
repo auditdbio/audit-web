@@ -7,6 +7,8 @@ import { auditorReducer } from './reducers/auditorReducer.js';
 import { projectReducer } from './reducers/projectReducer.js';
 import { auditReducer } from './reducers/auditReducer.jsx';
 import { contactUsReducer } from './reducers/contactUsReducer.js';
+import websocketMiddleware from './middleware/websocketMiddleware.js';
+import { websocketReducer } from './reducers/websocketReducer.js';
 
 export const store = createStore(
   combineReducers({
@@ -16,6 +18,7 @@ export const store = createStore(
     auditor: auditorReducer,
     audits: auditReducer,
     contactUs: contactUsReducer,
+    websocket: websocketReducer,
   }),
-  composeWithDevTools(applyMiddleware(thunk)),
+  composeWithDevTools(applyMiddleware(thunk, websocketMiddleware())),
 );
