@@ -93,7 +93,10 @@ const CreateProjectCard = ({ projectInfo }) => {
   };
   const [openInvite, setOpenInvite] = useState(false);
 
-  const handleInviteModal = () => {
+  const handleInviteModal = onSubmit => {
+    setState(true);
+    onSubmit();
+
     setOpenInvite(true);
   };
 
@@ -189,7 +192,7 @@ const CreateProjectCard = ({ projectInfo }) => {
                 variant={'contained'}
                 sx={inviteButton}
                 onClick={() => {
-                  handleInviteModal();
+                  handleInviteModal(handleSubmit);
                 }}
                 {...addTestsLabel('invite-button')}
               >
