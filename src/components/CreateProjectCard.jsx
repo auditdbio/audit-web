@@ -240,14 +240,14 @@ const CreateProjectCard = ({ projectInfo }) => {
                   <Box sx={formAllFields}>
                     <Box sx={formWrapper}>
                       <Box sx={fieldWrapper}>
-                        <SimpleField name={'name'} label={'Name'} />
-                        <TagsField name={'tags'} label={'Tags'} />
-                        <TagsArray name={'tags'} />
+                        <SimpleField name="name" label="Name" emptyPH />
+                        <TagsField name="tags" label="Tags" />
+                        <TagsArray name="tags" />
                       </Box>
                       <Box sx={fieldWrapper}>
-                        <TagsField name={'scope'} label={'Project links'} />
-                        <ProjectLinksList name={'scope'} />
-                        <SalarySlider name={'price'} />
+                        <TagsField name="scope" label="Project links" />
+                        <ProjectLinksList name="scope" />
+                        <SalarySlider name="price" />
                       </Box>
                     </Box>
 
