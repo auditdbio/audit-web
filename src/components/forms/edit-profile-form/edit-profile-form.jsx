@@ -40,6 +40,7 @@ import { addTestsLabel } from '../../../lib/helper.js';
 
 const EditProfileForm = ({ role }) => {
   const matchSm = useMediaQuery(theme.breakpoints.down('sm'));
+  const matchXs = useMediaQuery(theme.breakpoints.down('xs'));
   const dispatch = useDispatch();
   const { user } = useSelector(s => s.user);
   const customer = useSelector(s => s.customer.customer);
@@ -119,8 +120,18 @@ const EditProfileForm = ({ role }) => {
                   </Box>
                   {matchSm && (
                     <Box sx={[fieldWrapper, { width: '100%' }]}>
-                      <SimpleField name={'first_name'} label={'First Name'} />
-                      <SimpleField name={'last_name'} label={'Last name'} />
+                      <SimpleField
+                        name="first_name"
+                        label="First Name"
+                        size={matchXs ? 'small' : 'medium'}
+                        emptyPH
+                      />
+                      <SimpleField
+                        name="last_name"
+                        label="Last name"
+                        size={matchXs ? 'small' : 'medium'}
+                        emptyPH
+                      />
                     </Box>
                   )}
                 </Box>
@@ -128,16 +139,27 @@ const EditProfileForm = ({ role }) => {
                   <Box sx={fieldWrapper}>
                     {!matchSm && (
                       <>
-                        <SimpleField name={'first_name'} label={'First Name'} />
+                        <SimpleField
+                          name="first_name"
+                          label="First Name"
+                          emptyPH
+                        />
                         {/*<SimpleField name={'last_name'} label={'Last name'}/>*/}
                       </>
                     )}
                     <SimpleField
-                      name={'contacts.telegram'}
-                      label={'Telegram'}
+                      name="contacts.telegram"
+                      label="Telegram"
+                      size={matchXs ? 'small' : 'medium'}
+                      emptyPH
                     />
                     <Box>
-                      <SimpleField name={'contacts.email'} label={'E-mail'} />
+                      <SimpleField
+                        name="contacts.email"
+                        label="E-mail"
+                        size={matchXs ? 'small' : 'medium'}
+                        emptyPH
+                      />
                       <Box
                         sx={{
                           display: 'flex',
@@ -180,12 +202,22 @@ const EditProfileForm = ({ role }) => {
                   </Box>
                   <Box sx={fieldWrapper}>
                     {!matchSm && (
-                      <SimpleField name={'last_name'} label={'Last name'} />
+                      <SimpleField name="last_name" label="Last name" emptyPH />
                     )}
                     {role === CUSTOMER && (
-                      <SimpleField name={'company'} label={'Company'} />
+                      <SimpleField
+                        name="company"
+                        label="Company"
+                        size={matchXs ? 'small' : 'medium'}
+                        emptyPH
+                      />
                     )}
-                    <SimpleField name={'about'} label={'About'} />
+                    <SimpleField
+                      name="about"
+                      label="About"
+                      size={matchXs ? 'small' : 'medium'}
+                      emptyPH
+                    />
                     {role !== CUSTOMER && (
                       <Box>
                         <Typography sx={rateLabel}>
@@ -210,14 +242,20 @@ const EditProfileForm = ({ role }) => {
                         />
                       </Box>
                     )}
-                    {matchSm && <TagsField name={'tags'} label={'Tags'} />}
-                    <TagsArray name={'tags'} />
+                    {matchSm && (
+                      <TagsField
+                        name="tags"
+                        label="Tags"
+                        size={matchXs ? 'small' : 'medium'}
+                      />
+                    )}
+                    <TagsArray name="tags" />
                   </Box>
                 </Box>
               </Box>
               <Button
-                type={'submit'}
-                variant={'contained'}
+                type="submit"
+                variant="contained"
                 sx={[
                   buttonSx,
                   role === AUDITOR
@@ -310,7 +348,6 @@ const fieldWrapper = theme => ({
     },
     '& input': {
       fontSize: '12px',
-      paddingY: '9px',
     },
   },
 });

@@ -63,8 +63,8 @@ const SigninForm = () => {
                 </Box>
               </Modal>
               <Box sx={fieldWrapper}>
-                <SimpleField name={'email'} label={'E-mail'} />
-                <PasswordField name={'password'} label={'Password'} />
+                <SimpleField name="email" label="E-mail" emptyPH />
+                <PasswordField name="password" label="Password" />
               </Box>
               <Box
                 sx={{

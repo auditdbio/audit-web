@@ -8,7 +8,7 @@ import { AUDITOR } from '../../../redux/actions/types.js';
 import CustomSnackbar from '../../custom/CustomSnackbar.jsx';
 import { addTestsLabel } from '../../../lib/helper.js';
 
-const TagsField = ({ name, label, placeholder }) => {
+const TagsField = ({ name, label, placeholder, size = 'medium' }) => {
   const role = useSelector(s => s.user.user.current_role);
   const [field, meta, fieldHelper] = useField(name);
   const [state, setState] = useState('');
@@ -27,8 +27,12 @@ const TagsField = ({ name, label, placeholder }) => {
       }
     } else {
       if (field.value.length < 20) {
-        fieldHelper.setValue([...field.value, state]);
-        setState('');
+        if (/^https?:\/\//.test(state)) {
+          fieldHelper.setValue([...field.value, state]);
+          setState('');
+        } else {
+          setError('Invalid link');
+        }
       } else {
         setError('The maximum number of links that can be added is 20');
       }
@@ -37,10 +41,6 @@ const TagsField = ({ name, label, placeholder }) => {
 
   return (
     <Box sx={wrapper} className={'field-wrapper'}>
-      <Typography variant={'body2'} sx={formLabelSx}>
-        {label}
-      </Typography>
-
       <CustomSnackbar
         autoHideDuration={5000}
         open={!!error}
@@ -51,10 +51,12 @@ const TagsField = ({ name, label, placeholder }) => {
 
       <Field
         component={TextField}
-        placeholder={placeholder ? placeholder : '● ● ● ● ● ● ●'}
+        placeholder={placeholder ? placeholder : ''}
         fullWidth={true}
         name={'tag-field'}
         disabled={false}
+        label={label}
+        size={size}
         value={state || ''}
         onKeyDown={e => {
           if (e.key === 'Enter') {

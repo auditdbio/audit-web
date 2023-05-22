@@ -49,12 +49,12 @@ const SignupForm = () => {
               onChange={(e, newValue) => {
                 setIsAuditor(newValue);
               }}
-              name={'role'}
+              name="role"
               sx={tabsSx}
               indicatorColor="none"
             >
               <Tab
-                value={'auditor'}
+                value="auditor"
                 sx={[
                   isAuditor === 'auditor'
                     ? auditorTabSx
@@ -65,7 +65,7 @@ const SignupForm = () => {
                 {...addTestsLabel('auditor-button')}
               />
               <Tab
-                value={'customer'}
+                value="customer"
                 sx={[
                   isAuditor === 'customer'
                     ? customerTabSx
@@ -78,21 +78,21 @@ const SignupForm = () => {
             </Tabs>
             <Box sx={fieldsWrapper}>
               <Box sx={fieldWrapper}>
-                <SimpleField name={'name'} label={'User name'} />
-                <SimpleField name={'email'} label={'E-mail'} />
+                <SimpleField name="name" label="User name" emptyPH />
+                <SimpleField name="email" label="E-mail" emptyPH />
               </Box>
               <Box sx={fieldWrapper}>
-                <PasswordField name={'password'} label={'Password'} />
+                <PasswordField name="password" label="Password" />
                 <PasswordField
-                  name={'confirmPassword'}
-                  label={'Confirm password'}
+                  name="confirmPassword"
+                  label="Confirm password"
                 />
               </Box>
             </Box>
             <Button
-              type={'submit'}
+              type="submit"
               sx={submitButton}
-              variant={'contained'}
+              variant="contained"
               {...addTestsLabel('sign-up-button')}
             >
               Sing up
