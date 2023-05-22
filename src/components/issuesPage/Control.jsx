@@ -49,6 +49,7 @@ const Control = ({ setSearch, setPage }) => {
               variant="contained"
               color="secondary"
               sx={buttonSx}
+              onClick={() => navigate(`/issues/new-issue/${auditId}`)}
               {...addTestsLabel('new-issue-button')}
             >
               New issue
@@ -56,7 +57,7 @@ const Control = ({ setSearch, setPage }) => {
             <Button
               variant="contained"
               color="primary"
-              onClick={() => navigate(`/audit-request-offer/${auditId}`)}
+              onClick={() => {}}
               sx={buttonSx}
               {...addTestsLabel('resolve-button')}
             >

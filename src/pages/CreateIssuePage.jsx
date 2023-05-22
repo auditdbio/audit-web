@@ -1,36 +1,14 @@
 import React from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import Layout from '../styles/Layout.jsx';
+import { useNavigate } from 'react-router-dom';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack.js';
-import { Box, Button } from '@mui/material';
+import { Button } from '@mui/material';
 import { addTestsLabel } from '../lib/helper.js';
+import Layout from '../styles/Layout.jsx';
 import { CustomCard } from '../components/custom/Card';
-import { issues } from './AuditIssues.jsx';
 import IssueDetailsForm from '../components/issuesPage/IssueDetailsForm.jsx';
-import EventsList from '../components/issuesPage/EventsList.jsx';
-import AddComment from '../components/issuesPage/AddComment.jsx';
-import Loader from '../components/Loader.jsx';
 
-const AuditIssueDetails = () => {
+const CreateIssuePage = () => {
   const navigate = useNavigate();
-  const { issueId } = useParams();
-
-  const issue = issues.find(it => it.id === +issueId); //change after api finish
-
-  if (!issue) {
-    return (
-      <Box
-        sx={{
-          position: 'absolute',
-          top: '50%',
-          left: '50%',
-          transform: 'translate(-50%, -50%)',
-        }}
-      >
-        <Loader />
-      </Box>
-    );
-  }
 
   return (
     <Layout>
@@ -42,15 +20,13 @@ const AuditIssueDetails = () => {
         >
           <ArrowBackIcon color={'secondary'} />
         </Button>
-        <IssueDetailsForm issue={issue} editMode={true} />
-        <EventsList issue={issue} />
-        <AddComment />
+        <IssueDetailsForm />
       </CustomCard>
     </Layout>
   );
 };
 
-export default AuditIssueDetails;
+export default CreateIssuePage;
 
 const wrapper = theme => ({
   padding: '48px 45px 80px',
@@ -58,10 +34,15 @@ const wrapper = theme => ({
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'center',
+  gap: '20px',
   [theme.breakpoints.down('md')]: {
     padding: '38px 44px 60px',
+    '& h3': {
+      fontSize: '30px',
+    },
   },
   [theme.breakpoints.down('sm')]: {
+    gap: '20px',
     padding: '38px 20px 30px',
   },
 });

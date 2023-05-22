@@ -10,6 +10,7 @@ import IssueSeverity from '../components/issuesPage/IssueSeverity.jsx';
 import Control from '../components/issuesPage/Control.jsx';
 import CustomPagination from '../components/custom/CustomPagination.jsx';
 import theme from '../styles/themes.js';
+import Loader from '../components/Loader.jsx';
 
 const AuditIssues = () => {
   const { auditId } = useParams();
@@ -21,12 +22,25 @@ const AuditIssues = () => {
   const [page, setPage] = useState(1);
 
   const getSearchResultsLength = () => {
-    return issues.filter(issue => issue.title?.includes(search)).length;
+    return issues.filter(issue => issue.name?.includes(search)).length;
   };
 
   const getNumberOfPages = () => Math.ceil(getSearchResultsLength() / 10);
 
-  console.log(audit);
+  if (!audit) {
+    return (
+      <Box
+        sx={{
+          position: 'absolute',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+        }}
+      >
+        <Loader />
+      </Box>
+    );
+  }
 
   return (
     <Layout>
@@ -57,18 +71,18 @@ const AuditIssues = () => {
 
         <Box sx={{ width: '100%' }}>
           {issues
-            .filter(issue => issue.title?.includes(search))
+            .filter(issue => issue.name?.includes(search))
             .slice((page - 1) * 10, page * 10)
             .map(issue => (
               <Link
                 key={issue.id}
                 sx={issueRow}
                 component={RouterLink}
-                to={`/audit-issue/${auditId}/${issue.id}`}
+                to={`/issues/audit-issue/${auditId}/${issue.id}`}
                 {...addTestsLabel('issue-details-link')}
               >
                 <Typography sx={[columnText, issueTitleSx]}>
-                  {issue.title}
+                  {issue.name}
                 </Typography>
                 <Typography sx={[columnText, statusSx(issue.status)]}>
                   {issue.status}
@@ -80,7 +94,7 @@ const AuditIssues = () => {
             ))}
         </Box>
 
-        {getSearchResultsLength() === 0 && <Box sx={noResults}>No results</Box>}
+        {getSearchResultsLength() === 0 && <Box sx={noResults}>Empty</Box>}
 
         <CustomPagination
           show={getSearchResultsLength() > 10}
@@ -189,7 +203,8 @@ const issueTitleSx = {
 const statusSx = status => {
   let color = '#434242';
   if (status === 'Draft') color = '#52176D';
-  if (status === 'Fixed') color = '#09C010';
+  if (status === 'Verification' || status === 'In progress') color = '#5b97bb';
+  if (status === 'Fixed' || status === 'Will not fix') color = '#09C010';
 
   return {
     display: 'flex',
@@ -227,81 +242,134 @@ const noResults = {
 export const issues = [
   {
     id: 1,
-    title: 'Order metrics by time stamp for outputsOrder metrics by one',
-    status: 'In progress',
+    name: 'Order metrics by time stamp for outputsOrder metrics by one',
+    status: 'Verification',
     severity: 'Critical',
+    category: 'Important',
+    include: true,
     description:
-      "START YOUR PROJECT RIGHT NOW OR AUDIT LIKE EXPERT. AuditDB is a blockchain-based jobs platform that helps clients and freelancers connect. We provide efficient transactions with cryptocurrency, and robust protection through smart contracts - wherever you're based!",
+      "**START** YOUR PROJECT RIGHT NOW OR AUDIT LIKE EXPERT. AuditDB is a blockchain-based jobs platform that helps clients and freelancers connect. We provide efficient transactions with cryptocurrency, and robust protection through smart contracts - wherever you're based!",
+    event: [
+      {
+        datetime: 111111,
+        user: {
+          avatar:
+            'https://dev.auditdb.io/api/file/644f80bef51e7931580557a5auditornews-oct.png',
+          name: 'Mike',
+        },
+        type: 'type',
+        message: ' changed name of issue',
+      },
+      {
+        datetime: 111112,
+        user: {
+          avatar:
+            'https://dev.auditdb.io/api/file/644f80bef51e7931580557a5auditornews-oct.png',
+          name: 'Mike',
+        },
+        type: 'type2',
+        message: 'added the label last week',
+      },
+      {
+        datetime: 111113,
+        user: {
+          avatar:
+            'https://dev.auditdb.io/api/file/644f80bef51e7931580557a5auditornews-oct.png',
+          name: 'Mike',
+        },
+        type: 'type3',
+        message: ' changed description',
+      },
+    ],
   },
   {
     id: 2,
-    title: 'Order metrics by timestamp for outputsOrder metrics by two',
+    name: 'not included Order metrics by timestamp for outputsOrder metrics by two',
     status: 'Verification',
     severity: 'Major',
-    description: '',
+    category: 'Important',
+    include: false,
+    description: '**START** YOUR PROJECT RIGHT NOW OR AUDIT LIKE EXPERT.',
   },
   {
     id: 3,
-    title: 'Order metrics by timestamp for outputsOrder metrics by five',
-    status: 'Not included',
+    name: 'Order metrics by timestamp for outputsOrder metrics by five',
+    status: 'In progress',
     severity: 'Medium',
+    category: 'Important',
+    include: true,
     description: '',
   },
   {
     id: 4,
-    title: 'Order metrics by timestamp for outputsOrder metrics by four',
+    name: 'Order metrics by timestamp for outputsOrder metrics by four',
     status: 'Fixed',
     severity: 'Minor',
+    category: 'Important',
+    include: true,
     description: '',
   },
   {
     id: 5,
-    title:
-      'Order metrics by timestamp for outputsOrder metrics by three timestamp for outputsOrder metrics by timestamptimestamp for outputsOrder metrics by timestamptimestamp for outputsOrder metrics  for outputsOrder metrics by timestamptimestamp for outputsOrder metrics  for outputsOrder metrics by timestamptimestamp for outputsOrder metrics  for outputsOrder metrics by timestamptimestamp for outputsOrder metrics by timestamp',
+    name: 'Order metrics by timestamp for outputsOrder metrics by three timestamp for outputsOrder metrics by timestamptimestamp for outputsOrder metrics by timestamptimestamp for outputsOrder metrics  for outputsOrder metrics by timestamptimestamp for outputsOrder metrics  for outputsOrder metrics by timestamptimestamp for outputsOrder metrics  for outputsOrder metrics by timestamptimestamp for outputsOrder metrics by timestamp',
     status: 'Will not fix',
     severity: 'Minor',
+    category: 'Important',
+    include: true,
     description: '',
   },
   {
     id: 6,
-    title: 'Order metrics by timestamp for outputsOrder metrics by four',
+    name: 'Order metrics by timestamp for outputsOrder metrics by four',
     status: 'Draft',
     severity: 'Minor',
+    category: 'Important',
+    include: true,
     description: '',
   },
   {
     id: 7,
-    title: 'Order metrics by timestamp for outputsOrder metrics by four',
-    status: 'Fixed',
+    name: 'Order metrics by timestamp for outputsOrder metrics by four',
+    status: 'Draft',
     severity: 'Minor',
+    category: 'Important',
+    include: true,
     description: '',
   },
   {
     id: 8,
-    title: 'Order metrics by timestamp for outputsOrder metrics by four',
+    name: 'Order metrics by timestamp for outputsOrder metrics by four',
     status: 'Fixed',
     severity: 'Minor',
+    category: 'Important',
+    include: true,
     description: '',
   },
   {
     id: 9,
-    title: 'Order metrics by timestamp for outputsOrder metrics by four',
+    name: 'Order metrics by timestamp for outputsOrder metrics by four',
     status: 'Fixed',
     severity: 'Minor',
+    category: 'Important',
+    include: true,
     description: '',
   },
   {
     id: 10,
-    title: 'Order metrics by timestamp for outputsOrder metrics by four',
+    name: 'Order metrics by timestamp for outputsOrder metrics by four',
     status: 'Fixed',
     severity: 'Minor',
+    category: 'Important',
+    include: true,
     description: '',
   },
   {
     id: 11,
-    title: 'Order metrics by timestamp for outputsOrder metrics by four',
+    name: 'Order metrics by timestamp for outputsOrder metrics by four',
     status: 'Fixed',
     severity: 'Minor',
+    category: 'Important',
+    include: true,
     description: '',
   },
 ];

@@ -1,9 +1,8 @@
 import React, { useMemo } from 'react';
 import { CustomCard } from '../components/custom/Card.jsx';
 import Layout from '../styles/Layout.jsx';
-import { Avatar, Box, Button, Typography, Link, Tooltip } from '@mui/material';
+import { Avatar, Box, Button, Typography, Tooltip } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import theme from '../styles/themes.js';
 import { useNavigate } from 'react-router-dom/dist';
 import TagsList from '../components/tagsList.jsx';
 import { useDispatch, useSelector } from 'react-redux';
@@ -23,6 +22,7 @@ import { handleOpenReport } from '../lib/openReport.js';
 
 const AuditInfo = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const { id } = useParams();
   const auditRequest = useSelector(s =>
     s.audits?.auditRequests?.find(audit => audit.id === id),
@@ -30,6 +30,7 @@ const AuditInfo = () => {
   const auditConfirm = useSelector(s =>
     s.audits?.audits?.find(audit => audit.id === id),
   );
+
   const audit = useMemo(() => {
     if (auditRequest && !auditConfirm) {
       return auditRequest;
@@ -37,7 +38,6 @@ const AuditInfo = () => {
       return auditConfirm;
     }
   }, [id, auditConfirm, auditRequest]);
-  const dispatch = useDispatch();
 
   const handleConfirm = () => {
     dispatch(confirmAudit(audit));
@@ -59,6 +59,10 @@ const AuditInfo = () => {
         status: SUBMITED,
       }),
     );
+  };
+
+  const goToIssues = () => {
+    navigate(`/issues/audit-issue/${id}`);
   };
 
   return (
@@ -191,14 +195,27 @@ const AuditInfo = () => {
             </Button>
           )}
           {audit?.status !== SUBMITED && (
-            <Button
-              variant={'contained'}
-              onClick={handleDecline}
-              sx={[buttonSx, { backgroundColor: theme.palette.secondary.main }]}
-              {...addTestsLabel('decline-button')}
-            >
-              Decline
-            </Button>
+            <Box>
+              <Button
+                variant="contained"
+                color="secondary"
+                onClick={handleDecline}
+                sx={buttonSx}
+                {...addTestsLabel('decline-button')}
+              >
+                Decline
+              </Button>
+              <Button
+                variant="contained"
+                color="primary"
+                type="button"
+                onClick={goToIssues}
+                sx={buttonSx}
+                {...addTestsLabel('issues-button')}
+              >
+                Issues
+              </Button>
+            </Box>
           )}
         </Box>
       </CustomCard>
