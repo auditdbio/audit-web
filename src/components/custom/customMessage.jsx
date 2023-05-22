@@ -5,12 +5,14 @@ import { useDispatch, useSelector } from 'react-redux';
 import { AUDITOR, CUSTOMER } from '../../redux/actions/types.js';
 import theme from '../../styles/themes.js';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
+import { readMessage } from '../../redux/actions/websocketAction.js';
 
 const CustomMessage = ({ message }) => {
   const role = useSelector(s => s.user.user.current_role);
   const [open, setOpen] = React.useState(false);
   const dispatch = useDispatch();
-  const handleClose = () => {
+  const handleClose = id => {
+    dispatch(readMessage(id));
     setOpen(false);
   };
   const handleOpen = () => {
@@ -34,7 +36,7 @@ const CustomMessage = ({ message }) => {
       <Modal
         open={open}
         onClose={() => {
-          handleClose();
+          handleClose(message.id);
         }}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
@@ -42,7 +44,7 @@ const CustomMessage = ({ message }) => {
         <Box sx={modalStyle(role, theme)}>
           <Button
             onClick={() => {
-              handleClose();
+              handleClose(message.id);
             }}
             sx={{ minWidth: '36px', position: 'absolute', right: 0, top: 0 }}
           >
