@@ -1,4 +1,5 @@
 import {
+  READ_MESSAGE,
   RECEIVE_MESSAGE,
   RECEIVE_MESSAGES,
   WEBSOCKET_CONNECT,
@@ -21,6 +22,13 @@ export const websocketReducer = (state = initialState, action) => {
       return { ...state, messages: [...state.messages, action.payload] };
     case RECEIVE_MESSAGES:
       return { ...state, messages: action.payload };
+    case READ_MESSAGE:
+      return {
+        ...state,
+        messages: state.messages.filter(
+          message => message.id !== action.payload.id,
+        ),
+      };
     default:
       return state;
   }
