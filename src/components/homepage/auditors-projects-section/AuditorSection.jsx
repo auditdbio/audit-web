@@ -113,7 +113,7 @@ const AuditorSection = () => {
         // justifyContent="space-between"
       >
         {auditorReducer.auditors &&
-          auditorReducer.auditors.slice(0, matchSm ? 4 : 3).map(auditor => (
+          auditorReducer?.auditors?.slice(0, matchSm ? 4 : 3)?.map(auditor => (
             <Grid key={auditor.user_id} item sx={gridItemStylePublic}>
               <AuditorCard auditor={auditor} />
             </Grid>

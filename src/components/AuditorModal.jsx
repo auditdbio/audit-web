@@ -162,6 +162,12 @@ export default function AuditorModal({
                     </Tooltip>
                   </Box>
                 </Box>
+                {auditor?.about && (
+                  <Box sx={infoWrapper}>
+                    <span>About</span>
+                    <Typography>{auditor?.about}</Typography>
+                  </Box>
+                )}
                 <TagsList data={auditor.tags} fullView={true} />
               </Box>
               <Box sx={infoInnerStyle} />

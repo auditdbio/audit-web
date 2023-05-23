@@ -178,14 +178,14 @@ const CreateProjectCard = ({ projectInfo }) => {
               setState={setState}
             />
 
-            <CloseProjectModal
-              isOpen={closeConfirmIsOpen}
-              setIsOpen={setCloseConfirmIsOpen}
-              handleSubmit={handleSubmit}
-              values={values}
-              setIsClosed={setIsClosed}
-              projectInfo={projectInfo}
-            />
+            {/*<CloseProjectModal*/}
+            {/*  isOpen={closeConfirmIsOpen}*/}
+            {/*  setIsOpen={setCloseConfirmIsOpen}*/}
+            {/*  handleSubmit={handleSubmit}*/}
+            {/*  values={values}*/}
+            {/*  setIsClosed={setIsClosed}*/}
+            {/*  projectInfo={projectInfo}*/}
+            {/*/>*/}
 
             <Box sx={buttonGroup}>
               <Button
@@ -219,17 +219,17 @@ const CreateProjectCard = ({ projectInfo }) => {
               >
                 {isPublished ? 'Hide project' : 'Publish project'}
               </Button>
-              <Button
-                variant={'contained'}
-                sx={publishButton}
-                disabled={
-                  isClosed || !projectInfo || !!getSearchParam.get('copy')
-                }
-                onClick={() => setCloseConfirmIsOpen(true)}
-                {...addTestsLabel('close-project-button')}
-              >
-                {isClosed ? 'Project closed' : 'Close the project'}
-              </Button>
+              {/*<Button*/}
+              {/*  variant={'contained'}*/}
+              {/*  sx={publishButton}*/}
+              {/*  disabled={*/}
+              {/*    isClosed || !projectInfo || !!getSearchParam.get('copy')*/}
+              {/*  }*/}
+              {/*  onClick={() => setCloseConfirmIsOpen(true)}*/}
+              {/*  {...addTestsLabel('close-project-button')}*/}
+              {/*>*/}
+              {/*  {isClosed ? 'Project closed' : 'Close the project'}*/}
+              {/*</Button>*/}
               {/*<Button sx={menuButtonSx}>*/}
               {/*  <MenuRoundedIcon sx={menuButtonIconSx} />*/}
               {/*</Button>*/}
