@@ -8,7 +8,7 @@ import {
 
 const initialState = {
   auditor: null,
-  auditors: null,
+  auditors: [],
   searchAuditors: null,
   searchTotalAuditors: 0,
   error: null,
