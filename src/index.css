@@ -67,3 +67,9 @@ a {
 	scrollbar-width: 14px;
 	scrollbar-color: #6a737d transparent;
 }
+
+.MuiDialog-container.MuiDialog-scrollPaper .MuiPaper-root.MuiPaper-elevation.MuiPaper-rounded {
+	margin: 20px
+}{
+
+}

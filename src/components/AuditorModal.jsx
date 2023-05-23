@@ -163,9 +163,10 @@ export default function AuditorModal({
                   </Box>
                 </Box>
                 {auditor?.about && (
-                  <Box sx={infoWrapper}>
-                    <span>About</span>
-                    <Typography>{auditor?.about}</Typography>
+                  <Box sx={[infoWrapper, aboutSx]}>
+                    <Typography>
+                      <span>About</span> {auditor?.about}
+                    </Typography>
                   </Box>
                 )}
                 <TagsList data={auditor.tags} fullView={true} />
@@ -365,7 +366,7 @@ const modalWindow = theme => ({
     gap: '20px',
   },
   [theme.breakpoints.down('xs')]: {
-    padding: '20px 5px',
+    padding: '20px 10px',
   },
 });
 
@@ -442,19 +443,38 @@ const infoWrapper = theme => ({
     fontSize: 'inherit',
   },
   '& span': {
-    width: '125px',
-    marginRight: '50px',
+    width: '95px',
+    marginRight: '20px',
     color: '#B2B3B3',
   },
   fontSize: '15px',
   [theme.breakpoints.down('md')]: {
     '& span': {
       width: '90px',
-      marginRight: '20px',
     },
   },
   [theme.breakpoints.down('xs')]: {
     fontSize: '12px',
+    '& span': {
+      width: '80px',
+      marginRight: '10px',
+    },
+  },
+});
+
+const aboutSx = theme => ({
+  '& span': {
+    marginRight: '66px',
+  },
+  [theme.breakpoints.down('md')]: {
+    '& span': {
+      marginRight: '61px',
+    },
+  },
+  [theme.breakpoints.down('xs')]: {
+    '& span': {
+      marginRight: '51px',
+    },
   },
 });
 
