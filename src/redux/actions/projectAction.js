@@ -12,6 +12,7 @@ import axios from 'axios';
 import Cookies from 'js-cookie';
 import { history } from '../../services/history.js';
 import dayjs from 'dayjs';
+import { isAuth } from '../../lib/helper.js';
 
 const API_URL = import.meta.env.VITE_API_BASE_URL;
 
@@ -138,11 +139,19 @@ export const clearProjectMessage = () => {
 
 export const getAllProjects = (values = '', amount) => {
   return async dispatch => {
+    const token = Cookies.get('token');
     await axios
       .get(
         `${API_URL}/search?query=${values}&tags=&sort_by=price&sort_order=1&page=1&per_page=${
           amount ? amount : 0
         }&kind=project`,
+        isAuth()
+          ? {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          : {},
       )
       .then(({ data }) => {
         dispatch({ type: GET_PROJECTS, payload: data });
@@ -217,8 +226,18 @@ export const searchProjects = values => {
   const queryString = queryParams.join('&');
 
   return dispatch => {
+    const token = Cookies.get('token');
     axios
-      .get(`${API_URL}/search?${queryString}`)
+      .get(
+        `${API_URL}/search?${queryString}`,
+        isAuth()
+          ? {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          : {},
+      )
       .then(({ data }) => {
         dispatch({ type: SEARCH_PROJECTS, payload: data });
       })
