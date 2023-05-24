@@ -9,6 +9,7 @@ import {
 } from './types.js';
 import { history } from '../../services/history.js';
 import dayjs from 'dayjs';
+import { isAuth } from '../../lib/helper.js';
 
 const API_URL = import.meta.env.VITE_API_BASE_URL;
 
@@ -75,11 +76,19 @@ export const updateAuditor = values => {
 
 export const getAuditors = (values = '', amount) => {
   return dispatch => {
+    const token = Cookies.get('token');
     axios
       .get(
         `${API_URL}/search?query=${values}&sort_by=price&tags=&sort_order=1&page=1&per_page=${
           amount ? amount : 0
         }&kind=auditor`,
+        isAuth()
+          ? {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          : {},
       )
       .then(({ data }) => {
         dispatch({ type: GET_AUDITORS, payload: data });
@@ -138,8 +147,19 @@ export const searchAuditor = values => {
   const queryString = queryParams.join('&');
 
   return dispatch => {
+    const token = Cookies.get('token');
+
     axios
-      .get(`${API_URL}/search?${queryString}`)
+      .get(
+        `${API_URL}/search?${queryString}`,
+        isAuth()
+          ? {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          : {},
+      )
       .then(({ data }) => {
         dispatch({ type: GET_AUDITORS, payload: data });
       })
