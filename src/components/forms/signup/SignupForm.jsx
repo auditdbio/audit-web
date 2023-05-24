@@ -216,7 +216,7 @@ const fieldWrapper = theme => ({
   [theme.breakpoints.down('md')]: {
     '& .password-wrapper,.field-wrapper': {
       '& label': {
-        fontSize: '18px!important',
+        fontSize: '18px',
       },
     },
   },
@@ -229,6 +229,9 @@ const fieldWrapper = theme => ({
       gap: '16px',
       '& p': {
         width: 'unset',
+      },
+      '& label': {
+        fontSize: '15px',
       },
     },
   },
