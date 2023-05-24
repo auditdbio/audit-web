@@ -1,6 +1,13 @@
 import React, { useState } from 'react';
-import { Box, Tabs, Tab, Typography, Button } from '@mui/material';
-import { radiusOfComponents } from '../../../styles/themes.js';
+import {
+  Box,
+  Tabs,
+  Tab,
+  Typography,
+  Button,
+  useMediaQuery,
+} from '@mui/material';
+import theme, { radiusOfComponents } from '../../../styles/themes.js';
 import PasswordField from '../fields/password-field.jsx';
 import { Form, Formik } from 'formik';
 import * as Yup from 'yup';
@@ -13,6 +20,7 @@ import { addTestsLabel } from '../../../lib/helper.js';
 const SignupForm = () => {
   const [isAuditor, setIsAuditor] = useState('auditor');
   const dispatch = useDispatch();
+  const matchMd = useMediaQuery(theme.breakpoints.down('md'));
   const error = useSelector(s => s.user.error);
   const initialValues = {
     current_role: '',
@@ -78,12 +86,27 @@ const SignupForm = () => {
             </Tabs>
             <Box sx={fieldsWrapper}>
               <Box sx={fieldWrapper}>
-                <SimpleField name="name" label="User name" emptyPH />
-                <SimpleField name="email" label="E-mail" emptyPH />
+                <SimpleField
+                  size={!matchMd ? 'medium' : 'small'}
+                  name="name"
+                  label="User name"
+                  emptyPH
+                />
+                <SimpleField
+                  size={!matchMd ? 'medium' : 'small'}
+                  name="email"
+                  label="E-mail"
+                  emptyPH
+                />
               </Box>
               <Box sx={fieldWrapper}>
-                <PasswordField name="password" label="Password" />
                 <PasswordField
+                  size={!matchMd ? 'medium' : 'small'}
+                  name="password"
+                  label="Password"
+                />
+                <PasswordField
+                  size={!matchMd ? 'medium' : 'small'}
                   name="confirmPassword"
                   label="Confirm password"
                 />
@@ -191,10 +214,9 @@ const fieldWrapper = theme => ({
     },
   },
   [theme.breakpoints.down('md')]: {
-    '& .MuiInputBase-root': {
-      height: '44px',
-      '& input': {
-        paddingY: '7px',
+    '& .password-wrapper,.field-wrapper': {
+      '& label': {
+        fontSize: '16px!important',
       },
     },
   },

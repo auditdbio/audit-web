@@ -6,7 +6,12 @@ import EyeIcon from '../../icons/eye-icon.jsx';
 import RemovedEyeIcon from '../../icons/removed-eye-icon.jsx';
 import { addTestsLabel } from '../../../lib/helper.js';
 
-const PasswordField = ({ name, label, outerLabel = false }) => {
+const PasswordField = ({
+  name,
+  label,
+  outerLabel = false,
+  size = 'medium',
+}) => {
   const [showPassword, setShowPassword] = useState(false);
   const handleClickShowPassword = () => setShowPassword(!showPassword);
   const handleMouseDownPassword = () => setShowPassword(!showPassword);
@@ -25,6 +30,7 @@ const PasswordField = ({ name, label, outerLabel = false }) => {
         sx={fieldSx}
         name={name}
         label={label}
+        size={size}
         disabled={false}
         type={showPassword ? 'text' : 'password'}
         inputProps={{ ...addTestsLabel(`${name}-input`) }}
