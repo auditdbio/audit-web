@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Box, Button, Modal } from '@mui/material';
-import { radiusOfComponents } from '../../../styles/themes.js';
+import { Box, Button, Modal, useMediaQuery } from '@mui/material';
+import theme, { radiusOfComponents } from '../../../styles/themes.js';
 import PasswordField from '../fields/password-field.jsx';
 import { Form, Formik } from 'formik';
 import * as Yup from 'yup';
@@ -19,6 +19,7 @@ const SigninForm = () => {
   const dispatch = useDispatch();
   const error = useSelector(s => s.user.error);
   const [open, setOpen] = useState(false);
+  const matchMd = useMediaQuery(theme.breakpoints.down('md'));
   const successMessage = useSelector(s => s.user.success);
   const initialValues = {
     email: '',
@@ -63,8 +64,17 @@ const SigninForm = () => {
                 </Box>
               </Modal>
               <Box sx={fieldWrapper}>
-                <SimpleField name="email" label="E-mail" emptyPH />
-                <PasswordField name="password" label="Password" />
+                <SimpleField
+                  size={!matchMd ? 'medium' : 'small'}
+                  name="email"
+                  label="E-mail"
+                  emptyPH
+                />
+                <PasswordField
+                  size={!matchMd ? 'medium' : 'small'}
+                  name="password"
+                  label="Password"
+                />
               </Box>
               <Box
                 sx={{
@@ -155,10 +165,9 @@ const fieldWrapper = theme => ({
   width: '100%',
   gap: '20px',
   [theme.breakpoints.down('md')]: {
-    '& .MuiInputBase-root': {
-      height: '44px',
-      '& input': {
-        paddingY: '7px',
+    '& .password-wrapper,.field-wrapper': {
+      '& label': {
+        fontSize: '16px!important',
       },
     },
   },
