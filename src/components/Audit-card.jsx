@@ -75,11 +75,11 @@ const AuditCard = ({ audit }) => {
         <CustomButton
           sx={[
             acceptButtonStyle,
-            audit?.last_changer.toLowerCase() === CUSTOMER
+            audit?.last_changer?.toLowerCase() === CUSTOMER
               ? { backgroundColor: '#d7d7d7' }
               : {},
           ]}
-          disabled={audit?.last_changer.toLowerCase() === CUSTOMER}
+          disabled={audit?.last_changer?.toLowerCase() === CUSTOMER}
           onClick={() => dispatch(confirmAudit(audit))}
           {...addTestsLabel('audits_accept-button')}
         >
