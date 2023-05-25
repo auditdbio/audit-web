@@ -8,8 +8,8 @@ import {
   Link,
   useMediaQuery,
   Tooltip,
-  FormControlLabel,
   Switch,
+  FormControlLabel,
 } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack.js';
 import GitHubIcon from '@mui/icons-material/GitHub';
@@ -38,8 +38,12 @@ const AuditOffer = () => {
     s.audits.audits?.find(audit => audit.id === id),
   );
 
-  const goToIssues = () => {
-    navigate(`/issues/audit-issue/${id}`);
+  const goToIssues = create => {
+    if (create) {
+      navigate(`/issues/new-issue/${id}`);
+    } else {
+      navigate(`/issues/audit-issue/${id}`);
+    }
   };
 
   if (!audit) {
@@ -201,26 +205,43 @@ const AuditOffer = () => {
                         ))}
                       </Box>
 
-                      <Box sx={{ textAlign: 'center' }}>
-                        <FormControlLabel
-                          label={
-                            <Typography
-                              sx={{ fontSize: '20px', fontWeight: 500 }}
-                            >
-                              Use AuditDB workflow
-                            </Typography>
-                          }
-                          control={
-                            <Switch
-                              color="secondary"
-                              checked={auditDBWorkflow}
-                              onChange={() =>
-                                setAuditDBWorkflow(!auditDBWorkflow)
-                              }
-                            />
-                          }
-                        />
-                      </Box>
+                      {matchXs ? (
+                        <Box sx={{ textAlign: 'center' }}>
+                          <FormControlLabel
+                            label={
+                              <Typography
+                                sx={{ fontSize: '20px', fontWeight: 500 }}
+                              >
+                                Use AuditDB workflow
+                              </Typography>
+                            }
+                            control={
+                              <Switch
+                                color="secondary"
+                                checked={auditDBWorkflow}
+                                onChange={() =>
+                                  setAuditDBWorkflow(!auditDBWorkflow)
+                                }
+                              />
+                            }
+                          />
+                        </Box>
+                      ) : (
+                        <Box sx={workflowToggleBox}>
+                          <Button
+                            onClick={() => setAuditDBWorkflow(false)}
+                            sx={workflowButton(!auditDBWorkflow)}
+                          >
+                            Upload audit
+                          </Button>
+                          <Button
+                            onClick={() => setAuditDBWorkflow(true)}
+                            sx={workflowButton(auditDBWorkflow)}
+                          >
+                            АuditDB workflow
+                          </Button>
+                        </Box>
+                      )}
 
                       {!auditDBWorkflow && (
                         <Box sx={fileWrapper}>
@@ -242,32 +263,32 @@ const AuditOffer = () => {
                   </Box>
 
                   <Box sx={buttonWrapper}>
-                    {audit.status !== SUBMITED && (
-                      <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-                        {auditDBWorkflow ? (
-                          <Button
-                            variant="contained"
-                            color="secondary"
-                            type="button"
-                            onClick={goToIssues}
-                            sx={buttonSx}
-                            {...addTestsLabel('new-issue-button')}
-                          >
-                            New issue
-                          </Button>
-                        ) : (
-                          <Button
-                            variant="contained"
-                            type="submit"
-                            color="secondary"
-                            sx={[buttonSx, { mb: '15px' }]}
-                            {...addTestsLabel('send-button')}
-                          >
-                            Send to customer
-                          </Button>
-                        )}
-                      </Box>
-                    )}
+                    <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+                      {auditDBWorkflow ? (
+                        <Button
+                          variant="contained"
+                          color="secondary"
+                          type="button"
+                          onClick={() => goToIssues(!audit.issues?.length)}
+                          sx={buttonSx}
+                          {...addTestsLabel('new-issue-button')}
+                        >
+                          {audit.issues?.length
+                            ? `Issues (${audit.issues.length})`
+                            : 'New issue'}
+                        </Button>
+                      ) : (
+                        <Button
+                          variant="contained"
+                          type="submit"
+                          color="secondary"
+                          sx={[buttonSx, { mb: '15px' }]}
+                          {...addTestsLabel('send-button')}
+                        >
+                          Send to customer
+                        </Button>
+                      )}
+                    </Box>
                   </Box>
                 </CustomCard>
               </Form>
@@ -454,5 +475,29 @@ const buttonSx = theme => ({
   },
   [theme.breakpoints.down('xs')]: {
     margin: '0 6px',
+  },
+});
+
+const workflowToggleBox = theme => ({
+  width: '600px',
+  margin: '0 auto 50px',
+  padding: '3px 1px',
+  display: 'flex',
+  justifyContent: 'center',
+  border: '1px solid #B2B3B3',
+  borderRadius: '38px',
+});
+
+const workflowButton = useWorkflow => ({
+  fontWeight: 600,
+  fontSize: '20px',
+  color: useWorkflow ? 'white' : 'black',
+  textTransform: 'none',
+  padding: '15px 66px',
+  borderRadius: '38px',
+  background: useWorkflow ? theme.palette.secondary.main : 'none',
+  ':hover': { background: useWorkflow ? theme.palette.secondary.main : 'none' },
+  '& span': {
+    display: 'none',
   },
 });

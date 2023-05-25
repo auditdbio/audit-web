@@ -22,7 +22,7 @@ const AuditIssues = () => {
   const [page, setPage] = useState(1);
 
   const getSearchResultsLength = () => {
-    return issues.filter(issue => issue.name?.includes(search)).length;
+    return audit?.issues?.filter(issue => issue.name?.includes(search)).length;
   };
 
   const getNumberOfPages = () => Math.ceil(getSearchResultsLength() / 10);
@@ -50,7 +50,7 @@ const AuditIssues = () => {
           onClick={() => navigate(-1)}
           {...addTestsLabel('go-back-button')}
         >
-          <ArrowBackIcon color={'secondary'} />
+          <ArrowBackIcon color="secondary" />
         </Button>
 
         <Control setSearch={setSearch} setPage={setPage} />
@@ -70,8 +70,9 @@ const AuditIssues = () => {
         </Box>
 
         <Box sx={{ width: '100%' }}>
-          {issues
-            .filter(issue => issue.name?.includes(search))
+          {audit?.issues
+            ?.filter(issue => issue.name?.includes(search))
+            .reverse()
             .slice((page - 1) * 10, page * 10)
             .map(issue => (
               <Link

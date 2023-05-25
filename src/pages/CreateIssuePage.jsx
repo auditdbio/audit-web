@@ -18,7 +18,7 @@ const CreateIssuePage = () => {
           onClick={() => navigate(-1)}
           {...addTestsLabel('go-back-button')}
         >
-          <ArrowBackIcon color={'secondary'} />
+          <ArrowBackIcon color="secondary" />
         </Button>
         <IssueDetailsForm />
       </CustomCard>

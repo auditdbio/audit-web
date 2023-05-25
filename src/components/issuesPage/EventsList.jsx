@@ -5,7 +5,7 @@ import { Avatar, Box, Typography } from '@mui/material';
 const EventsList = ({ issue }) => {
   return (
     <Box sx={wrapper}>
-      {issue.event?.map(event => {
+      {issue.events?.map(event => {
         return (
           <Box key={event.datetime} sx={eventSx}>
             <Box sx={iconSx}>
@@ -44,7 +44,7 @@ const eventSx = {
   },
 };
 
-const iconSx = theme => ({
+const iconSx = {
   mr: '20px',
   position: 'relative',
   '&::before': {
@@ -58,7 +58,7 @@ const iconSx = theme => ({
     height: '32px',
     backgroundColor: '#b9b9b9',
   },
-});
+};
 
 const avatarSx = {
   width: '30px',

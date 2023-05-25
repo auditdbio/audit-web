@@ -5,17 +5,19 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack.js';
 import { Box, Button } from '@mui/material';
 import { addTestsLabel } from '../lib/helper.js';
 import { CustomCard } from '../components/custom/Card';
-import { issues } from './AuditIssues.jsx';
 import IssueDetailsForm from '../components/issuesPage/IssueDetailsForm.jsx';
 import EventsList from '../components/issuesPage/EventsList.jsx';
 import AddComment from '../components/issuesPage/AddComment.jsx';
 import Loader from '../components/Loader.jsx';
+import { useSelector } from 'react-redux';
 
 const AuditIssueDetails = () => {
   const navigate = useNavigate();
-  const { issueId } = useParams();
-
-  const issue = issues.find(it => it.id === +issueId); //change after api finish
+  const { auditId, issueId } = useParams();
+  const issue = useSelector(s => {
+    const audit = s.audits.audits?.find(audit => audit.id === auditId);
+    return audit?.issues?.find(issue => issue.id === +issueId);
+  });
 
   if (!issue) {
     return (
@@ -40,7 +42,7 @@ const AuditIssueDetails = () => {
           onClick={() => navigate(-1)}
           {...addTestsLabel('go-back-button')}
         >
-          <ArrowBackIcon color={'secondary'} />
+          <ArrowBackIcon color="secondary" />
         </Button>
         <IssueDetailsForm issue={issue} editMode={true} />
         <EventsList issue={issue} />

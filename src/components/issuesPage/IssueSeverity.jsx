@@ -13,7 +13,7 @@ const IssueSeverity = ({ text }) => {
       case 'Minor':
         return '#09C010';
       default:
-        return '#CCC';
+        return '#434242';
     }
   };
 

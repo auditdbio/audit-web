@@ -1,5 +1,6 @@
 import React, { useRef, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate, useParams } from 'react-router-dom';
 import { Field, Form, Formik } from 'formik';
 import { TextField, Select } from 'formik-mui';
 import * as Yup from 'yup';
@@ -22,13 +23,26 @@ import { AUDITOR } from '../../redux/actions/types.js';
 import Markdown from '../custom/Markdown-editor.jsx';
 import IssueSeverity from './IssueSeverity.jsx';
 import theme from '../../styles/themes.js';
+import {
+  addAuditIssue,
+  clearMessage,
+  updateAuditIssue,
+} from '../../redux/actions/auditAction.js';
+import CustomSnackbar from '../custom/CustomSnackbar.jsx';
 
 const IssueDetailsForm = ({ issue = null, editMode = false }) => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { auditId, issueId } = useParams();
   const matchXs = useMediaQuery(theme.breakpoints.down('xs'));
+
   const user = useSelector(s => s.user.user);
+  const { successMessage, error } = useSelector(s => s.audits);
+
   const [isEditName, setIsEditName] = useState(!editMode);
   const [isEditDescription, setIsEditDescription] = useState(!editMode);
-  const [addLinkField, setAddLinkField] = useState(false);
+  const [addLinkField, setAddLinkField] = useState(!!issue?.link);
+  const [issuePrevValues, setIssuePrevValues] = useState(null);
   const [mdRef, setMdRef] = useState(null);
   const nameInputRef = useRef();
 
@@ -63,14 +77,30 @@ const IssueDetailsForm = ({ issue = null, editMode = false }) => {
   };
 
   const initialValues = {
-    id: issue?.id || '',
     name: issue?.name || '',
     status: issue?.status || 'Draft',
     severity: issue?.severity || '',
     category: issue?.category || '',
     description: issue?.description || '',
     include: issue?.include ?? true,
-    event: issue?.event || [],
+    events: issue?.events || [],
+    link: issue?.link || '',
+    feedback: issue?.feedback || '',
+  };
+
+  const handleSubmitForm = values => {
+    if (editMode) {
+      const prev = issuePrevValues || initialValues;
+      const updatedValues = Object.keys(prev).reduce((acc, key) => {
+        return prev[key] === values[key] ? acc : { ...acc, [key]: values[key] };
+      }, {});
+      setIsEditName(false);
+      setIssuePrevValues({ ...values });
+      dispatch(updateAuditIssue(auditId, issueId, updatedValues));
+    } else {
+      dispatch(addAuditIssue(auditId, values));
+      navigate(`/issues/audit-issue/${auditId}`);
+    }
   };
 
   return (
@@ -79,20 +109,22 @@ const IssueDetailsForm = ({ issue = null, editMode = false }) => {
       validationSchema={issueValidationSchema}
       validateOnBlur={false}
       validateOnChange={false}
-      onSubmit={values => {
-        if (editMode) {
-          setIsEditName(false);
-        }
-        console.log(values);
-        console.log('submitted! waiting for API to be ready');
-      }}
+      onSubmit={handleSubmitForm}
     >
-      {({ handleSubmit, values, setFieldValue }) => {
+      {({ handleSubmit, values, setFieldValue, dirty }) => {
         return (
           <Form
             onSubmit={handleSubmit}
             style={{ width: '100%', marginBottom: '25px' }}
           >
+            <CustomSnackbar
+              autoHideDuration={5000}
+              open={!!error || !!successMessage}
+              severity={error ? 'error' : 'success'}
+              text={error || successMessage}
+              onClose={() => dispatch(clearMessage())}
+            />
+
             <Field
               component={TextField}
               name="name"
@@ -175,11 +207,11 @@ const IssueDetailsForm = ({ issue = null, editMode = false }) => {
                       component={TextField}
                       name="link"
                       fullWidth={true}
+                      disabled={false}
                       sx={linkInputSx}
-                      defaultValue="https://"
                       inputProps={{ ...addTestsLabel('issue-link-input') }}
                       InputProps={
-                        user.current_role === AUDITOR
+                        user.current_role === AUDITOR && issue?.link
                           ? {
                               endAdornment: (
                                 <InputAdornment position="end">
@@ -187,7 +219,13 @@ const IssueDetailsForm = ({ issue = null, editMode = false }) => {
                                     edge="end"
                                     type="button"
                                     aria-label="Delete link"
-                                    onClick={() => {}}
+                                    onClick={() => {
+                                      setFieldValue('link', '');
+                                      setAddLinkField(false);
+                                      if (editMode) {
+                                        handleSubmit();
+                                      }
+                                    }}
                                     {...addTestsLabel('delete-link-button')}
                                   >
                                     <ClearIcon
@@ -233,7 +271,6 @@ const IssueDetailsForm = ({ issue = null, editMode = false }) => {
                     disabled={false}
                     component={Select}
                     name="severity"
-                    onChange={() => editMode && handleSubmit()}
                     renderValue={selected => {
                       return (
                         <Box sx={{ textAlign: 'center' }}>
@@ -262,7 +299,6 @@ const IssueDetailsForm = ({ issue = null, editMode = false }) => {
                     disabled={false}
                     fullWidth={true}
                     sx={{ mt: '20px' }}
-                    onBlur={() => editMode && handleSubmit()}
                     inputProps={{ ...addTestsLabel('issue-category-input') }}
                   />
                 ) : (
@@ -288,7 +324,6 @@ const IssueDetailsForm = ({ issue = null, editMode = false }) => {
                         disabled={user.current_role !== AUDITOR}
                         onChange={e => {
                           setFieldValue('include', e.target.checked);
-                          handleSubmit();
                         }}
                         name="include"
                       />
@@ -298,16 +333,25 @@ const IssueDetailsForm = ({ issue = null, editMode = false }) => {
               </Box>
             </Box>
 
-            {user.current_role === AUDITOR && !editMode && (
+            {user.current_role === AUDITOR && (
               <Box sx={addIssueBox}>
                 <Button
                   variant="contained"
                   type="submit"
                   color="primary"
+                  disabled={!dirty}
                   sx={addIssueButton}
+                  onClick={() =>
+                    editMode &&
+                    mdRef?.current?.setView({
+                      menu: false,
+                      md: false,
+                      html: true,
+                    })
+                  }
                   {...addTestsLabel('new-issue-button')}
                 >
-                  Add issue
+                  {editMode ? 'Save changes' : 'Add issue'}
                 </Button>
               </Box>
             )}
@@ -325,9 +369,11 @@ const issueValidationSchema = Yup.object().shape({
   description: Yup.string().required('Required'),
   status: Yup.string().required('Required'),
   severity: Yup.string().required('Required'),
-  category: Yup.string(),
+  category: Yup.string().required('Required'),
+  link: Yup.string().url(),
   include: Yup.boolean(),
-  event: Yup.array(),
+  feedback: Yup.string(),
+  events: Yup.array(),
 });
 
 const nameInputSx = theme => ({

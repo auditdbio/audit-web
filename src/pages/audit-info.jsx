@@ -13,7 +13,7 @@ import {
   deleteAudit,
   deleteAuditRequest,
 } from '../redux/actions/auditAction.js';
-import { CUSTOMER, DONE, SUBMITED } from '../redux/actions/types.js';
+import { CUSTOMER, DONE, PENDING, SUBMITED } from '../redux/actions/types.js';
 import dayjs from 'dayjs';
 import Markdown from '../components/custom/Markdown.jsx';
 import { ASSET_URL } from '../services/urls.js';
@@ -195,27 +195,30 @@ const AuditInfo = () => {
             </Button>
           )}
           {audit?.status !== SUBMITED && (
-            <Box>
-              <Button
-                variant="contained"
-                color="secondary"
-                onClick={handleDecline}
-                sx={buttonSx}
-                {...addTestsLabel('decline-button')}
-              >
-                Decline
-              </Button>
-              <Button
-                variant="contained"
-                color="primary"
-                type="button"
-                onClick={goToIssues}
-                sx={buttonSx}
-                {...addTestsLabel('issues-button')}
-              >
-                Issues
-              </Button>
-            </Box>
+            <Button
+              variant="contained"
+              color="secondary"
+              onClick={handleDecline}
+              sx={buttonSx}
+              {...addTestsLabel('decline-button')}
+            >
+              Decline
+            </Button>
+          )}
+
+          {(audit?.status === DONE ||
+            audit?.status === SUBMITED ||
+            audit?.status === PENDING) && (
+            <Button
+              variant="contained"
+              color="primary"
+              type="button"
+              onClick={goToIssues}
+              sx={buttonSx}
+              {...addTestsLabel('issues-button')}
+            >
+              Issues ({audit?.issues?.length})
+            </Button>
           )}
         </Box>
       </CustomCard>
