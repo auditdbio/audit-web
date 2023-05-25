@@ -10,6 +10,7 @@ const SimpleField = ({
   size = 'medium',
   emptyPH = false,
   outerLabel = false,
+  ...props
 }) => {
   return (
     <Box sx={wrapper} className={'field-wrapper'}>
@@ -28,6 +29,7 @@ const SimpleField = ({
         sx={fieldSx}
         size={size}
         inputProps={{ ...addTestsLabel(`${name}-input`) }}
+        {...props}
       />
     </Box>
   );
