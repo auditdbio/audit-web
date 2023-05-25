@@ -267,19 +267,15 @@ export const changeRolePublicCustomerNoRedirect = (value, id, currentRole) => {
   };
 };
 
-export const changePassword = (value, userId) => {
+export const changePassword = (values, userId) => {
   return dispatch => {
     axios
-      .patch(
-        `${API_URL}/user/${userId}`,
-        { password: value },
-        {
-          headers: {
-            Authorization: 'Bearer ' + Cookies.get('token'),
-            'Content-Type': 'application/json',
-          },
+      .patch(`${API_URL}/user/${userId}`, values, {
+        headers: {
+          Authorization: 'Bearer ' + Cookies.get('token'),
+          'Content-Type': 'application/json',
         },
-      )
+      })
       .then(({ data }) => {
         dispatch({ type: UPDATE_USER, payload: data });
       });

@@ -1,42 +1,31 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { Field, Form, Formik } from 'formik';
+import * as Yup from 'yup';
 import {
-  Avatar,
   Box,
   Button,
   Checkbox,
-  Slider,
-  TextField,
   Typography,
   useMediaQuery,
 } from '@mui/material';
 import SimpleField from '../fields/simple-field.jsx';
-import PasswordField from '../fields/password-field.jsx';
 import TagsArray from '../../tagsArray/index.jsx';
-import SalarySlider from '../salary-slider/salary-slider.jsx';
 import theme from '../../../styles/themes.js';
-import EditIcon from '@mui/icons-material/Edit';
-import { useNavigate } from 'react-router-dom/dist';
-import {
-  createCustomer,
-  getCustomer,
-  updateCustomer,
-} from '../../../redux/actions/customerAction.js';
-import { useDispatch, useSelector } from 'react-redux';
-import {
-  createAuditor,
-  getAuditor,
-  updateAuditor,
-} from '../../../redux/actions/auditorAction.js';
 import Loader from '../../Loader.jsx';
-import { AUDITOR, CUSTOMER, PROJECTS } from '../../../redux/actions/types.js';
+import { AUDITOR, CUSTOMER } from '../../../redux/actions/types.js';
 import TagsField from '../tags-field/tags-field.jsx';
-import * as Yup from 'yup';
-import { changePassword } from '../../../redux/actions/userAction.js';
-import ChangePasswordFormik from '../change-password-formik/index.jsx';
 import AvatarForm from '../Avatar-form/index.jsx';
 import { SliderRange } from '../salary-slider/slider-range.jsx';
 import { addTestsLabel } from '../../../lib/helper.js';
+import {
+  createCustomer,
+  updateCustomer,
+} from '../../../redux/actions/customerAction.js';
+import {
+  createAuditor,
+  updateAuditor,
+} from '../../../redux/actions/auditorAction.js';
 
 const EditProfileForm = ({ role }) => {
   const matchSm = useMediaQuery(theme.breakpoints.down('sm'));
@@ -104,7 +93,7 @@ const EditProfileForm = ({ role }) => {
           }
         }}
       >
-        {({ handleSubmit, errors, values, setFieldValue }) => {
+        {({ handleSubmit, values, setFieldValue }) => {
           return (
             <Form onSubmit={handleSubmit}>
               <Box sx={wrapper}>
@@ -197,7 +186,6 @@ const EditProfileForm = ({ role }) => {
                         </label>
                       </Box>
                     </Box>
-                    <ChangePasswordFormik />
                     {!matchSm && <TagsField name={'tags'} label={'Tags'} />}
                   </Box>
                   <Box sx={fieldWrapper}>
@@ -285,10 +273,6 @@ const EditProfileSchema = Yup.object().shape({
   }),
   about: Yup.string(),
   tags: Yup.array(),
-});
-
-const PasswordValidation = Yup.object().shape({
-  password: Yup.string().min(6, 'Too Short!'),
 });
 
 const wrapper = theme => ({
