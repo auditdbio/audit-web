@@ -13,6 +13,7 @@ import Loader from '../components/Loader.jsx';
 import { createRequest } from '../redux/actions/auditAction.js';
 import { getAuditors } from '../redux/actions/auditorAction.js';
 import { addTestsLabel } from '../lib/helper.js';
+import CustomSnackbar from '../components/custom/CustomSnackbar.jsx';
 
 const MyProjects = () => {
   const navigate = useNavigate();
@@ -25,6 +26,7 @@ const MyProjects = () => {
   const auditor = useSelector(state =>
     state?.auditor?.auditors?.find(auditor => auditor.user_id === params.id),
   );
+  const [errorMessage, setErrorMessage] = useState(null);
 
   useEffect(() => {
     if (!auditor) {
@@ -71,6 +73,15 @@ const MyProjects = () => {
   return (
     <Layout>
       <CustomCard sx={wrapper}>
+        <CustomSnackbar
+          autoHideDuration={3000}
+          open={!!errorMessage}
+          onClose={() => {
+            setErrorMessage(null);
+          }}
+          severity={'error'}
+          text={errorMessage}
+        />
         <Box
           sx={{
             display: 'flex',
@@ -118,6 +129,7 @@ const MyProjects = () => {
             auditor={auditor}
             isForm={true}
             onSubmit={handleInviteAuditor}
+            setError={setErrorMessage}
           />
         )}
       </CustomCard>
