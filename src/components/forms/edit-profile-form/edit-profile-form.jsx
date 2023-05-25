@@ -205,6 +205,8 @@ const EditProfileForm = ({ role }) => {
                       label="About"
                       size={matchXs ? 'small' : 'medium'}
                       emptyPH
+                      multiline
+                      rows={3}
                     />
                     {role !== CUSTOMER && (
                       <Box>
