@@ -102,6 +102,7 @@ const AuditIssues = () => {
           count={getNumberOfPages()}
           onChange={(e, page) => setPage(page)}
           page={page}
+          showFirstLast={false}
         />
       </CustomCard>
     </Layout>
@@ -204,8 +205,8 @@ const issueTitleSx = {
 const statusSx = status => {
   let color = '#434242';
   if (status === 'Draft') color = '#52176D';
-  if (status === 'Verification' || status === 'In progress') color = '#5b97bb';
-  if (status === 'Fixed' || status === 'Will not fix') color = '#09C010';
+  if (status === 'Verification' || status === 'InProgress') color = '#5b97bb';
+  if (status === 'Fixed' || status === 'WillNotFix') color = '#09C010';
 
   return {
     display: 'flex',

@@ -8,6 +8,8 @@ const CustomPagination = ({
   sx,
   page = 1,
   color = 'secondary',
+  showFirstLast = true,
+  ...props
 }) => {
   return (
     <>
@@ -20,8 +22,9 @@ const CustomPagination = ({
             color={color}
             variant="outlined"
             shape="rounded"
-            showFirstButton
-            showLastButton
+            showFirstButton={showFirstLast}
+            showLastButton={showFirstLast}
+            {...props}
           />
         </Box>
       )}

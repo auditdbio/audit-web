@@ -32,6 +32,7 @@ export const INPROGRESS = 'inprogres';
 export const SUBMIT_AUDIT = 'SUBMIT_AUDIT';
 export const ADD_AUDIT_ISSUE = 'ADD_AUDIT_ISSUE';
 export const UPDATE_AUDIT_ISSUE = 'UPDATE_AUDIT_ISSUE';
+export const SET_CURRENT_AUDIT_PARTNER = 'SET_CURRENT_AUDIT_PARTNER';
 export const SUBMITED = 'SUBMITED';
 export const PENDING = 'pending';
 export const PROJECTS = 'projects';

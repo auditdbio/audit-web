@@ -1,25 +1,35 @@
 import React from 'react';
+import { useDispatch } from 'react-redux';
 import { Box, Button } from '@mui/material';
 import { Form, Formik } from 'formik';
 import Markdown from '../custom/Markdown-editor.jsx';
 import MarkdownTitlePlugin from './MarkdownTitlePlugin.jsx';
 import { addTestsLabel } from '../../lib/helper.js';
+import { updateAuditIssue } from '../../redux/actions/auditAction.js';
 
-const AddComment = () => {
+const AddComment = ({ auditId, issueId }) => {
+  const dispatch = useDispatch();
+
   return (
     <Formik
-      initialValues={{ comment: '' }}
-      onSubmit={values => {
-        console.log(values);
-        console.log('comment added. API');
+      initialValues={{ message: '' }}
+      onSubmit={(values, { resetForm }) => {
+        const comment = {
+          events: [{ kind: 'Comment', message: values.message }],
+        };
+        dispatch(updateAuditIssue(auditId, issueId, comment));
+        resetForm();
       }}
     >
-      {({ handleSubmit, values, resetForm }) => {
+      {({ handleSubmit, values }) => {
         return (
-          <Form onSubmit={handleSubmit} style={{ width: '100%' }}>
+          <Form
+            onSubmit={handleSubmit}
+            style={{ width: '100%', paddingTop: '30px' }}
+          >
             <Box sx={{ width: '100%' }}>
               <Markdown
-                name="comment"
+                name="message"
                 plugins={[MarkdownTitlePlugin]}
                 mdProps={{
                   placeholder: 'Leave a comment',
@@ -32,7 +42,7 @@ const AddComment = () => {
                 variant="contained"
                 type="submit"
                 color="secondary"
-                disabled={!values.comment}
+                disabled={!values.message}
                 {...addTestsLabel('add-comment-button')}
               >
                 Add comment

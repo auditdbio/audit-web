@@ -8,6 +8,7 @@ import {
   GET_AUDIT_REQUEST,
   GET_AUDITS,
   REQUEST_ERROR,
+  SET_CURRENT_AUDIT_PARTNER,
   SUBMIT_AUDIT,
   UPDATE_AUDIT_ISSUE,
 } from '../actions/types.js';
@@ -17,6 +18,7 @@ const initialState = {
   auditRequests: null,
   error: null,
   successMessage: null,
+  currentAuditPartner: null,
 };
 export const auditReducer = (state = initialState, action) => {
   switch (action.type) {
@@ -85,6 +87,8 @@ export const auditReducer = (state = initialState, action) => {
             : audit,
         ),
       };
+    case SET_CURRENT_AUDIT_PARTNER:
+      return { ...state, currentAuditPartner: action.payload };
     case REQUEST_ERROR:
       return { ...state, error: 'Error while processing request' };
     case CLEAR_MESSAGES:

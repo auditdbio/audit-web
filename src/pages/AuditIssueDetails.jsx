@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useMemo, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import Layout from '../styles/Layout.jsx';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack.js';
@@ -9,15 +10,23 @@ import IssueDetailsForm from '../components/issuesPage/IssueDetailsForm.jsx';
 import EventsList from '../components/issuesPage/EventsList.jsx';
 import AddComment from '../components/issuesPage/AddComment.jsx';
 import Loader from '../components/Loader.jsx';
-import { useSelector } from 'react-redux';
+import { setCurrentAuditPartner } from '../redux/actions/auditAction.js';
 
 const AuditIssueDetails = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const { auditId, issueId } = useParams();
-  const issue = useSelector(s => {
-    const audit = s.audits.audits?.find(audit => audit.id === auditId);
+  const { currentAuditPartner } = useSelector(s => s.audits);
+  const audit = useSelector(s =>
+    s.audits.audits?.find(audit => audit.id === auditId),
+  );
+  const issue = useMemo(() => {
     return audit?.issues?.find(issue => issue.id === +issueId);
-  });
+  }, [audit]);
+
+  useEffect(() => {
+    dispatch(setCurrentAuditPartner(audit));
+  }, [audit?.id]);
 
   if (!issue) {
     return (
@@ -45,8 +54,10 @@ const AuditIssueDetails = () => {
           <ArrowBackIcon color="secondary" />
         </Button>
         <IssueDetailsForm issue={issue} editMode={true} />
-        <EventsList issue={issue} />
-        <AddComment />
+        {!!issue.events?.length && (
+          <EventsList issue={issue} auditPartner={currentAuditPartner} />
+        )}
+        <AddComment auditId={auditId} issueId={issueId} />
       </CustomCard>
     </Layout>
   );

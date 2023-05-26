@@ -29,6 +29,8 @@ import {
   updateAuditIssue,
 } from '../../redux/actions/auditAction.js';
 import CustomSnackbar from '../custom/CustomSnackbar.jsx';
+import { createIssueEvent } from '../../lib/createIssueEvent.js';
+import StatusControl from './StatusControl.jsx';
 
 const IssueDetailsForm = ({ issue = null, editMode = false }) => {
   const dispatch = useDispatch();
@@ -83,20 +85,22 @@ const IssueDetailsForm = ({ issue = null, editMode = false }) => {
     category: issue?.category || '',
     description: issue?.description || '',
     include: issue?.include ?? true,
-    events: issue?.events || [],
     link: issue?.link || '',
     feedback: issue?.feedback || '',
   };
 
-  const handleSubmitForm = values => {
+  const handleSubmitForm = (values, { setFieldValue }) => {
     if (editMode) {
       const prev = issuePrevValues || initialValues;
       const updatedValues = Object.keys(prev).reduce((acc, key) => {
         return prev[key] === values[key] ? acc : { ...acc, [key]: values[key] };
       }, {});
+
+      const updatedValuesWithEvent = createIssueEvent(updatedValues);
       setIsEditName(false);
-      setIssuePrevValues({ ...values });
-      dispatch(updateAuditIssue(auditId, issueId, updatedValues));
+      setFieldValue('status', '');
+      setIssuePrevValues({ ...values, status: '' });
+      dispatch(updateAuditIssue(auditId, issueId, updatedValuesWithEvent));
     } else {
       dispatch(addAuditIssue(auditId, values));
       navigate(`/issues/audit-issue/${auditId}`);
@@ -113,10 +117,7 @@ const IssueDetailsForm = ({ issue = null, editMode = false }) => {
     >
       {({ handleSubmit, values, setFieldValue, dirty }) => {
         return (
-          <Form
-            onSubmit={handleSubmit}
-            style={{ width: '100%', marginBottom: '25px' }}
-          >
+          <Form onSubmit={handleSubmit} style={{ width: '100%' }}>
             <CustomSnackbar
               autoHideDuration={5000}
               open={!!error || !!successMessage}
@@ -246,23 +247,18 @@ const IssueDetailsForm = ({ issue = null, editMode = false }) => {
               <Box sx={issueStatusBlock}>
                 <Box sx={{ textAlign: 'center' }}>
                   <Typography sx={statusBlockTitle}>Status</Typography>
-                  <Typography sx={statusValueSx(values.status)}>
-                    {values.status}
+                  <Typography
+                    sx={statusValueSx(issue?.status || values.status)}
+                  >
+                    {issue?.status || values.status}
                   </Typography>
                 </Box>
 
                 {editMode && (
-                  <Box sx={{ textAlign: 'center', mb: '30px' }}>
-                    <Button
-                      variant="contained"
-                      type="submit"
-                      color="secondary"
-                      onClick={() => {}}
-                      {...addTestsLabel('change-status-button')}
-                    >
-                      !! AFTER API !!
-                    </Button>
-                  </Box>
+                  <StatusControl
+                    status={issue.status}
+                    setFieldValue={setFieldValue}
+                  />
                 )}
 
                 {user.current_role === AUDITOR ? (
@@ -334,7 +330,7 @@ const IssueDetailsForm = ({ issue = null, editMode = false }) => {
             </Box>
 
             {user.current_role === AUDITOR && (
-              <Box sx={addIssueBox}>
+              <Box sx={addIssueBox(issue?.events)}>
                 <Button
                   variant="contained"
                   type="submit"
@@ -367,13 +363,11 @@ export default IssueDetailsForm;
 const issueValidationSchema = Yup.object().shape({
   name: Yup.string().required('Required'),
   description: Yup.string().required('Required'),
-  status: Yup.string().required('Required'),
   severity: Yup.string().required('Required'),
   category: Yup.string().required('Required'),
   link: Yup.string().url(),
   include: Yup.boolean(),
   feedback: Yup.string(),
-  events: Yup.array(),
 });
 
 const nameInputSx = theme => ({
@@ -387,6 +381,10 @@ const nameInputSx = theme => ({
       backgroundColor: 'transparent',
       color: '#434242',
       '-webkit-text-fill-color': '#434242',
+    },
+    [theme.breakpoints.down('xs')]: {
+      fontSize: '16px',
+      padding: '15px 10px',
     },
   },
   [theme.breakpoints.down('xs')]: {
@@ -444,7 +442,6 @@ const infoWrapperSx = theme => ({
 
 const descriptionBlock = theme => ({
   width: '80%',
-  // position: 'relative',
   [theme.breakpoints.down('sm')]: {
     width: '70%',
   },
@@ -475,26 +472,45 @@ const statusBlockTitle = {
 const statusValueSx = status => {
   let color = '#434242';
   if (status === 'Draft') color = '#52176D';
-  if (status === 'Verification' || status === 'In progress') color = '#5b97bb';
-  if (status === 'Fixed' || status === 'Will not fix') color = '#09C010';
+  if (status === 'Verification' || status === 'InProgress') color = '#5b97bb';
+  if (status === 'Fixed' || status === 'WillNotFix') color = '#09C010';
 
   return { fontSize: '20px', fontWeight: 500, mb: '10px', color };
 };
 
-const addIssueBox = theme => ({
+const addIssueBox = events => ({
   display: 'flex',
   justifyContent: 'flex-end',
-  mt: '20px',
+  pt: '20px',
+  position: 'relative',
   [theme.breakpoints.down('xs')]: {
     justifyContent: 'center',
-    mt: 0,
+    pt: 0,
+    mb: '20px',
+  },
+  '&::before': {
+    content: '""',
+    display: events?.length ? 'block' : 'none',
+    position: 'absolute',
+    top: 0,
+    bottom: 0,
+    left: '36px',
+    width: '2px',
+    backgroundColor: '#b9b9b9',
+    [theme.breakpoints.down('xs')]: {
+      display: 'none',
+    },
   },
 });
 
-const addIssueButton = {
+const addIssueButton = theme => ({
   padding: '16px 44px',
   textTransform: 'none',
   fontWeight: 600,
   fontSize: '20px',
   lineHeight: '25px',
-};
+  [theme.breakpoints.down('xs')]: {
+    fontSize: '14px',
+    padding: '10px 30px',
+  },
+});
