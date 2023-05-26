@@ -6,6 +6,7 @@ import { TextField, Select } from 'formik-mui';
 import * as Yup from 'yup';
 import EditIcon from '@mui/icons-material/Edit';
 import AddLinkIcon from '@mui/icons-material/AddLink';
+import LinkIcon from '@mui/icons-material/Link';
 import ClearIcon from '@mui/icons-material/Clear';
 import {
   Box,
@@ -17,6 +18,7 @@ import {
   FormControlLabel,
   Switch,
   useMediaQuery,
+  Link,
 } from '@mui/material';
 import { addTestsLabel } from '../../lib/helper.js';
 import { AUDITOR } from '../../redux/actions/types.js';
@@ -204,42 +206,51 @@ const IssueDetailsForm = ({ issue = null, editMode = false }) => {
                 </Box>
                 {addLinkField && (
                   <Box>
-                    <Field
-                      component={TextField}
-                      name="link"
-                      fullWidth={true}
-                      disabled={false}
-                      sx={linkInputSx}
-                      inputProps={{ ...addTestsLabel('issue-link-input') }}
-                      InputProps={
-                        user.current_role === AUDITOR && issue?.link
-                          ? {
-                              endAdornment: (
-                                <InputAdornment position="end">
-                                  <IconButton
-                                    edge="end"
-                                    type="button"
-                                    aria-label="Delete link"
-                                    onClick={() => {
-                                      setFieldValue('link', '');
-                                      setAddLinkField(false);
-                                      if (editMode) {
-                                        handleSubmit();
-                                      }
-                                    }}
-                                    {...addTestsLabel('delete-link-button')}
-                                  >
-                                    <ClearIcon
-                                      color="secondary"
-                                      fontSize="small"
-                                    />
-                                  </IconButton>
-                                </InputAdornment>
-                              ),
-                            }
-                          : null
-                      }
-                    />
+                    {user.current_role === AUDITOR ? (
+                      <Field
+                        component={TextField}
+                        name="link"
+                        fullWidth={true}
+                        disabled={false}
+                        sx={linkInputSx}
+                        inputProps={{ ...addTestsLabel('issue-link-input') }}
+                        InputProps={
+                          user.current_role === AUDITOR && issue?.link
+                            ? {
+                                endAdornment: (
+                                  <InputAdornment position="end">
+                                    <IconButton
+                                      edge="end"
+                                      type="button"
+                                      aria-label="Delete link"
+                                      onClick={() => {
+                                        setFieldValue('link', '');
+                                        setAddLinkField(false);
+                                        if (editMode) {
+                                          handleSubmit();
+                                        }
+                                      }}
+                                      {...addTestsLabel('delete-link-button')}
+                                    >
+                                      <ClearIcon
+                                        color="secondary"
+                                        fontSize="small"
+                                      />
+                                    </IconButton>
+                                  </InputAdornment>
+                                ),
+                              }
+                            : null
+                        }
+                      />
+                    ) : (
+                      <Box sx={linkForCustomerSx}>
+                        <LinkIcon fontSize="small" sx={{ mr: '15px' }} />
+                        <Link href={issue.link} target="_blank">
+                          {issue.link}
+                        </Link>
+                      </Box>
+                    )}
                   </Box>
                 )}
               </Box>
@@ -306,26 +317,28 @@ const IssueDetailsForm = ({ issue = null, editMode = false }) => {
                   </Box>
                 )}
 
-                <Box sx={{ textAlign: 'center', mt: '20px' }}>
-                  <FormControlLabel
-                    label={
-                      <Typography sx={{ fontSize: '20px', fontWeight: 500 }}>
-                        Include
-                      </Typography>
-                    }
-                    control={
-                      <Switch
-                        checked={values.include}
-                        color="secondary"
-                        disabled={user.current_role !== AUDITOR}
-                        onChange={e => {
-                          setFieldValue('include', e.target.checked);
-                        }}
-                        name="include"
-                      />
-                    }
-                  />
-                </Box>
+                {editMode && (
+                  <Box sx={{ textAlign: 'center', mt: '20px' }}>
+                    <FormControlLabel
+                      label={
+                        <Typography sx={{ fontSize: '20px', fontWeight: 500 }}>
+                          Include
+                        </Typography>
+                      }
+                      control={
+                        <Switch
+                          checked={values.include}
+                          color="secondary"
+                          disabled={user.current_role !== AUDITOR}
+                          onChange={e => {
+                            setFieldValue('include', e.target.checked);
+                          }}
+                          name="include"
+                        />
+                      }
+                    />
+                  </Box>
+                )}
               </Box>
             </Box>
 
@@ -422,6 +435,20 @@ const addLinkButton = {
   left: '15px',
   display: 'flex',
   alignItems: 'center',
+};
+
+const linkForCustomerSx = {
+  display: 'flex',
+  alignItems: 'center',
+  border: '2px solid #E5E5E5',
+  padding: '8px 10px',
+  overflow: 'hidden',
+  '& a': {
+    fontSize: '16px',
+    fontWeight: 500,
+    textDecorationColor: '#152BEA',
+    color: '#152BEA',
+  },
 };
 
 const markdownSx = {
