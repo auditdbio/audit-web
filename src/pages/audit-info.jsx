@@ -115,21 +115,21 @@ const AuditInfo = () => {
               />
               <Box sx={{ display: 'grid' }}>
                 <Tooltip
-                  title={audit?.auditor_contacts?.email || 'Hidden'}
+                  title={audit?.auditor_first_name || 'Hidden'}
                   arrow
                   placement={'top'}
                 >
                   <Typography noWrap={true} sx={userNameWrapper}>
-                    {audit?.auditor_contacts?.email || 'Hidden'}
+                    {audit?.auditor_first_name || 'Hidden'}
                   </Typography>
                 </Tooltip>
                 <Tooltip
-                  title={audit?.auditor_contacts?.telegram || 'Hidden'}
+                  title={audit?.auditor_last_name || 'Hidden'}
                   arrow
                   placement={'top'}
                 >
                   <Typography noWrap={true} sx={userNameWrapper}>
-                    {audit?.auditor_contacts?.telegram || 'Hidden'}
+                    {audit?.auditor_last_name || 'Hidden'}
                   </Typography>
                 </Tooltip>
               </Box>
