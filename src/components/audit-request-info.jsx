@@ -341,7 +341,9 @@ const AuditRequestInfo = ({
             {project?.scope?.map((el, idx) => (
               <Typography key={idx} noWrap={true}>
                 <GitHubIcon />
-                <Link>{el}</Link>
+                <a href={el} target={'_blank'}>
+                  {el}
+                </a>
               </Typography>
             ))}
           </Box>
