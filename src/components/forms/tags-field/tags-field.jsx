@@ -8,7 +8,7 @@ import { AUDITOR } from '../../../redux/actions/types.js';
 import CustomSnackbar from '../../custom/CustomSnackbar.jsx';
 import { addTestsLabel } from '../../../lib/helper.js';
 
-const TagsField = ({ name, label, placeholder, size = 'medium' }) => {
+const TagsField = ({ name, label, placeholder }) => {
   const role = useSelector(s => s.user.user.current_role);
   const [field, meta, fieldHelper] = useField(name);
   const [state, setState] = useState('');
@@ -41,6 +41,10 @@ const TagsField = ({ name, label, placeholder, size = 'medium' }) => {
 
   return (
     <Box sx={wrapper} className={'field-wrapper'}>
+      <Typography variant={'body2'} sx={formLabelSx}>
+        {label}
+      </Typography>
+
       <CustomSnackbar
         autoHideDuration={5000}
         open={!!error}
@@ -51,12 +55,10 @@ const TagsField = ({ name, label, placeholder, size = 'medium' }) => {
 
       <Field
         component={TextField}
-        placeholder={placeholder ? placeholder : ''}
+        placeholder={placeholder ? placeholder : '● ● ● ● ● ● ●'}
         fullWidth={true}
         name={'tag-field'}
         disabled={false}
-        label={label}
-        size={size}
         value={state || ''}
         onKeyDown={e => {
           if (e.key === 'Enter') {

@@ -339,7 +339,7 @@ const AuditRequestInfo = ({
             </Box>
           )}
           <Box sx={linkWrapper} className={'audit-request-links'}>
-            {project?.project_scope?.map((el, idx) => (
+            {(project?.project_scope || project?.scope)?.map((el, idx) => (
               <Typography key={idx} noWrap={true}>
                 <GitHubIcon />
                 <a
