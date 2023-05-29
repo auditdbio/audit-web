@@ -238,7 +238,7 @@ const AuditOffer = () => {
                             onClick={() => setAuditDBWorkflow(true)}
                             sx={workflowButton(auditDBWorkflow)}
                           >
-                            АuditDB workflow
+                            AuditDB workflow
                           </Button>
                         </Box>
                       )}
