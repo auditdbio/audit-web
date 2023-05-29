@@ -37,6 +37,7 @@ const CreateProjectCard = ({ projectInfo }) => {
   const dispatch = useDispatch();
   const [getSearchParam] = useSearchParams();
   const matchMd = useMediaQuery(theme.breakpoints.down('md'));
+  const matchXs = useMediaQuery(theme.breakpoints.down('xs'));
   const customerReducer = useSelector(state => state.customer);
   const auditReducer = useSelector(state => state.audits);
   const [auditRequests, setAuditRequests] = useState([]);
@@ -271,7 +272,12 @@ const CreateProjectCard = ({ projectInfo }) => {
                     {/*</Box>*/}
                   </Box>
                   <Box className="description-box" sx={descriptionFieldWrapper}>
-                    <Markdown name={'description'} />
+                    <Markdown
+                      name="description"
+                      mdProps={{
+                        view: { menu: true, md: true, html: !matchXs },
+                      }}
+                    />
                   </Box>
                   <Button
                     type={'submit'}
