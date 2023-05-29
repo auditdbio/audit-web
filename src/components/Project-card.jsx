@@ -2,7 +2,6 @@ import React from 'react';
 import { Box, Button, Tooltip, Typography } from '@mui/material';
 import Currency from './icons/Currency.jsx';
 import Star from './icons/Star.jsx';
-import theme, { radiusOfComponents } from '../styles/themes.js';
 import { AUDITOR, DONE, SUBMITED } from '../redux/actions/types.js';
 import { useNavigate } from 'react-router-dom/dist';
 import { useSelector } from 'react-redux';
