@@ -202,7 +202,12 @@ const AuditOffer = () => {
                         {audit?.scope?.map((el, idx) => (
                           <Typography key={idx}>
                             <GitHubIcon />
-                            <Link>{el}</Link>
+                            <a
+                              target={'_blank'}
+                              href={el.includes('https') ? el : `https://${el}`}
+                            >
+                              {el}
+                            </a>
                             {/*<Button>x</Button>*/}
                           </Typography>
                         ))}
