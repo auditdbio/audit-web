@@ -339,10 +339,13 @@ const AuditRequestInfo = ({
             </Box>
           )}
           <Box sx={linkWrapper} className={'audit-request-links'}>
-            {project?.scope?.map((el, idx) => (
+            {project?.project_scope?.map((el, idx) => (
               <Typography key={idx} noWrap={true}>
                 <GitHubIcon />
-                <a href={el} target={'_blank'}>
+                <a
+                  href={el.includes('https') ? el : `https://${el}`}
+                  target={'_blank'}
+                >
                   {el}
                 </a>
               </Typography>
