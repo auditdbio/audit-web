@@ -135,7 +135,7 @@ const AuditorListCard = ({ auditor, projectIdToInvite }) => {
             </Box>
           </Box>
         </Box>
-        <Box>
+        <Box sx={tagsWrapper}>
           <TagsList data={auditor.tags} />
         </Box>
       </Box>
@@ -321,6 +321,12 @@ const inviteButtonStyle = theme => ({
   [theme.breakpoints.down('sm')]: {
     width: '85px',
     fontSize: '8px',
+  },
+});
+
+const tagsWrapper = theme => ({
+  [theme.breakpoints.down('xs')]: {
+    maxWidth: '130px',
   },
 });
 

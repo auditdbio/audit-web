@@ -79,11 +79,13 @@ const AuditInfo = () => {
         <Box sx={{ display: 'flex', width: '100%' }}>
           <Typography sx={{ width: '100%', textAlign: 'center' }}>
             You have offer to audit for{' '}
-            <span style={{ fontWeight: 500 }}>{audit?.project_name}</span>{' '}
+            <span style={{ fontWeight: 500, wordBreak: 'break-word' }}>
+              {audit?.project_name}
+            </span>{' '}
             project!
           </Typography>
         </Box>
-        <Box>
+        <Box sx={{ maxWidth: '100%' }}>
           <Box sx={contentWrapper}>
             <Box sx={userWrapper}>
               <Avatar
@@ -326,9 +328,10 @@ const buttonSx = theme => ({
   fontSize: '18px',
   textTransform: 'unset',
   fontWeight: 600,
-  margin: '0 12px',
+  mr: '15px',
   width: '270px',
   borderRadius: '10px',
+  ':last-child': { mr: 0 },
   [theme.breakpoints.down('md')]: {
     width: '210px',
     padding: '11px 0',

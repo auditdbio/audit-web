@@ -141,6 +141,10 @@ const wrapper = theme => ({
       fontSize: '10px',
     },
   },
+  [theme.breakpoints.down('xs')]: {
+    paddingX: '10px',
+    gap: '5px',
+  },
 });
 
 export const modalWrapper = theme => ({
