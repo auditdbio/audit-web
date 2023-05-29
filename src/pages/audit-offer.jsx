@@ -184,20 +184,6 @@ const AuditOffer = () => {
                     </Box>
                     <Box sx={infoWrapper}>
                       <Markdown value={audit?.description} />
-                      <Box sx={fileWrapper}>
-                        <Typography sx={subTitleSx}>Upload audit</Typography>
-                        <Box sx={{ display: 'flex' }}>
-                          <AuditUpload
-                            disabled={audit.status === SUBMITED}
-                            auditId={audit.id}
-                            auditorId={audit.auditor_id}
-                            auditReportName={audit.report_name}
-                            customerId={audit.customer_id}
-                            name={'report'}
-                            setFieldValue={setFieldValue}
-                          />
-                        </Box>
-                      </Box>
                       <Box sx={linkWrapper}>
                         {audit?.scope?.map((el, idx) => (
                           <Typography key={idx}>
@@ -211,6 +197,20 @@ const AuditOffer = () => {
                             {/*<Button>x</Button>*/}
                           </Typography>
                         ))}
+                      </Box>
+                      <Box sx={fileWrapper}>
+                        <Typography sx={subTitleSx}>Upload audit</Typography>
+                        <Box sx={{ display: 'flex' }}>
+                          <AuditUpload
+                            disabled={audit.status === SUBMITED}
+                            auditId={audit.id}
+                            auditorId={audit.auditor_id}
+                            auditReportName={audit.report_name}
+                            customerId={audit.customer_id}
+                            name={'report'}
+                            setFieldValue={setFieldValue}
+                          />
+                        </Box>
                       </Box>
                     </Box>
                   </Box>
@@ -366,6 +366,7 @@ const linkWrapper = theme => ({
   flexWrap: 'wrap',
   columnGap: '80px',
   marginTop: '50px',
+  marginBottom: '20px',
   justifyContent: 'space-around',
   '& button': {
     padding: 1,

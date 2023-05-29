@@ -26,7 +26,7 @@ const TagsField = ({ name, label, placeholder }) => {
         setError('Tag length is limited to 30 characters');
       }
     } else {
-      if (field.value.length < 20) {
+      if (field.value.length < 20 && state) {
         fieldHelper.setValue([...field.value, state]);
         setState('');
       } else {
