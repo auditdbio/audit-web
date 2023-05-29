@@ -5,7 +5,7 @@ import { userReducer } from './reducers/userReducer';
 import { customerReducer } from './reducers/customerReducer.js';
 import { auditorReducer } from './reducers/auditorReducer.js';
 import { projectReducer } from './reducers/projectReducer.js';
-import { auditReducer } from './reducers/auditReducer.jsx';
+import { auditReducer } from './reducers/auditReducer.js';
 import { contactUsReducer } from './reducers/contactUsReducer.js';
 import websocketMiddleware from './middleware/websocketMiddleware.js';
 import { websocketReducer } from './reducers/websocketReducer.js';
