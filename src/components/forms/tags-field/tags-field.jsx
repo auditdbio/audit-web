@@ -26,9 +26,13 @@ const TagsField = ({ name, label, placeholder }) => {
         setError('Tag length is limited to 30 characters');
       }
     } else {
-      if (field.value.length < 20 && state) {
-        fieldHelper.setValue([...field.value, state]);
-        setState('');
+      if (field.value.length < 20) {
+        if (/^https?:\/\//.test(state)) {
+          fieldHelper.setValue([...field.value, state]);
+          setState('');
+        } else {
+          setError('Invalid link');
+        }
       } else {
         setError('The maximum number of links that can be added is 20');
       }

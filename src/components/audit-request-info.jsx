@@ -45,6 +45,7 @@ const AuditRequestInfo = ({
   handleError,
   redirect,
   isModal,
+  setError,
 }) => {
   const navigate = useNavigate();
   const matchXs = useMediaQuery(theme.breakpoints.down('xs'));
@@ -426,7 +427,13 @@ const AuditRequestInfo = ({
                   to: parseInt(values.price),
                 },
               };
-              dispatch(createRequest(newValue, redirect));
+              if (newValue.auditor_id !== newValue.customer_id) {
+                dispatch(createRequest(newValue, redirect));
+              } else {
+                setError(
+                  'You cannot create an audit request for your own project',
+                );
+              }
               handleClose();
               if (onClose) {
                 onClose();
