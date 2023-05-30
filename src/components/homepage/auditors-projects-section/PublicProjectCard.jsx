@@ -102,8 +102,8 @@ const modalWrapper = theme => ({
   top: '50%',
   left: '50%',
   transform: 'translate(-50%, -50%)',
+  height: '90%',
   width: 700,
-  maxHeight: '90%',
   borderRadius: '14px',
   '& .audit-request-wrapper': {
     gap: '5px',
