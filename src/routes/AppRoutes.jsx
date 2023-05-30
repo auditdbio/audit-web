@@ -32,6 +32,7 @@ import RestorePasswordPage from '../pages/RestorePasswordPage.jsx';
 import AuditIssues from '../pages/AuditIssues.jsx';
 import AuditIssueDetails from '../pages/AuditIssueDetails.jsx';
 import CreateIssuePage from '../pages/CreateIssuePage.jsx';
+import PublicProfile from '../pages/Public-profile.jsx';
 
 const AppRoutes = () => {
   const token = useSelector(s => s.user.token);
@@ -77,6 +78,7 @@ const AppRoutes = () => {
         <Route path={'/audit-db'} element={<AuditDb />} />
         <Route path={'/FAQ'} element={<Faq />} />
         <Route path={'/contact-us'} element={<ContactUs />} />
+        <Route path={'/user/:id/:role'} element={<PublicProfile />} />
         <Route
           path="/profile/:tab"
           element={
