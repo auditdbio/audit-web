@@ -38,6 +38,7 @@ import {
 } from '../redux/actions/userAction.js';
 import TelegramIcon from '@mui/icons-material/Telegram';
 import EmailIcon from '@mui/icons-material/Email';
+import CustomLink from './custom/CustomLink.jsx';
 
 const AuditRequestInfo = ({
   project,
@@ -338,17 +339,9 @@ const AuditRequestInfo = ({
               </Box>
             </Box>
           )}
-          <Box sx={linkWrapper} className={'audit-request-links'}>
-            {(project?.project_scope || project?.scope)?.map((el, idx) => (
-              <Typography key={idx} noWrap={true}>
-                <GitHubIcon />
-                <a
-                  href={el.includes('https') ? el : `https://${el}`}
-                  target={'_blank'}
-                >
-                  {el}
-                </a>
-              </Typography>
+          <Box sx={linkWrapper} className="audit-request-links">
+            {(project?.project_scope || project?.scope)?.map((link, idx) => (
+              <CustomLink link={link} key={idx} />
             ))}
           </Box>
         </Box>
@@ -691,30 +684,16 @@ const infoWrapper = theme => ({
 
 const linkWrapper = theme => ({
   display: 'flex',
-  flexWrap: 'wrap',
-  columnGap: '80px',
+  flexDirection: 'column',
   marginTop: '50px',
-  justifyContent: 'space-around',
+  padding: '0 15px',
   '& p': {
     display: 'flex',
     alignItems: 'center',
-    gap: '15px',
     fontSize: '18px',
-    '& a': {
-      color: '#152BEA',
-    },
   },
   [theme.breakpoints.down('sm')]: {
-    columnGap: '40px',
     marginTop: '25px',
-    '& p': {
-      fontSize: '15px',
-    },
-  },
-  [theme.breakpoints.down('xs')]: {
-    flexDirection: 'column',
-    columnGap: 'unset',
-    gap: '15px',
   },
 });
 
@@ -732,9 +711,10 @@ const buttonSx = theme => ({
   fontSize: '18px',
   textTransform: 'unset',
   fontWeight: 600,
-  margin: '0 12px',
+  mr: '20px',
   width: '270px',
   borderRadius: '10px',
+  '&:last-child': { mr: 0 },
   [theme.breakpoints.down('md')]: {
     width: '210px',
     padding: '11px 0',
@@ -744,7 +724,7 @@ const buttonSx = theme => ({
   },
   [theme.breakpoints.down('xs')]: {
     width: '140px',
-    margin: '0 6px',
+    mr: '10px',
     fontSize: '12px',
   },
 });
