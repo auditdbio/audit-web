@@ -29,6 +29,7 @@ import Markdown from '../components/custom/Markdown.jsx';
 import TelegramIcon from '@mui/icons-material/Telegram';
 import EmailIcon from '@mui/icons-material/Email';
 import { addTestsLabel } from '../lib/helper.js';
+import CustomLink from '../components/custom/CustomLink.jsx';
 
 const AuditOffer = () => {
   const { id } = useParams();
@@ -79,7 +80,11 @@ const AuditOffer = () => {
                     </Button>
                     <Typography
                       variant={'h3'}
-                      sx={{ width: '100%', textAlign: 'center' }}
+                      sx={{
+                        width: '100%',
+                        textAlign: 'center',
+                        wordBreak: 'break-word',
+                      }}
                     >
                       {audit?.project_name}
                     </Typography>
@@ -186,16 +191,7 @@ const AuditOffer = () => {
                       <Markdown value={audit?.description} />
                       <Box sx={linkWrapper}>
                         {audit?.scope?.map((el, idx) => (
-                          <Typography key={idx}>
-                            <GitHubIcon />
-                            <a
-                              target={'_blank'}
-                              href={el.includes('https') ? el : `https://${el}`}
-                            >
-                              {el}
-                            </a>
-                            {/*<Button>x</Button>*/}
-                          </Typography>
+                          <CustomLink link={el} key={idx} />
                         ))}
                       </Box>
                       <Box sx={fileWrapper}>
@@ -363,11 +359,10 @@ const infoWrapper = theme => ({
 
 const linkWrapper = theme => ({
   display: 'flex',
-  flexWrap: 'wrap',
+  flexDirection: 'column',
   columnGap: '80px',
   marginTop: '50px',
   marginBottom: '20px',
-  justifyContent: 'space-around',
   '& button': {
     padding: 1,
     minWidth: 'unset',
@@ -377,9 +372,7 @@ const linkWrapper = theme => ({
     alignItems: 'center',
     gap: '15px',
     fontSize: '18px',
-    '& a': {
-      color: '#152BEA',
-    },
+    margin: '0 auto',
   },
   [theme.breakpoints.down('sm')]: {
     columnGap: '40px',
