@@ -26,6 +26,7 @@ import Loader from '../components/Loader.jsx';
 import { SUBMITED } from '../redux/actions/types.js';
 import Markdown from '../components/custom/Markdown.jsx';
 import { addTestsLabel } from '../lib/helper.js';
+import CustomLink from '../components/custom/CustomLink.jsx';
 
 const AuditOffer = () => {
   const { id } = useParams();
@@ -85,7 +86,11 @@ const AuditOffer = () => {
                     </Button>
                     <Typography
                       variant={'h3'}
-                      sx={{ width: '100%', textAlign: 'center' }}
+                      sx={{
+                        width: '100%',
+                        textAlign: 'center',
+                        wordBreak: 'break-word',
+                      }}
                     >
                       {audit?.project_name}
                     </Typography>
@@ -196,15 +201,7 @@ const AuditOffer = () => {
 
                       <Box sx={linkWrapper}>
                         {audit?.scope?.map((el, idx) => (
-                          <Typography key={idx}>
-                            <GitHubIcon />
-                            <a
-                              target={'_blank'}
-                              href={el.includes('https') ? el : `https://${el}`}
-                            >
-                              {el}
-                            </a>
-                          </Typography>
+                          <CustomLink link={el} key={idx} />
                         ))}
                       </Box>
 
@@ -423,11 +420,10 @@ const infoWrapper = theme => ({
 
 const linkWrapper = theme => ({
   display: 'flex',
-  flexWrap: 'wrap',
+  flexDirection: 'column',
   columnGap: '80px',
   mt: '50px',
   mb: '30px',
-  justifyContent: 'space-around',
   '& button': {
     padding: 1,
     minWidth: 'unset',
@@ -437,9 +433,7 @@ const linkWrapper = theme => ({
     alignItems: 'center',
     gap: '15px',
     fontSize: '18px',
-    '& a': {
-      color: '#152BEA',
-    },
+    margin: '0 auto',
   },
   [theme.breakpoints.down('sm')]: {
     columnGap: '40px',
