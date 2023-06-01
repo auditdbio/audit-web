@@ -120,7 +120,7 @@ const AuditRequestInfo = ({
           {project?.name || project?.project_name}
         </Typography>
       </Box>
-      <Box sx={{ width: '100%' }}>
+      <Box sx={{ width: '100%' }} className={'audit-content'}>
         <Box sx={contentWrapper} className={'audit-request-content-wrapper'}>
           <Typography sx={titleSx} className={'audit-request-title'}>
             {project?.tags?.map(el => el).join(', ') ?? ''}
