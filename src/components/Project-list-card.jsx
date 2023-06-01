@@ -140,27 +140,48 @@ const wrapper = theme => ({
   },
 });
 
-export const modalWrapper = theme => ({
+const modalWrapper = theme => ({
   position: 'absolute',
   top: '50%',
   left: '50%',
   transform: 'translate(-50%, -50%)',
   width: 700,
-  maxHeight: '90%',
-  height: '100%',
+  // maxHeight: '90%',
   borderRadius: '14px',
-  '& .audit-request-wrapper': {
-    gap: '100px',
-    paddingX: '35px',
+  // height: '100%',
+  '& .audit-content': {
+    maxHeight: '30vw',
+    overflowY: 'auto',
   },
-  '& .audit-request-links': {
-    gap: '20px',
+  '& .audit-request-button-wrapper': {
+    marginTop: '20px',
+  },
+  '& .audit-request-wrapper': {
+    gap: '5px',
+    paddingBottom: '40px',
+    paddingX: '35px',
+    paddingRight: '15px',
+  },
+  [theme.breakpoints.down('md')]: {
+    '& .audit-request-wrapper': {
+      paddingX: '20px',
+      minHeight: 'unset',
+    },
+  },
+  [theme.breakpoints.down('sm')]: {
+    '& .audit-content': {
+      maxHeight: '35vw',
+    },
   },
   [theme.breakpoints.down('xs')]: {
-    width: 360,
-    '& .audit-request-wrapper': {
-      gap: '30px',
-      paddingX: '15px',
+    width: 340,
+    '& .audit-content': {
+      maxHeight: '50vw',
+    },
+  },
+  [theme.breakpoints.down(500)]: {
+    '& .audit-content': {
+      maxHeight: '100vw',
     },
   },
 });

@@ -98,20 +98,43 @@ const modalWrapper = theme => ({
   left: '50%',
   transform: 'translate(-50%, -50%)',
   width: 700,
-  maxHeight: '90%',
+  // maxHeight: '90%',
   borderRadius: '14px',
-  height: '100%',
+  // height: '100%',
+  '& .audit-content': {
+    maxHeight: '30vw',
+    overflowY: 'auto',
+  },
+  '& .audit-request-button-wrapper': {
+    marginTop: '20px',
+  },
   '& .audit-request-wrapper': {
     gap: '5px',
+    paddingBottom: '40px',
     paddingX: '35px',
+    paddingRight: '15px',
   },
   [theme.breakpoints.down('md')]: {
     '& .audit-request-wrapper': {
       paddingX: '20px',
+      minHeight: 'unset',
+    },
+  },
+  [theme.breakpoints.down('sm')]: {
+    '& .audit-content': {
+      maxHeight: '35vw',
     },
   },
   [theme.breakpoints.down('xs')]: {
-    width: 360,
+    width: 340,
+    '& .audit-content': {
+      maxHeight: '50vw',
+    },
+  },
+  [theme.breakpoints.down(500)]: {
+    '& .audit-content': {
+      maxHeight: '100vw',
+    },
   },
 });
 
