@@ -1,9 +1,8 @@
 import React, { useMemo } from 'react';
 import { CustomCard } from '../components/custom/Card.jsx';
 import Layout from '../styles/Layout.jsx';
-import { Avatar, Box, Button, Typography, Link, Tooltip } from '@mui/material';
+import { Avatar, Box, Button, Typography, Tooltip } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import theme from '../styles/themes.js';
 import { useNavigate } from 'react-router-dom/dist';
 import TagsList from '../components/tagsList.jsx';
 import { useDispatch, useSelector } from 'react-redux';
@@ -14,16 +13,16 @@ import {
   deleteAudit,
   deleteAuditRequest,
 } from '../redux/actions/auditAction.js';
-import { CUSTOMER, DONE, SUBMITED } from '../redux/actions/types.js';
+import { CUSTOMER, DONE, PENDING, SUBMITED } from '../redux/actions/types.js';
 import dayjs from 'dayjs';
 import Markdown from '../components/custom/Markdown.jsx';
-import axios from 'axios';
-import Cookies from 'js-cookie';
 import { ASSET_URL } from '../services/urls.js';
 import { addTestsLabel } from '../lib/helper.js';
+import { handleOpenReport } from '../lib/openReport.js';
 
 const AuditInfo = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const { id } = useParams();
   const auditRequest = useSelector(s =>
     s.audits?.auditRequests?.find(audit => audit.id === id),
@@ -31,6 +30,7 @@ const AuditInfo = () => {
   const auditConfirm = useSelector(s =>
     s.audits?.audits?.find(audit => audit.id === id),
   );
+
   const audit = useMemo(() => {
     if (auditRequest && !auditConfirm) {
       return auditRequest;
@@ -38,7 +38,6 @@ const AuditInfo = () => {
       return auditConfirm;
     }
   }, [id, auditConfirm, auditRequest]);
-  const dispatch = useDispatch();
 
   const handleConfirm = () => {
     dispatch(confirmAudit(audit));
@@ -62,30 +61,8 @@ const AuditInfo = () => {
     );
   };
 
-  const handleOpenReport = () => {
-    axios
-      .get(`${ASSET_URL}/${audit?.report}`, {
-        responseType: 'blob',
-        withCredentials: true,
-        headers: {
-          Authorization: `Bearer ${Cookies.get('token')}`,
-        },
-      })
-      .then(response => {
-        const url = window.URL.createObjectURL(new Blob([response.data]));
-        const link = document.createElement('a');
-        link.href = url;
-        link.setAttribute(
-          'download',
-          `${
-            audit?.report_name
-              ? audit?.report_name
-              : audit?.project_name + '.pdf'
-          }`,
-        );
-        document.body.appendChild(link);
-        link.click();
-      });
+  const goToIssues = () => {
+    navigate(`/issues/audit-issue/${id}`);
   };
 
   return (
@@ -102,11 +79,13 @@ const AuditInfo = () => {
         <Box sx={{ display: 'flex', width: '100%' }}>
           <Typography sx={{ width: '100%', textAlign: 'center' }}>
             You have offer to audit for{' '}
-            <span style={{ fontWeight: 500 }}>{audit?.project_name}</span>{' '}
+            <span style={{ fontWeight: 500, wordBreak: 'break-word' }}>
+              {audit?.project_name}
+            </span>{' '}
             project!
           </Typography>
         </Box>
-        <Box>
+        <Box sx={{ maxWidth: '100%' }}>
           <Box sx={contentWrapper}>
             <Box sx={userWrapper}>
               <Avatar
@@ -186,7 +165,7 @@ const AuditInfo = () => {
           {(audit?.status === DONE || audit?.status === SUBMITED) && (
             <Box sx={{ display: 'flex', justifyContent: 'center' }}>
               <Button
-                onClick={handleOpenReport}
+                onClick={() => handleOpenReport(audit)}
                 sx={{ margin: '15px auto 0', display: 'block' }}
                 {...addTestsLabel('report-button')}
               >
@@ -219,12 +198,28 @@ const AuditInfo = () => {
           )}
           {audit?.status !== SUBMITED && (
             <Button
-              variant={'contained'}
+              variant="contained"
+              color="secondary"
               onClick={handleDecline}
-              sx={[buttonSx, { backgroundColor: theme.palette.secondary.main }]}
+              sx={buttonSx}
               {...addTestsLabel('decline-button')}
             >
               Decline
+            </Button>
+          )}
+
+          {(audit?.status === DONE ||
+            audit?.status === SUBMITED ||
+            audit?.status === PENDING) && (
+            <Button
+              variant="contained"
+              color="primary"
+              type="button"
+              onClick={goToIssues}
+              sx={buttonSx}
+              {...addTestsLabel('issues-button')}
+            >
+              Issues ({audit?.issues?.length})
             </Button>
           )}
         </Box>
@@ -333,9 +328,10 @@ const buttonSx = theme => ({
   fontSize: '18px',
   textTransform: 'unset',
   fontWeight: 600,
-  margin: '0 12px',
+  mr: '15px',
   width: '270px',
   borderRadius: '10px',
+  ':last-child': { mr: 0 },
   [theme.breakpoints.down('md')]: {
     width: '210px',
     padding: '11px 0',

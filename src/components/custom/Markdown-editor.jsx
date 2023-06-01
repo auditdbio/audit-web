@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import MarkdownIt from 'markdown-it';
 import MdEditor from 'react-markdown-editor-lite';
 import 'react-markdown-editor-lite/lib/index.css';
@@ -24,8 +24,42 @@ const mdParser = new MarkdownIt({
   },
 }).use(markdownItKatex);
 
-const Markdown = ({ name }) => {
+const initialPlugins = [
+  'header',
+  'font-bold',
+  'font-italic',
+  'font-underline',
+  'font-strikethrough',
+  'divider',
+  'list-unordered',
+  'list-ordered',
+  'block-quote',
+  'block-wrap',
+  'block-code-inline',
+  'block-code-block',
+  'table',
+  'image',
+  'link',
+  'clear',
+  'logger',
+  'mode-toggle',
+  'full-screen',
+  'tab-insert',
+];
+
+const Markdown = ({ name, setMdRef, mdProps = {}, plugins = [] }) => {
   const [markdownField, , markdownHelper] = useField(name);
+  const mdRef = useRef();
+
+  useEffect(() => {
+    plugins.forEach(plugin => MdEditor.use(plugin));
+  }, []);
+
+  useEffect(() => {
+    if (setMdRef) {
+      setMdRef(mdRef);
+    }
+  }, [mdRef]);
 
   const handleEditorChange = ({ html, text }) => {
     markdownHelper.setValue(text);
@@ -38,6 +72,9 @@ const Markdown = ({ name }) => {
         renderHTML={text => mdParser.render(text)}
         onChange={handleEditorChange}
         style={{ height: '300px' }}
+        ref={mdRef}
+        plugins={[...plugins.map(p => p.pluginName), ...initialPlugins]}
+        {...mdProps}
       />
     </Box>
   );
