@@ -372,7 +372,6 @@ const linkWrapper = theme => ({
     alignItems: 'center',
     gap: '15px',
     fontSize: '18px',
-    margin: '0 auto',
   },
   [theme.breakpoints.down('sm')]: {
     columnGap: '40px',
