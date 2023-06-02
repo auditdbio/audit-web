@@ -8,34 +8,38 @@ const linkShortener = link => {
   return link.replace(regex, '');
 };
 
-const CustomLink = ({ link }) => {
+const CustomLink = ({ link, showIcon = true, sx = {} }) => {
   const linkBoxRef = useRef();
   const [isNotFit, setIsNotFit] = useState(false);
+  const [shortLink, setShortLink] = useState(() => linkShortener(link));
 
   useEffect(() => {
     const boxWidth = linkBoxRef.current?.offsetWidth;
     const linkElement = linkBoxRef.current?.querySelector('a');
     const linkWidth = linkElement?.offsetWidth;
 
-    if (linkWidth === boxWidth) setIsNotFit(true);
+    if (linkWidth >= boxWidth - 40) setIsNotFit(true);
   }, []);
 
   return (
-    <Box sx={{ display: 'flex' }}>
+    <Box sx={{ display: 'flex', width: '100%' }}>
       <Tooltip title={link} arrow placement="top">
         <Typography noWrap={true} sx={linkBoxSx} ref={linkBoxRef}>
-          {/^https?:\/\/(www\.)?github\.com/.test(link) ? (
-            <GitHubIcon sx={{ mr: '8px' }} />
-          ) : (
-            <LinkIcon sx={{ mr: '8px' }} />
-          )}
+          {showIcon &&
+            (/^https?:\/\/(www\.)?github\.com/.test(link) ? (
+              <GitHubIcon sx={{ mr: '8px' }} />
+            ) : (
+              <LinkIcon sx={{ mr: '8px' }} />
+            ))}
           <Link
             href={/^https?:\/\//.test(link) ? link : `https://${link}`}
             target="_blank"
-            sx={[linkSx, isNotFit && { maxWidth: '90%' }]}
+            sx={[linkSx, isNotFit && { maxWidth: '90%' }, sx]}
           >
-            <span>{linkShortener(link)}</span>
-            {isNotFit && <span>{linkShortener(link)}</span>}
+            <span>
+              {isNotFit ? shortLink.slice(0, shortLink.length / 2) : shortLink}
+            </span>
+            {isNotFit && <span>{shortLink.slice(shortLink.length / 2)}</span>}
           </Link>
         </Typography>
       </Tooltip>
