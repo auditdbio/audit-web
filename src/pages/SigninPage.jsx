@@ -1,11 +1,19 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Box } from '@mui/material';
 import { ContentWrapper } from '../styles/themes.js';
 import Layout from '../styles/Layout.jsx';
 import { CustomCard } from '../components/custom/Card';
 import SigninForm from '../components/forms/signin/SigninForm.jsx';
+import { useNavigate } from 'react-router-dom';
+import { isAuth } from '../lib/helper.js';
 
 const SigninPage = () => {
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (isAuth()) {
+      navigate('/');
+    }
+  }, [isAuth()]);
   return (
     <Layout>
       <CustomCard sx={cardWrapper}>
