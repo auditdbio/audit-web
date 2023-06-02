@@ -76,7 +76,7 @@ const ProjectListCard = ({ project }) => {
             onClose={handleClose}
             project={project}
             handleError={handleError}
-            modal={true}
+            isModal={true}
             redirect={true}
           />
         </Box>
