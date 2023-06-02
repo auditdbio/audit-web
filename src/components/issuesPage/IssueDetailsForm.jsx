@@ -48,7 +48,9 @@ const IssueDetailsForm = ({ issue = null, editMode = false }) => {
   const [addLinkField, setAddLinkField] = useState(!!issue?.link);
   const [issuePrevValues, setIssuePrevValues] = useState(null);
   const [mdRef, setMdRef] = useState(null);
+  const [severityListOpen, setSeverityListOpen] = useState(false);
   const nameInputRef = useRef();
+  const categoryInputRef = useRef();
 
   const handleNameEdit = handleSubmit => {
     if (isEditName) {
@@ -83,8 +85,8 @@ const IssueDetailsForm = ({ issue = null, editMode = false }) => {
   const initialValues = {
     name: issue?.name || '',
     status: issue?.status || 'Draft',
-    severity: issue?.severity || '',
-    category: issue?.category || '',
+    severity: issue?.severity || 'Medium',
+    category: issue?.category || 'Default',
     description: issue?.description || '',
     include: issue?.include ?? true,
     link: issue?.link || '',
@@ -105,7 +107,7 @@ const IssueDetailsForm = ({ issue = null, editMode = false }) => {
       dispatch(updateAuditIssue(auditId, issueId, updatedValuesWithEvent));
     } else {
       dispatch(addAuditIssue(auditId, values));
-      navigate(`/issues/audit-issue/${auditId}`);
+      navigate(`/audit-request-offer/${auditId}`);
     }
   };
 
@@ -132,7 +134,6 @@ const IssueDetailsForm = ({ issue = null, editMode = false }) => {
               component={TextField}
               name="name"
               label="Title"
-              autoFocus
               fullWidth={true}
               disabled={!isEditName}
               sx={nameInputSx}
@@ -256,41 +257,54 @@ const IssueDetailsForm = ({ issue = null, editMode = false }) => {
               </Box>
 
               <Box sx={issueStatusBlock}>
-                <Box sx={{ textAlign: 'center' }}>
-                  <Typography sx={statusBlockTitle}>Status</Typography>
-                  <Typography
-                    sx={statusValueSx(issue?.status || values.status)}
-                  >
-                    {issue?.status || values.status}
-                  </Typography>
+                <Box sx={{ mb: '20px' }}>
+                  <Box sx={{ textAlign: 'left' }}>
+                    <Typography sx={statusBlockTitle}>▼ Status</Typography>
+                    <Typography
+                      sx={statusValueSx(issue?.status || values.status)}
+                    >
+                      {issue?.status || values.status}
+                    </Typography>
+                  </Box>
+
+                  {editMode && (
+                    <StatusControl
+                      status={issue.status}
+                      setFieldValue={setFieldValue}
+                    />
+                  )}
                 </Box>
 
-                {editMode && (
-                  <StatusControl
-                    status={issue.status}
-                    setFieldValue={setFieldValue}
-                  />
-                )}
-
                 {user.current_role === AUDITOR ? (
-                  <Field
-                    label="Severity"
-                    disabled={false}
-                    component={Select}
-                    name="severity"
-                    renderValue={selected => {
-                      return (
-                        <Box sx={{ textAlign: 'center' }}>
-                          <IssueSeverity text={selected} />
-                        </Box>
-                      );
-                    }}
-                  >
-                    <MenuItem value="Critical">Critical</MenuItem>
-                    <MenuItem value="Major">Major</MenuItem>
-                    <MenuItem value="Medium">Medium</MenuItem>
-                    <MenuItem value="Minor">Minor</MenuItem>
-                  </Field>
+                  <Box sx={severityWrapper}>
+                    <Typography
+                      sx={[statusBlockTitle, { cursor: 'pointer' }]}
+                      onClick={() => setSeverityListOpen(true)}
+                    >
+                      ▼ Severity
+                    </Typography>
+                    <Field
+                      open={severityListOpen}
+                      onClose={() => setSeverityListOpen(false)}
+                      onOpen={() => setSeverityListOpen(true)}
+                      disabled={false}
+                      component={Select}
+                      name="severity"
+                      sx={selectFieldSx}
+                      renderValue={selected => {
+                        return (
+                          <Box sx={{ textAlign: 'center' }}>
+                            <IssueSeverity text={selected} />
+                          </Box>
+                        );
+                      }}
+                    >
+                      <MenuItem value="Critical">Critical</MenuItem>
+                      <MenuItem value="Major">Major</MenuItem>
+                      <MenuItem value="Medium">Medium</MenuItem>
+                      <MenuItem value="Minor">Minor</MenuItem>
+                    </Field>
+                  </Box>
                 ) : (
                   <Box sx={{ textAlign: 'center' }}>
                     <Typography sx={statusBlockTitle}>Severity</Typography>
@@ -299,15 +313,26 @@ const IssueDetailsForm = ({ issue = null, editMode = false }) => {
                 )}
 
                 {user.current_role === AUDITOR ? (
-                  <Field
-                    component={TextField}
-                    name="category"
-                    label="Category"
-                    disabled={false}
-                    fullWidth={true}
-                    sx={{ mt: '20px' }}
-                    inputProps={{ ...addTestsLabel('issue-category-input') }}
-                  />
+                  <Box>
+                    <Typography
+                      sx={[statusBlockTitle, { cursor: 'pointer' }]}
+                      onClick={() => categoryInputRef.current?.focus()}
+                    >
+                      ▼ Category
+                    </Typography>
+                    <Field
+                      inputRef={categoryInputRef}
+                      component={TextField}
+                      name="category"
+                      disabled={false}
+                      fullWidth={true}
+                      sx={categoryInput}
+                      inputProps={{
+                        sx: { padding: '2px', fontSize: '20px' },
+                        ...addTestsLabel('issue-category-input'),
+                      }}
+                    />
+                  </Box>
                 ) : (
                   <Box sx={{ textAlign: 'center', mt: '20px' }}>
                     <Typography sx={statusBlockTitle}>Category</Typography>
@@ -318,7 +343,7 @@ const IssueDetailsForm = ({ issue = null, editMode = false }) => {
                 )}
 
                 {editMode && (
-                  <Box sx={{ textAlign: 'center', mt: '20px' }}>
+                  <Box sx={{ mt: '20px' }}>
                     <FormControlLabel
                       label={
                         <Typography sx={{ fontSize: '20px', fontWeight: 500 }}>
@@ -384,6 +409,7 @@ const issueValidationSchema = Yup.object().shape({
 });
 
 const nameInputSx = theme => ({
+  '& > div': { borderRadius: 0 },
   '& input': {
     backgroundColor: 'white',
     fontSize: '20px',
@@ -407,6 +433,7 @@ const nameInputSx = theme => ({
 
 const linkInputSx = {
   backgroundColor: 'white',
+  '& > div': { borderRadius: 0 },
   '& input': {
     fontSize: '16px',
     padding: '8px 10px',
@@ -481,19 +508,37 @@ const issueStatusBlock = theme => ({
   display: 'flex',
   flexDirection: 'column',
   width: '20%',
-  padding: '40px 10px 40px 20px',
+  padding: '40px 10px 40px 25px',
   [theme.breakpoints.down('sm')]: {
     width: '30%',
   },
   [theme.breakpoints.down('xs')]: {
+    padding: '40px 10px',
+    alignItems: 'center',
     width: '80%',
   },
 });
 
-const statusBlockTitle = {
+const statusBlockTitle = theme => ({
   fontSize: '20px',
   fontWeight: 500,
   mb: '5px',
+  [theme.breakpoints.down('xs')]: {
+    textAlign: 'center',
+  },
+});
+
+const severityWrapper = {
+  mb: '30px',
+  '& div.MuiFormControl-root': {
+    width: '100%',
+  },
+};
+
+const selectFieldSx = {
+  '& > div': { padding: '0 !important', display: 'flex' },
+  '& > fieldset': { border: 'none' },
+  '& > svg': { display: 'none' },
 };
 
 const statusValueSx = status => {
@@ -504,6 +549,13 @@ const statusValueSx = status => {
 
   return { fontSize: '20px', fontWeight: 500, mb: '10px', color };
 };
+
+const categoryInput = theme => ({
+  '& fieldset': { borderWidth: 0 },
+  '& input': {
+    [theme.breakpoints.down('xs')]: { textAlign: 'center' },
+  },
+});
 
 const addIssueBox = events => ({
   display: 'flex',

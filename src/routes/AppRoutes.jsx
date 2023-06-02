@@ -120,7 +120,7 @@ const AppRoutes = () => {
           }
         />
         <Route
-          path="/audit-request-offer/:id"
+          path="/audit-request-offer/:auditId"
           element={
             <PrivateRoute auth={{ isAuthenticated: isAuth() }}>
               <AuditOffer />

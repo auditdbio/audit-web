@@ -1,75 +1,82 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom/dist';
 import { Form, Formik } from 'formik';
 import * as Yup from 'yup';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack.js';
-import GitHubIcon from '@mui/icons-material/GitHub';
 import TelegramIcon from '@mui/icons-material/Telegram';
 import EmailIcon from '@mui/icons-material/Email';
-import {
-  Box,
-  Button,
-  Typography,
-  useMediaQuery,
-  Tooltip,
-  Switch,
-  FormControlLabel,
-} from '@mui/material';
+import { Box, Button, Typography, Tooltip } from '@mui/material';
 import theme from '../styles/themes.js';
 import { CustomCard } from '../components/custom/Card.jsx';
 import Layout from '../styles/Layout.jsx';
-import { addReportAudit } from '../redux/actions/auditAction.js';
+import { addReportAudit, clearMessage } from '../redux/actions/auditAction.js';
 import AuditUpload from '../components/forms/audit-upload/index.jsx';
 import Loader from '../components/Loader.jsx';
 import { SUBMITED } from '../redux/actions/types.js';
 import Markdown from '../components/custom/Markdown.jsx';
 import { addTestsLabel } from '../lib/helper.js';
 import CustomLink from '../components/custom/CustomLink.jsx';
+import IssueDetailsForm from '../components/issuesPage/IssueDetailsForm.jsx';
+import IssuesList from '../components/issuesPage/IssuesList.jsx';
+import CustomSnackbar from '../components/custom/CustomSnackbar.jsx';
 
 const AuditOffer = () => {
-  const { id } = useParams();
+  const { auditId } = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const matchXs = useMediaQuery(theme.breakpoints.down('xs'));
+  const { successMessage, error } = useSelector(s => s.audits);
   const audit = useSelector(s =>
-    s.audits.audits?.find(audit => audit.id === id),
+    s.audits.audits?.find(audit => audit.id === auditId),
   );
-  const [auditDBWorkflow, setAuditDBWorkflow] = useState(true);
 
-  const goToIssues = create => {
-    if (create) {
-      navigate(`/issues/new-issue/${id}`);
-    } else {
-      navigate(`/issues/audit-issue/${id}`);
-    }
-  };
+  const [auditDBWorkflow, setAuditDBWorkflow] = useState(true);
+  const [showReadMoreButton, setShowReadMoreButton] = useState(false);
+  const [showFull, setShowFull] = useState(false);
+
+  const descriptionRef = useRef();
+
+  useEffect(() => {
+    setTimeout(() => {
+      if (descriptionRef?.current?.offsetHeight > 400) {
+        setShowReadMoreButton(true);
+      }
+    }, 500);
+  }, [descriptionRef.current]);
 
   if (!audit) {
     return <Loader />;
   } else {
     return (
       <Layout>
-        <Formik
-          initialValues={{
-            id: audit.id,
-            status: 'done',
-            report: audit.report || '',
-            report_name: audit.report_name || '',
-          }}
-          validationSchema={SubmitValidation}
-          onSubmit={values => {
-            dispatch(addReportAudit(values));
-          }}
-        >
-          {({ handleSubmit, setFieldValue }) => {
-            return (
-              <Form
-                onSubmit={handleSubmit}
-                style={{ width: '100%', maxWidth: '1300px' }}
-              >
-                <CustomCard sx={wrapper}>
+        <CustomCard sx={wrapper}>
+          <Formik
+            initialValues={{
+              id: audit.id,
+              status: 'done',
+              report: audit.report || '',
+              report_name: audit.report_name || '',
+            }}
+            validationSchema={SubmitValidation}
+            onSubmit={values => {
+              dispatch(addReportAudit(values));
+            }}
+          >
+            {({ handleSubmit, setFieldValue }) => {
+              return (
+                <Form
+                  onSubmit={handleSubmit}
+                  style={{ width: '100%', maxWidth: '1300px' }}
+                >
+                  <CustomSnackbar
+                    autoHideDuration={5000}
+                    open={!!error || !!successMessage}
+                    severity={error ? 'error' : 'success'}
+                    text={error || successMessage}
+                    onClose={() => dispatch(clearMessage())}
+                  />
+
                   <Box
                     sx={{
                       display: 'flex',
@@ -197,7 +204,19 @@ const AuditOffer = () => {
                     </Box>
 
                     <Box sx={infoWrapper}>
-                      <Markdown value={audit?.description} />
+                      <Box sx={descriptionSx(showFull)}>
+                        <Box ref={descriptionRef}>
+                          <Markdown value={audit?.description} />
+                        </Box>
+                      </Box>
+                      {showReadMoreButton && (
+                        <Button
+                          onClick={() => setShowFull(!showFull)}
+                          sx={readAllButton}
+                        >
+                          {showFull ? 'Hide ▲' : `Read all ▼`}
+                        </Button>
+                      )}
 
                       <Box sx={linkWrapper}>
                         {audit?.scope?.map((el, idx) => (
@@ -205,43 +224,23 @@ const AuditOffer = () => {
                         ))}
                       </Box>
 
-                      {matchXs ? (
-                        <Box sx={{ textAlign: 'center' }}>
-                          <FormControlLabel
-                            label={
-                              <Typography
-                                sx={{ fontSize: '20px', fontWeight: 500 }}
-                              >
-                                Use AuditDB workflow
-                              </Typography>
-                            }
-                            control={
-                              <Switch
-                                color="secondary"
-                                checked={auditDBWorkflow}
-                                onChange={() =>
-                                  setAuditDBWorkflow(!auditDBWorkflow)
-                                }
-                              />
-                            }
-                          />
-                        </Box>
-                      ) : (
-                        <Box sx={workflowToggleBox}>
-                          <Button
-                            onClick={() => setAuditDBWorkflow(false)}
-                            sx={workflowButton(!auditDBWorkflow)}
-                          >
-                            Upload audit
-                          </Button>
-                          <Button
-                            onClick={() => setAuditDBWorkflow(true)}
-                            sx={workflowButton(auditDBWorkflow)}
-                          >
-                            AuditDB workflow
-                          </Button>
-                        </Box>
-                      )}
+                      <Box sx={workflowToggleBox}>
+                        <Button
+                          onClick={() => setAuditDBWorkflow(true)}
+                          sx={workflowButton(auditDBWorkflow)}
+                        >
+                          {audit.issues?.length
+                            ? `Issues (${audit.issues.length})`
+                            : 'New issue'}
+                        </Button>
+                        <Button
+                          onClick={() => setAuditDBWorkflow(false)}
+                          sx={workflowButton(!auditDBWorkflow)}
+                        >
+                          Upload audit
+                        </Button>
+                      </Box>
+
                       {!auditDBWorkflow && (
                         <Box sx={fileWrapper}>
                           <Typography sx={subTitleSx}>Upload audit</Typography>
@@ -261,39 +260,50 @@ const AuditOffer = () => {
                     </Box>
                   </Box>
 
-                  <Box sx={buttonWrapper}>
-                    <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-                      {auditDBWorkflow ? (
-                        <Button
-                          variant="contained"
-                          color="secondary"
-                          type="button"
-                          onClick={() => goToIssues(!audit.issues?.length)}
-                          sx={buttonSx}
-                          {...addTestsLabel('new-issue-button')}
-                        >
-                          {audit.issues?.length
-                            ? `Issues (${audit.issues.length})`
-                            : 'New issue'}
-                        </Button>
-                      ) : (
-                        <Button
-                          variant="contained"
-                          type="submit"
-                          color="secondary"
-                          sx={[buttonSx, { mb: '15px' }]}
-                          {...addTestsLabel('send-button')}
-                        >
-                          Send to customer
-                        </Button>
-                      )}
+                  {!auditDBWorkflow && (
+                    <Box
+                      sx={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        mb: '30px',
+                      }}
+                    >
+                      <Button
+                        variant="contained"
+                        type="submit"
+                        color="secondary"
+                        sx={[buttonSx, { mb: '15px' }]}
+                        {...addTestsLabel('send-button')}
+                      >
+                        Send to customer
+                      </Button>
                     </Box>
-                  </Box>
-                </CustomCard>
-              </Form>
-            );
-          }}
-        </Formik>
+                  )}
+                </Form>
+              );
+            }}
+          </Formik>
+
+          {auditDBWorkflow && (
+            <Box sx={{ width: '100%', mb: '30px' }}>
+              {audit.issues?.length ? (
+                <Box
+                  sx={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    gap: '20px',
+                  }}
+                >
+                  <IssuesList auditId={auditId} />
+                </Box>
+              ) : (
+                <IssueDetailsForm />
+              )}
+            </Box>
+          )}
+        </CustomCard>
       </Layout>
     );
   }
@@ -306,7 +316,7 @@ const SubmitValidation = Yup.object().shape({
 });
 
 const wrapper = theme => ({
-  padding: '48px 74px 80px',
+  padding: '48px 74px 0',
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'center',
@@ -316,18 +326,16 @@ const wrapper = theme => ({
     fontWeight: 500,
   },
   [theme.breakpoints.down('md')]: {
-    padding: '38px 44px 60px',
+    padding: '38px 44px 0',
     '& h3': {
       fontSize: '30px',
     },
   },
   [theme.breakpoints.down('sm')]: {
     gap: '20px',
-    padding: '38px 20px 30px',
+    padding: '38px 20px 0',
   },
 });
-
-const buttonWrapper = {};
 
 const contactWrapper = theme => ({
   maxWidth: '500px',
@@ -344,12 +352,10 @@ const contactWrapper = theme => ({
   },
 });
 
-const descriptionSx = theme => ({
-  fontSize: '16px!important',
-  fontWeight: 500,
-  [theme.breakpoints.down('sm')]: {
-    marginBottom: '25px',
-  },
+const descriptionSx = full => ({
+  maxHeight: full ? 'unset' : '400px',
+  overflow: 'hidden',
+  border: '2px solid #E5E5E5',
 });
 
 const subTitleSx = {
@@ -418,6 +424,23 @@ const infoWrapper = theme => ({
   },
 });
 
+const readAllButton = theme => ({
+  width: '100%',
+  padding: '8px',
+  fontWeight: 600,
+  fontSize: '21px',
+  color: 'black',
+  textTransform: 'none',
+  lineHeight: '25px',
+  background: '#E5E5E5',
+  borderRadius: 0,
+  ':hover': { background: '#D5D5D5' },
+  [theme.breakpoints.down('xs')]: {
+    fontSize: '16px',
+    border: 'none',
+  },
+});
+
 const linkWrapper = theme => ({
   display: 'flex',
   flexDirection: 'column',
@@ -473,26 +496,35 @@ const buttonSx = theme => ({
   },
 });
 
-const workflowToggleBox = {
-  width: '600px',
+const workflowToggleBox = theme => ({
+  maxWidth: '510px',
   margin: '0 auto 50px',
   padding: '3px 1px',
   display: 'flex',
   justifyContent: 'center',
   border: '1px solid #B2B3B3',
   borderRadius: '38px',
-};
+  [theme.breakpoints.down('xs')]: {
+    width: '248px',
+  },
+});
 
 const workflowButton = useWorkflow => ({
   fontWeight: 600,
   fontSize: '20px',
   color: useWorkflow ? 'white' : 'black',
   textTransform: 'none',
-  padding: '15px 66px',
+  padding: '15px 0',
+  width: '250px',
   borderRadius: '38px',
   background: useWorkflow ? theme.palette.secondary.main : 'none',
   ':hover': { background: useWorkflow ? theme.palette.secondary.main : 'none' },
   '& span': {
     display: 'none',
+  },
+  [theme.breakpoints.down('xs')]: {
+    width: '120px',
+    padding: '10px 0',
+    fontSize: '14px',
   },
 });

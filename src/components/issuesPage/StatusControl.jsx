@@ -71,5 +71,4 @@ export default StatusControl;
 const wrapper = {
   display: 'flex',
   flexDirection: 'column',
-  mb: '20px',
 };

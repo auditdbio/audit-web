@@ -23,6 +23,7 @@ const IssueSeverity = ({ text }) => {
       sx={{
         color: 'white',
         backgroundColor: defineColor(),
+        cursor: 'pointer',
       }}
     />
   );
