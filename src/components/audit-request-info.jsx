@@ -661,9 +661,7 @@ const titleSx = theme => ({
   fontWeight: 500,
   display: 'flex',
   flexWrap: 'wrap',
-  '& span': {
-    marginRight: '5px',
-  },
+  gap: '5px',
   [theme.breakpoints.down('md')]: {
     fontSize: '20px',
   },
