@@ -33,9 +33,14 @@ export const getCurrentCustomer = id => {
   const token = Cookies.get('token');
   return dispatch => {
     axios
-      .get(`${API_URL}/customer/${id}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      })
+      .get(
+        `${API_URL}/customer/${id}`,
+        token
+          ? {
+              headers: { Authorization: `Bearer ${token}` },
+            }
+          : {},
+      )
       .then(({ data }) => {
         dispatch({ type: GET_CURRENT_CUSTOMER, payload: data });
       })

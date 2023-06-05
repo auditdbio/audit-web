@@ -35,9 +35,14 @@ export const getCurrentAuditor = id => {
   const token = Cookies.get('token');
   return dispatch => {
     axios
-      .get(`${API_URL}/auditor/${id}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      })
+      .get(
+        `${API_URL}/auditor/${id}`,
+        token
+          ? {
+              headers: { Authorization: `Bearer ${token}` },
+            }
+          : {},
+      )
       .then(({ data }) => {
         dispatch({ type: GET_CURRENT_AUDITOR, payload: data });
       })
