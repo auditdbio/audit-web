@@ -123,7 +123,7 @@ const AuditRequestInfo = ({
         <Box sx={contentWrapper} className={'audit-request-content-wrapper'}>
           <Typography sx={titleSx} className={'audit-request-title'}>
             {project?.tags?.map((el, idx) => (
-              <span>{idx + 1 !== project?.tags?.length ? el + ', ' : el}</span>
+              <span>{idx + 1 !== project?.tags?.length ? el + ',' : el}</span>
             ))}
           </Typography>
           <Box sx={salaryWrapper} className={'audit-request-salary'}>
@@ -652,6 +652,11 @@ const contentWrapper = theme => ({
 
 const titleSx = theme => ({
   fontWeight: 500,
+  display: 'flex',
+  flexWrap: 'wrap',
+  '& span': {
+    marginRight: '5px',
+  },
   [theme.breakpoints.down('md')]: {
     fontSize: '20px',
   },
