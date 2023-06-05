@@ -94,7 +94,27 @@ const PublicProfile = () => {
   }, [role, customer, auditor]);
 
   if (!data) {
-    return <Loader role={role} />;
+    return (
+      <Layout>
+        <Box
+          sx={[
+            wrapper(
+              theme,
+              role.toLowerCase() === AUDITOR
+                ? theme.palette.secondary.main
+                : theme.palette.primary.main,
+            ),
+            {
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+            },
+          ]}
+        >
+          <Loader role={role} />
+        </Box>
+      </Layout>
+    );
   } else {
     return (
       <Layout>
