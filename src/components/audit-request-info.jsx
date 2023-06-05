@@ -123,7 +123,9 @@ const AuditRequestInfo = ({
       <Box sx={{ width: '100%' }} className={'audit-content'}>
         <Box sx={contentWrapper} className={'audit-request-content-wrapper'}>
           <Typography sx={titleSx} className={'audit-request-title'}>
-            {project?.tags?.map(el => el).join(', ') ?? ''}
+            {project?.tags?.map((el, idx) => (
+              <span>{idx + 1 !== project?.tags?.length ? el + ', ' : el}</span>
+            ))}
           </Typography>
           <Box sx={salaryWrapper} className={'audit-request-salary'}>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
