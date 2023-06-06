@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Button } from '@mui/material';
+import { Box, Button, useMediaQuery } from '@mui/material';
 import theme, { radiusOfComponents } from '../styles/themes.js';
 import { useNavigate } from 'react-router-dom/dist';
 import TagsArray from './tagsArray/index.jsx';
@@ -36,6 +36,8 @@ const CreateProjectCard = ({ projectInfo }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [getSearchParam] = useSearchParams();
+  const matchMd = useMediaQuery(theme.breakpoints.down('md'));
+  const matchXs = useMediaQuery(theme.breakpoints.down('xs'));
   const customerReducer = useSelector(state => state.customer);
   const auditReducer = useSelector(state => state.audits);
   const [auditRequests, setAuditRequests] = useState([]);
@@ -176,6 +178,7 @@ const CreateProjectCard = ({ projectInfo }) => {
               handleClose={handleCloseInviteModal}
               handleSubmit={handleSubmit}
               setState={setState}
+              setError={setError}
             />
 
             {/*<CloseProjectModal*/}
@@ -240,14 +243,27 @@ const CreateProjectCard = ({ projectInfo }) => {
                   <Box sx={formAllFields}>
                     <Box sx={formWrapper}>
                       <Box sx={fieldWrapper}>
-                        <SimpleField name={'name'} label={'Name'} />
-                        <TagsField name={'tags'} label={'Tags'} />
-                        <TagsArray name={'tags'} />
+                        <SimpleField
+                          size={matchMd ? 'small' : 'medium'}
+                          name="name"
+                          label="Name"
+                          emptyPH
+                        />
+                        <TagsField
+                          size={matchMd ? 'small' : 'medium'}
+                          name="tags"
+                          label="Tags"
+                        />
+                        <TagsArray name="tags" />
                       </Box>
                       <Box sx={fieldWrapper}>
-                        <TagsField name={'scope'} label={'Project links'} />
-                        <ProjectLinksList name={'scope'} />
-                        <SalarySlider name={'price'} />
+                        <TagsField
+                          size={matchMd ? 'small' : 'medium'}
+                          name="scope"
+                          label="Project links"
+                        />
+                        <ProjectLinksList name="scope" />
+                        <SalarySlider name="price" />
                       </Box>
                     </Box>
 
@@ -256,7 +272,12 @@ const CreateProjectCard = ({ projectInfo }) => {
                     {/*</Box>*/}
                   </Box>
                   <Box className="description-box" sx={descriptionFieldWrapper}>
-                    <Markdown name={'description'} />
+                    <Markdown
+                      name="description"
+                      mdProps={{
+                        view: { menu: true, md: true, html: !matchXs },
+                      }}
+                    />
                   </Box>
                   <Button
                     type={'submit'}

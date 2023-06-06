@@ -5,7 +5,6 @@ import { useDispatch } from 'react-redux';
 import SimpleField from './forms/fields/simple-field.jsx';
 import * as Yup from 'yup';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
-import { useParams } from 'react-router-dom';
 import { sendRestoreMessage } from '../redux/actions/userAction.js';
 import { addTestsLabel } from '../lib/helper.js';
 
@@ -46,7 +45,7 @@ const RestorePassword = ({ onClose }) => {
                 instructions on how to reset your password
               </Typography>
               <Box sx={fieldWrapper}>
-                <SimpleField name={'email'} label={'E-mail'} />
+                <SimpleField name="email" label="E-mail" size="small" emptyPH />
               </Box>
               <Button
                 sx={{
@@ -83,9 +82,9 @@ const fieldWrapper = theme => ({
   gap: '10px',
   '& .field-wrapper': {
     gap: '15px',
-    '& input': {
-      height: '1rem',
-    },
+    // '& input': {
+    //   height: '1rem',
+    // },
   },
   [theme.breakpoints.down('md')]: {
     '& .MuiInputBase-root': {

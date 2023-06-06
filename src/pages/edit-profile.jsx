@@ -1,12 +1,11 @@
 import React, { useEffect } from 'react';
-import { Box } from '@mui/material';
+import { useDispatch, useSelector } from 'react-redux';
 import Layout from '../styles/Layout.jsx';
 import { CustomCard } from '../components/custom/Card.jsx';
 import EditProfileForm from '../components/forms/edit-profile-form/edit-profile-form.jsx';
+import ChangePasswordFormik from '../components/forms/change-password-formik/index.jsx';
 import { getCustomer } from '../redux/actions/customerAction.js';
 import { getAuditor } from '../redux/actions/auditorAction.js';
-import { useDispatch, useSelector } from 'react-redux';
-import Loader from '../components/Loader.jsx';
 
 const EditProfile = () => {
   const role = useSelector(s => s.user.user.current_role);
@@ -25,6 +24,7 @@ const EditProfile = () => {
     <Layout>
       <CustomCard sx={editWrapper}>
         <EditProfileForm role={role} />
+        <ChangePasswordFormik />
       </CustomCard>
     </Layout>
   );

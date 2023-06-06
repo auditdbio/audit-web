@@ -1,33 +1,30 @@
-import React, { useEffect } from 'react';
-import { CustomCard } from '../components/custom/Card.jsx';
-import Layout from '../styles/Layout.jsx';
+import React, { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom/dist';
+import { Form, Formik } from 'formik';
+import * as Yup from 'yup';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack.js';
+import GitHubIcon from '@mui/icons-material/GitHub';
+import TelegramIcon from '@mui/icons-material/Telegram';
+import EmailIcon from '@mui/icons-material/Email';
 import {
-  Avatar,
   Box,
   Button,
   Typography,
-  Link,
   useMediaQuery,
-  TextField,
   Tooltip,
+  Switch,
+  FormControlLabel,
 } from '@mui/material';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack.js';
-import GitHubIcon from '@mui/icons-material/GitHub';
 import theme from '../styles/themes.js';
-import { useNavigate } from 'react-router-dom/dist';
-import CreateNewFolderOutlinedIcon from '@mui/icons-material/CreateNewFolderOutlined';
-import { useDispatch, useSelector } from 'react-redux';
-import { useParams } from 'react-router-dom';
-import { Form, Formik } from 'formik';
-import { addReportAudit, getAudits } from '../redux/actions/auditAction.js';
-import EditIcon from '@mui/icons-material/Edit.js';
+import { CustomCard } from '../components/custom/Card.jsx';
+import Layout from '../styles/Layout.jsx';
+import { addReportAudit } from '../redux/actions/auditAction.js';
 import AuditUpload from '../components/forms/audit-upload/index.jsx';
 import Loader from '../components/Loader.jsx';
-import { AUDITOR, SUBMITED } from '../redux/actions/types.js';
-import * as Yup from 'yup';
+import { SUBMITED } from '../redux/actions/types.js';
 import Markdown from '../components/custom/Markdown.jsx';
-import TelegramIcon from '@mui/icons-material/Telegram';
-import EmailIcon from '@mui/icons-material/Email';
 import { addTestsLabel } from '../lib/helper.js';
 import CustomLink from '../components/custom/CustomLink.jsx';
 
@@ -39,6 +36,15 @@ const AuditOffer = () => {
   const audit = useSelector(s =>
     s.audits.audits?.find(audit => audit.id === id),
   );
+  const [auditDBWorkflow, setAuditDBWorkflow] = useState(true);
+
+  const goToIssues = create => {
+    if (create) {
+      navigate(`/issues/new-issue/${id}`);
+    } else {
+      navigate(`/issues/audit-issue/${id}`);
+    }
+  };
 
   if (!audit) {
     return <Loader />;
@@ -89,6 +95,7 @@ const AuditOffer = () => {
                       {audit?.project_name}
                     </Typography>
                   </Box>
+
                   <Box sx={{ width: '100%' }}>
                     <Box sx={contentWrapper}>
                       <Typography sx={titleSx}>
@@ -143,6 +150,7 @@ const AuditOffer = () => {
                         </Box>
                       </Box>
                     </Box>
+
                     <Box
                       sx={[{ display: 'flex', gap: '25px' }, contactWrapper]}
                     >
@@ -187,43 +195,99 @@ const AuditOffer = () => {
                         </Box>
                       </Box>
                     </Box>
+
                     <Box sx={infoWrapper}>
                       <Markdown value={audit?.description} />
+
                       <Box sx={linkWrapper}>
                         {audit?.scope?.map((el, idx) => (
                           <CustomLink link={el} key={idx} />
                         ))}
                       </Box>
-                      <Box sx={fileWrapper}>
-                        <Typography sx={subTitleSx}>Upload audit</Typography>
-                        <Box sx={{ display: 'flex' }}>
-                          <AuditUpload
-                            disabled={audit.status === SUBMITED}
-                            auditId={audit.id}
-                            auditorId={audit.auditor_id}
-                            auditReportName={audit.report_name}
-                            customerId={audit.customer_id}
-                            name={'report'}
-                            setFieldValue={setFieldValue}
+
+                      {matchXs ? (
+                        <Box sx={{ textAlign: 'center' }}>
+                          <FormControlLabel
+                            label={
+                              <Typography
+                                sx={{ fontSize: '20px', fontWeight: 500 }}
+                              >
+                                Use AuditDB workflow
+                              </Typography>
+                            }
+                            control={
+                              <Switch
+                                color="secondary"
+                                checked={auditDBWorkflow}
+                                onChange={() =>
+                                  setAuditDBWorkflow(!auditDBWorkflow)
+                                }
+                              />
+                            }
                           />
                         </Box>
-                      </Box>
+                      ) : (
+                        <Box sx={workflowToggleBox}>
+                          <Button
+                            onClick={() => setAuditDBWorkflow(false)}
+                            sx={workflowButton(!auditDBWorkflow)}
+                          >
+                            Upload audit
+                          </Button>
+                          <Button
+                            onClick={() => setAuditDBWorkflow(true)}
+                            sx={workflowButton(auditDBWorkflow)}
+                          >
+                            AuditDB workflow
+                          </Button>
+                        </Box>
+                      )}
+                      {!auditDBWorkflow && (
+                        <Box sx={fileWrapper}>
+                          <Typography sx={subTitleSx}>Upload audit</Typography>
+                          <Box sx={{ display: 'flex' }}>
+                            <AuditUpload
+                              disabled={audit.status === SUBMITED}
+                              auditId={audit.id}
+                              auditorId={audit.auditor_id}
+                              auditReportName={audit.report_name}
+                              customerId={audit.customer_id}
+                              name={'report'}
+                              setFieldValue={setFieldValue}
+                            />
+                          </Box>
+                        </Box>
+                      )}
                     </Box>
                   </Box>
+
                   <Box sx={buttonWrapper}>
-                    {audit.status !== SUBMITED && (
-                      <Button
-                        variant={'contained'}
-                        type={'submit'}
-                        sx={[
-                          buttonSx,
-                          { backgroundColor: theme.palette.secondary.main },
-                        ]}
-                        {...addTestsLabel('send-button')}
-                      >
-                        Send to customer
-                      </Button>
-                    )}
+                    <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+                      {auditDBWorkflow ? (
+                        <Button
+                          variant="contained"
+                          color="secondary"
+                          type="button"
+                          onClick={() => goToIssues(!audit.issues?.length)}
+                          sx={buttonSx}
+                          {...addTestsLabel('new-issue-button')}
+                        >
+                          {audit.issues?.length
+                            ? `Issues (${audit.issues.length})`
+                            : 'New issue'}
+                        </Button>
+                      ) : (
+                        <Button
+                          variant="contained"
+                          type="submit"
+                          color="secondary"
+                          sx={[buttonSx, { mb: '15px' }]}
+                          {...addTestsLabel('send-button')}
+                        >
+                          Send to customer
+                        </Button>
+                      )}
+                    </Box>
                   </Box>
                 </CustomCard>
               </Form>
@@ -263,9 +327,7 @@ const wrapper = theme => ({
   },
 });
 
-const buttonWrapper = theme => ({
-  marginTop: '40px',
-});
+const buttonWrapper = {};
 
 const contactWrapper = theme => ({
   maxWidth: '500px',
@@ -290,12 +352,12 @@ const descriptionSx = theme => ({
   },
 });
 
-const subTitleSx = theme => ({
+const subTitleSx = {
   fontSize: '16px!important',
   fontWeight: 500,
-});
+};
 
-const contentWrapper = theme => ({
+const contentWrapper = {
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'center',
@@ -304,10 +366,10 @@ const contentWrapper = theme => ({
     fontSize: '18px',
     fontWeight: 500,
   },
-});
+};
 
 const fileWrapper = theme => ({
-  marginTop: '22px',
+  margin: '22px 0',
   display: 'flex',
   alignItems: 'center',
   gap: '30px',
@@ -350,7 +412,6 @@ const infoWrapper = theme => ({
     },
   },
   [theme.breakpoints.down('xs')]: {
-    // width: '310px',
     '& h4': {
       textAlign: 'start',
     },
@@ -361,8 +422,8 @@ const linkWrapper = theme => ({
   display: 'flex',
   flexDirection: 'column',
   columnGap: '80px',
-  marginTop: '50px',
-  marginBottom: '20px',
+  mt: '50px',
+  mb: '30px',
   '& button': {
     padding: 1,
     minWidth: 'unset',
@@ -408,5 +469,29 @@ const buttonSx = theme => ({
   },
   [theme.breakpoints.down('xs')]: {
     margin: '0 6px',
+  },
+});
+
+const workflowToggleBox = {
+  width: '600px',
+  margin: '0 auto 50px',
+  padding: '3px 1px',
+  display: 'flex',
+  justifyContent: 'center',
+  border: '1px solid #B2B3B3',
+  borderRadius: '38px',
+};
+
+const workflowButton = useWorkflow => ({
+  fontWeight: 600,
+  fontSize: '20px',
+  color: useWorkflow ? 'white' : 'black',
+  textTransform: 'none',
+  padding: '15px 66px',
+  borderRadius: '38px',
+  background: useWorkflow ? theme.palette.secondary.main : 'none',
+  ':hover': { background: useWorkflow ? theme.palette.secondary.main : 'none' },
+  '& span': {
+    display: 'none',
   },
 });

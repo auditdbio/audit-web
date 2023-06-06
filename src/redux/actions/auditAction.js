@@ -1,6 +1,7 @@
 import Cookies from 'js-cookie';
 import axios from 'axios';
 import {
+  ADD_AUDIT_ISSUE,
   AUDIT_REQUEST_CREATE,
   AUDITOR,
   CLEAR_MESSAGES,
@@ -12,7 +13,9 @@ import {
   GET_AUDITS,
   PROJECT_CREATE,
   REQUEST_ERROR,
+  SET_CURRENT_AUDIT_PARTNER,
   SUBMIT_AUDIT,
+  UPDATE_AUDIT_ISSUE,
 } from './types.js';
 import { history } from '../../services/history.js';
 import dayjs from 'dayjs';
@@ -168,6 +171,73 @@ export const confirmAudit = values => {
         history.back();
         dispatch({ type: CONFIRM_AUDIT, payload: data });
       });
+  };
+};
+
+export const addAuditIssue = (auditId, values) => {
+  return dispatch => {
+    const token = Cookies.get('token');
+    axios
+      .post(`${API_URL}/audit/${auditId}/issue`, values, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .then(({ data }) =>
+        dispatch({
+          type: ADD_AUDIT_ISSUE,
+          payload: {
+            id: auditId,
+            issue: data,
+          },
+        }),
+      )
+      .catch(e => dispatch({ type: REQUEST_ERROR }));
+  };
+};
+
+export const updateAuditIssue = (auditId, issueId, values) => {
+  return dispatch => {
+    const token = Cookies.get('token');
+    axios
+      .patch(`${API_URL}/audit/${auditId}/issue/${issueId}`, values, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .then(({ data }) => {
+        dispatch({
+          type: UPDATE_AUDIT_ISSUE,
+          payload: {
+            id: auditId,
+            issue: data,
+          },
+        });
+      })
+      .catch(e => dispatch({ type: REQUEST_ERROR }));
+  };
+};
+
+export const setCurrentAuditPartner = audit => {
+  return (dispatch, getState) => {
+    const state = getState();
+    const { user } = state.user;
+    const { currentAuditPartner } = state.audits;
+
+    if (
+      currentAuditPartner?.user_id === audit?.customer_id ||
+      currentAuditPartner?.user_id === audit?.auditor_id
+    ) {
+      return;
+    }
+
+    if (audit && user?.id === audit?.auditor_id) {
+      axios
+        .get(`${API_URL}/customer/${audit?.customer_id}`)
+        .then(({ data }) => {
+          dispatch({ type: SET_CURRENT_AUDIT_PARTNER, payload: data });
+        });
+    } else if (audit && user?.id === audit?.customer_id) {
+      axios.get(`${API_URL}/auditor/${audit?.auditor_id}`).then(({ data }) => {
+        dispatch({ type: SET_CURRENT_AUDIT_PARTNER, payload: data });
+      });
+    }
   };
 };
 

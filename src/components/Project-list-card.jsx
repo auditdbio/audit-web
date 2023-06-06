@@ -13,6 +13,7 @@ const ProjectListCard = ({ project }) => {
   const errorMessage = useSelector(s => s.audits.error);
   const successMessage = useSelector(s => s.audits.successMessage);
   const dispatch = useDispatch();
+  const [errorState, setErrorState] = useState(null);
 
   const handleOpen = () => {
     setIsOpen(true);
@@ -30,13 +31,14 @@ const ProjectListCard = ({ project }) => {
     <Box sx={wrapper}>
       <CustomSnackbar
         autoHideDuration={3000}
-        open={!!message || errorMessage || successMessage}
+        open={!!message || errorMessage || successMessage || errorState}
         onClose={() => {
           setMessage(null);
           dispatch(clearMessage());
+          setErrorState(null);
         }}
-        severity={errorMessage ? 'error' : 'success'}
-        text={message || errorMessage || successMessage}
+        severity={errorMessage || errorState ? 'error' : 'success'}
+        text={message || errorMessage || successMessage || errorState}
       />
 
       <Box sx={contentWrapper}>
@@ -78,6 +80,7 @@ const ProjectListCard = ({ project }) => {
             handleError={handleError}
             isModal={true}
             redirect={true}
+            setError={setErrorState}
           />
         </Box>
       </Modal>
@@ -137,6 +140,10 @@ const wrapper = theme => ({
     '& .MuiChip-root': {
       fontSize: '10px',
     },
+  },
+  [theme.breakpoints.down('xs')]: {
+    paddingX: '10px',
+    gap: '5px',
   },
 });
 
