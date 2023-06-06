@@ -11,9 +11,10 @@ import { getCustomer } from '../redux/actions/customerAction.js';
 import { getAuditor } from '../redux/actions/auditorAction.js';
 import { AUDITOR, CUSTOMER } from '../redux/actions/types.js';
 import AuditRequest from '../components/Audit-request.jsx';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { clearUserSuccess } from '../redux/actions/userAction.js';
 import CustomSnackbar from '../components/custom/CustomSnackbar.jsx';
+import { isAuth } from '../lib/helper.js';
 
 const ProfilePage = () => {
   const { tab } = useParams();
@@ -21,6 +22,13 @@ const ProfilePage = () => {
   const currentRole = useSelector(s => s.user.user.current_role);
   const message = useSelector(s => s.user.success);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!isAuth()) {
+      navigate('/');
+    }
+  }, [isAuth()]);
 
   useEffect(() => {
     setChooseTab(tab);
