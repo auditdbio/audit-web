@@ -15,7 +15,7 @@ import SimpleField from '../fields/simple-field.jsx';
 import { useDispatch, useSelector } from 'react-redux';
 import { clearUserError, signUp } from '../../../redux/actions/userAction.js';
 import CustomSnackbar from '../../custom/CustomSnackbar.jsx';
-import { addTestsLabel } from '../../../lib/helper.js';
+import { addTestsLabel, isAuth } from '../../../lib/helper.js';
 
 const SignupForm = () => {
   const [isAuditor, setIsAuditor] = useState('auditor');
@@ -115,7 +115,8 @@ const SignupForm = () => {
             <Button
               type="submit"
               sx={submitButton}
-              variant="contained"
+              variant={'contained'}
+              disabled={isAuth()}
               {...addTestsLabel('sign-up-button')}
             >
               Sing up

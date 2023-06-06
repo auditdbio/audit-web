@@ -2,16 +2,8 @@ import React, { useEffect } from 'react';
 import Layout from '../styles/Layout.jsx';
 import { CustomCard } from '../components/custom/Card';
 import SignupForm from '../components/forms/signup/SignupForm.jsx';
-import { isAuth } from '../lib/helper.js';
-import { useNavigate } from 'react-router-dom';
 
 const SignupPage = () => {
-  const navigate = useNavigate();
-  useEffect(() => {
-    if (isAuth()) {
-      navigate('/');
-    }
-  }, [isAuth()]);
   return (
     <Layout>
       <CustomCard sx={cardWrapper}>
