@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Box, Button } from '@mui/material';
 import Layout from '../styles/Layout.jsx';
 import Loader from '../components/Loader.jsx';
@@ -8,13 +8,23 @@ import IssuesList from '../components/issuesPage/IssuesList.jsx';
 import { CustomCard } from '../components/custom/Card.jsx';
 import { addTestsLabel } from '../lib/helper.js';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack.js';
+import { getIssues } from '../redux/actions/issueAction.js';
 
 const AuditIssues = () => {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const { auditId } = useParams();
+
+  const { issuesAuditId } = useSelector(s => s.issues);
   const audit = useSelector(s =>
     s.audits.audits?.find(audit => audit.id === auditId),
   );
+
+  useEffect(() => {
+    if (issuesAuditId !== auditId) {
+      dispatch(getIssues(auditId));
+    }
+  }, []);
 
   if (!audit) {
     return (

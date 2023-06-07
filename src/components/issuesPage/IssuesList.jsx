@@ -9,14 +9,12 @@ import IssueSeverity from './IssueSeverity.jsx';
 import CustomPagination from '../custom/CustomPagination.jsx';
 
 const IssuesList = ({ auditId }) => {
-  const audit = useSelector(s =>
-    s.audits.audits?.find(audit => audit.id === auditId),
-  );
+  const { issues } = useSelector(s => s.issues);
   const [search, setSearch] = useState('');
   const [page, setPage] = useState(1);
 
   const getSearchResultsLength = () => {
-    return audit?.issues?.filter(issue => issue.name?.includes(search)).length;
+    return issues?.filter(issue => issue.name?.includes(search)).length;
   };
 
   const getNumberOfPages = () => Math.ceil(getSearchResultsLength() / 10);
@@ -35,7 +33,7 @@ const IssuesList = ({ auditId }) => {
       </Box>
 
       <Box sx={{ width: '100%' }}>
-        {audit?.issues
+        {issues
           ?.filter(issue => issue.name?.includes(search))
           .reverse()
           .slice((page - 1) * 10, page * 10)

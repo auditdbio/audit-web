@@ -25,11 +25,11 @@ import { AUDITOR } from '../../redux/actions/types.js';
 import Markdown from '../custom/Markdown-editor.jsx';
 import IssueSeverity from './IssueSeverity.jsx';
 import theme from '../../styles/themes.js';
+import { clearMessage } from '../../redux/actions/auditAction.js';
 import {
   addAuditIssue,
-  clearMessage,
   updateAuditIssue,
-} from '../../redux/actions/auditAction.js';
+} from '../../redux/actions/issueAction.js';
 import CustomSnackbar from '../custom/CustomSnackbar.jsx';
 import { createIssueEvent } from '../../lib/createIssueEvent.js';
 import StatusControl from './StatusControl.jsx';
@@ -43,7 +43,7 @@ const IssueDetailsForm = ({ issue = null, editMode = false }) => {
   const matchXs = useMediaQuery(theme.breakpoints.down('xs'));
 
   const user = useSelector(s => s.user.user);
-  const { successMessage, error } = useSelector(s => s.audits);
+  const { successMessage, error } = useSelector(s => s.issues);
 
   const [isEditName, setIsEditName] = useState(!editMode);
   const [isEditDescription, setIsEditDescription] = useState(!editMode);

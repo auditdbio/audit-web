@@ -21,12 +21,14 @@ import CustomLink from '../components/custom/CustomLink.jsx';
 import IssueDetailsForm from '../components/issuesPage/IssueDetailsForm.jsx';
 import IssuesList from '../components/issuesPage/IssuesList.jsx';
 import CustomSnackbar from '../components/custom/CustomSnackbar.jsx';
+import { getIssues } from '../redux/actions/issueAction.js';
 
 const AuditOffer = () => {
   const { auditId } = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { successMessage, error } = useSelector(s => s.audits);
+  const { successMessage, error } = useSelector(s => s.issues);
+  const { issues, issuesAuditId } = useSelector(s => s.issues);
   const audit = useSelector(s =>
     s.audits.audits?.find(audit => audit.id === auditId),
   );
@@ -44,6 +46,12 @@ const AuditOffer = () => {
       }
     }, 500);
   }, [descriptionRef.current]);
+
+  useEffect(() => {
+    if (issuesAuditId !== auditId) {
+      dispatch(getIssues(auditId));
+    }
+  }, []);
 
   if (!audit) {
     return <Loader />;
@@ -229,8 +237,8 @@ const AuditOffer = () => {
                           onClick={() => setAuditDBWorkflow(true)}
                           sx={workflowButton(auditDBWorkflow)}
                         >
-                          {audit.issues?.length
-                            ? `Issues (${audit.issues.length})`
+                          {issues?.length
+                            ? `Issues (${issues.length})`
                             : 'New issue'}
                         </Button>
                         <Button
@@ -287,7 +295,7 @@ const AuditOffer = () => {
 
           {auditDBWorkflow && (
             <Box sx={{ width: '100%', mb: '30px' }}>
-              {audit.issues?.length ? (
+              {issues?.length ? (
                 <Box
                   sx={{
                     display: 'flex',

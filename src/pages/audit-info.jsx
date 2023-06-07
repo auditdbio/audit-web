@@ -19,6 +19,7 @@ import Markdown from '../components/custom/Markdown.jsx';
 import { ASSET_URL } from '../services/urls.js';
 import { addTestsLabel } from '../lib/helper.js';
 import { handleOpenReport } from '../lib/openReport.js';
+import { getIssues } from '../redux/actions/issueAction.js';
 
 const AuditInfo = () => {
   const navigate = useNavigate();
@@ -29,6 +30,7 @@ const AuditInfo = () => {
   const [showReadMoreButton, setShowReadMoreButton] = useState(false);
   const descriptionRef = useRef();
 
+  const { issues, issuesAuditId } = useSelector(s => s.issues);
   const auditRequest = useSelector(s =>
     s.audits?.auditRequests?.find(audit => audit.id === id),
   );
@@ -43,6 +45,12 @@ const AuditInfo = () => {
       }
     }, 500);
   }, [descriptionRef.current]);
+
+  useEffect(() => {
+    if (issuesAuditId !== id) {
+      dispatch(getIssues(id));
+    }
+  }, []);
 
   const audit = useMemo(() => {
     if (auditRequest && !auditConfirm) {
@@ -243,7 +251,7 @@ const AuditInfo = () => {
               sx={buttonSx}
               {...addTestsLabel('issues-button')}
             >
-              Issues ({audit?.issues?.length})
+              Issues ({issues?.length})
             </Button>
           )}
         </Box>

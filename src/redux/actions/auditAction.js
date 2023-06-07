@@ -1,7 +1,6 @@
 import Cookies from 'js-cookie';
 import axios from 'axios';
 import {
-  ADD_AUDIT_ISSUE,
   AUDIT_REQUEST_CREATE,
   AUDITOR,
   CLEAR_MESSAGES,
@@ -11,14 +10,10 @@ import {
   DELETE_REQUEST,
   GET_AUDIT_REQUEST,
   GET_AUDITS,
-  PROJECT_CREATE,
   REQUEST_ERROR,
   SET_CURRENT_AUDIT_PARTNER,
-  SUBMIT_AUDIT,
-  UPDATE_AUDIT_ISSUE,
 } from './types.js';
 import { history } from '../../services/history.js';
-import dayjs from 'dayjs';
 
 const API_URL = import.meta.env.VITE_API_BASE_URL;
 
@@ -171,46 +166,6 @@ export const confirmAudit = values => {
         history.back();
         dispatch({ type: CONFIRM_AUDIT, payload: data });
       });
-  };
-};
-
-export const addAuditIssue = (auditId, values) => {
-  return dispatch => {
-    const token = Cookies.get('token');
-    axios
-      .post(`${API_URL}/audit/${auditId}/issue`, values, {
-        headers: { Authorization: `Bearer ${token}` },
-      })
-      .then(({ data }) =>
-        dispatch({
-          type: ADD_AUDIT_ISSUE,
-          payload: {
-            id: auditId,
-            issue: data,
-          },
-        }),
-      )
-      .catch(e => dispatch({ type: REQUEST_ERROR }));
-  };
-};
-
-export const updateAuditIssue = (auditId, issueId, values) => {
-  return dispatch => {
-    const token = Cookies.get('token');
-    axios
-      .patch(`${API_URL}/audit/${auditId}/issue/${issueId}`, values, {
-        headers: { Authorization: `Bearer ${token}` },
-      })
-      .then(({ data }) => {
-        dispatch({
-          type: UPDATE_AUDIT_ISSUE,
-          payload: {
-            id: auditId,
-            issue: data,
-          },
-        });
-      })
-      .catch(e => dispatch({ type: REQUEST_ERROR }));
   };
 };
 
