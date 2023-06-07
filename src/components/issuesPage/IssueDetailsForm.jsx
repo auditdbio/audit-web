@@ -35,6 +35,7 @@ import { createIssueEvent } from '../../lib/createIssueEvent.js';
 import StatusControl from './StatusControl.jsx';
 import TagsField from '../forms/tags-field/tags-field.jsx';
 import { ProjectLinksList } from '../custom/ProjectLinksList';
+import ArrowIcon from '../icons/ArrowIcon.jsx';
 
 const IssueDetailsForm = ({ issue = null, editMode = false }) => {
   const dispatch = useDispatch();
@@ -214,7 +215,8 @@ const IssueDetailsForm = ({ issue = null, editMode = false }) => {
                         <TagsField
                           size="small"
                           name="link"
-                          label="Links"
+                          // label="Links"
+                          label="links not working, waiting api"
                           sx={{ '& > div': { borderRadius: 0 } }}
                         />
                         {/*<ProjectLinksList name="link" />*/}
@@ -269,13 +271,11 @@ const IssueDetailsForm = ({ issue = null, editMode = false }) => {
 
               <Box sx={issueStatusBlock}>
                 <Box sx={{ mb: '20px' }}>
-                  <Box
-                    sx={{
-                      textAlign:
-                        user.current_role === AUDITOR ? 'left' : 'center',
-                    }}
-                  >
-                    <Typography sx={statusBlockTitle}>▼ Status</Typography>
+                  <Box sx={{ textAlign: 'left' }}>
+                    <Typography sx={statusBlockTitle}>
+                      <ArrowIcon />
+                      <span>Status</span>
+                    </Typography>
                     <Typography
                       sx={statusValueSx(issue?.status || values.status)}
                     >
@@ -297,7 +297,8 @@ const IssueDetailsForm = ({ issue = null, editMode = false }) => {
                       sx={[statusBlockTitle, { cursor: 'pointer' }]}
                       onClick={() => setSeverityListOpen(true)}
                     >
-                      ▼ Severity
+                      <ArrowIcon />
+                      <span>Severity</span>
                     </Typography>
                     <Field
                       open={severityListOpen}
@@ -346,8 +347,11 @@ const IssueDetailsForm = ({ issue = null, editMode = false }) => {
                     </Field>
                   </Box>
                 ) : (
-                  <Box sx={{ textAlign: 'center' }}>
-                    <Typography sx={statusBlockTitle}>Severity</Typography>
+                  <Box sx={{ textAlign: 'left', pointerEvents: 'none' }}>
+                    <Typography sx={statusBlockTitle}>
+                      <ArrowIcon />
+                      <span>Severity</span>
+                    </Typography>
                     <IssueSeverity text={values.severity} />
                   </Box>
                 )}
@@ -358,7 +362,8 @@ const IssueDetailsForm = ({ issue = null, editMode = false }) => {
                       sx={[statusBlockTitle, { cursor: 'pointer' }]}
                       onClick={() => categoryInputRef.current?.focus()}
                     >
-                      ▼ Category
+                      <ArrowIcon />
+                      <span>Category</span>
                     </Typography>
                     <Field
                       inputRef={categoryInputRef}
@@ -374,8 +379,11 @@ const IssueDetailsForm = ({ issue = null, editMode = false }) => {
                     />
                   </Box>
                 ) : (
-                  <Box sx={{ textAlign: 'center', mt: '20px' }}>
-                    <Typography sx={statusBlockTitle}>Category</Typography>
+                  <Box sx={{ textAlign: 'left', mt: '20px' }}>
+                    <Typography sx={statusBlockTitle}>
+                      <ArrowIcon />
+                      <span>Category</span>
+                    </Typography>
                     <Typography sx={statusBlockTitle}>
                       {values.category}
                     </Typography>
@@ -560,6 +568,9 @@ const issueStatusBlock = theme => ({
 });
 
 const statusBlockTitle = theme => ({
+  display: 'flex',
+  alignItems: 'center',
+  columnGap: '10px',
   fontSize: '20px',
   fontWeight: 500,
   mb: '5px',
