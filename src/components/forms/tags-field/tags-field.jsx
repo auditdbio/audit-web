@@ -1,20 +1,20 @@
 import React, { useState } from 'react';
 import { Field, useField } from 'formik';
 import { TextField } from 'formik-mui';
-import { Box, IconButton, InputAdornment, Typography } from '@mui/material';
+import { Box, IconButton, InputAdornment } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import { useSelector } from 'react-redux';
 import { AUDITOR } from '../../../redux/actions/types.js';
 import CustomSnackbar from '../../custom/CustomSnackbar.jsx';
 import { addTestsLabel } from '../../../lib/helper.js';
 
-const TagsField = ({ name, label, placeholder, size = 'medium' }) => {
+const TagsField = ({ name, label, placeholder, size = 'medium', sx = {} }) => {
   const role = useSelector(s => s.user.user.current_role);
   const [field, meta, fieldHelper] = useField(name);
   const [state, setState] = useState('');
   const [error, setError] = useState(null);
   const handleAddTag = () => {
-    if (name !== 'scope') {
+    if (name !== 'scope' && name !== 'link') {
       if (state.length <= 30 && state) {
         if (field.value.length < 20) {
           fieldHelper.setValue([...field.value, state]);
@@ -65,7 +65,7 @@ const TagsField = ({ name, label, placeholder, size = 'medium' }) => {
           }
         }}
         onChange={e => setState(e.target.value)}
-        sx={[fieldSx, meta.error ? errorSx : {}]}
+        sx={[fieldSx, meta.error ? errorSx : {}, sx]}
         inputProps={{ ...addTestsLabel('tags-input') }}
         InputProps={{
           endAdornment: (

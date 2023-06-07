@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useRef, useState, useEffect } from 'react';
 import { CustomCard } from '../components/custom/Card.jsx';
 import Layout from '../styles/Layout.jsx';
 import { Avatar, Box, Button, Typography, Tooltip } from '@mui/material';
@@ -24,12 +24,25 @@ const AuditInfo = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { id } = useParams();
+
+  const [showFull, setShowFull] = useState(false);
+  const [showReadMoreButton, setShowReadMoreButton] = useState(false);
+  const descriptionRef = useRef();
+
   const auditRequest = useSelector(s =>
     s.audits?.auditRequests?.find(audit => audit.id === id),
   );
   const auditConfirm = useSelector(s =>
     s.audits?.audits?.find(audit => audit.id === id),
   );
+
+  useEffect(() => {
+    setTimeout(() => {
+      if (descriptionRef?.current?.offsetHeight > 400) {
+        setShowReadMoreButton(true);
+      }
+    }, 500);
+  }, [descriptionRef.current]);
 
   const audit = useMemo(() => {
     if (auditRequest && !auditConfirm) {
@@ -161,7 +174,18 @@ const AuditInfo = () => {
               <TagsList />
             </Box>
           </Box>
-          <Markdown value={audit?.description} />
+
+          <Box sx={descriptionSx(showFull)}>
+            <Box ref={descriptionRef}>
+              <Markdown value={audit?.description} />
+            </Box>
+          </Box>
+          {showReadMoreButton && (
+            <Button onClick={() => setShowFull(!showFull)} sx={readAllButton}>
+              {showFull ? 'Hide ▲' : `Read all ▼`}
+            </Button>
+          )}
+
           {(audit?.status === DONE || audit?.status === SUBMITED) && (
             <Box sx={{ display: 'flex', justifyContent: 'center' }}>
               <Button
@@ -267,8 +291,10 @@ const contentWrapper = theme => ({
   display: 'flex',
   gap: '70px',
   alignItems: 'center',
+  mb: '30px',
   [theme.breakpoints.down('md')]: {
     gap: '30px',
+    mb: '20px',
   },
   [theme.breakpoints.down('sm')]: {
     flexDirection: 'column',
@@ -398,5 +424,29 @@ const infoWrapper = theme => ({
   },
   [theme.breakpoints.down('xs')]: {
     fontSize: '12px',
+  },
+});
+
+const descriptionSx = full => ({
+  maxHeight: full ? 'unset' : '400px',
+  overflow: 'hidden',
+  border: '2px solid #E5E5E5',
+});
+
+const readAllButton = theme => ({
+  width: '100%',
+  padding: '8px',
+  fontWeight: 600,
+  fontSize: '21px',
+  color: 'black',
+  textTransform: 'none',
+  lineHeight: '25px',
+  background: '#E5E5E5',
+  borderRadius: 0,
+  boxShadow: '0px -24px 14px -8px rgba(252, 250, 246, 1)',
+  ':hover': { background: '#D5D5D5' },
+  [theme.breakpoints.down('xs')]: {
+    fontSize: '16px',
+    border: 'none',
   },
 });

@@ -19,6 +19,7 @@ const initialState = {
   error: null,
   successMessage: null,
   currentAuditPartner: null,
+  issues: null,
 };
 export const auditReducer = (state = initialState, action) => {
   switch (action.type) {

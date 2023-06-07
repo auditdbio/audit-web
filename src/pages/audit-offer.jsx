@@ -434,6 +434,7 @@ const readAllButton = theme => ({
   lineHeight: '25px',
   background: '#E5E5E5',
   borderRadius: 0,
+  boxShadow: '0px -24px 14px -8px rgba(252, 250, 246, 1)',
   ':hover': { background: '#D5D5D5' },
   [theme.breakpoints.down('xs')]: {
     fontSize: '16px',

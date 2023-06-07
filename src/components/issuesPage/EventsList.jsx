@@ -1,11 +1,12 @@
 import React, { useMemo } from 'react';
 import { Avatar, Box, Typography } from '@mui/material';
-import MessageIcon from '@mui/icons-material/Message';
 import EventIcon from './EventIcon.jsx';
 import Markdown from '../custom/Markdown.jsx';
 import { ASSET_URL } from '../../services/urls.js';
 import { useSelector } from 'react-redux';
 import { AUDITOR, CUSTOMER } from '../../redux/actions/types.js';
+import CommentIcon from '../icons/issueEvents/CommentIcon.jsx';
+import IssueSeverity from './IssueSeverity.jsx';
 
 const EventsList = ({ issue, auditPartner }) => {
   const { user } = useSelector(s => s.user);
@@ -39,10 +40,21 @@ const EventsList = ({ issue, auditPartner }) => {
               <EventIcon kind={event.kind} />
             </Box>
             <Avatar sx={avatarSx} alt="user photo" src={getAvatarURL(event)} />
-            <Typography sx={[eventTextSx, { mr: '5px', fontWeight: 700 }]}>
+            <Typography sx={eventUserSx}>
               {event.user === user?.id ? 'You' : auditPartner?.first_name}
             </Typography>
-            <Typography sx={eventTextSx}>{event.message}</Typography>
+
+            {event.kind === 'IssueSeverity' ? (
+              <Box sx={issueSeverityWrapper}>
+                <Typography sx={[eventTextSx, { mr: '5px' }]}>
+                  changed severity to
+                </Typography>
+                <IssueSeverity text={event.message} />
+              </Box>
+            ) : (
+              <Typography sx={eventTextSx}>{event.message}</Typography>
+            )}
+
             <Typography variant="span" sx={messageDate}>
               (
               {new Date(event.timestamp * 1000)
@@ -55,7 +67,9 @@ const EventsList = ({ issue, auditPartner }) => {
           <Box key={event.id} sx={messageWrapper}>
             <Box sx={messageHeader}>
               <Box sx={messageUserInfo}>
-                <MessageIcon color="default" sx={messageIconSx} />
+                <Box sx={iconSx}>
+                  <CommentIcon />
+                </Box>
                 <Typography
                   sx={[messageHeaderText, { mr: '5px', fontWeight: 700 }]}
                   variant="span"
@@ -116,11 +130,21 @@ const eventSx = {
   },
 };
 
-const iconSx = {
+const iconSx = theme => ({
+  width: '35px',
+  height: '35px',
   display: 'flex',
+  flexShrink: 0,
+  justifyContent: 'center',
+  alignItems: 'center',
+  background: '#D9D9D9',
+  borderRadius: '50%',
   mr: '20px',
   position: 'relative',
-};
+  [theme.breakpoints.down('xs')]: {
+    mr: '10px',
+  },
+});
 
 const avatarSx = theme => ({
   width: '30px',
@@ -128,6 +152,18 @@ const avatarSx = theme => ({
   mr: '13px',
   [theme.breakpoints.down('xs')]: {
     display: 'none',
+  },
+});
+
+const eventUserSx = theme => ({
+  mr: '5px',
+  color: '#434242',
+  fontSize: '20px',
+  lineHeight: '24px',
+  fontWeight: 700,
+  [theme.breakpoints.down('xs')]: {
+    fontSize: '12px',
+    letterSpacing: '-1.5px',
   },
 });
 
@@ -139,8 +175,24 @@ const eventTextSx = theme => ({
   mr: '20px',
   [theme.breakpoints.down('xs')]: {
     fontSize: '12px',
-    letterSpacing: '-1px',
-    maxWidth: '125px',
+    letterSpacing: '-1.2px',
+    maxWidth: '70%',
+  },
+});
+
+const issueSeverityWrapper = theme => ({
+  mr: '20px',
+  display: 'flex',
+  alignItems: 'center',
+  [theme.breakpoints.down('xs')]: {
+    '& .MuiChip-root': {
+      height: '16px',
+      '& span': {
+        padding: '0 6px',
+        fontSize: '12px',
+        letterSpacing: '-1px',
+      },
+    },
   },
 });
 
@@ -161,16 +213,13 @@ const messageHeader = theme => ({
   border: '2px solid #E5E5E5',
   padding: '9px 23px',
   [theme.breakpoints.down('xs')]: {
-    padding: '9px 10px',
+    padding: '5px 10px',
   },
 });
 
 const messageUserInfo = theme => ({
   display: 'flex',
   alignItems: 'center',
-  [theme.breakpoints.down('xs')]: {
-    maxWidth: '145px',
-  },
 });
 
 const messageHeaderText = theme => ({
@@ -187,14 +236,6 @@ const messageDate = theme => ({
   [theme.breakpoints.down('xs')]: {
     fontSize: '9px',
     letterSpacing: '-0.5px',
-  },
-});
-
-const messageIconSx = theme => ({
-  mr: '20px',
-  pt: '3px',
-  [theme.breakpoints.down('xs')]: {
-    mr: '10px',
   },
 });
 

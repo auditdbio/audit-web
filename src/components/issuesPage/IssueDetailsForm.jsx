@@ -33,6 +33,8 @@ import {
 import CustomSnackbar from '../custom/CustomSnackbar.jsx';
 import { createIssueEvent } from '../../lib/createIssueEvent.js';
 import StatusControl from './StatusControl.jsx';
+import TagsField from '../forms/tags-field/tags-field.jsx';
+import { ProjectLinksList } from '../custom/ProjectLinksList';
 
 const IssueDetailsForm = ({ issue = null, editMode = false }) => {
   const dispatch = useDispatch();
@@ -47,8 +49,8 @@ const IssueDetailsForm = ({ issue = null, editMode = false }) => {
   const [isEditDescription, setIsEditDescription] = useState(!editMode);
   const [addLinkField, setAddLinkField] = useState(!!issue?.link);
   const [issuePrevValues, setIssuePrevValues] = useState(null);
-  const [mdRef, setMdRef] = useState(null);
   const [severityListOpen, setSeverityListOpen] = useState(false);
+  const [mdRef, setMdRef] = useState(null);
   const nameInputRef = useRef();
   const categoryInputRef = useRef();
 
@@ -190,7 +192,7 @@ const IssueDetailsForm = ({ issue = null, editMode = false }) => {
                       </Box>
                     </IconButton>
                   )}
-                  {user.current_role === AUDITOR && (
+                  {user.current_role === AUDITOR && !addLinkField && (
                     <IconButton
                       type="button"
                       aria-label="add link"
@@ -206,44 +208,17 @@ const IssueDetailsForm = ({ issue = null, editMode = false }) => {
                   )}
                 </Box>
                 {addLinkField && (
-                  <Box>
+                  <Box sx={{ mt: '10px' }}>
                     {user.current_role === AUDITOR ? (
-                      <Field
-                        component={TextField}
-                        name="link"
-                        fullWidth={true}
-                        disabled={false}
-                        sx={linkInputSx}
-                        inputProps={{ ...addTestsLabel('issue-link-input') }}
-                        InputProps={
-                          user.current_role === AUDITOR && issue?.link
-                            ? {
-                                endAdornment: (
-                                  <InputAdornment position="end">
-                                    <IconButton
-                                      edge="end"
-                                      type="button"
-                                      aria-label="Delete link"
-                                      onClick={() => {
-                                        setFieldValue('link', '');
-                                        setAddLinkField(false);
-                                        if (editMode) {
-                                          handleSubmit();
-                                        }
-                                      }}
-                                      {...addTestsLabel('delete-link-button')}
-                                    >
-                                      <ClearIcon
-                                        color="secondary"
-                                        fontSize="small"
-                                      />
-                                    </IconButton>
-                                  </InputAdornment>
-                                ),
-                              }
-                            : null
-                        }
-                      />
+                      <>
+                        <TagsField
+                          size="small"
+                          name="link"
+                          label="Links"
+                          sx={{ '& > div': { borderRadius: 0 } }}
+                        />
+                        {/*<ProjectLinksList name="link" />*/}
+                      </>
                     ) : (
                       <Box sx={linkForCustomerSx}>
                         <LinkIcon fontSize="small" sx={{ mr: '15px' }} />
@@ -251,6 +226,42 @@ const IssueDetailsForm = ({ issue = null, editMode = false }) => {
                           {issue.link}
                         </Link>
                       </Box>
+                      // <Field
+                      //   component={TextField}
+                      //   name="link"
+                      //   fullWidth={true}
+                      //   disabled={false}
+                      //   sx={linkInputSx}
+                      //   inputProps={{ ...addTestsLabel('issue-link-input') }}
+                      //   InputProps={
+                      //     user.current_role === AUDITOR && issue?.link
+                      //       ? {
+                      //           endAdornment: (
+                      //             <InputAdornment position="end">
+                      //               <IconButton
+                      //                 edge="end"
+                      //                 type="button"
+                      //                 aria-label="Delete link"
+                      //                 onClick={() => {
+                      //                   setFieldValue('link', '');
+                      //                   setAddLinkField(false);
+                      //                   if (editMode) {
+                      //                     handleSubmit();
+                      //                   }
+                      //                 }}
+                      //                 {...addTestsLabel('delete-link-button')}
+                      //               >
+                      //                 <ClearIcon
+                      //                   color="secondary"
+                      //                   fontSize="small"
+                      //                 />
+                      //               </IconButton>
+                      //             </InputAdornment>
+                      //           ),
+                      //         }
+                      //       : null
+                      //   }
+                      // />
                     )}
                   </Box>
                 )}
@@ -258,7 +269,12 @@ const IssueDetailsForm = ({ issue = null, editMode = false }) => {
 
               <Box sx={issueStatusBlock}>
                 <Box sx={{ mb: '20px' }}>
-                  <Box sx={{ textAlign: 'left' }}>
+                  <Box
+                    sx={{
+                      textAlign:
+                        user.current_role === AUDITOR ? 'left' : 'center',
+                    }}
+                  >
                     <Typography sx={statusBlockTitle}>▼ Status</Typography>
                     <Typography
                       sx={statusValueSx(issue?.status || values.status)}
@@ -299,10 +315,34 @@ const IssueDetailsForm = ({ issue = null, editMode = false }) => {
                         );
                       }}
                     >
-                      <MenuItem value="Critical">Critical</MenuItem>
-                      <MenuItem value="Major">Major</MenuItem>
-                      <MenuItem value="Medium">Medium</MenuItem>
-                      <MenuItem value="Minor">Minor</MenuItem>
+                      <MenuItem
+                        value="Critical"
+                        sx={severityMenuItem}
+                        classes={{ selected: 'selected-severity' }}
+                      >
+                        Critical
+                      </MenuItem>
+                      <MenuItem
+                        value="Major"
+                        sx={severityMenuItem}
+                        classes={{ selected: 'selected-severity' }}
+                      >
+                        Major
+                      </MenuItem>
+                      <MenuItem
+                        value="Medium"
+                        sx={severityMenuItem}
+                        classes={{ selected: 'selected-severity' }}
+                      >
+                        Medium
+                      </MenuItem>
+                      <MenuItem
+                        value="Minor"
+                        sx={severityMenuItem}
+                        classes={{ selected: 'selected-severity' }}
+                      >
+                        Minor
+                      </MenuItem>
                     </Field>
                   </Box>
                 ) : (
@@ -342,7 +382,7 @@ const IssueDetailsForm = ({ issue = null, editMode = false }) => {
                   </Box>
                 )}
 
-                {editMode && (
+                {editMode && user.current_role === AUDITOR && (
                   <Box sx={{ mt: '20px' }}>
                     <FormControlLabel
                       label={
@@ -403,7 +443,7 @@ const issueValidationSchema = Yup.object().shape({
   description: Yup.string().required('Required'),
   severity: Yup.string().required('Required'),
   category: Yup.string().required('Required'),
-  link: Yup.string().url(),
+  // link: Yup.array().of(Yup.string().url()),
   include: Yup.boolean(),
   feedback: Yup.string(),
 });
@@ -415,7 +455,7 @@ const nameInputSx = theme => ({
     fontSize: '20px',
     fontWeight: 500,
     lineHeight: '24px',
-    padding: '30px 20px',
+    padding: '20px',
     '&:disabled': {
       backgroundColor: 'transparent',
       color: '#434242',
@@ -534,6 +574,13 @@ const severityWrapper = {
     width: '100%',
   },
 };
+
+const severityMenuItem = theme => ({
+  ':hover': {
+    background: theme.palette.primary.main,
+    color: 'white',
+  },
+});
 
 const selectFieldSx = {
   '& > div': { padding: '0 !important', display: 'flex' },
