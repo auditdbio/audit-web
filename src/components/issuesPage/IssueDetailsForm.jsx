@@ -228,6 +228,7 @@ const IssueDetailsForm = ({ issue = null, editMode = false }) => {
                           {issue.link}
                         </Link>
                       </Box>
+                      // todo DELETE NEXT:
                       // <Field
                       //   component={TextField}
                       //   name="link"
@@ -270,173 +271,200 @@ const IssueDetailsForm = ({ issue = null, editMode = false }) => {
               </Box>
 
               <Box sx={issueStatusBlock}>
-                <Box sx={{ mb: '20px' }}>
-                  <Box sx={{ textAlign: 'left' }}>
-                    <Typography sx={statusBlockTitle}>
-                      <ArrowIcon />
-                      <span>Status</span>
-                    </Typography>
-                    <Typography
-                      sx={statusValueSx(issue?.status || values.status)}
-                    >
-                      {issue?.status || values.status}
-                    </Typography>
+                <Box>
+                  <Box sx={{ mb: '20px' }}>
+                    <Box sx={statusBlockAlign}>
+                      <Typography sx={statusBlockTitle}>
+                        <ArrowIcon />
+                        <span>Status</span>
+                      </Typography>
+                      <Typography
+                        sx={statusValueSx(issue?.status || values.status)}
+                      >
+                        {issue?.status || values.status}
+                      </Typography>
+                    </Box>
+
+                    {editMode && (
+                      <StatusControl
+                        status={issue.status}
+                        setFieldValue={setFieldValue}
+                      />
+                    )}
                   </Box>
 
-                  {editMode && (
-                    <StatusControl
-                      status={issue.status}
-                      setFieldValue={setFieldValue}
-                    />
+                  {user.current_role === AUDITOR ? (
+                    <Box sx={severityWrapper}>
+                      <Typography
+                        sx={[statusBlockTitle, { cursor: 'pointer' }]}
+                        onClick={() => setSeverityListOpen(true)}
+                      >
+                        <ArrowIcon />
+                        <span>Severity</span>
+                      </Typography>
+                      <Field
+                        open={severityListOpen}
+                        onClose={() => setSeverityListOpen(false)}
+                        onOpen={() => setSeverityListOpen(true)}
+                        disabled={false}
+                        component={Select}
+                        name="severity"
+                        sx={selectFieldSx}
+                        renderValue={selected => {
+                          return (
+                            <Box sx={{ textAlign: 'center' }}>
+                              <IssueSeverity text={selected} />
+                            </Box>
+                          );
+                        }}
+                      >
+                        <MenuItem
+                          value="Critical"
+                          sx={severityMenuItem}
+                          classes={{ selected: 'selected-severity' }}
+                        >
+                          Critical
+                        </MenuItem>
+                        <MenuItem
+                          value="Major"
+                          sx={severityMenuItem}
+                          classes={{ selected: 'selected-severity' }}
+                        >
+                          Major
+                        </MenuItem>
+                        <MenuItem
+                          value="Medium"
+                          sx={severityMenuItem}
+                          classes={{ selected: 'selected-severity' }}
+                        >
+                          Medium
+                        </MenuItem>
+                        <MenuItem
+                          value="Minor"
+                          sx={severityMenuItem}
+                          classes={{ selected: 'selected-severity' }}
+                        >
+                          Minor
+                        </MenuItem>
+                      </Field>
+                    </Box>
+                  ) : (
+                    <Box sx={[statusBlockAlign, { pointerEvents: 'none' }]}>
+                      <Typography sx={statusBlockTitle}>
+                        <ArrowIcon />
+                        <span>Severity</span>
+                      </Typography>
+                      <IssueSeverity text={values.severity} />
+                    </Box>
+                  )}
+
+                  {user.current_role === AUDITOR ? (
+                    <Box>
+                      <Typography
+                        sx={[statusBlockTitle, { cursor: 'pointer' }]}
+                        onClick={() => categoryInputRef.current?.focus()}
+                      >
+                        <ArrowIcon />
+                        <span>Category</span>
+                      </Typography>
+                      <Field
+                        inputRef={categoryInputRef}
+                        component={TextField}
+                        name="category"
+                        disabled={false}
+                        fullWidth={true}
+                        sx={categoryInput}
+                        inputProps={{
+                          sx: { padding: '2px', fontSize: '20px' },
+                          ...addTestsLabel('issue-category-input'),
+                        }}
+                      />
+                    </Box>
+                  ) : (
+                    <Box sx={[statusBlockAlign, { mt: '20px' }]}>
+                      <Typography sx={statusBlockTitle}>
+                        <ArrowIcon />
+                        <span>Category</span>
+                      </Typography>
+                      <Typography sx={statusBlockTitle}>
+                        {values.category}
+                      </Typography>
+                    </Box>
+                  )}
+
+                  {editMode && user.current_role === AUDITOR && (
+                    <Box sx={[statusBlockAlign, { mt: '20px' }]}>
+                      <FormControlLabel
+                        label={
+                          <Typography
+                            sx={{ fontSize: '20px', fontWeight: 500 }}
+                          >
+                            Include
+                          </Typography>
+                        }
+                        control={
+                          <Switch
+                            checked={values.include}
+                            color="secondary"
+                            disabled={user.current_role !== AUDITOR}
+                            onChange={e => {
+                              setFieldValue('include', e.target.checked);
+                            }}
+                            name="include"
+                          />
+                        }
+                      />
+                    </Box>
                   )}
                 </Box>
 
-                {user.current_role === AUDITOR ? (
-                  <Box sx={severityWrapper}>
-                    <Typography
-                      sx={[statusBlockTitle, { cursor: 'pointer' }]}
-                      onClick={() => setSeverityListOpen(true)}
-                    >
-                      <ArrowIcon />
-                      <span>Severity</span>
-                    </Typography>
-                    <Field
-                      open={severityListOpen}
-                      onClose={() => setSeverityListOpen(false)}
-                      onOpen={() => setSeverityListOpen(true)}
-                      disabled={false}
-                      component={Select}
-                      name="severity"
-                      sx={selectFieldSx}
-                      renderValue={selected => {
-                        return (
-                          <Box sx={{ textAlign: 'center' }}>
-                            <IssueSeverity text={selected} />
-                          </Box>
-                        );
-                      }}
-                    >
-                      <MenuItem
-                        value="Critical"
-                        sx={severityMenuItem}
-                        classes={{ selected: 'selected-severity' }}
-                      >
-                        Critical
-                      </MenuItem>
-                      <MenuItem
-                        value="Major"
-                        sx={severityMenuItem}
-                        classes={{ selected: 'selected-severity' }}
-                      >
-                        Major
-                      </MenuItem>
-                      <MenuItem
-                        value="Medium"
-                        sx={severityMenuItem}
-                        classes={{ selected: 'selected-severity' }}
-                      >
-                        Medium
-                      </MenuItem>
-                      <MenuItem
-                        value="Minor"
-                        sx={severityMenuItem}
-                        classes={{ selected: 'selected-severity' }}
-                      >
-                        Minor
-                      </MenuItem>
-                    </Field>
-                  </Box>
-                ) : (
-                  <Box sx={{ textAlign: 'left', pointerEvents: 'none' }}>
-                    <Typography sx={statusBlockTitle}>
-                      <ArrowIcon />
-                      <span>Severity</span>
-                    </Typography>
-                    <IssueSeverity text={values.severity} />
-                  </Box>
-                )}
-
-                {user.current_role === AUDITOR ? (
-                  <Box>
-                    <Typography
-                      sx={[statusBlockTitle, { cursor: 'pointer' }]}
-                      onClick={() => categoryInputRef.current?.focus()}
-                    >
-                      <ArrowIcon />
-                      <span>Category</span>
-                    </Typography>
-                    <Field
-                      inputRef={categoryInputRef}
-                      component={TextField}
-                      name="category"
-                      disabled={false}
-                      fullWidth={true}
-                      sx={categoryInput}
-                      inputProps={{
-                        sx: { padding: '2px', fontSize: '20px' },
-                        ...addTestsLabel('issue-category-input'),
-                      }}
-                    />
-                  </Box>
-                ) : (
-                  <Box sx={{ textAlign: 'left', mt: '20px' }}>
-                    <Typography sx={statusBlockTitle}>
-                      <ArrowIcon />
-                      <span>Category</span>
-                    </Typography>
-                    <Typography sx={statusBlockTitle}>
-                      {values.category}
-                    </Typography>
-                  </Box>
-                )}
-
-                {editMode && user.current_role === AUDITOR && (
-                  <Box sx={{ mt: '20px' }}>
-                    <FormControlLabel
-                      label={
-                        <Typography sx={{ fontSize: '20px', fontWeight: 500 }}>
-                          Include
-                        </Typography>
+                {user.current_role === AUDITOR && (
+                  <Box sx={addIssueBox}>
+                    <Button
+                      variant="contained"
+                      type="submit"
+                      color="primary"
+                      disabled={!dirty}
+                      sx={addIssueButton}
+                      onClick={() =>
+                        editMode &&
+                        mdRef?.current?.setView({
+                          menu: false,
+                          md: false,
+                          html: true,
+                        })
                       }
-                      control={
-                        <Switch
-                          checked={values.include}
-                          color="secondary"
-                          disabled={user.current_role !== AUDITOR}
-                          onChange={e => {
-                            setFieldValue('include', e.target.checked);
-                          }}
-                          name="include"
-                        />
-                      }
-                    />
+                      {...addTestsLabel('new-issue-button')}
+                    >
+                      {editMode ? 'Save changes' : 'Add issue'}
+                    </Button>
                   </Box>
                 )}
               </Box>
             </Box>
 
-            {user.current_role === AUDITOR && (
-              <Box sx={addIssueBox(issue?.events)}>
-                <Button
-                  variant="contained"
-                  type="submit"
-                  color="primary"
-                  disabled={!dirty}
-                  sx={addIssueButton}
-                  onClick={() =>
-                    editMode &&
-                    mdRef?.current?.setView({
-                      menu: false,
-                      md: false,
-                      html: true,
-                    })
-                  }
-                  {...addTestsLabel('new-issue-button')}
-                >
-                  {editMode ? 'Save changes' : 'Add issue'}
-                </Button>
-              </Box>
-            )}
+            {/*{user.current_role === AUDITOR && (*/}
+            {/*  <Box sx={addIssueBox(issue?.events)}>*/}
+            {/*    <Button*/}
+            {/*      variant="contained"*/}
+            {/*      type="submit"*/}
+            {/*      color="primary"*/}
+            {/*      disabled={!dirty}*/}
+            {/*      sx={addIssueButton}*/}
+            {/*      onClick={() =>*/}
+            {/*        editMode &&*/}
+            {/*        mdRef?.current?.setView({*/}
+            {/*          menu: false,*/}
+            {/*          md: false,*/}
+            {/*          html: true,*/}
+            {/*        })*/}
+            {/*      }*/}
+            {/*      {...addTestsLabel('new-issue-button')}*/}
+            {/*    >*/}
+            {/*      {editMode ? 'Save changes' : 'Add issue'}*/}
+            {/*    </Button>*/}
+            {/*  </Box>*/}
+            {/*)}*/}
           </Form>
         );
       }}
@@ -527,7 +555,7 @@ const linkForCustomerSx = {
 };
 
 const markdownSx = {
-  height: '500px',
+  height: '550px',
   backgroundColor: 'transparent',
   fontWeight: 500,
   fontSize: '20px !important',
@@ -555,8 +583,9 @@ const descriptionBlock = theme => ({
 const issueStatusBlock = theme => ({
   display: 'flex',
   flexDirection: 'column',
+  justifyContent: 'space-between',
   width: '20%',
-  padding: '40px 10px 40px 25px',
+  padding: '40px 10px 0px 25px',
   [theme.breakpoints.down('sm')]: {
     width: '30%',
   },
@@ -564,6 +593,13 @@ const issueStatusBlock = theme => ({
     padding: '40px 10px',
     alignItems: 'center',
     width: '80%',
+  },
+});
+
+const statusBlockAlign = theme => ({
+  textAlign: 'left',
+  [theme.breakpoints.down('xs')]: {
+    textAlign: 'center',
   },
 });
 
@@ -575,7 +611,7 @@ const statusBlockTitle = theme => ({
   fontWeight: 500,
   mb: '5px',
   [theme.breakpoints.down('xs')]: {
-    textAlign: 'center',
+    justifyContent: 'center',
   },
 });
 
@@ -593,11 +629,17 @@ const severityMenuItem = theme => ({
   },
 });
 
-const selectFieldSx = {
-  '& > div': { padding: '0 !important', display: 'flex' },
+const selectFieldSx = theme => ({
   '& > fieldset': { border: 'none' },
   '& > svg': { display: 'none' },
-};
+  '& > div': {
+    padding: '0 !important',
+    display: 'flex',
+    [theme.breakpoints.down('xs')]: {
+      justifyContent: 'center',
+    },
+  },
+});
 
 const statusValueSx = status => {
   let color = '#434242';
@@ -615,7 +657,7 @@ const categoryInput = theme => ({
   },
 });
 
-const addIssueBox = events => ({
+const addIssueBox = {
   display: 'flex',
   justifyContent: 'flex-end',
   pt: '20px',
@@ -625,29 +667,23 @@ const addIssueBox = events => ({
     pt: 0,
     mb: '20px',
   },
-  '&::before': {
-    content: '""',
-    display: events?.length ? 'block' : 'none',
-    position: 'absolute',
-    top: 0,
-    bottom: 0,
-    left: '36px',
-    width: '2px',
-    backgroundColor: '#b9b9b9',
-    [theme.breakpoints.down('xs')]: {
-      display: 'none',
-    },
-  },
-});
+};
 
 const addIssueButton = theme => ({
-  padding: '16px 44px',
+  padding: '16px 10px',
+  width: '100%',
   textTransform: 'none',
   fontWeight: 600,
   fontSize: '20px',
   lineHeight: '25px',
+  [theme.breakpoints.down('md')]: {
+    padding: '12px 6px',
+    letterSpacing: '-0.5px',
+    fontSize: '18px',
+  },
   [theme.breakpoints.down('xs')]: {
     fontSize: '14px',
     padding: '10px 30px',
+    mt: '20px',
   },
 });

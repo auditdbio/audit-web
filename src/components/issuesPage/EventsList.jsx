@@ -1,9 +1,9 @@
 import React, { useMemo } from 'react';
+import { useSelector } from 'react-redux';
 import { Avatar, Box, Typography } from '@mui/material';
 import EventIcon from './EventIcon.jsx';
 import Markdown from '../custom/Markdown.jsx';
 import { ASSET_URL } from '../../services/urls.js';
-import { useSelector } from 'react-redux';
 import { AUDITOR, CUSTOMER } from '../../redux/actions/types.js';
 import CommentIcon from '../icons/issueEvents/CommentIcon.jsx';
 import IssueSeverity from './IssueSeverity.jsx';
@@ -40,19 +40,24 @@ const EventsList = ({ issue, auditPartner }) => {
               <EventIcon kind={event.kind} />
             </Box>
             <Avatar sx={avatarSx} alt="user photo" src={getAvatarURL(event)} />
-            <Typography sx={eventUserSx}>
-              {event.user === user?.id ? 'You' : auditPartner?.first_name}
-            </Typography>
 
             {event.kind === 'IssueSeverity' ? (
               <Box sx={issueSeverityWrapper}>
                 <Typography sx={[eventTextSx, { mr: '5px' }]}>
-                  changed severity to
+                  <b>
+                    {event.user === user?.id ? 'You' : auditPartner?.first_name}
+                  </b>
+                  &nbsp;changed severity to &nbsp;
                 </Typography>
                 <IssueSeverity text={event.message} />
               </Box>
             ) : (
-              <Typography sx={eventTextSx}>{event.message}</Typography>
+              <Typography sx={eventTextSx}>
+                <b>
+                  {event.user === user?.id ? 'You' : auditPartner?.first_name}
+                </b>
+                &nbsp;{event.message}
+              </Typography>
             )}
 
             <Typography variant="span" sx={messageDate}>
@@ -67,7 +72,7 @@ const EventsList = ({ issue, auditPartner }) => {
           <Box key={event.id} sx={messageWrapper}>
             <Box sx={messageHeader}>
               <Box sx={messageUserInfo}>
-                <Box sx={iconSx}>
+                <Box sx={[iconSx, commentIconSx]}>
                   <CommentIcon />
                 </Box>
                 <Typography
@@ -146,6 +151,12 @@ const iconSx = theme => ({
   },
 });
 
+const commentIconSx = theme => ({
+  [theme.breakpoints.down('xs')]: {
+    display: 'none',
+  },
+});
+
 const avatarSx = theme => ({
   width: '30px',
   height: '30px',
@@ -176,7 +187,6 @@ const eventTextSx = theme => ({
   [theme.breakpoints.down('xs')]: {
     fontSize: '12px',
     letterSpacing: '-1.2px',
-    maxWidth: '70%',
   },
 });
 
@@ -186,7 +196,7 @@ const issueSeverityWrapper = theme => ({
   alignItems: 'center',
   [theme.breakpoints.down('xs')]: {
     '& .MuiChip-root': {
-      height: '16px',
+      height: '18px',
       '& span': {
         padding: '0 6px',
         fontSize: '12px',
@@ -217,10 +227,10 @@ const messageHeader = theme => ({
   },
 });
 
-const messageUserInfo = theme => ({
+const messageUserInfo = {
   display: 'flex',
   alignItems: 'center',
-});
+};
 
 const messageHeaderText = theme => ({
   fontSize: '16px',
