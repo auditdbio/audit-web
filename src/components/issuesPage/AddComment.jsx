@@ -5,7 +5,7 @@ import { Form, Formik } from 'formik';
 import Markdown from '../custom/Markdown-editor.jsx';
 import MarkdownTitlePlugin from './MarkdownTitlePlugin.jsx';
 import { addTestsLabel } from '../../lib/helper.js';
-import { updateAuditIssue } from '../../redux/actions/auditAction.js';
+import { updateAuditIssue } from '../../redux/actions/issueAction.js';
 
 const AddComment = ({ auditId, issueId }) => {
   const dispatch = useDispatch();

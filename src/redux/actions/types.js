@@ -30,6 +30,7 @@ export const CONFIRM_AUDIT = 'CONFIRM_AUDIT';
 export const DONE = 'done';
 export const INPROGRESS = 'inprogres';
 export const SUBMIT_AUDIT = 'SUBMIT_AUDIT';
+export const GET_AUDIT_ISSUES = 'GET_AUDIT_ISSUES';
 export const ADD_AUDIT_ISSUE = 'ADD_AUDIT_ISSUE';
 export const UPDATE_AUDIT_ISSUE = 'UPDATE_AUDIT_ISSUE';
 export const SET_CURRENT_AUDIT_PARTNER = 'SET_CURRENT_AUDIT_PARTNER';

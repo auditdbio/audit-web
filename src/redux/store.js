@@ -9,6 +9,7 @@ import { auditReducer } from './reducers/auditReducer.js';
 import { contactUsReducer } from './reducers/contactUsReducer.js';
 import websocketMiddleware from './middleware/websocketMiddleware.js';
 import { websocketReducer } from './reducers/websocketReducer.js';
+import { issueReducer } from './reducers/issueReducer.js';
 
 export const store = createStore(
   combineReducers({
@@ -17,6 +18,7 @@ export const store = createStore(
     customer: customerReducer,
     auditor: auditorReducer,
     audits: auditReducer,
+    issues: issueReducer,
     contactUs: contactUsReducer,
     websocket: websocketReducer,
   }),

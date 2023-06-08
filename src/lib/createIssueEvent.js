@@ -21,7 +21,7 @@ export const createIssueEvent = values => {
     } else if (keys[0] === 'severity') {
       events.push({
         kind: 'IssueSeverity',
-        message: `changed severity to ${values.severity}`,
+        message: `${values.severity}`,
       });
     } else if (keys[0] === 'category') {
       events.push({

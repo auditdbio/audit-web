@@ -11,22 +11,31 @@ import EventsList from '../components/issuesPage/EventsList.jsx';
 import AddComment from '../components/issuesPage/AddComment.jsx';
 import Loader from '../components/Loader.jsx';
 import { setCurrentAuditPartner } from '../redux/actions/auditAction.js';
+import { getIssues } from '../redux/actions/issueAction.js';
 
 const AuditIssueDetails = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { auditId, issueId } = useParams();
   const { currentAuditPartner } = useSelector(s => s.audits);
+  const { issues, issuesAuditId } = useSelector(s => s.issues);
   const audit = useSelector(s =>
     s.audits.audits?.find(audit => audit.id === auditId),
   );
+
   const issue = useMemo(() => {
-    return audit?.issues?.find(issue => issue.id === +issueId);
-  }, [audit]);
+    return issues?.find(issue => issue.id === +issueId);
+  }, [issues]);
 
   useEffect(() => {
     dispatch(setCurrentAuditPartner(audit));
   }, [audit?.id]);
+
+  useEffect(() => {
+    if (issuesAuditId !== auditId) {
+      dispatch(getIssues(auditId));
+    }
+  }, []);
 
   if (!issue) {
     return (

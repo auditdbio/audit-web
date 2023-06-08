@@ -26,6 +26,11 @@ const Control = ({ setSearch, setPage }) => {
     setPage(1);
   };
 
+  const handleNewIssue = () => {
+    navigate(`/issues/new-issue/${auditId}`);
+    window.scrollTo(0, 0);
+  };
+
   return (
     <>
       <Box sx={wrapper}>
@@ -49,7 +54,7 @@ const Control = ({ setSearch, setPage }) => {
               variant="contained"
               color="secondary"
               sx={buttonSx}
-              onClick={() => navigate(`/issues/new-issue/${auditId}`)}
+              onClick={handleNewIssue}
               {...addTestsLabel('new-issue-button')}
             >
               New issue

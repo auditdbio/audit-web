@@ -19,10 +19,12 @@ const IssueSeverity = ({ text }) => {
 
   return (
     <Chip
+      component="span"
       label={text}
       sx={{
         color: 'white',
         backgroundColor: defineColor(),
+        cursor: 'pointer',
       }}
     />
   );
