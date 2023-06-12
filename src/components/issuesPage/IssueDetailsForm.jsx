@@ -6,8 +6,6 @@ import { TextField, Select } from 'formik-mui';
 import * as Yup from 'yup';
 import EditIcon from '@mui/icons-material/Edit';
 import AddLinkIcon from '@mui/icons-material/AddLink';
-import LinkIcon from '@mui/icons-material/Link';
-import ClearIcon from '@mui/icons-material/Clear';
 import {
   Box,
   IconButton,
@@ -18,7 +16,6 @@ import {
   FormControlLabel,
   Switch,
   useMediaQuery,
-  Link,
 } from '@mui/material';
 import { addTestsLabel } from '../../lib/helper.js';
 import { AUDITOR } from '../../redux/actions/types.js';
@@ -36,6 +33,7 @@ import StatusControl from './StatusControl.jsx';
 import TagsField from '../forms/tags-field/tags-field.jsx';
 import { ProjectLinksList } from '../custom/ProjectLinksList';
 import ArrowIcon from '../icons/ArrowIcon.jsx';
+import CustomLink from '../custom/CustomLink.jsx';
 
 const IssueDetailsForm = ({ issue = null, editMode = false }) => {
   const dispatch = useDispatch();
@@ -48,7 +46,7 @@ const IssueDetailsForm = ({ issue = null, editMode = false }) => {
 
   const [isEditName, setIsEditName] = useState(!editMode);
   const [isEditDescription, setIsEditDescription] = useState(!editMode);
-  const [addLinkField, setAddLinkField] = useState(!!issue?.link);
+  const [addLinkField, setAddLinkField] = useState(false);
   const [issuePrevValues, setIssuePrevValues] = useState(null);
   const [severityListOpen, setSeverityListOpen] = useState(false);
   const [mdRef, setMdRef] = useState(null);
@@ -92,7 +90,7 @@ const IssueDetailsForm = ({ issue = null, editMode = false }) => {
     category: issue?.category || 'Default',
     description: issue?.description || '',
     include: issue?.include ?? true,
-    link: issue?.link || '',
+    links: issue?.links || [],
     feedback: issue?.feedback || '',
   };
 
@@ -103,7 +101,10 @@ const IssueDetailsForm = ({ issue = null, editMode = false }) => {
         return prev[key] === values[key] ? acc : { ...acc, [key]: values[key] };
       }, {});
 
-      const updatedValuesWithEvent = createIssueEvent(updatedValues);
+      const updatedValuesWithEvent = createIssueEvent(
+        updatedValues,
+        prev.links?.length,
+      );
       setIsEditName(false);
       setFieldValue('status', '');
       setIssuePrevValues({ ...values, status: '' });
@@ -169,7 +170,7 @@ const IssueDetailsForm = ({ issue = null, editMode = false }) => {
 
             <Box sx={infoWrapperSx}>
               <Box sx={descriptionBlock}>
-                <Box sx={{ position: 'relative' }}>
+                <Box sx={markdownWrapper}>
                   <Markdown
                     name="description"
                     setMdRef={setMdRef}
@@ -208,63 +209,26 @@ const IssueDetailsForm = ({ issue = null, editMode = false }) => {
                     </IconButton>
                   )}
                 </Box>
+                <Box sx={linksList}>
+                  {user.current_role === AUDITOR ? (
+                    <ProjectLinksList name="links" />
+                  ) : (
+                    <Box sx={customerLinksList}>
+                      {values.links?.map((link, idx) => (
+                        <CustomLink link={link} key={idx} />
+                      ))}
+                    </Box>
+                  )}
+                </Box>
                 {addLinkField && (
                   <Box sx={{ mt: '10px' }}>
-                    {user.current_role === AUDITOR ? (
-                      <>
-                        <TagsField
-                          size="small"
-                          name="link"
-                          // label="Links"
-                          label="links not working, waiting api"
-                          sx={{ '& > div': { borderRadius: 0 } }}
-                        />
-                        {/*<ProjectLinksList name="link" />*/}
-                      </>
-                    ) : (
-                      <Box sx={linkForCustomerSx}>
-                        <LinkIcon fontSize="small" sx={{ mr: '15px' }} />
-                        <Link href={issue.link} target="_blank">
-                          {issue.link}
-                        </Link>
-                      </Box>
-                      // todo DELETE NEXT:
-                      // <Field
-                      //   component={TextField}
-                      //   name="link"
-                      //   fullWidth={true}
-                      //   disabled={false}
-                      //   sx={linkInputSx}
-                      //   inputProps={{ ...addTestsLabel('issue-link-input') }}
-                      //   InputProps={
-                      //     user.current_role === AUDITOR && issue?.link
-                      //       ? {
-                      //           endAdornment: (
-                      //             <InputAdornment position="end">
-                      //               <IconButton
-                      //                 edge="end"
-                      //                 type="button"
-                      //                 aria-label="Delete link"
-                      //                 onClick={() => {
-                      //                   setFieldValue('link', '');
-                      //                   setAddLinkField(false);
-                      //                   if (editMode) {
-                      //                     handleSubmit();
-                      //                   }
-                      //                 }}
-                      //                 {...addTestsLabel('delete-link-button')}
-                      //               >
-                      //                 <ClearIcon
-                      //                   color="secondary"
-                      //                   fontSize="small"
-                      //                 />
-                      //               </IconButton>
-                      //             </InputAdornment>
-                      //           ),
-                      //         }
-                      //       : null
-                      //   }
-                      // />
+                    {user.current_role === AUDITOR && (
+                      <TagsField
+                        size="small"
+                        name="links"
+                        label="Links"
+                        sx={{ '& > div': { borderRadius: 0 } }}
+                      />
                     )}
                   </Box>
                 )}
@@ -479,7 +443,7 @@ const issueValidationSchema = Yup.object().shape({
   description: Yup.string().required('Required'),
   severity: Yup.string().required('Required'),
   category: Yup.string().required('Required'),
-  // link: Yup.array().of(Yup.string().url()),
+  links: Yup.array().of(Yup.string().url()),
   include: Yup.boolean(),
   feedback: Yup.string(),
 });
@@ -507,15 +471,6 @@ const nameInputSx = theme => ({
   },
 });
 
-const linkInputSx = {
-  backgroundColor: 'white',
-  '& > div': { borderRadius: 0 },
-  '& input': {
-    fontSize: '16px',
-    padding: '8px 10px',
-  },
-};
-
 const editButtonText = theme => ({
   ml: '6px',
   color: theme.palette.secondary.main,
@@ -526,7 +481,7 @@ const editButtonText = theme => ({
 
 const editDescriptionButton = {
   position: 'absolute',
-  bottom: '10px',
+  bottom: '0',
   right: '15px',
   display: 'flex',
   alignItems: 'flex-end',
@@ -534,23 +489,26 @@ const editDescriptionButton = {
 
 const addLinkButton = {
   position: 'absolute',
-  bottom: '10px',
+  bottom: '0',
   left: '15px',
   display: 'flex',
   alignItems: 'center',
 };
 
-const linkForCustomerSx = {
+const linksList = {
+  border: '1px solid #e0e0e0',
+  borderRight: '2px solid #e0e0e0',
+  borderTop: 'none',
+  padding: '0 15px 15px',
+};
+
+const customerLinksList = {
   display: 'flex',
-  alignItems: 'center',
-  border: '2px solid #E5E5E5',
-  padding: '8px 10px',
-  overflow: 'hidden',
-  '& a': {
-    fontSize: '16px',
-    fontWeight: 500,
-    textDecorationColor: '#152BEA',
-    color: '#152BEA',
+  flexDirection: 'column',
+  '& p': {
+    display: 'flex',
+    alignItems: 'center',
+    fontSize: '18px',
   },
 };
 
@@ -579,6 +537,13 @@ const descriptionBlock = theme => ({
     width: '100%',
   },
 });
+
+const markdownWrapper = {
+  position: 'relative',
+  '& .rc-md-editor': {
+    borderBottom: 'none',
+  },
+};
 
 const issueStatusBlock = theme => ({
   display: 'flex',
