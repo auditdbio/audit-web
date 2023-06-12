@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom/dist';
 import { useDispatch } from 'react-redux';
 import { confirmAudit } from '../redux/actions/auditAction.js';
 import { useMemo } from 'react';
-import { CUSTOMER, DONE, SUBMITED } from '../redux/actions/types.js';
+import {CUSTOMER, DONE, IN_PROGRESS, RESOLVED, SUBMITED, WAITING_FOR_AUDITS} from '../redux/actions/types.js';
 import dayjs from 'dayjs';
 import { addTestsLabel } from '../lib/helper.js';
 
@@ -50,27 +50,21 @@ const AuditCard = ({ audit, request }) => {
         !request ? <Box sx={statusWrapper}>
           {audit.status !== SUBMITED && (
               <>
-                {audit.status === DONE ? (
+                {audit.status.toLowerCase() === RESOLVED.toLowerCase() ? (
                     <Box sx={{ backgroundColor: '#52176D' }} />
                 ) : (
-                    audit.status === 'pending' && (
+                    audit.status.toLowerCase() === WAITING_FOR_AUDITS.toLowerCase() && (
                         <Box sx={{ backgroundColor: '#FF9900' }} />
                     )
                 )}
-                {audit.status !== 'pending' && audit.status !== DONE && (
+                { audit.status.toLowerCase() !== RESOLVED.toLowerCase() && (
                     <Box sx={{ backgroundColor: '#09C010' }} />
                 )}
               </>
           )}
-          <Typography>
-            {!audit.status
-                ? 'Waiting for audit'
-                : audit.status === DONE
-                    ? 'Finished'
-                    : audit.status === SUBMITED
-                        ? 'Submitted'
-                        : 'In progress'}
-          </Typography>
+              <Typography>
+                {audit.status}
+              </Typography>
         </Box>
             :
             <Box sx={statusWrapper}>
