@@ -9,7 +9,7 @@ import { CUSTOMER, DONE, SUBMITED } from '../redux/actions/types.js';
 import dayjs from 'dayjs';
 import { addTestsLabel } from '../lib/helper.js';
 
-const AuditCard = ({ audit }) => {
+const AuditCard = ({ audit, request }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -46,31 +46,38 @@ const AuditCard = ({ audit }) => {
         </Typography>
       </Box>
 
-      <Box sx={statusWrapper}>
-        {audit.status !== SUBMITED && (
-          <>
-            {audit.status === DONE ? (
-              <Box sx={{ backgroundColor: '#52176D' }} />
-            ) : (
-              audit.status === 'pending' && (
-                <Box sx={{ backgroundColor: '#FF9900' }} />
-              )
-            )}
-            {audit.status !== 'pending' && audit.status !== DONE && (
-              <Box sx={{ backgroundColor: '#09C010' }} />
-            )}
-          </>
-        )}
-        <Typography>
-          {!audit.status
-            ? 'Waiting for audit'
-            : audit.status === DONE
-            ? 'Finished'
-            : audit.status === SUBMITED
-            ? 'Submitted'
-            : 'In progress'}
-        </Typography>
-      </Box>
+      {
+        !request ? <Box sx={statusWrapper}>
+          {audit.status !== SUBMITED && (
+              <>
+                {audit.status === DONE ? (
+                    <Box sx={{ backgroundColor: '#52176D' }} />
+                ) : (
+                    audit.status === 'pending' && (
+                        <Box sx={{ backgroundColor: '#FF9900' }} />
+                    )
+                )}
+                {audit.status !== 'pending' && audit.status !== DONE && (
+                    <Box sx={{ backgroundColor: '#09C010' }} />
+                )}
+              </>
+          )}
+          <Typography>
+            {!audit.status
+                ? 'Waiting for audit'
+                : audit.status === DONE
+                    ? 'Finished'
+                    : audit.status === SUBMITED
+                        ? 'Submitted'
+                        : 'In progress'}
+          </Typography>
+        </Box>
+            :
+            <Box sx={statusWrapper}>
+              <Box sx={{ backgroundColor: '#FF9900' }} />
+              <Typography>Request</Typography>
+            </Box>
+      }
       {!audit.status && (
         <CustomButton
           sx={[

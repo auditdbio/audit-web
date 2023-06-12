@@ -17,7 +17,7 @@ const Audits = () => {
         ))}
         {auditRequests?.map(audit => (
           <Grid key={audit.id} item xs={6} md={3} sm={4} sx={gridItemStyle}>
-            <AuditCard audit={audit} />
+            <AuditCard audit={audit} request={true} />
           </Grid>
         ))}
       </Grid>
