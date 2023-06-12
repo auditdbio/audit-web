@@ -14,7 +14,7 @@ const TagsField = ({ name, label, placeholder, size = 'medium', sx = {} }) => {
   const [state, setState] = useState('');
   const [error, setError] = useState(null);
   const handleAddTag = () => {
-    if (name !== 'scope' && name !== 'link') {
+    if (name !== 'scope' && name !== 'links') {
       if (state.length <= 30 && state) {
         if (field.value.length < 20) {
           fieldHelper.setValue([...field.value, state]);

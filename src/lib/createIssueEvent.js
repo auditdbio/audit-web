@@ -1,4 +1,4 @@
-export const createIssueEvent = values => {
+export const createIssueEvent = (values, prevLinksLength) => {
   const events = [];
   const keys = Object.keys(values);
 
@@ -33,10 +33,13 @@ export const createIssueEvent = values => {
         kind: 'IssueDescription',
         message: 'changed description',
       });
-    } else if (keys[0] === 'link') {
+    } else if (keys[0] === 'links') {
       events.push({
         kind: 'IssueLink',
-        message: values.link ? 'added new link' : 'deleted link',
+        message:
+          prevLinksLength < values.links?.length
+            ? 'added new link'
+            : 'deleted link',
       });
     }
   }
