@@ -165,86 +165,93 @@ const AuditRequestInfo = ({
           </Box>
           {!matchXs && (
             <Box sx={{ display: 'flex', gap: '25px', flexWrap: 'wrap' }}>
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                <EmailIcon />
-                <Box sx={{ display: 'grid' }}>
-                  {project?.creator_contacts ? (
-                    <Tooltip
-                      title={project?.creator_contacts?.email}
-                      arrow
-                      placement={'top'}
-                    >
-                      <Typography
-                        variant={'caption'}
-                        sx={contactStyle}
-                        noWrap={true}
-                      >
-                        {project?.creator_contacts?.email}
-                      </Typography>
-                    </Tooltip>
-                  ) : (
-                    <Tooltip
-                      title={
-                        project?.customer_contacts?.public_contacts
-                          ? project?.customer_contacts?.email
-                          : 'Hidden'
-                      }
-                      arrow
-                      placement={'top'}
-                    >
-                      <Typography
-                        variant={'caption'}
-                        sx={contactStyle}
-                        noWrap={true}
-                      >
-                        {project?.customer_contacts?.public_contacts
-                          ? project?.customer_contacts?.email
-                          : 'Hidden'}
-                      </Typography>
-                    </Tooltip>
-                  )}
+              { (project?.creator_contacts?.email ||
+                      (project?.customer_contacts?.email !== null && project?.customer_contacts?.email.length) ) &&
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                  <EmailIcon />
+                  <Box sx={{ display: 'grid' }}>
+                    {project?.creator_contacts ? (
+                        <Tooltip
+                            title={project?.creator_contacts?.email}
+                            arrow
+                            placement={'top'}
+                        >
+                          <Typography
+                              variant={'caption'}
+                              sx={contactStyle}
+                              noWrap={true}
+                          >
+                            {project?.creator_contacts?.email}
+                          </Typography>
+                        </Tooltip>
+                    ) : (
+                        <Tooltip
+                            title={
+                              project?.customer_contacts?.email !== null
+                                  ? project?.customer_contacts?.email
+                                  : 'Hidden'
+                            }
+                            arrow
+                            placement={'top'}
+                        >
+                          <Typography
+                              variant={'caption'}
+                              sx={contactStyle}
+                              noWrap={true}
+                          >
+                            {project?.customer_contacts?.email !== null
+                                ? project?.customer_contacts?.email
+                                : 'Hidden'}
+                          </Typography>
+                        </Tooltip>
+                    )}
+                  </Box>
                 </Box>
-              </Box>
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                <TelegramIcon />
-                <Box sx={{ display: 'grid' }}>
-                  {project?.creator_contacts ? (
-                    <Tooltip
-                      title={project?.creator_contacts?.telegram}
-                      arrow
-                      placement={'top'}
-                    >
-                      <Typography
-                        variant={'caption'}
-                        sx={contactStyle}
-                        noWrap={true}
-                      >
-                        {project?.creator_contacts?.telegram}
-                      </Typography>
-                    </Tooltip>
-                  ) : (
-                    <Tooltip
-                      title={
-                        project?.customer_contacts?.public_contacts
-                          ? project?.customer_contacts?.telegram
-                          : 'Hidden'
-                      }
-                      arrow
-                      placement={'top'}
-                    >
-                      <Typography
-                        variant={'caption'}
-                        sx={contactStyle}
-                        noWrap={true}
-                      >
-                        {project?.customer_contacts?.public_contacts
-                          ? project?.customer_contacts?.telegram
-                          : 'Hidden'}
-                      </Typography>
-                    </Tooltip>
-                  )}
+
+              }
+              { (project?.creator_contacts?.telegram ||
+                      (project?.customer_contacts?.telegram !== null && !!project?.customer_contacts?.telegram.length)) &&
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                  <TelegramIcon />
+                  <Box sx={{ display: 'grid' }}>
+                    {project?.creator_contacts ? (
+                        <Tooltip
+                            title={project?.creator_contacts?.telegram}
+                            arrow
+                            placement={'top'}
+                        >
+                          <Typography
+                              variant={'caption'}
+                              sx={contactStyle}
+                              noWrap={true}
+                          >
+                            {project?.creator_contacts?.telegram}
+                          </Typography>
+                        </Tooltip>
+                    ) : (
+                        <Tooltip
+                            title={
+                              project?.customer_contacts?.telegram !== null
+                                  ? project?.customer_contacts?.telegram
+                                  : 'Hidden'
+                            }
+                            arrow
+                            placement={'top'}
+                        >
+                          <Typography
+                              variant={'caption'}
+                              sx={contactStyle}
+                              noWrap={true}
+                          >
+                            {project?.customer_contacts?.telegram !== null
+                                ? project?.customer_contacts?.telegram
+                                : 'Hidden'}
+                          </Typography>
+                        </Tooltip>
+                    )}
+                  </Box>
                 </Box>
-              </Box>
+              }
             </Box>
           )}
         </Box>
@@ -259,6 +266,9 @@ const AuditRequestInfo = ({
                 justifyContent: 'center',
               }}
             >
+              {
+                (project?.creator_contacts?.email ||
+                    (project?.customer_contacts?.email !== null && project?.customer_contacts?.email.length) ) &&
               <Box sx={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                 <EmailIcon />
                 <Box sx={{ display: 'grid' }}>
@@ -279,7 +289,7 @@ const AuditRequestInfo = ({
                   ) : (
                     <Tooltip
                       title={
-                        project?.customer_contacts?.public_contacts
+                        project?.customer_contacts?.email !== null
                           ? project?.customer_contacts?.email
                           : 'Hidden'
                       }
@@ -291,7 +301,7 @@ const AuditRequestInfo = ({
                         sx={contactStyle}
                         noWrap={true}
                       >
-                        {project?.customer_contacts?.public_contacts
+                        {project?.customer_contacts?.email !== null
                           ? project?.customer_contacts?.email
                           : 'Hidden'}
                       </Typography>
@@ -299,46 +309,50 @@ const AuditRequestInfo = ({
                   )}
                 </Box>
               </Box>
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                <TelegramIcon />
-                <Box sx={{ display: 'grid' }}>
-                  {project?.creator_contacts ? (
-                    <Tooltip
-                      title={project?.creator_contacts?.telegram}
-                      arrow
-                      placement={'top'}
-                    >
-                      <Typography
-                        variant={'caption'}
-                        sx={contactStyle}
-                        noWrap={true}
-                      >
-                        {project?.creator_contacts?.telegram}
-                      </Typography>
-                    </Tooltip>
-                  ) : (
-                    <Tooltip
-                      title={
-                        project?.customer_contacts?.public_contacts
-                          ? project?.customer_contacts?.telegram
-                          : 'Hidden'
-                      }
-                      arrow
-                      placement={'top'}
-                    >
-                      <Typography
-                        variant={'caption'}
-                        sx={contactStyle}
-                        noWrap={true}
-                      >
-                        {project?.customer_contacts?.public_contacts
-                          ? project?.customer_contacts?.telegram
-                          : 'Hidden'}
-                      </Typography>
-                    </Tooltip>
-                  )}
+              }
+              { (project?.creator_contacts?.telegram ||
+                      (project?.customer_contacts?.telegram !== null && !!project?.customer_contacts?.telegram.length)) &&
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                  <TelegramIcon />
+                  <Box sx={{ display: 'grid' }}>
+                    {project?.creator_contacts ? (
+                        <Tooltip
+                            title={project?.creator_contacts?.telegram}
+                            arrow
+                            placement={'top'}
+                        >
+                          <Typography
+                              variant={'caption'}
+                              sx={contactStyle}
+                              noWrap={true}
+                          >
+                            {project?.creator_contacts?.telegram}
+                          </Typography>
+                        </Tooltip>
+                    ) : (
+                        <Tooltip
+                            title={
+                              project?.customer_contacts?.telegram !== null
+                                  ? project?.customer_contacts?.telegram
+                                  : 'Hidden'
+                            }
+                            arrow
+                            placement={'top'}
+                        >
+                          <Typography
+                              variant={'caption'}
+                              sx={contactStyle}
+                              noWrap={true}
+                          >
+                            {project?.customer_contacts?.telegram !== null
+                                ? project?.customer_contacts?.telegram
+                                : 'Hidden'}
+                          </Typography>
+                        </Tooltip>
+                    )}
+                  </Box>
                 </Box>
-              </Box>
+              }
             </Box>
           )}
           <Box sx={linkWrapper} className="audit-request-links">
