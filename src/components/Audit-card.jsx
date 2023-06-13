@@ -21,7 +21,7 @@ const AuditCard = ({ audit, request }) => {
       <Box sx={{ display: 'grid' }}>
         <Tooltip
           title={
-            audit?.auditor_contacts.public_contacts
+            audit?.auditor_contacts.email !== null
               ? audit?.auditor_contacts?.email
               : 'Hidden'
           }
@@ -29,7 +29,7 @@ const AuditCard = ({ audit, request }) => {
           placement={'top'}
         >
           <Typography sx={nameTextStyle} noWrap={true}>
-            {audit?.auditor_contacts.public_contacts
+            {audit?.auditor_contacts.email !== null
               ? audit?.auditor_contacts?.email
               : 'Hidden'}
           </Typography>

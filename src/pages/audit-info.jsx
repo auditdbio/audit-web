@@ -115,21 +115,21 @@ const AuditInfo = () => {
               />
               <Box sx={{ display: 'grid' }}>
                 <Tooltip
-                  title={audit?.auditor_first_name || 'Hidden'}
+                  title={audit?.auditor_first_name}
                   arrow
                   placement={'top'}
                 >
                   <Typography noWrap={true} sx={userNameWrapper}>
-                    {audit?.auditor_first_name || 'Hidden'}
+                    {audit?.auditor_first_name}
                   </Typography>
                 </Tooltip>
                 <Tooltip
-                  title={audit?.auditor_last_name || 'Hidden'}
+                  title={audit?.auditor_last_name}
                   arrow
                   placement={'top'}
                 >
                   <Typography noWrap={true} sx={userNameWrapper}>
-                    {audit?.auditor_last_name || 'Hidden'}
+                    {audit?.auditor_last_name}
                   </Typography>
                 </Tooltip>
               </Box>
@@ -138,29 +138,41 @@ const AuditInfo = () => {
               <Box sx={infoWrapper}>
                 <span>E-mail</span>
                 <Box sx={{ display: 'grid' }}>
-                  <Tooltip
-                    title={audit?.auditor_contacts?.email || 'Hidden'}
-                    arrow
-                    placement={'top'}
-                  >
-                    <Typography noWrap={true}>
-                      {audit?.auditor_contacts?.email || 'Hidden'}
-                    </Typography>
-                  </Tooltip>
+                  { (audit?.auditor_contacts?.email !== null) ?
+                    <Tooltip
+                        title={audit?.auditor_contacts?.email}
+                        arrow
+                        placement={'top'}
+                    >
+                      <Typography noWrap={true}>
+                        {audit?.auditor_contacts?.email}
+                      </Typography>
+                    </Tooltip>
+                      :
+                      <Typography noWrap={true}>
+                        Hidden
+                      </Typography>
+                  }
                 </Box>
               </Box>
               <Box sx={infoWrapper}>
                 <span>Telegram</span>
                 <Box sx={{ display: 'grid' }}>
-                  <Tooltip
-                    title={audit?.auditor_contacts?.telegram || 'Hidden'}
-                    arrow
-                    placement={'top'}
-                  >
-                    <Typography noWrap={true}>
-                      {audit?.auditor_contacts?.telegram || 'Hidden'}
-                    </Typography>
-                  </Tooltip>
+                  { (audit?.auditor_contacts?.telegram !== null) ?
+                    <Tooltip
+                        title={audit?.auditor_contacts?.telegram}
+                        arrow
+                        placement={'top'}
+                    >
+                      <Typography noWrap={true}>
+                        {audit?.auditor_contacts?.telegram}
+                      </Typography>
+                    </Tooltip>
+                      :
+                      <Typography noWrap={true}>
+                        Hidden
+                      </Typography>
+                  }
                 </Box>
               </Box>
               <Box sx={infoWrapper}>
