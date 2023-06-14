@@ -2,8 +2,8 @@ import React from 'react';
 import { useDispatch } from 'react-redux';
 import { Box, Button } from '@mui/material';
 import { Form, Formik } from 'formik';
-import Markdown from '../custom/Markdown-editor.jsx';
-import MarkdownTitlePlugin from './MarkdownTitlePlugin.jsx';
+import MarkdownEditor from '../markdown/Markdown-editor.jsx';
+import TitlePlugin from '../markdown/plugins/TitlePlugin.jsx';
 import { addTestsLabel } from '../../lib/helper.js';
 import { updateAuditIssue } from '../../redux/actions/issueAction.js';
 
@@ -28,9 +28,9 @@ const AddComment = ({ auditId, issueId }) => {
             style={{ width: '100%', paddingTop: '30px' }}
           >
             <Box sx={{ width: '100%' }}>
-              <Markdown
+              <MarkdownEditor
                 name="message"
-                plugins={[MarkdownTitlePlugin]}
+                plugins={[TitlePlugin]}
                 mdProps={{
                   placeholder: 'Leave a comment',
                   view: { menu: true, md: true, html: false },
@@ -42,7 +42,7 @@ const AddComment = ({ auditId, issueId }) => {
                 variant="contained"
                 type="submit"
                 color="secondary"
-                disabled={!values.message}
+                // disabled={!values.message}
                 {...addTestsLabel('add-comment-button')}
               >
                 Add comment

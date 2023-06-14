@@ -6,7 +6,7 @@ import theme from '../styles/themes.js';
 import { Box } from '@mui/system';
 import { Typography } from '@mui/material';
 import GitHubIcon from '@mui/icons-material/GitHub';
-import Markdown from './custom/Markdown.jsx';
+import Markdown from './markdown/Markdown.jsx';
 
 export default function ProjectModal({ open, handleClose, project }) {
   return (

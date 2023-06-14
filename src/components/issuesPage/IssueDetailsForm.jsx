@@ -19,7 +19,7 @@ import {
 } from '@mui/material';
 import { addTestsLabel } from '../../lib/helper.js';
 import { AUDITOR } from '../../redux/actions/types.js';
-import Markdown from '../custom/Markdown-editor.jsx';
+import MarkdownEditor from '../markdown/Markdown-editor.jsx';
 import IssueSeverity from './IssueSeverity.jsx';
 import theme from '../../styles/themes.js';
 import { clearMessage } from '../../redux/actions/auditAction.js';
@@ -171,7 +171,7 @@ const IssueDetailsForm = ({ issue = null, editMode = false }) => {
             <Box sx={infoWrapperSx}>
               <Box sx={descriptionBlock}>
                 <Box sx={markdownWrapper}>
-                  <Markdown
+                  <MarkdownEditor
                     name="description"
                     setMdRef={setMdRef}
                     mdProps={{
@@ -514,7 +514,7 @@ const customerLinksList = {
 
 const markdownSx = {
   height: '550px',
-  backgroundColor: 'transparent',
+  backgroundColor: '#fcfaf6',
   fontWeight: 500,
   fontSize: '20px !important',
   lineHeight: '24px',
