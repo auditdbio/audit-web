@@ -15,7 +15,7 @@ import { addReportAudit, clearMessage } from '../redux/actions/auditAction.js';
 import AuditUpload from '../components/forms/audit-upload/index.jsx';
 import Loader from '../components/Loader.jsx';
 import { SUBMITED } from '../redux/actions/types.js';
-import Markdown from '../components/custom/Markdown.jsx';
+import Markdown from '../components/markdown/Markdown.jsx';
 import { addTestsLabel } from '../lib/helper.js';
 import CustomLink from '../components/custom/CustomLink.jsx';
 import IssueDetailsForm from '../components/issuesPage/IssueDetailsForm.jsx';

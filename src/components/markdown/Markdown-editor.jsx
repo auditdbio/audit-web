@@ -1,38 +1,23 @@
-import React, { useEffect, useRef } from 'react';
-import MarkdownIt from 'markdown-it';
+import React, { useEffect, useRef, useState } from 'react';
 import MdEditor from 'react-markdown-editor-lite';
+import { useField } from 'formik';
+import { Box } from '@mui/material';
 import 'react-markdown-editor-lite/lib/index.css';
 import 'katex/dist/katex.min.css';
-import markdownItKatex from 'markdown-it-katex';
-import { Box } from '@mui/material';
-import { useField } from 'formik';
-import hljs from 'highlight.js';
-import 'highlight.js/styles/github.css';
-
-const mdParser = new MarkdownIt({
-  html: false,
-  linkify: true,
-  typographer: true,
-  highlight: function (str, lang) {
-    if (lang && hljs.getLanguage(lang)) {
-      try {
-        return hljs.highlight(str, { language: lang }).value;
-      } catch (__) {}
-    }
-
-    return '';
-  },
-}).use(markdownItKatex);
+import renderHTML from './renderHTML.jsx';
+import MarkdownInlineMath from './plugins/MarkdownInlineMath.jsx';
+import MarkdownMath from './plugins/MarkdownMath.jsx';
+import MarkdownCheckedList from './plugins/MarkdownCheckedList.jsx';
 
 const initialPlugins = [
   'header',
   'font-bold',
   'font-italic',
-  'font-underline',
   'font-strikethrough',
   'divider',
   'list-unordered',
   'list-ordered',
+  'list-checked',
   'block-quote',
   'block-wrap',
   'block-code-inline',
@@ -40,20 +25,31 @@ const initialPlugins = [
   'table',
   'image',
   'link',
+  'divider',
+  'inline-math',
+  'math',
+  'divider',
   'clear',
   'logger',
   'mode-toggle',
   'full-screen',
-  'tab-insert',
 ];
 
-const Markdown = ({ name, setMdRef, mdProps = {}, plugins = [] }) => {
+const MarkdownEditor = ({ name, setMdRef, mdProps = {}, plugins = [] }) => {
   const [markdownField, , markdownHelper] = useField(name);
+  const [markdown, setMarkdown] = useState('');
   const mdRef = useRef();
 
   useEffect(() => {
+    MdEditor.use(MarkdownInlineMath);
+    MdEditor.use(MarkdownMath);
+    MdEditor.use(MarkdownCheckedList);
     plugins.forEach(plugin => MdEditor.use(plugin));
   }, []);
+
+  useEffect(() => {
+    setMarkdown(markdownField.value);
+  }, [markdownField.value]);
 
   useEffect(() => {
     if (setMdRef) {
@@ -61,17 +57,22 @@ const Markdown = ({ name, setMdRef, mdProps = {}, plugins = [] }) => {
     }
   }, [mdRef]);
 
-  const handleEditorChange = ({ html, text }) => {
-    markdownHelper.setValue(text);
+  const handleEditorChange = ({ text }) => {
+    setMarkdown(text);
+  };
+
+  const handleEditorBlur = () => {
+    markdownHelper.setValue(markdown);
   };
 
   return (
     <Box data-color-mode="light" sx={wrapper}>
       <MdEditor
-        value={markdownField.value}
-        renderHTML={text => mdParser.render(text)}
+        renderHTML={renderHTML}
+        value={markdown}
         onChange={handleEditorChange}
-        style={{ height: '300px' }}
+        onBlur={handleEditorBlur}
+        style={{ height: '400px' }}
         ref={mdRef}
         plugins={[...plugins.map(p => p.pluginName), ...initialPlugins]}
         {...mdProps}
@@ -80,9 +81,10 @@ const Markdown = ({ name, setMdRef, mdProps = {}, plugins = [] }) => {
   );
 };
 
-export default Markdown;
+export default MarkdownEditor;
 
-const wrapper = theme => ({
+const wrapper = {
+  overflow: 'hidden',
   display: 'flex',
   gap: '16px',
   flexDirection: 'column',
@@ -100,10 +102,7 @@ const wrapper = theme => ({
     wordWrap: 'unset',
     flexShrink: 'unset',
   },
-  '& .katex .vlist': {
-    verticalAlign: 'unset',
-  },
   '& .mbin,.mrel': {
     margin: '0 3px',
   },
-});
+};

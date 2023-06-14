@@ -15,7 +15,7 @@ import {
 } from '../redux/actions/auditAction.js';
 import { CUSTOMER, DONE, PENDING, SUBMITED } from '../redux/actions/types.js';
 import dayjs from 'dayjs';
-import Markdown from '../components/custom/Markdown.jsx';
+import Markdown from '../components/markdown/Markdown.jsx';
 import { ASSET_URL } from '../services/urls.js';
 import { addTestsLabel } from '../lib/helper.js';
 import { handleOpenReport } from '../lib/openReport.js';
@@ -138,41 +138,37 @@ const AuditInfo = () => {
               <Box sx={infoWrapper}>
                 <span>E-mail</span>
                 <Box sx={{ display: 'grid' }}>
-                  { (audit?.auditor_contacts?.email !== null) ?
+                  {audit?.auditor_contacts?.email !== null ? (
                     <Tooltip
-                        title={audit?.auditor_contacts?.email}
-                        arrow
-                        placement={'top'}
+                      title={audit?.auditor_contacts?.email}
+                      arrow
+                      placement={'top'}
                     >
                       <Typography noWrap={true}>
                         {audit?.auditor_contacts?.email}
                       </Typography>
                     </Tooltip>
-                      :
-                      <Typography noWrap={true}>
-                        Hidden
-                      </Typography>
-                  }
+                  ) : (
+                    <Typography noWrap={true}>Hidden</Typography>
+                  )}
                 </Box>
               </Box>
               <Box sx={infoWrapper}>
                 <span>Telegram</span>
                 <Box sx={{ display: 'grid' }}>
-                  { (audit?.auditor_contacts?.telegram !== null) ?
+                  {audit?.auditor_contacts?.telegram !== null ? (
                     <Tooltip
-                        title={audit?.auditor_contacts?.telegram}
-                        arrow
-                        placement={'top'}
+                      title={audit?.auditor_contacts?.telegram}
+                      arrow
+                      placement={'top'}
                     >
                       <Typography noWrap={true}>
                         {audit?.auditor_contacts?.telegram}
                       </Typography>
                     </Tooltip>
-                      :
-                      <Typography noWrap={true}>
-                        Hidden
-                      </Typography>
-                  }
+                  ) : (
+                    <Typography noWrap={true}>Hidden</Typography>
+                  )}
                 </Box>
               </Box>
               <Box sx={infoWrapper}>

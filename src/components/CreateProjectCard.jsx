@@ -25,7 +25,7 @@ import * as Yup from 'yup';
 import { useLocation, useSearchParams } from 'react-router-dom';
 import { getAuditsRequest } from '../redux/actions/auditAction.js';
 import { AuditRequestsArray } from './custom/AuditRequestsArray.jsx';
-import Markdown from './custom/Markdown-editor.jsx';
+import MarkdownEditor from './markdown/Markdown-editor.jsx';
 import SalarySlider from './forms/salary-slider/salary-slider.jsx';
 import CloseProjectModal from './CloseProjectModal.jsx';
 import { DONE } from '../redux/actions/types.js';
@@ -124,6 +124,8 @@ const CreateProjectCard = ({ projectInfo }) => {
     <Formik
       initialValues={initialValues}
       validationSchema={validationSchema}
+      validateOnChange={false}
+      validateOnBlur={false}
       onSubmit={values => {
         const newValue = { ...values, price: parseInt(values.price) };
         if (editMode && projectInfo.id) {
@@ -272,7 +274,7 @@ const CreateProjectCard = ({ projectInfo }) => {
                     {/*</Box>*/}
                   </Box>
                   <Box className="description-box" sx={descriptionFieldWrapper}>
-                    <Markdown
+                    <MarkdownEditor
                       name="description"
                       mdProps={{
                         view: { menu: true, md: true, html: !matchXs },

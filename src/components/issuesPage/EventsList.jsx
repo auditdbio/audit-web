@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { Avatar, Box, Typography } from '@mui/material';
 import EventIcon from './EventIcon.jsx';
-import Markdown from '../custom/Markdown.jsx';
+import Markdown from '../markdown/Markdown.jsx';
 import { ASSET_URL } from '../../services/urls.js';
 import { AUDITOR, CUSTOMER } from '../../redux/actions/types.js';
 import CommentIcon from '../icons/issueEvents/CommentIcon.jsx';

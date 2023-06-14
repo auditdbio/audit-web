@@ -1,6 +1,6 @@
 import React from 'react';
 
-const MarkdownTitlePlugin = () => {
+const TitlePlugin = () => {
   return (
     <span style={{ fontWeight: 500, fontSize: '18px', marginRight: '30px' }}>
       <span>Add comment</span>
@@ -8,7 +8,7 @@ const MarkdownTitlePlugin = () => {
   );
 };
 
-MarkdownTitlePlugin.align = 'left';
-MarkdownTitlePlugin.pluginName = 'title';
+TitlePlugin.align = 'left';
+TitlePlugin.pluginName = 'title';
 
-export default MarkdownTitlePlugin;
+export default TitlePlugin;
