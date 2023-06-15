@@ -251,16 +251,18 @@ const AuditInfo = () => {
           {/*{(audit?.status === DONE ||*/}
           {/*  audit?.status === SUBMITED ||*/}
           {/*  audit?.status === PENDING) && (*/}
-          <Button
-            variant="contained"
-            color="primary"
-            type="button"
-            onClick={goToIssues}
-            sx={buttonSx}
-            {...addTestsLabel('issues-button')}
-          >
-            Issues ({issues?.length})
-          </Button>
+          {audit?.status && (
+            <Button
+              variant="contained"
+              color="primary"
+              type="button"
+              onClick={goToIssues}
+              sx={buttonSx}
+              {...addTestsLabel('issues-button')}
+            >
+              Issues ({issues?.length})
+            </Button>
+          )}
           {/*)}*/}
         </Box>
       </CustomCard>
