@@ -61,7 +61,7 @@ const TagsField = ({ name, label, placeholder, size = 'medium', sx = {} }) => {
         severity="error"
         text={error}
       />
-
+    <Box>
       <Field
         component={TextField}
         placeholder={placeholder ? placeholder : '● ● ● ● ● ● ●'}
@@ -148,6 +148,7 @@ const TagsField = ({ name, label, placeholder, size = 'medium', sx = {} }) => {
             </Modal>
           </>
       }
+    </Box>
     </Box>
   );
 };
