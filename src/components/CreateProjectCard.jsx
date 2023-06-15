@@ -280,7 +280,12 @@ const CreateProjectCard = ({ projectInfo }) => {
                     {/*  <AuditRequestsArray requests={auditRequests ?? []} />*/}
                     {/*</Box>*/}
                   </Box>
-                  <Box className="description-box" sx={descriptionFieldWrapper}>
+                  <Box
+                    className="description-box"
+                    sx={descriptionFieldWrapper(
+                      touched.description && errors.description,
+                    )}
+                  >
                     <MarkdownEditor
                       name="description"
                       setFieldTouched={setFieldTouched}
@@ -480,8 +485,9 @@ const fieldWrapper = theme => ({
     width: '100%',
   },
 });
-const descriptionFieldWrapper = theme => ({
+const descriptionFieldWrapper = error => ({
   width: '100%',
+  border: error ? '1px solid red' : '1px solid transparent',
 });
 
 const formAllFields = {
