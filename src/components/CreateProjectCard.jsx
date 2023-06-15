@@ -157,7 +157,6 @@ const CreateProjectCard = ({ projectInfo }) => {
         touched,
         errors,
       }) => {
-        console.log(errors);
         return (
           <Box sx={mainBox}>
             <Button
