@@ -232,6 +232,18 @@ const IssueDetailsForm = ({ issue = null, editMode = false }) => {
                     </Box>
                   )}
                 </Box>
+
+                {touched.description && errors.description && (
+                  <Typography
+                    sx={{
+                      color: `${theme.palette.error.main}!important`,
+                      fontSize: '14px',
+                    }}
+                  >
+                    {errors.description}
+                  </Typography>
+                )}
+
                 {addLinkField && (
                   <Box sx={{ mt: '10px' }}>
                     {user.current_role === AUDITOR && (
@@ -243,17 +255,6 @@ const IssueDetailsForm = ({ issue = null, editMode = false }) => {
                       />
                     )}
                   </Box>
-                )}
-
-                {touched.description && errors.description && (
-                  <Typography
-                    sx={{
-                      color: `${theme.palette.error.main}!important`,
-                      fontSize: '14px',
-                    }}
-                  >
-                    {errors.description}
-                  </Typography>
                 )}
               </Box>
 

@@ -107,7 +107,7 @@ const TagsField = ({
             ),
           }}
         />
-        {name !== 'scope' && (
+        {name !== 'scope' && name !== 'links' && (
           <>
             <Button
               sx={{ marginTop: '12px' }}
