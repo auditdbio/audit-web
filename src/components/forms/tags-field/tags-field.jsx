@@ -1,18 +1,28 @@
 import React, { useState } from 'react';
 import { Field, useField } from 'formik';
 import { TextField } from 'formik-mui';
-import { Box, IconButton, InputAdornment } from '@mui/material';
+import {Box, Button, IconButton, InputAdornment, Modal, Typography} from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import { useSelector } from 'react-redux';
 import { AUDITOR } from '../../../redux/actions/types.js';
 import CustomSnackbar from '../../custom/CustomSnackbar.jsx';
 import { addTestsLabel } from '../../../lib/helper.js';
+import CloseIcon from '@mui/icons-material/Close';
 
 const TagsField = ({ name, label, placeholder, size = 'medium', sx = {} }) => {
   const role = useSelector(s => s.user.user.current_role);
   const [field, meta, fieldHelper] = useField(name);
   const [state, setState] = useState('');
   const [error, setError] = useState(null);
+  const [open, setOpen] = useState(false);
+  const popularTags = [
+      'solidity',
+      'zkp',
+      'rust',
+      'defi',
+      'web3'
+  ]
+
   const handleAddTag = () => {
     if (name !== 'scope' && name !== 'links') {
       if (state.length <= 30 && state) {
@@ -39,6 +49,9 @@ const TagsField = ({ name, label, placeholder, size = 'medium', sx = {} }) => {
     }
   };
 
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+
   return (
     <Box sx={wrapper} className={'field-wrapper'}>
       <CustomSnackbar
@@ -48,10 +61,10 @@ const TagsField = ({ name, label, placeholder, size = 'medium', sx = {} }) => {
         severity="error"
         text={error}
       />
-
+    <Box>
       <Field
         component={TextField}
-        placeholder={placeholder ? placeholder : ''}
+        placeholder={placeholder ? placeholder : '● ● ● ● ● ● ●'}
         fullWidth={true}
         name={'tag-field'}
         disabled={false}
@@ -65,7 +78,7 @@ const TagsField = ({ name, label, placeholder, size = 'medium', sx = {} }) => {
           }
         }}
         onChange={e => setState(e.target.value)}
-        sx={[fieldSx, meta.error ? errorSx : {}, sx]}
+        sx={[fieldSx, meta.error ? errorSx : {}]}
         inputProps={{ ...addTestsLabel('tags-input') }}
         InputProps={{
           endAdornment: (
@@ -82,11 +95,81 @@ const TagsField = ({ name, label, placeholder, size = 'medium', sx = {} }) => {
           ),
         }}
       />
+      { name !== 'scope' &&
+          <>
+            <Button
+                sx={{marginTop: '12px'}}
+                color={role !== AUDITOR ? 'primary' : 'secondary'}
+                onClick={handleOpen}
+            >Popular tags
+            </Button>
+            <Modal
+                open={open}
+                onClose={handleClose}
+                aria-labelledby="modal-modal-title"
+                aria-describedby="modal-modal-description"
+            >
+              <Box sx={style}>
+                <Button
+                    sx={{
+                      position: 'absolute',
+                      top: '5px',
+                      right: '5px',
+                      minWidth: 'unset'
+                    }}
+                    onClick={handleClose}>
+                  <CloseIcon color={role !== AUDITOR ? 'primary' : 'secondary'} />
+                </Button>
+                <Box sx={{display: 'flex', flexWrap: 'wrap', gap: '8px'}}>
+                  {
+                    popularTags.map((tag, index) => (
+                        <Button
+                            key={index}
+                            sx={{ textTransform: 'none' }}
+                            color={role !== AUDITOR ? 'primary' : 'secondary'}
+                            disabled={field.value.includes(tag)}
+                            onClick={() => {
+                              if (field.value.length < 20) {
+                                fieldHelper.setValue([...field.value, tag]);
+                              } else {
+                                setError('The maximum number of tags that can be added is 20');
+                              }
+                              if (field.value.length === 19) {
+                                handleClose();
+                              }
+                            }}
+                        >
+                          {tag}
+                        </Button>
+                    ))
+                  }
+                </Box>
+              </Box>
+            </Modal>
+          </>
+      }
+    </Box>
     </Box>
   );
 };
 
 export default TagsField;
+
+const style = (theme) => ({
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 400,
+    bgcolor: 'background.paper',
+    borderRadius: '10px',
+    boxShadow: 24,
+    p: 4,
+    [theme.breakpoints.down('xs')]: {
+        p: 2,
+        width: 300,
+    }
+})
 
 const errorSx = theme => ({
   '& fieldset': {
@@ -98,6 +181,9 @@ const wrapper = theme => ({
   display: 'flex',
   gap: '28px',
   flexDirection: 'column',
+  '& button': {
+    textTransform: 'unset'
+  },
   '& p.Mui-error': {
     display: 'none',
   },
