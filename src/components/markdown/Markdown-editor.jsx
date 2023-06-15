@@ -35,8 +35,14 @@ const initialPlugins = [
   'full-screen',
 ];
 
-const MarkdownEditor = ({ name, setMdRef, mdProps = {}, plugins = [] }) => {
-  const [markdownField, , markdownHelper] = useField(name);
+const MarkdownEditor = ({
+  name,
+  setMdRef,
+  mdProps = {},
+  plugins = [],
+  setFieldTouched,
+}) => {
+  const [markdownField, meta, markdownHelper] = useField(name);
   const [markdown, setMarkdown] = useState('');
   const mdRef = useRef();
 
@@ -63,6 +69,9 @@ const MarkdownEditor = ({ name, setMdRef, mdProps = {}, plugins = [] }) => {
 
   const handleEditorBlur = () => {
     markdownHelper.setValue(markdown);
+    if (setFieldTouched && !meta.touched) {
+      setFieldTouched(name);
+    }
   };
 
   return (
@@ -86,7 +95,7 @@ export default MarkdownEditor;
 const wrapper = {
   overflow: 'hidden',
   display: 'flex',
-  gap: '16px',
+  gap: '5px',
   flexDirection: 'column',
   '& > *': {
     wordWrap: 'break-word',

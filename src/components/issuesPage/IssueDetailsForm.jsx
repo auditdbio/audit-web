@@ -123,7 +123,15 @@ const IssueDetailsForm = ({ issue = null, editMode = false }) => {
       validateOnChange={false}
       onSubmit={handleSubmitForm}
     >
-      {({ handleSubmit, values, setFieldValue, dirty }) => {
+      {({
+        handleSubmit,
+        values,
+        setFieldValue,
+        dirty,
+        setFieldTouched,
+        touched,
+        errors,
+      }) => {
         return (
           <Form onSubmit={handleSubmit} style={{ width: '100%' }}>
             <CustomSnackbar
@@ -174,9 +182,13 @@ const IssueDetailsForm = ({ issue = null, editMode = false }) => {
                   <MarkdownEditor
                     name="description"
                     setMdRef={setMdRef}
+                    setFieldTouched={setFieldTouched}
                     mdProps={{
                       view: getMarkdownInitialView(),
-                      placeholder: 'Description',
+                      placeholder:
+                        touched.description && errors.description
+                          ? 'Description is required'
+                          : 'Description',
                       style: markdownSx,
                     }}
                   />
@@ -231,6 +243,17 @@ const IssueDetailsForm = ({ issue = null, editMode = false }) => {
                       />
                     )}
                   </Box>
+                )}
+
+                {touched.description && errors.description && (
+                  <Typography
+                    sx={{
+                      color: `${theme.palette.error.main}!important`,
+                      fontSize: '14px',
+                    }}
+                  >
+                    {errors.description}
+                  </Typography>
                 )}
               </Box>
 
@@ -406,29 +429,6 @@ const IssueDetailsForm = ({ issue = null, editMode = false }) => {
                 )}
               </Box>
             </Box>
-
-            {/*{user.current_role === AUDITOR && (*/}
-            {/*  <Box sx={addIssueBox(issue?.events)}>*/}
-            {/*    <Button*/}
-            {/*      variant="contained"*/}
-            {/*      type="submit"*/}
-            {/*      color="primary"*/}
-            {/*      disabled={!dirty}*/}
-            {/*      sx={addIssueButton}*/}
-            {/*      onClick={() =>*/}
-            {/*        editMode &&*/}
-            {/*        mdRef?.current?.setView({*/}
-            {/*          menu: false,*/}
-            {/*          md: false,*/}
-            {/*          html: true,*/}
-            {/*        })*/}
-            {/*      }*/}
-            {/*      {...addTestsLabel('new-issue-button')}*/}
-            {/*    >*/}
-            {/*      {editMode ? 'Save changes' : 'Add issue'}*/}
-            {/*    </Button>*/}
-            {/*  </Box>*/}
-            {/*)}*/}
           </Form>
         );
       }}
@@ -439,8 +439,8 @@ const IssueDetailsForm = ({ issue = null, editMode = false }) => {
 export default IssueDetailsForm;
 
 const issueValidationSchema = Yup.object().shape({
-  name: Yup.string().required('Required'),
-  description: Yup.string().required('Required'),
+  name: Yup.string().required('Title is required'),
+  description: Yup.string().required('Description required'),
   severity: Yup.string().required('Required'),
   category: Yup.string().required('Required'),
   links: Yup.array().of(Yup.string().url()),
