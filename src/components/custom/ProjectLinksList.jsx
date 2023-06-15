@@ -1,4 +1,4 @@
-import { Box, IconButton, Tooltip, Typography } from '@mui/material';
+import { Box, IconButton, Typography } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import theme from '../../styles/themes.js';
 import { FieldArray, useField } from 'formik';
@@ -10,10 +10,13 @@ export const ProjectLinksList = ({ name }) => {
 
   return (
     <Box>
-      {meta.error && (
+      {meta.touched && meta.error && (
         <Typography
           variant={'body1'}
-          sx={{ color: `${theme.palette.error.main}!important` }}
+          sx={{
+            color: `${theme.palette.error.main}!important`,
+            fontSize: '16px',
+          }}
         >
           Links required
         </Typography>

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Button, useMediaQuery } from '@mui/material';
+import { Box, Button, Typography, useMediaQuery } from '@mui/material';
 import theme, { radiusOfComponents } from '../styles/themes.js';
 import { useNavigate } from 'react-router-dom/dist';
 import TagsArray from './tagsArray/index.jsx';
@@ -124,8 +124,6 @@ const CreateProjectCard = ({ projectInfo }) => {
     <Formik
       initialValues={initialValues}
       validationSchema={validationSchema}
-      validateOnChange={false}
-      validateOnBlur={false}
       onSubmit={values => {
         const newValue = { ...values, price: parseInt(values.price) };
         if (editMode && projectInfo.id) {
@@ -151,7 +149,14 @@ const CreateProjectCard = ({ projectInfo }) => {
         }
       }}
     >
-      {({ handleSubmit, values, setFieldValue }) => {
+      {({
+        handleSubmit,
+        values,
+        setFieldValue,
+        setFieldTouched,
+        touched,
+        errors,
+      }) => {
         return (
           <Box sx={mainBox}>
             <Button
@@ -255,6 +260,7 @@ const CreateProjectCard = ({ projectInfo }) => {
                           size={matchMd ? 'small' : 'medium'}
                           name="tags"
                           label="Tags"
+                          setFieldTouched={setFieldTouched}
                         />
                         <TagsArray name="tags" />
                       </Box>
@@ -263,6 +269,7 @@ const CreateProjectCard = ({ projectInfo }) => {
                           size={matchMd ? 'small' : 'medium'}
                           name="scope"
                           label="Project links"
+                          setFieldTouched={setFieldTouched}
                         />
                         <ProjectLinksList name="scope" />
                         <SalarySlider name="price" />
@@ -276,10 +283,21 @@ const CreateProjectCard = ({ projectInfo }) => {
                   <Box className="description-box" sx={descriptionFieldWrapper}>
                     <MarkdownEditor
                       name="description"
+                      setFieldTouched={setFieldTouched}
                       mdProps={{
                         view: { menu: true, md: true, html: !matchXs },
                       }}
                     />
+                    {touched.description && errors.description && (
+                      <Typography
+                        sx={{
+                          color: `${theme.palette.error.main}!important`,
+                          fontSize: '14px',
+                        }}
+                      >
+                        {errors.description}
+                      </Typography>
+                    )}
                   </Box>
                   <Button
                     type={'submit'}
