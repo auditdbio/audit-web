@@ -46,12 +46,6 @@ const AuditInfo = () => {
     }, 500);
   }, [descriptionRef.current]);
 
-  useEffect(() => {
-    if (issuesAuditId !== id) {
-      dispatch(getIssues(id));
-    }
-  }, []);
-
   const audit = useMemo(() => {
     if (auditRequest && !auditConfirm) {
       return auditRequest;
@@ -59,6 +53,12 @@ const AuditInfo = () => {
       return auditConfirm;
     }
   }, [id, auditConfirm, auditRequest]);
+
+  useEffect(() => {
+    if (issuesAuditId !== id && audit?.status) {
+      dispatch(getIssues(id));
+    }
+  }, [audit?.status, issuesAuditId]);
 
   const handleConfirm = () => {
     dispatch(confirmAudit(audit));
