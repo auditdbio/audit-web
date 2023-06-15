@@ -144,54 +144,63 @@ const PublicProfile = () => {
                 alt="User photo"
               />
             </Box>
-            <Box sx={infoStyle}>
-              <Box sx={infoInnerStyle}>
-                <Box sx={infoWrapper}>
-                  <span>First Name</span>
-                  <Typography noWrap={true}>{data.first_name}</Typography>
-                </Box>
-                <Box sx={infoWrapper}>
-                  <span>Last name</span>
-                  <Typography noWrap={true}>{data.last_name}</Typography>
-                </Box>
-                <Box sx={infoWrapper}>
-                  <span>Telegram</span>
-                  <Typography noWrap={true}>
-                    {data.contacts?.public_contacts
-                      ? data.contacts?.telegram
-                      : 'Hidden'}
-                  </Typography>
-                </Box>
-                {role === AUDITOR && (
+            <Box>
+              <Box sx={infoStyle}>
+                <Box sx={infoInnerStyle}>
                   <Box sx={infoWrapper}>
-                    <span>Price range:</span>
-                    {data?.price_range?.from && data?.price_range?.to && (
-                      <Typography>
-                        ${data?.price_range?.from} - {data?.price_range?.to} per
-                        line
-                      </Typography>
-                    )}
+                    <span>First Name</span>
+                    <Typography noWrap={true}>{data.first_name}</Typography>
                   </Box>
-                )}
-              </Box>
-              <Box sx={infoInnerStyle}>
-                {role !== AUDITOR && (
                   <Box sx={infoWrapper}>
-                    <span>Company</span>
-                    <Typography noWrap={true}>{data.company}</Typography>
+                    <span>Last name</span>
+                    <Typography noWrap={true}>{data.last_name}</Typography>
                   </Box>
-                )}
-                <Box sx={infoWrapper}>
-                  <span>E-mail</span>
-                  <Typography noWrap={true}>
-                    {data.contacts?.public_contacts
-                      ? data.contacts?.email
-                      : 'Hidden'}
-                  </Typography>
+                  {role === AUDITOR && (
+                    <Box sx={infoWrapper}>
+                      <span>Price range:</span>
+                      {data?.price_range?.from && data?.price_range?.to && (
+                        <Typography>
+                          ${data?.price_range?.from} - {data?.price_range?.to}{' '}
+                          per line
+                        </Typography>
+                      )}
+                    </Box>
+                  )}
+                </Box>
+                <Box sx={infoInnerStyle}>
+                  {role !== AUDITOR && (
+                    <Box sx={infoWrapper}>
+                      <span>Company</span>
+                      <Typography noWrap={true}>{data.company}</Typography>
+                    </Box>
+                  )}
+                  <Box sx={infoWrapper}>
+                    <span>E-mail</span>
+                    <Typography noWrap={true}>
+                      {data.contacts?.public_contacts
+                        ? data.contacts?.email
+                        : 'Hidden'}
+                    </Typography>
+                  </Box>
+                  <Box sx={infoWrapper}>
+                    <span>Telegram</span>
+                    <Typography noWrap={true}>
+                      {data.contacts?.public_contacts
+                        ? data.contacts?.telegram
+                        : 'Hidden'}
+                    </Typography>
+                  </Box>
                 </Box>
               </Box>
               <Box
-                sx={{ display: 'flex', flexDirection: 'column', gap: '15px' }}
+                sx={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '15px',
+                  '& .tagsWrapper': {
+                    width: '100%',
+                  },
+                }}
               >
                 <Box sx={infoWrapper}>
                   <Typography
@@ -307,7 +316,9 @@ const avatarStyle = theme => ({
 const contentWrapper = theme => ({
   display: 'flex',
   gap: '70px',
-  justifyContent: 'space-between',
+  justifyContent: 'center',
+  margin: '0 auto',
+  maxWidth: '1200px',
   [theme.breakpoints.down('md')]: {
     gap: '50px',
   },
