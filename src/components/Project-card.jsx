@@ -2,7 +2,7 @@ import React from 'react';
 import { Box, Button, Tooltip, Typography } from '@mui/material';
 import Currency from './icons/Currency.jsx';
 import Star from './icons/Star.jsx';
-import { AUDITOR, DONE, SUBMITED } from '../redux/actions/types.js';
+import {AUDITOR, DONE, RESOLVED, SUBMITED, WAITING_FOR_AUDITS} from '../redux/actions/types.js';
 import { useNavigate } from 'react-router-dom/dist';
 import { useSelector } from 'react-redux';
 import { addTestsLabel } from '../lib/helper.js';
@@ -14,6 +14,7 @@ const ProjectCard = ({ type, project }) => {
   const handleClick = () => {
     if (type === AUDITOR) {
       navigate(`/audit-request-offer/${project.id}`);
+      window.scrollTo({ top: 0, left: 0 });
     } else {
       navigate(`/edit-project/${project.id}`);
     }
@@ -68,26 +69,21 @@ const ProjectCard = ({ type, project }) => {
           <Box sx={statusWrapper}>
             {project.status !== SUBMITED && (
               <>
-                {project.status === DONE ? (
+                {project.status.toLowerCase() === RESOLVED.toLowerCase() ? (
                   <Box sx={{ backgroundColor: '#52176D' }} />
                 ) : (
-                  project.status === 'pending' && (
+                  project.status.toLowerCase() === WAITING_FOR_AUDITS.toLowerCase() && (
                     <Box sx={{ backgroundColor: '#FF9900' }} />
                   )
                 )}
-                {project.status !== 'pending' && project.status !== DONE && (
+                {project.status.toLowerCase() !== WAITING_FOR_AUDITS.toLowerCase() &&
+                    project.status.toLowerCase() !== RESOLVED.toLowerCase() && (
                   <Box sx={{ backgroundColor: '#09C010' }} />
                 )}
               </>
             )}
             <Typography>
-              {!project.status
-                ? 'Waiting for audit'
-                : project.status === DONE
-                ? 'Finished'
-                : project.status === SUBMITED
-                ? 'Submitted'
-                : 'In progress'}
+              {project.status}
             </Typography>
           </Box>
         ) : (

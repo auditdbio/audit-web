@@ -47,6 +47,7 @@ const AuditorCard = ({ auditor }) => {
         handleClose={handleCloseModal}
         auditor={auditor}
         handleError={handleError}
+        setError={setErrorMessage}
       />
       <CustomSnackbar
         autoHideDuration={3000}

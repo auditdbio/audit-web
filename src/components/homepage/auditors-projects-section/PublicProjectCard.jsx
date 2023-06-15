@@ -12,6 +12,7 @@ const PublicProjectCard = ({ project }) => {
   const navigate = useNavigate();
   const [message, setMessage] = useState(null);
   const [openModal, setOpenModal] = useState(false);
+  const [errorMessage, setErrorMessage] = useState(null);
   const handleView = () => {
     setOpenModal(true);
   };
@@ -39,6 +40,7 @@ const PublicProjectCard = ({ project }) => {
             handleError={handleError}
             isModal={true}
             redirect={true}
+            setError={setErrorMessage}
           />
         </Box>
       </Modal>
@@ -66,10 +68,13 @@ const PublicProjectCard = ({ project }) => {
 
       <CustomSnackbar
         autoHideDuration={3000}
-        open={!!message}
-        onClose={() => setMessage(null)}
-        severity="success"
-        text={message}
+        open={!!message || !!errorMessage}
+        onClose={() => {
+          setMessage(null);
+          setErrorMessage(null);
+        }}
+        severity={errorMessage ? 'error' : 'success'}
+        text={message || errorMessage}
       />
 
       <Box sx={statusWrapper}>

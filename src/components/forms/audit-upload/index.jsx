@@ -117,4 +117,7 @@ const inputWrapper = theme => ({
     overflow: 'hidden',
     whiteSpace: 'noWrap',
   },
+  [theme.breakpoints.down('xs')]: {
+    width: '200px',
+  },
 });

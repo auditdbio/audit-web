@@ -15,16 +15,16 @@ const CustomLink = ({ link, showIcon = true, sx = {} }) => {
 
   useEffect(() => {
     const boxWidth = linkBoxRef.current?.offsetWidth;
-    const linkElement = linkBoxRef.current?.querySelector('a');
+    const linkElement = linkBoxRef.current?.querySelector('span');
     const linkWidth = linkElement?.offsetWidth;
 
-    if (linkWidth >= boxWidth - 40) setIsNotFit(true);
+    if (linkWidth >= boxWidth) setIsNotFit(true);
   }, []);
 
   return (
     <Box sx={{ display: 'flex', width: '100%' }}>
       <Tooltip title={link} arrow placement="top">
-        <Typography noWrap={true} sx={linkBoxSx} ref={linkBoxRef}>
+        <Typography noWrap={true} sx={linkBoxSx}>
           {showIcon &&
             (/^https?:\/\/(www\.)?github\.com/.test(link) ? (
               <GitHubIcon sx={{ mr: '8px' }} />
@@ -35,6 +35,7 @@ const CustomLink = ({ link, showIcon = true, sx = {} }) => {
             href={/^https?:\/\//.test(link) ? link : `https://${link}`}
             target="_blank"
             sx={[linkSx, isNotFit && { maxWidth: '90%' }, sx]}
+            ref={linkBoxRef}
           >
             <span>
               {isNotFit ? shortLink.slice(0, shortLink.length / 2) : shortLink}
@@ -51,14 +52,14 @@ export default CustomLink;
 
 const linkBoxSx = {
   mb: '10px',
-  maxWidth: '100%',
+  width: '100%',
 };
 
 const linkSx = {
   color: '#152BEA',
   textDecoration: 'none',
   display: 'flex',
-  maxWidth: '100%',
+  width: '100%',
   '& span': {
     overflow: 'hidden',
     textOverflow: 'ellipsis',

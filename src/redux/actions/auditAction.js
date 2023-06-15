@@ -10,12 +10,10 @@ import {
   DELETE_REQUEST,
   GET_AUDIT_REQUEST,
   GET_AUDITS,
-  PROJECT_CREATE,
   REQUEST_ERROR,
-  SUBMIT_AUDIT,
+  SET_CURRENT_AUDIT_PARTNER,
 } from './types.js';
 import { history } from '../../services/history.js';
-import dayjs from 'dayjs';
 
 const API_URL = import.meta.env.VITE_API_BASE_URL;
 
@@ -168,6 +166,33 @@ export const confirmAudit = values => {
         history.back();
         dispatch({ type: CONFIRM_AUDIT, payload: data });
       });
+  };
+};
+
+export const setCurrentAuditPartner = audit => {
+  return (dispatch, getState) => {
+    const state = getState();
+    const { user } = state.user;
+    const { currentAuditPartner } = state.audits;
+
+    if (
+      currentAuditPartner?.user_id === audit?.customer_id ||
+      currentAuditPartner?.user_id === audit?.auditor_id
+    ) {
+      return;
+    }
+
+    if (audit && user?.id === audit?.auditor_id) {
+      axios
+        .get(`${API_URL}/customer/${audit?.customer_id}`)
+        .then(({ data }) => {
+          dispatch({ type: SET_CURRENT_AUDIT_PARTNER, payload: data });
+        });
+    } else if (audit && user?.id === audit?.customer_id) {
+      axios.get(`${API_URL}/auditor/${audit?.auditor_id}`).then(({ data }) => {
+        dispatch({ type: SET_CURRENT_AUDIT_PARTNER, payload: data });
+      });
+    }
   };
 };
 
