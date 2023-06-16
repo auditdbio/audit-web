@@ -91,13 +91,24 @@ const IssuesList = ({ auditId }) => {
 
       <Box sx={{ display: 'flex', width: '100%', justifyContent: 'flex-end' }}>
         <Box sx={columnsTitleBlock}>
-          <Button sx={[columnText, columnTitle]} onClick={handleStatusSort}>
+          <Button
+            sx={[columnText, columnTitle, columnTitleHidden]}
+            onClick={handleStatusSort}
+          >
             <span>Status</span>
-            {sortType === STATUS_ASCENDING ? <ArrowUpIcon /> : <ArrowIcon />}
+            <span>
+              {sortType === STATUS_ASCENDING ? <ArrowUpIcon /> : <ArrowIcon />}
+            </span>
           </Button>
           <Button sx={[columnText, columnTitle]} onClick={handleSeveritySort}>
             <span>Severity</span>
-            {sortType === SEVERITY_ASCENDING ? <ArrowUpIcon /> : <ArrowIcon />}
+            <span>
+              {sortType === SEVERITY_ASCENDING ? (
+                <ArrowUpIcon />
+              ) : (
+                <ArrowIcon />
+              )}
+            </span>
           </Button>
         </Box>
       </Box>
@@ -155,18 +166,28 @@ const columnsTitleBlock = theme => ({
   display: 'flex',
   width: '30%',
   [theme.breakpoints.down('xs')]: {
-    display: 'none',
+    pr: '15px',
+    justifyContent: 'flex-end',
   },
 });
 
-const columnTitle = {
+const columnTitle = theme => ({
   width: '50%',
   whiteSpace: 'nowrap',
   textTransform: 'none',
   display: 'flex',
   justifyContent: 'center',
   columnGap: '10px',
-};
+  [theme.breakpoints.down('xs')]: {
+    fontSize: '16px',
+  },
+});
+
+const columnTitleHidden = theme => ({
+  [theme.breakpoints.down('xs')]: {
+    display: 'none',
+  },
+});
 
 const columnText = theme => ({
   color: '#434242',

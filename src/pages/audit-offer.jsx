@@ -302,6 +302,9 @@ const AuditOffer = () => {
                     flexDirection: 'column',
                     alignItems: 'center',
                     gap: '20px',
+                    [theme.breakpoints.down('xs')]: {
+                      gap: '10px',
+                    },
                   }}
                 >
                   <IssuesList auditId={auditId} />
