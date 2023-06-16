@@ -61,7 +61,9 @@ const IssueDetailsForm = ({ issue = null, editMode = false }) => {
     setTimeout(() => nameInputRef.current?.focus(), 100);
   };
 
-  const handleDescriptionEdit = handleSubmit => {
+  const handleDescriptionEdit = (handleSubmit, values) => {
+    if (!values.description?.trim()) return;
+
     if (isEditDescription) {
       mdRef?.current?.setView({ menu: false, md: false, html: true });
       handleSubmit();
@@ -196,7 +198,9 @@ const IssueDetailsForm = ({ issue = null, editMode = false }) => {
                     <IconButton
                       type="button"
                       aria-label="Edit description"
-                      onClick={() => handleDescriptionEdit(handleSubmit)}
+                      onClick={() =>
+                        handleDescriptionEdit(handleSubmit, values)
+                      }
                       sx={editDescriptionButton}
                       {...addTestsLabel('edit-description-button')}
                     >
@@ -263,7 +267,6 @@ const IssueDetailsForm = ({ issue = null, editMode = false }) => {
                   <Box sx={{ mb: '20px' }}>
                     <Box sx={statusBlockAlign}>
                       <Typography sx={statusBlockTitle}>
-                        <ArrowIcon />
                         <span>Status</span>
                       </Typography>
                       <Typography
@@ -352,7 +355,6 @@ const IssueDetailsForm = ({ issue = null, editMode = false }) => {
                         sx={[statusBlockTitle, { cursor: 'pointer' }]}
                         onClick={() => categoryInputRef.current?.focus()}
                       >
-                        <ArrowIcon />
                         <span>Category</span>
                       </Typography>
                       <Field
