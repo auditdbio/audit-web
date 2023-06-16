@@ -5,7 +5,14 @@ import { useNavigate } from 'react-router-dom/dist';
 import { useDispatch } from 'react-redux';
 import { confirmAudit } from '../redux/actions/auditAction.js';
 import { useMemo } from 'react';
-import {CUSTOMER, DONE, IN_PROGRESS, RESOLVED, SUBMITED, WAITING_FOR_AUDITS} from '../redux/actions/types.js';
+import {
+  CUSTOMER,
+  DONE,
+  IN_PROGRESS,
+  RESOLVED,
+  SUBMITED,
+  WAITING_FOR_AUDITS,
+} from '../redux/actions/types.js';
 import dayjs from 'dayjs';
 import { addTestsLabel } from '../lib/helper.js';
 
@@ -46,32 +53,33 @@ const AuditCard = ({ audit, request }) => {
         </Typography>
       </Box>
 
-      {
-        !request ? <Box sx={statusWrapper}>
+      {!request ? (
+        <Box sx={statusWrapper}>
           {audit.status !== SUBMITED && (
-              <>
-                {audit.status.toLowerCase() === RESOLVED.toLowerCase() ? (
-                    <Box sx={{ backgroundColor: '#52176D' }} />
-                ) : (
-                    audit.status.toLowerCase() === WAITING_FOR_AUDITS.toLowerCase() && (
-                        <Box sx={{ backgroundColor: '#FF9900' }} />
-                    )
+            <>
+              {audit.status.toLowerCase() === RESOLVED.toLowerCase() ? (
+                <Box sx={{ backgroundColor: '#52176D' }} />
+              ) : (
+                audit.status.toLowerCase() ===
+                  WAITING_FOR_AUDITS.toLowerCase() && (
+                  <Box sx={{ backgroundColor: '#FF9900' }} />
+                )
+              )}
+              {audit.status.toLowerCase() !== RESOLVED.toLowerCase() &&
+                audit.status.toLowerCase() !==
+                  WAITING_FOR_AUDITS.toLowerCase() && (
+                  <Box sx={{ backgroundColor: '#09C010' }} />
                 )}
-                { audit.status.toLowerCase() !== RESOLVED.toLowerCase() && (
-                    <Box sx={{ backgroundColor: '#09C010' }} />
-                )}
-              </>
+            </>
           )}
-              <Typography>
-                {audit.status}
-              </Typography>
+          <Typography>{audit.status}</Typography>
         </Box>
-            :
-            <Box sx={statusWrapper}>
-              <Box sx={{ backgroundColor: '#FF9900' }} />
-              <Typography>Request</Typography>
-            </Box>
-      }
+      ) : (
+        <Box sx={statusWrapper}>
+          <Box sx={{ backgroundColor: '#FF9900' }} />
+          <Typography>Request</Typography>
+        </Box>
+      )}
       {!audit.status && (
         <CustomButton
           sx={[

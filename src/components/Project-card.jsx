@@ -2,14 +2,22 @@ import React from 'react';
 import { Box, Button, Tooltip, Typography } from '@mui/material';
 import Currency from './icons/Currency.jsx';
 import Star from './icons/Star.jsx';
-import {AUDITOR, DONE, RESOLVED, SUBMITED, WAITING_FOR_AUDITS} from '../redux/actions/types.js';
+import {
+  AUDITOR,
+  DONE,
+  RESOLVED,
+  SUBMITED,
+  WAITING_FOR_AUDITS,
+} from '../redux/actions/types.js';
 import { useNavigate } from 'react-router-dom/dist';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { addTestsLabel } from '../lib/helper.js';
+import { startAudit } from '../redux/actions/auditAction.js';
 
 const ProjectCard = ({ type, project }) => {
   const navigate = useNavigate();
   const currentRole = useSelector(s => s.user.user.current_role);
+  const dispatch = useDispatch();
 
   const handleClick = () => {
     if (type === AUDITOR) {
@@ -22,6 +30,10 @@ const ProjectCard = ({ type, project }) => {
 
   const handleMakeCopy = () => {
     navigate(`/edit-project/${project.id}?copy=true`);
+  };
+
+  const handleStartAudit = () => {
+    dispatch(startAudit(project));
   };
 
   return (
@@ -72,19 +84,19 @@ const ProjectCard = ({ type, project }) => {
                 {project.status.toLowerCase() === RESOLVED.toLowerCase() ? (
                   <Box sx={{ backgroundColor: '#52176D' }} />
                 ) : (
-                  project.status.toLowerCase() === WAITING_FOR_AUDITS.toLowerCase() && (
+                  project.status.toLowerCase() ===
+                    WAITING_FOR_AUDITS.toLowerCase() && (
                     <Box sx={{ backgroundColor: '#FF9900' }} />
                   )
                 )}
-                {project.status.toLowerCase() !== WAITING_FOR_AUDITS.toLowerCase() &&
-                    project.status.toLowerCase() !== RESOLVED.toLowerCase() && (
-                  <Box sx={{ backgroundColor: '#09C010' }} />
-                )}
+                {project.status.toLowerCase() !==
+                  WAITING_FOR_AUDITS.toLowerCase() &&
+                  project.status.toLowerCase() !== RESOLVED.toLowerCase() && (
+                    <Box sx={{ backgroundColor: '#09C010' }} />
+                  )}
               </>
             )}
-            <Typography>
-              {project.status}
-            </Typography>
+            <Typography>{project.status}</Typography>
           </Box>
         ) : (
           <Box sx={statusWrapper}>
@@ -110,9 +122,13 @@ const ProjectCard = ({ type, project }) => {
           onClick={handleClick}
           {...addTestsLabel(type === AUDITOR ? 'submit-button' : 'edit-button')}
         >
-          {type === AUDITOR ? 'Submit' : 'Edit'}
+          {type === AUDITOR
+            ? project?.status.toLowerCase() !== WAITING_FOR_AUDITS.toLowerCase()
+              ? 'Submit'
+              : 'View'
+            : 'Edit'}
         </Button>
-        {project.name && (
+        {type !== AUDITOR ? (
           <Button
             sx={copyBtn}
             onClick={handleMakeCopy}
@@ -120,6 +136,19 @@ const ProjectCard = ({ type, project }) => {
           >
             Make a copy
           </Button>
+        ) : (
+          project?.status.toLowerCase() ===
+            WAITING_FOR_AUDITS.toLowerCase() && (
+            <Button
+              sx={[editButton, { marginTop: '12px' }]}
+              variant={'contained'}
+              color={'primary'}
+              onClick={handleStartAudit}
+              {...addTestsLabel('make-copy-button')}
+            >
+              Start audit
+            </Button>
+          )
         )}
       </Box>
     </Box>

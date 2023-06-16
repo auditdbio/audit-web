@@ -11,10 +11,14 @@ import { Box, Button, Typography, Tooltip } from '@mui/material';
 import theme from '../styles/themes.js';
 import { CustomCard } from '../components/custom/Card.jsx';
 import Layout from '../styles/Layout.jsx';
-import { addReportAudit, clearMessage } from '../redux/actions/auditAction.js';
+import {
+  addReportAudit,
+  clearMessage,
+  startAudit,
+} from '../redux/actions/auditAction.js';
 import AuditUpload from '../components/forms/audit-upload/index.jsx';
 import Loader from '../components/Loader.jsx';
-import { SUBMITED } from '../redux/actions/types.js';
+import { SUBMITED, WAITING_FOR_AUDITS } from '../redux/actions/types.js';
 import Markdown from '../components/markdown/Markdown.jsx';
 import { addTestsLabel } from '../lib/helper.js';
 import CustomLink from '../components/custom/CustomLink.jsx';
@@ -232,39 +236,65 @@ const AuditOffer = () => {
                         ))}
                       </Box>
 
-                      <Box sx={workflowToggleBox}>
-                        <Button
-                          onClick={() => setAuditDBWorkflow(true)}
-                          sx={workflowButton(auditDBWorkflow)}
+                      {audit?.status.toLowerCase() ===
+                      WAITING_FOR_AUDITS.toLowerCase() ? (
+                        <Box
+                          sx={{
+                            display: 'flex',
+                            justifyContent: 'center',
+                            maxWidth: '400px',
+                            margin: '0 auto',
+                          }}
                         >
-                          {issues?.length
-                            ? `Issues (${issues.length})`
-                            : 'New issue'}
-                        </Button>
-                        <Button
-                          onClick={() => setAuditDBWorkflow(false)}
-                          sx={workflowButton(!auditDBWorkflow)}
-                        >
-                          Upload audit
-                        </Button>
-                      </Box>
-
-                      {!auditDBWorkflow && (
-                        <Box sx={fileWrapper}>
-                          <Typography sx={subTitleSx}>Upload audit</Typography>
-                          <Box sx={{ display: 'flex' }}>
-                            <AuditUpload
-                              disabled={audit.status === SUBMITED}
-                              auditId={audit.id}
-                              auditorId={audit.auditor_id}
-                              auditReportName={audit.report_name}
-                              customerId={audit.customer_id}
-                              name={'report'}
-                              setFieldValue={setFieldValue}
-                            />
-                          </Box>
+                          <Button
+                            sx={[
+                              workflowButton(auditDBWorkflow),
+                              { width: '100%' },
+                            ]}
+                            onClick={() => dispatch(startAudit(audit, true))}
+                          >
+                            Start audit
+                          </Button>
+                        </Box>
+                      ) : (
+                        <Box sx={workflowToggleBox}>
+                          <Button
+                            onClick={() => setAuditDBWorkflow(true)}
+                            sx={workflowButton(auditDBWorkflow)}
+                          >
+                            {issues?.length
+                              ? `Issues (${issues.length})`
+                              : 'New issue'}
+                          </Button>
+                          <Button
+                            onClick={() => setAuditDBWorkflow(false)}
+                            sx={workflowButton(!auditDBWorkflow)}
+                          >
+                            Upload audit
+                          </Button>
                         </Box>
                       )}
+
+                      {!auditDBWorkflow &&
+                        audit?.status.toLowerCase() !==
+                          WAITING_FOR_AUDITS.toLowerCase() && (
+                          <Box sx={fileWrapper}>
+                            <Typography sx={subTitleSx}>
+                              Upload audit
+                            </Typography>
+                            <Box sx={{ display: 'flex' }}>
+                              <AuditUpload
+                                disabled={audit.status === SUBMITED}
+                                auditId={audit.id}
+                                auditorId={audit.auditor_id}
+                                auditReportName={audit.report_name}
+                                customerId={audit.customer_id}
+                                name={'report'}
+                                setFieldValue={setFieldValue}
+                              />
+                            </Box>
+                          </Box>
+                        )}
                     </Box>
                   </Box>
 
@@ -293,7 +323,9 @@ const AuditOffer = () => {
             }}
           </Formik>
 
-          {auditDBWorkflow && (
+          {auditDBWorkflow &&
+            audit?.status.toLowerCase() !==
+            WAITING_FOR_AUDITS.toLowerCase() && (
             <Box sx={{ width: '100%', mb: '30px' }}>
               {issues?.length ? (
                 <Box
