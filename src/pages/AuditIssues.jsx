@@ -9,6 +9,7 @@ import { CustomCard } from '../components/custom/Card.jsx';
 import { addTestsLabel } from '../lib/helper.js';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack.js';
 import { getIssues } from '../redux/actions/issueAction.js';
+import { CUSTOMER } from '../redux/actions/types.js';
 
 const AuditIssues = () => {
   const dispatch = useDispatch();
@@ -16,6 +17,7 @@ const AuditIssues = () => {
   const { auditId } = useParams();
 
   const { issuesAuditId } = useSelector(s => s.issues);
+  const { user } = useSelector(s => s.user);
   const audit = useSelector(s =>
     s.audits.audits?.find(audit => audit.id === auditId),
   );
@@ -25,6 +27,14 @@ const AuditIssues = () => {
       dispatch(getIssues(auditId));
     }
   }, []);
+
+  const handleGoBack = () => {
+    if (user.current_role === CUSTOMER) {
+      navigate(`/audit-info/${auditId}`);
+    } else {
+      navigate(`/audit-request-offer/${auditId}`);
+    }
+  };
 
   if (!audit) {
     return (
@@ -46,7 +56,7 @@ const AuditIssues = () => {
       <CustomCard sx={wrapper}>
         <Button
           sx={backButtonSx}
-          onClick={() => navigate(-1)}
+          onClick={handleGoBack}
           {...addTestsLabel('go-back-button')}
         >
           <ArrowBackIcon color="secondary" />

@@ -94,7 +94,7 @@ const AuditOffer = () => {
                   >
                     <Button
                       sx={backButtonSx}
-                      onClick={() => navigate(-1)}
+                      onClick={() => navigate('/profile/projects')}
                       {...addTestsLabel('go-back-button')}
                     >
                       <ArrowBackIcon color={'secondary'} />
