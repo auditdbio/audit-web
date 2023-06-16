@@ -6,6 +6,7 @@ import {
   DELETE_REQUEST,
   GET_AUDIT_REQUEST,
   GET_AUDITS,
+  IN_PROGRESS,
   REQUEST_ERROR,
   SET_CURRENT_AUDIT_PARTNER,
   SUBMIT_AUDIT,
@@ -50,6 +51,13 @@ export const auditReducer = (state = initialState, action) => {
         audits: [...state.audits, action.payload],
         auditRequests: state.auditRequests.filter(
           request => request.project_id !== action.payload.project_id,
+        ),
+      };
+    case IN_PROGRESS:
+      return {
+        ...state,
+        audits: state.audits?.map(audit =>
+          audit.id === action.payload.id ? action.payload : audit,
         ),
       };
     case SUBMIT_AUDIT:

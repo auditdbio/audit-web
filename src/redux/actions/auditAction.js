@@ -10,6 +10,7 @@ import {
   DELETE_REQUEST,
   GET_AUDIT_REQUEST,
   GET_AUDITS,
+  IN_PROGRESS,
   REQUEST_ERROR,
   SET_CURRENT_AUDIT_PARTNER,
 } from './types.js';
@@ -165,6 +166,25 @@ export const confirmAudit = values => {
       .then(({ data }) => {
         history.back();
         dispatch({ type: CONFIRM_AUDIT, payload: data });
+      });
+  };
+};
+
+export const startAudit = (values, goBack) => {
+  const newValue = { ...values, start_audit: true };
+  return dispatch => {
+    const token = Cookies.get('token');
+    axios
+      .patch(`${API_URL}/audit/${values.id}`, newValue, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then(({ data }) => {
+        dispatch({ type: IN_PROGRESS, payload: data });
+        if (goBack) {
+          history.back();
+        }
       });
   };
 };
