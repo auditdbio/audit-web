@@ -22,9 +22,10 @@ import {
 const PublicProfile = () => {
   const { role, id } = useParams();
   const navigate = useNavigate();
-  const customer = useSelector(s => s.customer.currentAuditor);
+  const customer = useSelector(s => s.customer.currentCustomer);
   const auditor = useSelector(s => s.auditor.currentAuditor);
   const matchXs = useMediaQuery(theme.breakpoints.down('xs'));
+  const matchSm = useMediaQuery(theme.breakpoints.down('sm'));
   const userProjects = useSelector(s => s.project.myProjects);
   const dispatch = useDispatch();
   const [errorMessage, setErrorMessage] = useState(null);
@@ -144,7 +145,7 @@ const PublicProfile = () => {
                 alt="User photo"
               />
             </Box>
-            <Box>
+            <Box sx={{ [theme.breakpoints.down(560)]: { width: '100%' } }}>
               <Box sx={infoStyle}>
                 <Box sx={infoInnerStyle}>
                   <Box sx={infoWrapper}>
@@ -166,14 +167,14 @@ const PublicProfile = () => {
                       )}
                     </Box>
                   )}
-                </Box>
-                <Box sx={infoInnerStyle}>
                   {role !== AUDITOR && (
                     <Box sx={infoWrapper}>
                       <span>Company</span>
                       <Typography noWrap={true}>{data.company}</Typography>
                     </Box>
                   )}
+                </Box>
+                <Box sx={infoInnerStyle}>
                   <Box sx={infoWrapper}>
                     <span>E-mail</span>
                     <Typography noWrap={true}>
@@ -192,32 +193,50 @@ const PublicProfile = () => {
                   </Box>
                 </Box>
               </Box>
-              <Box
-                sx={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: '15px',
-                  '& .tagsWrapper': {
-                    width: '100%',
-                  },
-                }}
-              >
-                <Box sx={infoWrapper}>
-                  <Typography
-                    sx={{
-                      wordBreak: 'break-word',
-                      maxWidth: 'unset!important',
-                    }}
-                  >
-                    <span className={'about-title'}>About</span>
-                    {data.about}
-                  </Typography>
+              {!matchSm && (
+                <Box sx={aboutWrapper}>
+                  <Box sx={infoWrapper}>
+                    <Typography
+                      sx={{
+                        wordBreak: 'break-word',
+                        maxWidth: 'unset!important',
+                      }}
+                    >
+                      <span className={'about-title'}>About</span>
+                      {data.about}
+                    </Typography>
+                  </Box>
+                  <TagsList data={data.tags} fullView={true} />
                 </Box>
-                {!matchXs && <TagsList data={data.tags} fullView={true} />}
-              </Box>
+              )}
             </Box>
           </Box>
-          {matchXs && <MobileTagsList data={data.tags} />}
+          {matchSm && (
+            <Box sx={aboutWrapper}>
+              <Box sx={[infoWrapper, { flexDirection: 'column' }]}>
+                <span
+                  className={'about-title'}
+                  style={{
+                    display: 'block',
+                    width: '100%',
+                    textAlign: 'center',
+                  }}
+                >
+                  About
+                </span>
+                <Typography
+                  sx={{
+                    wordBreak: 'break-word',
+                    maxWidth: 'unset!important',
+                  }}
+                >
+                  {data.about}
+                </Typography>
+              </Box>
+              <MobileTagsList data={data.tags} />
+            </Box>
+          )}
+          {/*{matchXs && <MobileTagsList data={data.tags} />}*/}
           {role.toLowerCase() === AUDITOR && (
             <Button
               variant={'contained'}
@@ -255,6 +274,7 @@ const wrapper = (theme, color) => ({
   },
   [theme.breakpoints.down('sm')]: {
     gap: '20px',
+    justifyContent: 'flex-start',
     padding: '20px',
   },
   [theme.breakpoints.down('xs')]: {
@@ -267,6 +287,18 @@ const wrapper = (theme, color) => ({
   },
 });
 
+const aboutWrapper = theme => ({
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '15px',
+  '& .tagsWrapper': {
+    width: '100%',
+  },
+  [theme.breakpoints.down('sm')]: {
+    width: '100%',
+  },
+});
+
 const infoInnerStyle = theme => ({
   display: 'flex',
   flexDirection: 'column',
@@ -275,7 +307,7 @@ const infoInnerStyle = theme => ({
 
 const infoStyle = theme => ({
   display: 'flex',
-  margin: '0 0 50px',
+  margin: '0 0 16px',
   flexDirection: 'row',
   flexWrap: 'wrap',
   gap: '40px',
@@ -323,9 +355,16 @@ const contentWrapper = theme => ({
     gap: '50px',
   },
   [theme.breakpoints.down('sm')]: {
-    flexDirection: 'column',
     alignItems: 'center',
-    gap: '40px',
+    maxWidth: 'unset',
+    justifyContent: 'flex-start',
+    margin: 0,
+    gap: '30px',
+    width: '100%',
+  },
+  [theme.breakpoints.down(560)]: {
+    flexDirection: 'column',
+    gap: '20px',
   },
 });
 
@@ -381,24 +420,24 @@ const infoWrapper = theme => ({
     },
   },
   [theme.breakpoints.down('sm')]: {
+    '& .about-title': {
+      marginRight: 'unset',
+    },
     '& p': {
       maxWidth: '240px',
     },
   },
   [theme.breakpoints.down('xs')]: {
     fontSize: '12px',
-    '& .about-title': {
-      marginRight: '73px',
-    },
-  },
-  [theme.breakpoints.down(450)]: {
     '& span': {
-      width: '70px',
-      marginRight: '20px',
+      width: '80px',
+      marginRight: '12px',
     },
     '& p': {
       maxWidth: '180px',
     },
+  },
+  [theme.breakpoints.down(450)]: {
     '& .about-title': {
       marginRight: '52px',
     },

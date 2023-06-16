@@ -21,7 +21,7 @@ export const customerReducer = (state = initialState, action) => {
     case GET_CURRENT_CUSTOMER:
       return {
         ...state,
-        currentAuditor: action.payload,
+        currentCustomer: action.payload,
       };
     case LOG_OUT:
       return initialState;
