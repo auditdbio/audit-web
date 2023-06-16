@@ -194,37 +194,43 @@ const IssueDetailsForm = ({ issue = null, editMode = false }) => {
                       style: markdownSx,
                     }}
                   />
-                  {user.current_role === AUDITOR && editMode && (
-                    <IconButton
-                      type="button"
-                      aria-label="Edit description"
-                      onClick={() =>
-                        handleDescriptionEdit(handleSubmit, values)
-                      }
-                      sx={editDescriptionButton}
-                      {...addTestsLabel('edit-description-button')}
-                    >
-                      <EditIcon color="secondary" fontSize="small" />
-                      <Box component="span" sx={editButtonText}>
-                        {isEditDescription ? 'Save' : 'Edit'}
-                      </Box>
-                    </IconButton>
-                  )}
-                  {user.current_role === AUDITOR && !addLinkField && (
-                    <IconButton
-                      type="button"
-                      aria-label="add link"
-                      onClick={() => setAddLinkField(true)}
-                      sx={addLinkButton}
-                      {...addTestsLabel('add-link-button')}
-                    >
-                      <AddLinkIcon color="secondary" />
-                      <Box component="span" sx={editButtonText}>
-                        Add link
-                      </Box>
-                    </IconButton>
-                  )}
                 </Box>
+
+                {user.current_role === AUDITOR && (
+                  <Box sx={descriptionButtonsSx}>
+                    {editMode && (
+                      <IconButton
+                        type="button"
+                        aria-label="Edit description"
+                        onClick={() =>
+                          handleDescriptionEdit(handleSubmit, values)
+                        }
+                        sx={editDescriptionButton}
+                        {...addTestsLabel('edit-description-button')}
+                      >
+                        <EditIcon color="secondary" fontSize="small" />
+                        <Box component="span" sx={editButtonText}>
+                          {isEditDescription ? 'Save' : 'Edit'}
+                        </Box>
+                      </IconButton>
+                    )}
+                    {!addLinkField && (
+                      <IconButton
+                        type="button"
+                        aria-label="add link"
+                        onClick={() => setAddLinkField(true)}
+                        sx={addLinkButton}
+                        {...addTestsLabel('add-link-button')}
+                      >
+                        <AddLinkIcon color="secondary" />
+                        <Box component="span" sx={editButtonText}>
+                          Add link
+                        </Box>
+                      </IconButton>
+                    )}
+                  </Box>
+                )}
+
                 <Box sx={linksList}>
                   {user.current_role === AUDITOR ? (
                     <ProjectLinksList name="links" />
@@ -482,18 +488,22 @@ const editButtonText = theme => ({
   lineHeight: '17px',
 });
 
+const descriptionButtonsSx = {
+  height: '40px',
+  padding: '0 10px',
+  display: 'flex',
+  justifyContent: 'space-between',
+  flexDirection: 'row-reverse',
+  borderLeft: '1px solid #e0e0e0',
+  borderRight: '2px solid #e0e0e0',
+};
+
 const editDescriptionButton = {
-  position: 'absolute',
-  bottom: '0',
-  right: '15px',
   display: 'flex',
   alignItems: 'flex-end',
 };
 
 const addLinkButton = {
-  position: 'absolute',
-  bottom: '0',
-  left: '15px',
   display: 'flex',
   alignItems: 'center',
 };
