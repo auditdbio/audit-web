@@ -2,18 +2,12 @@ import React from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined.js';
-import {
-  Box,
-  Button,
-  IconButton,
-  InputAdornment,
-  TextField,
-} from '@mui/material';
+import { Box, Button, InputAdornment, TextField } from '@mui/material';
 import { addTestsLabel } from '../../lib/helper.js';
 import { AUDITOR } from '../../redux/actions/types.js';
 import { handleOpenReport } from '../../lib/openReport.js';
 
-const Control = ({ setSearch, setPage }) => {
+const Control = ({ search, setSearch, setPage, setSearchParams }) => {
   const navigate = useNavigate();
   const { auditId } = useParams();
   const user = useSelector(s => s.user.user);
@@ -24,6 +18,7 @@ const Control = ({ setSearch, setPage }) => {
   const handleSearch = e => {
     setSearch(e.target.value);
     setPage(1);
+    setSearchParams({ search: e.target.value, page: 1 });
   };
 
   const handleNewIssue = () => {
@@ -38,6 +33,7 @@ const Control = ({ setSearch, setPage }) => {
           variant="outlined"
           size="small"
           sx={textFieldSx}
+          value={search}
           onChange={handleSearch}
           inputProps={{ ...addTestsLabel('search-input') }}
           InputProps={{

@@ -1,41 +1,111 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { Link as RouterLink } from 'react-router-dom';
-import { Box, Link, Typography } from '@mui/material';
+import { Link as RouterLink, useSearchParams } from 'react-router-dom';
+import { Box, Button, Link, Typography } from '@mui/material';
 import theme from '../../styles/themes.js';
 import { addTestsLabel } from '../../lib/helper.js';
 import Control from './Control.jsx';
 import IssueSeverity from './IssueSeverity.jsx';
 import CustomPagination from '../custom/CustomPagination.jsx';
+import ArrowIcon from '../icons/ArrowIcon.jsx';
+import {
+  SEVERITY_ASCENDING,
+  SEVERITY_DESCENDING,
+  STATUS_ASCENDING,
+  STATUS_DESCENDING,
+  severityOrder,
+  statusOrder,
+} from './constants.js';
+import ArrowUpIcon from '../icons/ArrowUpIcon.jsx';
 
 const IssuesList = ({ auditId }) => {
+  const [searchParams, setSearchParams] = useSearchParams();
   const { issues } = useSelector(s => s.issues);
-  const [search, setSearch] = useState('');
-  const [page, setPage] = useState(1);
+
+  const [search, setSearch] = useState(searchParams.get('search') || '');
+  const [page, setPage] = useState(+searchParams.get('page') || 1);
+  const [sortType, setSortType] = useState(
+    searchParams.get('sort') || STATUS_DESCENDING,
+  );
+
+  const getNumberOfPages = () => Math.ceil(getSearchResultsLength() / 10);
 
   const getSearchResultsLength = () => {
     return issues?.filter(issue => issue.name?.includes(search)).length;
   };
 
-  const getNumberOfPages = () => Math.ceil(getSearchResultsLength() / 10);
+  const handlePageChange = (e, page) => {
+    setPage(page);
+    setSearchParams(prev => ({ ...Object.fromEntries(prev.entries()), page }));
+  };
+
+  const sortFunc = (a, b) => {
+    switch (sortType) {
+      case STATUS_DESCENDING:
+        return statusOrder[a.status] - statusOrder[b.status] || 0;
+      case STATUS_ASCENDING:
+        return statusOrder[b.status] - statusOrder[a.status] || 0;
+      case SEVERITY_DESCENDING:
+        return severityOrder[a.severity] - severityOrder[b.severity] || 0;
+      case SEVERITY_ASCENDING:
+        return severityOrder[b.severity] - severityOrder[a.severity] || 0;
+      default:
+        return statusOrder[a.status] - statusOrder[b.status] || 0;
+    }
+  };
+
+  const handleSeveritySort = () => {
+    setPage(1);
+    if (sortType === SEVERITY_DESCENDING) {
+      setSortType(SEVERITY_ASCENDING);
+    } else {
+      setSortType(SEVERITY_DESCENDING);
+    }
+  };
+
+  const handleStatusSort = () => {
+    setPage(1);
+    if (sortType === STATUS_DESCENDING) {
+      setSortType(STATUS_ASCENDING);
+    } else {
+      setSortType(STATUS_DESCENDING);
+    }
+  };
+
+  useEffect(() => {
+    setSearchParams(prev => ({
+      ...Object.fromEntries(prev.entries()),
+      page,
+      sort: sortType,
+    }));
+  }, [sortType]);
 
   return (
     <>
-      <Control setSearch={setSearch} setPage={setPage} />
+      <Control
+        search={search}
+        setSearch={setSearch}
+        setPage={setPage}
+        setSearchParams={setSearchParams}
+      />
 
       <Box sx={{ display: 'flex', width: '100%', justifyContent: 'flex-end' }}>
         <Box sx={columnsTitleBlock}>
-          <Typography sx={[columnText, columnTitle]}>Status &#9660;</Typography>
-          <Typography sx={[columnText, columnTitle]}>
-            Severity &#9660;
-          </Typography>
+          <Button sx={[columnText, columnTitle]} onClick={handleStatusSort}>
+            <span>Status</span>
+            {sortType === STATUS_ASCENDING ? <ArrowUpIcon /> : <ArrowIcon />}
+          </Button>
+          <Button sx={[columnText, columnTitle]} onClick={handleSeveritySort}>
+            <span>Severity</span>
+            {sortType === SEVERITY_ASCENDING ? <ArrowUpIcon /> : <ArrowIcon />}
+          </Button>
         </Box>
       </Box>
 
       <Box sx={{ width: '100%' }}>
         {issues
           ?.filter(issue => issue.name?.includes(search))
-          .reverse()
+          .sort(sortFunc)
           .slice((page - 1) * 10, page * 10)
           .map(issue => (
             <Link
@@ -64,7 +134,7 @@ const IssuesList = ({ auditId }) => {
       <CustomPagination
         show={getSearchResultsLength() > 10}
         count={getNumberOfPages()}
-        onChange={(e, page) => setPage(page)}
+        onChange={handlePageChange}
         page={page}
         showFirstLast={false}
       />
@@ -91,8 +161,11 @@ const columnsTitleBlock = theme => ({
 
 const columnTitle = {
   width: '50%',
-  textAlign: 'center',
   whiteSpace: 'nowrap',
+  textTransform: 'none',
+  display: 'flex',
+  justifyContent: 'center',
+  columnGap: '10px',
 };
 
 const columnText = theme => ({
