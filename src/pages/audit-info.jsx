@@ -16,6 +16,7 @@ import {
 import {
   CUSTOMER,
   DONE,
+  IN_PROGRESS,
   PENDING,
   SUBMITED,
   WAITING_FOR_AUDITS,
@@ -242,17 +243,19 @@ const AuditInfo = () => {
               Confirm
             </Button>
           )}
-          {audit?.status !== SUBMITED && (
-            <Button
-              variant="contained"
-              color="secondary"
-              onClick={handleDecline}
-              sx={buttonSx}
-              {...addTestsLabel('decline-button')}
-            >
-              Decline
-            </Button>
-          )}
+          {audit?.status?.toLowerCase() !== SUBMITED.toLowerCase() &&
+            audit?.status?.toLowerCase() !== WAITING_FOR_AUDITS.toLowerCase() &&
+            audit?.status?.toLowerCase() !== IN_PROGRESS.toLowerCase() && (
+              <Button
+                variant="contained"
+                color="secondary"
+                onClick={handleDecline}
+                sx={buttonSx}
+                {...addTestsLabel('decline-button')}
+              >
+                Decline
+              </Button>
+            )}
 
           {/*{(audit?.status === DONE ||*/}
           {/*  audit?.status === SUBMITED ||*/}
