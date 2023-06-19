@@ -1,30 +1,45 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Box, Tooltip, Typography, Link } from '@mui/material';
+import { Box, Tooltip, Typography, Link, useMediaQuery } from '@mui/material';
 import GitHubIcon from '@mui/icons-material/GitHub.js';
 import LinkIcon from '@mui/icons-material/Link';
+import theme from '../../styles/themes.js';
 
-const linkShortener = link => {
+const linkShortener = (link, shortLinkLength) => {
   const regex = /(^https?:\/\/(www\.)?(github\.com\/)?)|(\?.*$)/g;
-  return link.replace(regex, '');
+  const shortLink = link.replace(regex, '');
+  if (shortLinkLength) {
+    return (
+      shortLink
+        .slice(0, shortLinkLength - 1)
+        .replace(/(?<=[\/\-_.])[^\/\-_.]*$/, '') +
+      '…' +
+      shortLink.slice(-shortLinkLength)
+    );
+  }
+  return shortLink;
 };
 
 const CustomLink = ({ link, showIcon = true, sx = {} }) => {
   const linkBoxRef = useRef();
-  const [isNotFit, setIsNotFit] = useState(false);
-  const [shortLink, setShortLink] = useState(() => linkShortener(link));
+  const matchSm = useMediaQuery(theme.breakpoints.down('sm'));
+  const [shortLinkLength, setShortLinkLength] = useState(null);
 
   useEffect(() => {
     const boxWidth = linkBoxRef.current?.offsetWidth;
-    const linkElement = linkBoxRef.current?.querySelector('a');
+    const linkElement = linkBoxRef.current?.querySelector('span');
     const linkWidth = linkElement?.offsetWidth;
+    const charWidth = matchSm ? 8.25 : 10;
 
-    if (linkWidth >= boxWidth - 40) setIsNotFit(true);
-  }, []);
+    if (linkWidth >= boxWidth) {
+      const charsCount = Math.trunc(boxWidth / charWidth / 2);
+      setShortLinkLength(charsCount);
+    }
+  }, [matchSm]);
 
   return (
     <Box sx={{ display: 'flex', width: '100%' }}>
       <Tooltip title={link} arrow placement="top">
-        <Typography noWrap={true} sx={linkBoxSx} ref={linkBoxRef}>
+        <Typography noWrap={true} sx={linkBoxSx}>
           {showIcon &&
             (/^https?:\/\/(www\.)?github\.com/.test(link) ? (
               <GitHubIcon sx={{ mr: '8px' }} />
@@ -34,12 +49,10 @@ const CustomLink = ({ link, showIcon = true, sx = {} }) => {
           <Link
             href={/^https?:\/\//.test(link) ? link : `https://${link}`}
             target="_blank"
-            sx={[linkSx, isNotFit && { maxWidth: '90%' }, sx]}
+            sx={[linkSx, sx]}
+            ref={linkBoxRef}
           >
-            <span>
-              {isNotFit ? shortLink.slice(0, shortLink.length / 2) : shortLink}
-            </span>
-            {isNotFit && <span>{shortLink.slice(shortLink.length / 2)}</span>}
+            <span>{linkShortener(link, shortLinkLength)}</span>
           </Link>
         </Typography>
       </Tooltip>
@@ -51,20 +64,15 @@ export default CustomLink;
 
 const linkBoxSx = {
   mb: '10px',
-  maxWidth: '100%',
+  width: '100%',
 };
 
 const linkSx = {
+  fontFamily: 'monospace',
+  fontWeight: 400,
   color: '#152BEA',
   textDecoration: 'none',
   display: 'flex',
-  maxWidth: '100%',
-  '& span': {
-    overflow: 'hidden',
-    textOverflow: 'ellipsis',
-    '&:nth-child(2)': {
-      textOverflow: 'clip',
-      direction: 'rtl',
-    },
-  },
+  width: '100%',
+  overflow: 'hidden',
 };
