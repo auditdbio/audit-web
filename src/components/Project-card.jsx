@@ -5,6 +5,7 @@ import Star from './icons/Star.jsx';
 import {
   AUDITOR,
   DONE,
+  IN_PROGRESS,
   RESOLVED,
   SUBMITED,
   WAITING_FOR_AUDITS,
@@ -124,7 +125,9 @@ const ProjectCard = ({ type, project }) => {
         >
           {type === AUDITOR
             ? project?.status.toLowerCase() !== WAITING_FOR_AUDITS.toLowerCase()
-              ? 'Submit'
+              ? project?.status.toLowerCase() === IN_PROGRESS.toLowerCase()
+                ? 'Proceed'
+                : 'Submit'
               : 'View'
             : 'Edit'}
         </Button>
