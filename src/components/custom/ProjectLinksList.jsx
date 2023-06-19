@@ -1,4 +1,4 @@
-import { Box, IconButton, Tooltip, Typography } from '@mui/material';
+import { Box, IconButton, Typography } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import theme from '../../styles/themes.js';
 import { FieldArray, useField } from 'formik';
@@ -25,11 +25,7 @@ export const ProjectLinksList = ({ name }) => {
           field.value?.map((link, idx) => {
             return (
               <Box key={idx} sx={linkWrapper}>
-                <CustomLink
-                  link={link}
-                  showIcon={false}
-                  sx={{ fontSize: '18px' }}
-                />
+                <CustomLink link={link} showIcon={false} sx={linkSx} />
 
                 <IconButton
                   sx={{ padding: '5px' }}
@@ -66,3 +62,10 @@ const linkWrapper = {
     },
   },
 };
+
+const linkSx = theme => ({
+  fontSize: '18px',
+  [theme.breakpoints.down('sm')]: {
+    fontSize: '15px',
+  },
+});
