@@ -18,6 +18,7 @@ import {
   DONE,
   IN_PROGRESS,
   PENDING,
+  RESOLVED,
   SUBMITED,
   WAITING_FOR_AUDITS,
 } from '../redux/actions/types.js';
@@ -208,20 +209,23 @@ const AuditInfo = () => {
               {showFull ? 'Hide ▲' : `Read all ▼`}
             </Button>
           )}
-
-          {(audit?.status === DONE || audit?.status === SUBMITED) && (
+        </Box>
+        <Box>
+          {(audit?.status === RESOLVED ||
+            audit?.report ||
+            audit?.report_name) && (
             <Box sx={{ display: 'flex', justifyContent: 'center' }}>
               <Button
+                variant={'contained'}
+                color={'secondary'}
                 onClick={() => handleOpenReport(audit)}
-                sx={{ margin: '15px auto 0', display: 'block' }}
+                sx={[buttonSx, { marginBottom: '20px' }]}
                 {...addTestsLabel('report-button')}
               >
-                Report
+                Download Report
               </Button>
             </Box>
           )}
-        </Box>
-        <Box>
           {auditRequest && (
             <Button
               variant={'contained'}
@@ -259,6 +263,7 @@ const AuditInfo = () => {
           {/*  audit?.status === SUBMITED ||*/}
           {/*  audit?.status === PENDING) && (*/}
           {audit?.status &&
+            !!issues?.length &&
             audit?.status.toLowerCase() !==
               WAITING_FOR_AUDITS.toLowerCase() && (
               <Button
