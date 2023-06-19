@@ -244,12 +244,16 @@ const AuditOffer = () => {
                             justifyContent: 'center',
                             maxWidth: '400px',
                             margin: '0 auto',
+                            paddingBottom: '25px',
                           }}
                         >
                           <Button
                             sx={[
                               workflowButton(auditDBWorkflow),
-                              { width: '100%' },
+                              {
+                                borderRadius: '10px',
+                                width: '180px',
+                              },
                             ]}
                             onClick={() => dispatch(startAudit(audit, true))}
                           >
@@ -325,27 +329,27 @@ const AuditOffer = () => {
 
           {auditDBWorkflow &&
             audit?.status.toLowerCase() !==
-            WAITING_FOR_AUDITS.toLowerCase() && (
-            <Box sx={{ width: '100%', mb: '30px' }}>
-              {issues?.length ? (
-                <Box
-                  sx={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    gap: '20px',
-                    [theme.breakpoints.down('xs')]: {
-                      gap: '10px',
-                    },
-                  }}
-                >
-                  <IssuesList auditId={auditId} />
-                </Box>
-              ) : (
-                <IssueDetailsForm />
-              )}
-            </Box>
-          )}
+              WAITING_FOR_AUDITS.toLowerCase() && (
+              <Box sx={{ width: '100%', mb: '30px' }}>
+                {issues?.length ? (
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      gap: '20px',
+                      [theme.breakpoints.down('xs')]: {
+                        gap: '10px',
+                      },
+                    }}
+                  >
+                    <IssuesList auditId={auditId} />
+                  </Box>
+                ) : (
+                  <IssueDetailsForm />
+                )}
+              </Box>
+            )}
         </CustomCard>
       </Layout>
     );
