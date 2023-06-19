@@ -237,7 +237,7 @@ const IssueDetailsForm = ({ issue = null, editMode = false }) => {
                   ) : (
                     <Box sx={customerLinksList}>
                       {values.links?.map((link, idx) => (
-                        <CustomLink link={link} key={idx} />
+                        <CustomLink link={link} key={idx} sx={linkSx} />
                       ))}
                     </Box>
                   )}
@@ -524,6 +524,13 @@ const customerLinksList = {
     fontSize: '18px',
   },
 };
+
+const linkSx = theme => ({
+  fontSize: '18px',
+  [theme.breakpoints.down('sm')]: {
+    fontSize: '15px',
+  },
+});
 
 const markdownSx = {
   height: '550px',
