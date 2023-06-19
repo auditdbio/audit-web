@@ -243,19 +243,17 @@ const AuditInfo = () => {
               Confirm
             </Button>
           )}
-          {audit?.status?.toLowerCase() !== SUBMITED.toLowerCase() &&
-            audit?.status?.toLowerCase() !== WAITING_FOR_AUDITS.toLowerCase() &&
-            audit?.status?.toLowerCase() !== IN_PROGRESS.toLowerCase() && (
-              <Button
-                variant="contained"
-                color="secondary"
-                onClick={handleDecline}
-                sx={buttonSx}
-                {...addTestsLabel('decline-button')}
-              >
-                Decline
-              </Button>
-            )}
+          {!audit?.status && (
+            <Button
+              variant="contained"
+              color="secondary"
+              onClick={handleDecline}
+              sx={buttonSx}
+              {...addTestsLabel('decline-button')}
+            >
+              Decline
+            </Button>
+          )}
 
           {/*{(audit?.status === DONE ||*/}
           {/*  audit?.status === SUBMITED ||*/}
