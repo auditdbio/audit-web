@@ -97,7 +97,7 @@ const AuditCard = ({ audit, request }) => {
       )}
       <CustomButton
         sx={viewButtonStyle}
-        onClick={() => navigate(`/audit-info/${audit.id}`)}
+        onClick={() => navigate(`/audit-info/${audit.id}/customer`)}
         {...addTestsLabel('audits_view-button')}
       >
         View

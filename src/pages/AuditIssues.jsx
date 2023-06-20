@@ -30,9 +30,9 @@ const AuditIssues = () => {
 
   const handleGoBack = () => {
     if (user.current_role === CUSTOMER) {
-      navigate(`/audit-info/${auditId}`);
+      navigate(`/audit-info/${auditId}/customer`);
     } else {
-      navigate(`/audit-request-offer/${auditId}`);
+      navigate(`/audit-info/${auditId}/auditor`);
     }
   };
 
