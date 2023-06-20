@@ -80,8 +80,10 @@ export default function AuditorModal({
   useEffect(() => {
     if (open && !isForm) {
       setMode('info');
-    } else {
+    } else if (open && isForm) {
       setMode('invite');
+    } else {
+      setMode('');
     }
   }, [open, isForm]);
 
