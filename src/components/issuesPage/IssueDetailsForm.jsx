@@ -113,7 +113,7 @@ const IssueDetailsForm = ({ issue = null, editMode = false }) => {
       dispatch(updateAuditIssue(auditId, issueId, updatedValuesWithEvent));
     } else {
       dispatch(addAuditIssue(auditId, values));
-      navigate(`/audit-request-offer/${auditId}`);
+      navigate(`/audit-info/${auditId}/auditor`);
     }
   };
 

@@ -22,7 +22,7 @@ const ProjectCard = ({ type, project }) => {
 
   const handleClick = () => {
     if (type === AUDITOR) {
-      navigate(`/audit-request-offer/${project.id}`);
+      navigate(`/audit-info/${project.id}/auditor`);
       window.scrollTo({ top: 0, left: 0 });
     } else {
       navigate(`/edit-project/${project.id}`);
