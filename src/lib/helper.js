@@ -13,3 +13,9 @@ export const addTestsLabel = value => {
   const label = value.toLowerCase().replace(/ /g, '-');
   return IS_DEV ? { 'data-testid': label } : {};
 };
+
+export const addSpacesToCamelCase = str => {
+  return typeof str === 'string'
+    ? str.replace(/(?<=[a-z])([A-Z])/g, ' $1')
+    : '';
+};

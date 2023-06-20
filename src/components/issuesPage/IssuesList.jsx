@@ -1,11 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { Link as RouterLink, useSearchParams } from 'react-router-dom';
-import { Box, Button, Link, Typography } from '@mui/material';
-import theme from '../../styles/themes.js';
-import { addTestsLabel } from '../../lib/helper.js';
+import { useSearchParams } from 'react-router-dom';
+import { Box, Button } from '@mui/material';
 import Control from './Control.jsx';
-import IssueSeverity from './IssueSeverity.jsx';
 import CustomPagination from '../custom/CustomPagination.jsx';
 import ArrowIcon from '../icons/ArrowIcon.jsx';
 import {
@@ -17,6 +14,7 @@ import {
   statusOrder,
 } from './constants.js';
 import ArrowUpIcon from '../icons/ArrowUpIcon.jsx';
+import IssueListItem from './IssueListItem.jsx';
 
 const IssuesList = ({ auditId }) => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -119,24 +117,7 @@ const IssuesList = ({ auditId }) => {
           .sort(sortFunc)
           .slice((page - 1) * 10, page * 10)
           .map(issue => (
-            <Link
-              key={issue.id}
-              sx={issueRow}
-              component={RouterLink}
-              onClick={() => window.scrollTo({ top: 0 })}
-              to={`/issues/audit-issue/${auditId}/${issue.id}`}
-              {...addTestsLabel('issue-details-link')}
-            >
-              <Typography sx={[columnText, issueTitleSx]}>
-                {issue.name}
-              </Typography>
-              <Typography sx={[columnText, statusSx(issue.status)]}>
-                {issue.status}
-              </Typography>
-              <Box sx={severityWrapper}>
-                <IssueSeverity text={issue.severity} />
-              </Box>
-            </Link>
+            <IssueListItem issue={issue} key={issue.id} auditId={auditId} />
           ))}
       </Box>
 
@@ -154,13 +135,6 @@ const IssuesList = ({ auditId }) => {
 };
 
 export default IssuesList;
-
-const projectTitle = {
-  fontWeight: 600,
-  fontSize: '26px',
-  lineHeight: '32px',
-  width: '70%',
-};
 
 const columnsTitleBlock = theme => ({
   display: 'flex',
@@ -205,62 +179,6 @@ const columnText = theme => ({
     padding: '0 15px',
   },
 });
-
-const issueRow = theme => ({
-  display: 'flex',
-  width: '100%',
-  padding: '30px 0',
-  textDecoration: 'none',
-  cursor: 'pointer',
-  border: '2px solid #E5E5E5',
-  borderBottom: 'none',
-  '&:last-child': { borderBottom: '2px solid #E5E5E5' },
-  ':hover': { backgroundColor: '#F1F1F1' },
-  [theme.breakpoints.down('xs')]: {
-    justifyContent: 'space-between',
-    padding: '15px 10px 15px 0',
-  },
-});
-
-const issueTitleSx = {
-  display: '-webkit-box',
-  maxHeight: '50px',
-  overflow: 'hidden',
-  wordBreak: 'break-word',
-  width: '70%',
-  alignSelf: 'center',
-  '-webkit-line-clamp': '2',
-  '-webkit-box-orient': 'vertical',
-  'text-overflow': 'ellipsis',
-};
-
-const statusSx = status => {
-  let color = '#434242';
-  if (status === 'Draft') color = '#52176D';
-  if (status === 'Verification' || status === 'InProgress') color = '#5b97bb';
-  if (status === 'Fixed' || status === 'WillNotFix') color = '#09C010';
-
-  return {
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    textAlign: 'center',
-    padding: '0 !important',
-    width: '15%',
-    letterSpacing: '-1px',
-    color,
-    [theme.breakpoints.down('xs')]: {
-      display: 'none',
-    },
-  };
-};
-
-const severityWrapper = {
-  width: '15%',
-  display: 'flex',
-  justifyContent: 'center',
-  alignItems: 'center',
-};
 
 const noResults = {
   paddingTop: '70px',

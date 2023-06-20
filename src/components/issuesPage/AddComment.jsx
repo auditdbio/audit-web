@@ -16,6 +16,8 @@ const AddComment = ({ auditId, issueId }) => {
     <Formik
       initialValues={{ message: '' }}
       validationSchema={validationSchema}
+      validateOnBlur={false}
+      validateOnChange={false}
       onSubmit={(values, { resetForm }) => {
         const comment = {
           events: [{ kind: 'Comment', message: values.message }],

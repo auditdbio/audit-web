@@ -7,6 +7,7 @@ import { ASSET_URL } from '../../services/urls.js';
 import { AUDITOR, CUSTOMER } from '../../redux/actions/types.js';
 import CommentIcon from '../icons/issueEvents/CommentIcon.jsx';
 import IssueSeverity from './IssueSeverity.jsx';
+import { addSpacesToCamelCase } from '../../lib/helper.js';
 
 const EventsList = ({ issue, auditPartner }) => {
   const { user } = useSelector(s => s.user);
@@ -56,7 +57,7 @@ const EventsList = ({ issue, auditPartner }) => {
                 <b>
                   {event.user === user?.id ? 'You' : auditPartner?.first_name}
                 </b>
-                &nbsp;{event.message}
+                &nbsp;{addSpacesToCamelCase(event.message)}
               </Typography>
             )}
 
