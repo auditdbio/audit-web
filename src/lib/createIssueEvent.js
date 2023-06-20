@@ -1,4 +1,32 @@
-export const createIssueEvent = (values, prevLinksLength) => {
+const getStatusLabel = (action, currentStatus) => {
+  if (currentStatus === 'Draft' && action === 'Begin') {
+    return 'InProgress';
+  }
+  if (currentStatus === 'InProgress' && action === 'Fixed') {
+    return 'Verification';
+  }
+  if (currentStatus === 'InProgress' && action === 'Discard') {
+    return 'WillNotFix';
+  }
+  if (currentStatus === 'Verification' && action === 'Verified') {
+    return 'Fixed';
+  }
+  if (currentStatus === 'Verification' && action === 'NotFixed') {
+    return 'InProgress';
+  }
+  if (currentStatus === 'Fixed' && action === 'Verified') {
+    return 'Verification';
+  }
+  if (currentStatus === 'WillNotFix' && action === 'Discard') {
+    return 'InProgress';
+  }
+  if (currentStatus === 'Verification' && action === 'Fixed') {
+    return 'InProgress';
+  }
+  return 'new';
+};
+
+export const createIssueEvent = (values, prevLinksLength, currentStatus) => {
   const events = [];
   const keys = Object.keys(values);
 
@@ -14,9 +42,10 @@ export const createIssueEvent = (values, prevLinksLength) => {
         message: 'changed name of the issue',
       });
     } else if (keys[0] === 'status') {
+      const newStatus = getStatusLabel(values.status, currentStatus);
       events.push({
         kind: 'StatusChange',
-        message: `changed status`,
+        message: `changed status to ${newStatus}`,
       });
     } else if (keys[0] === 'severity') {
       events.push({
@@ -26,7 +55,7 @@ export const createIssueEvent = (values, prevLinksLength) => {
     } else if (keys[0] === 'category') {
       events.push({
         kind: 'IssueCategory',
-        message: `changed category to ${values.category}`,
+        message: `changed category to '${values.category}'`,
       });
     } else if (keys[0] === 'description') {
       events.push({
@@ -37,7 +66,7 @@ export const createIssueEvent = (values, prevLinksLength) => {
       events.push({
         kind: 'IssueLink',
         message:
-          prevLinksLength < values.links?.length
+          prevLinksLength <= values.links?.length
             ? 'added new link'
             : 'deleted link',
       });

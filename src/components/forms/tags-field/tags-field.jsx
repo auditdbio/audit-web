@@ -16,6 +16,7 @@ const TagsField = ({
   size = 'medium',
   sx = {},
   setFieldTouched,
+  handleSubmit,
 }) => {
   const role = useSelector(s => s.user.user.current_role);
   const [field, meta, fieldHelper] = useField(name);
@@ -41,6 +42,7 @@ const TagsField = ({
         if (/^https?:\/\//.test(state)) {
           fieldHelper.setValue([...field.value, state]);
           setState('');
+          if (handleSubmit) handleSubmit();
         } else {
           setError('Invalid link');
         }

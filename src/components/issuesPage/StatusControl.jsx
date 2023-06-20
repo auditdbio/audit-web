@@ -12,7 +12,7 @@ const StatusControl = ({ status, setFieldValue }) => {
     const actions = [];
     if (user?.current_role === AUDITOR) {
       if (status === 'Draft') {
-        actions.push({ action: 'Begin', text: 'Begin' });
+        actions.push({ action: 'Begin', text: 'Disclose' });
       }
       if (status === 'Verification') {
         actions.push(
