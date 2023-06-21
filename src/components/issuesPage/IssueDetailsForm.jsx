@@ -211,7 +211,7 @@ const IssueDetailsForm = ({ issue = null, editMode = false }) => {
                         touched.description && errors.description
                           ? 'Description is required'
                           : 'Description',
-                      style: markdownSx,
+                      style: markdownSx(matchXs),
                     }}
                   />
                 </Box>
@@ -285,7 +285,7 @@ const IssueDetailsForm = ({ issue = null, editMode = false }) => {
                         name="links"
                         label="Links"
                         handleSubmit={handleSubmit}
-                        sx={{ '& > div': { borderRadius: 0 } }}
+                        sx={linkFieldSx}
                       />
                     )}
                   </Box>
@@ -519,6 +519,7 @@ const issueValidationSchema = Yup.object().shape({
 
 const nameInputSx = theme => ({
   '& > div': { borderRadius: 0 },
+  '& fieldset': { borderColor: '#b9b9b9 !important' },
   '& input': {
     backgroundColor: 'white',
     fontSize: '20px',
@@ -554,8 +555,8 @@ const descriptionButtonsSx = {
   display: 'flex',
   justifyContent: 'space-between',
   flexDirection: 'row-reverse',
-  borderLeft: '1px solid #e0e0e0',
-  borderRight: '2px solid #e0e0e0',
+  borderLeft: '1px solid #b9b9b9',
+  borderRight: '1px solid #b9b9b9',
 };
 
 const editDescriptionButton = {
@@ -569,10 +570,14 @@ const addLinkButton = {
 };
 
 const linksList = {
-  border: '1px solid #e0e0e0',
-  borderRight: '2px solid #e0e0e0',
+  border: '1px solid #b9b9b9',
   borderTop: 'none',
   padding: '0 15px 15px',
+};
+
+const linkFieldSx = {
+  '& > div': { borderRadius: 0 },
+  '& fieldset': { borderColor: '#b9b9b9' },
 };
 
 const customerLinksList = {
@@ -592,13 +597,33 @@ const linkSx = theme => ({
   },
 });
 
-const markdownSx = {
+const markdownWrapper = {
+  position: 'relative',
+  '& .rc-md-editor': {
+    borderBottom: 'none',
+  },
+  '& .rc-md-navigation.visible': {
+    borderRight: '1px solid #b9b9b9',
+    borderBottom: '1px solid #b9b9b9',
+  },
+  '& .section': {
+    borderRightColor: '#b9b9b9 !important',
+  },
+  '& .sec-md.visible': {
+    borderBottom: '1px solid #b9b9b9',
+  },
+};
+
+const markdownSx = matchXs => ({
   height: '550px',
   backgroundColor: '#fcfaf6',
   fontWeight: 500,
   fontSize: '20px !important',
   lineHeight: '24px',
-};
+  borderLeft: '1px solid #b9b9b9',
+  borderTop: matchXs ? '1px solid #b9b9b9' : 'none',
+  borderRight: 'none',
+});
 
 const infoWrapperSx = theme => ({
   display: 'flex',
@@ -617,13 +642,6 @@ const descriptionBlock = theme => ({
     width: '100%',
   },
 });
-
-const markdownWrapper = {
-  position: 'relative',
-  '& .rc-md-editor': {
-    borderBottom: 'none',
-  },
-};
 
 const issueStatusBlock = theme => ({
   display: 'flex',
