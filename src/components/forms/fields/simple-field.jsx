@@ -10,7 +10,6 @@ const SimpleField = ({
   size = 'medium',
   emptyPH = false,
   outerLabel = false,
-  autocomplete = 'off',
   ...props
 }) => {
   return (
@@ -29,7 +28,6 @@ const SimpleField = ({
         disabled={false}
         sx={fieldSx}
         size={size}
-        autoComplete={autocomplete}
         inputProps={{ ...addTestsLabel(`${name}-input`) }}
         {...props}
       />

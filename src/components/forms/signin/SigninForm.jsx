@@ -41,7 +41,7 @@ const SigninForm = () => {
     >
       {({ handleSubmit }) => {
         return (
-          <Form onSubmit={handleSubmit} autoComplete={'on'}>
+          <Form onSubmit={handleSubmit}>
             <Box sx={formWrapper}>
               <CustomSnackbar
                 autoHideDuration={7000}
@@ -69,7 +69,6 @@ const SigninForm = () => {
                   name="email"
                   label="E-mail"
                   emptyPH
-                  autocomplete={'email'}
                 />
                 <PasswordField
                   size={!matchMd ? 'medium' : 'small'}
