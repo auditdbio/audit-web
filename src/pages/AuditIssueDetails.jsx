@@ -6,7 +6,7 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack.js';
 import { Box, Button } from '@mui/material';
 import { addTestsLabel } from '../lib/helper.js';
 import { CustomCard } from '../components/custom/Card';
-import IssueDetailsForm from '../components/issuesPage/IssueDetailsForm.jsx';
+import IssueDetailsForm from '../components/issuesPage/IssueDetailsForm/IssueDetailsForm.jsx';
 import EventsList from '../components/issuesPage/EventsList.jsx';
 import AddComment from '../components/issuesPage/AddComment.jsx';
 import Loader from '../components/Loader.jsx';

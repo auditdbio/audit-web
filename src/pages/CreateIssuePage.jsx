@@ -5,7 +5,7 @@ import { Button } from '@mui/material';
 import { addTestsLabel } from '../lib/helper.js';
 import Layout from '../styles/Layout.jsx';
 import { CustomCard } from '../components/custom/Card';
-import IssueDetailsForm from '../components/issuesPage/IssueDetailsForm.jsx';
+import IssueDetailsForm from '../components/issuesPage/IssueDetailsForm/IssueDetailsForm.jsx';
 
 const CreateIssuePage = () => {
   const navigate = useNavigate();

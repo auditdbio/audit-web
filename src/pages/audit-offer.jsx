@@ -22,7 +22,7 @@ import { SUBMITED, WAITING_FOR_AUDITS } from '../redux/actions/types.js';
 import Markdown from '../components/markdown/Markdown.jsx';
 import { addTestsLabel } from '../lib/helper.js';
 import CustomLink from '../components/custom/CustomLink.jsx';
-import IssueDetailsForm from '../components/issuesPage/IssueDetailsForm.jsx';
+import IssueDetailsForm from '../components/issuesPage/IssueDetailsForm/IssueDetailsForm.jsx';
 import IssuesList from '../components/issuesPage/IssuesList.jsx';
 import CustomSnackbar from '../components/custom/CustomSnackbar.jsx';
 import { getIssues } from '../redux/actions/issueAction.js';
