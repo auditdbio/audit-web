@@ -97,6 +97,7 @@ const SignupForm = () => {
                   name="email"
                   label="E-mail"
                   emptyPH
+                  autocomplete={'email'}
                 />
               </Box>
               <Box sx={fieldWrapper}>
