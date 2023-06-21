@@ -119,7 +119,7 @@ const wrapper = theme => ({
     top: 0,
     bottom: 0,
     left: '36px',
-    width: '2px',
+    width: '1px',
     backgroundColor: '#b9b9b9',
     [theme.breakpoints.down('xs')]: {
       left: '16px',
