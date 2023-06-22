@@ -65,3 +65,5 @@ export const GET_CURRENT_CUSTOMER = 'GET_CURRENT_CUSTOMER';
 export const WAITING_FOR_AUDITS = 'WAITING FOR AUDIT';
 export const IN_PROGRESS = 'IN PROGRESS';
 export const RESOLVED = 'RESOLVED';
+export const NOT_FOUND = 'NOT FOUND';
+export const CLEAR_REQUEST = '';
