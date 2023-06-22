@@ -33,6 +33,7 @@ import AuditIssues from '../pages/AuditIssues.jsx';
 import AuditIssueDetails from '../pages/AuditIssueDetails.jsx';
 import CreateIssuePage from '../pages/CreateIssuePage.jsx';
 import PublicProfile from '../pages/Public-profile.jsx';
+import NotFound from '../pages/Not-Found.jsx';
 
 const AppRoutes = () => {
   const token = useSelector(s => s.user.token);
@@ -167,6 +168,7 @@ const AppRoutes = () => {
             </PrivateRoute>
           }
         />
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </>
   );
