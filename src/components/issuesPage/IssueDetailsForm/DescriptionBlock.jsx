@@ -3,7 +3,7 @@ import { Box, IconButton, Typography, useMediaQuery } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit.js';
 import AddLinkIcon from '@mui/icons-material/AddLink.js';
 import MarkdownEditor from '../../markdown/Markdown-editor.jsx';
-import { AUDITOR } from '../../../redux/actions/types.js';
+import { AUDITOR, RESOLVED } from '../../../redux/actions/types.js';
 import { addTestsLabel } from '../../../lib/helper.js';
 import { ProjectLinksList } from '../../custom/ProjectLinksList.jsx';
 import CustomLink from '../../custom/CustomLink.jsx';
@@ -18,6 +18,7 @@ const DescriptionBlock = ({
   handleSubmit,
   values,
   user,
+  audit,
 }) => {
   const matchXs = useMediaQuery(theme.breakpoints.down('xs'));
 
@@ -67,41 +68,43 @@ const DescriptionBlock = ({
         />
       </Box>
 
-      {user.current_role === AUDITOR && (
-        <Box sx={descriptionButtonsSx}>
-          {!addLinkField && (
-            <IconButton
-              type="button"
-              aria-label="add link"
-              onClick={() => setAddLinkField(true)}
-              sx={addLinkButton}
-              {...addTestsLabel('add-link-button')}
-            >
-              <AddLinkIcon color="secondary" />
-              <Box component="span" sx={editButtonText}>
-                Add link
-              </Box>
-            </IconButton>
-          )}
-          {editMode && (
-            <IconButton
-              type="button"
-              aria-label="Edit description"
-              onClick={() => handleDescriptionEdit(handleSubmit, values)}
-              sx={editDescriptionButton}
-              {...addTestsLabel('edit-description-button')}
-            >
-              <EditIcon color="secondary" fontSize="small" />
-              <Box component="span" sx={editButtonText}>
-                {isEditDescription ? 'Save' : 'Edit'}
-              </Box>
-            </IconButton>
-          )}
-        </Box>
-      )}
+      {user.current_role === AUDITOR &&
+        audit.status?.toLowerCase() !== RESOLVED.toLowerCase() && (
+          <Box sx={descriptionButtonsSx}>
+            {!addLinkField && (
+              <IconButton
+                type="button"
+                aria-label="add link"
+                onClick={() => setAddLinkField(true)}
+                sx={addLinkButton}
+                {...addTestsLabel('add-link-button')}
+              >
+                <AddLinkIcon color="secondary" />
+                <Box component="span" sx={editButtonText}>
+                  Add link
+                </Box>
+              </IconButton>
+            )}
+            {editMode && (
+              <IconButton
+                type="button"
+                aria-label="Edit description"
+                onClick={() => handleDescriptionEdit(handleSubmit, values)}
+                sx={editDescriptionButton}
+                {...addTestsLabel('edit-description-button')}
+              >
+                <EditIcon color="secondary" fontSize="small" />
+                <Box component="span" sx={editButtonText}>
+                  {isEditDescription ? 'Save' : 'Edit'}
+                </Box>
+              </IconButton>
+            )}
+          </Box>
+        )}
 
       <Box sx={linksList}>
-        {user.current_role === AUDITOR ? (
+        {user.current_role === AUDITOR &&
+        audit.status?.toLowerCase() !== RESOLVED.toLowerCase() ? (
           <ProjectLinksList name="links" handleSubmit={handleSubmit} />
         ) : (
           <Box sx={customerLinksList}>

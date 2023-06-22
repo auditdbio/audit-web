@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useSearchParams } from 'react-router-dom';
 import { Box, Button } from '@mui/material';
 import Control from './Control.jsx';
@@ -15,10 +15,14 @@ import {
 } from './constants.js';
 import ArrowUpIcon from '../icons/ArrowUpIcon.jsx';
 import IssueListItem from './IssueListItem.jsx';
+import { clearMessage } from '../../redux/actions/auditAction.js';
+import CustomSnackbar from '../custom/CustomSnackbar.jsx';
 
 const IssuesList = ({ auditId }) => {
+  const dispatch = useDispatch();
   const [searchParams, setSearchParams] = useSearchParams();
   const { issues } = useSelector(s => s.issues);
+  const { successMessage, error } = useSelector(s => s.audits);
 
   const [search, setSearch] = useState(searchParams.get('search') || '');
   const [page, setPage] = useState(+searchParams.get('page') || 1);
@@ -80,7 +84,16 @@ const IssuesList = ({ auditId }) => {
 
   return (
     <>
+      <CustomSnackbar
+        autoHideDuration={5000}
+        open={!!error || !!successMessage}
+        severity={error ? 'error' : 'success'}
+        text={error || successMessage}
+        onClose={() => dispatch(clearMessage())}
+      />
+
       <Control
+        issues={issues}
         search={search}
         setSearch={setSearch}
         setPage={setPage}

@@ -7,7 +7,7 @@ import * as Yup from 'yup';
 import EditIcon from '@mui/icons-material/Edit';
 import { Box, IconButton, InputAdornment, Tooltip } from '@mui/material';
 import { addTestsLabel } from '../../../lib/helper.js';
-import { AUDITOR } from '../../../redux/actions/types.js';
+import { AUDITOR, RESOLVED } from '../../../redux/actions/types.js';
 import { clearMessage } from '../../../redux/actions/auditAction.js';
 import {
   addAuditIssue,
@@ -25,6 +25,9 @@ const IssueDetailsForm = ({ issue = null, editMode = false }) => {
 
   const user = useSelector(s => s.user.user);
   const { successMessage, error } = useSelector(s => s.issues);
+  const audit = useSelector(s =>
+    s.audits.audits?.find(audit => audit.id === auditId),
+  );
 
   const [isEditName, setIsEditName] = useState(!editMode);
   const [issuePrevValues, setIssuePrevValues] = useState(null);
@@ -123,7 +126,9 @@ const IssueDetailsForm = ({ issue = null, editMode = false }) => {
                   inputRef={nameInputRef}
                   inputProps={{ ...addTestsLabel('issue-name-input') }}
                   InputProps={
-                    user.current_role === AUDITOR && editMode
+                    user.current_role === AUDITOR &&
+                    audit.status?.toLowerCase() !== RESOLVED.toLowerCase() &&
+                    editMode
                       ? {
                           endAdornment: (
                             <InputAdornment position="end">
@@ -158,6 +163,7 @@ const IssueDetailsForm = ({ issue = null, editMode = false }) => {
                 setFieldTouched={setFieldTouched}
                 values={values}
                 user={user}
+                audit={audit}
               />
 
               <StatusSeverityBlock
@@ -170,6 +176,7 @@ const IssueDetailsForm = ({ issue = null, editMode = false }) => {
                 issue={issue}
                 editMode={editMode}
                 handleSubmit={handleSubmit}
+                audit={audit}
               />
             </Box>
           </Form>

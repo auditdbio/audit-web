@@ -273,9 +273,12 @@ const AuditOffer = () => {
                           <Button
                             onClick={() => setAuditDBWorkflow(false)}
                             disabled={
-                              !issues.every(function (object) {
-                                return object.status === 'Fixed';
-                              })
+                              !issues.every(
+                                issue =>
+                                  issue.status === 'Fixed' ||
+                                  issue.status === 'WillNotFix' ||
+                                  !issue.include,
+                              )
                             }
                             sx={workflowButton(!auditDBWorkflow)}
                           >

@@ -12,6 +12,7 @@ import {
   GET_AUDITS,
   IN_PROGRESS,
   REQUEST_ERROR,
+  RESOLVED,
   SET_CURRENT_AUDIT_PARTNER,
 } from './types.js';
 import { history } from '../../services/history.js';
@@ -186,6 +187,20 @@ export const startAudit = (values, goBack) => {
           history.back();
         }
       });
+  };
+};
+
+export const resolveAudit = values => {
+  return dispatch => {
+    const token = Cookies.get('token');
+    axios
+      .patch(
+        `${API_URL}/audit/${values.id}`,
+        { action: 'resolve' },
+        { headers: { Authorization: `Bearer ${token}` } },
+      )
+      .then(({ data }) => dispatch({ type: RESOLVED, payload: data }))
+      .catch(() => dispatch({ type: REQUEST_ERROR }));
   };
 };
 

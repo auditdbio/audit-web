@@ -11,7 +11,7 @@ import {
 } from '@mui/material';
 import { addSpacesToCamelCase, addTestsLabel } from '../../../lib/helper.js';
 import StatusControl from '../StatusControl.jsx';
-import { AUDITOR } from '../../../redux/actions/types.js';
+import { AUDITOR, RESOLVED } from '../../../redux/actions/types.js';
 import ArrowIcon from '../../icons/ArrowIcon.jsx';
 import { Field } from 'formik';
 import { Select, TextField } from 'formik-mui';
@@ -29,6 +29,7 @@ const StatusSeverityBlock = ({
   touched,
   dirty,
   user,
+  audit,
 }) => {
   const [severityListOpen, setSeverityListOpen] = useState(false);
   const [categoryPrevVal, setCategoryPrevVal] = useState(issue?.category || '');
@@ -46,15 +47,17 @@ const StatusSeverityBlock = ({
             </Typography>
           </Box>
 
-          {editMode && (
-            <StatusControl
-              status={issue.status}
-              setFieldValue={setFieldValue}
-            />
-          )}
+          {editMode &&
+            audit.status?.toLowerCase() !== RESOLVED.toLowerCase() && (
+              <StatusControl
+                status={issue.status}
+                setFieldValue={setFieldValue}
+              />
+            )}
         </Box>
 
-        {user.current_role === AUDITOR ? (
+        {user.current_role === AUDITOR &&
+        audit.status?.toLowerCase() !== RESOLVED.toLowerCase() ? (
           <Box sx={severityWrapper}>
             <Typography
               sx={[statusBlockTitle, { cursor: 'pointer' }]}
@@ -122,7 +125,8 @@ const StatusSeverityBlock = ({
           </Box>
         )}
 
-        {user.current_role === AUDITOR ? (
+        {user.current_role === AUDITOR &&
+        audit.status?.toLowerCase() !== RESOLVED.toLowerCase() ? (
           <Box>
             <Typography sx={[statusBlockTitle]}>
               <span>Category</span>
@@ -194,7 +198,10 @@ const StatusSeverityBlock = ({
                 <Switch
                   checked={values.include}
                   color="secondary"
-                  disabled={user.current_role !== AUDITOR}
+                  disabled={
+                    user.current_role !== AUDITOR ||
+                    audit.status?.toLowerCase() === RESOLVED.toLowerCase()
+                  }
                   onChange={e => {
                     setFieldValue('include', e.target.checked);
                     handleSubmit();
