@@ -211,7 +211,7 @@ const AuditInfo = () => {
           )}
         </Box>
         <Box>
-          {(audit?.status === RESOLVED ||
+          {(audit?.status.toLowerCase() === RESOLVED.toLowerCase() ||
             audit?.report ||
             audit?.report_name) && (
             <Box sx={{ display: 'flex', justifyContent: 'center' }}>

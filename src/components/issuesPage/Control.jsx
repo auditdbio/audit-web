@@ -1,15 +1,18 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined.js';
-import { Box, Button, InputAdornment, TextField } from '@mui/material';
+import { Box, Button, InputAdornment, TextField, Tooltip } from '@mui/material';
 import { addTestsLabel } from '../../lib/helper.js';
-import { AUDITOR } from '../../redux/actions/types.js';
+import { AUDITOR, RESOLVED } from '../../redux/actions/types.js';
 import { handleOpenReport } from '../../lib/openReport.js';
+import ResolveAuditConfirmation from './ResolveAuditConfirmation.jsx';
 
-const Control = ({ search, setSearch, setPage, setSearchParams }) => {
+const Control = ({ issues, search, setSearch, setPage, setSearchParams }) => {
   const navigate = useNavigate();
   const { auditId } = useParams();
+  const [resolveConfirmation, setResolveConfirmation] = useState(false);
+  const [allIssuesClosed, setAllIssuesClosed] = useState(false);
   const user = useSelector(s => s.user.user);
   const audit = useSelector(s =>
     s.audits.audits?.find(audit => audit.id === auditId),
@@ -26,8 +29,24 @@ const Control = ({ search, setSearch, setPage, setSearchParams }) => {
     window.scrollTo(0, 0);
   };
 
+  useEffect(() => {
+    const allClosed = issues?.every(
+      issue =>
+        issue.status === 'Fixed' ||
+        issue.status === 'WillNotFix' ||
+        !issue.include,
+    );
+    setAllIssuesClosed(allClosed);
+  }, [issues]);
+
   return (
     <>
+      <ResolveAuditConfirmation
+        isOpen={resolveConfirmation}
+        setIsOpen={setResolveConfirmation}
+        audit={audit}
+      />
+
       <Box sx={wrapper}>
         <TextField
           variant="outlined"
@@ -50,20 +69,36 @@ const Control = ({ search, setSearch, setPage, setSearchParams }) => {
               variant="contained"
               color="secondary"
               sx={buttonSx}
+              disabled={audit.status?.toLowerCase() === RESOLVED.toLowerCase()}
               onClick={handleNewIssue}
               {...addTestsLabel('new-issue-button')}
             >
               New issue
             </Button>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={() => {}}
-              sx={buttonSx}
-              {...addTestsLabel('resolve-button')}
-            >
-              Resolve audit
-            </Button>
+            {audit.status?.toLowerCase() !== RESOLVED.toLowerCase() && (
+              <Tooltip
+                arrow
+                placement="top"
+                title={
+                  allIssuesClosed
+                    ? ''
+                    : "To resolve an audit, it is necessary that the status of all issues be 'Fixed' or 'Will not fix'. Or do not include some issues in the audit."
+                }
+              >
+                <span>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={() => setResolveConfirmation(true)}
+                    disabled={!allIssuesClosed}
+                    sx={buttonSx}
+                    {...addTestsLabel('resolve-button')}
+                  >
+                    Resolve audit
+                  </Button>
+                </span>
+              </Tooltip>
+            )}
           </Box>
         ) : (
           <Button
