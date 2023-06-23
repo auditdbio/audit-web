@@ -58,7 +58,13 @@ const AuditOffer = () => {
   }, []);
 
   if (!audit) {
-    return <Loader />;
+    return (
+      <Layout>
+        <CustomCard sx={wrapper}>
+          <Loader />
+        </CustomCard>
+      </Layout>
+    );
   } else {
     return (
       <Layout>

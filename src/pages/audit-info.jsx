@@ -28,6 +28,8 @@ import { ASSET_URL } from '../services/urls.js';
 import { addTestsLabel } from '../lib/helper.js';
 import { handleOpenReport } from '../lib/openReport.js';
 import { getIssues } from '../redux/actions/issueAction.js';
+import Loader from '../components/Loader.jsx';
+import NotFound from './Not-Found.jsx';
 
 const AuditInfo = () => {
   const navigate = useNavigate();
@@ -57,8 +59,10 @@ const AuditInfo = () => {
   const audit = useMemo(() => {
     if (auditRequest && !auditConfirm) {
       return auditRequest;
-    } else {
+    } else if (!auditRequest && auditConfirm) {
       return auditConfirm;
+    } else {
+      return null;
     }
   }, [id, auditConfirm, auditRequest]);
 
@@ -94,194 +98,212 @@ const AuditInfo = () => {
     navigate(`/issues/audit-issue/${id}`);
   };
 
-  return (
-    <Layout>
-      <CustomCard sx={wrapper}>
-        <Button
-          sx={backButtonSx}
-          onClick={() => navigate('/profile/audits')}
-          aria-label="Go back"
-          {...addTestsLabel('go-back-button')}
-        >
-          <ArrowBackIcon />
-        </Button>
-        <Box sx={{ display: 'flex', width: '100%' }}>
-          <Typography sx={{ width: '100%', textAlign: 'center' }}>
-            You have offer to audit for{' '}
-            <span style={{ fontWeight: 500, wordBreak: 'break-word' }}>
-              {audit?.project_name}
-            </span>{' '}
-            project!
-          </Typography>
-        </Box>
-        <Box sx={{ maxWidth: '100%' }}>
-          <Box sx={contentWrapper}>
-            <Box sx={userWrapper}>
-              <Avatar
-                src={audit?.avatar ? `${ASSET_URL}/${audit?.avatar}` : ''}
-                alt="auditor photo"
-              />
-              <Box sx={{ display: 'grid' }}>
-                <Tooltip
-                  title={audit?.auditor_first_name}
-                  arrow
-                  placement={'top'}
-                >
-                  <Typography noWrap={true} sx={userNameWrapper}>
-                    {audit?.auditor_first_name}
-                  </Typography>
-                </Tooltip>
-                <Tooltip
-                  title={audit?.auditor_last_name}
-                  arrow
-                  placement={'top'}
-                >
-                  <Typography noWrap={true} sx={userNameWrapper}>
-                    {audit?.auditor_last_name}
-                  </Typography>
-                </Tooltip>
-              </Box>
-            </Box>
-            <Box sx={userInfoWrapper}>
-              <Box sx={infoWrapper}>
-                <span>E-mail</span>
-                <Box sx={{ display: 'grid' }}>
-                  {audit?.auditor_contacts?.email !== null ? (
-                    <Tooltip
-                      title={audit?.auditor_contacts?.email}
-                      arrow
-                      placement={'top'}
-                    >
-                      <Typography noWrap={true}>
-                        {audit?.auditor_contacts?.email}
-                      </Typography>
-                    </Tooltip>
-                  ) : (
-                    <Typography noWrap={true}>Hidden</Typography>
-                  )}
-                </Box>
-              </Box>
-              <Box sx={infoWrapper}>
-                <span>Telegram</span>
-                <Box sx={{ display: 'grid' }}>
-                  {audit?.auditor_contacts?.telegram !== null ? (
-                    <Tooltip
-                      title={audit?.auditor_contacts?.telegram}
-                      arrow
-                      placement={'top'}
-                    >
-                      <Typography noWrap={true}>
-                        {audit?.auditor_contacts?.telegram}
-                      </Typography>
-                    </Tooltip>
-                  ) : (
-                    <Typography noWrap={true}>Hidden</Typography>
-                  )}
-                </Box>
-              </Box>
-              <Box sx={infoWrapper}>
-                <span>Price:</span>
-                <Typography>${audit?.price} per line</Typography>
-              </Box>
-            </Box>
-            <Box sx={projectWrapper}>
-              <Typography>Time for project</Typography>
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                <Box sx={dateWrapper}>
-                  {dayjs(audit?.time?.from).format('DD.MM.YYYY')}
-                </Box>
-                -
-                <Box sx={dateWrapper}>
-                  {dayjs(audit?.time?.to).format('DD.MM.YYYY')}
-                </Box>
-              </Box>
-              <TagsList />
-            </Box>
-          </Box>
+  if (!audit && audit !== null) {
+    return (
+      <Layout>
+        <CustomCard sx={wrapper}>
+          <Loader />
+        </CustomCard>
+      </Layout>
+    );
+  }
 
-          <Box sx={descriptionSx(showFull)}>
-            <Box ref={descriptionRef}>
-              <Markdown value={audit?.description} />
-            </Box>
-          </Box>
-          {showReadMoreButton && (
-            <Button onClick={() => setShowFull(!showFull)} sx={readAllButton}>
-              {showFull ? 'Hide ▲' : `Read all ▼`}
-            </Button>
-          )}
-        </Box>
-        <Box>
-          {(audit?.status.toLowerCase() === RESOLVED.toLowerCase() ||
-            audit?.report ||
-            audit?.report_name) && (
-            <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-              <Button
-                variant={'contained'}
-                color={'secondary'}
-                onClick={() => handleOpenReport(audit)}
-                sx={[buttonSx, { marginBottom: '20px' }]}
-                {...addTestsLabel('report-button')}
-              >
-                Download Report
-              </Button>
-            </Box>
-          )}
-          {auditRequest && (
-            <Button
-              variant={'contained'}
-              sx={buttonSx}
-              disabled={audit?.last_changer.toLowerCase() === CUSTOMER}
-              onClick={handleConfirm}
-              {...addTestsLabel('accept-button')}
-            >
-              Accept
-            </Button>
-          )}
-          {audit?.status !== SUBMITED && audit?.status === DONE && (
-            <Button
-              variant={'contained'}
-              sx={buttonSx}
-              onClick={handleAcceptAudit}
-              {...addTestsLabel('confirm-button')}
-            >
-              Confirm
-            </Button>
-          )}
-          {!audit?.status && (
-            <Button
-              variant="contained"
-              color="secondary"
-              onClick={handleDecline}
-              sx={buttonSx}
-              {...addTestsLabel('decline-button')}
-            >
-              Decline
-            </Button>
-          )}
+  if (audit === null) {
+    return <NotFound />;
+  }
 
-          {/*{(audit?.status === DONE ||*/}
-          {/*  audit?.status === SUBMITED ||*/}
-          {/*  audit?.status === PENDING) && (*/}
-          {audit?.status &&
-            !!issues?.length &&
-            audit?.status.toLowerCase() !==
-              WAITING_FOR_AUDITS.toLowerCase() && (
-              <Button
-                variant="contained"
-                color="primary"
-                type="button"
-                onClick={goToIssues}
-                sx={buttonSx}
-                {...addTestsLabel('issues-button')}
-              >
-                Issues ({issues?.length})
+  if (audit) {
+    return (
+      <Layout>
+        <CustomCard sx={wrapper}>
+          <Button
+            sx={backButtonSx}
+            onClick={() => navigate('/profile/audits')}
+            aria-label="Go back"
+            {...addTestsLabel('go-back-button')}
+          >
+            <ArrowBackIcon />
+          </Button>
+          <Box sx={{ display: 'flex', width: '100%' }}>
+            <Typography sx={{ width: '100%', textAlign: 'center' }}>
+              You have offer to audit for{' '}
+              <span style={{ fontWeight: 500, wordBreak: 'break-word' }}>
+                {audit?.project_name}
+              </span>{' '}
+              project!
+            </Typography>
+          </Box>
+          <Box sx={{ maxWidth: '100%' }}>
+            <Box sx={contentWrapper}>
+              <Box sx={userWrapper}>
+                <Avatar
+                  src={audit?.avatar ? `${ASSET_URL}/${audit?.avatar}` : ''}
+                  alt="auditor photo"
+                />
+                <Box sx={{ display: 'grid' }}>
+                  <Tooltip
+                    title={audit?.auditor_first_name}
+                    arrow
+                    placement={'top'}
+                  >
+                    <Typography noWrap={true} sx={userNameWrapper}>
+                      {audit?.auditor_first_name}
+                    </Typography>
+                  </Tooltip>
+                  <Tooltip
+                    title={audit?.auditor_last_name}
+                    arrow
+                    placement={'top'}
+                  >
+                    <Typography noWrap={true} sx={userNameWrapper}>
+                      {audit?.auditor_last_name}
+                    </Typography>
+                  </Tooltip>
+                </Box>
+              </Box>
+              <Box sx={userInfoWrapper}>
+                <Box sx={infoWrapper}>
+                  <span>E-mail</span>
+                  <Box sx={{ display: 'grid' }}>
+                    {audit?.auditor_contacts?.email !== null ? (
+                      <Tooltip
+                        title={audit?.auditor_contacts?.email}
+                        arrow
+                        placement={'top'}
+                      >
+                        <Typography noWrap={true}>
+                          {audit?.auditor_contacts?.email}
+                        </Typography>
+                      </Tooltip>
+                    ) : (
+                      <Typography noWrap={true}>Hidden</Typography>
+                    )}
+                  </Box>
+                </Box>
+                <Box sx={infoWrapper}>
+                  <span>Telegram</span>
+                  <Box sx={{ display: 'grid' }}>
+                    {audit?.auditor_contacts?.telegram !== null ? (
+                      <Tooltip
+                        title={audit?.auditor_contacts?.telegram}
+                        arrow
+                        placement={'top'}
+                      >
+                        <Typography noWrap={true}>
+                          {audit?.auditor_contacts?.telegram}
+                        </Typography>
+                      </Tooltip>
+                    ) : (
+                      <Typography noWrap={true}>Hidden</Typography>
+                    )}
+                  </Box>
+                </Box>
+                <Box sx={infoWrapper}>
+                  <span>Price:</span>
+                  <Typography>${audit?.price} per line</Typography>
+                </Box>
+              </Box>
+              <Box sx={projectWrapper}>
+                <Typography>Time for project</Typography>
+                <Box
+                  sx={{ display: 'flex', alignItems: 'center', gap: '10px' }}
+                >
+                  <Box sx={dateWrapper}>
+                    {dayjs(audit?.time?.from).format('DD.MM.YYYY')}
+                  </Box>
+                  -
+                  <Box sx={dateWrapper}>
+                    {dayjs(audit?.time?.to).format('DD.MM.YYYY')}
+                  </Box>
+                </Box>
+                <TagsList />
+              </Box>
+            </Box>
+
+            <Box sx={descriptionSx(showFull)}>
+              <Box ref={descriptionRef}>
+                <Markdown value={audit?.description} />
+              </Box>
+            </Box>
+            {showReadMoreButton && (
+              <Button onClick={() => setShowFull(!showFull)} sx={readAllButton}>
+                {showFull ? 'Hide ▲' : `Read all ▼`}
               </Button>
             )}
-          {/*)}*/}
-        </Box>
-      </CustomCard>
-    </Layout>
-  );
+          </Box>
+          <Box>
+            {(audit?.status?.toLowerCase() === RESOLVED.toLowerCase() ||
+              audit?.report ||
+              audit?.report_name) && (
+              <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+                <Button
+                  variant={'contained'}
+                  color={'secondary'}
+                  onClick={() => handleOpenReport(audit)}
+                  sx={[buttonSx, { marginBottom: '20px' }]}
+                  {...addTestsLabel('report-button')}
+                >
+                  Download Report
+                </Button>
+              </Box>
+            )}
+            {auditRequest && (
+              <Button
+                variant={'contained'}
+                sx={buttonSx}
+                disabled={audit?.last_changer.toLowerCase() === CUSTOMER}
+                onClick={handleConfirm}
+                {...addTestsLabel('accept-button')}
+              >
+                Accept
+              </Button>
+            )}
+            {audit?.status !== SUBMITED && audit?.status === DONE && (
+              <Button
+                variant={'contained'}
+                sx={buttonSx}
+                onClick={handleAcceptAudit}
+                {...addTestsLabel('confirm-button')}
+              >
+                Confirm
+              </Button>
+            )}
+            {!audit?.status && (
+              <Button
+                variant="contained"
+                color="secondary"
+                onClick={handleDecline}
+                sx={buttonSx}
+                {...addTestsLabel('decline-button')}
+              >
+                Decline
+              </Button>
+            )}
+
+            {/*{(audit?.status === DONE ||*/}
+            {/*  audit?.status === SUBMITED ||*/}
+            {/*  audit?.status === PENDING) && (*/}
+            {audit?.status &&
+              !!issues?.length &&
+              audit?.status.toLowerCase() !==
+                WAITING_FOR_AUDITS.toLowerCase() && (
+                <Button
+                  variant="contained"
+                  color="primary"
+                  type="button"
+                  onClick={goToIssues}
+                  sx={buttonSx}
+                  {...addTestsLabel('issues-button')}
+                >
+                  Issues ({issues?.length})
+                </Button>
+              )}
+            {/*)}*/}
+          </Box>
+        </CustomCard>
+      </Layout>
+    );
+  }
 };
 
 export default AuditInfo;
