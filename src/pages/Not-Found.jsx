@@ -25,7 +25,9 @@ const NotFound = () => {
           <Typography>
             Oops! The page you are looking for does not exist
           </Typography>
-          <Typography variant={'h2'}>404</Typography>
+          <Typography variant={'h2'} color={'primary'}>
+            404
+          </Typography>
         </Box>
       </CustomCard>
     </Layout>
@@ -67,7 +69,6 @@ const wrapper = theme => ({
       fontSize: '144px',
       lineHeight: '100%',
       fontWeight: 'bold',
-      color: theme.palette.text.primary,
     },
   },
   [theme.breakpoints.down('md')]: {
