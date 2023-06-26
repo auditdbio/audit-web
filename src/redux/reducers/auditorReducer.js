@@ -35,7 +35,7 @@ export const auditorReducer = (state = initialState, action) => {
         currentAuditor: action.payload,
       };
     case LOG_OUT:
-      return { ...state, auditor: null };
+      return { ...state, auditor: null, currentAuditor: null };
     default:
       return state;
   }

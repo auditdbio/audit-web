@@ -7,6 +7,7 @@ import {
   PROJECT_UPDATE_STATUS,
   CLEAR_SUCCESS,
   CLOSE_THE_PROJECT,
+  LOG_OUT,
 } from '../actions/types.js';
 
 const initialState = {
@@ -81,6 +82,16 @@ export const projectReducer = (state = initialState, action) => {
     case CLEAR_SUCCESS: {
       return { ...state, message: null };
     }
+    case LOG_OUT:
+      return {
+        ...state,
+        myProjects: null,
+        recentProject: null,
+        error: null,
+        searchProjects: null,
+        message: null,
+        searchTotalProjects: 0,
+      };
     default:
       return state;
   }
