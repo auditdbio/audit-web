@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom/dist';
@@ -26,7 +26,6 @@ import IssueDetailsForm from '../components/issuesPage/IssueDetailsForm/IssueDet
 import IssuesList from '../components/issuesPage/IssuesList.jsx';
 import CustomSnackbar from '../components/custom/CustomSnackbar.jsx';
 import { getIssues } from '../redux/actions/issueAction.js';
-import NotFound from './Not-Found.jsx';
 
 const AuditOffer = () => {
   const { auditId } = useParams();
@@ -34,25 +33,15 @@ const AuditOffer = () => {
   const dispatch = useDispatch();
   const { successMessage, error } = useSelector(s => s.issues);
   const { issues, issuesAuditId } = useSelector(s => s.issues);
-  const audits = useSelector(s => s.audits.audits);
+  const audit = useSelector(s =>
+    s.audits.audits?.find(audit => audit.id === auditId),
+  );
 
   const [auditDBWorkflow, setAuditDBWorkflow] = useState(true);
   const [showReadMoreButton, setShowReadMoreButton] = useState(false);
   const [showFull, setShowFull] = useState(false);
 
   const descriptionRef = useRef();
-
-  const audit = useMemo(() => {
-    if (audits?.length) {
-      const data = audits?.find(audit => audit.id === auditId);
-      if (data) {
-        return data;
-      } else {
-        return 'not-found';
-      }
-    }
-    return null;
-  }, [audits, auditId]);
 
   useEffect(() => {
     setTimeout(() => {
@@ -69,16 +58,8 @@ const AuditOffer = () => {
   }, []);
 
   if (!audit) {
-    return (
-      <Layout>
-        <CustomCard sx={wrapper}>
-          <Loader />
-        </CustomCard>
-      </Layout>
-    );
-  }
-
-  if (audit && audit !== 'not-found') {
+    return <Loader />;
+  } else {
     return (
       <Layout>
         <CustomCard sx={wrapper}>
@@ -380,10 +361,6 @@ const AuditOffer = () => {
         </CustomCard>
       </Layout>
     );
-  }
-
-  if (audit === 'not-found') {
-    return <NotFound />;
   }
 };
 
