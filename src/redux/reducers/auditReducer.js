@@ -11,6 +11,7 @@ import {
   RESOLVED,
   SET_CURRENT_AUDIT_PARTNER,
   SUBMIT_AUDIT,
+  LOG_OUT,
 } from '../actions/types.js';
 
 const initialState = {
@@ -82,6 +83,8 @@ export const auditReducer = (state = initialState, action) => {
       return { ...state, error: 'Error while processing request' };
     case CLEAR_MESSAGES:
       return { ...state, error: null, successMessage: null };
+    case LOG_OUT:
+      return initialState;
     default:
       return state;
   }
