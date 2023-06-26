@@ -43,12 +43,15 @@ const AuditOffer = () => {
   const descriptionRef = useRef();
 
   const audit = useMemo(() => {
-    const data = audits?.find(audit => audit.id === auditId);
-    if (data) {
-      return data;
-    } else {
-      return null;
+    if (audits?.length) {
+      const data = audits?.find(audit => audit.id === auditId);
+      if (data) {
+        return data;
+      } else {
+        return 'not-found';
+      }
     }
+    return null;
   }, [audits, auditId]);
 
   useEffect(() => {
@@ -65,7 +68,7 @@ const AuditOffer = () => {
     }
   }, []);
 
-  if (audit !== null && !audit) {
+  if (!audit) {
     return (
       <Layout>
         <CustomCard sx={wrapper}>
@@ -75,7 +78,7 @@ const AuditOffer = () => {
     );
   }
 
-  if (audit) {
+  if (audit && audit !== 'not-found') {
     return (
       <Layout>
         <CustomCard sx={wrapper}>
@@ -379,7 +382,7 @@ const AuditOffer = () => {
     );
   }
 
-  if (audit === null && audit !== undefined) {
+  if (audit === 'not-found') {
     return <NotFound />;
   }
 };
