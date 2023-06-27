@@ -69,7 +69,7 @@ const DescriptionBlock = ({
       </Box>
 
       {user.current_role === AUDITOR &&
-        audit.status?.toLowerCase() !== RESOLVED.toLowerCase() && (
+        audit?.status?.toLowerCase() !== RESOLVED.toLowerCase() && (
           <Box sx={descriptionButtonsSx}>
             {!addLinkField && (
               <IconButton
@@ -104,7 +104,7 @@ const DescriptionBlock = ({
 
       <Box sx={linksList}>
         {user.current_role === AUDITOR &&
-        audit.status?.toLowerCase() !== RESOLVED.toLowerCase() ? (
+        audit?.status?.toLowerCase() !== RESOLVED.toLowerCase() ? (
           <ProjectLinksList name="links" handleSubmit={handleSubmit} />
         ) : (
           <Box sx={customerLinksList}>
