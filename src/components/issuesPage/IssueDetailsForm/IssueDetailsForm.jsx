@@ -121,7 +121,10 @@ const IssueDetailsForm = ({ issue = null, editMode = false }) => {
                   name="name"
                   label="Title"
                   fullWidth={true}
-                  disabled={!isEditName}
+                  disabled={
+                    !isEditName ||
+                    audit.status?.toLowerCase() === RESOLVED.toLowerCase()
+                  }
                   sx={nameInputSx}
                   inputRef={nameInputRef}
                   inputProps={{ ...addTestsLabel('issue-name-input') }}

@@ -18,7 +18,11 @@ import {
 } from '../redux/actions/auditAction.js';
 import AuditUpload from '../components/forms/audit-upload/index.jsx';
 import Loader from '../components/Loader.jsx';
-import { SUBMITED, WAITING_FOR_AUDITS } from '../redux/actions/types.js';
+import {
+  RESOLVED,
+  SUBMITED,
+  WAITING_FOR_AUDITS,
+} from '../redux/actions/types.js';
 import Markdown from '../components/markdown/Markdown.jsx';
 import { addTestsLabel } from '../lib/helper.js';
 import CustomLink from '../components/custom/CustomLink.jsx';
@@ -56,6 +60,15 @@ const AuditOffer = () => {
       dispatch(getIssues(auditId));
     }
   }, []);
+
+  useEffect(() => {
+    if (
+      audit.status?.toLowerCase() === RESOLVED.toLowerCase() &&
+      !issues?.length
+    ) {
+      setAuditDBWorkflow(false);
+    }
+  }, [audit, issues]);
 
   if (!audit) {
     return <Loader />;
@@ -265,6 +278,10 @@ const AuditOffer = () => {
                           <Button
                             onClick={() => setAuditDBWorkflow(true)}
                             sx={workflowButton(auditDBWorkflow)}
+                            disabled={
+                              audit.status?.toLowerCase() ===
+                                RESOLVED.toLowerCase() && !issues?.length
+                            }
                           >
                             {issues?.length
                               ? `Issues (${issues.length})`
@@ -353,9 +370,9 @@ const AuditOffer = () => {
                   >
                     <IssuesList auditId={auditId} />
                   </Box>
-                ) : (
+                ) : audit.status?.toLowerCase() !== RESOLVED.toLowerCase() ? (
                   <IssueDetailsForm />
-                )}
+                ) : null}
               </Box>
             )}
         </CustomCard>
@@ -561,6 +578,7 @@ const workflowToggleBox = theme => ({
   borderRadius: '38px',
   [theme.breakpoints.down('xs')]: {
     width: '248px',
+    margin: '0 auto 20px',
   },
 });
 
