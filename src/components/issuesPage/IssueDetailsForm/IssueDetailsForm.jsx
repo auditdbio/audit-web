@@ -31,6 +31,7 @@ const IssueDetailsForm = ({ issue = null, editMode = false }) => {
 
   const [isEditName, setIsEditName] = useState(!editMode);
   const [issuePrevValues, setIssuePrevValues] = useState(null);
+  const [isEditFeedback, setIsEditFeedback] = useState(false);
   const nameInputRef = useRef();
 
   const handleNameEdit = handleSubmit => {
@@ -121,13 +122,16 @@ const IssueDetailsForm = ({ issue = null, editMode = false }) => {
                   name="name"
                   label="Title"
                   fullWidth={true}
-                  disabled={!isEditName}
+                  disabled={
+                    !isEditName ||
+                    audit?.status?.toLowerCase() === RESOLVED.toLowerCase()
+                  }
                   sx={nameInputSx}
                   inputRef={nameInputRef}
                   inputProps={{ ...addTestsLabel('issue-name-input') }}
                   InputProps={
                     user.current_role === AUDITOR &&
-                    audit.status?.toLowerCase() !== RESOLVED.toLowerCase() &&
+                    audit?.status?.toLowerCase() !== RESOLVED.toLowerCase() &&
                     editMode
                       ? {
                           endAdornment: (
@@ -164,6 +168,8 @@ const IssueDetailsForm = ({ issue = null, editMode = false }) => {
                 values={values}
                 user={user}
                 audit={audit}
+                isEditFeedback={isEditFeedback}
+                setIsEditFeedback={setIsEditFeedback}
               />
 
               <StatusSeverityBlock
@@ -177,6 +183,8 @@ const IssueDetailsForm = ({ issue = null, editMode = false }) => {
                 editMode={editMode}
                 handleSubmit={handleSubmit}
                 audit={audit}
+                isEditFeedback={isEditFeedback}
+                setIsEditFeedback={setIsEditFeedback}
               />
             </Box>
           </Form>
@@ -192,7 +200,7 @@ const issueValidationSchema = Yup.object().shape({
   name: Yup.string().required('Title is required'),
   description: Yup.string().required('Description required'),
   severity: Yup.string().required('Required'),
-  category: Yup.string().required('Required'),
+  category: Yup.string(),
   links: Yup.array().of(Yup.string().url()),
   include: Yup.boolean(),
   feedback: Yup.string(),
