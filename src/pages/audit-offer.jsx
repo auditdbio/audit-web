@@ -63,7 +63,7 @@ const AuditOffer = () => {
 
   useEffect(() => {
     if (
-      audit.status?.toLowerCase() === RESOLVED.toLowerCase() &&
+      audit?.status?.toLowerCase() === RESOLVED.toLowerCase() &&
       !issues?.length
     ) {
       setAuditDBWorkflow(false);
@@ -279,7 +279,7 @@ const AuditOffer = () => {
                             onClick={() => setAuditDBWorkflow(true)}
                             sx={workflowButton(auditDBWorkflow)}
                             disabled={
-                              audit.status?.toLowerCase() ===
+                              audit?.status?.toLowerCase() ===
                                 RESOLVED.toLowerCase() && !issues?.length
                             }
                           >
@@ -370,7 +370,7 @@ const AuditOffer = () => {
                   >
                     <IssuesList auditId={auditId} />
                   </Box>
-                ) : audit.status?.toLowerCase() !== RESOLVED.toLowerCase() ? (
+                ) : audit?.status?.toLowerCase() !== RESOLVED.toLowerCase() ? (
                   <IssueDetailsForm />
                 ) : null}
               </Box>
