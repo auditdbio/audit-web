@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Box, IconButton, Typography, useMediaQuery } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit.js';
 import AddLinkIcon from '@mui/icons-material/AddLink.js';
 import MarkdownEditor from '../../markdown/Markdown-editor.jsx';
-import { AUDITOR, RESOLVED } from '../../../redux/actions/types.js';
+import { AUDITOR, CUSTOMER, RESOLVED } from '../../../redux/actions/types.js';
 import { addTestsLabel } from '../../../lib/helper.js';
 import { ProjectLinksList } from '../../custom/ProjectLinksList.jsx';
 import CustomLink from '../../custom/CustomLink.jsx';
@@ -19,12 +19,19 @@ const DescriptionBlock = ({
   values,
   user,
   audit,
+  isEditFeedback,
+  setIsEditFeedback,
 }) => {
   const matchXs = useMediaQuery(theme.breakpoints.down('xs'));
 
   const [addLinkField, setAddLinkField] = useState(false);
   const [mdRef, setMdRef] = useState(null);
+  const [feedbackRef, setFeedbackRef] = useState(null);
   const [isEditDescription, setIsEditDescription] = useState(!editMode);
+
+  useEffect(() => {
+    setTimeout(() => feedbackRef?.current?.nodeMdText?.current?.focus(), 100);
+  }, [feedbackRef]);
 
   const handleDescriptionEdit = (handleSubmit, values) => {
     if (!values.description?.trim()) return;
@@ -50,6 +57,24 @@ const DescriptionBlock = ({
     }
   };
 
+  const handleFeedbackEdit = handleSubmit => {
+    if (isEditFeedback) {
+      feedbackRef?.current?.setView({ menu: false, md: false, html: true });
+      handleSubmit();
+    } else {
+      feedbackRef.current?.setView({ menu: true, md: true, html: false });
+      setTimeout(() => feedbackRef?.current?.nodeMdText?.current?.focus(), 100);
+    }
+    setIsEditFeedback(!isEditFeedback);
+  };
+
+  const getFeedbackView = () => {
+    if (user.current_role === CUSTOMER && isEditFeedback) {
+      return { menu: true, md: true, html: false };
+    }
+    return { menu: false, md: false, html: true };
+  };
+
   return (
     <Box sx={descriptionBlock}>
       <Box sx={markdownWrapper}>
@@ -70,13 +95,18 @@ const DescriptionBlock = ({
 
       {user.current_role === AUDITOR &&
         audit?.status?.toLowerCase() !== RESOLVED.toLowerCase() && (
-          <Box sx={descriptionButtonsSx}>
+          <Box
+            sx={[
+              descriptionButtonsSx,
+              addLinkField && { justifyContent: 'flex-end' },
+            ]}
+          >
             {!addLinkField && (
               <IconButton
                 type="button"
                 aria-label="add link"
                 onClick={() => setAddLinkField(true)}
-                sx={addLinkButton}
+                sx={[addLinkButton]}
                 {...addTestsLabel('add-link-button')}
               >
                 <AddLinkIcon color="secondary" />
@@ -90,7 +120,7 @@ const DescriptionBlock = ({
                 type="button"
                 aria-label="Edit description"
                 onClick={() => handleDescriptionEdit(handleSubmit, values)}
-                sx={editDescriptionButton}
+                sx={editButton}
                 {...addTestsLabel('edit-description-button')}
               >
                 <EditIcon color="secondary" fontSize="small" />
@@ -139,11 +169,59 @@ const DescriptionBlock = ({
           )}
         </Box>
       )}
+
+      {(values.feedback || isEditFeedback) && (
+        <Box sx={feedbackWrapper}>
+          {!isEditFeedback && <Box sx={feedbackHeader}>Feedback</Box>}
+          <MarkdownEditor
+            name="feedback"
+            setMdRef={setFeedbackRef}
+            mdProps={{
+              view: getFeedbackView(),
+              placeholder: 'Feedback',
+              style: isEditFeedback
+                ? { ...feedbackMarkdownSx, height: '238px' }
+                : feedbackMarkdownSx,
+            }}
+          />
+
+          {user.current_role === CUSTOMER && (
+            <Box sx={editFeedbackButtonWrapper}>
+              <IconButton
+                type="button"
+                aria-label="Edit feedback"
+                onClick={() => handleFeedbackEdit(handleSubmit)}
+                sx={editButton}
+                {...addTestsLabel('edit-feedback-button')}
+              >
+                <EditIcon color="secondary" fontSize="small" />
+                <Box component="span" sx={editButtonText}>
+                  {isEditFeedback ? 'Save' : 'Edit'}
+                </Box>
+              </IconButton>
+            </Box>
+          )}
+        </Box>
+      )}
     </Box>
   );
 };
 
 export default DescriptionBlock;
+
+const eventLine = height => ({
+  content: '""',
+  display: 'block',
+  position: 'absolute',
+  top: `-${height}px`,
+  left: '36px',
+  width: '1px',
+  height: `${height + 1}px`,
+  backgroundColor: '#b9b9b9',
+  [theme.breakpoints.down('xs')]: {
+    left: '16px',
+  },
+});
 
 const descriptionBlock = theme => ({
   width: '80%',
@@ -168,12 +246,11 @@ const descriptionButtonsSx = {
   padding: '0 10px',
   display: 'flex',
   justifyContent: 'space-between',
-  // flexDirection: 'row-reverse',
   borderLeft: '1px solid #b9b9b9',
   borderRight: '1px solid #b9b9b9',
 };
 
-const editDescriptionButton = {
+const editButton = {
   display: 'flex',
   alignItems: 'flex-end',
 };
@@ -190,8 +267,10 @@ const linksList = {
 };
 
 const linkFieldSx = {
+  position: 'relative',
   '& > div': { borderRadius: 0 },
   '& fieldset': { borderColor: '#b9b9b9' },
+  '&::before': eventLine(10),
 };
 
 const customerLinksList = {
@@ -238,3 +317,37 @@ const markdownSx = matchXs => ({
   borderTop: matchXs ? '1px solid #b9b9b9' : 'none',
   borderRight: 'none',
 });
+
+const feedbackWrapper = {
+  position: 'relative',
+  mt: '20px',
+  '& .rc-md-navigation.visible': {
+    borderRight: '1px solid #b9b9b9',
+    borderBottom: '1px solid #b9b9b9',
+  },
+  '& .section': {
+    borderRightColor: '#b9b9b9 !important',
+  },
+  '&::before': eventLine(20),
+};
+
+const feedbackHeader = {
+  border: '1px solid #b9b9b9',
+  borderBottom: 'none',
+  background: '#F5F5F5',
+  padding: '9px 15px',
+  fontWeight: 500,
+};
+
+const feedbackMarkdownSx = {
+  height: '200px',
+  border: '1px solid #b9b9b9',
+  borderRight: 'none',
+  backgroundColor: '#fcfaf6',
+};
+
+const editFeedbackButtonWrapper = {
+  position: 'absolute',
+  right: '12px',
+  bottom: '5px',
+};
