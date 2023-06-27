@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Button } from '@mui/material';
+import { Box, Button, Typography } from '@mui/material';
 import { Form, Formik } from 'formik';
 import * as Yup from 'yup';
 import EditIcon from '@mui/icons-material/Edit.js';
@@ -13,6 +13,7 @@ import CustomSnackbar from '../../custom/CustomSnackbar.jsx';
 import { addTestsLabel } from '../../../lib/helper.js';
 import PasswordField from '../fields/password-field.jsx';
 import { AUDITOR } from '../../../redux/actions/types.js';
+import theme from '../../../styles/themes.js';
 
 const ChangePasswordFormik = () => {
   const dispatch = useDispatch();
@@ -52,7 +53,7 @@ const ChangePasswordFormik = () => {
             dispatch(changePassword(values, user.id));
           }}
         >
-          {({ handleSubmit, dirty }) => {
+          {({ handleSubmit, dirty, errors }) => {
             return (
               <Form onSubmit={handleSubmit}>
                 <Box sx={wrapper}>
@@ -66,6 +67,16 @@ const ChangePasswordFormik = () => {
                       name="confirm_password"
                       label="Confirm password"
                     />
+                    {(errors.confirm_password || errors.password) && (
+                      <Typography
+                        sx={{
+                          color: `${theme.palette.error.main}!important`,
+                          fontSize: '14px',
+                        }}
+                      >
+                        {errors.confirm_password || errors.password}
+                      </Typography>
+                    )}
                   </Box>
                   <Button
                     sx={passwordButtonSx}
@@ -97,7 +108,7 @@ export default ChangePasswordFormik;
 
 const validationSchema = Yup.object().shape({
   current_password: Yup.string().required('Required'),
-  password: Yup.string().min(6, 'Too Short!').required('Required'),
+  password: Yup.string().min(6, 'Password too Short!').required('Required'),
   confirm_password: Yup.string()
     .required()
     .oneOf([Yup.ref('password'), null], 'Passwords must match'),
