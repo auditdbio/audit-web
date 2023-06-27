@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Box, Button } from '@mui/material';
 import { Form, Formik } from 'formik';
 import * as Yup from 'yup';
 import EditIcon from '@mui/icons-material/Edit.js';
 import {
   changePassword,
+  clearUserError,
   clearUserSuccess,
 } from '../../../redux/actions/userAction.js';
 import { useDispatch, useSelector } from 'react-redux';
@@ -15,17 +16,26 @@ import { AUDITOR } from '../../../redux/actions/types.js';
 
 const ChangePasswordFormik = () => {
   const dispatch = useDispatch();
-  const { user, success } = useSelector(s => s.user);
+  const { user, success, error } = useSelector(s => s.user);
   const [editMode, setEditMode] = useState(false);
+
+  useEffect(() => {
+    if (success) {
+      setEditMode(false);
+    }
+  }, [success]);
 
   return (
     <Box sx={{ textAlign: 'center', mt: '30px' }}>
       <CustomSnackbar
         autoHideDuration={10000}
-        open={!!success}
-        onClose={() => dispatch(clearUserSuccess())}
-        severity="success"
-        text={success}
+        open={!!error || !!success}
+        onClose={() => {
+          dispatch(clearUserSuccess());
+          dispatch(clearUserError());
+        }}
+        severity={error ? 'error' : 'success'}
+        text={error || success}
       />
 
       {editMode ? (
@@ -40,7 +50,6 @@ const ChangePasswordFormik = () => {
           validateOnChange={false}
           onSubmit={values => {
             dispatch(changePassword(values, user.id));
-            setEditMode(false);
           }}
         >
           {({ handleSubmit, dirty }) => {
