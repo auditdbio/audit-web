@@ -2,7 +2,17 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined.js';
-import { Box, Button, InputAdornment, TextField, Tooltip } from '@mui/material';
+import {
+  Box,
+  Button,
+  InputAdornment,
+  Menu,
+  MenuItem,
+  TextField,
+  Tooltip,
+} from '@mui/material';
+import MenuIcon from '@mui/icons-material/Menu';
+import IconButton from '@mui/material/IconButton';
 import { addTestsLabel } from '../../lib/helper.js';
 import { AUDITOR, RESOLVED } from '../../redux/actions/types.js';
 import { handleOpenReport } from '../../lib/openReport.js';
@@ -13,6 +23,7 @@ const Control = ({ issues, search, setSearch, setPage, setSearchParams }) => {
   const { auditId } = useParams();
   const [resolveConfirmation, setResolveConfirmation] = useState(false);
   const [allIssuesClosed, setAllIssuesClosed] = useState(false);
+  const [anchorEl, setAnchorEl] = useState(null);
   const user = useSelector(s => s.user.user);
   const audit = useSelector(s =>
     s.audits.audits?.find(audit => audit.id === auditId),
@@ -27,6 +38,14 @@ const Control = ({ issues, search, setSearch, setPage, setSearchParams }) => {
   const handleNewIssue = () => {
     navigate(`/issues/new-issue/${auditId}`);
     window.scrollTo(0, 0);
+  };
+
+  const handleOpenNavMenu = e => {
+    setAnchorEl(e.currentTarget);
+  };
+
+  const handleCloseNavMenu = () => {
+    setAnchorEl(null);
   };
 
   useEffect(() => {
@@ -48,23 +67,46 @@ const Control = ({ issues, search, setSearch, setPage, setSearchParams }) => {
       />
 
       <Box sx={wrapper}>
-        <TextField
-          variant="outlined"
-          size="small"
-          sx={textFieldSx}
-          value={search}
-          onChange={handleSearch}
-          inputProps={{ ...addTestsLabel('search-input') }}
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <SearchOutlinedIcon />
-              </InputAdornment>
-            ),
-          }}
-        />
+        <Box sx={searchBlock}>
+          <IconButton
+            aria-label="Menu"
+            color="secondary"
+            onClick={handleOpenNavMenu}
+            sx={menuButton}
+          >
+            <MenuIcon fontSize="large" sx={{ color: 'white' }} />
+          </IconButton>
+          <Menu
+            open={!!anchorEl}
+            anchorEl={anchorEl}
+            anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+            transformOrigin={{ vertical: 'top', horizontal: 'left' }}
+            onClose={handleCloseNavMenu}
+            PaperProps={{
+              sx: { width: '250px', borderRadius: '10px !important' },
+            }}
+          >
+            <MenuItem onClick={handleCloseNavMenu}>Disclose all</MenuItem>
+            <MenuItem onClick={handleCloseNavMenu}>Mark all as read</MenuItem>
+          </Menu>
+          <TextField
+            variant="outlined"
+            size="small"
+            sx={textFieldSx}
+            value={search}
+            onChange={handleSearch}
+            inputProps={{ ...addTestsLabel('search-input') }}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchOutlinedIcon />
+                </InputAdornment>
+              ),
+            }}
+          />
+        </Box>
         {user?.current_role === AUDITOR ? (
-          <Box sx={{ flexShrink: 0, alignSelf: 'center' }}>
+          <Box sx={buttonBoxSx}>
             <Button
               variant="contained"
               color="secondary"
@@ -103,7 +145,7 @@ const Control = ({ issues, search, setSearch, setPage, setSearchParams }) => {
         ) : (
           <Button
             variant="contained"
-            color="secondary"
+            color="primary"
             disabled={!audit?.report}
             onClick={() => handleOpenReport(audit)}
             sx={buttonSx}
@@ -128,12 +170,52 @@ const wrapper = theme => ({
   },
 });
 
+const searchBlock = theme => ({
+  display: 'flex',
+  flexGrow: 1,
+  alignItems: 'center',
+  [theme.breakpoints.down('xs')]: {
+    mt: '20px',
+  },
+});
+
 const textFieldSx = theme => ({
   width: '100%',
   mr: '20px',
   [theme.breakpoints.down('xs')]: {
     mr: 0,
-    mt: '10px',
+  },
+});
+
+const menuButton = theme => ({
+  width: '55px',
+  height: '55px',
+  borderRadius: '8px',
+  background: theme.palette.secondary.main,
+  padding: 0,
+  mr: '20px',
+  '&:hover': {
+    filter: 'brightness(0.8)',
+    background: theme.palette.secondary.main,
+  },
+  [theme.breakpoints.down('lg')]: {
+    width: '49px',
+    height: '49px',
+  },
+  [theme.breakpoints.down('md')]: {
+    width: '46px',
+    height: '46px',
+  },
+  [theme.breakpoints.down('sm')]: {
+    width: '39px',
+    height: '39px',
+  },
+});
+
+const buttonBoxSx = theme => ({
+  [theme.breakpoints.down('xs')]: {
+    display: 'flex',
+    justifyContent: 'center',
   },
 });
 
@@ -151,12 +233,15 @@ const buttonSx = theme => ({
     padding: '12px 24px',
   },
   [theme.breakpoints.down('md')]: {
-    padding: '7px 24px',
+    padding: '10px 24px',
     fontWeight: 500,
   },
-  [theme.breakpoints.down('xs')]: {
-    padding: '7px 12px',
+  [theme.breakpoints.down('sm')]: {
+    padding: '7px 24px',
     fontSize: '16px',
+  },
+  [theme.breakpoints.down('xs')]: {
+    padding: '7px 10px',
     fontWeight: 400,
   },
 });
