@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined.js';
 import {
   Box,
@@ -17,8 +17,10 @@ import { addTestsLabel } from '../../lib/helper.js';
 import { AUDITOR, RESOLVED } from '../../redux/actions/types.js';
 import { handleOpenReport } from '../../lib/openReport.js';
 import ResolveAuditConfirmation from './ResolveAuditConfirmation.jsx';
+import { discloseAllIssues } from '../../redux/actions/issueAction.js';
 
 const Control = ({ issues, search, setSearch, setPage, setSearchParams }) => {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const { auditId } = useParams();
   const [resolveConfirmation, setResolveConfirmation] = useState(false);
@@ -46,6 +48,15 @@ const Control = ({ issues, search, setSearch, setPage, setSearchParams }) => {
 
   const handleCloseNavMenu = () => {
     setAnchorEl(null);
+  };
+
+  const handleDiscloseAll = () => {
+    dispatch(discloseAllIssues(auditId));
+    setAnchorEl(null);
+  };
+
+  const checkDraftIssues = () => {
+    return !issues?.some(issue => issue.status === 'Draft');
   };
 
   useEffect(() => {
@@ -86,9 +97,17 @@ const Control = ({ issues, search, setSearch, setPage, setSearchParams }) => {
               sx: { width: '250px', borderRadius: '10px !important' },
             }}
           >
-            <MenuItem onClick={handleCloseNavMenu}>Disclose all</MenuItem>
+            {user.current_role === AUDITOR && (
+              <MenuItem
+                disabled={checkDraftIssues()}
+                onClick={handleDiscloseAll}
+              >
+                Disclose all
+              </MenuItem>
+            )}
             <MenuItem onClick={handleCloseNavMenu}>Mark all as read</MenuItem>
           </Menu>
+
           <TextField
             variant="outlined"
             size="small"
@@ -105,6 +124,7 @@ const Control = ({ issues, search, setSearch, setPage, setSearchParams }) => {
             }}
           />
         </Box>
+
         {user?.current_role === AUDITOR ? (
           <Box sx={buttonBoxSx}>
             <Button
