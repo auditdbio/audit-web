@@ -31,6 +31,7 @@ const IssueDetailsForm = ({ issue = null, editMode = false }) => {
 
   const [isEditName, setIsEditName] = useState(!editMode);
   const [issuePrevValues, setIssuePrevValues] = useState(null);
+  const [isEditFeedback, setIsEditFeedback] = useState(false);
   const nameInputRef = useRef();
 
   const handleNameEdit = handleSubmit => {
@@ -167,6 +168,8 @@ const IssueDetailsForm = ({ issue = null, editMode = false }) => {
                 values={values}
                 user={user}
                 audit={audit}
+                isEditFeedback={isEditFeedback}
+                setIsEditFeedback={setIsEditFeedback}
               />
 
               <StatusSeverityBlock
@@ -180,6 +183,8 @@ const IssueDetailsForm = ({ issue = null, editMode = false }) => {
                 editMode={editMode}
                 handleSubmit={handleSubmit}
                 audit={audit}
+                isEditFeedback={isEditFeedback}
+                setIsEditFeedback={setIsEditFeedback}
               />
             </Box>
           </Form>

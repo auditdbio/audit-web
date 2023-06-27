@@ -11,7 +11,7 @@ import {
 } from '@mui/material';
 import { addSpacesToCamelCase, addTestsLabel } from '../../../lib/helper.js';
 import StatusControl from '../StatusControl.jsx';
-import { AUDITOR, RESOLVED } from '../../../redux/actions/types.js';
+import { AUDITOR, CUSTOMER, RESOLVED } from '../../../redux/actions/types.js';
 import ArrowIcon from '../../icons/ArrowIcon.jsx';
 import { Field } from 'formik';
 import { Select, TextField } from 'formik-mui';
@@ -30,6 +30,8 @@ const StatusSeverityBlock = ({
   dirty,
   user,
   audit,
+  isEditFeedback,
+  setIsEditFeedback,
 }) => {
   const [severityListOpen, setSeverityListOpen] = useState(false);
   const [categoryPrevVal, setCategoryPrevVal] = useState(issue?.category || '');
@@ -215,16 +217,30 @@ const StatusSeverityBlock = ({
       </Box>
 
       {user.current_role === AUDITOR && !editMode && (
-        <Box sx={addIssueBox}>
+        <Box sx={buttonsBox}>
           <Button
             variant="contained"
             type="submit"
             color="primary"
             disabled={!dirty}
-            sx={addIssueButton}
+            sx={issueButton}
             {...addTestsLabel('new-issue-button')}
           >
             Add issue
+          </Button>
+        </Box>
+      )}
+
+      {user.current_role === CUSTOMER && !isEditFeedback && !issue.feedback && (
+        <Box sx={buttonsBox}>
+          <Button
+            variant="contained"
+            color="primary"
+            sx={[issueButton, feedbackButton]}
+            onClick={() => setIsEditFeedback(prev => !prev)}
+            {...addTestsLabel('feedback-button')}
+          >
+            Send feedback
           </Button>
         </Box>
       )}
@@ -311,7 +327,7 @@ const categoryInput = theme => ({
   },
 });
 
-const addIssueBox = {
+const buttonsBox = {
   display: 'flex',
   justifyContent: 'flex-end',
   pt: '20px',
@@ -323,7 +339,7 @@ const addIssueBox = {
   },
 };
 
-const addIssueButton = theme => ({
+const issueButton = theme => ({
   padding: '16px 10px',
   width: '100%',
   textTransform: 'none',
@@ -339,5 +355,14 @@ const addIssueButton = theme => ({
     fontSize: '14px',
     padding: '10px 30px',
     mt: '20px',
+  },
+});
+
+const feedbackButton = theme => ({
+  fontSize: '18px',
+  padding: '6px 6px',
+  [theme.breakpoints.down('md')]: {
+    padding: '4px 6px',
+    fontSize: '16px',
   },
 });
