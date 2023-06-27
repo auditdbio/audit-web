@@ -61,9 +61,11 @@ const issueRow = theme => ({
   borderBottom: 'none',
   '&:last-child': { borderBottom: '2px solid #E5E5E5' },
   ':hover': { backgroundColor: '#F1F1F1' },
+  [theme.breakpoints.down('sm')]: {
+    padding: '15px 10px 15px 0',
+  },
   [theme.breakpoints.down('xs')]: {
     justifyContent: 'space-between',
-    padding: '15px 10px 15px 0',
   },
 });
 

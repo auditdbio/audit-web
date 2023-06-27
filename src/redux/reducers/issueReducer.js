@@ -1,6 +1,7 @@
 import {
   ADD_AUDIT_ISSUE,
   CLEAR_MESSAGES,
+  DISCLOSE_ALL_ISSUES,
   GET_AUDIT_ISSUES,
   REQUEST_ERROR,
   UPDATE_AUDIT_ISSUE,
@@ -34,6 +35,12 @@ export const issueReducer = (state = initialState, action) => {
         issues: state.issues?.map(issue =>
           issue.id === action.payload.issue.id ? action.payload.issue : issue,
         ),
+      };
+    case DISCLOSE_ALL_ISSUES:
+      return {
+        ...state,
+        issues: action.payload,
+        successMessage: 'All issues disclosed',
       };
     case REQUEST_ERROR:
       return { ...state, error: 'Error while processing request' };

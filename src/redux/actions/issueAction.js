@@ -2,6 +2,7 @@ import Cookies from 'js-cookie';
 import axios from 'axios';
 import {
   ADD_AUDIT_ISSUE,
+  DISCLOSE_ALL_ISSUES,
   GET_AUDIT_ISSUES,
   REQUEST_ERROR,
   UPDATE_AUDIT_ISSUE,
@@ -55,6 +56,23 @@ export const updateAuditIssue = (auditId, issueId, values) => {
             id: auditId,
             issue: data,
           },
+        });
+      })
+      .catch(e => dispatch({ type: REQUEST_ERROR }));
+  };
+};
+
+export const discloseAllIssues = auditId => {
+  return dispatch => {
+    const token = Cookies.get('token');
+    axios
+      .patch(`${API_URL}/audit/${auditId}/disclose_all`, null, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .then(({ data }) => {
+        dispatch({
+          type: DISCLOSE_ALL_ISSUES,
+          payload: data,
         });
       })
       .catch(e => dispatch({ type: REQUEST_ERROR }));
