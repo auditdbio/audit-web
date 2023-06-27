@@ -278,6 +278,9 @@ export const changePassword = (values, userId) => {
       })
       .then(({ data }) => {
         dispatch({ type: UPDATE_USER, payload: data });
+      })
+      .catch(({ response }) => {
+        dispatch({ type: SIGN_IN_ERROR, payload: response.data });
       });
   };
 };
