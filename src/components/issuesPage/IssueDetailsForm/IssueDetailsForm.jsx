@@ -123,14 +123,14 @@ const IssueDetailsForm = ({ issue = null, editMode = false }) => {
                   fullWidth={true}
                   disabled={
                     !isEditName ||
-                    audit.status?.toLowerCase() === RESOLVED.toLowerCase()
+                    audit?.status?.toLowerCase() === RESOLVED.toLowerCase()
                   }
                   sx={nameInputSx}
                   inputRef={nameInputRef}
                   inputProps={{ ...addTestsLabel('issue-name-input') }}
                   InputProps={
                     user.current_role === AUDITOR &&
-                    audit.status?.toLowerCase() !== RESOLVED.toLowerCase() &&
+                    audit?.status?.toLowerCase() !== RESOLVED.toLowerCase() &&
                     editMode
                       ? {
                           endAdornment: (
@@ -195,7 +195,7 @@ const issueValidationSchema = Yup.object().shape({
   name: Yup.string().required('Title is required'),
   description: Yup.string().required('Description required'),
   severity: Yup.string().required('Required'),
-  category: Yup.string().required('Required'),
+  category: Yup.string(),
   links: Yup.array().of(Yup.string().url()),
   include: Yup.boolean(),
   feedback: Yup.string(),
