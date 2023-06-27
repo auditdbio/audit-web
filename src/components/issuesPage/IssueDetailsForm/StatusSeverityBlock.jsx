@@ -48,7 +48,7 @@ const StatusSeverityBlock = ({
           </Box>
 
           {editMode &&
-            audit.status?.toLowerCase() !== RESOLVED.toLowerCase() && (
+            audit?.status?.toLowerCase() !== RESOLVED.toLowerCase() && (
               <StatusControl
                 status={issue.status}
                 setFieldValue={setFieldValue}
@@ -57,7 +57,7 @@ const StatusSeverityBlock = ({
         </Box>
 
         {user.current_role === AUDITOR &&
-        audit.status?.toLowerCase() !== RESOLVED.toLowerCase() ? (
+        audit?.status?.toLowerCase() !== RESOLVED.toLowerCase() ? (
           <Box sx={severityWrapper}>
             <Typography
               sx={[statusBlockTitle, { cursor: 'pointer' }]}
@@ -126,7 +126,7 @@ const StatusSeverityBlock = ({
         )}
 
         {user.current_role === AUDITOR &&
-        audit.status?.toLowerCase() !== RESOLVED.toLowerCase() ? (
+        audit?.status?.toLowerCase() !== RESOLVED.toLowerCase() ? (
           <Box>
             <Typography sx={[statusBlockTitle]}>
               <span>Category</span>
@@ -200,7 +200,7 @@ const StatusSeverityBlock = ({
                   color="secondary"
                   disabled={
                     user.current_role !== AUDITOR ||
-                    audit.status?.toLowerCase() === RESOLVED.toLowerCase()
+                    audit?.status?.toLowerCase() === RESOLVED.toLowerCase()
                   }
                   onChange={e => {
                     setFieldValue('include', e.target.checked);
