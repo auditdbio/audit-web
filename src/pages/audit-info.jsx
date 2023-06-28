@@ -211,7 +211,7 @@ const AuditInfo = () => {
           )}
         </Box>
         <Box>
-          {(audit?.status.toLowerCase() === RESOLVED.toLowerCase() ||
+          {(audit?.status?.toLowerCase() === RESOLVED.toLowerCase() ||
             audit?.report ||
             audit?.report_name) && (
             <Box sx={{ display: 'flex', justifyContent: 'center' }}>
@@ -230,7 +230,7 @@ const AuditInfo = () => {
             <Button
               variant={'contained'}
               sx={buttonSx}
-              disabled={audit?.last_changer.toLowerCase() === CUSTOMER}
+              disabled={audit?.last_changer?.toLowerCase() === CUSTOMER}
               onClick={handleConfirm}
               {...addTestsLabel('accept-button')}
             >
@@ -264,7 +264,7 @@ const AuditInfo = () => {
           {/*  audit?.status === PENDING) && (*/}
           {audit?.status &&
             !!issues?.length &&
-            audit?.status.toLowerCase() !==
+            audit?.status?.toLowerCase() !==
               WAITING_FOR_AUDITS.toLowerCase() && (
               <Button
                 variant="contained"
