@@ -8,9 +8,12 @@ import {
   CUSTOMER,
   DELETE_AUDIT,
   DELETE_REQUEST,
+  GET_AUDIT,
   GET_AUDIT_REQUEST,
   GET_AUDITS,
+  GET_REQUEST,
   IN_PROGRESS,
+  NOT_FOUND,
   REQUEST_ERROR,
   RESOLVED,
   SET_CURRENT_AUDIT_PARTNER,
@@ -73,6 +76,26 @@ export const getAuditsRequest = role => {
   };
 };
 
+export const getAuditRequest = id => {
+  return dispatch => {
+    const token = Cookies.get('token');
+    axios
+      .get(`${API_URL}/audit_request/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then(({ data }) => {
+        if (data.id) {
+          dispatch({ type: GET_REQUEST, payload: data });
+        } else {
+          dispatch({ type: NOT_FOUND });
+        }
+      })
+      .catch(() => dispatch({ type: NOT_FOUND }));
+  };
+};
+
 export const getAudits = role => {
   return dispatch => {
     const token = Cookies.get('token');
@@ -88,6 +111,26 @@ export const getAudits = role => {
         //     some: true
         // });
       });
+  };
+};
+
+export const getAudit = id => {
+  return dispatch => {
+    const token = Cookies.get('token');
+    axios
+      .get(`${API_URL}/audit/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then(({ data }) => {
+        if (data.id) {
+          dispatch({ type: GET_AUDIT, payload: data });
+        } else {
+          dispatch({ type: NOT_FOUND });
+        }
+      })
+      .catch(() => dispatch({ type: NOT_FOUND }));
   };
 };
 
@@ -172,7 +215,7 @@ export const confirmAudit = values => {
 };
 
 export const startAudit = (values, goBack) => {
-  const newValue = { ...values, start_audit: true };
+  const newValue = { ...values, action: 'start' };
   return dispatch => {
     const token = Cookies.get('token');
     axios
@@ -182,6 +225,7 @@ export const startAudit = (values, goBack) => {
         },
       })
       .then(({ data }) => {
+        console.log(data);
         dispatch({ type: IN_PROGRESS, payload: data });
         if (goBack) {
           history.back();

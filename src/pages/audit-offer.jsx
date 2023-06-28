@@ -14,11 +14,13 @@ import Layout from '../styles/Layout.jsx';
 import {
   addReportAudit,
   clearMessage,
+  getAudit,
   startAudit,
 } from '../redux/actions/auditAction.js';
 import AuditUpload from '../components/forms/audit-upload/index.jsx';
 import Loader from '../components/Loader.jsx';
 import {
+  CLEAR_AUDIT,
   RESOLVED,
   SUBMITED,
   WAITING_FOR_AUDITS,
@@ -30,22 +32,30 @@ import IssueDetailsForm from '../components/issuesPage/IssueDetailsForm/IssueDet
 import IssuesList from '../components/issuesPage/IssuesList.jsx';
 import CustomSnackbar from '../components/custom/CustomSnackbar.jsx';
 import { getIssues } from '../redux/actions/issueAction.js';
+import NotFound from './Not-Found.jsx';
 
 const AuditOffer = () => {
   const { auditId } = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const role = useSelector(s => s.user?.user?.current_role);
   const { successMessage, error } = useSelector(s => s.issues);
   const { issues, issuesAuditId } = useSelector(s => s.issues);
-  const audit = useSelector(s =>
-    s.audits.audits?.find(audit => audit.id === auditId),
-  );
+  const audit = useSelector(s => s.audits.audit);
+  const notFound = useSelector(s => s.notFound.error);
 
   const [auditDBWorkflow, setAuditDBWorkflow] = useState(true);
   const [showReadMoreButton, setShowReadMoreButton] = useState(false);
   const [showFull, setShowFull] = useState(false);
 
   const descriptionRef = useRef();
+
+  useEffect(() => {
+    dispatch(getAudit(auditId));
+    return () => {
+      dispatch({ type: CLEAR_AUDIT });
+    };
+  }, [auditId]);
 
   useEffect(() => {
     setTimeout(() => {
@@ -70,9 +80,15 @@ const AuditOffer = () => {
     }
   }, [audit, issues]);
 
-  if (!audit) {
-    return <Loader />;
-  } else {
+  if (!audit?.id && !notFound) {
+    return (
+      <Layout>
+        <Loader />
+      </Layout>
+    );
+  }
+
+  if (audit && !notFound) {
     return (
       <Layout>
         <CustomCard sx={wrapper}>
@@ -378,6 +394,11 @@ const AuditOffer = () => {
         </CustomCard>
       </Layout>
     );
+    ф;
+  }
+
+  if (notFound) {
+    return <NotFound role={role} />;
   }
 };
 

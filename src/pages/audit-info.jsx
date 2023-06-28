@@ -29,22 +29,12 @@ import { addTestsLabel } from '../lib/helper.js';
 import { handleOpenReport } from '../lib/openReport.js';
 import { getIssues } from '../redux/actions/issueAction.js';
 
-const AuditInfo = () => {
+const AuditInfo = ({ audit, auditRequest, issues }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { id } = useParams();
-
   const [showFull, setShowFull] = useState(false);
   const [showReadMoreButton, setShowReadMoreButton] = useState(false);
   const descriptionRef = useRef();
-
-  const { issues, issuesAuditId } = useSelector(s => s.issues);
-  const auditRequest = useSelector(s =>
-    s.audits?.auditRequests?.find(audit => audit.id === id),
-  );
-  const auditConfirm = useSelector(s =>
-    s.audits?.audits?.find(audit => audit.id === id),
-  );
 
   useEffect(() => {
     setTimeout(() => {
@@ -53,20 +43,6 @@ const AuditInfo = () => {
       }
     }, 500);
   }, [descriptionRef.current]);
-
-  const audit = useMemo(() => {
-    if (auditRequest && !auditConfirm) {
-      return auditRequest;
-    } else {
-      return auditConfirm;
-    }
-  }, [id, auditConfirm, auditRequest]);
-
-  useEffect(() => {
-    if (issuesAuditId !== id && audit?.status) {
-      dispatch(getIssues(id));
-    }
-  }, [audit?.status, issuesAuditId]);
 
   const handleConfirm = () => {
     dispatch(confirmAudit(audit));
@@ -91,7 +67,7 @@ const AuditInfo = () => {
   };
 
   const goToIssues = () => {
-    navigate(`/issues/audit-issue/${id}`);
+    navigate(`/issues/audit-issue/${audit?.id}`);
   };
 
   return (

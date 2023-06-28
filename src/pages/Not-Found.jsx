@@ -6,14 +6,16 @@ import { Box } from '@mui/system';
 import { addTestsLabel } from '../lib/helper.js';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { useNavigate } from 'react-router-dom/dist';
+import { AUDITOR } from '../redux/actions/types.js';
 
-const NotFound = () => {
+const NotFound = ({ role }) => {
   const navigate = useNavigate();
   return (
     <Layout>
       <CustomCard sx={wrapper}>
         <Button
           sx={backButtonSx}
+          color={role === AUDITOR ? 'secondary' : 'primary'}
           onClick={() => navigate(-1)}
           aria-label="Go back"
           {...addTestsLabel('go-back-button')}
@@ -38,10 +40,12 @@ export default NotFound;
 
 const backButtonSx = theme => ({
   position: 'absolute',
-  left: 0,
+  left: '10px',
   top: '10px',
   [theme.breakpoints.down('md')]: {
     minWidth: 'unset',
+  },
+  [theme.breakpoints.down('sm')]: {
     top: 0,
   },
 });
