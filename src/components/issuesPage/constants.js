@@ -2,6 +2,8 @@ export const SEVERITY_ASCENDING = 'SEVERITY_ASCENDING';
 export const SEVERITY_DESCENDING = 'SEVERITY_DESCENDING';
 export const STATUS_ASCENDING = 'STATUS_ASCENDING';
 export const STATUS_DESCENDING = 'STATUS_DESCENDING';
+export const NAME_ASCENDING = 'NAME_ASCENDING';
+export const NAME_DESCENDING = 'NAME_DESCENDING';
 
 export const severityOrder = {
   Critical: 0,

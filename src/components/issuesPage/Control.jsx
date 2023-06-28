@@ -25,7 +25,7 @@ const Control = ({ issues, search, setSearch, setPage, setSearchParams }) => {
   const { auditId } = useParams();
   const [resolveConfirmation, setResolveConfirmation] = useState(false);
   const [allIssuesClosed, setAllIssuesClosed] = useState(false);
-  const [anchorEl, setAnchorEl] = useState(null);
+  const [menuAnchorEl, setMenuAnchorEl] = useState(null);
   const user = useSelector(s => s.user.user);
   const audit = useSelector(s =>
     s.audits.audits?.find(audit => audit.id === auditId),
@@ -42,17 +42,17 @@ const Control = ({ issues, search, setSearch, setPage, setSearchParams }) => {
     window.scrollTo(0, 0);
   };
 
-  const handleOpenNavMenu = e => {
-    setAnchorEl(e.currentTarget);
+  const handleOpenMenu = e => {
+    setMenuAnchorEl(e.currentTarget);
   };
 
-  const handleCloseNavMenu = () => {
-    setAnchorEl(null);
+  const handleCloseMenu = () => {
+    setMenuAnchorEl(null);
   };
 
   const handleDiscloseAll = () => {
     dispatch(discloseAllIssues(auditId));
-    setAnchorEl(null);
+    setMenuAnchorEl(null);
   };
 
   const checkDraftIssues = () => {
@@ -82,17 +82,17 @@ const Control = ({ issues, search, setSearch, setPage, setSearchParams }) => {
           <IconButton
             aria-label="Menu"
             color="secondary"
-            onClick={handleOpenNavMenu}
+            onClick={handleOpenMenu}
             sx={menuButton}
           >
             <MenuIcon fontSize="large" sx={{ color: 'white' }} />
           </IconButton>
           <Menu
-            open={!!anchorEl}
-            anchorEl={anchorEl}
+            open={!!menuAnchorEl}
+            anchorEl={menuAnchorEl}
             anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
             transformOrigin={{ vertical: 'top', horizontal: 'left' }}
-            onClose={handleCloseNavMenu}
+            onClose={handleCloseMenu}
             PaperProps={{
               sx: { width: '250px', borderRadius: '10px !important' },
             }}
@@ -105,7 +105,7 @@ const Control = ({ issues, search, setSearch, setPage, setSearchParams }) => {
                 Disclose all
               </MenuItem>
             )}
-            <MenuItem onClick={handleCloseNavMenu}>Mark all as read</MenuItem>
+            <MenuItem onClick={handleCloseMenu}>Mark all as read</MenuItem>
           </Menu>
 
           <TextField
