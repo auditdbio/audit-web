@@ -34,6 +34,8 @@ import AuditIssueDetails from '../pages/AuditIssueDetails.jsx';
 import CreateIssuePage from '../pages/CreateIssuePage.jsx';
 import PublicProfile from '../pages/Public-profile.jsx';
 import NotFound from '../pages/Not-Found.jsx';
+import AuditInfoReqPage from '../pages/audit-info-req-page.jsx';
+import AuditInfoPage from '../pages/audit-info-page.jsx';
 
 const AppRoutes = () => {
   const token = useSelector(s => s.user.token);
@@ -108,7 +110,7 @@ const AppRoutes = () => {
           path="/audit-info/:id/customer"
           element={
             <PrivateRoute auth={{ isAuthenticated: isAuth() }}>
-              <AuditInfo />
+              <AuditInfoPage />
             </PrivateRoute>
           }
         />
@@ -117,6 +119,14 @@ const AppRoutes = () => {
           element={
             <PrivateRoute auth={{ isAuthenticated: isAuth() }}>
               <AuditRequestPage />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/audit-request/:id/customer"
+          element={
+            <PrivateRoute auth={{ isAuthenticated: isAuth() }}>
+              <AuditInfoReqPage />
             </PrivateRoute>
           }
         />
