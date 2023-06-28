@@ -18,13 +18,16 @@ const CustomBudge = () => {
   const [isOpen, setIsOpen] = useState(false);
   const dispatch = useDispatch();
   const currentRole = useSelector(s => s.user.user.current_role);
-  const messages = useSelector(s => s.websocket.messages);
+  const { messages, connected } = useSelector(s => s.websocket);
 
   useEffect(() => {
-    dispatch(websocketConnect());
-    return () => dispatch(websocketDisconnect());
-  }, [websocketConnect]);
-
+    if (!connected) {
+      dispatch(websocketConnect());
+    }
+    return () => {
+      dispatch(websocketDisconnect());
+    };
+  }, [connected]);
   const handleClose = () => {
     setIsOpen(false);
   };

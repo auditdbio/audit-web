@@ -8,6 +8,7 @@ import { Box } from '@mui/material';
 import Loader from '../components/Loader.jsx';
 import NotFound from './Not-Found.jsx';
 import { CLEAR_AUDIT_REQUEST } from '../redux/actions/types.js';
+import { CustomCard } from '../components/custom/Card.jsx';
 
 const AuditRequestPage = () => {
   const { id } = useParams();
@@ -26,7 +27,9 @@ const AuditRequestPage = () => {
   if (!auditInfo && !notFound) {
     return (
       <Layout>
-        <Loader />
+        <CustomCard sx={wrapper} className={'audit-request-wrapper'}>
+          <Loader />
+        </CustomCard>
       </Layout>
     );
   }
@@ -45,3 +48,27 @@ const AuditRequestPage = () => {
 };
 
 export default AuditRequestPage;
+
+const wrapper = theme => ({
+  overflowY: 'auto',
+  height: '100%',
+  padding: '48px 74px 80px',
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  gap: '20px',
+  '& h3': {
+    fontSize: '37px',
+    fontWeight: 500,
+  },
+  [theme.breakpoints.down('md')]: {
+    padding: '38px 44px 60px',
+    '& h3': {
+      fontSize: '30px',
+    },
+  },
+  [theme.breakpoints.down('sm')]: {
+    gap: '20px',
+    padding: '38px 20px 30px',
+  },
+});

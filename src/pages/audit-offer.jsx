@@ -83,6 +83,18 @@ const AuditOffer = () => {
   if (!audit?.id && !notFound) {
     return (
       <Layout>
+        <CustomCard
+          sx={[wrapper, { height: '100%', justifyContent: 'center' }]}
+        >
+          <Loader />
+        </CustomCard>
+      </Layout>
+    );
+  }
+
+  if (!audit?.id && !notFound) {
+    return (
+      <Layout>
         <Loader />
       </Layout>
     );
@@ -94,10 +106,10 @@ const AuditOffer = () => {
         <CustomCard sx={wrapper}>
           <Formik
             initialValues={{
-              id: audit.id,
+              id: audit?.id,
               status: 'done',
-              report: audit.report || '',
-              report_name: audit.report_name || '',
+              report: audit?.report || '',
+              report_name: audit?.report_name || '',
             }}
             validationSchema={SubmitValidation}
             onSubmit={values => {
@@ -265,7 +277,7 @@ const AuditOffer = () => {
                         ))}
                       </Box>
 
-                      {audit?.status.toLowerCase() ===
+                      {audit?.status?.toLowerCase() ===
                       WAITING_FOR_AUDITS.toLowerCase() ? (
                         <Box
                           sx={{
@@ -306,7 +318,7 @@ const AuditOffer = () => {
                           <Button
                             onClick={() => setAuditDBWorkflow(false)}
                             disabled={
-                              !issues.every(
+                              !issues?.every(
                                 issue =>
                                   issue.status === 'Fixed' ||
                                   issue.status === 'WillNotFix' ||
@@ -329,11 +341,11 @@ const AuditOffer = () => {
                             </Typography>
                             <Box sx={{ display: 'flex' }}>
                               <AuditUpload
-                                disabled={audit.status === SUBMITED}
-                                auditId={audit.id}
-                                auditorId={audit.auditor_id}
-                                auditReportName={audit.report_name}
-                                customerId={audit.customer_id}
+                                disabled={audit?.status === SUBMITED}
+                                auditId={audit?.id}
+                                auditorId={audit?.auditor_id}
+                                auditReportName={audit?.report_name}
+                                customerId={audit?.customer_id}
                                 name={'report'}
                                 setFieldValue={setFieldValue}
                               />
@@ -369,7 +381,7 @@ const AuditOffer = () => {
           </Formik>
 
           {auditDBWorkflow &&
-            audit?.status.toLowerCase() !==
+            audit?.status?.toLowerCase() !==
               WAITING_FOR_AUDITS.toLowerCase() && (
               <Box sx={{ width: '100%', mb: '30px' }}>
                 {issues?.length ? (
