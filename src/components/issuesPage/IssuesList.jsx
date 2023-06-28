@@ -12,6 +12,8 @@ import {
   STATUS_DESCENDING,
   severityOrder,
   statusOrder,
+  NAME_DESCENDING,
+  NAME_ASCENDING,
 } from './constants.js';
 import ArrowUpIcon from '../icons/ArrowUpIcon.jsx';
 import IssueListItem from './IssueListItem.jsx';
@@ -51,6 +53,10 @@ const IssuesList = ({ auditId }) => {
         return severityOrder[a.severity] - severityOrder[b.severity] || 0;
       case SEVERITY_ASCENDING:
         return severityOrder[b.severity] - severityOrder[a.severity] || 0;
+      case NAME_DESCENDING:
+        return b.name.localeCompare(a.name);
+      case NAME_ASCENDING:
+        return a.name.localeCompare(b.name);
       default:
         return statusOrder[a.status] - statusOrder[b.status] || 0;
     }
@@ -71,6 +77,15 @@ const IssuesList = ({ auditId }) => {
       setSortType(STATUS_ASCENDING);
     } else {
       setSortType(STATUS_DESCENDING);
+    }
+  };
+
+  const handleNameSort = () => {
+    setPage(1);
+    if (sortType === NAME_ASCENDING) {
+      setSortType(NAME_DESCENDING);
+    } else {
+      setSortType(NAME_ASCENDING);
     }
   };
 
@@ -100,7 +115,17 @@ const IssuesList = ({ auditId }) => {
         setSearchParams={setSearchParams}
       />
 
-      <Box sx={{ display: 'flex', width: '100%', justifyContent: 'flex-end' }}>
+      <Box
+        sx={{ display: 'flex', width: '100%', justifyContent: 'space-between' }}
+      >
+        <Box sx={{ ml: '30px' }}>
+          <Button sx={[columnText, columnTitle]} onClick={handleNameSort}>
+            <span>Issue</span>
+            <span>
+              {sortType === NAME_ASCENDING ? <ArrowUpIcon /> : <ArrowIcon />}
+            </span>
+          </Button>
+        </Box>
         <Box sx={columnsTitleBlock}>
           <Button
             sx={[columnText, columnTitle, columnTitleHidden]}
