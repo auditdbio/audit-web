@@ -131,13 +131,13 @@ const Control = ({ issues, search, setSearch, setPage, setSearchParams }) => {
               variant="contained"
               color="secondary"
               sx={buttonSx}
-              disabled={audit.status?.toLowerCase() === RESOLVED.toLowerCase()}
+              disabled={audit?.status?.toLowerCase() === RESOLVED.toLowerCase()}
               onClick={handleNewIssue}
               {...addTestsLabel('new-issue-button')}
             >
               New issue
             </Button>
-            {audit.status?.toLowerCase() !== RESOLVED.toLowerCase() && (
+            {audit?.status?.toLowerCase() !== RESOLVED.toLowerCase() && (
               <Tooltip
                 arrow
                 placement="top"
