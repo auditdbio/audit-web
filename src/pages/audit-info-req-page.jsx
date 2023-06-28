@@ -7,6 +7,7 @@ import Layout from '../styles/Layout.jsx';
 import Loader from '../components/Loader.jsx';
 import NotFound from './Not-Found.jsx';
 import { CLEAR_AUDIT_REQUEST } from '../redux/actions/types.js';
+import { CustomCard } from '../components/custom/Card.jsx';
 
 const AuditInfoReqPage = () => {
   const { id } = useParams();
@@ -22,7 +23,9 @@ const AuditInfoReqPage = () => {
   if (!auditRequest && !notFound) {
     return (
       <Layout>
-        <Loader />
+        <CustomCard sx={[wrapper, { justifyContent: 'center' }]}>
+          <Loader />
+        </CustomCard>
       </Layout>
     );
   }
@@ -37,3 +40,19 @@ const AuditInfoReqPage = () => {
 };
 
 export default AuditInfoReqPage;
+
+const wrapper = theme => ({
+  padding: '48px 74px 80px',
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  gap: '80px',
+  position: 'relative',
+  [theme.breakpoints.down('md')]: {
+    padding: '38px 44px 60px',
+  },
+  [theme.breakpoints.down('sm')]: {
+    gap: '40px',
+    padding: '38px 20px 30px',
+  },
+});
