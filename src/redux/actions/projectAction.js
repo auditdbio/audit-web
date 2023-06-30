@@ -1,6 +1,7 @@
 import {
   CLEAR_SUCCESS,
   CLOSE_THE_PROJECT,
+  GET_CUSTOMER_PROJECTS,
   GET_MY_PROJECTS,
   GET_PROJECTS,
   PROJECT_CREATE,
@@ -177,7 +178,23 @@ export const getProjects = () => {
       });
   };
 };
+// /customer/{id}/project
 
+export const getCustomerProjects = id => {
+  const token = Cookies.get('token');
+  return dispatch => {
+    axios
+      .get(`${API_URL}/customer/${id}/project`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .then(({ data }) => {
+        dispatch({ type: GET_CUSTOMER_PROJECTS, payload: data });
+      })
+      .catch(({ response }) => {
+        console.log(response, 'res');
+      });
+  };
+};
 export const searchProjects = values => {
   const searchValues = {
     query: values?.search || '',

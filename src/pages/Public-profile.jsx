@@ -18,6 +18,8 @@ import {
   changeRolePublicCustomer,
   changeRolePublicCustomerNoRedirect,
 } from '../redux/actions/userAction.js';
+import { getCustomerProjects } from '../redux/actions/projectAction.js';
+import ProjectCardList from '../components/Project-card-list.jsx';
 
 const PublicProfile = () => {
   const { role, id } = useParams();
@@ -33,6 +35,7 @@ const PublicProfile = () => {
   const customerReducer = useSelector(state => state.customer.customer);
   const myProjects = useSelector(state => state.project.myProjects);
   const user = useSelector(state => state.user.user);
+  const customerProjects = useSelector(s => s.project.customerProjects);
 
   const handleError = () => {
     setErrorMessage(null);
@@ -83,6 +86,7 @@ const PublicProfile = () => {
       dispatch(getCurrentAuditor(id));
     } else {
       dispatch(getCurrentCustomer(id));
+      dispatch(getCustomerProjects(id));
     }
   }, [id, role]);
 
@@ -97,156 +101,165 @@ const PublicProfile = () => {
   if (!data) {
     return (
       <Layout>
-        <Box
-          sx={[
-            wrapper(
-              theme,
-              role.toLowerCase() === AUDITOR
-                ? theme.palette.secondary.main
-                : theme.palette.primary.main,
-            ),
-            {
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-            },
-          ]}
-        >
-          <Loader role={role} />
+        <Box sx={mainWrapper}>
+          <Box
+            sx={[
+              wrapper(
+                theme,
+                role.toLowerCase() === AUDITOR
+                  ? theme.palette.secondary.main
+                  : theme.palette.primary.main,
+              ),
+              {
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+              },
+            ]}
+          >
+            <Loader role={role} />
+          </Box>
         </Box>
       </Layout>
     );
   } else {
     return (
-      <Layout>
-        <Box
-          sx={wrapper(
-            theme,
-            role.toLowerCase() === AUDITOR
-              ? theme.palette.secondary.main
-              : theme.palette.primary.main,
-          )}
-        >
-          <Box sx={contentWrapper}>
-            <CustomSnackbar
-              autoHideDuration={3000}
-              open={!!message || !!errorMessage}
-              onClose={() => {
-                setErrorMessage(null);
-                setMessage(null);
-              }}
-              severity={!errorMessage ? 'success' : 'error'}
-              text={message || errorMessage}
-            />
-            <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-              <Avatar
-                src={data.avatar && `${ASSET_URL}/${data.avatar}`}
-                sx={avatarStyle}
-                alt="User photo"
+      <Layout sx={{ flexDirection: 'column' }}>
+        <Box sx={mainWrapper}>
+          <Box
+            sx={wrapper(
+              theme,
+              role.toLowerCase() === AUDITOR
+                ? theme.palette.secondary.main
+                : theme.palette.primary.main,
+            )}
+          >
+            <Box sx={contentWrapper}>
+              <CustomSnackbar
+                autoHideDuration={3000}
+                open={!!message || !!errorMessage}
+                onClose={() => {
+                  setErrorMessage(null);
+                  setMessage(null);
+                }}
+                severity={!errorMessage ? 'success' : 'error'}
+                text={message || errorMessage}
               />
-            </Box>
-            <Box sx={{ [theme.breakpoints.down(560)]: { width: '100%' } }}>
-              <Box sx={infoStyle}>
-                <Box sx={infoInnerStyle}>
-                  <Box sx={infoWrapper}>
-                    <span>First Name</span>
-                    <Typography noWrap={true}>{data.first_name}</Typography>
-                  </Box>
-                  <Box sx={infoWrapper}>
-                    <span>Last name</span>
-                    <Typography noWrap={true}>{data.last_name}</Typography>
-                  </Box>
-                  {role === AUDITOR && (
-                    <Box sx={infoWrapper}>
-                      <span>Price range:</span>
-                      {data?.price_range?.from && data?.price_range?.to && (
-                        <Typography>
-                          ${data?.price_range?.from} - {data?.price_range?.to}{' '}
-                          per line
-                        </Typography>
-                      )}
-                    </Box>
-                  )}
-                  {role !== AUDITOR && (
-                    <Box sx={infoWrapper}>
-                      <span>Company</span>
-                      <Typography noWrap={true}>{data.company}</Typography>
-                    </Box>
-                  )}
-                </Box>
-                <Box sx={infoInnerStyle}>
-                  <Box sx={infoWrapper}>
-                    <span>E-mail</span>
-                    <Typography noWrap={true}>
-                      {data.contacts?.public_contacts
-                        ? data.contacts?.email
-                        : 'Hidden'}
-                    </Typography>
-                  </Box>
-                  <Box sx={infoWrapper}>
-                    <span>Telegram</span>
-                    <Typography noWrap={true}>
-                      {data.contacts?.public_contacts
-                        ? data.contacts?.telegram
-                        : 'Hidden'}
-                    </Typography>
-                  </Box>
-                </Box>
+              <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+                <Avatar
+                  src={data.avatar && `${ASSET_URL}/${data.avatar}`}
+                  sx={avatarStyle}
+                  alt="User photo"
+                />
               </Box>
-              {!matchSm && (
-                <Box sx={aboutWrapper}>
-                  <Box sx={infoWrapper}>
-                    <Typography
-                      sx={{
-                        wordBreak: 'break-word',
-                        maxWidth: 'unset!important',
-                      }}
-                    >
-                      <span className={'about-title'}>About</span>
-                      {data.about}
-                    </Typography>
+              <Box sx={{ [theme.breakpoints.down(560)]: { width: '100%' } }}>
+                <Box sx={infoStyle}>
+                  <Box sx={infoInnerStyle}>
+                    <Box sx={infoWrapper}>
+                      <span>First Name</span>
+                      <Typography noWrap={true}>{data.first_name}</Typography>
+                    </Box>
+                    <Box sx={infoWrapper}>
+                      <span>Last name</span>
+                      <Typography noWrap={true}>{data.last_name}</Typography>
+                    </Box>
+                    {role === AUDITOR && (
+                      <Box sx={infoWrapper}>
+                        <span>Price range:</span>
+                        {data?.price_range?.from && data?.price_range?.to && (
+                          <Typography>
+                            ${data?.price_range?.from} - {data?.price_range?.to}{' '}
+                            per line
+                          </Typography>
+                        )}
+                      </Box>
+                    )}
+                    {role !== AUDITOR && (
+                      <Box sx={infoWrapper}>
+                        <span>Company</span>
+                        <Typography noWrap={true}>{data.company}</Typography>
+                      </Box>
+                    )}
                   </Box>
-                  <TagsList data={data.tags} fullView={true} />
+                  <Box sx={infoInnerStyle}>
+                    <Box sx={infoWrapper}>
+                      <span>E-mail</span>
+                      <Typography noWrap={true}>
+                        {data.contacts?.public_contacts
+                          ? data.contacts?.email
+                          : 'Hidden'}
+                      </Typography>
+                    </Box>
+                    <Box sx={infoWrapper}>
+                      <span>Telegram</span>
+                      <Typography noWrap={true}>
+                        {data.contacts?.public_contacts
+                          ? data.contacts?.telegram
+                          : 'Hidden'}
+                      </Typography>
+                    </Box>
+                  </Box>
                 </Box>
-              )}
+                {!matchSm && (
+                  <Box sx={aboutWrapper}>
+                    <Box sx={infoWrapper}>
+                      <Typography
+                        sx={{
+                          wordBreak: 'break-word',
+                          maxWidth: 'unset!important',
+                        }}
+                      >
+                        <span className={'about-title'}>About</span>
+                        {data.about}
+                      </Typography>
+                    </Box>
+                    <TagsList data={data.tags} fullView={true} />
+                  </Box>
+                )}
+              </Box>
             </Box>
+            {matchSm && (
+              <Box sx={aboutWrapper}>
+                <Box sx={[infoWrapper, { flexDirection: 'column' }]}>
+                  <span
+                    className={'about-title'}
+                    style={{
+                      display: 'block',
+                      width: '100%',
+                      textAlign: 'center',
+                    }}
+                  >
+                    About
+                  </span>
+                  <Typography
+                    sx={{
+                      wordBreak: 'break-word',
+                      maxWidth: 'unset!important',
+                    }}
+                  >
+                    {data.about}
+                  </Typography>
+                </Box>
+                <MobileTagsList data={data.tags} />
+              </Box>
+            )}
+            {/*{matchXs && <MobileTagsList data={data.tags} />}*/}
+            {role.toLowerCase() === AUDITOR && (
+              <Button
+                variant={'contained'}
+                sx={[submitAuditor, buttonSx]}
+                onClick={handleInvite}
+                {...addTestsLabel('invite-button')}
+              >
+                Invite to project
+              </Button>
+            )}
           </Box>
-          {matchSm && (
-            <Box sx={aboutWrapper}>
-              <Box sx={[infoWrapper, { flexDirection: 'column' }]}>
-                <span
-                  className={'about-title'}
-                  style={{
-                    display: 'block',
-                    width: '100%',
-                    textAlign: 'center',
-                  }}
-                >
-                  About
-                </span>
-                <Typography
-                  sx={{
-                    wordBreak: 'break-word',
-                    maxWidth: 'unset!important',
-                  }}
-                >
-                  {data.about}
-                </Typography>
-              </Box>
-              <MobileTagsList data={data.tags} />
-            </Box>
-          )}
-          {/*{matchXs && <MobileTagsList data={data.tags} />}*/}
-          {role.toLowerCase() === AUDITOR && (
-            <Button
-              variant={'contained'}
-              sx={[submitAuditor, buttonSx]}
-              onClick={handleInvite}
-              {...addTestsLabel('invite-button')}
-            >
-              Invite to project
-            </Button>
-          )}
+
+          <Box sx={projectsWrapper}>
+            <Box sx={headWrapper}>Projects</Box>
+            <ProjectCardList projects={customerProjects} />
+          </Box>
         </Box>
       </Layout>
     );
@@ -255,17 +268,57 @@ const PublicProfile = () => {
 
 export default PublicProfile;
 
+const projectsWrapper = theme => ({
+  backgroundColor: '#fbfaf6',
+  marginTop: '98px',
+  border: '1px solid #B2B3B3',
+  padding: '48px',
+  position: 'relative',
+  '& .project-wrapper': {
+    backgroundColor: '#fff',
+  },
+});
+
+const headWrapper = theme => ({
+  borderRadius: '10.619px 10.619px 0px 0px',
+  borderTop: '0.708px solid #B9B9B9',
+  borderRight: '0.708px solid #B9B9B9',
+  borderLeft: '0.708px solid #B9B9B9',
+  background: 'linear-gradient(180deg, #FFF 0%, #E5E5E5 100%)',
+  fontSize: '19px',
+  fontWeight: 600,
+  padding: '10px',
+  textAlign: 'center',
+  position: 'absolute',
+  left: '-1px',
+  right: '-1px',
+  top: '-44px',
+});
+
+const mainWrapper = theme => ({
+  backgroundColor: '#fff',
+  width: '1300px',
+  padding: '75px 120px',
+});
+
 const wrapper = (theme, color) => ({
   width: '100%',
   minHeight: '520px',
   display: 'flex',
   flexDirection: 'column',
-  padding: '100px 100px 60px',
+  padding: '70px 40px',
   gap: '50px',
   backgroundColor: '#fff',
   borderRadius: '10px',
-  border: `2px solid ${color}`,
+  border: `5px solid ${color}`,
   justifyContent: 'space-between',
+  boxShadow:
+    '0px 1.976611852645874px 1.5812894105911255px 0px rgba(0, 0, 0, 0.02),' +
+    ' 0px 4.750072956085205px 3.800058364868164px 0px rgba(0, 0, 0, 0.03), ' +
+    '0px 8.943965911865234px 7.155172824859619px 0px rgba(0, 0, 0, 0.04), ' +
+    '0px 15.954506874084473px 12.763605117797852px 0px rgba(0, 0, 0, 0.04), ' +
+    '0px 29.84115219116211px 23.872920989990234px 0px rgba(0, 0, 0, 0.05), ' +
+    '0px 71.42857360839844px 57.142860412597656px 0px rgba(0, 0, 0, 0.07)',
   [theme.breakpoints.down('lg')]: {
     padding: '60px 40px 40px',
   },
@@ -286,7 +339,6 @@ const wrapper = (theme, color) => ({
     },
   },
 });
-
 const aboutWrapper = theme => ({
   display: 'flex',
   flexDirection: 'column',

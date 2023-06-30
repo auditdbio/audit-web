@@ -8,6 +8,7 @@ import {
   CLEAR_SUCCESS,
   CLOSE_THE_PROJECT,
   LOG_OUT,
+  GET_CUSTOMER_PROJECTS,
 } from '../actions/types.js';
 
 const initialState = {
@@ -18,6 +19,7 @@ const initialState = {
   searchProjects: null,
   message: null,
   searchTotalProjects: 0,
+  customerProjects: null,
 };
 export const projectReducer = (state = initialState, action) => {
   switch (action.type) {
@@ -44,6 +46,11 @@ export const projectReducer = (state = initialState, action) => {
           }
           return project;
         }),
+      };
+    case GET_CUSTOMER_PROJECTS:
+      return {
+        ...state,
+        customerProjects: action.payload,
       };
     case PROJECT_UPDATE_STATUS:
       return {

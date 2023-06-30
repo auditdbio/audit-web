@@ -38,7 +38,7 @@ const ProjectCard = ({ type, project }) => {
   };
 
   return (
-    <Box sx={cardWrapper}>
+    <Box sx={cardWrapper} className={'project-wrapper'}>
       <Box sx={cardInnerWrapper}>
         <Tooltip
           title={project.name || project.project_name}
