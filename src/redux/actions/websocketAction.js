@@ -48,7 +48,6 @@ export const getUnreadMessages = () => {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then(({ data }) => {
-        console.log(data, 'data');
         dispatch({ type: RECEIVE_MESSAGES, payload: data });
       });
   };

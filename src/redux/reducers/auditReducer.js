@@ -19,9 +19,9 @@ import {
 } from '../actions/types.js';
 
 const initialState = {
-  audits: null,
+  audits: [],
   audit: null,
-  auditRequests: null,
+  auditRequests: [],
   auditRequest: null,
   error: null,
   successMessage: null,
