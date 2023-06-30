@@ -19,9 +19,12 @@ export const websocketReducer = (state = initialState, action) => {
     case WEBSOCKET_DISCONNECT:
       return { ...state, connected: false };
     case RECEIVE_MESSAGE:
-      return { ...state, messages: [...state.messages, action.payload] };
+      return {
+        ...state,
+        messages: [action.payload.payload.Notification, ...state.messages],
+      };
     case RECEIVE_MESSAGES:
-      return { ...state, messages: action.payload };
+      return { ...state, messages: action.payload.reverse() };
     case READ_MESSAGE:
       return {
         ...state,

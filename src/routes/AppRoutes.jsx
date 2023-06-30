@@ -36,6 +36,11 @@ import PublicProfile from '../pages/Public-profile.jsx';
 import NotFound from '../pages/Not-Found.jsx';
 import AuditInfoReqPage from '../pages/audit-info-req-page.jsx';
 import AuditInfoPage from '../pages/audit-info-page.jsx';
+import {
+  getUnreadMessages,
+  websocketConnect,
+  websocketDisconnect,
+} from '../redux/actions/websocketAction.js';
 
 const AppRoutes = () => {
   const token = useSelector(s => s.user.token);
@@ -43,6 +48,13 @@ const AppRoutes = () => {
   const customer = useSelector(s => s.customer.customer);
   const auditor = useSelector(s => s.auditor.auditor);
   const dispatch = useDispatch();
+  const { messages, connected } = useSelector(s => s.websocket);
+
+  useEffect(() => {
+    if (isAuth()) {
+      dispatch(getUnreadMessages());
+    }
+  }, [isAuth()]);
 
   useEffect(() => {
     if (isAuth()) {
@@ -63,6 +75,15 @@ const AppRoutes = () => {
       }
     }
   }, [currentRole, isAuth(), customer, auditor]);
+
+  useEffect(() => {
+    if (isAuth() && !connected) {
+      dispatch(websocketConnect());
+    }
+    return () => {
+      dispatch(websocketDisconnect());
+    };
+  }, [isAuth()]);
 
   return (
     <>
