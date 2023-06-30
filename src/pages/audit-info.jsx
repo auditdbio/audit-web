@@ -75,7 +75,9 @@ const AuditInfo = ({ audit, auditRequest, issues }) => {
       <CustomCard sx={wrapper}>
         <Button
           sx={backButtonSx}
-          onClick={() => navigate('/profile/audits')}
+          onClick={() => {
+            navigate(-1);
+          }}
           aria-label="Go back"
           {...addTestsLabel('go-back-button')}
         >
