@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { Avatar, Button, Typography, useMediaQuery } from '@mui/material';
+import { Avatar, Button, Grid, Typography, useMediaQuery } from '@mui/material';
 import { AUDITOR, CUSTOMER } from '../redux/actions/types.js';
 import Loader from '../components/Loader.jsx';
 import { Box } from '@mui/system';
@@ -20,6 +20,7 @@ import {
 } from '../redux/actions/userAction.js';
 import { getCustomerProjects } from '../redux/actions/projectAction.js';
 import ProjectCardList from '../components/Project-card-list.jsx';
+import ProjectCard from '../components/Project-card.jsx';
 
 const PublicProfile = () => {
   const { role, id } = useParams();
@@ -256,10 +257,15 @@ const PublicProfile = () => {
             )}
           </Box>
 
-          <Box sx={projectsWrapper}>
-            <Box sx={headWrapper}>Projects</Box>
-            <ProjectCardList projects={customerProjects} />
-          </Box>
+          <Grid container spacing={2}>
+            <Grid item sm={6}>
+              <Box sx={projectsWrapper}>
+                <Box sx={headWrapper}>Projects</Box>
+                <ProjectCardList projects={customerProjects?.slice(0, 6)} />
+                <Button sx={moreBtnSx}>View more</Button>
+              </Box>
+            </Grid>
+          </Grid>
         </Box>
       </Layout>
     );
@@ -268,12 +274,24 @@ const PublicProfile = () => {
 
 export default PublicProfile;
 
+const moreBtnSx = theme => ({
+  display: 'block',
+  marginRight: 0,
+  marginLeft: 'auto',
+  marginBottom: '-20px',
+  marginTop: '20px',
+  textTransform: 'unset',
+});
+
 const projectsWrapper = theme => ({
   backgroundColor: '#fbfaf6',
   marginTop: '98px',
   border: '1px solid #B2B3B3',
   padding: '48px',
   position: 'relative',
+  '& .MuiGrid-item': {
+    width: '50%',
+  },
   '& .project-wrapper': {
     backgroundColor: '#fff',
   },
@@ -281,9 +299,9 @@ const projectsWrapper = theme => ({
 
 const headWrapper = theme => ({
   borderRadius: '10.619px 10.619px 0px 0px',
-  borderTop: '0.708px solid #B9B9B9',
-  borderRight: '0.708px solid #B9B9B9',
-  borderLeft: '0.708px solid #B9B9B9',
+  borderTop: '1px solid #B9B9B9',
+  borderRight: '1px solid #B9B9B9',
+  borderLeft: '1px solid #B9B9B9',
   background: 'linear-gradient(180deg, #FFF 0%, #E5E5E5 100%)',
   fontSize: '19px',
   fontWeight: 600,
