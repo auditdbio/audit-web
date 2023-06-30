@@ -1,4 +1,5 @@
 import {
+  LOG_OUT,
   READ_MESSAGE,
   RECEIVE_MESSAGE,
   RECEIVE_MESSAGES,
@@ -32,6 +33,8 @@ export const websocketReducer = (state = initialState, action) => {
           message => message.id !== action.payload.id,
         ),
       };
+    case LOG_OUT:
+      return initialState;
     default:
       return state;
   }
