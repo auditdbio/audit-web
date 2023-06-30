@@ -161,7 +161,7 @@ const CreateProjectCard = ({ projectInfo }) => {
           <Box sx={mainBox}>
             <Button
               sx={backButtonSx}
-              onClick={() => navigate('/profile/projects')}
+              onClick={() => navigate(-1)}
               aria-label="Ga back"
               {...addTestsLabel('go-back-button')}
             >

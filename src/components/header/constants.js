@@ -9,13 +9,13 @@ export const authorizedPages = [
         id: 111,
         role: AUDITOR,
         itemName: 'My audits',
-        link: '/profile/projects',
+        link: '/profile/audits',
       },
       {
         id: 112,
         role: AUDITOR,
         itemName: 'My audit requests',
-        link: '/profile/audits',
+        link: '/profile/audit-requests',
       },
       {
         id: 113,
