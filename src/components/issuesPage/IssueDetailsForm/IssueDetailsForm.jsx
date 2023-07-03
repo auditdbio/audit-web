@@ -69,6 +69,7 @@ const IssueDetailsForm = ({ issue = null, editMode = false }) => {
         updatedValues,
         prev.links?.length,
         issue?.status || 'Draft',
+        issue?.feedback,
       );
       setIsEditName(false);
       setFieldValue('status', '');
