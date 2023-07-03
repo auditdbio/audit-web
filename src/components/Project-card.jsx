@@ -124,10 +124,10 @@ const ProjectCard = ({ type, project }) => {
           {...addTestsLabel(type === AUDITOR ? 'submit-button' : 'edit-button')}
         >
           {type === AUDITOR
-            ? project?.status.toLowerCase() !== WAITING_FOR_AUDITS.toLowerCase()
-              ? project?.status.toLowerCase() === IN_PROGRESS.toLowerCase()
-                ? 'Proceed'
-                : 'Submit'
+            ? project?.status.toLowerCase() !==
+                WAITING_FOR_AUDITS.toLowerCase() &&
+              project?.status.toLowerCase() !== RESOLVED.toLowerCase()
+              ? 'Proceed'
               : 'View'
             : 'Edit'}
         </Button>
