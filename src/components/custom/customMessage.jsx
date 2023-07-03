@@ -69,6 +69,7 @@ const titleStyle = theme => ({
   textAlign: 'left',
   overflow: 'hidden',
   display: '-webkit-box',
+  minHeight: '20px',
   '-webkit-line-clamp': '2',
   '-webkit-box-orient': 'vertical',
   textOverflow: 'ellipsis',
