@@ -50,6 +50,7 @@ const simpleTab = theme => ({
 const tabSx = theme => ({
   color: '#222222',
   fontSize: '19px',
+  fontWeight: 600,
   textTransform: 'capitalize',
   borderRadius: '14.8672px 14.8672px 0px 0px',
   // padding: '15px 40px',

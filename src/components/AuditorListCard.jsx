@@ -293,12 +293,9 @@ const priceStyle = {
 };
 
 const viewButtonStyle = theme => ({
-  width: '200px',
+  width: '130px',
   textTransform: 'unset',
   boxShadow: '0',
-  [theme.breakpoints.down('lg')]: {
-    width: '160px',
-  },
   [theme.breakpoints.down('md')]: {
     width: '130px',
   },
@@ -309,12 +306,9 @@ const viewButtonStyle = theme => ({
 });
 
 const inviteButtonStyle = theme => ({
-  width: '200px',
+  width: '130px',
   textTransform: 'unset',
   boxShadow: '0',
-  [theme.breakpoints.down('lg')]: {
-    width: '160px',
-  },
   [theme.breakpoints.down('md')]: {
     width: '130px',
   },

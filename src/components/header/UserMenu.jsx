@@ -257,6 +257,7 @@ const tabSx = theme => ({
   width: '50%',
   color: '#222222',
   fontSize: '16px',
+  fontWeight: 600,
   textTransform: 'capitalize',
   [theme.breakpoints.down('md')]: {
     minHeight: '41px',
