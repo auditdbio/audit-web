@@ -102,7 +102,7 @@ const statusSx = status => {
   let color = '#434242';
   if (status === 'Draft') color = '#52176D';
   if (status === 'Verification' || status === 'InProgress') color = '#5b97bb';
-  if (status === 'Fixed' || status === 'WillNotFix') color = '#09C010';
+  if (status === 'Fixed' || status === 'NotFixed') color = '#09C010';
 
   return {
     display: 'flex',

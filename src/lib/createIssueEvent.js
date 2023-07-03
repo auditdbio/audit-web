@@ -6,7 +6,7 @@ const getStatusLabel = (action, currentStatus) => {
     return 'Verification';
   }
   if (currentStatus === 'InProgress' && action === 'Discard') {
-    return 'WillNotFix';
+    return 'NotFixed';
   }
   if (currentStatus === 'Verification' && action === 'Verified') {
     return 'Fixed';
@@ -17,7 +17,7 @@ const getStatusLabel = (action, currentStatus) => {
   if (currentStatus === 'Fixed' && action === 'Verified') {
     return 'Verification';
   }
-  if (currentStatus === 'WillNotFix' && action === 'Discard') {
+  if (currentStatus === 'NotFixed' && action === 'ReOpen') {
     return 'InProgress';
   }
   if (currentStatus === 'Verification' && action === 'Fixed') {

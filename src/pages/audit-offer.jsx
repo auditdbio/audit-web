@@ -321,7 +321,7 @@ const AuditOffer = () => {
                               !issues?.every(
                                 issue =>
                                   issue.status === 'Fixed' ||
-                                  issue.status === 'WillNotFix' ||
+                                  issue.status === 'NotFixed' ||
                                   !issue.include,
                               )
                             }

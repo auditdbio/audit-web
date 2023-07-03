@@ -63,7 +63,7 @@ const Control = ({ issues, search, setSearch, setPage, setSearchParams }) => {
     const allClosed = issues?.every(
       issue =>
         issue.status === 'Fixed' ||
-        issue.status === 'WillNotFix' ||
+        issue.status === 'NotFixed' ||
         !issue.include,
     );
     setAllIssuesClosed(allClosed);
@@ -144,7 +144,7 @@ const Control = ({ issues, search, setSearch, setPage, setSearchParams }) => {
                 title={
                   allIssuesClosed
                     ? ''
-                    : "To resolve an audit, it is necessary that the status of all issues be 'Fixed' or 'Will not fix'. Or do not include some issues in the audit."
+                    : "To resolve an audit, it is necessary that the status of all issues be 'Fixed' or 'Not fixed'. Or do not include some issues in the audit."
                 }
               >
                 <span>

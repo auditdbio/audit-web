@@ -16,6 +16,6 @@ export const statusOrder = {
   Draft: 0,
   InProgress: 1,
   Verification: 2,
-  WillNotFix: 3,
+  NotFixed: 3,
   Fixed: 4,
 };

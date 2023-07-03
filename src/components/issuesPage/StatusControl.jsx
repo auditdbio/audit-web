@@ -23,6 +23,9 @@ const StatusControl = ({ status, setFieldValue }) => {
       if (status === 'Fixed') {
         actions.push({ action: 'Verified', text: 'Not Fixed' });
       }
+      if (status === 'NotFixed') {
+        actions.push({ action: 'ReOpen', text: 'Reopen' });
+      }
     } else if (user?.current_role === CUSTOMER) {
       if (status === 'InProgress') {
         actions.push(
@@ -30,8 +33,8 @@ const StatusControl = ({ status, setFieldValue }) => {
           { action: 'Discard', text: 'Discard' },
         );
       }
-      if (status === 'WillNotFix') {
-        actions.push({ action: 'Discard', text: 'In Progress' });
+      if (status === 'NotFixed') {
+        actions.push({ action: 'ReOpen', text: 'In Progress' });
       }
       if (status === 'Verification') {
         actions.push({ action: 'Fixed', text: 'In Progress' });
