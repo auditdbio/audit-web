@@ -18,6 +18,13 @@ import { Select, TextField } from 'formik-mui';
 import IssueSeverity from '../IssueSeverity.jsx';
 import SaveIcon from '@mui/icons-material/Save.js';
 import theme from '../../../styles/themes.js';
+import {
+  DRAFT,
+  FIXED,
+  IN_PROGRESS,
+  NOT_FIXED,
+  VERIFICATION,
+} from '../constants.js';
 
 const StatusSeverityBlock = ({
   issue,
@@ -313,9 +320,9 @@ const selectFieldSx = theme => ({
 
 const statusValueSx = status => {
   let color = '#434242';
-  if (status === 'Draft') color = '#52176D';
-  if (status === 'Verification' || status === 'InProgress') color = '#5b97bb';
-  if (status === 'Fixed' || status === 'WillNotFix') color = '#09C010';
+  if (status === DRAFT) color = '#52176D';
+  if (status === VERIFICATION || status === IN_PROGRESS) color = '#5b97bb';
+  if (status === FIXED || status === NOT_FIXED) color = '#09C010';
 
   return { fontSize: '20px', fontWeight: 500, mb: '10px', color };
 };
