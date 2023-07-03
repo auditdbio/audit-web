@@ -55,7 +55,6 @@ const UserInfo = ({ role }) => {
 
     clipboard.on('error', () => {
       console.error('Failed to copy URL to clipboard.');
-      // Добавьте здесь свою логику для обработки ошибки копирования
       clipboard.destroy();
     });
 

@@ -117,12 +117,10 @@ const projectTitleWrapper = theme => ({
 });
 
 const viewButton = theme => ({
-  width: '170px',
+  width: '130px',
   textTransform: 'unset',
+  fontWeight: 600,
   marginTop: '33px',
-  [theme.breakpoints.down('md')]: {
-    width: '130px',
-  },
   [theme.breakpoints.down('xs')]: {
     width: '100px',
     fontSize: '9px',
