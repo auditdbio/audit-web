@@ -26,7 +26,12 @@ const getStatusLabel = (action, currentStatus) => {
   return 'new';
 };
 
-export const createIssueEvent = (values, prevLinksLength, currentStatus) => {
+export const createIssueEvent = (
+  values,
+  prevLinksLength,
+  currentStatus,
+  feedback,
+) => {
   const events = [];
   const keys = Object.keys(values);
 
@@ -69,6 +74,11 @@ export const createIssueEvent = (values, prevLinksLength, currentStatus) => {
           prevLinksLength <= values.links?.length
             ? 'added new link'
             : 'deleted link',
+      });
+    } else if (keys[0] === 'feedback') {
+      events.push({
+        kind: feedback ? 'FeedbackChanged' : 'FeedbackAdded',
+        message: feedback ? 'changed feedback' : 'added feedback',
       });
     }
   }
