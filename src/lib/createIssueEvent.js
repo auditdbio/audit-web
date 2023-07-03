@@ -1,28 +1,43 @@
+import {
+  BEGIN_ACTION,
+  DISCARD_ACTION,
+  DRAFT,
+  FIXED,
+  FIXED_ACTION,
+  NOT_FIXED,
+  NOT_FIXED_ACTION,
+  REOPEN_ACTION,
+  VERIFICATION,
+  VERIFIED_ACTION,
+} from '../components/issuesPage/constants.js';
+import { IN_PROGRESS } from '../redux/actions/types.js';
+
 const getStatusLabel = (action, currentStatus) => {
-  if (currentStatus === 'Draft' && action === 'Begin') {
-    return 'InProgress';
+  if (currentStatus === DRAFT && action === BEGIN_ACTION) {
+    return IN_PROGRESS;
   }
-  if (currentStatus === 'InProgress' && action === 'Fixed') {
-    return 'Verification';
+  if (currentStatus === IN_PROGRESS && action === FIXED_ACTION) {
+    return VERIFICATION;
   }
-  if (currentStatus === 'InProgress' && action === 'Discard') {
-    return 'NotFixed';
+  if (currentStatus === IN_PROGRESS && action === DISCARD_ACTION) {
+    return NOT_FIXED;
   }
-  if (currentStatus === 'Verification' && action === 'Verified') {
-    return 'Fixed';
+  if (currentStatus === VERIFICATION && action === VERIFIED_ACTION) {
+    return FIXED;
   }
-  if (currentStatus === 'Verification' && action === 'NotFixed') {
-    return 'InProgress';
+  if (currentStatus === VERIFICATION && action === NOT_FIXED_ACTION) {
+    return IN_PROGRESS;
   }
-  if (currentStatus === 'Fixed' && action === 'Verified') {
-    return 'Verification';
+  if (currentStatus === VERIFICATION && action === FIXED_ACTION) {
+    return IN_PROGRESS;
   }
-  if (currentStatus === 'NotFixed' && action === 'ReOpen') {
-    return 'InProgress';
+  if (currentStatus === FIXED && action === VERIFIED_ACTION) {
+    return VERIFICATION;
   }
-  if (currentStatus === 'Verification' && action === 'Fixed') {
-    return 'InProgress';
+  if (currentStatus === NOT_FIXED && action === REOPEN_ACTION) {
+    return IN_PROGRESS;
   }
+
   return 'new';
 };
 

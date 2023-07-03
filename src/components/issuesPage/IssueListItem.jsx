@@ -4,6 +4,13 @@ import { addSpacesToCamelCase, addTestsLabel } from '../../lib/helper.js';
 import { Box, Link, Tooltip, Typography, Zoom } from '@mui/material';
 import IssueSeverity from './IssueSeverity.jsx';
 import theme from '../../styles/themes.js';
+import {
+  DRAFT,
+  FIXED,
+  IN_PROGRESS,
+  NOT_FIXED,
+  VERIFICATION,
+} from './constants.js';
 
 const IssueListItem = ({ issue, auditId }) => {
   const [showTitleTooltip, setShowTitleTooltip] = useState(false);
@@ -100,9 +107,9 @@ const issueTitleSx = {
 
 const statusSx = status => {
   let color = '#434242';
-  if (status === 'Draft') color = '#52176D';
-  if (status === 'Verification' || status === 'InProgress') color = '#5b97bb';
-  if (status === 'Fixed' || status === 'NotFixed') color = '#09C010';
+  if (status === DRAFT) color = '#52176D';
+  if (status === VERIFICATION || status === IN_PROGRESS) color = '#5b97bb';
+  if (status === FIXED || status === NOT_FIXED) color = '#09C010';
 
   return {
     display: 'flex',

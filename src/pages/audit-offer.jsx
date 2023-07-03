@@ -33,6 +33,7 @@ import IssuesList from '../components/issuesPage/IssuesList.jsx';
 import CustomSnackbar from '../components/custom/CustomSnackbar.jsx';
 import { getIssues } from '../redux/actions/issueAction.js';
 import NotFound from './Not-Found.jsx';
+import { FIXED, NOT_FIXED } from '../components/issuesPage/constants.js';
 
 const AuditOffer = () => {
   const { auditId } = useParams();
@@ -320,8 +321,8 @@ const AuditOffer = () => {
                             disabled={
                               !issues?.every(
                                 issue =>
-                                  issue.status === 'Fixed' ||
-                                  issue.status === 'NotFixed' ||
+                                  issue.status === FIXED ||
+                                  issue.status === NOT_FIXED ||
                                   !issue.include,
                               )
                             }
