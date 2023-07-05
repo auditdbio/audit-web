@@ -124,10 +124,10 @@ const ProjectCard = ({ type, project }) => {
           {...addTestsLabel(type === AUDITOR ? 'submit-button' : 'edit-button')}
         >
           {type === AUDITOR
-            ? project?.status.toLowerCase() !== WAITING_FOR_AUDITS.toLowerCase()
-              ? project?.status.toLowerCase() === IN_PROGRESS.toLowerCase()
-                ? 'Proceed'
-                : 'Submit'
+            ? project?.status.toLowerCase() !==
+                WAITING_FOR_AUDITS.toLowerCase() &&
+              project?.status.toLowerCase() !== RESOLVED.toLowerCase()
+              ? 'Proceed'
               : 'View'
             : 'Edit'}
         </Button>
@@ -235,14 +235,13 @@ const editButton = theme => ({
   fontSize: '15px',
   fontWeight: 600,
   lineHeight: '25px',
-  width: '110px',
+  width: '100px',
   textTransform: 'none',
   borderRadius: '10px',
   gap: '40px',
   padding: '9px 0',
   maxWidth: '170px',
   [theme.breakpoints.down('md')]: {
-    width: '100px',
     height: '30px',
   },
   [theme.breakpoints.down('xs')]: {

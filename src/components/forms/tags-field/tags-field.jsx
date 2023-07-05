@@ -221,4 +221,12 @@ const fieldSx = theme => ({
   '& input': {
     paddingLeft: '35px',
   },
+  [theme.breakpoints.up('sm')]: {
+    '& input': {
+      fontSize: '18px',
+    },
+    '& .MuiFormLabel-root,.MuiInputLabel-root': {
+      fontSize: '18px',
+    },
+  },
 });

@@ -18,6 +18,7 @@ import { AUDITOR, RESOLVED } from '../../redux/actions/types.js';
 import { handleOpenReport } from '../../lib/openReport.js';
 import ResolveAuditConfirmation from './ResolveAuditConfirmation.jsx';
 import { discloseAllIssues } from '../../redux/actions/issueAction.js';
+import { DRAFT, FIXED, NOT_FIXED } from './constants.js';
 
 const Control = ({ issues, search, setSearch, setPage, setSearchParams }) => {
   const dispatch = useDispatch();
@@ -56,15 +57,13 @@ const Control = ({ issues, search, setSearch, setPage, setSearchParams }) => {
   };
 
   const checkDraftIssues = () => {
-    return !issues?.some(issue => issue.status === 'Draft');
+    return !issues?.some(issue => issue.status === DRAFT);
   };
 
   useEffect(() => {
     const allClosed = issues?.every(
       issue =>
-        issue.status === 'Fixed' ||
-        issue.status === 'WillNotFix' ||
-        !issue.include,
+        issue.status === FIXED || issue.status === NOT_FIXED || !issue.include,
     );
     setAllIssuesClosed(allClosed);
   }, [issues]);
@@ -144,7 +143,7 @@ const Control = ({ issues, search, setSearch, setPage, setSearchParams }) => {
                 title={
                   allIssuesClosed
                     ? ''
-                    : "To resolve an audit, it is necessary that the status of all issues be 'Fixed' or 'Will not fix'. Or do not include some issues in the audit."
+                    : "To resolve an audit, it is necessary that the status of all issues be 'Fixed' or 'Not fixed'. Or do not include some issues in the audit."
                 }
               >
                 <span>

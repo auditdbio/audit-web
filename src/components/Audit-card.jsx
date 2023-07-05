@@ -82,6 +82,7 @@ const AuditCard = ({ audit, request }) => {
       )}
       {!audit.status && (
         <CustomButton
+          variant={'contained'}
           sx={[
             acceptButtonStyle,
             audit?.last_changer?.toLowerCase() === CUSTOMER
@@ -97,6 +98,7 @@ const AuditCard = ({ audit, request }) => {
       )}
       <CustomButton
         sx={viewButtonStyle}
+        variant={'contained'}
         onClick={() =>
           request
             ? navigate(`/audit-request/${audit.id}/customer`)
@@ -109,6 +111,15 @@ const AuditCard = ({ audit, request }) => {
     </Card>
   );
 };
+
+const btnWrapper = () => ({
+  display: 'flex',
+  gap: '12px',
+  [theme.breakpoints.down('xs')]: {
+    flexDirection: 'column',
+    gap: '12px',
+  },
+});
 
 const cardWrapper = {
   display: 'flex',
@@ -135,36 +146,39 @@ const cardWrapper = {
 };
 
 const acceptButtonStyle = {
-  backgroundColor: '#52176D',
-  color: 'white',
   fontSize: '15px!important',
-  padding: '13px 58px',
-  width: '170px',
-  height: '44px',
-  ':hover': { backgroundColor: '#52176D', color: 'white' },
-  [theme.breakpoints.down('sm')]: {
-    fontSize: '12px!important',
-    width: '105px',
-    height: '28px',
-    borderRadius: '8px',
-    padding: '6px 30px',
+  backgroundColor: '#52176D',
+  fontWeight: 600,
+  lineHeight: '25px',
+  width: '100px',
+  textTransform: 'none',
+  borderRadius: '10px',
+  gap: '40px',
+  padding: '9px 0',
+  maxWidth: '170px',
+  [theme.breakpoints.down('md')]: {
+    height: '30px',
+  },
+  [theme.breakpoints.down('xs')]: {
+    fontSize: '11px!important',
   },
 };
 
 const viewButtonStyle = {
-  backgroundColor: 'orange',
-  color: 'white',
   fontSize: '15px!important',
-  padding: '13px 58px',
-  width: '170px',
-  height: '44px',
-  ':hover': { backgroundColor: 'orange', color: 'white' },
-  [theme.breakpoints.down('sm')]: {
-    fontSize: '12px!important',
-    width: '105px',
-    height: '28px',
-    borderRadius: '8px',
-    padding: '6px 30px',
+  fontWeight: 600,
+  lineHeight: '25px',
+  width: '100px',
+  textTransform: 'none',
+  borderRadius: '10px',
+  gap: '40px',
+  padding: '9px 0',
+  maxWidth: '170px',
+  [theme.breakpoints.down('md')]: {
+    height: '30px',
+  },
+  [theme.breakpoints.down('xs')]: {
+    fontSize: '11px!important',
   },
 };
 

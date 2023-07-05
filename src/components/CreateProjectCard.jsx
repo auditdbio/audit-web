@@ -161,7 +161,7 @@ const CreateProjectCard = ({ projectInfo }) => {
           <Box sx={mainBox}>
             <Button
               sx={backButtonSx}
-              onClick={() => navigate('/profile/projects')}
+              onClick={() => navigate(-1)}
               aria-label="Ga back"
               {...addTestsLabel('go-back-button')}
             >
@@ -380,7 +380,7 @@ const inviteButton = {
   padding: '8px 42px',
   whiteSpace: 'nowrap',
   color: '#FCFAF6',
-  fontWeight: '500',
+  fontWeight: '600',
   borderRadius: '4px',
   maxWidth: '180px',
   margin: '0 auto',
@@ -403,7 +403,7 @@ const publishButton = {
   padding: '8px 42px',
   whiteSpace: 'nowrap',
   color: '#FCFAF6',
-  fontWeight: '500',
+  fontWeight: '600',
   borderRadius: '4px',
   maxWidth: '180px',
   margin: '0 auto',

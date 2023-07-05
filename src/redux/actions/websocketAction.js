@@ -8,6 +8,7 @@ import {
   WEBSOCKET_DISCONNECT,
 } from './types.js';
 import axios from 'axios';
+import Cookies from 'js-cookie';
 const API_URL = import.meta.env.VITE_API_BASE_URL;
 
 export const websocketConnect = () => {
@@ -35,6 +36,19 @@ export const readMessage = id => {
       })
       .catch(({ response }) => {
         dispatch({ type: USER_IS_ALREADY_EXIST });
+      });
+  };
+};
+
+export const getUnreadMessages = () => {
+  const token = Cookies.get('token');
+  return dispatch => {
+    axios
+      .get(`${API_URL}/unread_notifications`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .then(({ data }) => {
+        dispatch({ type: RECEIVE_MESSAGES, payload: data });
       });
   };
 };

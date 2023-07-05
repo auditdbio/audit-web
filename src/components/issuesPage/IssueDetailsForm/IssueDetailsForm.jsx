@@ -17,6 +17,7 @@ import CustomSnackbar from '../../custom/CustomSnackbar.jsx';
 import { createIssueEvent } from '../../../lib/createIssueEvent.js';
 import DescriptionBlock from './DescriptionBlock.jsx';
 import StatusSeverityBlock from './StatusSeverityBlock.jsx';
+import { DRAFT } from '../constants.js';
 
 const IssueDetailsForm = ({ issue = null, editMode = false }) => {
   const dispatch = useDispatch();
@@ -44,7 +45,7 @@ const IssueDetailsForm = ({ issue = null, editMode = false }) => {
 
   const initialValues = {
     name: issue?.name || '',
-    status: issue?.status || 'Draft',
+    status: issue?.status || DRAFT,
     severity: issue?.severity || 'Medium',
     category: issue?.category || '',
     description: issue?.description || '',
@@ -68,7 +69,8 @@ const IssueDetailsForm = ({ issue = null, editMode = false }) => {
       const updatedValuesWithEvent = createIssueEvent(
         updatedValues,
         prev.links?.length,
-        issue?.status || 'Draft',
+        issue?.status || DRAFT,
+        issue?.feedback,
       );
       setIsEditName(false);
       setFieldValue('status', '');

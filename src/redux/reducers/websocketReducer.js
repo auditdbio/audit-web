@@ -1,4 +1,5 @@
 import {
+  LOG_OUT,
   READ_MESSAGE,
   RECEIVE_MESSAGE,
   RECEIVE_MESSAGES,
@@ -19,9 +20,12 @@ export const websocketReducer = (state = initialState, action) => {
     case WEBSOCKET_DISCONNECT:
       return { ...state, connected: false };
     case RECEIVE_MESSAGE:
-      return { ...state, messages: [...state.messages, action.payload] };
+      return {
+        ...state,
+        messages: [action.payload.payload.Notification, ...state.messages],
+      };
     case RECEIVE_MESSAGES:
-      return { ...state, messages: action.payload };
+      return { ...state, messages: action.payload.reverse() };
     case READ_MESSAGE:
       return {
         ...state,
@@ -29,6 +33,8 @@ export const websocketReducer = (state = initialState, action) => {
           message => message.id !== action.payload.id,
         ),
       };
+    case LOG_OUT:
+      return initialState;
     default:
       return state;
   }

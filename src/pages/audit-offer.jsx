@@ -33,6 +33,7 @@ import IssuesList from '../components/issuesPage/IssuesList.jsx';
 import CustomSnackbar from '../components/custom/CustomSnackbar.jsx';
 import { getIssues } from '../redux/actions/issueAction.js';
 import NotFound from './Not-Found.jsx';
+import { FIXED, NOT_FIXED } from '../components/issuesPage/constants.js';
 
 const AuditOffer = () => {
   const { auditId } = useParams();
@@ -139,7 +140,7 @@ const AuditOffer = () => {
                   >
                     <Button
                       sx={backButtonSx}
-                      onClick={() => navigate('/profile/projects')}
+                      onClick={() => navigate('/profile/audits')}
                       {...addTestsLabel('go-back-button')}
                     >
                       <ArrowBackIcon color={'secondary'} />
@@ -214,46 +215,50 @@ const AuditOffer = () => {
                     <Box
                       sx={[{ display: 'flex', gap: '25px' }, contactWrapper]}
                     >
-                      <Box
-                        sx={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: '10px',
-                        }}
-                      >
-                        <EmailIcon />
-                        <Box sx={{ display: 'grid' }}>
-                          <Tooltip
-                            title={audit?.customer_contacts?.email}
-                            arrow
-                            placement={'top'}
-                          >
-                            <Typography variant={'caption'} noWrap={true}>
-                              {audit?.customer_contacts?.email}
-                            </Typography>
-                          </Tooltip>
+                      {audit?.customer_contacts?.email && (
+                        <Box
+                          sx={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '10px',
+                          }}
+                        >
+                          <EmailIcon />
+                          <Box sx={{ display: 'grid' }}>
+                            <Tooltip
+                              title={audit?.customer_contacts?.email}
+                              arrow
+                              placement={'top'}
+                            >
+                              <Typography variant={'caption'} noWrap={true}>
+                                {audit?.customer_contacts?.email}
+                              </Typography>
+                            </Tooltip>
+                          </Box>
                         </Box>
-                      </Box>
-                      <Box
-                        sx={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: '10px',
-                        }}
-                      >
-                        <TelegramIcon />
-                        <Box sx={{ display: 'grid' }}>
-                          <Tooltip
-                            title={audit?.customer_contacts?.telegram}
-                            arrow
-                            placement={'top'}
-                          >
-                            <Typography variant={'caption'} noWrap={true}>
-                              {audit?.customer_contacts?.telegram}
-                            </Typography>
-                          </Tooltip>
+                      )}
+                      {audit?.customer_contacts?.telegram && (
+                        <Box
+                          sx={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '10px',
+                          }}
+                        >
+                          <TelegramIcon />
+                          <Box sx={{ display: 'grid' }}>
+                            <Tooltip
+                              title={audit?.customer_contacts?.telegram}
+                              arrow
+                              placement={'top'}
+                            >
+                              <Typography variant={'caption'} noWrap={true}>
+                                {audit?.customer_contacts?.telegram}
+                              </Typography>
+                            </Tooltip>
+                          </Box>
                         </Box>
-                      </Box>
+                      )}
                     </Box>
 
                     <Box sx={infoWrapper}>
@@ -320,8 +325,8 @@ const AuditOffer = () => {
                             disabled={
                               !issues?.every(
                                 issue =>
-                                  issue.status === 'Fixed' ||
-                                  issue.status === 'WillNotFix' ||
+                                  issue.status === FIXED ||
+                                  issue.status === NOT_FIXED ||
                                   !issue.include,
                               )
                             }
@@ -445,7 +450,7 @@ const wrapper = theme => ({
 const contactWrapper = theme => ({
   maxWidth: '500px',
   margin: '15px auto 0',
-  justifyContent: 'space-between',
+  justifyContent: 'center',
   '& span': {
     fontSize: '16px',
   },
