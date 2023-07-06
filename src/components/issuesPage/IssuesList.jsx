@@ -24,6 +24,7 @@ const IssuesList = ({ auditId }) => {
   const dispatch = useDispatch();
   const [searchParams, setSearchParams] = useSearchParams();
   const { issues } = useSelector(s => s.issues);
+  const { user } = useSelector(s => s.user);
   const { successMessage, error } = useSelector(s => s.audits);
 
   const [search, setSearch] = useState(searchParams.get('search') || '');
@@ -155,7 +156,12 @@ const IssuesList = ({ auditId }) => {
           .sort(sortFunc)
           .slice((page - 1) * 10, page * 10)
           .map(issue => (
-            <IssueListItem issue={issue} key={issue.id} auditId={auditId} />
+            <IssueListItem
+              issue={issue}
+              key={issue.id}
+              auditId={auditId}
+              user={user}
+            />
           ))}
       </Box>
 

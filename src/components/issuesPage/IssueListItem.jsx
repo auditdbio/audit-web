@@ -12,7 +12,7 @@ import {
   VERIFICATION,
 } from './constants.js';
 
-const IssueListItem = ({ issue, auditId }) => {
+const IssueListItem = ({ issue, auditId, user }) => {
   const [showTitleTooltip, setShowTitleTooltip] = useState(false);
   const titleBoxRef = useRef();
   const titleTextRef = useRef();
@@ -27,7 +27,9 @@ const IssueListItem = ({ issue, auditId }) => {
   }, []);
 
   const checkUnread = () => {
-    return issue.events?.length && issue.events?.length >= issue.read
+    return user?.id !== issue.events?.at(-1)?.user &&
+      issue.events?.length &&
+      issue.events?.length >= issue.read
       ? unreadChanges
       : {};
   };
