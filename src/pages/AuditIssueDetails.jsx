@@ -64,7 +64,11 @@ const AuditIssueDetails = () => {
         </Button>
         <IssueDetailsForm issue={issue} editMode={true} />
         {!!issue.events?.length && (
-          <EventsList issue={issue} auditPartner={currentAuditPartner} />
+          <EventsList
+            issue={issue}
+            auditPartner={currentAuditPartner}
+            auditId={auditId}
+          />
         )}
         <AddComment auditId={auditId} issueId={issueId} />
       </CustomCard>
