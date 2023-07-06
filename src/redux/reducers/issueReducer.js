@@ -4,6 +4,7 @@ import {
   DISCLOSE_ALL_ISSUES,
   GET_AUDIT_ISSUES,
   REQUEST_ERROR,
+  SET_READ_CHANGES,
   UPDATE_AUDIT_ISSUE,
 } from '../actions/types.js';
 
@@ -46,6 +47,14 @@ export const issueReducer = (state = initialState, action) => {
       return { ...state, error: 'Error while processing request' };
     case CLEAR_MESSAGES:
       return { ...state, error: null, successMessage: null };
+    case SET_READ_CHANGES:
+      const { issueId, readCount } = action.payload;
+      return {
+        ...state,
+        issues: state.issues?.map(issue =>
+          issue.id === issueId ? { ...issue, read: readCount } : issue,
+        ),
+      };
     default:
       return state;
   }

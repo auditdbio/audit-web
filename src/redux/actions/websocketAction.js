@@ -23,10 +23,6 @@ export const receiveMessage = message => {
   return { type: RECEIVE_MESSAGE, payload: message };
 };
 
-export const receiveMessages = messages => {
-  return { type: RECEIVE_MESSAGES, payload: messages };
-};
-
 export const readMessage = id => {
   return dispatch => {
     axios

@@ -1,4 +1,5 @@
 import {
+  DISCONNECTED_WS,
   LOG_OUT,
   READ_MESSAGE,
   RECEIVE_MESSAGE,
@@ -11,14 +12,17 @@ import {
 const initialState = {
   connected: false,
   messages: [],
+  reconnect: false,
 };
 
 export const websocketReducer = (state = initialState, action) => {
   switch (action.type) {
     case WEBSOCKET_CONNECTED:
-      return { ...state, connected: true };
+      return { ...state, connected: true, reconnect: false };
     case WEBSOCKET_DISCONNECT:
       return { ...state, connected: false };
+    case DISCONNECTED_WS:
+      return { ...state, connected: false, reconnect: true };
     case RECEIVE_MESSAGE:
       return {
         ...state,
