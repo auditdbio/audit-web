@@ -48,7 +48,7 @@ const AppRoutes = () => {
   const customer = useSelector(s => s.customer.customer);
   const auditor = useSelector(s => s.auditor.auditor);
   const dispatch = useDispatch();
-  const { messages, connected } = useSelector(s => s.websocket);
+  const { reconnect, connected } = useSelector(s => s.websocket);
 
   useEffect(() => {
     if (isAuth()) {
@@ -80,10 +80,24 @@ const AppRoutes = () => {
     if (isAuth() && !connected) {
       dispatch(websocketConnect());
     }
+  }, [isAuth(), connected]);
+
+  useEffect(() => {
+    if (isAuth() && reconnect && !connected) {
+      const handleReconnect = setInterval(() => {
+        dispatch(websocketConnect());
+      }, 10000);
+      return () => {
+        clearInterval(handleReconnect);
+      };
+    }
+  }, [reconnect, connected]);
+
+  useEffect(() => {
     return () => {
       dispatch(websocketDisconnect());
     };
-  }, [isAuth()]);
+  }, []);
 
   return (
     <>
