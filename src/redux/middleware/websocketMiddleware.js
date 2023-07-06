@@ -1,4 +1,5 @@
 import {
+  DISCONNECTED_WS,
   WEBSOCKET_CONNECT,
   WEBSOCKET_CONNECTED,
   WEBSOCKET_DISCONNECT,
@@ -7,7 +8,10 @@ import {
 } from '../actions/types.js';
 import { w3cwebsocket as WebSocket } from 'websocket';
 import Cookies from 'js-cookie';
-import { receiveMessage, receiveMessages } from '../actions/websocketAction.js';
+import {
+  receiveMessage,
+  websocketConnect,
+} from '../actions/websocketAction.js';
 
 const API_URL = import.meta.env.VITE_API_WS_BASE_URL;
 
@@ -28,11 +32,13 @@ const websocketMiddleware = () => {
 
           socket.onmessage = event => {
             const message = JSON.parse(event.data);
-            if (message.user_id) {
-              store.dispatch(receiveMessage(message));
-            } else {
-              store.dispatch(receiveMessages(message));
-            }
+            store.dispatch(receiveMessage(message));
+          };
+
+          socket.onclose = () => {
+            console.log('disconnected');
+            socket = null;
+            store.dispatch({ type: DISCONNECTED_WS });
           };
         }
         break;
