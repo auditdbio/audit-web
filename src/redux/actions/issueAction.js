@@ -5,6 +5,7 @@ import {
   DISCLOSE_ALL_ISSUES,
   GET_AUDIT_ISSUES,
   REQUEST_ERROR,
+  SET_READ_CHANGES,
   UPDATE_AUDIT_ISSUE,
 } from './types.js';
 import { API_URL } from '../../services/urls.js';
@@ -76,5 +77,21 @@ export const discloseAllIssues = auditId => {
         });
       })
       .catch(e => dispatch({ type: REQUEST_ERROR }));
+  };
+};
+
+export const setReadChanges = (auditId, issueId, readCount) => {
+  const token = Cookies.get('token');
+  return dispatch => {
+    axios
+      .patch(`${API_URL}/audit/${auditId}/${issueId}/read/${readCount}`, null, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .then(() =>
+        dispatch({
+          type: SET_READ_CHANGES,
+          payload: { issueId, readCount },
+        }),
+      );
   };
 };

@@ -26,6 +26,12 @@ const IssueListItem = ({ issue, auditId }) => {
     }
   }, []);
 
+  const checkUnread = () => {
+    return issue.events?.length && issue.events?.length >= issue.read
+      ? unreadChanges
+      : {};
+  };
+
   return (
     <Link
       sx={issueRow}
@@ -42,7 +48,10 @@ const IssueListItem = ({ issue, auditId }) => {
         enterDelay={300}
         leaveDelay={0}
       >
-        <Typography sx={[columnText, issueTitleSx]} ref={titleBoxRef}>
+        <Typography
+          sx={[columnText, issueTitleSx, checkUnread()]}
+          ref={titleBoxRef}
+        >
           <span ref={titleTextRef}>{issue.name}</span>
         </Typography>
       </Tooltip>
@@ -132,3 +141,24 @@ const severityWrapper = {
   justifyContent: 'center',
   alignItems: 'center',
 };
+
+const unreadChanges = theme => ({
+  position: 'relative',
+  '&::before': {
+    display: 'block',
+    content: "''",
+    position: 'absolute',
+    top: '50%',
+    left: '10px',
+    transform: 'translateY(-50%)',
+    width: '8px',
+    height: '8px',
+    backgroundColor: 'red',
+    borderRadius: '50%',
+    [theme.breakpoints.down('xs')]: {
+      left: '5px',
+      width: '5px',
+      height: '5px',
+    },
+  },
+});
