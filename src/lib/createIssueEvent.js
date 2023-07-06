@@ -9,8 +9,8 @@ import {
   REOPEN_ACTION,
   VERIFICATION,
   VERIFIED_ACTION,
+  IN_PROGRESS,
 } from '../components/issuesPage/constants.js';
-import { IN_PROGRESS } from '../redux/actions/types.js';
 
 const getStatusLabel = (action, currentStatus) => {
   if (currentStatus === DRAFT && action === BEGIN_ACTION) {
