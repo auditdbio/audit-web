@@ -27,6 +27,9 @@ const StatusControl = ({ status, setFieldValue }) => {
       if (status === DRAFT) {
         actions.push({ action: BEGIN_ACTION, text: 'Disclose' });
       }
+      if (status === IN_PROGRESS) {
+        actions.push({ action: DISCARD_ACTION, text: 'Not Fixed' });
+      }
       if (status === VERIFICATION) {
         actions.push(
           { action: VERIFIED_ACTION, text: 'Verified' },
