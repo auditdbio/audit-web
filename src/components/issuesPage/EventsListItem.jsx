@@ -36,11 +36,14 @@ const EventsListItem = ({ event, idx, issue, issueRefs, auditPartner }) => {
     }
   };
 
+  const checkUnread = isComment => {
+    return user.id !== event.user && issue.read - 1 <= idx
+      ? unreadChanges(isComment)
+      : {};
+  };
+
   return event.kind !== 'Comment' ? (
-    <Box
-      sx={[eventSx, issue.read - 1 <= idx && unreadChanges(false)]}
-      ref={issueRef}
-    >
+    <Box sx={[eventSx, checkUnread(false)]} ref={issueRef}>
       <Box sx={iconSx}>
         <EventIcon kind={event.kind} />
       </Box>
@@ -66,11 +69,7 @@ const EventsListItem = ({ event, idx, issue, issueRefs, auditPartner }) => {
       </Typography>
     </Box>
   ) : (
-    <Box
-      key={event.id}
-      sx={[messageWrapper, issue.read - 1 <= idx && unreadChanges(true)]}
-      ref={issueRef}
-    >
+    <Box key={event.id} sx={[messageWrapper, checkUnread(true)]} ref={issueRef}>
       <Box sx={messageHeader}>
         <Box sx={messageUserInfo}>
           <Box sx={[iconSx, commentIconSx]}>
