@@ -37,6 +37,7 @@ const PublicProfile = () => {
   const myProjects = useSelector(state => state.project.myProjects);
   const user = useSelector(state => state.user.user);
   const customerProjects = useSelector(s => s.project.customerProjects);
+  const [showMore, setShowMore] = useState(false);
 
   const handleError = () => {
     setErrorMessage(null);
@@ -257,21 +258,32 @@ const PublicProfile = () => {
             )}
           </Box>
 
-          <Grid container spacing={2}>
-            <Grid item sm={6}>
-              <Box sx={projectsWrapper}>
-                <Box sx={headWrapper}>Projects</Box>
-                <ProjectCardList projects={customerProjects?.slice(0, 6)} />
-                <Button sx={moreBtnSx}>View more</Button>
-              </Box>
-            </Grid>
-          </Grid>
+          {/*<Grid container spacing={2}>*/}
+          {/*  <Grid item sm={6}>*/}
+          {role.toLowerCase() === CUSTOMER && (
+            <Box sx={projectsWrapper}>
+              <Box sx={headWrapper}>Projects</Box>
+              <ProjectCardList
+                projects={
+                  showMore ? customerProjects : customerProjects?.slice(0, 8)
+                }
+                isPublic={true}
+              />
+              {customerProjects?.length > 8 && (
+                <Button sx={moreBtnSx} onClick={() => setShowMore(!showMore)}>
+                  {showMore ? 'Hide' : 'View more'}
+                </Button>
+              )}
+            </Box>
+          )}
+          {/*  </Grid>*/}
+          {/*</Grid>*/}
         </Box>
       </Layout>
     );
   }
 };
-
+//
 export default PublicProfile;
 
 const moreBtnSx = theme => ({
@@ -290,10 +302,32 @@ const projectsWrapper = theme => ({
   padding: '48px',
   position: 'relative',
   '& .MuiGrid-item': {
-    width: '50%',
+    width: '25%',
   },
   '& .project-wrapper': {
     backgroundColor: '#fff',
+    '& button': {
+      marginTop: '15px',
+    },
+  },
+  [theme.breakpoints.down('md')]: {
+    marginTop: '128px',
+  },
+  [theme.breakpoints.down('sm')]: {
+    '& .MuiGrid-item': {
+      width: '50%',
+    },
+  },
+  [theme.breakpoints.down('xs')]: {
+    padding: '15px',
+    marginTop: '88px',
+    '& .project-wrapper': {
+      flexDirection: 'column',
+      gap: '10px',
+    },
+    '& .project-inner': {
+      alignItems: 'center',
+    },
   },
 });
 
@@ -317,6 +351,15 @@ const mainWrapper = theme => ({
   backgroundColor: '#fff',
   width: '1300px',
   padding: '75px 120px',
+  [theme.breakpoints.down('lg')]: {
+    width: '1200px',
+    padding: '50px 80px',
+  },
+  [theme.breakpoints.down('md')]: {
+    width: '100%',
+    padding: 0,
+    backgroundColor: 'transparent',
+  },
 });
 
 const wrapper = (theme, color) => ({
@@ -342,6 +385,7 @@ const wrapper = (theme, color) => ({
   },
   [theme.breakpoints.down('md')]: {
     gap: '50px',
+    minHeight: '450px',
   },
   [theme.breakpoints.down('sm')]: {
     gap: '20px',
@@ -380,7 +424,7 @@ const infoStyle = theme => ({
   margin: '0 0 16px',
   flexDirection: 'row',
   flexWrap: 'wrap',
-  gap: '40px',
+  gap: '20px',
   '& .tagsWrapper': {
     width: '100%',
   },
@@ -417,7 +461,7 @@ const avatarStyle = theme => ({
 
 const contentWrapper = theme => ({
   display: 'flex',
-  gap: '70px',
+  gap: '40px',
   justifyContent: 'center',
   margin: '0 auto',
   maxWidth: '1200px',
@@ -465,15 +509,15 @@ const infoWrapper = theme => ({
   fontWeight: 500,
   color: '#434242',
   '& .about-title': {
-    marginRight: '128px',
+    marginRight: '58px',
   },
   '& p': {
     fontSize: 'inherit',
     maxWidth: '250px',
   },
   '& span': {
-    width: '125px',
-    marginRight: '50px',
+    width: '85px',
+    marginRight: '20px',
     color: '#B2B3B3',
   },
   fontSize: '15px',

@@ -1,5 +1,5 @@
-import React from 'react';
-import { Box, Button, Tooltip, Typography } from '@mui/material';
+import React, { useState } from 'react';
+import { Box, Button, Modal, Tooltip, Typography } from '@mui/material';
 import Currency from './icons/Currency.jsx';
 import Star from './icons/Star.jsx';
 import {
@@ -14,11 +14,16 @@ import { useNavigate } from 'react-router-dom/dist';
 import { useDispatch, useSelector } from 'react-redux';
 import { addTestsLabel } from '../lib/helper.js';
 import { startAudit } from '../redux/actions/auditAction.js';
+import AuditRequestInfo from './audit-request-info.jsx';
+import CustomSnackbar from './custom/CustomSnackbar.jsx';
 
-const ProjectCard = ({ type, project }) => {
+const ProjectCard = ({ type, project, isPublic }) => {
   const navigate = useNavigate();
   const currentRole = useSelector(s => s.user.user.current_role);
   const dispatch = useDispatch();
+  const [openModal, setOpenModal] = useState(false);
+  const [message, setMessage] = useState(null);
+  const [errorMessage, setErrorMessage] = useState(null);
 
   const handleClick = () => {
     if (type === AUDITOR) {
@@ -37,9 +42,47 @@ const ProjectCard = ({ type, project }) => {
     dispatch(startAudit(project));
   };
 
+  const handleError = () => {
+    setMessage('Switched to auditor role');
+  };
+  const handleView = () => {
+    setOpenModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setOpenModal(false);
+  };
+
   return (
     <Box sx={cardWrapper} className={'project-wrapper'}>
-      <Box sx={cardInnerWrapper}>
+      <Modal
+        open={openModal}
+        onClose={handleCloseModal}
+        aria-labelledby="parent-modal-title"
+        aria-describedby="parent-modal-description"
+      >
+        <Box sx={modalWrapper}>
+          <AuditRequestInfo
+            onClose={handleCloseModal}
+            project={project}
+            handleError={handleError}
+            isModal={true}
+            redirect={true}
+            setError={setErrorMessage}
+          />
+        </Box>
+      </Modal>
+      <CustomSnackbar
+        autoHideDuration={3000}
+        open={!!message || !!errorMessage}
+        onClose={() => {
+          setMessage(null);
+          setErrorMessage(null);
+        }}
+        severity={errorMessage ? 'error' : 'success'}
+        text={message || errorMessage}
+      />
+      <Box sx={cardInnerWrapper} className={'project-inner'}>
         <Tooltip
           title={project.name || project.project_name}
           arrow
@@ -78,87 +121,150 @@ const ProjectCard = ({ type, project }) => {
           marginBottom: 0,
         }}
       >
-        {currentRole === AUDITOR ? (
-          <Box sx={statusWrapper}>
-            {project.status !== SUBMITED && (
-              <>
-                {project.status.toLowerCase() === RESOLVED.toLowerCase() ? (
-                  <Box sx={{ backgroundColor: '#52176D' }} />
-                ) : (
-                  project.status.toLowerCase() ===
-                    WAITING_FOR_AUDITS.toLowerCase() && (
-                    <Box sx={{ backgroundColor: '#FF9900' }} />
-                  )
-                )}
-                {project.status.toLowerCase() !==
-                  WAITING_FOR_AUDITS.toLowerCase() &&
-                  project.status.toLowerCase() !== RESOLVED.toLowerCase() && (
-                    <Box sx={{ backgroundColor: '#09C010' }} />
+        {!isPublic &&
+          (currentRole === AUDITOR ? (
+            <Box sx={statusWrapper}>
+              {project.status !== SUBMITED && (
+                <>
+                  {project.status.toLowerCase() === RESOLVED.toLowerCase() ? (
+                    <Box sx={{ backgroundColor: '#52176D' }} />
+                  ) : (
+                    project.status.toLowerCase() ===
+                      WAITING_FOR_AUDITS.toLowerCase() && (
+                      <Box sx={{ backgroundColor: '#FF9900' }} />
+                    )
                   )}
-              </>
-            )}
-            <Typography>{project.status}</Typography>
-          </Box>
-        ) : (
-          <Box sx={statusWrapper}>
-            {project.status === DONE ? (
-              <Box sx={{ backgroundColor: '#FF4444' }} />
-            ) : project.publish_options.publish ? (
-              <Box sx={{ backgroundColor: '#09C010' }} />
-            ) : (
-              <Box sx={{ backgroundColor: '#FF9900' }} />
-            )}
-            <Typography>
-              {project.status === DONE
-                ? 'Project closed'
-                : project.publish_options.publish
-                ? 'Published'
-                : 'Hidden'}
-            </Typography>
-          </Box>
-        )}
-        <Button
-          variant={'contained'}
-          sx={[editButton, type === 'auditor' ? editAuditor : {}]}
-          onClick={handleClick}
-          {...addTestsLabel(type === AUDITOR ? 'submit-button' : 'edit-button')}
-        >
-          {type === AUDITOR
-            ? project?.status.toLowerCase() !==
-                WAITING_FOR_AUDITS.toLowerCase() &&
-              project?.status.toLowerCase() !== RESOLVED.toLowerCase()
-              ? 'Proceed'
-              : 'View'
-            : 'Edit'}
-        </Button>
-        {type !== AUDITOR ? (
+                  {project.status.toLowerCase() !==
+                    WAITING_FOR_AUDITS.toLowerCase() &&
+                    project.status.toLowerCase() !== RESOLVED.toLowerCase() && (
+                      <Box sx={{ backgroundColor: '#09C010' }} />
+                    )}
+                </>
+              )}
+              <Typography>{project.status}</Typography>
+            </Box>
+          ) : (
+            <Box sx={statusWrapper}>
+              {project.status === DONE ? (
+                <Box sx={{ backgroundColor: '#FF4444' }} />
+              ) : project.publish_options.publish ? (
+                <Box sx={{ backgroundColor: '#09C010' }} />
+              ) : (
+                <Box sx={{ backgroundColor: '#FF9900' }} />
+              )}
+              <Typography>
+                {project.status === DONE
+                  ? 'Project closed'
+                  : project.publish_options.publish
+                  ? 'Published'
+                  : 'Hidden'}
+              </Typography>
+            </Box>
+          ))}
+        {!isPublic ? (
           <Button
-            sx={copyBtn}
-            onClick={handleMakeCopy}
-            {...addTestsLabel('make-copy-button')}
+            variant={'contained'}
+            sx={[editButton, type === 'auditor' ? editAuditor : {}]}
+            onClick={handleClick}
+            {...addTestsLabel(
+              type === AUDITOR ? 'submit-button' : 'edit-button',
+            )}
           >
-            Make a copy
+            {type === AUDITOR
+              ? project?.status.toLowerCase() !==
+                  WAITING_FOR_AUDITS.toLowerCase() &&
+                project?.status.toLowerCase() !== RESOLVED.toLowerCase()
+                ? 'Proceed'
+                : 'View'
+              : 'Edit'}
           </Button>
         ) : (
-          project?.status.toLowerCase() ===
-            WAITING_FOR_AUDITS.toLowerCase() && (
+          <Button
+            variant={'contained'}
+            sx={[editButton, type === 'auditor' ? editAuditor : {}]}
+            onClick={handleView}
+            {...addTestsLabel(
+              type === AUDITOR ? 'submit-button' : 'edit-button',
+            )}
+          >
+            View
+          </Button>
+        )}
+        {!isPublic &&
+          (type !== AUDITOR ? (
             <Button
-              sx={[editButton, { marginTop: '12px' }]}
-              variant={'contained'}
-              color={'primary'}
-              onClick={handleStartAudit}
+              sx={copyBtn}
+              onClick={handleMakeCopy}
               {...addTestsLabel('make-copy-button')}
             >
-              Start audit
+              Make a copy
             </Button>
-          )
-        )}
+          ) : (
+            project?.status.toLowerCase() ===
+              WAITING_FOR_AUDITS.toLowerCase() && (
+              <Button
+                sx={[editButton, { marginTop: '12px' }]}
+                variant={'contained'}
+                color={'primary'}
+                onClick={handleStartAudit}
+                {...addTestsLabel('make-copy-button')}
+              >
+                Start audit
+              </Button>
+            )
+          ))}
       </Box>
     </Box>
   );
 };
 
 export default ProjectCard;
+
+const modalWrapper = theme => ({
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: 700,
+  // maxHeight: '90%',
+  borderRadius: '14px',
+  // height: '100%',
+  '& .audit-content': {
+    maxHeight: '30vw',
+    overflowY: 'auto',
+  },
+  '& .audit-request-button-wrapper': {
+    marginTop: '20px',
+  },
+  '& .audit-request-wrapper': {
+    gap: '5px',
+    paddingBottom: '40px',
+    paddingX: '35px',
+    paddingRight: '15px',
+  },
+  [theme.breakpoints.down('md')]: {
+    '& .audit-request-wrapper': {
+      paddingX: '20px',
+      minHeight: 'unset',
+    },
+  },
+  [theme.breakpoints.down('sm')]: {
+    '& .audit-content': {
+      maxHeight: '35vw',
+    },
+  },
+  [theme.breakpoints.down('xs')]: {
+    width: 340,
+    '& .audit-content': {
+      maxHeight: '50vw',
+    },
+  },
+  [theme.breakpoints.down(500)]: {
+    '& .audit-content': {
+      maxHeight: '100vw',
+    },
+  },
+});
 
 const priceWrapper = theme => ({
   display: 'flex',

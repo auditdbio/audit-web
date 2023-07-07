@@ -286,8 +286,8 @@ const infoWrapper = theme => ({
     maxWidth: '250px',
   },
   '& span': {
-    width: '125px',
-    marginRight: '50px',
+    width: '90px',
+    marginRight: '30px',
     color: '#B2B3B3',
   },
   fontSize: '15px',
