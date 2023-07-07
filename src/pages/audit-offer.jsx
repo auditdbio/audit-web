@@ -93,14 +93,6 @@ const AuditOffer = () => {
     );
   }
 
-  if (!audit?.id && !notFound) {
-    return (
-      <Layout>
-        <Loader />
-      </Layout>
-    );
-  }
-
   if (audit && !notFound) {
     return (
       <Layout>
@@ -411,10 +403,9 @@ const AuditOffer = () => {
         </CustomCard>
       </Layout>
     );
-    ф;
   }
 
-  if (notFound) {
+  if (notFound && !audit?.id) {
     return <NotFound role={role} />;
   }
 };
