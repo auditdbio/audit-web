@@ -97,12 +97,15 @@ const Control = ({ issues, search, setSearch, setPage, setSearchParams }) => {
             }}
           >
             {user.current_role === AUDITOR && (
-              <MenuItem
-                disabled={checkDraftIssues()}
-                onClick={handleDiscloseAll}
-              >
-                Disclose all
-              </MenuItem>
+              <>
+                <MenuItem
+                  disabled={checkDraftIssues()}
+                  onClick={handleDiscloseAll}
+                >
+                  Disclose all
+                </MenuItem>
+                <MenuItem onClick={handleCloseMenu}>Generate report</MenuItem>
+              </>
             )}
             <MenuItem onClick={handleCloseMenu}>Mark all as read</MenuItem>
           </Menu>
@@ -126,39 +129,53 @@ const Control = ({ issues, search, setSearch, setPage, setSearchParams }) => {
 
         {user?.current_role === AUDITOR ? (
           <Box sx={buttonBoxSx}>
-            <Button
-              variant="contained"
-              color="secondary"
-              sx={buttonSx}
-              disabled={audit?.status?.toLowerCase() === RESOLVED.toLowerCase()}
-              onClick={handleNewIssue}
-              {...addTestsLabel('new-issue-button')}
-            >
-              New issue
-            </Button>
-            {audit?.status?.toLowerCase() !== RESOLVED.toLowerCase() && (
-              <Tooltip
-                arrow
-                placement="top"
-                title={
-                  allIssuesClosed
-                    ? ''
-                    : "To resolve an audit, it is necessary that the status of all issues be 'Fixed' or 'Not fixed'. Or do not include some issues in the audit."
-                }
+            {audit?.status?.toLowerCase() !== RESOLVED.toLowerCase() ? (
+              <>
+                <Button
+                  variant="contained"
+                  color="secondary"
+                  sx={buttonSx}
+                  disabled={
+                    audit?.status?.toLowerCase() === RESOLVED.toLowerCase()
+                  }
+                  onClick={handleNewIssue}
+                  {...addTestsLabel('new-issue-button')}
+                >
+                  New issue
+                </Button>
+                <Tooltip
+                  arrow
+                  placement="top"
+                  title={
+                    allIssuesClosed
+                      ? ''
+                      : "To resolve an audit, it is necessary that the status of all issues be 'Fixed' or 'Not fixed'. Or do not include some issues in the audit."
+                  }
+                >
+                  <span>
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      onClick={() => setResolveConfirmation(true)}
+                      disabled={!allIssuesClosed}
+                      sx={buttonSx}
+                      {...addTestsLabel('resolve-button')}
+                    >
+                      Resolve audit
+                    </Button>
+                  </span>
+                </Tooltip>
+              </>
+            ) : (
+              <Button
+                variant="contained"
+                color="secondary"
+                sx={[buttonSx, { width: '100%' }]}
+                onClick={() => {}}
+                {...addTestsLabel('download-report-button')}
               >
-                <span>
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={() => setResolveConfirmation(true)}
-                    disabled={!allIssuesClosed}
-                    sx={buttonSx}
-                    {...addTestsLabel('resolve-button')}
-                  >
-                    Resolve audit
-                  </Button>
-                </span>
-              </Tooltip>
+                Download report
+              </Button>
             )}
           </Box>
         ) : (
