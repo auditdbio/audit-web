@@ -2,12 +2,14 @@ import React from 'react';
 import { Box, Pagination } from '@mui/material';
 
 const CustomPagination = ({
-  show,
+  show = true,
   count,
   onChange,
   sx,
   page = 1,
   color = 'secondary',
+  showFirstLast = true,
+  ...props
 }) => {
   return (
     <>
@@ -20,8 +22,9 @@ const CustomPagination = ({
             color={color}
             variant="outlined"
             shape="rounded"
-            showFirstButton
-            showLastButton
+            showFirstButton={showFirstLast}
+            showLastButton={showFirstLast}
+            {...props}
           />
         </Box>
       )}

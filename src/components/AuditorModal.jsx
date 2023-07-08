@@ -34,6 +34,7 @@ export default function AuditorModal({
   isForm,
   onSubmit,
   handleError,
+  setError,
 }) {
   const navigate = useNavigate();
   const auditorReducer = useSelector(state => state.auditor.auditors);
@@ -79,8 +80,10 @@ export default function AuditorModal({
   useEffect(() => {
     if (open && !isForm) {
       setMode('info');
-    } else {
+    } else if (open && isForm) {
       setMode('invite');
+    } else {
+      setMode('');
     }
   }, [open, isForm]);
 
@@ -226,7 +229,11 @@ export default function AuditorModal({
                 to: parseInt(values.price),
               },
             };
-            onSubmit(newValue);
+            if (newValue.auditor_id !== newValue.customer_id) {
+              onSubmit(newValue);
+            } else {
+              setError('You cannot create an audit request with yourself');
+            }
             handleClose();
             if (onClose) {
               onClose();

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Layout from '../styles/Layout.jsx';
-import { Box, Button } from '@mui/material';
+import { Box, Button, useMediaQuery } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack.js';
 import Filter from '../components/forms/filter/index.jsx';
 import ProjectListCard from '../components/Project-list-card.jsx';
@@ -11,8 +11,10 @@ import { searchProjects } from '../redux/actions/projectAction.js';
 import { clearMessage } from '../redux/actions/auditAction.js';
 import CustomPagination from '../components/custom/CustomPagination.jsx';
 import { addTestsLabel } from '../lib/helper.js';
+import theme from '../styles/themes.js';
 
 const ProjectPage = () => {
+  const matchXs = useMediaQuery(theme.breakpoints.down('xs'));
   const [searchParams, setSearchParams] = useSearchParams();
   const projects = useSelector(s => s.project.searchProjects);
   const totalProjects = useSelector(s => s.project.searchTotalProjects);
@@ -123,6 +125,8 @@ const ProjectPage = () => {
           sx={{ mb: '20px' }}
           page={currentPage}
           onChange={handleChangePage}
+          showFirstLast={!matchXs}
+          size={matchXs ? 'small' : 'medium'}
         />
         <Box sx={contentWrapper}>
           <Box sx={{ display: 'flex', flexWrap: 'wrap' }}>
@@ -148,6 +152,8 @@ const ProjectPage = () => {
           sx={{ display: 'flex', justifyContent: 'flex-end' }}
           page={currentPage}
           onChange={handleChangePage}
+          showFirstLast={!matchXs}
+          size={matchXs ? 'small' : 'medium'}
         />
       </Box>
     </Layout>

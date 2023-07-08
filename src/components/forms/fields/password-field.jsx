@@ -1,27 +1,36 @@
 import { Box, InputAdornment, Typography } from '@mui/material';
-import { Field, useField } from 'formik';
+import { Field } from 'formik';
 import { TextField } from 'formik-mui';
 import React, { useState } from 'react';
 import EyeIcon from '../../icons/eye-icon.jsx';
 import RemovedEyeIcon from '../../icons/removed-eye-icon.jsx';
 import { addTestsLabel } from '../../../lib/helper.js';
 
-const PasswordField = ({ name, label }) => {
+const PasswordField = ({
+  name,
+  label,
+  outerLabel = false,
+  size = 'medium',
+}) => {
   const [showPassword, setShowPassword] = useState(false);
   const handleClickShowPassword = () => setShowPassword(!showPassword);
   const handleMouseDownPassword = () => setShowPassword(!showPassword);
 
   return (
     <Box sx={wrapper} className={'password-wrapper'}>
-      <Typography sx={formLabelSx} variant={'body2'}>
-        {label}
-      </Typography>
+      {outerLabel && (
+        <Typography sx={formLabelSx} variant={'body2'}>
+          {label}
+        </Typography>
+      )}
       <Field
         component={TextField}
         placeholder={'● ● ● ● ● ● ●'}
         fullWidth={true}
         sx={fieldSx}
         name={name}
+        label={label}
+        size={size}
         disabled={false}
         type={showPassword ? 'text' : 'password'}
         inputProps={{ ...addTestsLabel(`${name}-input`) }}
@@ -56,6 +65,17 @@ const wrapper = theme => ({
 const fieldSx = theme => ({
   '& input': {
     paddingLeft: '35px',
+  },
+  [theme.breakpoints.up('sm')]: {
+    '& input': {
+      fontSize: '18px',
+    },
+    '& textarea': {
+      fontSize: '18px',
+    },
+    '& .MuiFormLabel-root,.MuiInputLabel-root': {
+      fontSize: '18px',
+    },
   },
 });
 

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Box, Button, Modal } from '@mui/material';
-import { radiusOfComponents } from '../../../styles/themes.js';
+import { Box, Button, Modal, useMediaQuery } from '@mui/material';
+import theme, { radiusOfComponents } from '../../../styles/themes.js';
 import PasswordField from '../fields/password-field.jsx';
 import { Form, Formik } from 'formik';
 import * as Yup from 'yup';
@@ -13,12 +13,13 @@ import {
 } from '../../../redux/actions/userAction.js';
 import CustomSnackbar from '../../custom/CustomSnackbar.jsx';
 import RestorePassword from '../../RestorePassword.jsx';
-import { addTestsLabel } from '../../../lib/helper.js';
+import { addTestsLabel, isAuth } from '../../../lib/helper.js';
 
 const SigninForm = () => {
   const dispatch = useDispatch();
   const error = useSelector(s => s.user.error);
   const [open, setOpen] = useState(false);
+  const matchMd = useMediaQuery(theme.breakpoints.down('md'));
   const successMessage = useSelector(s => s.user.success);
   const initialValues = {
     email: '',
@@ -63,8 +64,17 @@ const SigninForm = () => {
                 </Box>
               </Modal>
               <Box sx={fieldWrapper}>
-                <SimpleField name={'email'} label={'E-mail'} />
-                <PasswordField name={'password'} label={'Password'} />
+                <SimpleField
+                  size={!matchMd ? 'medium' : 'small'}
+                  name="email"
+                  label="E-mail"
+                  emptyPH
+                />
+                <PasswordField
+                  size={!matchMd ? 'medium' : 'small'}
+                  name="password"
+                  label="Password"
+                />
               </Box>
               <Box
                 sx={{
@@ -78,6 +88,7 @@ const SigninForm = () => {
                   variant={'contained'}
                   sx={submitButton}
                   {...addTestsLabel('sign-in-button')}
+                  disabled={isAuth()}
                 >
                   Sing in
                 </Button>
@@ -86,6 +97,7 @@ const SigninForm = () => {
                   variant={'text'}
                   sx={{ textTransform: 'unset', mt: '25px', fontSize: '12px' }}
                   onClick={() => setOpen(true)}
+                  disabled={isAuth()}
                   {...addTestsLabel('forgot-password-button')}
                 >
                   Forgot password
@@ -155,10 +167,9 @@ const fieldWrapper = theme => ({
   width: '100%',
   gap: '20px',
   [theme.breakpoints.down('md')]: {
-    '& .MuiInputBase-root': {
-      height: '44px',
-      '& input': {
-        paddingY: '7px',
+    '& .password-wrapper,.field-wrapper': {
+      '& label': {
+        fontSize: '18px',
       },
     },
   },
@@ -166,6 +177,9 @@ const fieldWrapper = theme => ({
     gap: '16px',
     '& .password-wrapper, .field-wrapper': {
       gap: '16px',
+      '& label': {
+        fontSize: '15px',
+      },
     },
   },
 });

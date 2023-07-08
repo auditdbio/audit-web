@@ -13,6 +13,7 @@ const ProjectListCard = ({ project }) => {
   const errorMessage = useSelector(s => s.audits.error);
   const successMessage = useSelector(s => s.audits.successMessage);
   const dispatch = useDispatch();
+  const [errorState, setErrorState] = useState(null);
 
   const handleOpen = () => {
     setIsOpen(true);
@@ -30,13 +31,14 @@ const ProjectListCard = ({ project }) => {
     <Box sx={wrapper}>
       <CustomSnackbar
         autoHideDuration={3000}
-        open={!!message || errorMessage || successMessage}
+        open={!!message || errorMessage || successMessage || errorState}
         onClose={() => {
           setMessage(null);
           dispatch(clearMessage());
+          setErrorState(null);
         }}
-        severity={errorMessage ? 'error' : 'success'}
-        text={message || errorMessage || successMessage}
+        severity={errorMessage || errorState ? 'error' : 'success'}
+        text={message || errorMessage || successMessage || errorState}
       />
 
       <Box sx={contentWrapper}>
@@ -76,8 +78,9 @@ const ProjectListCard = ({ project }) => {
             onClose={handleClose}
             project={project}
             handleError={handleError}
-            modal={true}
+            isModal={true}
             redirect={true}
+            setError={setErrorState}
           />
         </Box>
       </Modal>
@@ -114,12 +117,10 @@ const projectTitleWrapper = theme => ({
 });
 
 const viewButton = theme => ({
-  width: '170px',
+  width: '130px',
   textTransform: 'unset',
+  fontWeight: 600,
   marginTop: '33px',
-  [theme.breakpoints.down('md')]: {
-    width: '130px',
-  },
   [theme.breakpoints.down('xs')]: {
     width: '100px',
     fontSize: '9px',
@@ -138,28 +139,54 @@ const wrapper = theme => ({
       fontSize: '10px',
     },
   },
+  [theme.breakpoints.down('xs')]: {
+    paddingX: '10px',
+    gap: '5px',
+  },
 });
 
-export const modalWrapper = theme => ({
+const modalWrapper = theme => ({
   position: 'absolute',
   top: '50%',
   left: '50%',
   transform: 'translate(-50%, -50%)',
   width: 700,
-  height: '90%',
+  // maxHeight: '90%',
   borderRadius: '14px',
-  '& .audit-request-wrapper': {
-    gap: '100px',
-    paddingX: '35px',
+  // height: '100%',
+  '& .audit-content': {
+    maxHeight: '30vw',
+    overflowY: 'auto',
   },
-  '& .audit-request-links': {
-    gap: '20px',
+  '& .audit-request-button-wrapper': {
+    marginTop: '20px',
+  },
+  '& .audit-request-wrapper': {
+    gap: '5px',
+    paddingBottom: '40px',
+    paddingX: '35px',
+    paddingRight: '15px',
+  },
+  [theme.breakpoints.down('md')]: {
+    '& .audit-request-wrapper': {
+      paddingX: '20px',
+      minHeight: 'unset',
+    },
+  },
+  [theme.breakpoints.down('sm')]: {
+    '& .audit-content': {
+      maxHeight: '35vw',
+    },
   },
   [theme.breakpoints.down('xs')]: {
-    width: 360,
-    '& .audit-request-wrapper': {
-      gap: '30px',
-      paddingX: '15px',
+    width: 340,
+    '& .audit-content': {
+      maxHeight: '50vw',
+    },
+  },
+  [theme.breakpoints.down(500)]: {
+    '& .audit-content': {
+      maxHeight: '100vw',
     },
   },
 });

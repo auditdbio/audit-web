@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Layout from '../styles/Layout.jsx';
 import { CustomCard } from '../components/custom/Card';
 import SignupForm from '../components/forms/signup/SignupForm.jsx';

@@ -1,68 +1,128 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom/dist';
+import { Form, Formik } from 'formik';
+import * as Yup from 'yup';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack.js';
+import TelegramIcon from '@mui/icons-material/Telegram';
+import EmailIcon from '@mui/icons-material/Email';
+import { Box, Button, Typography, Tooltip } from '@mui/material';
+import theme from '../styles/themes.js';
 import { CustomCard } from '../components/custom/Card.jsx';
 import Layout from '../styles/Layout.jsx';
 import {
-  Avatar,
-  Box,
-  Button,
-  Typography,
-  Link,
-  useMediaQuery,
-  TextField,
-  Tooltip,
-} from '@mui/material';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack.js';
-import GitHubIcon from '@mui/icons-material/GitHub';
-import theme from '../styles/themes.js';
-import { useNavigate } from 'react-router-dom/dist';
-import CreateNewFolderOutlinedIcon from '@mui/icons-material/CreateNewFolderOutlined';
-import { useDispatch, useSelector } from 'react-redux';
-import { useParams } from 'react-router-dom';
-import { Form, Formik } from 'formik';
-import { addReportAudit, getAudits } from '../redux/actions/auditAction.js';
-import EditIcon from '@mui/icons-material/Edit.js';
+  addReportAudit,
+  clearMessage,
+  getAudit,
+  startAudit,
+} from '../redux/actions/auditAction.js';
 import AuditUpload from '../components/forms/audit-upload/index.jsx';
 import Loader from '../components/Loader.jsx';
-import { AUDITOR, SUBMITED } from '../redux/actions/types.js';
-import * as Yup from 'yup';
-import Markdown from '../components/custom/Markdown.jsx';
-import TelegramIcon from '@mui/icons-material/Telegram';
-import EmailIcon from '@mui/icons-material/Email';
+import {
+  CLEAR_AUDIT,
+  RESOLVED,
+  SUBMITED,
+  WAITING_FOR_AUDITS,
+} from '../redux/actions/types.js';
+import Markdown from '../components/markdown/Markdown.jsx';
 import { addTestsLabel } from '../lib/helper.js';
+import CustomLink from '../components/custom/CustomLink.jsx';
+import IssueDetailsForm from '../components/issuesPage/IssueDetailsForm/IssueDetailsForm.jsx';
+import IssuesList from '../components/issuesPage/IssuesList.jsx';
+import CustomSnackbar from '../components/custom/CustomSnackbar.jsx';
+import { getIssues } from '../redux/actions/issueAction.js';
+import NotFound from './Not-Found.jsx';
+import { FIXED, NOT_FIXED } from '../components/issuesPage/constants.js';
 
 const AuditOffer = () => {
-  const { id } = useParams();
+  const { auditId } = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const matchXs = useMediaQuery(theme.breakpoints.down('xs'));
-  const audit = useSelector(s =>
-    s.audits.audits?.find(audit => audit.id === id),
-  );
+  const role = useSelector(s => s.user?.user?.current_role);
+  const { successMessage, error } = useSelector(s => s.issues);
+  const { issues, issuesAuditId } = useSelector(s => s.issues);
+  const audit = useSelector(s => s.audits.audit);
+  const notFound = useSelector(s => s.notFound.error);
 
-  if (!audit) {
-    return <Loader />;
-  } else {
+  const [auditDBWorkflow, setAuditDBWorkflow] = useState(true);
+  const [showReadMoreButton, setShowReadMoreButton] = useState(false);
+  const [showFull, setShowFull] = useState(false);
+
+  const descriptionRef = useRef();
+
+  useEffect(() => {
+    dispatch(getAudit(auditId));
+    return () => {
+      dispatch({ type: CLEAR_AUDIT });
+    };
+  }, [auditId]);
+
+  useEffect(() => {
+    setTimeout(() => {
+      if (descriptionRef?.current?.offsetHeight > 400) {
+        setShowReadMoreButton(true);
+      }
+    }, 500);
+  }, [descriptionRef.current]);
+
+  useEffect(() => {
+    if (issuesAuditId !== auditId) {
+      dispatch(getIssues(auditId));
+    }
+  }, []);
+
+  useEffect(() => {
+    if (
+      audit?.status?.toLowerCase() === RESOLVED.toLowerCase() &&
+      !issues?.length
+    ) {
+      setAuditDBWorkflow(false);
+    }
+  }, [audit, issues]);
+
+  if (!audit?.id && !notFound) {
     return (
       <Layout>
-        <Formik
-          initialValues={{
-            id: audit.id,
-            status: 'done',
-            report: audit.report || '',
-            report_name: audit.report_name || '',
-          }}
-          validationSchema={SubmitValidation}
-          onSubmit={values => {
-            dispatch(addReportAudit(values));
-          }}
+        <CustomCard
+          sx={[wrapper, { height: '100%', justifyContent: 'center' }]}
         >
-          {({ handleSubmit, setFieldValue }) => {
-            return (
-              <Form
-                onSubmit={handleSubmit}
-                style={{ width: '100%', maxWidth: '1300px' }}
-              >
-                <CustomCard sx={wrapper}>
+          <Loader />
+        </CustomCard>
+      </Layout>
+    );
+  }
+
+  if (audit && !notFound) {
+    return (
+      <Layout>
+        <CustomCard sx={wrapper}>
+          <Formik
+            initialValues={{
+              id: audit?.id,
+              status: 'done',
+              report: audit?.report || '',
+              report_name: audit?.report_name || '',
+            }}
+            validationSchema={SubmitValidation}
+            onSubmit={values => {
+              dispatch(addReportAudit(values));
+            }}
+          >
+            {({ handleSubmit, setFieldValue }) => {
+              return (
+                <Form
+                  onSubmit={handleSubmit}
+                  style={{ width: '100%', maxWidth: '1300px' }}
+                >
+                  <CustomSnackbar
+                    autoHideDuration={5000}
+                    open={!!error || !!successMessage}
+                    severity={error ? 'error' : 'success'}
+                    text={error || successMessage}
+                    onClose={() => dispatch(clearMessage())}
+                  />
+
                   <Box
                     sx={{
                       display: 'flex',
@@ -72,18 +132,23 @@ const AuditOffer = () => {
                   >
                     <Button
                       sx={backButtonSx}
-                      onClick={() => navigate(-1)}
+                      onClick={() => navigate('/profile/audits')}
                       {...addTestsLabel('go-back-button')}
                     >
                       <ArrowBackIcon color={'secondary'} />
                     </Button>
                     <Typography
                       variant={'h3'}
-                      sx={{ width: '100%', textAlign: 'center' }}
+                      sx={{
+                        width: '100%',
+                        textAlign: 'center',
+                        wordBreak: 'break-word',
+                      }}
                     >
                       {audit?.project_name}
                     </Typography>
                   </Box>
+
                   <Box sx={{ width: '100%' }}>
                     <Box sx={contentWrapper}>
                       <Typography sx={titleSx}>
@@ -138,104 +203,210 @@ const AuditOffer = () => {
                         </Box>
                       </Box>
                     </Box>
+
                     <Box
                       sx={[{ display: 'flex', gap: '25px' }, contactWrapper]}
                     >
-                      <Box
-                        sx={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: '10px',
-                        }}
-                      >
-                        <EmailIcon />
-                        <Box sx={{ display: 'grid' }}>
-                          <Tooltip
-                            title={audit?.customer_contacts?.email}
-                            arrow
-                            placement={'top'}
-                          >
-                            <Typography variant={'caption'} noWrap={true}>
-                              {audit?.customer_contacts?.email}
-                            </Typography>
-                          </Tooltip>
+                      {audit?.customer_contacts?.email && (
+                        <Box
+                          sx={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '10px',
+                          }}
+                        >
+                          <EmailIcon />
+                          <Box sx={{ display: 'grid' }}>
+                            <Tooltip
+                              title={audit?.customer_contacts?.email}
+                              arrow
+                              placement={'top'}
+                            >
+                              <Typography variant={'caption'} noWrap={true}>
+                                {audit?.customer_contacts?.email}
+                              </Typography>
+                            </Tooltip>
+                          </Box>
                         </Box>
-                      </Box>
-                      <Box
-                        sx={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: '10px',
-                        }}
-                      >
-                        <TelegramIcon />
-                        <Box sx={{ display: 'grid' }}>
-                          <Tooltip
-                            title={audit?.customer_contacts?.telegram}
-                            arrow
-                            placement={'top'}
-                          >
-                            <Typography variant={'caption'} noWrap={true}>
-                              {audit?.customer_contacts?.telegram}
-                            </Typography>
-                          </Tooltip>
+                      )}
+                      {audit?.customer_contacts?.telegram && (
+                        <Box
+                          sx={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '10px',
+                          }}
+                        >
+                          <TelegramIcon />
+                          <Box sx={{ display: 'grid' }}>
+                            <Tooltip
+                              title={audit?.customer_contacts?.telegram}
+                              arrow
+                              placement={'top'}
+                            >
+                              <Typography variant={'caption'} noWrap={true}>
+                                {audit?.customer_contacts?.telegram}
+                              </Typography>
+                            </Tooltip>
+                          </Box>
                         </Box>
-                      </Box>
+                      )}
                     </Box>
+
                     <Box sx={infoWrapper}>
-                      <Markdown value={audit?.description} />
+                      <Box sx={descriptionSx(showFull)}>
+                        <Box ref={descriptionRef}>
+                          <Markdown value={audit?.description} />
+                        </Box>
+                      </Box>
+                      {showReadMoreButton && (
+                        <Button
+                          onClick={() => setShowFull(!showFull)}
+                          sx={readAllButton}
+                        >
+                          {showFull ? 'Hide ▲' : `Read all ▼`}
+                        </Button>
+                      )}
+
                       <Box sx={linkWrapper}>
                         {audit?.scope?.map((el, idx) => (
-                          <Typography key={idx}>
-                            <GitHubIcon />
-                            <a
-                              target={'_blank'}
-                              href={el.includes('https') ? el : `https://${el}`}
-                            >
-                              {el}
-                            </a>
-                            {/*<Button>x</Button>*/}
-                          </Typography>
+                          <CustomLink link={el} key={idx} />
                         ))}
                       </Box>
-                      <Box sx={fileWrapper}>
-                        <Typography sx={subTitleSx}>Upload audit</Typography>
-                        <Box sx={{ display: 'flex' }}>
-                          <AuditUpload
-                            disabled={audit.status === SUBMITED}
-                            auditId={audit.id}
-                            auditorId={audit.auditor_id}
-                            auditReportName={audit.report_name}
-                            customerId={audit.customer_id}
-                            name={'report'}
-                            setFieldValue={setFieldValue}
-                          />
+
+                      {audit?.status?.toLowerCase() ===
+                      WAITING_FOR_AUDITS.toLowerCase() ? (
+                        <Box
+                          sx={{
+                            display: 'flex',
+                            justifyContent: 'center',
+                            maxWidth: '400px',
+                            margin: '0 auto',
+                            paddingBottom: '25px',
+                          }}
+                        >
+                          <Button
+                            sx={[
+                              workflowButton(auditDBWorkflow),
+                              {
+                                borderRadius: '10px',
+                                width: '180px',
+                              },
+                            ]}
+                            onClick={() => dispatch(startAudit(audit, true))}
+                          >
+                            Start audit
+                          </Button>
                         </Box>
-                      </Box>
+                      ) : (
+                        <Box sx={workflowToggleBox}>
+                          <Button
+                            onClick={() => setAuditDBWorkflow(true)}
+                            sx={workflowButton(auditDBWorkflow)}
+                            disabled={
+                              audit?.status?.toLowerCase() ===
+                                RESOLVED.toLowerCase() && !issues?.length
+                            }
+                          >
+                            {issues?.length
+                              ? `Issues (${issues.length})`
+                              : 'New issue'}
+                          </Button>
+                          <Button
+                            onClick={() => setAuditDBWorkflow(false)}
+                            disabled={
+                              !issues?.every(
+                                issue =>
+                                  issue.status === FIXED ||
+                                  issue.status === NOT_FIXED ||
+                                  !issue.include,
+                              )
+                            }
+                            sx={workflowButton(!auditDBWorkflow)}
+                          >
+                            Upload audit
+                          </Button>
+                        </Box>
+                      )}
+
+                      {!auditDBWorkflow &&
+                        audit?.status.toLowerCase() !==
+                          WAITING_FOR_AUDITS.toLowerCase() && (
+                          <Box sx={fileWrapper}>
+                            <Typography sx={subTitleSx}>
+                              Upload audit
+                            </Typography>
+                            <Box sx={{ display: 'flex' }}>
+                              <AuditUpload
+                                disabled={audit?.status === SUBMITED}
+                                auditId={audit?.id}
+                                auditorId={audit?.auditor_id}
+                                auditReportName={audit?.report_name}
+                                customerId={audit?.customer_id}
+                                name={'report'}
+                                setFieldValue={setFieldValue}
+                              />
+                            </Box>
+                          </Box>
+                        )}
                     </Box>
                   </Box>
-                  <Box sx={buttonWrapper}>
-                    {audit.status !== SUBMITED && (
+
+                  {!auditDBWorkflow && (
+                    <Box
+                      sx={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        mb: '30px',
+                      }}
+                    >
                       <Button
-                        variant={'contained'}
-                        type={'submit'}
-                        sx={[
-                          buttonSx,
-                          { backgroundColor: theme.palette.secondary.main },
-                        ]}
+                        variant="contained"
+                        type="submit"
+                        color="secondary"
+                        sx={[buttonSx, { mb: '15px' }]}
                         {...addTestsLabel('send-button')}
                       >
                         Send to customer
                       </Button>
-                    )}
+                    </Box>
+                  )}
+                </Form>
+              );
+            }}
+          </Formik>
+
+          {auditDBWorkflow &&
+            audit?.status?.toLowerCase() !==
+              WAITING_FOR_AUDITS.toLowerCase() && (
+              <Box sx={{ width: '100%', mb: '30px' }}>
+                {issues?.length ? (
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      gap: '20px',
+                      [theme.breakpoints.down('xs')]: {
+                        gap: '10px',
+                      },
+                    }}
+                  >
+                    <IssuesList auditId={auditId} />
                   </Box>
-                </CustomCard>
-              </Form>
-            );
-          }}
-        </Formik>
+                ) : audit?.status?.toLowerCase() !== RESOLVED.toLowerCase() ? (
+                  <IssueDetailsForm />
+                ) : null}
+              </Box>
+            )}
+        </CustomCard>
       </Layout>
     );
+  }
+
+  if (notFound && !audit?.id) {
+    return <NotFound role={role} />;
   }
 };
 
@@ -246,7 +417,7 @@ const SubmitValidation = Yup.object().shape({
 });
 
 const wrapper = theme => ({
-  padding: '48px 74px 80px',
+  padding: '48px 74px 0',
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'center',
@@ -256,25 +427,21 @@ const wrapper = theme => ({
     fontWeight: 500,
   },
   [theme.breakpoints.down('md')]: {
-    padding: '38px 44px 60px',
+    padding: '38px 44px 0',
     '& h3': {
       fontSize: '30px',
     },
   },
   [theme.breakpoints.down('sm')]: {
     gap: '20px',
-    padding: '38px 20px 30px',
+    padding: '38px 20px 0',
   },
-});
-
-const buttonWrapper = theme => ({
-  marginTop: '40px',
 });
 
 const contactWrapper = theme => ({
   maxWidth: '500px',
   margin: '15px auto 0',
-  justifyContent: 'space-between',
+  justifyContent: 'center',
   '& span': {
     fontSize: '16px',
   },
@@ -286,20 +453,18 @@ const contactWrapper = theme => ({
   },
 });
 
-const descriptionSx = theme => ({
-  fontSize: '16px!important',
-  fontWeight: 500,
-  [theme.breakpoints.down('sm')]: {
-    marginBottom: '25px',
-  },
+const descriptionSx = full => ({
+  maxHeight: full ? 'unset' : '400px',
+  overflow: 'hidden',
+  border: '2px solid #E5E5E5',
 });
 
-const subTitleSx = theme => ({
+const subTitleSx = {
   fontSize: '16px!important',
   fontWeight: 500,
-});
+};
 
-const contentWrapper = theme => ({
+const contentWrapper = {
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'center',
@@ -308,10 +473,10 @@ const contentWrapper = theme => ({
     fontSize: '18px',
     fontWeight: 500,
   },
-});
+};
 
 const fileWrapper = theme => ({
-  marginTop: '22px',
+  margin: '22px 0',
   display: 'flex',
   alignItems: 'center',
   gap: '30px',
@@ -354,20 +519,36 @@ const infoWrapper = theme => ({
     },
   },
   [theme.breakpoints.down('xs')]: {
-    // width: '310px',
     '& h4': {
       textAlign: 'start',
     },
   },
 });
 
+const readAllButton = theme => ({
+  width: '100%',
+  padding: '8px',
+  fontWeight: 600,
+  fontSize: '21px',
+  color: 'black',
+  textTransform: 'none',
+  lineHeight: '25px',
+  background: '#E5E5E5',
+  borderRadius: 0,
+  boxShadow: '0px -24px 14px -8px rgba(252, 250, 246, 1)',
+  ':hover': { background: '#D5D5D5' },
+  [theme.breakpoints.down('xs')]: {
+    fontSize: '16px',
+    border: 'none',
+  },
+});
+
 const linkWrapper = theme => ({
   display: 'flex',
-  flexWrap: 'wrap',
+  flexDirection: 'column',
   columnGap: '80px',
-  marginTop: '50px',
-  marginBottom: '20px',
-  justifyContent: 'space-around',
+  mt: '50px',
+  mb: '30px',
   '& button': {
     padding: 1,
     minWidth: 'unset',
@@ -377,9 +558,6 @@ const linkWrapper = theme => ({
     alignItems: 'center',
     gap: '15px',
     fontSize: '18px',
-    '& a': {
-      color: '#152BEA',
-    },
   },
   [theme.breakpoints.down('sm')]: {
     columnGap: '40px',
@@ -416,5 +594,39 @@ const buttonSx = theme => ({
   },
   [theme.breakpoints.down('xs')]: {
     margin: '0 6px',
+  },
+});
+
+const workflowToggleBox = theme => ({
+  maxWidth: '510px',
+  margin: '0 auto 50px',
+  padding: '3px 1px',
+  display: 'flex',
+  justifyContent: 'center',
+  border: '1px solid #B2B3B3',
+  borderRadius: '38px',
+  [theme.breakpoints.down('xs')]: {
+    width: '248px',
+    margin: '0 auto 20px',
+  },
+});
+
+const workflowButton = useWorkflow => ({
+  fontWeight: 600,
+  fontSize: '20px',
+  color: useWorkflow ? 'white' : 'black',
+  textTransform: 'none',
+  padding: '15px 0',
+  width: '250px',
+  borderRadius: '38px',
+  background: useWorkflow ? theme.palette.secondary.main : 'none',
+  ':hover': { background: useWorkflow ? theme.palette.secondary.main : 'none' },
+  '& span': {
+    display: 'none',
+  },
+  [theme.breakpoints.down('xs')]: {
+    width: '120px',
+    padding: '10px 0',
+    fontSize: '14px',
   },
 });

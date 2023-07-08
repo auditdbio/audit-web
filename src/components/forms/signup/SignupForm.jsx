@@ -1,6 +1,13 @@
 import React, { useState } from 'react';
-import { Box, Tabs, Tab, Typography, Button } from '@mui/material';
-import { radiusOfComponents } from '../../../styles/themes.js';
+import {
+  Box,
+  Tabs,
+  Tab,
+  Typography,
+  Button,
+  useMediaQuery,
+} from '@mui/material';
+import theme, { radiusOfComponents } from '../../../styles/themes.js';
 import PasswordField from '../fields/password-field.jsx';
 import { Form, Formik } from 'formik';
 import * as Yup from 'yup';
@@ -8,11 +15,12 @@ import SimpleField from '../fields/simple-field.jsx';
 import { useDispatch, useSelector } from 'react-redux';
 import { clearUserError, signUp } from '../../../redux/actions/userAction.js';
 import CustomSnackbar from '../../custom/CustomSnackbar.jsx';
-import { addTestsLabel } from '../../../lib/helper.js';
+import { addTestsLabel, isAuth } from '../../../lib/helper.js';
 
 const SignupForm = () => {
   const [isAuditor, setIsAuditor] = useState('auditor');
   const dispatch = useDispatch();
+  const matchMd = useMediaQuery(theme.breakpoints.down('md'));
   const error = useSelector(s => s.user.error);
   const initialValues = {
     current_role: '',
@@ -49,12 +57,12 @@ const SignupForm = () => {
               onChange={(e, newValue) => {
                 setIsAuditor(newValue);
               }}
-              name={'role'}
+              name="role"
               sx={tabsSx}
               indicatorColor="none"
             >
               <Tab
-                value={'auditor'}
+                value="auditor"
                 sx={[
                   isAuditor === 'auditor'
                     ? auditorTabSx
@@ -65,7 +73,7 @@ const SignupForm = () => {
                 {...addTestsLabel('auditor-button')}
               />
               <Tab
-                value={'customer'}
+                value="customer"
                 sx={[
                   isAuditor === 'customer'
                     ? customerTabSx
@@ -78,21 +86,37 @@ const SignupForm = () => {
             </Tabs>
             <Box sx={fieldsWrapper}>
               <Box sx={fieldWrapper}>
-                <SimpleField name={'name'} label={'User name'} />
-                <SimpleField name={'email'} label={'E-mail'} />
+                <SimpleField
+                  size={!matchMd ? 'medium' : 'small'}
+                  name="name"
+                  label="User name"
+                  emptyPH
+                />
+                <SimpleField
+                  size={!matchMd ? 'medium' : 'small'}
+                  name="email"
+                  label="E-mail"
+                  emptyPH
+                />
               </Box>
               <Box sx={fieldWrapper}>
-                <PasswordField name={'password'} label={'Password'} />
                 <PasswordField
-                  name={'confirmPassword'}
-                  label={'Confirm password'}
+                  size={!matchMd ? 'medium' : 'small'}
+                  name="password"
+                  label="Password"
+                />
+                <PasswordField
+                  size={!matchMd ? 'medium' : 'small'}
+                  name="confirmPassword"
+                  label="Confirm password"
                 />
               </Box>
             </Box>
             <Button
-              type={'submit'}
+              type="submit"
               sx={submitButton}
               variant={'contained'}
+              disabled={isAuth()}
               {...addTestsLabel('sign-up-button')}
             >
               Sing up
@@ -191,10 +215,9 @@ const fieldWrapper = theme => ({
     },
   },
   [theme.breakpoints.down('md')]: {
-    '& .MuiInputBase-root': {
-      height: '44px',
-      '& input': {
-        paddingY: '7px',
+    '& .password-wrapper,.field-wrapper': {
+      '& label': {
+        fontSize: '18px',
       },
     },
   },
@@ -207,6 +230,9 @@ const fieldWrapper = theme => ({
       gap: '16px',
       '& p': {
         width: 'unset',
+      },
+      '& label': {
+        fontSize: '15px',
       },
     },
   },

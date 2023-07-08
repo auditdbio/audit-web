@@ -1,15 +1,8 @@
-import React, { useState } from 'react';
-import PasswordField from '../fields/password-field.jsx';
-import {
-  Box,
-  Button,
-  InputAdornment,
-  Typography,
-  TextField,
-} from '@mui/material';
+import React, { useEffect, useState } from 'react';
+import { Box, Button, Typography } from '@mui/material';
+import { Form, Formik } from 'formik';
+import * as Yup from 'yup';
 import EditIcon from '@mui/icons-material/Edit.js';
-import RemovedEyeIcon from '../../icons/removed-eye-icon.jsx';
-import EyeIcon from '../../icons/eye-icon.jsx';
 import {
   changePassword,
   clearUserError,
@@ -18,97 +11,124 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 import CustomSnackbar from '../../custom/CustomSnackbar.jsx';
 import { addTestsLabel } from '../../../lib/helper.js';
+import PasswordField from '../fields/password-field.jsx';
+import { AUDITOR } from '../../../redux/actions/types.js';
+import theme from '../../../styles/themes.js';
 
 const ChangePasswordFormik = () => {
   const dispatch = useDispatch();
-  const userId = useSelector(s => s.user.user.id);
-  const message = useSelector(s => s.user.success);
-  const [showPassword, setShowPassword] = useState(false);
-  const [passwordState, setPasswordState] = useState('');
-  const handleClickShowPassword = () => setShowPassword(!showPassword);
-  const handleMouseDownPassword = () => setShowPassword(!showPassword);
+  const { user, success, error } = useSelector(s => s.user);
+  const [editMode, setEditMode] = useState(false);
 
-  const handleChangePassword = () => {
-    setPasswordState('');
-    dispatch(changePassword(passwordState, userId));
-  };
+  useEffect(() => {
+    if (success) {
+      setEditMode(false);
+    }
+  }, [success]);
+
   return (
-    <Box>
+    <Box sx={{ textAlign: 'center', mt: '30px' }}>
       <CustomSnackbar
         autoHideDuration={10000}
-        open={!!message}
-        onClose={() => dispatch(clearUserSuccess())}
-        severity="success"
-        text={message}
+        open={!!error || !!success}
+        onClose={() => {
+          dispatch(clearUserSuccess());
+          dispatch(clearUserError());
+        }}
+        severity={error ? 'error' : 'success'}
+        text={error || success}
       />
 
-      <Box sx={wrapper} className={'password-wrapper'}>
-        <Typography sx={formLabelSx} variant={'body2'}>
-          {'Password'}
-        </Typography>
-        <TextField
-          placeholder={'● ● ● ● ● ● ●'}
-          fullWidth={true}
-          sx={fieldSx}
-          disabled={false}
-          onChange={e => setPasswordState(e.target.value)}
-          type={showPassword ? 'text' : 'password'}
-          inputProps={{ ...addTestsLabel('password-input') }}
-          InputProps={{
-            endAdornment: (
-              <InputAdornment
-                sx={{ cursor: 'pointer' }}
-                position="end"
-                onClick={handleClickShowPassword}
-                onMouseDown={handleMouseDownPassword}
-              >
-                {showPassword ? <RemovedEyeIcon /> : <EyeIcon />}
-              </InputAdornment>
-            ),
+      {editMode ? (
+        <Formik
+          initialValues={{
+            current_password: '',
+            password: '',
+            confirm_password: '',
           }}
-        />
-      </Box>
-      <Button
-        sx={passwordButtonSx}
-        onClick={handleChangePassword}
-        disabled={passwordState.length < 6}
-        {...addTestsLabel('change-password-button')}
-      >
-        <EditIcon />
-        Change password
-      </Button>
+          validationSchema={validationSchema}
+          validateOnBlur={false}
+          validateOnChange={false}
+          onSubmit={values => {
+            dispatch(changePassword(values, user.id));
+          }}
+        >
+          {({ handleSubmit, dirty, errors }) => {
+            return (
+              <Form onSubmit={handleSubmit}>
+                <Box sx={wrapper}>
+                  <Box sx={fieldsWrapper}>
+                    <PasswordField
+                      name="current_password"
+                      label="Current password"
+                    />
+                    <PasswordField name="password" label="New password" />
+                    <PasswordField
+                      name="confirm_password"
+                      label="Confirm password"
+                    />
+                    {(errors.confirm_password || errors.password) && (
+                      <Typography
+                        sx={{
+                          color: `${theme.palette.error.main}!important`,
+                          fontSize: '14px',
+                        }}
+                      >
+                        {errors.confirm_password || errors.password}
+                      </Typography>
+                    )}
+                  </Box>
+                  <Button
+                    sx={passwordButtonSx}
+                    type="submit"
+                    disabled={!dirty}
+                    {...addTestsLabel('change-password-button')}
+                  >
+                    <EditIcon />
+                    Change password
+                  </Button>
+                </Box>
+              </Form>
+            );
+          }}
+        </Formik>
+      ) : (
+        <Button
+          color={user?.current_role === AUDITOR ? 'secondary' : 'primary'}
+          onClick={() => setEditMode(true)}
+        >
+          Change password
+        </Button>
+      )}
     </Box>
   );
 };
 
 export default ChangePasswordFormik;
 
+const validationSchema = Yup.object().shape({
+  current_password: Yup.string().required('Required'),
+  password: Yup.string().min(6, 'Password too Short!').required('Required'),
+  confirm_password: Yup.string()
+    .required()
+    .oneOf([Yup.ref('password'), null], 'Passwords must match'),
+});
+
 const wrapper = theme => ({
+  width: '450px',
+  margin: '0 auto',
+  [theme.breakpoints.down('xs')]: {
+    width: '100%',
+  },
+});
+
+const fieldsWrapper = {
   display: 'flex',
-  gap: '28px',
   flexDirection: 'column',
-  '& p.Mui-error': {
-    display: 'none',
-  },
-});
+  gap: '15px',
+};
 
-const fieldSx = theme => ({
-  '& input': {
-    paddingLeft: '35px',
-  },
-});
-
-const formLabelSx = theme => ({
-  fontWeight: 500,
-  fontSize: '14px',
-  lineHeight: '24px',
-  color: '#434242',
-  [theme.breakpoints.down('lg')]: {
-    fontSize: '14px',
-  },
-});
-
-const passwordButtonSx = theme => ({
+const passwordButtonSx = {
   display: 'flex',
   alignItems: 'center',
   marginRight: 0,
@@ -119,4 +139,4 @@ const passwordButtonSx = theme => ({
   '& svg': {
     width: '14px',
   },
-});
+};

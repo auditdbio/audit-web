@@ -4,6 +4,7 @@ import {
   SEARCH_AUDITOR,
   UPDATE_AUDITOR,
   LOG_OUT,
+  GET_CURRENT_AUDITOR,
 } from '../actions/types.js';
 
 const initialState = {
@@ -12,6 +13,7 @@ const initialState = {
   searchAuditors: null,
   searchTotalAuditors: 0,
   error: null,
+  currentAuditor: null,
 };
 export const auditorReducer = (state = initialState, action) => {
   switch (action.type) {
@@ -27,8 +29,13 @@ export const auditorReducer = (state = initialState, action) => {
         auditors: action.payload.result,
         searchTotalAuditors: action.payload.totalDocuments,
       };
+    case GET_CURRENT_AUDITOR:
+      return {
+        ...state,
+        currentAuditor: action.payload,
+      };
     case LOG_OUT:
-      return { ...state, auditor: null };
+      return { ...state, auditor: null, currentAuditor: null };
     default:
       return state;
   }

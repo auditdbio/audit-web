@@ -1,6 +1,8 @@
 import axios from 'axios';
 import Cookies from 'js-cookie';
 import {
+  GET_CURRENT_AUDITOR,
+  GET_CURRENT_CUSTOMER,
   GET_CUSTOMER,
   SIGN_IN_ERROR,
   UPDATE_CUSTOMER,
@@ -26,7 +28,24 @@ export const getCustomer = values => {
       });
   };
 };
-// /home-customer
+
+export const getCurrentCustomer = id => {
+  const token = Cookies.get('token');
+  return dispatch => {
+    axios
+      .get(`${API_URL}/customer/${id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .then(({ data }) => {
+        dispatch({ type: GET_CURRENT_CUSTOMER, payload: data });
+      })
+      .catch(({ response }) => {
+        console.log(response, 'res');
+        // dispatch({type: SIGN_IN_ERROR})
+      });
+  };
+};
+
 export const createCustomer = values => {
   const token = Cookies.get('token');
   return dispatch => {

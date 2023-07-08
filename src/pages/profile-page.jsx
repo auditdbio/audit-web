@@ -11,9 +11,10 @@ import { getCustomer } from '../redux/actions/customerAction.js';
 import { getAuditor } from '../redux/actions/auditorAction.js';
 import { AUDITOR, CUSTOMER } from '../redux/actions/types.js';
 import AuditRequest from '../components/Audit-request.jsx';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { clearUserSuccess } from '../redux/actions/userAction.js';
 import CustomSnackbar from '../components/custom/CustomSnackbar.jsx';
+import { isAuth } from '../lib/helper.js';
 
 const ProfilePage = () => {
   const { tab } = useParams();
@@ -21,6 +22,13 @@ const ProfilePage = () => {
   const currentRole = useSelector(s => s.user.user.current_role);
   const message = useSelector(s => s.user.success);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!isAuth()) {
+      navigate('/');
+    }
+  }, [isAuth()]);
 
   useEffect(() => {
     setChooseTab(tab);
@@ -45,11 +53,16 @@ const ProfilePage = () => {
         />
         <InfoCard role={currentRole}>
           {chooseTab === 'audits' && currentRole === CUSTOMER && <Audits />}
-          {chooseTab === 'user-info' && <UserInfo role={currentRole} />}
-          {chooseTab === 'projects' && <Projects role={currentRole} />}
           {chooseTab === 'audits' && currentRole === AUDITOR && (
+            <Projects role={currentRole} />
+          )}
+          {chooseTab === 'projects' && currentRole === CUSTOMER && (
+            <Projects role={currentRole} />
+          )}
+          {chooseTab === 'audit-requests' && currentRole === AUDITOR && (
             <AuditRequest />
           )}
+          {chooseTab === 'user-info' && <UserInfo role={currentRole} />}
         </InfoCard>
       </Box>
     </Layout>
@@ -60,11 +73,11 @@ export default ProfilePage;
 
 const auditorTabs = [
   {
-    value: 'projects',
+    value: 'audits',
     label: 'Audits',
   },
   {
-    value: 'audits',
+    value: 'audit-requests',
     label: 'Audit requests',
   },
   {

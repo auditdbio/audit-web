@@ -5,11 +5,18 @@ import { useNavigate } from 'react-router-dom/dist';
 import { useDispatch } from 'react-redux';
 import { confirmAudit } from '../redux/actions/auditAction.js';
 import { useMemo } from 'react';
-import { CUSTOMER, DONE, SUBMITED } from '../redux/actions/types.js';
+import {
+  CUSTOMER,
+  DONE,
+  IN_PROGRESS,
+  RESOLVED,
+  SUBMITED,
+  WAITING_FOR_AUDITS,
+} from '../redux/actions/types.js';
 import dayjs from 'dayjs';
 import { addTestsLabel } from '../lib/helper.js';
 
-const AuditCard = ({ audit }) => {
+const AuditCard = ({ audit, request }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -21,7 +28,7 @@ const AuditCard = ({ audit }) => {
       <Box sx={{ display: 'grid' }}>
         <Tooltip
           title={
-            audit?.auditor_contacts.public_contacts
+            audit?.auditor_contacts.email !== null
               ? audit?.auditor_contacts?.email
               : 'Hidden'
           }
@@ -29,7 +36,7 @@ const AuditCard = ({ audit }) => {
           placement={'top'}
         >
           <Typography sx={nameTextStyle} noWrap={true}>
-            {audit?.auditor_contacts.public_contacts
+            {audit?.auditor_contacts.email !== null
               ? audit?.auditor_contacts?.email
               : 'Hidden'}
           </Typography>
@@ -46,40 +53,43 @@ const AuditCard = ({ audit }) => {
         </Typography>
       </Box>
 
-      <Box sx={statusWrapper}>
-        {audit.status !== SUBMITED && (
-          <>
-            {audit.status === DONE ? (
-              <Box sx={{ backgroundColor: '#52176D' }} />
-            ) : (
-              audit.status === 'pending' && (
-                <Box sx={{ backgroundColor: '#FF9900' }} />
-              )
-            )}
-            {audit.status !== 'pending' && audit.status !== DONE && (
-              <Box sx={{ backgroundColor: '#09C010' }} />
-            )}
-          </>
-        )}
-        <Typography>
-          {!audit.status
-            ? 'Waiting for audit'
-            : audit.status === DONE
-            ? 'Finished'
-            : audit.status === SUBMITED
-            ? 'Submitted'
-            : 'In progress'}
-        </Typography>
-      </Box>
+      {!request ? (
+        <Box sx={statusWrapper}>
+          {audit.status !== SUBMITED && (
+            <>
+              {audit.status.toLowerCase() === RESOLVED.toLowerCase() ? (
+                <Box sx={{ backgroundColor: '#52176D' }} />
+              ) : (
+                audit.status.toLowerCase() ===
+                  WAITING_FOR_AUDITS.toLowerCase() && (
+                  <Box sx={{ backgroundColor: '#FF9900' }} />
+                )
+              )}
+              {audit.status.toLowerCase() !== RESOLVED.toLowerCase() &&
+                audit.status.toLowerCase() !==
+                  WAITING_FOR_AUDITS.toLowerCase() && (
+                  <Box sx={{ backgroundColor: '#09C010' }} />
+                )}
+            </>
+          )}
+          <Typography>{audit.status}</Typography>
+        </Box>
+      ) : (
+        <Box sx={statusWrapper}>
+          <Box sx={{ backgroundColor: '#FF9900' }} />
+          <Typography>Request</Typography>
+        </Box>
+      )}
       {!audit.status && (
         <CustomButton
+          variant={'contained'}
           sx={[
             acceptButtonStyle,
-            audit?.last_changer.toLowerCase() === CUSTOMER
+            audit?.last_changer?.toLowerCase() === CUSTOMER
               ? { backgroundColor: '#d7d7d7' }
               : {},
           ]}
-          disabled={audit?.last_changer.toLowerCase() === CUSTOMER}
+          disabled={audit?.last_changer?.toLowerCase() === CUSTOMER}
           onClick={() => dispatch(confirmAudit(audit))}
           {...addTestsLabel('audits_accept-button')}
         >
@@ -88,7 +98,12 @@ const AuditCard = ({ audit }) => {
       )}
       <CustomButton
         sx={viewButtonStyle}
-        onClick={() => navigate(`/audit-info/${audit.id}`)}
+        variant={'contained'}
+        onClick={() =>
+          request
+            ? navigate(`/audit-request/${audit.id}/customer`)
+            : navigate(`/audit-info/${audit.id}/customer`)
+        }
         {...addTestsLabel('audits_view-button')}
       >
         View
@@ -96,6 +111,15 @@ const AuditCard = ({ audit }) => {
     </Card>
   );
 };
+
+const btnWrapper = () => ({
+  display: 'flex',
+  gap: '12px',
+  [theme.breakpoints.down('xs')]: {
+    flexDirection: 'column',
+    gap: '12px',
+  },
+});
 
 const cardWrapper = {
   display: 'flex',
@@ -122,36 +146,39 @@ const cardWrapper = {
 };
 
 const acceptButtonStyle = {
-  backgroundColor: '#52176D',
-  color: 'white',
   fontSize: '15px!important',
-  padding: '13px 58px',
-  width: '170px',
-  height: '44px',
-  ':hover': { backgroundColor: '#52176D', color: 'white' },
-  [theme.breakpoints.down('sm')]: {
-    fontSize: '12px!important',
-    width: '105px',
-    height: '28px',
-    borderRadius: '8px',
-    padding: '6px 30px',
+  backgroundColor: '#52176D',
+  fontWeight: 600,
+  lineHeight: '25px',
+  width: '100px',
+  textTransform: 'none',
+  borderRadius: '10px',
+  gap: '40px',
+  padding: '9px 0',
+  maxWidth: '170px',
+  [theme.breakpoints.down('md')]: {
+    height: '30px',
+  },
+  [theme.breakpoints.down('xs')]: {
+    fontSize: '11px!important',
   },
 };
 
 const viewButtonStyle = {
-  backgroundColor: 'orange',
-  color: 'white',
   fontSize: '15px!important',
-  padding: '13px 58px',
-  width: '170px',
-  height: '44px',
-  ':hover': { backgroundColor: 'orange', color: 'white' },
-  [theme.breakpoints.down('sm')]: {
-    fontSize: '12px!important',
-    width: '105px',
-    height: '28px',
-    borderRadius: '8px',
-    padding: '6px 30px',
+  fontWeight: 600,
+  lineHeight: '25px',
+  width: '100px',
+  textTransform: 'none',
+  borderRadius: '10px',
+  gap: '40px',
+  padding: '9px 0',
+  maxWidth: '170px',
+  [theme.breakpoints.down('md')]: {
+    height: '30px',
+  },
+  [theme.breakpoints.down('xs')]: {
+    fontSize: '11px!important',
   },
 };
 

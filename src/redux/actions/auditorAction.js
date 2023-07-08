@@ -3,6 +3,7 @@ import axios from 'axios';
 import {
   GET_AUDITOR,
   GET_AUDITORS,
+  GET_CURRENT_AUDITOR,
   SEARCH_AUDITOR,
   SEARCH_PROJECTS,
   UPDATE_AUDITOR,
@@ -22,6 +23,23 @@ export const getAuditor = values => {
       })
       .then(({ data }) => {
         dispatch({ type: GET_AUDITOR, payload: data });
+      })
+      .catch(({ response }) => {
+        console.log(response, 'res');
+        // dispatch({type: SIGN_IN_ERROR})
+      });
+  };
+};
+
+export const getCurrentAuditor = id => {
+  const token = Cookies.get('token');
+  return dispatch => {
+    axios
+      .get(`${API_URL}/auditor/${id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .then(({ data }) => {
+        dispatch({ type: GET_CURRENT_AUDITOR, payload: data });
       })
       .catch(({ response }) => {
         console.log(response, 'res');

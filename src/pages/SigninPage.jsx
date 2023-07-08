@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Box } from '@mui/material';
 import { ContentWrapper } from '../styles/themes.js';
 import Layout from '../styles/Layout.jsx';

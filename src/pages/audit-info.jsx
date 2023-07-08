@@ -1,9 +1,8 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useRef, useState, useEffect } from 'react';
 import { CustomCard } from '../components/custom/Card.jsx';
 import Layout from '../styles/Layout.jsx';
-import { Avatar, Box, Button, Typography, Link, Tooltip } from '@mui/material';
+import { Avatar, Box, Button, Typography, Tooltip } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import theme from '../styles/themes.js';
 import { useNavigate } from 'react-router-dom/dist';
 import TagsList from '../components/tagsList.jsx';
 import { useDispatch, useSelector } from 'react-redux';
@@ -14,31 +13,36 @@ import {
   deleteAudit,
   deleteAuditRequest,
 } from '../redux/actions/auditAction.js';
-import { CUSTOMER, DONE, SUBMITED } from '../redux/actions/types.js';
+import {
+  CUSTOMER,
+  DONE,
+  IN_PROGRESS,
+  PENDING,
+  RESOLVED,
+  SUBMITED,
+  WAITING_FOR_AUDITS,
+} from '../redux/actions/types.js';
 import dayjs from 'dayjs';
-import Markdown from '../components/custom/Markdown.jsx';
-import axios from 'axios';
-import Cookies from 'js-cookie';
+import Markdown from '../components/markdown/Markdown.jsx';
 import { ASSET_URL } from '../services/urls.js';
 import { addTestsLabel } from '../lib/helper.js';
+import { handleOpenReport } from '../lib/openReport.js';
+import { getIssues } from '../redux/actions/issueAction.js';
 
-const AuditInfo = () => {
+const AuditInfo = ({ audit, auditRequest, issues }) => {
   const navigate = useNavigate();
-  const { id } = useParams();
-  const auditRequest = useSelector(s =>
-    s.audits?.auditRequests?.find(audit => audit.id === id),
-  );
-  const auditConfirm = useSelector(s =>
-    s.audits?.audits?.find(audit => audit.id === id),
-  );
-  const audit = useMemo(() => {
-    if (auditRequest && !auditConfirm) {
-      return auditRequest;
-    } else {
-      return auditConfirm;
-    }
-  }, [id, auditConfirm, auditRequest]);
   const dispatch = useDispatch();
+  const [showFull, setShowFull] = useState(false);
+  const [showReadMoreButton, setShowReadMoreButton] = useState(false);
+  const descriptionRef = useRef();
+
+  useEffect(() => {
+    setTimeout(() => {
+      if (descriptionRef?.current?.offsetHeight > 400) {
+        setShowReadMoreButton(true);
+      }
+    }, 500);
+  }, [descriptionRef.current]);
 
   const handleConfirm = () => {
     dispatch(confirmAudit(audit));
@@ -62,30 +66,8 @@ const AuditInfo = () => {
     );
   };
 
-  const handleOpenReport = () => {
-    axios
-      .get(`${ASSET_URL}/${audit?.report}`, {
-        responseType: 'blob',
-        withCredentials: true,
-        headers: {
-          Authorization: `Bearer ${Cookies.get('token')}`,
-        },
-      })
-      .then(response => {
-        const url = window.URL.createObjectURL(new Blob([response.data]));
-        const link = document.createElement('a');
-        link.href = url;
-        link.setAttribute(
-          'download',
-          `${
-            audit?.report_name
-              ? audit?.report_name
-              : audit?.project_name + '.pdf'
-          }`,
-        );
-        document.body.appendChild(link);
-        link.click();
-      });
+  const goToIssues = () => {
+    navigate(`/issues/audit-issue/${audit?.id}`);
   };
 
   return (
@@ -93,7 +75,9 @@ const AuditInfo = () => {
       <CustomCard sx={wrapper}>
         <Button
           sx={backButtonSx}
-          onClick={() => navigate(-1)}
+          onClick={() => {
+            navigate('/profile/audits');
+          }}
           aria-label="Go back"
           {...addTestsLabel('go-back-button')}
         >
@@ -102,11 +86,13 @@ const AuditInfo = () => {
         <Box sx={{ display: 'flex', width: '100%' }}>
           <Typography sx={{ width: '100%', textAlign: 'center' }}>
             You have offer to audit for{' '}
-            <span style={{ fontWeight: 500 }}>{audit?.project_name}</span>{' '}
+            <span style={{ fontWeight: 500, wordBreak: 'break-word' }}>
+              {audit?.project_name}
+            </span>{' '}
             project!
           </Typography>
         </Box>
-        <Box>
+        <Box sx={{ maxWidth: '100%' }}>
           <Box sx={contentWrapper}>
             <Box sx={userWrapper}>
               <Avatar
@@ -115,21 +101,21 @@ const AuditInfo = () => {
               />
               <Box sx={{ display: 'grid' }}>
                 <Tooltip
-                  title={audit?.auditor_first_name || 'Hidden'}
+                  title={audit?.auditor_first_name}
                   arrow
                   placement={'top'}
                 >
                   <Typography noWrap={true} sx={userNameWrapper}>
-                    {audit?.auditor_first_name || 'Hidden'}
+                    {audit?.auditor_first_name}
                   </Typography>
                 </Tooltip>
                 <Tooltip
-                  title={audit?.auditor_last_name || 'Hidden'}
+                  title={audit?.auditor_last_name}
                   arrow
                   placement={'top'}
                 >
                   <Typography noWrap={true} sx={userNameWrapper}>
-                    {audit?.auditor_last_name || 'Hidden'}
+                    {audit?.auditor_last_name}
                   </Typography>
                 </Tooltip>
               </Box>
@@ -138,29 +124,37 @@ const AuditInfo = () => {
               <Box sx={infoWrapper}>
                 <span>E-mail</span>
                 <Box sx={{ display: 'grid' }}>
-                  <Tooltip
-                    title={audit?.auditor_contacts?.email || 'Hidden'}
-                    arrow
-                    placement={'top'}
-                  >
-                    <Typography noWrap={true}>
-                      {audit?.auditor_contacts?.email || 'Hidden'}
-                    </Typography>
-                  </Tooltip>
+                  {audit?.auditor_contacts?.email !== null ? (
+                    <Tooltip
+                      title={audit?.auditor_contacts?.email}
+                      arrow
+                      placement={'top'}
+                    >
+                      <Typography noWrap={true}>
+                        {audit?.auditor_contacts?.email}
+                      </Typography>
+                    </Tooltip>
+                  ) : (
+                    <Typography noWrap={true}>Hidden</Typography>
+                  )}
                 </Box>
               </Box>
               <Box sx={infoWrapper}>
                 <span>Telegram</span>
                 <Box sx={{ display: 'grid' }}>
-                  <Tooltip
-                    title={audit?.auditor_contacts?.telegram || 'Hidden'}
-                    arrow
-                    placement={'top'}
-                  >
-                    <Typography noWrap={true}>
-                      {audit?.auditor_contacts?.telegram || 'Hidden'}
-                    </Typography>
-                  </Tooltip>
+                  {audit?.auditor_contacts?.telegram !== null ? (
+                    <Tooltip
+                      title={audit?.auditor_contacts?.telegram}
+                      arrow
+                      placement={'top'}
+                    >
+                      <Typography noWrap={true}>
+                        {audit?.auditor_contacts?.telegram}
+                      </Typography>
+                    </Tooltip>
+                  ) : (
+                    <Typography noWrap={true}>Hidden</Typography>
+                  )}
                 </Box>
               </Box>
               <Box sx={infoWrapper}>
@@ -182,25 +176,39 @@ const AuditInfo = () => {
               <TagsList />
             </Box>
           </Box>
-          <Markdown value={audit?.description} />
-          {(audit?.status === DONE || audit?.status === SUBMITED) && (
-            <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-              <Button
-                onClick={handleOpenReport}
-                sx={{ margin: '15px auto 0', display: 'block' }}
-                {...addTestsLabel('report-button')}
-              >
-                Report
-              </Button>
+
+          <Box sx={descriptionSx(showFull)}>
+            <Box ref={descriptionRef}>
+              <Markdown value={audit?.description} />
             </Box>
+          </Box>
+          {showReadMoreButton && (
+            <Button onClick={() => setShowFull(!showFull)} sx={readAllButton}>
+              {showFull ? 'Hide ▲' : `Read all ▼`}
+            </Button>
           )}
         </Box>
         <Box>
+          {(audit?.status?.toLowerCase() === RESOLVED.toLowerCase() ||
+            audit?.report ||
+            audit?.report_name) && (
+            <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+              <Button
+                variant={'contained'}
+                color={'secondary'}
+                onClick={() => handleOpenReport(audit)}
+                sx={[buttonSx, { marginBottom: '20px' }]}
+                {...addTestsLabel('report-button')}
+              >
+                Download Report
+              </Button>
+            </Box>
+          )}
           {auditRequest && (
             <Button
               variant={'contained'}
               sx={buttonSx}
-              disabled={audit?.last_changer.toLowerCase() === CUSTOMER}
+              disabled={audit?.last_changer?.toLowerCase() === CUSTOMER}
               onClick={handleConfirm}
               {...addTestsLabel('accept-button')}
             >
@@ -217,16 +225,37 @@ const AuditInfo = () => {
               Confirm
             </Button>
           )}
-          {audit?.status !== SUBMITED && (
+          {!audit?.status && (
             <Button
-              variant={'contained'}
+              variant="contained"
+              color="secondary"
               onClick={handleDecline}
-              sx={[buttonSx, { backgroundColor: theme.palette.secondary.main }]}
+              sx={buttonSx}
               {...addTestsLabel('decline-button')}
             >
               Decline
             </Button>
           )}
+
+          {/*{(audit?.status === DONE ||*/}
+          {/*  audit?.status === SUBMITED ||*/}
+          {/*  audit?.status === PENDING) && (*/}
+          {audit?.status &&
+            !!issues?.length &&
+            audit?.status?.toLowerCase() !==
+              WAITING_FOR_AUDITS.toLowerCase() && (
+              <Button
+                variant="contained"
+                color="primary"
+                type="button"
+                onClick={goToIssues}
+                sx={buttonSx}
+                {...addTestsLabel('issues-button')}
+              >
+                Issues ({issues?.length})
+              </Button>
+            )}
+          {/*)}*/}
         </Box>
       </CustomCard>
     </Layout>
@@ -272,8 +301,10 @@ const contentWrapper = theme => ({
   display: 'flex',
   gap: '70px',
   alignItems: 'center',
+  mb: '30px',
   [theme.breakpoints.down('md')]: {
     gap: '30px',
+    mb: '20px',
   },
   [theme.breakpoints.down('sm')]: {
     flexDirection: 'column',
@@ -333,9 +364,10 @@ const buttonSx = theme => ({
   fontSize: '18px',
   textTransform: 'unset',
   fontWeight: 600,
-  margin: '0 12px',
+  mr: '15px',
   width: '270px',
   borderRadius: '10px',
+  ':last-child': { mr: 0 },
   [theme.breakpoints.down('md')]: {
     width: '210px',
     padding: '11px 0',
@@ -402,5 +434,29 @@ const infoWrapper = theme => ({
   },
   [theme.breakpoints.down('xs')]: {
     fontSize: '12px',
+  },
+});
+
+const descriptionSx = full => ({
+  maxHeight: full ? 'unset' : '400px',
+  overflow: 'hidden',
+  border: '2px solid #E5E5E5',
+});
+
+const readAllButton = theme => ({
+  width: '100%',
+  padding: '8px',
+  fontWeight: 600,
+  fontSize: '21px',
+  color: 'black',
+  textTransform: 'none',
+  lineHeight: '25px',
+  background: '#E5E5E5',
+  borderRadius: 0,
+  boxShadow: '0px -24px 14px -8px rgba(252, 250, 246, 1)',
+  ':hover': { background: '#D5D5D5' },
+  [theme.breakpoints.down('xs')]: {
+    fontSize: '16px',
+    border: 'none',
   },
 });

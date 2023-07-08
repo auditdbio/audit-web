@@ -12,6 +12,7 @@ const PublicProjectCard = ({ project }) => {
   const navigate = useNavigate();
   const [message, setMessage] = useState(null);
   const [openModal, setOpenModal] = useState(false);
+  const [errorMessage, setErrorMessage] = useState(null);
   const handleView = () => {
     setOpenModal(true);
   };
@@ -39,6 +40,7 @@ const PublicProjectCard = ({ project }) => {
             handleError={handleError}
             isModal={true}
             redirect={true}
+            setError={setErrorMessage}
           />
         </Box>
       </Modal>
@@ -66,10 +68,13 @@ const PublicProjectCard = ({ project }) => {
 
       <CustomSnackbar
         autoHideDuration={3000}
-        open={!!message}
-        onClose={() => setMessage(null)}
-        severity="success"
-        text={message}
+        open={!!message || !!errorMessage}
+        onClose={() => {
+          setMessage(null);
+          setErrorMessage(null);
+        }}
+        severity={errorMessage ? 'error' : 'success'}
+        text={message || errorMessage}
       />
 
       <Box sx={statusWrapper}>
@@ -98,19 +103,43 @@ const modalWrapper = theme => ({
   left: '50%',
   transform: 'translate(-50%, -50%)',
   width: 700,
-  maxHeight: '90%',
+  // maxHeight: '90%',
   borderRadius: '14px',
+  // height: '100%',
+  '& .audit-content': {
+    maxHeight: '30vw',
+    overflowY: 'auto',
+  },
+  '& .audit-request-button-wrapper': {
+    marginTop: '20px',
+  },
   '& .audit-request-wrapper': {
     gap: '5px',
+    paddingBottom: '40px',
     paddingX: '35px',
+    paddingRight: '15px',
   },
   [theme.breakpoints.down('md')]: {
     '& .audit-request-wrapper': {
       paddingX: '20px',
+      minHeight: 'unset',
+    },
+  },
+  [theme.breakpoints.down('sm')]: {
+    '& .audit-content': {
+      maxHeight: '35vw',
     },
   },
   [theme.breakpoints.down('xs')]: {
-    width: 360,
+    width: 340,
+    '& .audit-content': {
+      maxHeight: '50vw',
+    },
+  },
+  [theme.breakpoints.down(500)]: {
+    '& .audit-content': {
+      maxHeight: '100vw',
+    },
   },
 });
 

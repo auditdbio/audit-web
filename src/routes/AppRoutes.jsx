@@ -29,6 +29,18 @@ import Faq from '../pages/Faq.jsx';
 import ContactUs from '../pages/Contact-Us.jsx';
 import MyProjects from '../pages/My-projects.jsx';
 import RestorePasswordPage from '../pages/RestorePasswordPage.jsx';
+import AuditIssues from '../pages/AuditIssues.jsx';
+import AuditIssueDetails from '../pages/AuditIssueDetails.jsx';
+import CreateIssuePage from '../pages/CreateIssuePage.jsx';
+import PublicProfile from '../pages/Public-profile.jsx';
+import NotFound from '../pages/Not-Found.jsx';
+import AuditInfoReqPage from '../pages/audit-info-req-page.jsx';
+import AuditInfoPage from '../pages/audit-info-page.jsx';
+import {
+  getUnreadMessages,
+  websocketConnect,
+  websocketDisconnect,
+} from '../redux/actions/websocketAction.js';
 
 const AppRoutes = () => {
   const token = useSelector(s => s.user.token);
@@ -36,6 +48,13 @@ const AppRoutes = () => {
   const customer = useSelector(s => s.customer.customer);
   const auditor = useSelector(s => s.auditor.auditor);
   const dispatch = useDispatch();
+  const { reconnect, connected } = useSelector(s => s.websocket);
+
+  useEffect(() => {
+    if (isAuth()) {
+      dispatch(getUnreadMessages());
+    }
+  }, [isAuth()]);
 
   useEffect(() => {
     if (isAuth()) {
@@ -45,7 +64,7 @@ const AppRoutes = () => {
         dispatch(getAudits(currentRole));
       }
     }
-  }, [token, currentRole, isAuth]);
+  }, [token, currentRole, isAuth()]);
 
   useEffect(() => {
     if (isAuth()) {
@@ -55,7 +74,30 @@ const AppRoutes = () => {
         dispatch(getCustomer());
       }
     }
-  }, [currentRole, isAuth, customer, auditor]);
+  }, [currentRole, isAuth(), customer, auditor]);
+
+  useEffect(() => {
+    if (isAuth() && !connected) {
+      dispatch(websocketConnect());
+    }
+  }, [isAuth(), connected]);
+
+  useEffect(() => {
+    if (isAuth() && reconnect && !connected) {
+      const handleReconnect = setInterval(() => {
+        dispatch(websocketConnect());
+      }, 10000);
+      return () => {
+        clearInterval(handleReconnect);
+      };
+    }
+  }, [reconnect, connected]);
+
+  useEffect(() => {
+    return () => {
+      dispatch(websocketDisconnect());
+    };
+  }, []);
 
   return (
     <>
@@ -74,6 +116,7 @@ const AppRoutes = () => {
         <Route path={'/audit-db'} element={<AuditDb />} />
         <Route path={'/FAQ'} element={<Faq />} />
         <Route path={'/contact-us'} element={<ContactUs />} />
+        <Route path={'/user/:id/:role'} element={<PublicProfile />} />
         <Route
           path="/profile/:tab"
           element={
@@ -99,10 +142,10 @@ const AppRoutes = () => {
           }
         />
         <Route
-          path="/audit-info/:id"
+          path="/audit-info/:id/customer"
           element={
             <PrivateRoute auth={{ isAuthenticated: isAuth() }}>
-              <AuditInfo />
+              <AuditInfoPage />
             </PrivateRoute>
           }
         />
@@ -115,10 +158,42 @@ const AppRoutes = () => {
           }
         />
         <Route
-          path="/audit-request-offer/:id"
+          path="/audit-request/:id/customer"
+          element={
+            <PrivateRoute auth={{ isAuthenticated: isAuth() }}>
+              <AuditInfoReqPage />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/audit-info/:auditId/auditor"
           element={
             <PrivateRoute auth={{ isAuthenticated: isAuth() }}>
               <AuditOffer />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/issues/audit-issue/:auditId"
+          element={
+            <PrivateRoute auth={{ isAuthenticated: isAuth() }}>
+              <AuditIssues />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/issues/audit-issue/:auditId/:issueId"
+          element={
+            <PrivateRoute auth={{ isAuthenticated: isAuth() }}>
+              <AuditIssueDetails />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/issues/new-issue/:auditId"
+          element={
+            <PrivateRoute auth={{ isAuthenticated: isAuth() }}>
+              <CreateIssuePage />
             </PrivateRoute>
           }
         />
@@ -138,6 +213,7 @@ const AppRoutes = () => {
             </PrivateRoute>
           }
         />
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </>
   );

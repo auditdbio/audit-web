@@ -135,7 +135,7 @@ const AuditorListCard = ({ auditor, projectIdToInvite }) => {
             </Box>
           </Box>
         </Box>
-        <Box>
+        <Box sx={tagsWrapper}>
           <TagsList data={auditor.tags} />
         </Box>
       </Box>
@@ -293,12 +293,9 @@ const priceStyle = {
 };
 
 const viewButtonStyle = theme => ({
-  width: '200px',
+  width: '130px',
   textTransform: 'unset',
   boxShadow: '0',
-  [theme.breakpoints.down('lg')]: {
-    width: '160px',
-  },
   [theme.breakpoints.down('md')]: {
     width: '130px',
   },
@@ -309,18 +306,21 @@ const viewButtonStyle = theme => ({
 });
 
 const inviteButtonStyle = theme => ({
-  width: '200px',
+  width: '130px',
   textTransform: 'unset',
   boxShadow: '0',
-  [theme.breakpoints.down('lg')]: {
-    width: '160px',
-  },
   [theme.breakpoints.down('md')]: {
     width: '130px',
   },
   [theme.breakpoints.down('sm')]: {
     width: '85px',
     fontSize: '8px',
+  },
+});
+
+const tagsWrapper = theme => ({
+  [theme.breakpoints.down('xs')]: {
+    maxWidth: '130px',
   },
 });
 
