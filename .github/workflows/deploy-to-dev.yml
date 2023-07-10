@@ -20,6 +20,6 @@ jobs:
           ssh -i /root/.ssh/id_rsa $DEV_HOST << EOF
           cd /root/audit-web/audit-web
           git checkout develop
-          echo $PASS | git pull
+          git pull
           docker-compose up -d --build
           EOF
