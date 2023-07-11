@@ -129,7 +129,13 @@ const UserInfo = ({ role }) => {
             </Box>
             <Box sx={[infoWrapper, aboutWrapper]}>
               <span>About</span>
-              <Typography sx={{ maxWidth: 'unset!important', width: '100%' }}>
+              <Typography
+                sx={{
+                  maxWidth: 'unset!important',
+                  width: '100%',
+                  wordBreak: 'break-word',
+                }}
+              >
                 {data.about}
               </Typography>
             </Box>
