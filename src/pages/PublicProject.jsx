@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Avatar, Box, Button, Tooltip, Typography } from '@mui/material';
+import { Avatar, Box, Button, Modal, Tooltip, Typography } from '@mui/material';
 import Layout from '../styles/Layout.jsx';
 import { getProjectById } from '../redux/actions/projectAction.js';
 import Markdown from '../components/markdown/Markdown.jsx';
@@ -10,7 +10,7 @@ import { ASSET_URL } from '../services/urls.js';
 import CustomLink from '../components/custom/CustomLink.jsx';
 import TagsList from '../components/tagsList.jsx';
 import { addTestsLabel, isAuth } from '../lib/helper.js';
-import { AUDITOR, CLEAR_NOT_FOUND } from '../redux/actions/types.js';
+import { AUDITOR, CLEAR_NOT_FOUND, CUSTOMER } from '../redux/actions/types.js';
 import NotFound from './Not-Found.jsx';
 import theme from '../styles/themes.js';
 import Loader from '../components/Loader.jsx';
@@ -19,6 +19,8 @@ import {
   changeRolePublicAuditorNoRedirect,
 } from '../redux/actions/userAction.js';
 import CustomSnackbar from '../components/custom/CustomSnackbar.jsx';
+import OfferModal from '../components/modal/OfferModal.jsx';
+import { clearMessage } from '../redux/actions/auditAction.js';
 
 const PublicProject = () => {
   const dispatch = useDispatch();
@@ -27,11 +29,13 @@ const PublicProject = () => {
 
   const { user } = useSelector(s => s.user);
   const { auditor } = useSelector(s => s.auditor);
+  const { successMessage, error: auditError } = useSelector(s => s.audits);
   const { currentProject: project } = useSelector(s => s.project);
   const { currentCustomer: customer } = useSelector(s => s.customer);
   const { error: notFound } = useSelector(s => s.notFound);
 
   const [message, setMessage] = useState(null);
+  const [error, setError] = useState(null);
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [showFull, setShowFull] = useState(false);
   const [showReadMoreButton, setShowReadMoreButton] = useState(false);
@@ -60,22 +64,32 @@ const PublicProject = () => {
 
   const handleMakeOffer = () => {
     if (isAuth()) {
-      if (!auditor?.first_name) {
-        dispatch(changeRolePublicAuditor(AUDITOR, user.id, auditor));
-      } else {
-        if (user.current_role === AUDITOR) {
-          setModalIsOpen(true);
+      if (user.current_role === AUDITOR) {
+        if (!auditor?.first_name) {
+          dispatch(changeRolePublicAuditor(AUDITOR, user.id, auditor));
         } else {
+          setModalIsOpen(true);
+        }
+      } else if (user.current_role === CUSTOMER) {
+        if (!auditor?.first_name) {
+          setMessage('Switched to auditor role');
+          setModalIsOpen(true);
+          dispatch(changeRolePublicAuditor(AUDITOR, user.id, auditor));
+        } else {
+          setMessage('Switched to auditor role');
+          setModalIsOpen(true);
           dispatch(
             changeRolePublicAuditorNoRedirect(AUDITOR, user.id, auditor),
           );
-          setMessage('Switched to auditor role');
-          setModalIsOpen(true);
         }
       }
     } else {
       navigate('/sign-in');
     }
+  };
+
+  const handleCloseModal = () => {
+    setModalIsOpen(false);
   };
 
   if (notFound) {
@@ -101,14 +115,33 @@ const PublicProject = () => {
     <Layout>
       <Box sx={wrapper(user?.current_role)}>
         <CustomSnackbar
-          autoHideDuration={3000}
-          open={!!message}
-          onClose={() => setMessage(null)}
-          severity="success"
-          text={message}
+          autoHideDuration={4000}
+          open={!!message || !!error || !!successMessage || !!auditError}
+          onClose={() => {
+            setMessage(null);
+            setError(null);
+            dispatch(clearMessage());
+          }}
+          severity={message || successMessage ? 'success' : 'error'}
+          text={message || successMessage || error || auditError}
         />
 
-        {modalIsOpen && <div>modal</div>}
+        <Modal
+          open={modalIsOpen}
+          onClose={handleCloseModal}
+          aria-labelledby="child-modal-title"
+          aria-describedby="child-modal-description"
+          disableScrollLock
+        >
+          <OfferModal
+            auditor={auditor}
+            project={project}
+            user={user}
+            handleClose={handleCloseModal}
+            setError={setError}
+            redirect={true}
+          />
+        </Modal>
 
         <Box>
           <Typography sx={projectNameSx}>{project?.name}</Typography>
