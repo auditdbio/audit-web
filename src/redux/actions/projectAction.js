@@ -1,8 +1,10 @@
 import {
   CLEAR_SUCCESS,
   CLOSE_THE_PROJECT,
+  GET_CURRENT_PROJECT,
   GET_MY_PROJECTS,
   GET_PROJECTS,
+  NOT_FOUND,
   PROJECT_CREATE,
   PROJECT_UPDATE,
   PROJECT_UPDATE_STATUS,
@@ -174,6 +176,19 @@ export const getProjects = () => {
       })
       .catch(({ response }) => {
         console.log(response, 'res');
+      });
+  };
+};
+
+export const getProjectById = id => {
+  return dispatch => {
+    axios
+      .get(`${API_URL}/project/${id}`)
+      .then(({ data }) =>
+        dispatch({ type: GET_CURRENT_PROJECT, payload: data }),
+      )
+      .catch(({ response }) => {
+        if (response?.status === 403) dispatch({ type: NOT_FOUND });
       });
   };
 };
