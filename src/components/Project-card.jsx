@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
-import { Box, Button, Modal, Tooltip, Typography } from '@mui/material';
+import { Box, Button, Tooltip, Modal, Typography } from '@mui/material';
 import Currency from './icons/Currency.jsx';
 import Star from './icons/Star.jsx';
 import {
   AUDITOR,
   DONE,
-  IN_PROGRESS,
   RESOLVED,
   SUBMITED,
   WAITING_FOR_AUDITS,
@@ -14,6 +13,7 @@ import { useNavigate } from 'react-router-dom/dist';
 import { useDispatch, useSelector } from 'react-redux';
 import { addTestsLabel } from '../lib/helper.js';
 import { startAudit } from '../redux/actions/auditAction.js';
+import ShareProjectButton from './custom/ShareProjectButton.jsx';
 import AuditRequestInfo from './audit-request-info.jsx';
 import CustomSnackbar from './custom/CustomSnackbar.jsx';
 
@@ -121,46 +121,46 @@ const ProjectCard = ({ type, project, isPublic }) => {
           marginBottom: 0,
         }}
       >
-        {!isPublic &&
+        {!isPublic && &&
           (currentRole === AUDITOR ? (
-            <Box sx={statusWrapper}>
-              {project.status !== SUBMITED && (
-                <>
-                  {project.status.toLowerCase() === RESOLVED.toLowerCase() ? (
-                    <Box sx={{ backgroundColor: '#52176D' }} />
-                  ) : (
-                    project.status.toLowerCase() ===
-                      WAITING_FOR_AUDITS.toLowerCase() && (
-                      <Box sx={{ backgroundColor: '#FF9900' }} />
-                    )
+          <Box sx={statusWrapper}>
+            {project.status !== SUBMITED && (
+              <>
+                {project.status.toLowerCase() === RESOLVED.toLowerCase() ? (
+                  <Box sx={{ backgroundColor: '#52176D' }} />
+                ) : (
+                  project.status.toLowerCase() ===
+                    WAITING_FOR_AUDITS.toLowerCase() && (
+                    <Box sx={{ backgroundColor: '#FF9900' }} />
+                  )
+                )}
+                {project.status.toLowerCase() !==
+                  WAITING_FOR_AUDITS.toLowerCase() &&
+                  project.status.toLowerCase() !== RESOLVED.toLowerCase() && (
+                    <Box sx={{ backgroundColor: '#09C010' }} />
                   )}
-                  {project.status.toLowerCase() !==
-                    WAITING_FOR_AUDITS.toLowerCase() &&
-                    project.status.toLowerCase() !== RESOLVED.toLowerCase() && (
-                      <Box sx={{ backgroundColor: '#09C010' }} />
-                    )}
-                </>
-              )}
-              <Typography>{project.status}</Typography>
-            </Box>
-          ) : (
-            <Box sx={statusWrapper}>
-              {project.status === DONE ? (
-                <Box sx={{ backgroundColor: '#FF4444' }} />
-              ) : project.publish_options.publish ? (
-                <Box sx={{ backgroundColor: '#09C010' }} />
-              ) : (
-                <Box sx={{ backgroundColor: '#FF9900' }} />
-              )}
-              <Typography>
-                {project.status === DONE
-                  ? 'Project closed'
-                  : project.publish_options.publish
-                  ? 'Published'
-                  : 'Hidden'}
-              </Typography>
-            </Box>
-          ))}
+              </>
+            )}
+            <Typography>{project.status}</Typography>
+          </Box>
+        ) : (
+          <Box sx={statusWrapper}>
+            {project.status === DONE ? (
+              <Box sx={{ backgroundColor: '#FF4444' }} />
+            ) : project.publish_options.publish ? (
+              <Box sx={{ backgroundColor: '#09C010' }} />
+            ) : (
+              <Box sx={{ backgroundColor: '#FF9900' }} />
+            )}
+            <Typography>
+              {project.status === DONE
+                ? 'Project closed'
+                : project.publish_options.publish
+                ? 'Published'
+                : 'Hidden'}
+            </Typography>
+          </Box>
+        ))}
         {!isPublic ? (
           <Button
             variant={'contained'}
@@ -172,8 +172,8 @@ const ProjectCard = ({ type, project, isPublic }) => {
           >
             {type === AUDITOR
               ? project?.status.toLowerCase() !==
-                  WAITING_FOR_AUDITS.toLowerCase() &&
-                project?.status.toLowerCase() !== RESOLVED.toLowerCase()
+              WAITING_FOR_AUDITS.toLowerCase() &&
+              project?.status.toLowerCase() !== RESOLVED.toLowerCase()
                 ? 'Proceed'
                 : 'View'
               : 'Edit'}
@@ -192,27 +192,32 @@ const ProjectCard = ({ type, project, isPublic }) => {
         )}
         {!isPublic &&
           (type !== AUDITOR ? (
+            <Box sx={smallButtonsBox}>
+          <Button
+            sx={copyBtn}
+            onClick={handleMakeCopy}
+            {...addTestsLabel('make-copy-button')}
+          >
+            Make a copy
+          </Button>
+              {project.publish_options.publish && (
+                  <ShareProjectButton projectId={project.id} />
+                )}
+            </Box>
+        ) : (
+          project?.status.toLowerCase() ===
+            WAITING_FOR_AUDITS.toLowerCase() && (
             <Button
-              sx={copyBtn}
-              onClick={handleMakeCopy}
+              sx={[editButton, { marginTop: '12px' }]}
+              variant={'contained'}
+              color={'primary'}
+              onClick={handleStartAudit}
               {...addTestsLabel('make-copy-button')}
             >
-              Make a copy
+              Start audit
             </Button>
-          ) : (
-            project?.status.toLowerCase() ===
-              WAITING_FOR_AUDITS.toLowerCase() && (
-              <Button
-                sx={[editButton, { marginTop: '12px' }]}
-                variant={'contained'}
-                color={'primary'}
-                onClick={handleStartAudit}
-                {...addTestsLabel('make-copy-button')}
-              >
-                Start audit
-              </Button>
-            )
-          ))}
+          )
+        ))}
       </Box>
     </Box>
   );
@@ -297,12 +302,26 @@ const cardInnerWrapper = theme => ({
   },
 });
 
+const smallButtonsBox = theme => ({
+  display: 'flex',
+  flexDirection: 'column',
+  justifyContent: 'center',
+  minWidth: '100px',
+  height: '60px',
+  mt: '12px',
+  [theme.breakpoints.down('xs')]: {
+    mt: '5px',
+    height: '52px',
+    justifyContent: 'flex-start',
+  },
+});
+
 const copyBtn = theme => ({
   textTransform: 'none',
   fontSize: '10px',
   mt: '12px',
   [theme.breakpoints.down('xs')]: {
-    mt: '5px',
+    padding: '4px 6px',
   },
 });
 
