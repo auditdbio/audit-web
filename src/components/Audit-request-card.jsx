@@ -81,7 +81,7 @@ const cardInnerWrapper = theme => ({
 const buttonWrapper = theme => ({
   display: 'flex',
   alignItems: 'center',
-  justifyContent: 'space-between',
+  justifyContent: 'center',
   width: '100%',
   gap: '7px',
   mt: '24px',

@@ -121,46 +121,46 @@ const ProjectCard = ({ type, project, isPublic }) => {
           marginBottom: 0,
         }}
       >
-        {!isPublic && &&
+        {!isPublic &&
           (currentRole === AUDITOR ? (
-          <Box sx={statusWrapper}>
-            {project.status !== SUBMITED && (
-              <>
-                {project.status.toLowerCase() === RESOLVED.toLowerCase() ? (
-                  <Box sx={{ backgroundColor: '#52176D' }} />
-                ) : (
-                  project.status.toLowerCase() ===
-                    WAITING_FOR_AUDITS.toLowerCase() && (
-                    <Box sx={{ backgroundColor: '#FF9900' }} />
-                  )
-                )}
-                {project.status.toLowerCase() !==
-                  WAITING_FOR_AUDITS.toLowerCase() &&
-                  project.status.toLowerCase() !== RESOLVED.toLowerCase() && (
-                    <Box sx={{ backgroundColor: '#09C010' }} />
+            <Box sx={statusWrapper}>
+              {project.status !== SUBMITED && (
+                <>
+                  {project.status.toLowerCase() === RESOLVED.toLowerCase() ? (
+                    <Box sx={{ backgroundColor: '#52176D' }} />
+                  ) : (
+                    project.status.toLowerCase() ===
+                      WAITING_FOR_AUDITS.toLowerCase() && (
+                      <Box sx={{ backgroundColor: '#FF9900' }} />
+                    )
                   )}
-              </>
-            )}
-            <Typography>{project.status}</Typography>
-          </Box>
-        ) : (
-          <Box sx={statusWrapper}>
-            {project.status === DONE ? (
-              <Box sx={{ backgroundColor: '#FF4444' }} />
-            ) : project.publish_options.publish ? (
-              <Box sx={{ backgroundColor: '#09C010' }} />
-            ) : (
-              <Box sx={{ backgroundColor: '#FF9900' }} />
-            )}
-            <Typography>
-              {project.status === DONE
-                ? 'Project closed'
-                : project.publish_options.publish
-                ? 'Published'
-                : 'Hidden'}
-            </Typography>
-          </Box>
-        ))}
+                  {project.status.toLowerCase() !==
+                    WAITING_FOR_AUDITS.toLowerCase() &&
+                    project.status.toLowerCase() !== RESOLVED.toLowerCase() && (
+                      <Box sx={{ backgroundColor: '#09C010' }} />
+                    )}
+                </>
+              )}
+              <Typography>{project.status}</Typography>
+            </Box>
+          ) : (
+            <Box sx={statusWrapper}>
+              {project.status === DONE ? (
+                <Box sx={{ backgroundColor: '#FF4444' }} />
+              ) : project.publish_options.publish ? (
+                <Box sx={{ backgroundColor: '#09C010' }} />
+              ) : (
+                <Box sx={{ backgroundColor: '#FF9900' }} />
+              )}
+              <Typography>
+                {project.status === DONE
+                  ? 'Project closed'
+                  : project.publish_options.publish
+                  ? 'Published'
+                  : 'Hidden'}
+              </Typography>
+            </Box>
+          ))}
         {!isPublic ? (
           <Button
             variant={'contained'}
@@ -172,8 +172,8 @@ const ProjectCard = ({ type, project, isPublic }) => {
           >
             {type === AUDITOR
               ? project?.status.toLowerCase() !==
-              WAITING_FOR_AUDITS.toLowerCase() &&
-              project?.status.toLowerCase() !== RESOLVED.toLowerCase()
+                  WAITING_FOR_AUDITS.toLowerCase() &&
+                project?.status.toLowerCase() !== RESOLVED.toLowerCase()
                 ? 'Proceed'
                 : 'View'
               : 'Edit'}
@@ -193,31 +193,31 @@ const ProjectCard = ({ type, project, isPublic }) => {
         {!isPublic &&
           (type !== AUDITOR ? (
             <Box sx={smallButtonsBox}>
-          <Button
-            sx={copyBtn}
-            onClick={handleMakeCopy}
-            {...addTestsLabel('make-copy-button')}
-          >
-            Make a copy
-          </Button>
+              <Button
+                sx={copyBtn}
+                onClick={handleMakeCopy}
+                {...addTestsLabel('make-copy-button')}
+              >
+                Make a copy
+              </Button>
               {project.publish_options.publish && (
-                  <ShareProjectButton projectId={project.id} />
-                )}
+                <ShareProjectButton projectId={project.id} />
+              )}
             </Box>
-        ) : (
-          project?.status.toLowerCase() ===
-            WAITING_FOR_AUDITS.toLowerCase() && (
-            <Button
-              sx={[editButton, { marginTop: '12px' }]}
-              variant={'contained'}
-              color={'primary'}
-              onClick={handleStartAudit}
-              {...addTestsLabel('make-copy-button')}
-            >
-              Start audit
-            </Button>
-          )
-        ))}
+          ) : (
+            project?.status.toLowerCase() ===
+              WAITING_FOR_AUDITS.toLowerCase() && (
+              <Button
+                sx={[editButton, { marginTop: '12px' }]}
+                variant={'contained'}
+                color={'primary'}
+                onClick={handleStartAudit}
+                {...addTestsLabel('make-copy-button')}
+              >
+                Start audit
+              </Button>
+            )
+          ))}
       </Box>
     </Box>
   );
