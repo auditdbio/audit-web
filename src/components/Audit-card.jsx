@@ -1,10 +1,16 @@
-import { Box, Card, Tooltip, Typography } from '@mui/material';
+import {
+  Box,
+  Card,
+  FormControlLabel,
+  Switch,
+  Tooltip,
+  Typography,
+} from '@mui/material';
 import theme from '../styles/themes.js';
 import { CustomButton } from './custom/Button.jsx';
 import { useNavigate } from 'react-router-dom/dist';
 import { useDispatch } from 'react-redux';
-import { confirmAudit } from '../redux/actions/auditAction.js';
-import { useMemo } from 'react';
+import { confirmAudit, makeAuditPublic } from '../redux/actions/auditAction.js';
 import {
   CUSTOMER,
   DONE,
@@ -15,15 +21,23 @@ import {
 } from '../redux/actions/types.js';
 import dayjs from 'dayjs';
 import { addTestsLabel } from '../lib/helper.js';
+import { handleViewReport } from '../lib/viewReport.js';
 
-const AuditCard = ({ audit, request }) => {
+const AuditCard = ({ audit, request, isPublic }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
+  const handlePublish = e => {
+    const value = { ...audit, isPublic: e.target.checked };
+    dispatch(makeAuditPublic(value));
+  };
+
   return (
-    <Card sx={cardWrapper}>
+    <Card sx={cardWrapper} className={'audit-wrapper'}>
       <Tooltip title={audit.project_name} arrow placement={'top'}>
-        <Typography sx={auditNameStyle}>{audit.project_name}</Typography>
+        <Typography sx={auditNameStyle} className={'name-style'}>
+          {audit.project_name}
+        </Typography>
       </Tooltip>
       <Box sx={{ display: 'grid' }}>
         <Tooltip
@@ -44,11 +58,11 @@ const AuditCard = ({ audit, request }) => {
       </Box>
       <Typography sx={priceTextStyle}>${audit?.price} per line</Typography>
       <Box sx={dateWrapper}>
-        <Typography sx={dateStyle}>
+        <Typography sx={dateStyle} className={'date-style'}>
           {dayjs(audit?.time?.from).format('DD.MM.YYYY')}
         </Typography>
         <Typography variant={'caption'}>-</Typography>
-        <Typography sx={dateStyle}>
+        <Typography sx={dateStyle} className={'date-style'}>
           {dayjs(audit?.time?.to).format('DD.MM.YYYY')}
         </Typography>
       </Box>
@@ -96,18 +110,43 @@ const AuditCard = ({ audit, request }) => {
           Accept
         </CustomButton>
       )}
-      <CustomButton
-        sx={viewButtonStyle}
-        variant={'contained'}
-        onClick={() =>
-          request
-            ? navigate(`/audit-request/${audit.id}/customer`)
-            : navigate(`/audit-info/${audit.id}/customer`)
-        }
-        {...addTestsLabel('audits_view-button')}
-      >
-        View
-      </CustomButton>
+      {!isPublic && audit?.status?.toLowerCase() === RESOLVED.toLowerCase() && (
+        <FormControlLabel
+          sx={switchStyle}
+          control={
+            <Switch
+              checked={audit?.isPublic}
+              onChange={handlePublish}
+              name="public"
+              size={'small'}
+            />
+          }
+          label="Make it public"
+        />
+      )}
+      {isPublic ? (
+        <CustomButton
+          sx={viewButtonStyle}
+          variant={'contained'}
+          onClick={() => handleViewReport(audit)}
+          {...addTestsLabel('audits_view-button')}
+        >
+          View report
+        </CustomButton>
+      ) : (
+        <CustomButton
+          sx={viewButtonStyle}
+          variant={'contained'}
+          onClick={() =>
+            request
+              ? navigate(`/audit-request/${audit.id}/customer`)
+              : navigate(`/audit-info/${audit.id}/customer`)
+          }
+          {...addTestsLabel('audits_view-button')}
+        >
+          View
+        </CustomButton>
+      )}
     </Card>
   );
 };
@@ -118,6 +157,25 @@ const btnWrapper = () => ({
   [theme.breakpoints.down('xs')]: {
     flexDirection: 'column',
     gap: '12px',
+  },
+});
+
+const switchStyle = theme => ({
+  '.MuiTypography-root': {
+    fontSize: '15px',
+    fontWeight: 500,
+  },
+  [theme.breakpoints.down('sm')]: {
+    '.MuiTypography-root': {
+      fontSize: '12px',
+    },
+  },
+  [theme.breakpoints.down('xs')]: {
+    marginRight: 0,
+    marginLeft: '-6px',
+    '.MuiTypography-root': {
+      fontSize: '10px',
+    },
   },
 });
 

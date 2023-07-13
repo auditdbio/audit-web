@@ -16,6 +16,8 @@ import {
   GET_REQUEST,
   CLEAR_AUDIT_REQUEST,
   CLEAR_AUDIT,
+  GET_USER_AUDITS,
+  CHANGE_PUBLISH_AUDIT,
 } from '../actions/types.js';
 
 const initialState = {
@@ -26,6 +28,7 @@ const initialState = {
   error: null,
   successMessage: null,
   currentAuditPartner: null,
+  userAudits: null,
 };
 export const auditReducer = (state = initialState, action) => {
   switch (action.type) {
@@ -73,6 +76,18 @@ export const auditReducer = (state = initialState, action) => {
       return {
         ...state,
         auditRequest: null,
+      };
+    case CHANGE_PUBLISH_AUDIT:
+      return {
+        ...state,
+        audits: state.audits?.map(audit =>
+          audit.id === action.payload.id ? action.payload : audit,
+        ),
+      };
+    case GET_USER_AUDITS:
+      return {
+        ...state,
+        userAudits: action.payload,
       };
     case CLEAR_AUDIT:
       return {

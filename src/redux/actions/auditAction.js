@@ -3,6 +3,7 @@ import axios from 'axios';
 import {
   AUDIT_REQUEST_CREATE,
   AUDITOR,
+  CHANGE_PUBLISH_AUDIT,
   CLEAR_MESSAGES,
   CONFIRM_AUDIT,
   CUSTOMER,
@@ -11,7 +12,9 @@ import {
   GET_AUDIT,
   GET_AUDIT_REQUEST,
   GET_AUDITS,
+  GET_CUSTOMER_PROJECTS,
   GET_REQUEST,
+  GET_USER_AUDITS,
   IN_PROGRESS,
   NOT_FOUND,
   REQUEST_ERROR,
@@ -230,6 +233,38 @@ export const startAudit = (values, goBack) => {
         if (goBack) {
           history.back();
         }
+      });
+  };
+};
+
+export const makeAuditPublic = values => {
+  return dispatch => {
+    const token = Cookies.get('token');
+    axios
+      .patch(`${API_URL}/audit/${values.id}`, values, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then(({ data }) => {
+        console.log(data);
+        dispatch({ type: CHANGE_PUBLISH_AUDIT, payload: data });
+      });
+  };
+};
+
+export const getUserAudits = (id, role) => {
+  const token = Cookies.get('token');
+  return dispatch => {
+    axios
+      .get(`${API_URL}/public_audits/${id}/${role}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .then(({ data }) => {
+        dispatch({ type: GET_USER_AUDITS, payload: data });
+      })
+      .catch(({ response }) => {
+        console.log(response, 'res');
       });
   };
 };

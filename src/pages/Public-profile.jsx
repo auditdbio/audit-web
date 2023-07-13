@@ -21,6 +21,9 @@ import {
 import { getCustomerProjects } from '../redux/actions/projectAction.js';
 import ProjectCardList from '../components/Project-card-list.jsx';
 import ProjectCard from '../components/Project-card.jsx';
+import AuditCard from '../components/Audit-card.jsx';
+import { gridItemStyle } from '../components/Audits.jsx';
+import { getUserAudits } from '../redux/actions/auditAction.js';
 
 const PublicProfile = () => {
   const { role, id } = useParams();
@@ -37,6 +40,7 @@ const PublicProfile = () => {
   const myProjects = useSelector(state => state.project.myProjects);
   const user = useSelector(state => state.user.user);
   const customerProjects = useSelector(s => s.project.customerProjects);
+  const userAudits = useSelector(s => s.audits.userAudits);
   const [showMore, setShowMore] = useState(false);
 
   const handleError = () => {
@@ -86,9 +90,11 @@ const PublicProfile = () => {
   useEffect(() => {
     if (role.toLowerCase() === AUDITOR) {
       dispatch(getCurrentAuditor(id));
+      dispatch(getUserAudits(id, role));
     } else {
       dispatch(getCurrentCustomer(id));
       dispatch(getCustomerProjects(id));
+      dispatch(getUserAudits(id, role));
     }
   }, [id, role]);
 
@@ -258,26 +264,60 @@ const PublicProfile = () => {
             )}
           </Box>
 
-          {/*<Grid container spacing={2}>*/}
-          {/*  <Grid item sm={6}>*/}
-          {role.toLowerCase() === CUSTOMER && (
-            <Box sx={projectsWrapper}>
-              <Box sx={headWrapper}>Projects</Box>
-              <ProjectCardList
-                projects={
-                  showMore ? customerProjects : customerProjects?.slice(0, 8)
-                }
-                isPublic={true}
-              />
-              {customerProjects?.length > 8 && (
-                <Button sx={moreBtnSx} onClick={() => setShowMore(!showMore)}>
-                  {showMore ? 'Hide' : 'View more'}
-                </Button>
-              )}
-            </Box>
-          )}
-          {/*  </Grid>*/}
-          {/*</Grid>*/}
+          <Grid container sx={{ marginTop: '98px' }} spacing={0}>
+            {role.toLowerCase() === CUSTOMER && (
+              <Grid item sm={6} sx={matchSm ? { marginBottom: '60px' } : {}}>
+                <Box
+                  sx={[
+                    projectsWrapper,
+                    !matchSm ? { borderRightColor: '#F90' } : {},
+                  ]}
+                >
+                  <Box sx={headWrapper}>Projects</Box>
+                  <ProjectCardList
+                    projects={
+                      showMore
+                        ? customerProjects
+                        : customerProjects?.slice(0, 8)
+                    }
+                    isPublic={true}
+                  />
+                  {customerProjects?.length > 8 && (
+                    <Button
+                      sx={moreBtnSx}
+                      onClick={() => setShowMore(!showMore)}
+                    >
+                      {showMore ? 'Hide' : 'View more'}
+                    </Button>
+                  )}
+                </Box>
+              </Grid>
+            )}
+            <Grid item sm={role.toLowerCase() === CUSTOMER ? 6 : 12}>
+              <Box
+                sx={[
+                  projectsWrapper(theme, role.toLowerCase() === AUDITOR),
+                  !matchSm && role.toLowerCase() !== AUDITOR
+                    ? { borderLeftColor: '#F90' }
+                    : {},
+                ]}
+              >
+                <Box sx={headWrapper}>Audits</Box>
+                <Grid container spacing={2}>
+                  {userAudits?.map(audit => (
+                    <Grid key={audit.id} item>
+                      <AuditCard audit={audit} isPublic={true} />
+                    </Grid>
+                  ))}
+                </Grid>
+                {userAudits?.length > 8 && (
+                  <Button sx={moreBtnSx} onClick={() => setShowMore(!showMore)}>
+                    {showMore ? 'Hide' : 'View more'}
+                  </Button>
+                )}
+              </Box>
+            </Grid>
+          </Grid>
         </Box>
       </Layout>
     );
@@ -295,23 +335,35 @@ const moreBtnSx = theme => ({
   textTransform: 'unset',
 });
 
-const projectsWrapper = theme => ({
+const projectsWrapper = (theme, isAuditor) => ({
   backgroundColor: '#fbfaf6',
-  marginTop: '98px',
   border: '1px solid #B2B3B3',
   padding: '48px',
   position: 'relative',
+  height: '100%',
   '& .MuiGrid-item': {
-    width: '25%',
+    width: isAuditor ? '25%' : '50%',
   },
   '& .project-wrapper': {
+    borderRadius: '15px',
     backgroundColor: '#fff',
     '& button': {
       marginTop: '15px',
     },
   },
+  '& .audit-wrapper': {
+    gap: '11px',
+  },
+  '& .date-style': {
+    fontSize: '10px!important',
+    padding: '5px',
+  },
+  '& .name-style': {
+    height: '27px',
+    '-webkit-line-clamp': 1,
+  },
   [theme.breakpoints.down('md')]: {
-    marginTop: '128px',
+    padding: '28px',
   },
   [theme.breakpoints.down('sm')]: {
     '& .MuiGrid-item': {
@@ -320,13 +372,16 @@ const projectsWrapper = theme => ({
   },
   [theme.breakpoints.down('xs')]: {
     padding: '15px',
-    marginTop: '88px',
     '& .project-wrapper': {
       flexDirection: 'column',
       gap: '10px',
     },
     '& .project-inner': {
       alignItems: 'center',
+    },
+    '& .date-style': {
+      fontSize: '8px!important',
+      padding: '5px 2px',
     },
   },
 });
