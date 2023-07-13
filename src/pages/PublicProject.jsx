@@ -156,7 +156,7 @@ const PublicProject = () => {
             />
           </Box>
           <Box sx={customerInfoColumn}>
-            <Box sx={{ display: 'flex', mb: '15px' }}>
+            <Box sx={[customerInfoString, { mb: '15px' }]}>
               <Box sx={fieldLabel}>First Name:</Box>
               <Tooltip
                 title={customer?.first_name}
@@ -170,7 +170,7 @@ const PublicProject = () => {
               </Tooltip>
             </Box>
             {customer?.last_name && (
-              <Box sx={{ display: 'flex' }}>
+              <Box sx={customerInfoString}>
                 <Box sx={fieldLabel}>Last Name:</Box>
                 <Tooltip
                   title={customer?.last_name}
@@ -188,7 +188,7 @@ const PublicProject = () => {
 
           {customer?.contacts?.public_contacts && (
             <Box sx={customerInfoColumn}>
-              <Box sx={{ display: 'flex', mb: '15px' }}>
+              <Box sx={[customerInfoString, { mb: '15px' }]}>
                 <Box sx={fieldLabel}>Email:</Box>
                 <Tooltip
                   title={customer?.contacts.email}
@@ -202,7 +202,7 @@ const PublicProject = () => {
                 </Tooltip>
               </Box>
               {customer?.last_name && (
-                <Box sx={{ display: 'flex' }}>
+                <Box sx={customerInfoString}>
                   <Box sx={fieldLabel}>Telegram:</Box>
                   <Tooltip
                     title={customer?.contacts.telegram}
@@ -342,6 +342,11 @@ const customerInfoColumn = theme => ({
     mb: '15px',
   },
 });
+
+const customerInfoString = {
+  display: 'flex',
+  alignItems: 'center',
+};
 
 const avatarBoxSx = theme => ({
   width: '15%',
