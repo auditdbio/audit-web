@@ -26,7 +26,6 @@ const ShareProjectButton = ({
 
     const clipboard = new ClipboardJS(buttonRef.current, options);
     clipboard.on('success', a => {
-      console.log(a);
       setText('Link copied');
       setHideIcon(true);
       clipboard.destroy();
