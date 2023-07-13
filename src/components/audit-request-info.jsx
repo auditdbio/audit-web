@@ -24,6 +24,7 @@ import {
 } from '../redux/actions/userAction.js';
 import CustomLink from './custom/CustomLink.jsx';
 import OfferModal from './modal/OfferModal.jsx';
+import ShareProjectButton from './custom/ShareProjectButton.jsx';
 
 const AuditRequestInfo = ({
   project,
@@ -109,7 +110,9 @@ const AuditRequestInfo = ({
         <Box sx={contentWrapper} className={'audit-request-content-wrapper'}>
           <Typography sx={titleSx} className={'audit-request-title'}>
             {project?.tags?.map((el, idx) => (
-              <span>{idx + 1 !== project?.tags?.length ? el + ',' : el}</span>
+              <span key={idx}>
+                {idx + 1 !== project?.tags?.length ? el + ',' : el}
+              </span>
             ))}
           </Typography>
           <Box sx={salaryWrapper} className={'audit-request-salary'}>
@@ -245,6 +248,16 @@ const AuditRequestInfo = ({
             </Box>
           )}
         </Box>
+
+        <Box sx={{ textAlign: 'center', mt: '10px' }}>
+          <ShareProjectButton
+            projectId={project?.id}
+            sx={{ fontSize: '14px' }}
+            showIcon
+            isModal
+          />
+        </Box>
+
         <Box sx={infoWrapper} className={'audit-request-info'}>
           <Markdown value={project?.description} />
           {matchXs && (
@@ -470,7 +483,7 @@ const salaryWrapper = theme => ({
 });
 
 const infoWrapper = theme => ({
-  marginTop: '30px',
+  marginTop: '20px',
   [theme.breakpoints.down('sm')]: {
     '& span': {
       fontSize: '15px',

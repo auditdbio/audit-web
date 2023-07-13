@@ -1,28 +1,24 @@
-import React, { useRef, useState } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom/dist';
 import { useDispatch, useSelector } from 'react-redux';
 import { Box, Button, Tooltip, Typography } from '@mui/material';
-import ClipboardJS from 'clipboard';
 import Currency from './icons/Currency.jsx';
 import Star from './icons/Star.jsx';
 import {
   AUDITOR,
   DONE,
-  IN_PROGRESS,
   RESOLVED,
   SUBMITED,
   WAITING_FOR_AUDITS,
 } from '../redux/actions/types.js';
 import { addTestsLabel } from '../lib/helper.js';
 import { startAudit } from '../redux/actions/auditAction.js';
-import { API_URL } from '../services/urls.js';
+import ShareProjectButton from './custom/ShareProjectButton.jsx';
 
 const ProjectCard = ({ type, project }) => {
   const navigate = useNavigate();
   const currentRole = useSelector(s => s.user.user.current_role);
   const dispatch = useDispatch();
-  const [tooltipText, setTooltipText] = useState('Share the Project');
-  const buttonRef = useRef(null);
 
   const handleClick = () => {
     if (type === AUDITOR) {
@@ -35,27 +31,6 @@ const ProjectCard = ({ type, project }) => {
 
   const handleMakeCopy = () => {
     navigate(`/edit-project/${project.id}?copy=true`);
-  };
-
-  const handleShare = () => {
-    const text = `${API_URL.slice(0, -3)}projects/${project.id}`;
-    const clipboard = new ClipboardJS(buttonRef.current, {
-      text: () => text,
-    });
-    clipboard.on('success', () => {
-      setTooltipText('Link copied');
-      clipboard.destroy();
-      setTimeout(() => {
-        setTooltipText('Share the Project');
-      }, 2000);
-    });
-
-    clipboard.on('error', () => {
-      console.error('Failed to copy URL to clipboard.');
-      clipboard.destroy();
-    });
-
-    clipboard.onClick(event);
   };
 
   const handleStartAudit = () => {
@@ -166,14 +141,7 @@ const ProjectCard = ({ type, project }) => {
               Make a copy
             </Button>
             {project.publish_options.publish && (
-              <Button
-                sx={copyBtn}
-                onClick={handleShare}
-                ref={buttonRef}
-                {...addTestsLabel('make-copy-button')}
-              >
-                {tooltipText}
-              </Button>
+              <ShareProjectButton projectId={project.id} />
             )}
           </Box>
         ) : (
