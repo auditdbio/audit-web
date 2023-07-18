@@ -15,7 +15,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 import IconButton from '@mui/material/IconButton';
 import { addTestsLabel } from '../../lib/helper.js';
 import { AUDITOR, RESOLVED } from '../../redux/actions/types.js';
-import { handleOpenReport } from '../../lib/openReport.js';
+import { generateReport, handleOpenReport } from '../../lib/report.js';
 import ResolveAuditConfirmation from './ResolveAuditConfirmation.jsx';
 import { discloseAllIssues } from '../../redux/actions/issueAction.js';
 import { DRAFT, FIXED, NOT_FIXED } from './constants.js';
@@ -53,6 +53,11 @@ const Control = ({ issues, search, setSearch, setPage, setSearchParams }) => {
 
   const handleDiscloseAll = () => {
     dispatch(discloseAllIssues(auditId));
+    setMenuAnchorEl(null);
+  };
+
+  const handleGenerateReport = () => {
+    generateReport(audit);
     setMenuAnchorEl(null);
   };
 
@@ -97,17 +102,21 @@ const Control = ({ issues, search, setSearch, setPage, setSearchParams }) => {
             }}
           >
             {user.current_role === AUDITOR && (
-              <>
-                <MenuItem
-                  disabled={checkDraftIssues()}
-                  onClick={handleDiscloseAll}
-                >
-                  Disclose all
-                </MenuItem>
-                <MenuItem onClick={handleCloseMenu}>Generate report</MenuItem>
-              </>
+              <MenuItem
+                disabled={checkDraftIssues()}
+                onClick={handleDiscloseAll}
+              >
+                Disclose all
+              </MenuItem>
             )}
-            <MenuItem onClick={handleCloseMenu}>Mark all as read</MenuItem>
+            <MenuItem disabled onClick={handleCloseMenu}>
+              Mark all as read
+            </MenuItem>
+            {user.current_role === AUDITOR && (
+              <MenuItem onClick={handleGenerateReport}>
+                Generate report
+              </MenuItem>
+            )}
           </Menu>
 
           <TextField
@@ -171,7 +180,7 @@ const Control = ({ issues, search, setSearch, setPage, setSearchParams }) => {
                 variant="contained"
                 color="secondary"
                 sx={[buttonSx, { width: '100%' }]}
-                onClick={() => {}}
+                onClick={() => handleOpenReport(audit)}
                 {...addTestsLabel('download-report-button')}
               >
                 Download report

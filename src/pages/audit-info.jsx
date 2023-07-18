@@ -26,7 +26,7 @@ import dayjs from 'dayjs';
 import Markdown from '../components/markdown/Markdown.jsx';
 import { ASSET_URL } from '../services/urls.js';
 import { addTestsLabel } from '../lib/helper.js';
-import { handleOpenReport } from '../lib/openReport.js';
+import { handleOpenReport } from '../lib/report.js';
 import { getIssues } from '../redux/actions/issueAction.js';
 
 const AuditInfo = ({ audit, auditRequest, issues }) => {
