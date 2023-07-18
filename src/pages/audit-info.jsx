@@ -3,7 +3,7 @@ import { CustomCard } from '../components/custom/Card.jsx';
 import Layout from '../styles/Layout.jsx';
 import { Avatar, Box, Button, Typography, Tooltip } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import { useNavigate } from 'react-router-dom/dist';
+import { useNavigate, Link } from 'react-router-dom/dist';
 import TagsList from '../components/tagsList.jsx';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
@@ -87,7 +87,12 @@ const AuditInfo = ({ audit, auditRequest, issues }) => {
           <Typography sx={{ width: '100%', textAlign: 'center' }}>
             You have offer to audit for{' '}
             <span style={{ fontWeight: 500, wordBreak: 'break-word' }}>
-              {audit?.project_name}
+              <Link
+                style={{ color: '#000' }}
+                to={`/projects/${audit.project_id}`}
+              >
+                {audit?.project_name}
+              </Link>
             </span>{' '}
             project!
           </Typography>
