@@ -242,15 +242,17 @@ const PublicProject = () => {
           })}
         </Box>
 
-        <Button
-          variant="contained"
-          color={user?.current_role === AUDITOR ? 'secondary' : 'primary'}
-          sx={buttonSx}
-          onClick={handleMakeOffer}
-          {...addTestsLabel('offer-button')}
-        >
-          Make Offer
-        </Button>
+        {user.id !== project.customer_id && (
+          <Button
+            variant="contained"
+            color={user?.current_role === AUDITOR ? 'secondary' : 'primary'}
+            sx={buttonSx}
+            onClick={handleMakeOffer}
+            {...addTestsLabel('offer-button')}
+          >
+            Make Offer
+          </Button>
+        )}
       </Box>
     </Layout>
   );
