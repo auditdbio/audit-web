@@ -61,6 +61,14 @@ const Control = ({ issues, search, setSearch, setPage, setSearchParams }) => {
     setMenuAnchorEl(null);
   };
 
+  const handleDownloadReport = () => {
+    if (audit?.report_name) {
+      handleOpenReport(audit);
+    } else {
+      handleGenerateReport();
+    }
+  };
+
   const checkDraftIssues = () => {
     return !issues?.some(issue => issue.status === DRAFT);
   };
@@ -180,7 +188,7 @@ const Control = ({ issues, search, setSearch, setPage, setSearchParams }) => {
                 variant="contained"
                 color="secondary"
                 sx={[buttonSx, { width: '100%' }]}
-                onClick={() => handleOpenReport(audit)}
+                onClick={handleDownloadReport}
                 {...addTestsLabel('download-report-button')}
               >
                 Download report
