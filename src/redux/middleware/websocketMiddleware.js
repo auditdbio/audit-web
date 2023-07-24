@@ -1,4 +1,6 @@
 import {
+  AUDITOR,
+  CUSTOMER,
   DISCONNECTED_WS,
   WEBSOCKET_CONNECT,
   WEBSOCKET_CONNECTED,
@@ -9,10 +11,11 @@ import {
 import { w3cwebsocket as WebSocket } from 'websocket';
 import Cookies from 'js-cookie';
 import {
-  receiveMessage,
+  receiveAuditorMessage,
+  receiveCustomerMessage,
   websocketConnect,
 } from '../actions/websocketAction.js';
-
+//
 const API_URL = import.meta.env.VITE_API_WS_BASE_URL;
 
 const websocketMiddleware = () => {
@@ -32,7 +35,19 @@ const websocketMiddleware = () => {
 
           socket.onmessage = event => {
             const message = JSON.parse(event.data);
-            store.dispatch(receiveMessage(message));
+            if (
+              message.payload.Notification.inner.role.toLowerCase() ===
+                CUSTOMER ||
+              !message.payload.Notification.inner.role
+            ) {
+              store.dispatch(receiveCustomerMessage(message));
+            } else if (
+              message.payload.Notification.inner.role.toLowerCase() ===
+                AUDITOR ||
+              !message.payload.Notification.inner.role
+            ) {
+              store.dispatch(receiveAuditorMessage(message));
+            }
           };
 
           socket.onclose = () => {
