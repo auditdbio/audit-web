@@ -264,25 +264,54 @@ const PublicProfile = () => {
             )}
           </Box>
 
-          <Grid container sx={{ marginTop: '98px' }} spacing={0}>
-            {role.toLowerCase() === CUSTOMER && (
-              <Grid item sm={6} sx={matchSm ? { marginBottom: '60px' } : {}}>
+          {isAuth() && (
+            <Grid container sx={{ marginTop: '98px' }} spacing={0}>
+              {role.toLowerCase() === CUSTOMER && (
+                <Grid item sm={6} sx={matchSm ? { marginBottom: '60px' } : {}}>
+                  <Box
+                    sx={[
+                      projectsWrapper,
+                      !matchSm ? { borderRightColor: '#F90' } : {},
+                    ]}
+                  >
+                    <Box sx={headWrapper}>Projects</Box>
+                    <ProjectCardList
+                      projects={
+                        showMore
+                          ? customerProjects
+                          : customerProjects?.slice(0, 8)
+                      }
+                      isPublic={true}
+                    />
+                    {customerProjects?.length > 8 && (
+                      <Button
+                        sx={moreBtnSx}
+                        onClick={() => setShowMore(!showMore)}
+                      >
+                        {showMore ? 'Hide' : 'View more'}
+                      </Button>
+                    )}
+                  </Box>
+                </Grid>
+              )}
+              <Grid item sm={role.toLowerCase() === CUSTOMER ? 6 : 12}>
                 <Box
                   sx={[
-                    projectsWrapper,
-                    !matchSm ? { borderRightColor: '#F90' } : {},
+                    projectsWrapper(theme, role.toLowerCase() === AUDITOR),
+                    !matchSm && role.toLowerCase() !== AUDITOR
+                      ? { borderLeftColor: '#F90' }
+                      : {},
                   ]}
                 >
-                  <Box sx={headWrapper}>Projects</Box>
-                  <ProjectCardList
-                    projects={
-                      showMore
-                        ? customerProjects
-                        : customerProjects?.slice(0, 8)
-                    }
-                    isPublic={true}
-                  />
-                  {customerProjects?.length > 8 && (
+                  <Box sx={headWrapper}>Audits</Box>
+                  <Grid container spacing={2}>
+                    {userAudits?.map(audit => (
+                      <Grid key={audit.id} item>
+                        <AuditCard audit={audit} isPublic={true} />
+                      </Grid>
+                    ))}
+                  </Grid>
+                  {userAudits?.length > 8 && (
                     <Button
                       sx={moreBtnSx}
                       onClick={() => setShowMore(!showMore)}
@@ -292,32 +321,8 @@ const PublicProfile = () => {
                   )}
                 </Box>
               </Grid>
-            )}
-            <Grid item sm={role.toLowerCase() === CUSTOMER ? 6 : 12}>
-              <Box
-                sx={[
-                  projectsWrapper(theme, role.toLowerCase() === AUDITOR),
-                  !matchSm && role.toLowerCase() !== AUDITOR
-                    ? { borderLeftColor: '#F90' }
-                    : {},
-                ]}
-              >
-                <Box sx={headWrapper}>Audits</Box>
-                <Grid container spacing={2}>
-                  {userAudits?.map(audit => (
-                    <Grid key={audit.id} item>
-                      <AuditCard audit={audit} isPublic={true} />
-                    </Grid>
-                  ))}
-                </Grid>
-                {userAudits?.length > 8 && (
-                  <Button sx={moreBtnSx} onClick={() => setShowMore(!showMore)}>
-                    {showMore ? 'Hide' : 'View more'}
-                  </Button>
-                )}
-              </Box>
             </Grid>
-          </Grid>
+          )}
         </Box>
       </Layout>
     );
