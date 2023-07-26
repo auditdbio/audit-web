@@ -275,7 +275,7 @@ const buttonBoxSx = theme => ({
 const buttonSx = theme => ({
   padding: '15px 24px',
   flexShrink: 0,
-  fontWeight: 600,
+  fontWeight: '600!important',
   fontSize: '20px',
   lineHeight: '25px',
   textTransform: 'none',
