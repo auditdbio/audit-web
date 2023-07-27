@@ -235,6 +235,7 @@ const submitBtn = theme => ({
   textTransform: 'unset',
   width: '360px',
   paddingY: '24px',
+  fontWeight: 600,
   fontSize: '18px',
   borderRadius: '10px',
   [theme.breakpoints.down('sm')]: {
