@@ -575,6 +575,7 @@ const sendButton = {
   borderRadius: '4px',
   padding: '12px 63px',
   height: '45px',
+  fontWeight: 600,
   width: '50%',
   textTransform: 'none',
   [theme.breakpoints.down('sm')]: {

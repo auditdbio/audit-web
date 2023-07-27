@@ -376,6 +376,7 @@ const customDropdown = {
 const findButton = {
   backgroundColor: theme.palette.secondary.main,
   color: theme.palette.background.default,
+  fontWeight: 600,
   borderRadius: '4px',
   padding: '12px 63px',
   height: '45px',

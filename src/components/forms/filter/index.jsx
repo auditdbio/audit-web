@@ -381,6 +381,7 @@ const submitButton = theme => ({
   width: '438px',
   padding: '24px 0',
   margin: '25px auto 0',
+  fontWeight: 600,
   [theme.breakpoints.down('md')]: {
     width: '310px',
     padding: '15px 0',
@@ -447,6 +448,7 @@ const filterButton = theme => ({
   fontSize: '12px',
   padding: '14px 0',
   width: '160px',
+  fontWeight: 600,
   textTransform: 'unset',
   [theme.breakpoints.down('xs')]: {
     padding: '8px',

@@ -173,6 +173,7 @@ const submitBtn = theme => ({
   margin: 'auto 0 0',
   width: '406px',
   padding: '22px 0',
+  fontWeight: 600,
   fontSize: '18px',
   borderRadius: '10px',
   [theme.breakpoints.down('md')]: {
