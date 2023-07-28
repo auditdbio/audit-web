@@ -246,7 +246,7 @@ const AuditInfo = ({ audit, auditRequest, issues }) => {
           {/*  audit?.status === SUBMITED ||*/}
           {/*  audit?.status === PENDING) && (*/}
           {audit?.status &&
-            !!issues?.length &&
+            !!audit?.issues?.length &&
             audit?.status?.toLowerCase() !==
               WAITING_FOR_AUDITS.toLowerCase() && (
               <Button
@@ -257,7 +257,7 @@ const AuditInfo = ({ audit, auditRequest, issues }) => {
                 sx={buttonSx}
                 {...addTestsLabel('issues-button')}
               >
-                Issues ({issues?.length})
+                Issues ({audit?.issues?.length})
               </Button>
             )}
           {/*)}*/}
