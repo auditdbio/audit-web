@@ -192,6 +192,7 @@ const ProjectCard = ({ type, project, isPublic }) => {
                       checked={project?.isPublic}
                       onChange={handlePublish}
                       name="public"
+                      color={'secondary'}
                       size={'small'}
                     />
                   }
