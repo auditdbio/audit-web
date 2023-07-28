@@ -3,7 +3,6 @@ import { API_URL, ASSET_URL } from '../services/urls.js';
 import Cookies from 'js-cookie';
 
 const downloadResponse = (res, audit) => {
-  console.log(res.data);
   const url = window.URL.createObjectURL(new Blob([res.data]));
   const link = document.createElement('a');
   link.href = url;
@@ -20,11 +19,12 @@ const downloadResponse = (res, audit) => {
 };
 
 export const handleOpenReport = audit => {
+  const token = Cookies.get('token');
   axios
     .get(`${ASSET_URL}/${audit?.report}`, {
       responseType: 'blob',
       withCredentials: true,
-      headers: { Authorization: `Bearer ${Cookies.get('token')}` },
+      headers: { Authorization: `Bearer ${token}` },
     })
     .then(response => downloadResponse(response, audit));
 };
