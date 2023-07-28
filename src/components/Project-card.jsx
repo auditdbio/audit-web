@@ -1,5 +1,13 @@
 import React, { useState } from 'react';
-import { Box, Button, Tooltip, Modal, Typography } from '@mui/material';
+import {
+  Box,
+  Button,
+  Tooltip,
+  Modal,
+  Typography,
+  FormControlLabel,
+  Switch,
+} from '@mui/material';
 import Currency from './icons/Currency.jsx';
 import Star from './icons/Star.jsx';
 import {
@@ -12,7 +20,7 @@ import {
 import { useNavigate } from 'react-router-dom/dist';
 import { useDispatch, useSelector } from 'react-redux';
 import { addTestsLabel } from '../lib/helper.js';
-import { startAudit } from '../redux/actions/auditAction.js';
+import { makeAuditPublic, startAudit } from '../redux/actions/auditAction.js';
 import ShareProjectButton from './custom/ShareProjectButton.jsx';
 import AuditRequestInfo from './audit-request-info.jsx';
 import CustomSnackbar from './custom/CustomSnackbar.jsx';
@@ -53,6 +61,11 @@ const ProjectCard = ({ type, project, isPublic }) => {
     setOpenModal(false);
   };
 
+  const handlePublish = e => {
+    const value = { ...project, isPublic: e.target.checked };
+    dispatch(makeAuditPublic(value));
+  };
+  //
   return (
     <Box sx={cardWrapper} className={'project-wrapper'}>
       <Modal
@@ -162,22 +175,46 @@ const ProjectCard = ({ type, project, isPublic }) => {
             </Box>
           ))}
         {!isPublic ? (
-          <Button
-            variant={'contained'}
-            sx={[editButton, type === 'auditor' ? editAuditor : {}]}
-            onClick={handleClick}
-            {...addTestsLabel(
-              type === AUDITOR ? 'submit-button' : 'edit-button',
-            )}
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              gap: '15px',
+            }}
           >
-            {type === AUDITOR
-              ? project?.status.toLowerCase() !==
-                  WAITING_FOR_AUDITS.toLowerCase() &&
-                project?.status.toLowerCase() !== RESOLVED.toLowerCase()
-                ? 'Proceed'
-                : 'View'
-              : 'Edit'}
-          </Button>
+            {type === AUDITOR &&
+              project?.status?.toLowerCase() === RESOLVED.toLowerCase() && (
+                <FormControlLabel
+                  sx={switchStyle}
+                  control={
+                    <Switch
+                      checked={project?.isPublic}
+                      onChange={handlePublish}
+                      name="public"
+                      size={'small'}
+                    />
+                  }
+                  label="Make it public"
+                />
+              )}
+            <Button
+              variant={'contained'}
+              sx={[editButton, type === 'auditor' ? editAuditor : {}]}
+              onClick={handleClick}
+              {...addTestsLabel(
+                type === AUDITOR ? 'submit-button' : 'edit-button',
+              )}
+            >
+              {type === AUDITOR
+                ? project?.status.toLowerCase() !==
+                    WAITING_FOR_AUDITS.toLowerCase() &&
+                  project?.status.toLowerCase() !== RESOLVED.toLowerCase()
+                  ? 'Proceed'
+                  : 'View'
+                : 'Edit'}
+            </Button>
+          </Box>
         ) : (
           <Button
             variant={'contained'}
@@ -224,6 +261,25 @@ const ProjectCard = ({ type, project, isPublic }) => {
 };
 
 export default ProjectCard;
+
+const switchStyle = theme => ({
+  '.MuiTypography-root': {
+    fontSize: '15px',
+    fontWeight: 500,
+  },
+  [theme.breakpoints.down('sm')]: {
+    '.MuiTypography-root': {
+      fontSize: '12px',
+    },
+  },
+  [theme.breakpoints.down('xs')]: {
+    marginRight: 0,
+    marginLeft: '-6px',
+    '.MuiTypography-root': {
+      fontSize: '10px',
+    },
+  },
+});
 
 const modalWrapper = theme => ({
   position: 'absolute',
