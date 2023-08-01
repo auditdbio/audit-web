@@ -189,7 +189,7 @@ const Control = ({ issues, search, setSearch, setPage, setSearchParams }) => {
                 color="secondary"
                 sx={[buttonSx, { width: '100%' }]}
                 onClick={handleDownloadReport}
-                {...addTestsLabel('download-report-button')}
+                {...addTestsLabel('auditor-report-button')}
               >
                 Download report
               </Button>
@@ -202,7 +202,7 @@ const Control = ({ issues, search, setSearch, setPage, setSearchParams }) => {
             disabled={!audit?.report}
             onClick={() => handleOpenReport(audit)}
             sx={buttonSx}
-            {...addTestsLabel('report-button')}
+            {...addTestsLabel('customer-report-button')}
           >
             Download report
           </Button>

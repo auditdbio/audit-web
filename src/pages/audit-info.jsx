@@ -194,9 +194,7 @@ const AuditInfo = ({ audit, auditRequest, issues }) => {
           )}
         </Box>
         <Box>
-          {(audit?.status?.toLowerCase() === RESOLVED.toLowerCase() ||
-            audit?.report ||
-            audit?.report_name) && (
+          {audit?.report && (
             <Box sx={{ display: 'flex', justifyContent: 'center' }}>
               <Button
                 variant={'contained'}
