@@ -109,7 +109,7 @@ const PublicProfile = ({ currentRole, ownerId }) => {
 
   if (!data && !customerProjects && !userAudits && !ownerId) {
     return (
-      <Box sx={mainWrapper}>
+      <Box sx={mainWrapper(theme, ownerId)}>
         <Box
           sx={[
             wrapper(
@@ -131,7 +131,7 @@ const PublicProfile = ({ currentRole, ownerId }) => {
     );
   } else {
     return (
-      <Box sx={mainWrapper}>
+      <Box sx={mainWrapper(theme, ownerId)}>
         {!ownerId && (
           <Box
             sx={wrapper(
@@ -267,7 +267,11 @@ const PublicProfile = ({ currentRole, ownerId }) => {
         {isAuth() && (
           <Grid container sx={{ marginTop: '98px' }} spacing={0}>
             {(currentRole || role).toLowerCase() === CUSTOMER && (
-              <Grid item sm={6} sx={matchSm ? { marginBottom: '60px' } : {}}>
+              <Grid
+                item
+                sm={6}
+                sx={matchSm ? { marginBottom: '60px', width: '100%' } : {}}
+              >
                 <Box
                   sx={[
                     projectsWrapper,
@@ -296,6 +300,7 @@ const PublicProfile = ({ currentRole, ownerId }) => {
             )}
             <Grid
               item
+              sx={{ width: '100%' }}
               sm={(currentRole || role).toLowerCase() === CUSTOMER ? 6 : 12}
             >
               <Box
@@ -418,8 +423,8 @@ const headWrapper = theme => ({
   top: '-44px',
 });
 
-const mainWrapper = theme => ({
-  backgroundColor: '#fff',
+const mainWrapper = (theme, ownerId) => ({
+  backgroundColor: ownerId ? 'transparent' : '#fff',
   width: '1300px',
   padding: '75px 120px',
   [theme.breakpoints.down('lg')]: {
