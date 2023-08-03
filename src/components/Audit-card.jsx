@@ -23,7 +23,7 @@ import dayjs from 'dayjs';
 import { addTestsLabel } from '../lib/helper.js';
 import { handleViewReport } from '../lib/viewReport.js';
 
-const AuditCard = ({ audit, request, isOwner }) => {
+const AuditCard = ({ audit, request, isOwner, isPrivate }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -124,7 +124,7 @@ const AuditCard = ({ audit, request, isOwner }) => {
           label="Make it public"
         />
       )}
-      {!isOwner ? (
+      {isOwner || isPrivate ? (
         <CustomButton
           sx={viewButtonStyle}
           variant={'contained'}

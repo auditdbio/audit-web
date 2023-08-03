@@ -314,7 +314,11 @@ const PublicProfile = ({ currentRole, ownerId }) => {
                   {(showMoreAudits ? userAudits : userAudits?.slice(0, 8))?.map(
                     audit => (
                       <Grid key={audit.id} item>
-                        <AuditCard audit={audit} isOwner={ownerId} />
+                        <AuditCard
+                          audit={audit}
+                          isOwner={ownerId}
+                          isPrivate={true}
+                        />
                       </Grid>
                     ),
                   )}

@@ -7,8 +7,6 @@ import UserInfo from '../components/User-info.jsx';
 import Projects from '../components/Projects.jsx';
 import Audits from '../components/Audits.jsx';
 import { useDispatch, useSelector } from 'react-redux';
-import { getCustomer } from '../redux/actions/customerAction.js';
-import { getAuditor } from '../redux/actions/auditorAction.js';
 import { AUDITOR, CUSTOMER } from '../redux/actions/types.js';
 import AuditRequest from '../components/Audit-request.jsx';
 import { useNavigate, useParams } from 'react-router-dom';
