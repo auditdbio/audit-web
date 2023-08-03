@@ -68,7 +68,7 @@ const tabSx = theme => ({
 });
 
 const tabsSx = theme => ({
-  marginBottom: '-1px',
+  marginBottom: '-0.5px',
   '& .MuiTabs-flexContainer': {
     gap: '3px',
   },

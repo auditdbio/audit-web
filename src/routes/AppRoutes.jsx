@@ -42,6 +42,7 @@ import {
   websocketDisconnect,
 } from '../redux/actions/websocketAction.js';
 import PublicProject from '../pages/PublicProject.jsx';
+import PublicProfilePage from '../pages/Public-profile-page.jsx';
 
 const AppRoutes = () => {
   const token = useSelector(s => s.user.token);
@@ -118,7 +119,7 @@ const AppRoutes = () => {
         <Route path={'/audit-db'} element={<AuditDb />} />
         <Route path={'/FAQ'} element={<Faq />} />
         <Route path={'/contact-us'} element={<ContactUs />} />
-        <Route path={'/user/:id/:role'} element={<PublicProfile />} />
+        <Route path={'/user/:id/:role'} element={<PublicProfilePage />} />
         <Route
           path="/profile/:tab"
           element={

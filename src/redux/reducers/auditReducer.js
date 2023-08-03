@@ -80,7 +80,7 @@ export const auditReducer = (state = initialState, action) => {
     case CHANGE_PUBLISH_AUDIT:
       return {
         ...state,
-        audits: state.audits?.map(audit =>
+        userAudits: state.audits?.map(audit =>
           audit.id === action.payload.id ? action.payload : audit,
         ),
       };

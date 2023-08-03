@@ -10,7 +10,6 @@ import { addTestsLabel, isAuth } from '../lib/helper.js';
 import MobileTagsList from '../components/MobileTagsList/index.jsx';
 import TagsList from '../components/tagsList.jsx';
 import theme from '../styles/themes.js';
-import Layout from '../styles/Layout.jsx';
 import { getCurrentAuditor } from '../redux/actions/auditorAction.js';
 import { getCurrentCustomer } from '../redux/actions/customerAction.js';
 import CustomSnackbar from '../components/custom/CustomSnackbar.jsx';
@@ -20,12 +19,10 @@ import {
 } from '../redux/actions/userAction.js';
 import { getCustomerProjects } from '../redux/actions/projectAction.js';
 import ProjectCardList from '../components/Project-card-list.jsx';
-import ProjectCard from '../components/Project-card.jsx';
 import AuditCard from '../components/Audit-card.jsx';
-import { gridItemStyle } from '../components/Audits.jsx';
 import { getUserAudits } from '../redux/actions/auditAction.js';
 
-const PublicProfile = () => {
+const PublicProfile = ({ currentRole, ownerId }) => {
   const { role, id } = useParams();
   const navigate = useNavigate();
   const customer = useSelector(s => s.customer.currentCustomer);
@@ -42,7 +39,7 @@ const PublicProfile = () => {
   const customerProjects = useSelector(s => s.project.customerProjects);
   const userAudits = useSelector(s => s.audits.userAudits);
   const [showMore, setShowMore] = useState(false);
-
+  const [showMoreAudits, setShowMoreAudits] = useState(false);
   const handleError = () => {
     setErrorMessage(null);
     setMessage('Switched to customer role');
@@ -88,56 +85,58 @@ const PublicProfile = () => {
   };
 
   useEffect(() => {
-    if (role.toLowerCase() === AUDITOR) {
-      dispatch(getCurrentAuditor(id));
-      dispatch(getUserAudits(id, role));
+    if ((currentRole || role).toLowerCase() === AUDITOR) {
+      dispatch(getUserAudits(id || ownerId, currentRole || role));
+      if (!ownerId) {
+        dispatch(getCurrentAuditor(id));
+      }
     } else {
-      dispatch(getCurrentCustomer(id));
-      dispatch(getCustomerProjects(id));
-      dispatch(getUserAudits(id, role));
+      dispatch(getCustomerProjects(id || ownerId));
+      dispatch(getUserAudits(id || ownerId, currentRole || role));
+      if (!ownerId) {
+        dispatch(getCurrentCustomer(id));
+      }
     }
-  }, [id, role]);
+  }, [id, role, currentRole, ownerId]);
 
   const data = useMemo(() => {
-    if (role.toLowerCase() === AUDITOR) {
+    if ((currentRole || role).toLowerCase() === AUDITOR) {
       return auditor;
     } else {
       return customer;
     }
-  }, [role, customer, auditor]);
+  }, [role, customer, auditor, currentRole]);
 
-  if (!data) {
+  if (!data && !customerProjects && !userAudits && !ownerId) {
     return (
-      <Layout>
-        <Box sx={mainWrapper}>
-          <Box
-            sx={[
-              wrapper(
-                theme,
-                role.toLowerCase() === AUDITOR
-                  ? theme.palette.secondary.main
-                  : theme.palette.primary.main,
-              ),
-              {
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-              },
-            ]}
-          >
-            <Loader role={role} />
-          </Box>
+      <Box sx={mainWrapper}>
+        <Box
+          sx={[
+            wrapper(
+              theme,
+              (currentRole || role).toLowerCase() === AUDITOR
+                ? theme.palette.secondary.main
+                : theme.palette.primary.main,
+            ),
+            {
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+            },
+          ]}
+        >
+          <Loader role={role || currentRole} />
         </Box>
-      </Layout>
+      </Box>
     );
   } else {
     return (
-      <Layout sx={{ flexDirection: 'column' }}>
-        <Box sx={mainWrapper}>
+      <Box sx={mainWrapper}>
+        {!ownerId && (
           <Box
             sx={wrapper(
               theme,
-              role.toLowerCase() === AUDITOR
+              (currentRole || role).toLowerCase() === AUDITOR
                 ? theme.palette.secondary.main
                 : theme.palette.primary.main,
             )}
@@ -155,7 +154,7 @@ const PublicProfile = () => {
               />
               <Box sx={{ display: 'flex', justifyContent: 'center' }}>
                 <Avatar
-                  src={data.avatar && `${ASSET_URL}/${data.avatar}`}
+                  src={data?.avatar && `${ASSET_URL}/${data?.avatar}`}
                   sx={avatarStyle}
                   alt="User photo"
                 />
@@ -165,13 +164,13 @@ const PublicProfile = () => {
                   <Box sx={infoInnerStyle}>
                     <Box sx={infoWrapper}>
                       <span>First Name</span>
-                      <Typography noWrap={true}>{data.first_name}</Typography>
+                      <Typography noWrap={true}>{data?.first_name}</Typography>
                     </Box>
                     <Box sx={infoWrapper}>
                       <span>Last name</span>
-                      <Typography noWrap={true}>{data.last_name}</Typography>
+                      <Typography noWrap={true}>{data?.last_name}</Typography>
                     </Box>
-                    {role === AUDITOR && (
+                    {(currentRole || role) === AUDITOR && (
                       <Box sx={infoWrapper}>
                         <span>Price range:</span>
                         {data?.price_range?.from && data?.price_range?.to && (
@@ -182,10 +181,10 @@ const PublicProfile = () => {
                         )}
                       </Box>
                     )}
-                    {role !== AUDITOR && (
+                    {(currentRole || role) !== AUDITOR && (
                       <Box sx={infoWrapper}>
                         <span>Company</span>
-                        <Typography noWrap={true}>{data.company}</Typography>
+                        <Typography noWrap={true}>{data?.company}</Typography>
                       </Box>
                     )}
                   </Box>
@@ -193,16 +192,16 @@ const PublicProfile = () => {
                     <Box sx={infoWrapper}>
                       <span>E-mail</span>
                       <Typography noWrap={true}>
-                        {data.contacts?.public_contacts
-                          ? data.contacts?.email
+                        {data?.contacts?.public_contacts
+                          ? data?.contacts?.email
                           : 'Hidden'}
                       </Typography>
                     </Box>
                     <Box sx={infoWrapper}>
                       <span>Telegram</span>
                       <Typography noWrap={true}>
-                        {data.contacts?.public_contacts
-                          ? data.contacts?.telegram
+                        {data?.contacts?.public_contacts
+                          ? data?.contacts?.telegram
                           : 'Hidden'}
                       </Typography>
                     </Box>
@@ -218,10 +217,10 @@ const PublicProfile = () => {
                         }}
                       >
                         <span className={'about-title'}>About</span>
-                        {data.about}
+                        {data?.about}
                       </Typography>
                     </Box>
-                    <TagsList data={data.tags} fullView={true} />
+                    <TagsList data={data?.tags} fullView={true} />
                   </Box>
                 )}
               </Box>
@@ -245,14 +244,14 @@ const PublicProfile = () => {
                       maxWidth: 'unset!important',
                     }}
                   >
-                    {data.about}
+                    {data?.about}
                   </Typography>
                 </Box>
-                <MobileTagsList data={data.tags} />
+                <MobileTagsList data={data?.tags} />
               </Box>
             )}
             {/*{matchXs && <MobileTagsList data={data.tags} />}*/}
-            {role.toLowerCase() === AUDITOR && (
+            {(currentRole || role).toLowerCase() === AUDITOR && (
               <Button
                 variant={'contained'}
                 sx={[submitAuditor, buttonSx]}
@@ -263,55 +262,28 @@ const PublicProfile = () => {
               </Button>
             )}
           </Box>
+        )}
 
-          {isAuth() && (
-            <Grid container sx={{ marginTop: '98px' }} spacing={0}>
-              {role.toLowerCase() === CUSTOMER && (
-                <Grid item sm={6} sx={matchSm ? { marginBottom: '60px' } : {}}>
-                  <Box
-                    sx={[
-                      projectsWrapper,
-                      !matchSm ? { borderRightColor: '#F90' } : {},
-                    ]}
-                  >
-                    <Box sx={headWrapper}>Projects</Box>
-                    <ProjectCardList
-                      projects={
-                        showMore
-                          ? customerProjects
-                          : customerProjects?.slice(0, 8)
-                      }
-                      isPublic={true}
-                    />
-                    {customerProjects?.length > 8 && (
-                      <Button
-                        sx={moreBtnSx}
-                        onClick={() => setShowMore(!showMore)}
-                      >
-                        {showMore ? 'Hide' : 'View more'}
-                      </Button>
-                    )}
-                  </Box>
-                </Grid>
-              )}
-              <Grid item sm={role.toLowerCase() === CUSTOMER ? 6 : 12}>
+        {isAuth() && (
+          <Grid container sx={{ marginTop: '98px' }} spacing={0}>
+            {(currentRole || role).toLowerCase() === CUSTOMER && (
+              <Grid item sm={6} sx={matchSm ? { marginBottom: '60px' } : {}}>
                 <Box
                   sx={[
-                    projectsWrapper(theme, role.toLowerCase() === AUDITOR),
-                    !matchSm && role.toLowerCase() !== AUDITOR
-                      ? { borderLeftColor: '#F90' }
-                      : {},
+                    projectsWrapper,
+                    !matchSm ? { borderRightColor: '#F90' } : {},
                   ]}
                 >
-                  <Box sx={headWrapper}>Audits</Box>
-                  <Grid container spacing={2}>
-                    {userAudits?.map(audit => (
-                      <Grid key={audit.id} item>
-                        <AuditCard audit={audit} isPublic={true} />
-                      </Grid>
-                    ))}
-                  </Grid>
-                  {userAudits?.length > 8 && (
+                  <Box sx={headWrapper}>Projects</Box>
+                  <ProjectCardList
+                    projects={
+                      showMore
+                        ? customerProjects
+                        : customerProjects?.slice(0, 8)
+                    }
+                    isPublic={true}
+                  />
+                  {customerProjects?.length > 8 && (
                     <Button
                       sx={moreBtnSx}
                       onClick={() => setShowMore(!showMore)}
@@ -321,10 +293,45 @@ const PublicProfile = () => {
                   )}
                 </Box>
               </Grid>
+            )}
+            <Grid
+              item
+              sm={(currentRole || role).toLowerCase() === CUSTOMER ? 6 : 12}
+            >
+              <Box
+                sx={[
+                  projectsWrapper(
+                    theme,
+                    (currentRole || role).toLowerCase() === AUDITOR,
+                  ),
+                  !matchSm && (currentRole || role).toLowerCase() !== AUDITOR
+                    ? { borderLeftColor: '#F90' }
+                    : {},
+                ]}
+              >
+                <Box sx={headWrapper}>Audits</Box>
+                <Grid container spacing={2}>
+                  {(showMoreAudits ? userAudits : userAudits?.slice(0, 8))?.map(
+                    audit => (
+                      <Grid key={audit.id} item>
+                        <AuditCard audit={audit} isOwner={ownerId} />
+                      </Grid>
+                    ),
+                  )}
+                </Grid>
+                {userAudits?.length > 8 && (
+                  <Button
+                    sx={moreBtnSx}
+                    onClick={() => setShowMoreAudits(!showMoreAudits)}
+                  >
+                    {showMore ? 'Hide' : 'View more'}
+                  </Button>
+                )}
+              </Box>
             </Grid>
-          )}
-        </Box>
-      </Layout>
+          </Grid>
+        )}
+      </Box>
     );
   }
 };

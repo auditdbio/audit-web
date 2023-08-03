@@ -23,7 +23,7 @@ import dayjs from 'dayjs';
 import { addTestsLabel } from '../lib/helper.js';
 import { handleViewReport } from '../lib/viewReport.js';
 
-const AuditCard = ({ audit, request, isPublic }) => {
+const AuditCard = ({ audit, request, isOwner }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -110,7 +110,7 @@ const AuditCard = ({ audit, request, isPublic }) => {
           Accept
         </CustomButton>
       )}
-      {!isPublic && audit?.status?.toLowerCase() === RESOLVED.toLowerCase() && (
+      {isOwner && audit?.status?.toLowerCase() === RESOLVED.toLowerCase() && (
         <FormControlLabel
           sx={switchStyle}
           control={
@@ -124,7 +124,7 @@ const AuditCard = ({ audit, request, isPublic }) => {
           label="Make it public"
         />
       )}
-      {isPublic ? (
+      {!isOwner ? (
         <CustomButton
           sx={viewButtonStyle}
           variant={'contained'}
@@ -162,13 +162,8 @@ const btnWrapper = () => ({
 
 const switchStyle = theme => ({
   '.MuiTypography-root': {
-    fontSize: '15px',
+    fontSize: '12px',
     fontWeight: 500,
-  },
-  [theme.breakpoints.down('sm')]: {
-    '.MuiTypography-root': {
-      fontSize: '12px',
-    },
   },
   [theme.breakpoints.down('xs')]: {
     marginRight: 0,

@@ -15,11 +15,13 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { clearUserSuccess } from '../redux/actions/userAction.js';
 import CustomSnackbar from '../components/custom/CustomSnackbar.jsx';
 import { isAuth } from '../lib/helper.js';
+import PublicProfile from './Public-profile.jsx';
 
 const ProfilePage = () => {
   const { tab } = useParams();
   const [chooseTab, setChooseTab] = useState(tab);
   const currentRole = useSelector(s => s.user.user.current_role);
+  const id = useSelector(s => s.user.user.id);
   const message = useSelector(s => s.user.success);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -34,7 +36,7 @@ const ProfilePage = () => {
     setChooseTab(tab);
   }, [tab, chooseTab]);
   return (
-    <Layout>
+    <Layout sx={{ flexDirection: 'column' }}>
       <CustomSnackbar
         autoHideDuration={3000}
         open={!!message}
@@ -65,6 +67,9 @@ const ProfilePage = () => {
           {chooseTab === 'user-info' && <UserInfo role={currentRole} />}
         </InfoCard>
       </Box>
+      {chooseTab === 'user-info' && (
+        <PublicProfile currentRole={currentRole} ownerId={id} />
+      )}
     </Layout>
   );
 };
