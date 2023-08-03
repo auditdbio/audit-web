@@ -34,7 +34,7 @@ const ProfilePage = () => {
     setChooseTab(tab);
   }, [tab, chooseTab]);
   return (
-    <Layout sx={{ flexDirection: 'column' }}>
+    <Layout sx={pageWrapper}>
       <CustomSnackbar
         autoHideDuration={3000}
         open={!!message}
@@ -103,6 +103,11 @@ const customerTabs = [
     label: 'User info',
   },
 ];
+
+const pageWrapper = () => ({
+  flexDirection: 'column',
+  paddingY: '50px!important',
+});
 
 const wrapper = theme => ({
   display: 'flex',

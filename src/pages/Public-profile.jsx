@@ -265,7 +265,7 @@ const PublicProfile = ({ currentRole, ownerId }) => {
         )}
 
         {isAuth() && (
-          <Grid container sx={{ marginTop: '98px' }} spacing={0}>
+          <Grid container sx={gridWrapper(ownerId)} spacing={0}>
             {(currentRole || role).toLowerCase() === CUSTOMER && (
               <Grid
                 item
@@ -344,7 +344,7 @@ const PublicProfile = ({ currentRole, ownerId }) => {
     );
   }
 };
-//
+
 export default PublicProfile;
 
 const moreBtnSx = theme => ({
@@ -354,6 +354,10 @@ const moreBtnSx = theme => ({
   marginBottom: '-20px',
   marginTop: '20px',
   textTransform: 'unset',
+});
+
+const gridWrapper = ownerId => ({
+  marginTop: ownerId ? '60px' : '98px',
 });
 
 const projectsWrapper = (theme, isAuditor) => ({
@@ -426,10 +430,10 @@ const headWrapper = theme => ({
 const mainWrapper = (theme, ownerId) => ({
   backgroundColor: ownerId ? 'transparent' : '#fff',
   width: '1300px',
-  padding: '75px 120px',
+  padding: ownerId ? 0 : '75px 120px',
   [theme.breakpoints.down('lg')]: {
     width: '1200px',
-    padding: '50px 80px',
+    padding: ownerId ? 0 : '50px 80px',
   },
   [theme.breakpoints.down('md')]: {
     width: '100%',
