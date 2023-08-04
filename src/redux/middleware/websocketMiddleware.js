@@ -6,6 +6,7 @@ import {
   GET_NEW_REQUEST,
   GET_REQUEST,
   IN_PROGRESS,
+  REQUEST_DECLINE,
   WEBSOCKET_CONNECT,
   WEBSOCKET_CONNECTED,
   WEBSOCKET_DISCONNECT,
@@ -39,7 +40,6 @@ const websocketMiddleware = () => {
 
           socket.onmessage = event => {
             const message = JSON.parse(event.data);
-            console.log('message', message);
             if (message.kind.toLowerCase() === 'notification') {
               if (
                 message.payload.Notification.inner.role.toLowerCase() ===
@@ -68,6 +68,11 @@ const websocketMiddleware = () => {
               store.dispatch({
                 type: IN_PROGRESS,
                 payload: message.payload.AuditUpdate,
+              });
+            } else if (message.kind.toLowerCase() === 'requestdecline') {
+              store.dispatch({
+                type: REQUEST_DECLINE,
+                payload: message.payload.RequestDecline,
               });
             }
           };

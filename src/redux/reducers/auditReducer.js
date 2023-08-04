@@ -18,6 +18,7 @@ import {
   CLEAR_AUDIT,
   GET_NEW_REQUEST,
   GET_NEW_AUDIT,
+  REQUEST_DECLINE,
 } from '../actions/types.js';
 
 const initialState = {
@@ -86,6 +87,13 @@ export const auditReducer = (state = initialState, action) => {
         audit: action.payload,
         audits: state.audits?.map(audit =>
           audit.id === action.payload.id ? action.payload : audit,
+        ),
+      };
+    case REQUEST_DECLINE:
+      return {
+        ...state,
+        auditRequests: state.auditRequests.filter(
+          audit => audit.id !== action.payload,
         ),
       };
     case CLEAR_AUDIT_REQUEST:
