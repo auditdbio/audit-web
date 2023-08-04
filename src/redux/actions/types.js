@@ -77,3 +77,6 @@ export const CLEAR_AUDIT_REQUEST = 'CLEAR_AUDIT_REQUEST';
 export const CLEAR_AUDIT = 'CLEAR_AUDIT';
 export const READY_FOR_RESOLVE = 'Ready for resolve';
 export const DISCONNECTED_WS = 'DISCONNECTED_WS';
+export const GET_NEW_REQUEST = 'GET_NEW_REQUEST';
+export const GET_NEW_AUDIT = 'GET_NEW_AUDIT';
+export const REQUEST_DECLINE = 'REQUEST_DECLINE';

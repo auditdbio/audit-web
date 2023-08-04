@@ -198,7 +198,7 @@ export const acceptAudit = values => {
   };
 };
 
-export const confirmAudit = values => {
+export const confirmAudit = (values, shouldRedirect) => {
   return dispatch => {
     const token = Cookies.get('token');
     axios
@@ -208,7 +208,9 @@ export const confirmAudit = values => {
         },
       })
       .then(({ data }) => {
-        history.back();
+        if (!shouldRedirect) {
+          history.back();
+        }
         dispatch({ type: CONFIRM_AUDIT, payload: data });
       });
   };
