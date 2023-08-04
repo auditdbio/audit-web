@@ -230,6 +230,8 @@ export const startAudit = (values, goBack) => {
         dispatch({ type: IN_PROGRESS, payload: data });
         if (goBack) {
           history.back();
+        } else {
+          history.push(`/audit-info/${values.id}/auditor`);
         }
       });
   };
