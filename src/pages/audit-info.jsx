@@ -29,7 +29,7 @@ import { addTestsLabel } from '../lib/helper.js';
 import { handleOpenReport } from '../lib/report.js';
 import { getIssues } from '../redux/actions/issueAction.js';
 
-const AuditInfo = ({ audit, auditRequest, issues }) => {
+const AuditInfo = ({ audit, auditRequest, issues, confirmed }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [showFull, setShowFull] = useState(false);
@@ -84,18 +84,48 @@ const AuditInfo = ({ audit, auditRequest, issues }) => {
           <ArrowBackIcon />
         </Button>
         <Box sx={{ display: 'flex', width: '100%' }}>
-          <Typography sx={{ width: '100%', textAlign: 'center' }}>
-            You have offer to audit for{' '}
-            <span style={{ fontWeight: 500, wordBreak: 'break-word' }}>
-              <Link
-                style={{ color: '#000' }}
-                to={`/projects/${audit.project_id}`}
+          {confirmed ? (
+            <Box
+              sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}
+            >
+              <Typography
+                variant={'h3'}
+                sx={{
+                  width: '100%',
+                  textAlign: 'center',
+                  wordBreak: 'break-word',
+                }}
               >
-                {audit?.project_name}
-              </Link>
-            </span>{' '}
-            project!
-          </Typography>
+                <Link
+                  style={{ color: '#000' }}
+                  to={`/projects/${audit.project_id}`}
+                >
+                  {audit?.project_name}
+                </Link>
+              </Typography>
+              <Typography sx={titleSx}>
+                {audit?.tags?.map(el => el).join(', ') ?? ''}
+              </Typography>
+            </Box>
+          ) : (
+            <Typography sx={{ width: '100%', textAlign: 'center' }}>
+              You have offer to audit for{' '}
+              <span style={{ fontWeight: 500, wordBreak: 'break-word' }}>
+                <Link
+                  style={{ color: '#000' }}
+                  to={`/projects/${audit.project_id}`}
+                >
+                  {audit?.project_name}
+                </Link>
+              </span>{' '}
+              project!
+            </Typography>
+          )}
         </Box>
         <Box sx={{ maxWidth: '100%' }}>
           <Box sx={contentWrapper}>
@@ -274,15 +304,34 @@ const wrapper = theme => ({
   alignItems: 'center',
   gap: '80px',
   position: 'relative',
+  '& h3': {
+    fontSize: '37px',
+    fontWeight: 500,
+  },
   [theme.breakpoints.down('md')]: {
     padding: '38px 44px 60px',
+    '& h3': {
+      fontSize: '30px',
+    },
   },
   [theme.breakpoints.down('sm')]: {
     gap: '40px',
     padding: '38px 20px 30px',
+    '& h3': {
+      fontSize: '24px',
+    },
   },
 });
 
+const titleSx = theme => ({
+  fontWeight: 500,
+  [theme.breakpoints.down('md')]: {
+    fontSize: '20px',
+  },
+  [theme.breakpoints.down('sm')]: {
+    fontSize: '16px',
+  },
+});
 const userNameWrapper = theme => ({
   maxWidth: '190px',
   [theme.breakpoints.down('sm')]: {
