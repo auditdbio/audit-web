@@ -15,10 +15,10 @@ import MenuIcon from '@mui/icons-material/Menu';
 import IconButton from '@mui/material/IconButton';
 import { addTestsLabel } from '../../lib/helper.js';
 import { AUDITOR, RESOLVED } from '../../redux/actions/types.js';
-import { generateReport, handleOpenReport } from '../../lib/report.js';
 import ResolveAuditConfirmation from './ResolveAuditConfirmation.jsx';
 import { discloseAllIssues } from '../../redux/actions/issueAction.js';
 import { DRAFT, FIXED, NOT_FIXED } from './constants.js';
+import { downloadReport } from '../../redux/actions/auditAction.js';
 
 const Control = ({ issues, search, setSearch, setPage, setSearchParams }) => {
   const dispatch = useDispatch();
@@ -57,15 +57,15 @@ const Control = ({ issues, search, setSearch, setPage, setSearchParams }) => {
   };
 
   const handleGenerateReport = () => {
-    generateReport(audit);
+    dispatch(downloadReport(audit, { generate: true }));
     setMenuAnchorEl(null);
   };
 
   const handleDownloadReport = () => {
     if (audit?.report_name) {
-      handleOpenReport(audit);
+      dispatch(downloadReport(audit));
     } else {
-      handleGenerateReport();
+      dispatch(downloadReport(audit, { generate: true }));
     }
   };
 
@@ -200,7 +200,7 @@ const Control = ({ issues, search, setSearch, setPage, setSearchParams }) => {
             variant="contained"
             color="primary"
             disabled={!audit?.report}
-            onClick={() => handleOpenReport(audit)}
+            onClick={() => dispatch(downloadReport(audit))}
             sx={buttonSx}
             {...addTestsLabel('customer-report-button')}
           >

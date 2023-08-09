@@ -19,6 +19,7 @@ import {
   GET_NEW_REQUEST,
   GET_NEW_AUDIT,
   REQUEST_DECLINE,
+  DOWNLOAD_REPORT_START,
 } from '../actions/types.js';
 
 const initialState = {
@@ -140,6 +141,8 @@ export const auditReducer = (state = initialState, action) => {
       return { ...state, currentAuditPartner: action.payload };
     case REQUEST_ERROR:
       return { ...state, error: 'Error while processing request' };
+    case DOWNLOAD_REPORT_START:
+      return { ...state, successMessage: 'The report is loading' };
     case CLEAR_MESSAGES:
       return { ...state, error: null, successMessage: null };
     case LOG_OUT:
