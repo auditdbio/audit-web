@@ -1,4 +1,4 @@
-import React, { useMemo, useRef, useState, useEffect } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { CustomCard } from '../components/custom/Card.jsx';
 import Layout from '../styles/Layout.jsx';
 import { Avatar, Box, Button, Typography, Tooltip } from '@mui/material';
@@ -6,19 +6,17 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { useNavigate, Link } from 'react-router-dom/dist';
 import TagsList from '../components/tagsList.jsx';
 import { useDispatch, useSelector } from 'react-redux';
-import { useParams } from 'react-router-dom';
 import {
   acceptAudit,
+  clearMessage,
   confirmAudit,
   deleteAudit,
   deleteAuditRequest,
+  downloadReport,
 } from '../redux/actions/auditAction.js';
 import {
   CUSTOMER,
   DONE,
-  IN_PROGRESS,
-  PENDING,
-  RESOLVED,
   SUBMITED,
   WAITING_FOR_AUDITS,
 } from '../redux/actions/types.js';
@@ -26,14 +24,14 @@ import dayjs from 'dayjs';
 import Markdown from '../components/markdown/Markdown.jsx';
 import { ASSET_URL } from '../services/urls.js';
 import { addTestsLabel } from '../lib/helper.js';
-import { handleOpenReport } from '../lib/report.js';
-import { getIssues } from '../redux/actions/issueAction.js';
+import CustomSnackbar from '../components/custom/CustomSnackbar.jsx';
 
 const AuditInfo = ({ audit, auditRequest, issues, confirmed }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [showFull, setShowFull] = useState(false);
   const [showReadMoreButton, setShowReadMoreButton] = useState(false);
+  const { successMessage, error } = useSelector(s => s.audits);
   const descriptionRef = useRef();
 
   useEffect(() => {
@@ -72,6 +70,14 @@ const AuditInfo = ({ audit, auditRequest, issues, confirmed }) => {
 
   return (
     <Layout>
+      <CustomSnackbar
+        autoHideDuration={5000}
+        open={!!error || !!successMessage}
+        severity={error ? 'error' : 'success'}
+        text={error || successMessage}
+        onClose={() => dispatch(clearMessage())}
+      />
+
       <CustomCard sx={wrapper}>
         <Button
           sx={backButtonSx}
@@ -229,7 +235,7 @@ const AuditInfo = ({ audit, auditRequest, issues, confirmed }) => {
               <Button
                 variant={'contained'}
                 color={'secondary'}
-                onClick={() => handleOpenReport(audit)}
+                onClick={() => dispatch(downloadReport(audit))}
                 sx={[buttonSx, { marginBottom: '20px' }]}
                 {...addTestsLabel('report-button')}
               >
