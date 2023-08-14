@@ -75,6 +75,7 @@ const CustomMessage = ({ message }) => {
                   navigate(message.inner.links[0]);
                   handleClose(message.id);
                 }}
+                color={role === AUDITOR ? 'secondary' : 'primary'}
                 sx={{
                   padding: 0,
                   textTransform: 'unset',

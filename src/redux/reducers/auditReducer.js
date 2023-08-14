@@ -18,6 +18,10 @@ import {
   CLEAR_AUDIT,
   GET_USER_AUDITS,
   CHANGE_PUBLISH_AUDIT,
+  GET_NEW_REQUEST,
+  GET_NEW_AUDIT,
+  REQUEST_DECLINE,
+  DOWNLOAD_REPORT_START,
 } from '../actions/types.js';
 
 const initialState = {
@@ -64,12 +68,36 @@ export const auditReducer = (state = initialState, action) => {
           audit.id === action.payload.id ? action.payload : audit,
         ),
       };
+    //
+    case GET_NEW_AUDIT:
+      return {
+        ...state,
+        audits: [action.payload, ...state.audits],
+        auditRequests: state.auditRequests.filter(
+          request => request.id !== action?.payload?.id,
+        ),
+      };
+    case GET_NEW_REQUEST:
+      const newRequests = state.auditRequests.filter(
+        request => request.id !== action?.payload?.id,
+      );
+      return {
+        ...state,
+        auditRequests: [action.payload, ...newRequests],
+      };
     case GET_AUDIT:
       return {
         ...state,
         audit: action.payload,
         audits: state.audits?.map(audit =>
           audit.id === action.payload.id ? action.payload : audit,
+        ),
+      };
+    case REQUEST_DECLINE:
+      return {
+        ...state,
+        auditRequests: state.auditRequests.filter(
+          audit => audit.id !== action.payload,
         ),
       };
     case CLEAR_AUDIT_REQUEST:
@@ -128,6 +156,8 @@ export const auditReducer = (state = initialState, action) => {
       return { ...state, currentAuditPartner: action.payload };
     case REQUEST_ERROR:
       return { ...state, error: 'Error while processing request' };
+    case DOWNLOAD_REPORT_START:
+      return { ...state, successMessage: 'The report is loading' };
     case CLEAR_MESSAGES:
       return { ...state, error: null, successMessage: null };
     case LOG_OUT:

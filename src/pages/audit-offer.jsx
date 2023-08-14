@@ -435,6 +435,9 @@ const wrapper = theme => ({
   [theme.breakpoints.down('sm')]: {
     gap: '20px',
     padding: '38px 20px 0',
+    '& h3': {
+      fontSize: '24px',
+    },
   },
 });
 
@@ -491,6 +494,9 @@ const titleSx = theme => ({
   fontWeight: 500,
   [theme.breakpoints.down('md')]: {
     fontSize: '20px',
+  },
+  [theme.breakpoints.down('sm')]: {
+    fontSize: '16px',
   },
 });
 

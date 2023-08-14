@@ -24,6 +24,7 @@ const ResolveAuditConfirmation = ({ isOpen, setIsOpen, audit }) => {
           onClick={handleDisagree}
           variant="contained"
           color="primary"
+          sx={buttonSx}
           {...addTestsLabel('resolve-disagree-button')}
         >
           Disagree
@@ -32,6 +33,7 @@ const ResolveAuditConfirmation = ({ isOpen, setIsOpen, audit }) => {
           onClick={handleAgree}
           variant="contained"
           color="secondary"
+          sx={buttonSx}
           {...addTestsLabel('resolve-agree-button')}
         >
           Agree
@@ -42,3 +44,8 @@ const ResolveAuditConfirmation = ({ isOpen, setIsOpen, audit }) => {
 };
 
 export default ResolveAuditConfirmation;
+
+const buttonSx = () => ({
+  textTransform: 'unset',
+  fontWeight: 600,
+});
