@@ -4,6 +4,7 @@ import {
   GET_CURRENT_AUDITOR,
   GET_CURRENT_CUSTOMER,
   GET_CUSTOMER,
+  NOT_FOUND,
   SIGN_IN_ERROR,
   UPDATE_CUSTOMER,
   USER_SIGNIN,
@@ -39,10 +40,7 @@ export const getCurrentCustomer = id => {
       .then(({ data }) => {
         dispatch({ type: GET_CURRENT_CUSTOMER, payload: data });
       })
-      .catch(({ response }) => {
-        console.log(response, 'res');
-        // dispatch({type: SIGN_IN_ERROR})
-      });
+      .catch(() => dispatch({ type: NOT_FOUND }));
   };
 };
 

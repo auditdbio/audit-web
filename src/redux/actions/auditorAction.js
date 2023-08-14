@@ -4,6 +4,7 @@ import {
   GET_AUDITOR,
   GET_AUDITORS,
   GET_CURRENT_AUDITOR,
+  NOT_FOUND,
   SEARCH_AUDITOR,
   SEARCH_PROJECTS,
   UPDATE_AUDITOR,
@@ -41,10 +42,7 @@ export const getCurrentAuditor = id => {
       .then(({ data }) => {
         dispatch({ type: GET_CURRENT_AUDITOR, payload: data });
       })
-      .catch(({ response }) => {
-        console.log(response, 'res');
-        // dispatch({type: SIGN_IN_ERROR})
-      });
+      .catch(() => dispatch({ type: NOT_FOUND }));
   };
 };
 

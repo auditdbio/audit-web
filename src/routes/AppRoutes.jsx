@@ -32,7 +32,6 @@ import RestorePasswordPage from '../pages/RestorePasswordPage.jsx';
 import AuditIssues from '../pages/AuditIssues.jsx';
 import AuditIssueDetails from '../pages/AuditIssueDetails.jsx';
 import CreateIssuePage from '../pages/CreateIssuePage.jsx';
-import PublicProfile from '../pages/Public-profile.jsx';
 import NotFound from '../pages/Not-Found.jsx';
 import AuditInfoReqPage from '../pages/audit-info-req-page.jsx';
 import AuditInfoPage from '../pages/audit-info-page.jsx';

@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { Avatar, Button, Grid, Typography, useMediaQuery } from '@mui/material';
-import { AUDITOR, CUSTOMER } from '../redux/actions/types.js';
+import { AUDITOR, CLEAR_AUDIT, CUSTOMER } from '../redux/actions/types.js';
 import Loader from '../components/Loader.jsx';
 import { Box } from '@mui/system';
 import { ASSET_URL } from '../services/urls.js';
@@ -21,13 +21,14 @@ import { getCustomerProjects } from '../redux/actions/projectAction.js';
 import ProjectCardList from '../components/Project-card-list.jsx';
 import AuditCard from '../components/Audit-card.jsx';
 import { getUserAudits } from '../redux/actions/auditAction.js';
+import NotFound from './Not-Found.jsx';
 
 const PublicProfile = ({ currentRole, ownerId }) => {
   const { role, id } = useParams();
   const navigate = useNavigate();
+  const notFound = useSelector(s => s.notFound.error);
   const customer = useSelector(s => s.customer.currentCustomer);
   const auditor = useSelector(s => s.auditor.currentAuditor);
-  const matchXs = useMediaQuery(theme.breakpoints.down('xs'));
   const matchSm = useMediaQuery(theme.breakpoints.down('sm'));
   const userProjects = useSelector(s => s.project.myProjects);
   const dispatch = useDispatch();
@@ -97,6 +98,7 @@ const PublicProfile = ({ currentRole, ownerId }) => {
         dispatch(getCurrentCustomer(id));
       }
     }
+    return () => dispatch({ type: CLEAR_AUDIT });
   }, [id, role, currentRole, ownerId]);
 
   const data = useMemo(() => {
@@ -107,7 +109,7 @@ const PublicProfile = ({ currentRole, ownerId }) => {
     }
   }, [role, customer, auditor, currentRole]);
 
-  if (!data && !customerProjects && !userAudits && !ownerId) {
+  if (!data && !customerProjects && !userAudits && !ownerId && !notFound) {
     return (
       <Box sx={mainWrapper(theme, ownerId)}>
         <Box
@@ -129,7 +131,8 @@ const PublicProfile = ({ currentRole, ownerId }) => {
         </Box>
       </Box>
     );
-  } else {
+  }
+  if (!notFound) {
     return (
       <Box sx={mainWrapper(theme, ownerId)}>
         {!ownerId && (
@@ -342,6 +345,10 @@ const PublicProfile = ({ currentRole, ownerId }) => {
         )}
       </Box>
     );
+  }
+
+  if (notFound) {
+    return <NotFound component={true} />;
   }
 };
 

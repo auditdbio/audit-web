@@ -9,10 +9,31 @@ import { useNavigate } from 'react-router-dom/dist';
 import { AUDITOR } from '../redux/actions/types.js';
 import NotFound404 from '../components/images/404.png';
 
-const NotFound = ({ role }) => {
+const NotFound = ({ role, component }) => {
   const navigate = useNavigate();
-  return (
-    <Layout>
+  if (!component) {
+    return (
+      <Layout>
+        <CustomCard sx={wrapper}>
+          <Button
+            sx={backButtonSx}
+            color={role === AUDITOR ? 'secondary' : 'primary'}
+            onClick={() => navigate(-1)}
+            aria-label="Go back"
+            {...addTestsLabel('go-back-button')}
+          >
+            <ArrowBackIcon />
+          </Button>
+          <Box>
+            <img src={NotFound404} alt="" />
+          </Box>
+        </CustomCard>
+      </Layout>
+    );
+  }
+
+  if (component) {
+    return (
       <CustomCard sx={wrapper}>
         <Button
           sx={backButtonSx}
@@ -27,8 +48,8 @@ const NotFound = ({ role }) => {
           <img src={NotFound404} alt="" />
         </Box>
       </CustomCard>
-    </Layout>
-  );
+    );
+  }
 };
 
 export default NotFound;
