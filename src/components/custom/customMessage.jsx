@@ -6,11 +6,13 @@ import { AUDITOR, CUSTOMER } from '../../redux/actions/types.js';
 import theme from '../../styles/themes.js';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import { readMessage } from '../../redux/actions/websocketAction.js';
+import { useNavigate } from 'react-router-dom/dist';
 
 const CustomMessage = ({ message }) => {
   const role = useSelector(s => s.user.user.current_role);
   const [open, setOpen] = React.useState(false);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const handleClose = id => {
     dispatch(readMessage(id));
     setOpen(false);
@@ -52,9 +54,40 @@ const CustomMessage = ({ message }) => {
               color={role === AUDITOR ? 'secondary' : 'primary'}
             />
           </Button>
-          <Typography id="modal-modal-description">
-            {message.inner.message}
-          </Typography>
+          {!message.inner.links.length ? (
+            <Typography id="modal-modal-description">
+              {message.inner.message}
+            </Typography>
+          ) : (
+            <Box
+              sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'flex-start',
+                gap: '15px',
+              }}
+            >
+              <Typography id="modal-modal-description">
+                {message.inner.message}
+              </Typography>
+              <Button
+                onClick={() => {
+                  navigate(message.inner.links[0]);
+                  handleClose(message.id);
+                }}
+                color={role === AUDITOR ? 'secondary' : 'primary'}
+                sx={{
+                  padding: 0,
+                  textTransform: 'unset',
+                  alignSelf: 'flex-end',
+                  marginBottom: '-15px',
+                  marginRight: '-15px',
+                }}
+              >
+                View more &#x2192;
+              </Button>
+            </Box>
+          )}
         </Box>
       </Modal>
     </Box>

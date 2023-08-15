@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import Box from '@mui/material/Box';
 import { Button, ClickAwayListener, Typography } from '@mui/material';
 import { CustomBadge } from '../custom/Badge.jsx';
@@ -8,29 +8,23 @@ import { useDispatch, useSelector } from 'react-redux';
 import { AUDITOR } from '../../redux/actions/types.js';
 import theme from '../../styles/themes.js';
 import { addTestsLabel } from '../../lib/helper.js';
-import {
-  websocketConnect,
-  websocketDisconnect,
-} from '../../redux/actions/websocketAction.js';
 import CustomMessage from '../custom/customMessage.jsx';
 
 const CustomBudge = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const dispatch = useDispatch();
   const currentRole = useSelector(s => s.user.user.current_role);
-  const { messages, connected } = useSelector(s => s.websocket);
+  const { auditorMessages, customerMessages } = useSelector(s => s.websocket);
 
-  // useEffect(() => {
-  //   if (!connected) {
-  //     dispatch(websocketConnect());
-  //   }
-  //   return () => {
-  //     dispatch(websocketDisconnect());
-  //   };
-  // }, [connected]);
   const handleClose = () => {
     setIsOpen(false);
   };
+
+  const messages = useMemo(() => {
+    if (currentRole === AUDITOR) {
+      return auditorMessages;
+    }
+    return customerMessages;
+  }, [auditorMessages, customerMessages, currentRole]);
 
   return (
     <ClickAwayListener onClickAway={handleClose}>

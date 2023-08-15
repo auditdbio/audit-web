@@ -127,6 +127,18 @@ const UserInfo = ({ role }) => {
                 <Typography noWrap={true}>{data.contacts?.email}</Typography>
               </Box>
             </Box>
+            <Box sx={[infoWrapper, aboutWrapper]}>
+              <span>About</span>
+              <Typography
+                sx={{
+                  maxWidth: 'unset!important',
+                  width: '100%',
+                  wordBreak: 'break-word',
+                }}
+              >
+                {data.about}
+              </Typography>
+            </Box>
             {!matchXs && <TagsList data={data.tags} fullView={true} />}
           </Box>
         </Box>
@@ -175,6 +187,26 @@ const shareBtn = theme => ({
   textTransform: 'capitalize',
 });
 
+const aboutWrapper = theme => ({
+  width: '100%',
+  '& span': {
+    marginRight: '50px',
+    maxWidth: '125px',
+    width: '100%',
+  },
+  [theme.breakpoints.down('md')]: {
+    '& span': {
+      maxWidth: '90px',
+      marginRight: '20px',
+    },
+  },
+  [theme.breakpoints.down(450)]: {
+    '& span': {
+      maxWidth: '70px',
+    },
+  },
+});
+
 const wrapper = theme => ({
   width: '100%',
   minHeight: '520px',
@@ -215,6 +247,7 @@ const infoStyle = theme => ({
   flexDirection: 'row',
   flexWrap: 'wrap',
   gap: '40px',
+  rowGap: '15px',
   '& .tagsWrapper': {
     width: '100%',
   },

@@ -15,10 +15,10 @@ import MenuIcon from '@mui/icons-material/Menu';
 import IconButton from '@mui/material/IconButton';
 import { addTestsLabel } from '../../lib/helper.js';
 import { AUDITOR, RESOLVED } from '../../redux/actions/types.js';
-import { handleOpenReport } from '../../lib/openReport.js';
 import ResolveAuditConfirmation from './ResolveAuditConfirmation.jsx';
 import { discloseAllIssues } from '../../redux/actions/issueAction.js';
 import { DRAFT, FIXED, NOT_FIXED } from './constants.js';
+import { downloadReport } from '../../redux/actions/auditAction.js';
 
 const Control = ({ issues, search, setSearch, setPage, setSearchParams }) => {
   const dispatch = useDispatch();
@@ -54,6 +54,19 @@ const Control = ({ issues, search, setSearch, setPage, setSearchParams }) => {
   const handleDiscloseAll = () => {
     dispatch(discloseAllIssues(auditId));
     setMenuAnchorEl(null);
+  };
+
+  const handleGenerateReport = () => {
+    dispatch(downloadReport(audit, { generate: true }));
+    setMenuAnchorEl(null);
+  };
+
+  const handleDownloadReport = () => {
+    if (audit?.report_name) {
+      dispatch(downloadReport(audit));
+    } else {
+      dispatch(downloadReport(audit, { generate: true }));
+    }
   };
 
   const checkDraftIssues = () => {
@@ -104,7 +117,14 @@ const Control = ({ issues, search, setSearch, setPage, setSearchParams }) => {
                 Disclose all
               </MenuItem>
             )}
-            <MenuItem onClick={handleCloseMenu}>Mark all as read</MenuItem>
+            <MenuItem disabled onClick={handleCloseMenu}>
+              Mark all as read
+            </MenuItem>
+            {user.current_role === AUDITOR && (
+              <MenuItem onClick={handleGenerateReport}>
+                Generate report
+              </MenuItem>
+            )}
           </Menu>
 
           <TextField
@@ -126,39 +146,53 @@ const Control = ({ issues, search, setSearch, setPage, setSearchParams }) => {
 
         {user?.current_role === AUDITOR ? (
           <Box sx={buttonBoxSx}>
-            <Button
-              variant="contained"
-              color="secondary"
-              sx={buttonSx}
-              disabled={audit?.status?.toLowerCase() === RESOLVED.toLowerCase()}
-              onClick={handleNewIssue}
-              {...addTestsLabel('new-issue-button')}
-            >
-              New issue
-            </Button>
-            {audit?.status?.toLowerCase() !== RESOLVED.toLowerCase() && (
-              <Tooltip
-                arrow
-                placement="top"
-                title={
-                  allIssuesClosed
-                    ? ''
-                    : "To resolve an audit, it is necessary that the status of all issues be 'Fixed' or 'Not fixed'. Or do not include some issues in the audit."
-                }
+            {audit?.status?.toLowerCase() !== RESOLVED.toLowerCase() ? (
+              <>
+                <Button
+                  variant="contained"
+                  color="secondary"
+                  sx={buttonSx}
+                  disabled={
+                    audit?.status?.toLowerCase() === RESOLVED.toLowerCase()
+                  }
+                  onClick={handleNewIssue}
+                  {...addTestsLabel('new-issue-button')}
+                >
+                  New issue
+                </Button>
+                <Tooltip
+                  arrow
+                  placement="top"
+                  title={
+                    allIssuesClosed
+                      ? ''
+                      : "To resolve an audit, it is necessary that the status of all issues be 'Fixed' or 'Not fixed'. Or do not include some issues in the audit."
+                  }
+                >
+                  <span>
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      onClick={() => setResolveConfirmation(true)}
+                      disabled={!allIssuesClosed}
+                      sx={buttonSx}
+                      {...addTestsLabel('resolve-button')}
+                    >
+                      Resolve audit
+                    </Button>
+                  </span>
+                </Tooltip>
+              </>
+            ) : (
+              <Button
+                variant="contained"
+                color="secondary"
+                sx={[buttonSx, { width: '100%' }]}
+                onClick={handleDownloadReport}
+                {...addTestsLabel('auditor-report-button')}
               >
-                <span>
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={() => setResolveConfirmation(true)}
-                    disabled={!allIssuesClosed}
-                    sx={buttonSx}
-                    {...addTestsLabel('resolve-button')}
-                  >
-                    Resolve audit
-                  </Button>
-                </span>
-              </Tooltip>
+                Download report
+              </Button>
             )}
           </Box>
         ) : (
@@ -166,9 +200,9 @@ const Control = ({ issues, search, setSearch, setPage, setSearchParams }) => {
             variant="contained"
             color="primary"
             disabled={!audit?.report}
-            onClick={() => handleOpenReport(audit)}
+            onClick={() => dispatch(downloadReport(audit))}
             sx={buttonSx}
-            {...addTestsLabel('report-button')}
+            {...addTestsLabel('customer-report-button')}
           >
             Download report
           </Button>
@@ -241,7 +275,7 @@ const buttonBoxSx = theme => ({
 const buttonSx = theme => ({
   padding: '15px 24px',
   flexShrink: 0,
-  fontWeight: 600,
+  fontWeight: '600!important',
   fontSize: '20px',
   lineHeight: '25px',
   textTransform: 'none',

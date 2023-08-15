@@ -1,19 +1,19 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom/dist';
+import { useDispatch, useSelector } from 'react-redux';
 import { Box, Button, Tooltip, Typography } from '@mui/material';
 import Currency from './icons/Currency.jsx';
 import Star from './icons/Star.jsx';
 import {
   AUDITOR,
   DONE,
-  IN_PROGRESS,
   RESOLVED,
   SUBMITED,
   WAITING_FOR_AUDITS,
 } from '../redux/actions/types.js';
-import { useNavigate } from 'react-router-dom/dist';
-import { useDispatch, useSelector } from 'react-redux';
 import { addTestsLabel } from '../lib/helper.js';
 import { startAudit } from '../redux/actions/auditAction.js';
+import ShareProjectButton from './custom/ShareProjectButton.jsx';
 
 const ProjectCard = ({ type, project }) => {
   const navigate = useNavigate();
@@ -132,13 +132,18 @@ const ProjectCard = ({ type, project }) => {
             : 'Edit'}
         </Button>
         {type !== AUDITOR ? (
-          <Button
-            sx={copyBtn}
-            onClick={handleMakeCopy}
-            {...addTestsLabel('make-copy-button')}
-          >
-            Make a copy
-          </Button>
+          <Box sx={smallButtonsBox}>
+            <Button
+              sx={copyBtn}
+              onClick={handleMakeCopy}
+              {...addTestsLabel('make-copy-button')}
+            >
+              Make a copy
+            </Button>
+            {project.publish_options.publish && (
+              <ShareProjectButton projectId={project.id} />
+            )}
+          </Box>
         ) : (
           project?.status.toLowerCase() ===
             WAITING_FOR_AUDITS.toLowerCase() && (
@@ -191,12 +196,25 @@ const cardInnerWrapper = theme => ({
   },
 });
 
-const copyBtn = theme => ({
-  textTransform: 'none',
-  fontSize: '10px',
+const smallButtonsBox = theme => ({
+  display: 'flex',
+  flexDirection: 'column',
+  justifyContent: 'center',
+  minWidth: '100px',
+  height: '60px',
   mt: '12px',
   [theme.breakpoints.down('xs')]: {
     mt: '5px',
+    height: '52px',
+    justifyContent: 'flex-start',
+  },
+});
+
+const copyBtn = theme => ({
+  textTransform: 'none',
+  fontSize: '10px',
+  [theme.breakpoints.down('xs')]: {
+    padding: '4px 6px',
   },
 });
 

@@ -1,6 +1,7 @@
 import {
   READ_MESSAGE,
-  RECEIVE_MESSAGE,
+  RECEIVE_AUDITOR_MESSAGE,
+  RECEIVE_CUSTOMER_MESSAGE,
   RECEIVE_MESSAGES,
   USER_IS_ALREADY_EXIST,
   USER_SIGNUP,
@@ -19,8 +20,12 @@ export const websocketDisconnect = () => {
   return { type: WEBSOCKET_DISCONNECT };
 };
 
-export const receiveMessage = message => {
-  return { type: RECEIVE_MESSAGE, payload: message };
+export const receiveAuditorMessage = message => {
+  return { type: RECEIVE_AUDITOR_MESSAGE, payload: message };
+};
+
+export const receiveCustomerMessage = message => {
+  return { type: RECEIVE_CUSTOMER_MESSAGE, payload: message };
 };
 
 export const readMessage = id => {

@@ -1,28 +1,25 @@
 name: Deploy to Dev
 
 on:
-  workflow_dispatch:
   push:
     branches:
-      - develop
+      - "develop"
+      
+  workflow_dispatch:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
-    env:
-      GIT_BRANCH: "#develop"
-
+    runs-on: self-hosted
     steps:
-    - uses: actions/checkout@v1
-    
-    - name: Deploy Docker
-      uses: wshihadeh/docker-deployment-action@v1
-      with:
-        remote_docker_host: ${{secrets.ADB_DEV_HOST}}
-        ssh_private_key: ${{secrets.SSH_PRIVATE_KEY}}
-        ssh_public_key: ${{secrets.ADB_DEV_PUBLIC_KEY}}
-        deployment_mode: docker-compose
-        copy_stack_file: true
-        deploy_path: /root/audit-web
-        stack_file_name: docker-compose.yml
-        args: up -d --build
+      -
+        name: pull and build
+        env:
+          DEV_HOST: ${{ secrets.DEV_HOST }}
+          PASS: ${{ secrets.PASS }}
+        run: |
+          ssh -i /root/.ssh/id_rsa $DEV_HOST << EOF
+          cd /root/audit-web/audit-web
+          git checkout develop
+          echo $PASS | git pull
+          docker-compose up -d --build
+          EOF

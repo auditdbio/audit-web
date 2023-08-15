@@ -59,6 +59,7 @@ const AddComment = ({ auditId, issueId }) => {
                 variant="contained"
                 type="submit"
                 color="secondary"
+                sx={{ fontWeight: 600, textTransform: 'unset' }}
                 {...addTestsLabel('add-comment-button')}
               >
                 Add comment

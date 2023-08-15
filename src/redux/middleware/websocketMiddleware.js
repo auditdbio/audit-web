@@ -1,5 +1,12 @@
 import {
+  AUDITOR,
+  CUSTOMER,
   DISCONNECTED_WS,
+  GET_NEW_AUDIT,
+  GET_NEW_REQUEST,
+  GET_REQUEST,
+  IN_PROGRESS,
+  REQUEST_DECLINE,
   WEBSOCKET_CONNECT,
   WEBSOCKET_CONNECTED,
   WEBSOCKET_DISCONNECT,
@@ -9,10 +16,11 @@ import {
 import { w3cwebsocket as WebSocket } from 'websocket';
 import Cookies from 'js-cookie';
 import {
-  receiveMessage,
+  receiveAuditorMessage,
+  receiveCustomerMessage,
   websocketConnect,
 } from '../actions/websocketAction.js';
-
+//
 const API_URL = import.meta.env.VITE_API_WS_BASE_URL;
 
 const websocketMiddleware = () => {
@@ -32,7 +40,41 @@ const websocketMiddleware = () => {
 
           socket.onmessage = event => {
             const message = JSON.parse(event.data);
-            store.dispatch(receiveMessage(message));
+            if (message.kind.toLowerCase() === 'notification') {
+              if (
+                message.payload.Notification.inner.role.toLowerCase() ===
+                  CUSTOMER ||
+                !message.payload.Notification.inner.role
+              ) {
+                store.dispatch(receiveCustomerMessage(message));
+              } else if (
+                message.payload.Notification.inner.role.toLowerCase() ===
+                  AUDITOR ||
+                !message.payload.Notification.inner.role
+              ) {
+                store.dispatch(receiveAuditorMessage(message));
+              }
+            } else if (message.kind.toLowerCase() === 'newrequest') {
+              store.dispatch({
+                type: GET_NEW_REQUEST,
+                payload: message.payload.NewRequest,
+              });
+            } else if (message.kind.toLowerCase() === 'newaudit') {
+              store.dispatch({
+                type: GET_NEW_AUDIT,
+                payload: message.payload.NewAudit,
+              });
+            } else if (message.kind.toLowerCase() === 'auditupdate') {
+              store.dispatch({
+                type: IN_PROGRESS,
+                payload: message.payload.AuditUpdate,
+              });
+            } else if (message.kind.toLowerCase() === 'requestdecline') {
+              store.dispatch({
+                type: REQUEST_DECLINE,
+                payload: message.payload.RequestDecline,
+              });
+            }
           };
 
           socket.onclose = () => {

@@ -42,7 +42,7 @@ const AuditInfoPage = () => {
     return <NotFound />;
   }
   if (auditConfirm?.id && !notFound) {
-    return <AuditInfo audit={auditConfirm} issues={issues} />;
+    return <AuditInfo audit={auditConfirm} confirmed={true} issues={issues} />;
   }
 };
 
