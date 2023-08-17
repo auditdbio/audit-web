@@ -11,10 +11,12 @@ import CustomMenu from '../custom/CustomMenu.jsx';
 import CustomBadge from '../customBudge';
 import { UserMenu } from './UserMenu.jsx';
 import { authorizedPages } from './constants.js';
-import { addTestsLabel } from '../../lib/helper.js';
+import { addTestsLabel, isAuth } from '../../lib/helper.js';
+import ChatLabel from '../Chat/ChatLabel.jsx';
 
 const AuthorizedOptions = () => {
   const matchSm = useMediaQuery(theme.breakpoints.down('sm'));
+  const matchXs = useMediaQuery(theme.breakpoints.down('xs'));
 
   const reduxUser = useSelector(state => state.user.user);
   const auditor = useSelector(state => state.auditor.auditor);
@@ -49,10 +51,11 @@ const AuthorizedOptions = () => {
       {/*   Mobile Screen  */}
       {matchSm && (
         <Box sx={mobileWrapper}>
+          {isAuth() && matchXs && <ChatLabel />}
           <CustomBadge />
           <Avatar
             src={userAvatar ? `${ASSET_URL}/${userAvatar}` : ''}
-            style={{ width: '35px', height: '35px' }}
+            sx={mobileAvatarSx}
             alt="User photo"
           />
           <IconButton
@@ -145,6 +148,14 @@ const avatarStyle = role => ({
   border: `3px solid ${
     role === AUDITOR ? theme.palette.secondary.main : theme.palette.primary.main
   }`,
+});
+
+const mobileAvatarSx = theme => ({
+  width: '35px',
+  height: '35px',
+  [theme.breakpoints.down('xxs')]: {
+    display: 'none',
+  },
 });
 
 export default AuthorizedOptions;

@@ -77,6 +77,11 @@ export default function AuditorModal({
     }
   };
 
+  const handleSendMessage = () => {
+    window.scrollTo(0, 0);
+    navigate(`/chat/${auditor?.user_id}`);
+  };
+
   useEffect(() => {
     if (open && !isForm) {
       setMode('info');
@@ -177,26 +182,36 @@ export default function AuditorModal({
               <Box sx={infoInnerStyle} />
             </Box>
           </Box>
-          <Box sx={fieldButtonContainer}>
-            <Button
-              variant={'contained'}
-              sx={[
-                findButton,
-                { backgroundColor: theme.palette.secondary.main },
-              ]}
-              onClick={handleClose}
-              {...addTestsLabel('auditor-modal_back-button')}
-            >
-              Back
-            </Button>
-            <Button
-              variant={'contained'}
-              sx={findButton}
-              onClick={handleInvite}
-              {...addTestsLabel('auditor-modal_invite-button')}
-            >
-              Invite to project
-            </Button>
+          <Box>
+            <Box sx={fieldButtonContainer}>
+              <Button
+                variant="contained"
+                color="secondary"
+                sx={findButton}
+                onClick={handleClose}
+                {...addTestsLabel('auditor-modal_back-button')}
+              >
+                Back
+              </Button>
+              <Button
+                variant="contained"
+                sx={findButton}
+                onClick={handleInvite}
+                {...addTestsLabel('auditor-modal_invite-button')}
+              >
+                Invite to project
+              </Button>
+            </Box>
+            <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+              <Button
+                variant="contained"
+                sx={[findButton, messageButton]}
+                onClick={handleSendMessage}
+                {...addTestsLabel('message-button')}
+              >
+                Send a message
+              </Button>
+            </Box>
           </Box>
         </DialogContent>
       )}
@@ -382,11 +397,11 @@ const findButton = theme => ({
   fontSize: '18px',
   textTransform: 'unset',
   fontWeight: 600,
-  margin: '0 12px',
-  width: '180px',
+  mr: '20px',
+  width: '210px',
   borderRadius: '10px',
+  ':last-child': { mr: 0 },
   [theme.breakpoints.down('md')]: {
-    width: '210px',
     padding: '11px 0',
   },
   [theme.breakpoints.down('sm')]: {
@@ -396,7 +411,28 @@ const findButton = theme => ({
     width: '134px',
     height: '50px',
     fontSize: '12px',
-    margin: '0 6px',
+    mr: '6px',
+  },
+  [theme.breakpoints.down('xxs')]: {
+    width: '122px',
+  },
+});
+
+const messageButton = theme => ({
+  width: '440px',
+  padding: '4px 0',
+  [theme.breakpoints.down('md')]: {
+    padding: '4px 0',
+  },
+  [theme.breakpoints.down('sm')]: {
+    width: '360px',
+  },
+  [theme.breakpoints.down('xs')]: {
+    width: '274px',
+    height: 'unset',
+  },
+  [theme.breakpoints.down('xxs')]: {
+    width: '254px',
   },
 });
 
@@ -510,10 +546,7 @@ const backButton = {
 
 const fieldButtonContainer = theme => ({
   display: 'flex',
-  gap: '10px',
-  [theme.breakpoints.down('xs')]: {
-    gap: '5px',
-  },
+  mb: '10px',
 });
 
 const offerDialogStyle = {

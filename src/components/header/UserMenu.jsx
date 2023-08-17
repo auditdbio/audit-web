@@ -106,7 +106,7 @@ export const UserMenu = ({ open, handleClose, anchor, userAvatar, pages }) => {
           onClick={handleMyAccountClick}
           {...addTestsLabel('header_my-account')}
         >
-          My account
+          My Account
         </Button>
       </MenuItem>
       {matchSm &&

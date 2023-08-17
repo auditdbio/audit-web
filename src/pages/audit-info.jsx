@@ -64,6 +64,11 @@ const AuditInfo = ({ audit, auditRequest, issues, confirmed }) => {
     );
   };
 
+  const handleSendMessage = () => {
+    navigate(`/chat/${audit?.auditor_id}`);
+    window.scrollTo(0, 0);
+  };
+
   const goToIssues = () => {
     navigate(`/issues/audit-issue/${audit?.id}`);
   };
@@ -231,6 +236,17 @@ const AuditInfo = ({ audit, auditRequest, issues, confirmed }) => {
           )}
         </Box>
         <Box>
+          <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+            <Button
+              variant="contained"
+              sx={[buttonSx, { mb: '20px' }]}
+              onClick={handleSendMessage}
+              {...addTestsLabel('message-button')}
+            >
+              Send a message
+            </Button>
+          </Box>
+
           {audit?.report && (
             <Box sx={{ display: 'flex', justifyContent: 'center' }}>
               <Button

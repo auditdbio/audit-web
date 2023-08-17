@@ -78,6 +78,10 @@ const PublicProfile = () => {
     }
   };
 
+  const handleSendMessage = () => {
+    navigate(`/chat/${id}`);
+  };
+
   useEffect(() => {
     if (role.toLowerCase() === AUDITOR) {
       dispatch(getCurrentAuditor(id));
@@ -237,16 +241,28 @@ const PublicProfile = () => {
             </Box>
           )}
           {/*{matchXs && <MobileTagsList data={data.tags} />}*/}
-          {role.toLowerCase() === AUDITOR && (
+          <Box>
+            {role.toLowerCase() === AUDITOR && (
+              <Button
+                variant="contained"
+                color="secondary"
+                sx={buttonSx}
+                onClick={handleInvite}
+                {...addTestsLabel('invite-button')}
+              >
+                Invite to project
+              </Button>
+            )}
             <Button
-              variant={'contained'}
-              sx={[submitAuditor, buttonSx]}
-              onClick={handleInvite}
-              {...addTestsLabel('invite-button')}
+              variant="contained"
+              color={role === AUDITOR ? 'secondary' : 'primary'}
+              sx={buttonSx}
+              onClick={handleSendMessage}
+              {...addTestsLabel('message-button')}
             >
-              Invite to project
+              Send a message
             </Button>
-          )}
+          </Box>
         </Box>
       </Layout>
     );
@@ -369,7 +385,7 @@ const contentWrapper = theme => ({
 });
 
 const buttonSx = theme => ({
-  margin: '0 auto',
+  margin: '0 auto 15px',
   display: 'block',
   color: theme.palette.background.default,
   textTransform: 'capitalize',
@@ -377,16 +393,10 @@ const buttonSx = theme => ({
   fontSize: '18px',
   padding: '9px 50px',
   borderRadius: '10px',
+  ':last-child': { mb: 0 },
   [theme.breakpoints.down('xs')]: {
     padding: '9px 20px',
     fontSize: '12px',
-  },
-});
-
-const submitAuditor = theme => ({
-  backgroundColor: theme.palette.secondary.main,
-  '&:hover': {
-    backgroundColor: '#450e5d',
   },
 });
 

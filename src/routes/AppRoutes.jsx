@@ -42,6 +42,7 @@ import {
   websocketDisconnect,
 } from '../redux/actions/websocketAction.js';
 import PublicProject from '../pages/PublicProject.jsx';
+import ChatPage from '../pages/ChatPage.jsx';
 
 const AppRoutes = () => {
   const token = useSelector(s => s.user.token);
@@ -212,6 +213,22 @@ const AppRoutes = () => {
           element={
             <PrivateRoute auth={{ isAuthenticated: isAuth() }}>
               <EditProject />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/chat"
+          element={
+            <PrivateRoute auth={{ isAuthenticated: isAuth() }}>
+              <ChatPage />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/chat/:id"
+          element={
+            <PrivateRoute auth={{ isAuthenticated: isAuth() }}>
+              <ChatPage />
             </PrivateRoute>
           }
         />

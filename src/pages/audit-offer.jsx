@@ -274,6 +274,20 @@ const AuditOffer = () => {
                         ))}
                       </Box>
 
+                      <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+                        <Button
+                          variant="contained"
+                          color="secondary"
+                          sx={[buttonSx, sendMessageButton]}
+                          onClick={() =>
+                            navigate(`/chat/${audit?.customer_id}`)
+                          }
+                          {...addTestsLabel('message-button')}
+                        >
+                          Send a message
+                        </Button>
+                      </Box>
+
                       {audit?.status?.toLowerCase() ===
                       WAITING_FOR_AUDITS.toLowerCase() ? (
                         <Box
@@ -286,13 +300,9 @@ const AuditOffer = () => {
                           }}
                         >
                           <Button
-                            sx={[
-                              workflowButton(auditDBWorkflow),
-                              {
-                                borderRadius: '10px',
-                                width: '180px',
-                              },
-                            ]}
+                            sx={buttonSx}
+                            variant="contained"
+                            color="secondary"
                             onClick={() => dispatch(startAudit(audit, true))}
                           >
                             Start audit
@@ -600,6 +610,15 @@ const buttonSx = theme => ({
   },
   [theme.breakpoints.down('xs')]: {
     margin: '0 6px',
+    padding: '12px 0',
+    fontSize: '14px',
+  },
+});
+
+const sendMessageButton = theme => ({
+  mb: '20px',
+  [theme.breakpoints.down('xs')]: {
+    mb: '15px',
   },
 });
 

@@ -83,6 +83,11 @@ const AuditRequestInfo = ({
     }
   };
 
+  const handleSendMessage = () => {
+    window.scrollTo(0, 0);
+    navigate(`/chat/${project?.customer_id}`);
+  };
+
   return (
     <CustomCard sx={wrapper} className={'audit-request-wrapper'}>
       <Box sx={{ display: 'flex', width: '100%', position: 'relative' }}>
@@ -372,8 +377,9 @@ const AuditRequestInfo = ({
       </Box>
       <Box sx={buttonWrapper} className={'audit-request-button-wrapper'}>
         <Button
-          variant={'contained'}
-          sx={[buttonSx, { backgroundColor: theme.palette.secondary.main }]}
+          variant="contained"
+          color="secondary"
+          sx={buttonSx}
           onClick={() => {
             if (isModal) {
               handleBack();
@@ -386,7 +392,7 @@ const AuditRequestInfo = ({
           {isModal ? 'Cancel' : 'Decline'}
         </Button>
         <Button
-          variant={'contained'}
+          variant="contained"
           sx={buttonSx}
           onClick={handleOpen}
           {...addTestsLabel('project-modal_make-offer-button')}
@@ -394,6 +400,15 @@ const AuditRequestInfo = ({
           Make offer
         </Button>
       </Box>
+      <Button
+        variant="contained"
+        sx={[buttonSx, messageButton]}
+        onClick={handleSendMessage}
+        {...addTestsLabel('message-button')}
+      >
+        Send a message
+      </Button>
+
       <Modal
         open={open}
         onClose={handleClose}
@@ -448,7 +463,8 @@ const wrapper = theme => ({
 });
 
 const buttonWrapper = {
-  marginTop: '40px',
+  mt: '40px',
+  mb: '10px',
 };
 
 const contentWrapper = {
@@ -536,5 +552,26 @@ const buttonSx = theme => ({
     width: '140px',
     mr: '10px',
     fontSize: '12px',
+  },
+  [theme.breakpoints.down('xxs')]: {
+    width: '122px',
+  },
+});
+
+const messageButton = theme => ({
+  width: '560px',
+  padding: '4px 0',
+  [theme.breakpoints.down('md')]: {
+    width: '440px',
+    padding: '4px 0',
+  },
+  [theme.breakpoints.down('sm')]: {
+    width: '360px',
+  },
+  [theme.breakpoints.down('xs')]: {
+    width: '290px',
+  },
+  [theme.breakpoints.down('xxs')]: {
+    width: '254px',
   },
 });
