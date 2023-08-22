@@ -97,6 +97,7 @@ const AuditInfo = ({ audit, auditRequest, issues, confirmed }) => {
                 flexDirection: 'column',
                 justifyContent: 'center',
                 alignItems: 'center',
+                width: '100%',
               }}
             >
               <Typography
