@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import Box from '@mui/material/Box';
 import { Button, Modal, Typography } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
@@ -7,12 +7,16 @@ import theme from '../../styles/themes.js';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import { readMessage } from '../../redux/actions/websocketAction.js';
 import { useNavigate } from 'react-router-dom/dist';
+import NotificationMessage from '../NotificationMessage.jsx';
 
 const CustomMessage = ({ message }) => {
   const role = useSelector(s => s.user.user.current_role);
   const [open, setOpen] = React.useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const messageRef = useRef(null);
+  const [renderMessage, setRenderMessage] = React.useState('');
+
   const handleClose = id => {
     dispatch(readMessage(id));
     setOpen(false);
@@ -21,6 +25,23 @@ const CustomMessage = ({ message }) => {
     setOpen(true);
   };
 
+  useEffect(() => {
+    if (messageRef) {
+      const renderedSubstitutions = message.inner.substitutions
+        .map(substitution => {
+          return `<span style="font-weight: ${substitution.styles[0]}">${substitution.text}</span>`;
+        })
+        .join('');
+      setRenderMessage(
+        message.inner.message.replace('{}', renderedSubstitutions),
+      );
+      messageRef.current.innerHTML = message.inner.message.replace(
+        '{}',
+        renderedSubstitutions,
+      );
+    }
+  }, [message.inner.substitutions, message.inner.message, messageRef]);
+  //
   return (
     <Box
       sx={[
@@ -32,9 +53,16 @@ const CustomMessage = ({ message }) => {
         ),
       ]}
     >
-      <Typography sx={titleStyle} onClick={handleOpen}>
-        {message.inner.message}
-      </Typography>
+      <Box>
+        {message.inner.title && (
+          <Typography sx={titleStyle}>{message.inner.title}</Typography>
+        )}
+        <Typography
+          sx={textStyle}
+          onClick={handleOpen}
+          ref={messageRef}
+        ></Typography>
+      </Box>
       <Modal
         open={open}
         onClose={() => {
@@ -55,9 +83,16 @@ const CustomMessage = ({ message }) => {
             />
           </Button>
           {!message.inner.links.length ? (
-            <Typography id="modal-modal-description">
-              {message.inner.message}
-            </Typography>
+            <Box>
+              {message.inner.title && (
+                <Typography sx={messageTitle}>{message.inner.title}</Typography>
+              )}
+              <NotificationMessage
+                sx={messageDescription}
+                id={'modal-modal-description'}
+                innerData={renderMessage}
+              />
+            </Box>
           ) : (
             <Box
               sx={{
@@ -67,9 +102,16 @@ const CustomMessage = ({ message }) => {
                 gap: '15px',
               }}
             >
-              <Typography id="modal-modal-description">
-                {message.inner.message}
-              </Typography>
+              <Box>
+                {message.inner.title && (
+                  <Typography sx={titleStyle}>{message.inner.title}</Typography>
+                )}
+                <NotificationMessage
+                  sx={messageDescription}
+                  id={'modal-modal-description'}
+                  innerData={renderMessage}
+                />
+              </Box>
               <Button
                 onClick={() => {
                   navigate(message.inner.links[0]);
@@ -96,7 +138,64 @@ const CustomMessage = ({ message }) => {
 
 export default CustomMessage;
 
+const messageDescription = theme => ({
+  color: '#000',
+  fontSize: '22px!important',
+  textAlign: 'left',
+  overflow: 'hidden',
+  display: '-webkit-box',
+  minHeight: '20px',
+  '-webkit-line-clamp': '2',
+  '-webkit-box-orient': 'vertical',
+  textOverflow: 'ellipsis',
+  [theme.breakpoints.down('lg')]: {
+    fontSize: '18px!important',
+  },
+  [theme.breakpoints.down('md')]: {
+    fontSize: '14px!important',
+  },
+});
+
+const messageTitle = theme => ({
+  color: '#000',
+  fontSize: '28px!important',
+  textAlign: 'left',
+  overflow: 'hidden',
+  display: '-webkit-box',
+  minHeight: '20px',
+  fontWeight: 600,
+  '-webkit-line-clamp': '1',
+  '-webkit-box-orient': 'vertical',
+  textOverflow: 'ellipsis',
+  marginBottom: '15px',
+  [theme.breakpoints.down('lg')]: {
+    fontSize: '20px!important',
+  },
+  [theme.breakpoints.down('md')]: {
+    fontSize: '16px!important',
+  },
+});
+
 const titleStyle = theme => ({
+  color: '#000',
+  fontSize: '18px!important',
+  textAlign: 'left',
+  overflow: 'hidden',
+  display: '-webkit-box',
+  minHeight: '20px',
+  fontWeight: 600,
+  '-webkit-line-clamp': '1',
+  '-webkit-box-orient': 'vertical',
+  textOverflow: 'ellipsis',
+  [theme.breakpoints.down('lg')]: {
+    fontSize: '16px!important',
+  },
+  [theme.breakpoints.down('md')]: {
+    fontSize: '14px!important',
+  },
+});
+
+const textStyle = theme => ({
   color: '#000',
   fontSize: '16px!important',
   textAlign: 'left',
