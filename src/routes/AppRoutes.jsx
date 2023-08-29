@@ -43,6 +43,7 @@ import {
 } from '../redux/actions/websocketAction.js';
 import PublicProject from '../pages/PublicProject.jsx';
 import CustomSnackbar from '../components/custom/CustomSnackbar.jsx';
+import InvitePage from '../pages/Invite-page.jsx';
 
 const AppRoutes = () => {
   const token = useSelector(s => s.user.token);
@@ -125,6 +126,7 @@ const AppRoutes = () => {
       <Routes>
         <Route path={'/'} element={<HomePage />} />
         <Route path={'/sign-up'} element={<SignupPage />} />
+        <Route path={'/invite-user'} element={<InvitePage />} />
         <Route path={'/sign-in'} element={<SigninPage />} />
         <Route
           path={'/restore-password/:token'}
