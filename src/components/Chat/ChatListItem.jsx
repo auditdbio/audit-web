@@ -1,24 +1,41 @@
 import React from 'react';
 import { Link as RouterLink } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 import { Avatar, Box, Link, Tooltip } from '@mui/material';
 import { ASSET_URL } from '../../services/urls.js';
 import { AUDITOR } from '../../redux/actions/types.js';
 import theme from '../../styles/themes.js';
 import { addTestsLabel } from '../../lib/helper.js';
+import { setCurrentChat } from '../../redux/actions/chatActions.js';
 
-const ChatListItem = ({ companionUser, user, setListIsOpen }) => {
+const ChatListItem = ({ user, setListIsOpen, chat }) => {
+  const dispatch = useDispatch();
+
+  const setChatHandle = () => {
+    setListIsOpen(false);
+    dispatch(
+      setCurrentChat(chat?.id, { name: chat?.name, avatar: chat?.avatar }),
+    );
+  };
+
+  const convertDate = date => {
+    const messageDate = new Date(date / 1000);
+    if (+new Date() - +messageDate > 86_400_000) {
+      return messageDate.toLocaleDateString().replace(/\.\d{4}$/, '');
+    }
+    return messageDate.toLocaleTimeString().replace(/:\d\d(?=$|( AM| PM))/, '');
+  };
+
   return (
     <Link
       sx={wrapper}
       component={RouterLink}
-      to={`/chat`}
-      onClick={() => setListIsOpen(false)}
+      to={`/chat/${chat?.id}`}
+      onClick={setChatHandle}
       {...addTestsLabel('chat-link')}
     >
       <Avatar
-        src={
-          companionUser?.avatar ? `${ASSET_URL}/${companionUser?.avatar}` : null
-        }
+        src={chat?.avatar ? `${ASSET_URL}/${chat?.avatar}` : null}
         sx={avatarStyle}
         alt="User photo"
       />
@@ -31,14 +48,14 @@ const ChatListItem = ({ companionUser, user, setListIsOpen }) => {
           enterDelay={500}
           leaveDelay={0}
         >
-          <Box sx={userNameSx}>Mihael</Box>
+          <Box sx={userNameSx}>{chat?.name}</Box>
         </Tooltip>
-        <Box sx={userStatusSx(true)}>Online</Box>
+        <Box sx={userStatusSx({ online: true })}>Online</Box>
       </Box>
 
       <Box sx={messagesInfo}>
-        <Box sx={messagesCount(user, 133)}>338</Box>
-        <Box sx={lastMessageTime}>15:53</Box>
+        <Box sx={messagesCount({ user, count: 245 })}>245</Box>
+        <Box sx={lastMessageTime}>{convertDate(chat.last_message?.time)}</Box>
       </Box>
     </Link>
   );
@@ -104,7 +121,7 @@ const userNameSx = theme => ({
   },
 });
 
-const userStatusSx = online => ({
+const userStatusSx = ({ online }) => ({
   fontSize: '16px',
   fontWeight: 500,
   color: '#B2B3B3',
@@ -138,32 +155,40 @@ const messagesInfo = {
   justifyContent: 'center',
 };
 
-const messagesCount = (user, count) => ({
-  display: 'flex',
-  justifyContent: 'center',
-  alignItems: 'center',
-  width: '30px',
-  height: '30px',
-  mb: '5px',
-  fontSize: count < 100 ? '20px' : '14px',
-  fontWeight: 600,
-  color: 'white',
-  borderRadius: '50%',
-  background:
-    user.current_role === AUDITOR
-      ? theme.palette.secondary.main
-      : theme.palette.primary.main,
-  [theme.breakpoints.down('md')]: {
-    width: '25px',
-    height: '25px',
-    fontSize: count < 100 ? '15px' : '12px',
-  },
-  [theme.breakpoints.down('sm')]: {
-    width: '20px',
-    height: '20px',
-    fontSize: count < 100 ? '12px' : '9px',
-  },
-});
+const messagesCount = ({ user, count }) => {
+  const getFontSize = () => {
+    if (count > 999) return '11px';
+    if (count > 99) return '14px';
+    return '18px';
+  };
+
+  return {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '30px',
+    height: '30px',
+    mb: '5px',
+    fontSize: getFontSize(),
+    fontWeight: 600,
+    color: 'white',
+    borderRadius: '50%',
+    background:
+      user.current_role === AUDITOR
+        ? theme.palette.secondary.main
+        : theme.palette.primary.main,
+    [theme.breakpoints.down('md')]: {
+      width: '25px',
+      height: '25px',
+      fontSize: count < 100 ? '15px' : '12px',
+    },
+    [theme.breakpoints.down('sm')]: {
+      width: '20px',
+      height: '20px',
+      fontSize: count < 100 ? '12px' : '9px',
+    },
+  };
+};
 
 const lastMessageTime = theme => ({
   fontSize: '16px',

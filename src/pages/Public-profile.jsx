@@ -18,6 +18,7 @@ import {
   changeRolePublicCustomer,
   changeRolePublicCustomerNoRedirect,
 } from '../redux/actions/userAction.js';
+import { setCurrentChat } from '../redux/actions/chatActions.js';
 
 const PublicProfile = () => {
   const { role, id } = useParams();
@@ -32,7 +33,8 @@ const PublicProfile = () => {
   const [message, setMessage] = useState(null);
   const customerReducer = useSelector(state => state.customer.customer);
   const myProjects = useSelector(state => state.project.myProjects);
-  const user = useSelector(state => state.user.user);
+  const { user } = useSelector(state => state.user);
+  const { chatList } = useSelector(s => s.chat);
 
   const handleError = () => {
     setErrorMessage(null);
@@ -78,8 +80,26 @@ const PublicProfile = () => {
     }
   };
 
-  const handleSendMessage = () => {
-    navigate(`/chat/${id}`);
+  const handleSendMessage = data => {
+    const existingChat = chatList.find(chat =>
+      chat.members?.find(
+        member =>
+          member.id === data?.user_id &&
+          member.role?.toLowerCase() === role.toLowerCase(),
+      ),
+    );
+    const chatId = existingChat ? existingChat.id : data?.user_id;
+
+    dispatch(
+      setCurrentChat(chatId, {
+        name: data.first_name,
+        avatar: data.avatar,
+        role,
+        isNew: !existingChat,
+      }),
+    );
+
+    navigate(`/chat/${chatId}`);
   };
 
   useEffect(() => {
@@ -257,7 +277,7 @@ const PublicProfile = () => {
               variant="contained"
               color={role === AUDITOR ? 'secondary' : 'primary'}
               sx={buttonSx}
-              onClick={handleSendMessage}
+              onClick={() => handleSendMessage(data)}
               {...addTestsLabel('message-button')}
             >
               Send a message

@@ -1,14 +1,7 @@
-import React, { useState } from 'react';
-import { useParams, Link as RouterLink } from 'react-router-dom';
-import { useSelector } from 'react-redux';
-import {
-  Avatar,
-  Box,
-  Button,
-  IconButton,
-  TextField,
-  Link,
-} from '@mui/material';
+import React, { useEffect, useRef, useState } from 'react';
+import { Link as RouterLink } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { Avatar, Box, Button, IconButton, Link } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu.js';
 import { ASSET_URL } from '../../services/urls.js';
 import AttachIcon from '../icons/AttachIcon.jsx';
@@ -17,100 +10,174 @@ import { AUDITOR } from '../../redux/actions/types.js';
 import { addTestsLabel } from '../../lib/helper.js';
 import theme from '../../styles/themes.js';
 import Message from './Message.jsx';
+import CustomTextarea from '../custom/CustomTextarea.jsx';
+import {
+  chatSendMessage,
+  closeCurrentChat,
+  getChatMessages,
+} from '../../redux/actions/chatActions.js';
+import AttachFileModal from './AttachFileModal.jsx';
 
-const CurrentChat = ({ companionUser, setChatListIsOpen }) => {
-  const { id } = useParams();
+const CurrentChat = ({
+  chatMessages,
+  currentChat,
+  chatList,
+  setChatListIsOpen,
+}) => {
+  const dispatch = useDispatch();
   const { user } = useSelector(s => s.user);
   const [newMessage, setNewMessage] = useState('');
+  const [attachModalIsOpen, setAttachModalIsOpen] = useState(false);
+  const [displayedMessages, setDisplayedMessages] = useState(20);
+  const [userLinkData, setUserLinkData] = useState({});
+  const messageBoxRef = useRef();
+
+  useEffect(() => {
+    if (currentChat?.chatId && !currentChat?.isNew) {
+      setDisplayedMessages(20);
+      dispatch(getChatMessages(currentChat.chatId));
+    }
+  }, [currentChat]);
+
+  useEffect(() => {
+    if (messageBoxRef.current) {
+      messageBoxRef.current.scrollTop = messageBoxRef.current.scrollHeight;
+    }
+  }, [chatMessages]);
+
+  useEffect(() => {
+    const chat = chatList.find(chat => chat.id === currentChat?.chatId);
+    const companion = chat?.members?.find(member => member.id !== user.id);
+    setUserLinkData({ id: companion?.id, role: companion?.role });
+  }, [currentChat, chatList]);
+
+  useEffect(() => {
+    return () => dispatch(closeCurrentChat());
+  }, []);
 
   const handleMessageInput = e => {
     setNewMessage(e.target.value);
   };
 
   const handleSend = () => {
-    return;
+    dispatch(
+      chatSendMessage(
+        newMessage,
+        { id: currentChat?.chatId, role: currentChat?.role },
+        user.current_role,
+        currentChat?.isNew,
+      ),
+    );
+    setNewMessage('');
+  };
+
+  const messageHandleKeyDown = e => {
+    if ((e.which === 13 || e.code === 'Enter') && !e.shiftKey) {
+      e.preventDefault();
+      handleSend();
+    }
+  };
+
+  const getDisplayedMessages = () => {
+    const from = Math.max(chatMessages.length - displayedMessages, 0);
+    const to = chatMessages.length;
+    return [from, to];
+  };
+
+  const showMore = () => {
+    setDisplayedMessages(displayedMessages + 10);
   };
 
   return (
-    <Box sx={wrapper}>
-      <Box sx={currentChatHeader}>
-        <IconButton
-          aria-label="Chat list"
-          aria-controls="menu-appbar"
-          aria-haspopup="true"
-          onClick={() => setChatListIsOpen(prev => !prev)}
-          color="inherit"
-          sx={menuButtonSx}
-        >
-          <MenuIcon fontSize="large" />
-        </IconButton>
+    <>
+      <AttachFileModal
+        isOpen={attachModalIsOpen}
+        setIsOpen={setAttachModalIsOpen}
+      />
 
-        <RouterLink to={`/user/:id/:role`}>
-          <Avatar
-            src={
-              companionUser?.avatar
-                ? `${ASSET_URL}/${companionUser?.avatar}`
-                : null
-            }
-            sx={avatarStyle}
-            alt="User photo"
-          />
-        </RouterLink>
-        <Box sx={userInfo}>
-          <Link
-            component={RouterLink}
-            to={`/user/:id/:role`}
-            sx={userNameSx}
-            {...addTestsLabel('profile-link')}
+      <Box sx={wrapper}>
+        <Box sx={currentChatHeader}>
+          <IconButton
+            aria-label="Chat list"
+            aria-controls="menu-appbar"
+            aria-haspopup="true"
+            onClick={() => setChatListIsOpen(prev => !prev)}
+            color="inherit"
+            sx={menuButtonSx}
           >
-            Mihael
-          </Link>
-          <Box sx={userStatusSx(true)}>Online</Box>
+            <MenuIcon fontSize="large" />
+          </IconButton>
+
+          <RouterLink to={`/user/${userLinkData.id}/${userLinkData.role}`}>
+            <Avatar
+              src={
+                currentChat?.avatar
+                  ? `${ASSET_URL}/${currentChat.avatar}`
+                  : null
+              }
+              sx={avatarStyle}
+              alt="User photo"
+            />
+          </RouterLink>
+          <Box sx={userInfo}>
+            <Link
+              component={RouterLink}
+              to={`/user/${userLinkData.id}/${userLinkData.role}`}
+              sx={userNameSx}
+              {...addTestsLabel('profile-link')}
+            >
+              {currentChat?.name}
+            </Link>
+            <Box sx={userStatusSx({ online: true })}>Online</Box>
+          </Box>
+
+          <IconButton
+            color="disabled"
+            aria-label="Attach file"
+            onClick={() => setAttachModalIsOpen(true)}
+            sx={attachButton}
+          >
+            <AttachIcon />
+          </IconButton>
         </Box>
-
-        <IconButton
-          color="disabled"
-          aria-label="Attach file"
-          onClick={() => {}}
-          sx={attachButton}
-        >
-          <AttachIcon />
-        </IconButton>
+        <Box sx={chatSx} ref={messageBoxRef}>
+          {displayedMessages < chatMessages.length && (
+            <Box sx={showMoreSx}>
+              <Button color="secondary" onClick={showMore}>
+                Show more
+              </Button>
+            </Box>
+          )}
+          {chatMessages.slice(...getDisplayedMessages()).map(message => (
+            <Message
+              key={message.id}
+              user={user}
+              message={message}
+              currentChat={currentChat}
+            />
+          ))}
+        </Box>
+        <Box sx={sendBox}>
+          <CustomTextarea
+            maxRows={1}
+            onChange={handleMessageInput}
+            onKeyDown={messageHandleKeyDown}
+            value={newMessage}
+            placeholder="Type here..."
+            {...addTestsLabel('message-input')}
+          />
+          <Button
+            color={user.current_role === AUDITOR ? 'secondary' : 'primary'}
+            variant="contained"
+            sx={sendButton}
+            onClick={handleSend}
+            {...addTestsLabel('send-button')}
+          >
+            <SendMessageIcon />
+          </Button>
+        </Box>
       </Box>
-
-      <Box sx={chatSx}>
-        <Message companionUser={companionUser} user={user} />
-        <Message companionUser={companionUser} user={user} />
-        <Message companionUser={companionUser} user={user} />
-        <Message companionUser={companionUser} user={user} />
-        <Message companionUser={companionUser} user={user} />
-      </Box>
-
-      <Box sx={sendBox}>
-        <TextField
-          onChange={handleMessageInput}
-          value={newMessage}
-          placeholder="Type here..."
-          variant="standard"
-          fullWidth
-          sx={newMessageSx}
-          InputProps={{ disableUnderline: true }}
-          inputProps={{
-            style: newMessageInput,
-            ...addTestsLabel('message-input'),
-          }}
-        />
-        <Button
-          color={user.current_role === AUDITOR ? 'secondary' : 'primary'}
-          variant="contained"
-          sx={sendButton}
-          onClick={handleSend}
-          {...addTestsLabel('send-button')}
-        >
-          <SendMessageIcon />
-        </Button>
-      </Box>
-    </Box>
+    </>
   );
 };
 
@@ -137,6 +204,9 @@ const currentChatHeader = theme => ({
   [theme.breakpoints.down('xs')]: {
     padding: '12px 8px',
   },
+  [theme.breakpoints.down('xxs')]: {
+    padding: '12px 1px',
+  },
 });
 
 const menuButtonSx = theme => ({
@@ -144,6 +214,9 @@ const menuButtonSx = theme => ({
   mr: '10px',
   [theme.breakpoints.down('xs')]: {
     display: 'inline-flex',
+  },
+  [theme.breakpoints.down('xxs')]: {
+    mr: '4px',
   },
 });
 
@@ -159,6 +232,11 @@ const avatarStyle = theme => ({
     width: '40px',
     height: '40px',
     mr: '15px',
+  },
+  [theme.breakpoints.down('xxs')]: {
+    width: '30px',
+    height: '30px',
+    mr: '10px',
   },
 });
 
@@ -191,7 +269,7 @@ const userNameSx = theme => ({
   },
 });
 
-const userStatusSx = online => ({
+const userStatusSx = ({ online }) => ({
   fontSize: '16px',
   fontWeight: 500,
   color: '#B2B3B3',
@@ -232,7 +310,6 @@ const attachButton = theme => ({
 const chatSx = theme => ({
   position: 'relative',
   padding: '40px',
-  maxHeight: '640px',
   flexGrow: 1,
   display: 'flex',
   flexDirection: 'column',
@@ -242,35 +319,31 @@ const chatSx = theme => ({
     width: '6px',
   },
   [theme.breakpoints.down('sm')]: {
-    padding: '20px',
+    padding: '30px 20px 20px',
     rowGap: '20px',
-    maxHeight: '650px',
     '::-webkit-scrollbar': {
       width: '4px',
     },
   },
   [theme.breakpoints.down('xs')]: {
-    padding: '20px 10px',
+    padding: '30px 10px 20px',
     rowGap: '15px',
-    maxHeight: '75vh',
   },
 });
+
+const showMoreSx = {
+  position: 'absolute',
+  top: 0,
+  left: '50%',
+  transform: 'translateX(-50%)',
+};
 
 const sendBox = {
   display: 'flex',
   height: '55px',
-};
-
-const newMessageSx = {
-  borderTop: '2px solid #e5e5e5',
-};
-
-const newMessageInput = {
-  height: '53px',
-  fontSize: '18px',
-  fontWeight: 500,
-  padding: '0 40px',
-  borderBottom: 'none',
+  '& ::-webkit-scrollbar': {
+    width: '8px !important',
+  },
 };
 
 const sendButton = theme => ({

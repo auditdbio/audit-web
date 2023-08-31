@@ -19,13 +19,14 @@ import { addTestsLabel, isAuth } from '../lib/helper.js';
 import { ASSET_URL } from '../services/urls.js';
 import SalarySlider from './forms/salary-slider/salary-slider.jsx';
 import { Field, Form, Formik } from 'formik';
-import { CUSTOMER } from '../redux/actions/types.js';
+import { AUDITOR, CUSTOMER } from '../redux/actions/types.js';
 import {
   changeRolePublicCustomer,
   changeRolePublicCustomerNoRedirect,
 } from '../redux/actions/userAction.js';
 import * as Yup from 'yup';
 import CustomSnackbar from './custom/CustomSnackbar.jsx';
+import { getChatList, setCurrentChat } from '../redux/actions/chatActions.js';
 
 export default function AuditorModal({
   open,
@@ -39,7 +40,8 @@ export default function AuditorModal({
   const navigate = useNavigate();
   const auditorReducer = useSelector(state => state.auditor.auditors);
   const customerReducer = useSelector(state => state.customer.customer);
-  const user = useSelector(s => s.user.user);
+  const { user } = useSelector(s => s.user);
+  const { chatList } = useSelector(s => s.chat);
   const [mode, setMode] = useState('info');
   const [message, setMessage] = useState('');
   const myProjects = useSelector(state => state.project.myProjects);
@@ -79,8 +81,32 @@ export default function AuditorModal({
 
   const handleSendMessage = () => {
     window.scrollTo(0, 0);
-    navigate(`/chat/${auditor?.user_id}`);
+
+    const existingChat = chatList.find(chat =>
+      chat.members?.find(
+        member =>
+          member.id === auditor?.user_id &&
+          member.role?.toLowerCase() === AUDITOR,
+      ),
+    );
+    const chatId = existingChat ? existingChat.id : auditor?.user_id;
+
+    dispatch(
+      setCurrentChat(chatId, {
+        name: auditor.first_name,
+        avatar: auditor.avatar,
+        role: AUDITOR,
+        isNew: !existingChat,
+      }),
+    );
+    navigate(`/chat/${existingChat ? existingChat.id : auditor?.user_id}`);
   };
+
+  useEffect(() => {
+    if (open) {
+      dispatch(getChatList(user.current_role));
+    }
+  }, [user, open]);
 
   useEffect(() => {
     if (open && !isForm) {

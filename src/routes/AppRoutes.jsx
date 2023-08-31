@@ -43,6 +43,7 @@ import {
 } from '../redux/actions/websocketAction.js';
 import PublicProject from '../pages/PublicProject.jsx';
 import ChatPage from '../pages/ChatPage.jsx';
+import { getChatList } from '../redux/actions/chatActions.js';
 
 const AppRoutes = () => {
   const token = useSelector(s => s.user.token);
@@ -94,6 +95,12 @@ const AppRoutes = () => {
       };
     }
   }, [reconnect, connected]);
+
+  useEffect(() => {
+    if (isAuth()) {
+      dispatch(getChatList(currentRole));
+    }
+  }, [currentRole]);
 
   useEffect(() => {
     return () => {

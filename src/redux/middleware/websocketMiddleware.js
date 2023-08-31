@@ -1,5 +1,7 @@
 import {
   AUDITOR,
+  CHAT_NEW_MESSAGE,
+  CHAT_SEND_MESSAGE,
   CUSTOMER,
   DISCONNECTED_WS,
   GET_NEW_AUDIT,
@@ -69,6 +71,11 @@ const websocketMiddleware = () => {
                 type: IN_PROGRESS,
                 payload: message.payload.AuditUpdate,
               });
+            } else if (message.kind.toLowerCase() === 'chatmessage') {
+              store.dispatch({
+                type: CHAT_NEW_MESSAGE,
+                payload: message.payload.ChatMessage,
+              });
             } else if (message.kind.toLowerCase() === 'requestdecline') {
               store.dispatch({
                 type: REQUEST_DECLINE,
@@ -84,6 +91,18 @@ const websocketMiddleware = () => {
           };
         }
         break;
+
+      // case CHAT_SEND_MESSAGE:
+      //   if (socket) {
+      //     const message = {
+      //       kind: 'ChatMessage',
+      //       text: action.payload?.text,
+      //       to: action.payload?.to,
+      //       is_first: action.payload?.isFirst || false,
+      //     };
+      //     socket.send(JSON.stringify(message));
+      //   }
+      //   break;
 
       case WEBSOCKET_DISCONNECT:
         if (socket) {

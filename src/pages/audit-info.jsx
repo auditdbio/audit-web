@@ -15,6 +15,7 @@ import {
   downloadReport,
 } from '../redux/actions/auditAction.js';
 import {
+  AUDITOR,
   CUSTOMER,
   DONE,
   SUBMITED,
@@ -25,6 +26,7 @@ import Markdown from '../components/markdown/Markdown.jsx';
 import { ASSET_URL } from '../services/urls.js';
 import { addTestsLabel } from '../lib/helper.js';
 import CustomSnackbar from '../components/custom/CustomSnackbar.jsx';
+import { setCurrentChat } from '../redux/actions/chatActions.js';
 
 const AuditInfo = ({ audit, auditRequest, issues, confirmed }) => {
   const navigate = useNavigate();
@@ -32,6 +34,8 @@ const AuditInfo = ({ audit, auditRequest, issues, confirmed }) => {
   const [showFull, setShowFull] = useState(false);
   const [showReadMoreButton, setShowReadMoreButton] = useState(false);
   const { successMessage, error } = useSelector(s => s.audits);
+  const { user } = useSelector(s => s.user);
+  const { chatList } = useSelector(s => s.chat);
   const descriptionRef = useRef();
 
   useEffect(() => {
@@ -65,8 +69,26 @@ const AuditInfo = ({ audit, auditRequest, issues, confirmed }) => {
   };
 
   const handleSendMessage = () => {
-    navigate(`/chat/${audit?.auditor_id}`);
     window.scrollTo(0, 0);
+
+    const existingChat = chatList.find(chat =>
+      chat.members?.find(
+        member =>
+          member.id === audit?.auditor_id &&
+          member.role?.toLowerCase() === AUDITOR,
+      ),
+    );
+    const chatId = existingChat ? existingChat.id : audit?.auditor_id;
+    dispatch(
+      setCurrentChat(chatId, {
+        name: audit?.auditor_first_name,
+        avatar: audit.avatar,
+        role: AUDITOR,
+        isNew: !existingChat,
+      }),
+    );
+
+    navigate(`/chat/${audit?.auditor_id}`);
   };
 
   const goToIssues = () => {

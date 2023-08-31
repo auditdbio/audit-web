@@ -17,7 +17,7 @@ import theme from '../styles/themes.js';
 import { deleteAuditRequest } from '../redux/actions/auditAction.js';
 import Markdown from './markdown/Markdown.jsx';
 import { addTestsLabel, isAuth } from '../lib/helper.js';
-import { AUDITOR } from '../redux/actions/types.js';
+import { AUDITOR, CUSTOMER } from '../redux/actions/types.js';
 import {
   changeRolePublicAuditor,
   changeRolePublicAuditorNoRedirect,
@@ -25,6 +25,7 @@ import {
 import CustomLink from './custom/CustomLink.jsx';
 import OfferModal from './modal/OfferModal.jsx';
 import ShareProjectButton from './custom/ShareProjectButton.jsx';
+import { setCurrentChat } from '../redux/actions/chatActions.js';
 
 const AuditRequestInfo = ({
   project,
@@ -37,8 +38,9 @@ const AuditRequestInfo = ({
   const navigate = useNavigate();
   const matchXs = useMediaQuery(theme.breakpoints.down('xs'));
   const [open, setOpen] = useState(false);
-  const auditor = useSelector(s => s.auditor.auditor);
-  const user = useSelector(s => s.user.user);
+  const { auditor } = useSelector(s => s.auditor);
+  const { user } = useSelector(s => s.user);
+  const { chatList } = useSelector(s => s.chat);
   const dispatch = useDispatch();
 
   const handleOpen = () => {
@@ -85,6 +87,24 @@ const AuditRequestInfo = ({
 
   const handleSendMessage = () => {
     window.scrollTo(0, 0);
+
+    const existingChat = chatList.find(chat =>
+      chat.members?.find(
+        member =>
+          member.id === project?.customer_id &&
+          member.role?.toLowerCase() === CUSTOMER,
+      ),
+    );
+    const chatId = existingChat ? existingChat.id : project?.customer_id;
+
+    dispatch(
+      setCurrentChat(chatId, {
+        role: CUSTOMER,
+        isNew: !existingChat,
+        userDataId: project?.customer_id,
+      }),
+    );
+
     navigate(`/chat/${project?.customer_id}`);
   };
 

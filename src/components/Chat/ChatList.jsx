@@ -13,7 +13,7 @@ import { addTestsLabel } from '../../lib/helper.js';
 import ChatListItem from './ChatListItem.jsx';
 import { AUDITOR } from '../../redux/actions/types.js';
 
-const ChatList = ({ chatListIsOpen, setChatListIsOpen }) => {
+const ChatList = ({ chatList, chatListIsOpen, setChatListIsOpen }) => {
   const [search, setSearch] = useState('');
   const { user } = useSelector(s => s.user);
 
@@ -22,51 +22,71 @@ const ChatList = ({ chatListIsOpen, setChatListIsOpen }) => {
   };
 
   return (
-    <Box sx={[wrapper, chatListIsOpen && mobileChatListOpen]}>
-      <Box sx={listHeader}>
-        <Box sx={{ display: 'flex', alignItems: 'flex-start' }}>
-          <TextField
-            variant="outlined"
-            size="small"
-            color={user.current_role === AUDITOR ? 'secondary' : 'primary'}
-            sx={searchFieldSx}
-            value={search}
-            onChange={handleSearch}
-            inputProps={{
-              style: searchInputStyle,
-              ...addTestsLabel('search-input'),
-            }}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <SearchOutlinedIcon />
-                </InputAdornment>
-              ),
-            }}
-          />
-          <IconButton
-            aria-label="Close"
-            aria-controls="menu-appbar"
-            aria-haspopup="true"
-            onClick={() => setChatListIsOpen(false)}
-            color="inherit"
-            sx={closeButtonSx}
-          >
-            <CloseIcon />
-          </IconButton>
+    <>
+      <Box sx={[wrapper, chatListIsOpen && mobileChatListOpen]}>
+        <Box sx={listHeader}>
+          <Box sx={{ display: 'flex', alignItems: 'flex-start' }}>
+            <TextField
+              autoComplete="off"
+              variant="outlined"
+              size="small"
+              color={user.current_role === AUDITOR ? 'secondary' : 'primary'}
+              sx={searchFieldSx}
+              value={search}
+              onChange={handleSearch}
+              inputProps={{
+                style: searchInputStyle,
+                ...addTestsLabel('search-input'),
+              }}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <SearchOutlinedIcon />
+                  </InputAdornment>
+                ),
+              }}
+            />
+            <IconButton
+              aria-label="Close"
+              aria-controls="menu-appbar"
+              aria-haspopup="true"
+              onClick={() => setChatListIsOpen(false)}
+              color="inherit"
+              sx={closeButtonSx}
+            >
+              <CloseIcon />
+            </IconButton>
+          </Box>
+          <Typography variant="span" sx={chatsLabel}>
+            Chats
+          </Typography>
         </Box>
-        <Typography variant="span" sx={chatsLabel}>
-          Chats
-        </Typography>
-      </Box>
 
-      <Box sx={chatListSx}>
-        <ChatListItem user={user} setListIsOpen={setChatListIsOpen} />
-        <ChatListItem user={user} setListIsOpen={setChatListIsOpen} />
-        <ChatListItem user={user} setListIsOpen={setChatListIsOpen} />
-        <ChatListItem user={user} setListIsOpen={setChatListIsOpen} />
+        <Box sx={chatListSx}>
+          {chatList.length > 0 ? (
+            chatList
+              ?.filter(chat =>
+                chat.name?.toLowerCase().includes(search.toLowerCase().trim()),
+              )
+              .reverse()
+              .map(chat => (
+                <ChatListItem
+                  key={chat.id}
+                  chat={chat}
+                  user={user}
+                  setListIsOpen={setChatListIsOpen}
+                />
+              ))
+          ) : (
+            <Box sx={emptyListLabel}>You haven't written to anyone yet</Box>
+          )}
+        </Box>
       </Box>
-    </Box>
+      <Box
+        sx={chatListIsOpen && mobileChatListOpenBackground}
+        onClick={() => setChatListIsOpen(false)}
+      />
+    </>
   );
 };
 
@@ -75,12 +95,18 @@ export default ChatList;
 const wrapper = theme => ({
   width: '30%',
   borderRight: '2px solid #e5e5e5',
+  display: 'flex',
+  flexDirection: 'column',
   [theme.breakpoints.down('xs')]: {
     display: 'none',
   },
 });
 
 const mobileChatListOpen = theme => ({
+  overflowY: 'auto',
+  '::-webkit-scrollbar': {
+    width: '4px',
+  },
   [theme.breakpoints.down('xs')]: {
     background: '#fcfaf6',
     position: 'absolute',
@@ -93,6 +119,23 @@ const mobileChatListOpen = theme => ({
   },
   [theme.breakpoints.down('xxs')]: {
     width: '100%',
+  },
+});
+
+const mobileChatListOpenBackground = theme => ({
+  display: 'none',
+  [theme.breakpoints.down('xs')]: {
+    display: 'block',
+    width: '30%',
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    bottom: 0,
+    zIndex: 20,
+    background: 'rgba(0, 0, 0, .1)',
+  },
+  [theme.breakpoints.down('xxs')]: {
+    display: 'none',
   },
 });
 
@@ -123,21 +166,14 @@ const chatsLabel = {
   color: '#B2B3B3',
 };
 
-const chatListSx = theme => ({
+const chatListSx = {
   direction: 'rtl',
   background: '#fcfaf6',
-  maxHeight: '693px',
   overflowY: 'auto',
   '::-webkit-scrollbar': {
     width: '4px',
   },
-  [theme.breakpoints.down('sm')]: {
-    maxHeight: '706px',
-  },
-  [theme.breakpoints.down('xs')]: {
-    maxHeight: '86vh',
-  },
-});
+};
 
 const closeButtonSx = theme => ({
   display: 'none',
@@ -147,3 +183,9 @@ const closeButtonSx = theme => ({
     pl: '15px',
   },
 });
+
+const emptyListLabel = {
+  padding: '0 15px',
+  pt: '30px',
+  textAlign: 'center',
+};

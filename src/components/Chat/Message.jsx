@@ -1,24 +1,41 @@
-import React from 'react';
+import React, { useMemo } from 'react';
+import { useSelector } from 'react-redux';
 import { Avatar, Box, Typography } from '@mui/material';
 import { ASSET_URL } from '../../services/urls.js';
 import theme from '../../styles/themes.js';
+import { AUDITOR, CUSTOMER } from '../../redux/actions/types.js';
 
-const Message = ({ message, companionUser, user }) => {
+const Message = ({ message, user, currentChat }) => {
+  const { customer } = useSelector(state => state.customer);
+  const { auditor } = useSelector(state => state.auditor);
+
+  const userAvatar = useMemo(() => {
+    if (user.current_role === AUDITOR && !!auditor?.avatar) {
+      return auditor.avatar;
+    } else if (user.current_role === CUSTOMER && !!customer?.avatar) {
+      return customer.avatar;
+    } else {
+      return null;
+    }
+  }, [user.current_role, customer?.avatar, auditor?.avatar]);
+
+  const getMessageAvatar = () => {
+    if (message?.from?.id === user?.id) {
+      return userAvatar ? `${ASSET_URL}/${userAvatar}` : null;
+    }
+    return currentChat?.avatar ? `${ASSET_URL}/${currentChat.avatar}` : null;
+  };
+
   return (
-    <Box sx={messageSx(true)}>
-      <Avatar
-        src={
-          companionUser?.avatar ? `${ASSET_URL}/${companionUser?.avatar}` : null
-        }
-        sx={messageAvatarSx}
-        alt="User photo"
-      />
-      <Box sx={messageTextSx(true)}>
-        <Typography>
-          Hello. My name is Michael. Im your auditor and i have some questions
-          for you.
-        </Typography>
-        <Box sx={messageTimeSx}>19:45</Box>
+    <Box sx={messageSx({ isOwn: message.from?.id === user.id })}>
+      <Avatar src={getMessageAvatar()} sx={messageAvatarSx} alt="User photo" />
+      <Box sx={messageTextSx({ isOwn: message.from?.id === user.id })}>
+        <Typography sx={{ whiteSpace: 'pre-wrap' }}>{message.text}</Typography>
+        <Box sx={messageTimeSx}>
+          {new Date(message?.time / 1000)
+            .toLocaleTimeString()
+            .replace(/:\d\d(?=$|( AM| PM))/, '')}
+        </Box>
       </Box>
     </Box>
   );
@@ -26,7 +43,7 @@ const Message = ({ message, companionUser, user }) => {
 
 export default Message;
 
-const messageSx = isOwn => ({
+const messageSx = ({ isOwn }) => ({
   display: 'flex',
   flexDirection: isOwn ? 'row-reverse' : 'row',
 });
@@ -44,7 +61,7 @@ const messageAvatarSx = theme => ({
   },
 });
 
-const messageTextSx = isOwn => ({
+const messageTextSx = ({ isOwn }) => ({
   position: 'relative',
   minWidth: '150px',
   maxWidth: '400px',
