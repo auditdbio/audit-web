@@ -13,21 +13,7 @@ const ImageUploadPlugin = ({ editor }) => {
     setShowMenu(prev => !prev);
   };
 
-  const handleSelectImage = e => {
-    setError(() => '');
-    setFile(() => null);
-    const currentFile = e.target.files[0];
-    if (currentFile.size > 10_000_000) {
-      setError(() => 'Image size is too large');
-      return;
-    } else if (!currentFile.type.includes('image')) {
-      setError(() => 'Images only');
-      return;
-    }
-    setFile(() => currentFile);
-  };
-
-  const handleUploadImage = () => {
+  const handleUploadImage = file => {
     const token = Cookies.get('token');
     const path = +new Date() + file.name;
 
@@ -47,6 +33,7 @@ const ImageUploadPlugin = ({ editor }) => {
           `![](${ASSET_URL}/${path.replace(/ /g, '%20')} "image")`,
         );
         setFile(null);
+        setShowMenu(false);
         formData.delete('file');
         formData.delete('path');
         formData.delete('original_name');
@@ -60,6 +47,22 @@ const ImageUploadPlugin = ({ editor }) => {
         formData.delete('original_name');
         formData.delete('private');
       });
+  };
+
+  const handleSelectImage = e => {
+    setError(() => '');
+    setFile(() => null);
+    const currentFile = e.target.files[0];
+    if (currentFile.size > 10_000_000) {
+      setError(() => 'Image size is too large');
+      return;
+    } else if (!currentFile.type.includes('image')) {
+      setError(() => 'Images only');
+      return;
+    }
+    setFile(() => currentFile);
+
+    handleUploadImage(currentFile);
   };
 
   const handleCancel = () => {
@@ -81,10 +84,10 @@ const ImageUploadPlugin = ({ editor }) => {
       setError(() => 'Images only');
       return;
     }
-
     if (files.length > 0) {
       setFile(() => files[0]);
     }
+    handleUploadImage(files[0]);
   };
 
   const handleDragOver = e => {
@@ -154,14 +157,6 @@ const ImageUploadPlugin = ({ editor }) => {
           </button>
           <button
             type="button"
-            disabled={!file}
-            style={uploadButtonStyle}
-            onClick={handleUploadImage}
-          >
-            Upload
-          </button>
-          <button
-            type="button"
             style={uploadButtonStyle}
             onClick={handleCancel}
           >
@@ -178,7 +173,7 @@ const uploadMenuStyle = {
   top: 25,
   zIndex: 30,
   width: '300px',
-  height: '90px',
+  height: '115px',
   padding: '6px',
   border: '1px solid #e0e0e0',
   background: 'white',
@@ -188,8 +183,8 @@ const uploadMenuStyle = {
 const filenameStyle = {
   border: '1px solid #E5E5E5',
   width: '285px',
-  height: '40px',
-  padding: '5px',
+  height: '50px',
+  padding: '8px',
   overflow: 'hidden',
   textOverflow: 'ellipsis',
   whiteSpace: 'nowrap',
@@ -199,7 +194,7 @@ const uploadButtonStyle = {
   background: '#f5f5f5',
   border: '1px solid #E5E5E5',
   padding: '3px 10px',
-  margin: '8px 10px 0 0',
+  margin: '15px 10px 0 0',
   cursor: 'pointer',
 };
 
