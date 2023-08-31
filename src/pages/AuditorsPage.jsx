@@ -126,9 +126,10 @@ const AuditorsPage = () => {
         />
         {auditors?.length > 0 && (
           <Box sx={contentWrapper}>
-            {auditors?.map(auditor => (
+            {auditors?.map((auditor, idx) => (
               <Box sx={auditorContainerStyle} key={auditor.user_id}>
                 <AuditorListCard
+                  budge={idx % 2 === 0}
                   auditor={auditor}
                   projectIdToInvite={projectIdToInvite}
                 />

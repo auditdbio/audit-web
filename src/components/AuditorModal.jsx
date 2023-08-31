@@ -35,9 +35,9 @@ export default function AuditorModal({
   onSubmit,
   handleError,
   setError,
+  budge,
 }) {
   const navigate = useNavigate();
-  const auditorReducer = useSelector(state => state.auditor.auditors);
   const customerReducer = useSelector(state => state.customer.customer);
   const user = useSelector(s => s.user.user);
   const [mode, setMode] = useState('info');
@@ -179,18 +179,17 @@ export default function AuditorModal({
           </Box>
           <Box sx={fieldButtonContainer}>
             <Button
-              variant={'contained'}
-              sx={[
-                findButton,
-                { backgroundColor: theme.palette.secondary.main },
-              ]}
+              variant={budge ? 'outlined' : 'contained'}
+              color={'secondary'}
+              sx={findButton}
               onClick={handleClose}
               {...addTestsLabel('auditor-modal_back-button')}
             >
               Back
             </Button>
             <Button
-              variant={'contained'}
+              variant={budge ? 'outlined' : 'contained'}
+              color={'primary'}
               sx={findButton}
               onClick={handleInvite}
               {...addTestsLabel('auditor-modal_invite-button')}
