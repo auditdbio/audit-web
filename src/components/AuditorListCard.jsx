@@ -15,7 +15,7 @@ import {
 } from '../redux/actions/userAction.js';
 import CustomSnackbar from './custom/CustomSnackbar.jsx';
 
-const AuditorListCard = ({ auditor, projectIdToInvite }) => {
+const AuditorListCard = ({ auditor, projectIdToInvite, budge }) => {
   const navigate = useNavigate();
   const user = useSelector(state => state.user.user);
   const [openModal, setOpenModal] = useState(false);
@@ -104,6 +104,7 @@ const AuditorListCard = ({ auditor, projectIdToInvite }) => {
         auditor={auditor}
         isForm={isForm}
         handleError={handleError}
+        budge={budge}
       />
       <Box sx={cardLeftSide}>
         <Box sx={avatarDescription}>
@@ -147,7 +148,7 @@ const AuditorListCard = ({ auditor, projectIdToInvite }) => {
           color={'secondary'}
           size={'small'}
           sx={viewButtonStyle}
-          variant={'contained'}
+          variant={budge ? 'outlined' : 'contained'}
           onClick={handleView}
           {...addTestsLabel('view-more-button')}
         >
@@ -157,18 +158,29 @@ const AuditorListCard = ({ auditor, projectIdToInvite }) => {
           color={'primary'}
           size={'small'}
           sx={inviteButtonStyle(theme)}
-          variant={'contained'}
+          variant={budge ? 'outlined' : 'contained'}
           onClick={handleInvite}
           {...addTestsLabel('invite-button')}
         >
           Invite to project
         </Button>
+        {budge && <Typography sx={budgeTitle}>not registrated</Typography>}
       </Box>
     </Box>
   );
 };
 
 export default AuditorListCard;
+
+const budgeTitle = theme => ({
+  color: '#B2B3B3',
+  fontSize: '14px!important',
+  marginTop: '-10px',
+  [theme.breakpoints.down('sm')]: {
+    fontSize: '12px!important',
+    marginTop: '-5px',
+  },
+});
 
 const wrapper = theme => ({
   padding: '32px 38px 32px 38px',
@@ -301,7 +313,7 @@ const viewButtonStyle = theme => ({
     width: '130px',
   },
   [theme.breakpoints.down('sm')]: {
-    width: '85px',
+    width: '86px',
     fontSize: '8px',
   },
 });
@@ -315,7 +327,7 @@ const inviteButtonStyle = theme => ({
     width: '130px',
   },
   [theme.breakpoints.down('sm')]: {
-    width: '85px',
+    width: '86px',
     fontSize: '8px',
   },
 });
