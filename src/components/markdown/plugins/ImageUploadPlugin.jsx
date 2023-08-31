@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { ASSET_URL } from '../../../services/urls.js';
 import Cookies from 'js-cookie';
 import axios from 'axios';
+import { ASSET_URL } from '../../../services/urls.js';
 
 const ImageUploadPlugin = ({ editor }) => {
   const [showMenu, setShowMenu] = useState(false);
@@ -10,23 +10,21 @@ const ImageUploadPlugin = ({ editor }) => {
   const formData = new FormData();
 
   const handleClickIcon = () => {
-    const selected = editor.getSelection().text;
-    editor.insertText(`![](${selected})`, true, {
-      start: 4,
-      end: selected.length + 4,
-    });
+    setShowMenu(prev => !prev);
   };
 
   const handleSelectImage = e => {
     setError(() => '');
     setFile(() => null);
-    const file = e.target.files[0];
-    if (file.size > 10_000_000) {
+    const currentFile = e.target.files[0];
+    if (currentFile.size > 10_000_000) {
       setError(() => 'Image size is too large');
       return;
+    } else if (!currentFile.type.includes('image')) {
+      setError(() => 'Images only');
+      return;
     }
-
-    setFile(() => file);
+    setFile(() => currentFile);
   };
 
   const handleUploadImage = () => {
@@ -45,7 +43,9 @@ const ImageUploadPlugin = ({ editor }) => {
         headers: { Authorization: 'Bearer ' + token },
       })
       .then(() => {
-        editor.insertText(`![](${ASSET_URL}/${path})`);
+        editor.insertText(
+          `![](${ASSET_URL}/${path.replace(/ /g, '%20')} "image")`,
+        );
         setFile(null);
         formData.delete('file');
         formData.delete('path');
@@ -66,22 +66,34 @@ const ImageUploadPlugin = ({ editor }) => {
     setError(() => '');
     setFile(() => null);
     setShowMenu(() => false);
-
     formData.delete('file');
     formData.delete('path');
     formData.delete('original_name');
     formData.delete('private');
   };
 
-  const openMenu = () => setShowMenu(true);
+  const handleDrop = e => {
+    e.preventDefault();
+    setError(() => '');
+    setFile(() => null);
+    const { files } = e.dataTransfer;
+    if (!files[0]?.type.includes('image')) {
+      setError(() => 'Images only');
+      return;
+    }
 
-  const closeMenu = () => setShowMenu(false);
+    if (files.length > 0) {
+      setFile(() => files[0]);
+    }
+  };
+
+  const handleDragOver = e => {
+    e.preventDefault();
+  };
 
   return (
     <span
       className="button"
-      onMouseOver={openMenu}
-      onMouseLeave={closeMenu}
       onClick={handleClickIcon}
       style={{
         display: 'inline-flex',
@@ -114,12 +126,17 @@ const ImageUploadPlugin = ({ editor }) => {
         </g>
       </svg>
 
-      {(showMenu || file || error) && (
-        <div onClick={e => e.stopPropagation()} style={uploadMenuStyle}>
+      {showMenu && (
+        <div
+          onClick={e => e.stopPropagation()}
+          onDrop={handleDrop}
+          onDragOver={handleDragOver}
+          style={uploadMenuStyle}
+        >
           <input
             id="image-upload"
             style={{ display: 'none' }}
-            accept="image/png, image/jpeg, image/bmp, image/gif"
+            accept="image/png, image/jpeg, image/bmp, image/gif, image/svg+xml"
             onChange={handleSelectImage}
             type="file"
           />
@@ -127,7 +144,7 @@ const ImageUploadPlugin = ({ editor }) => {
             {error ? (
               <span style={{ color: 'red' }}>{error}</span>
             ) : (
-              <span>{file?.name || ''}</span>
+              <span>{file?.name || 'Select or drag an image'}</span>
             )}
           </div>
           <button style={uploadButtonStyle} type="button">
