@@ -66,16 +66,16 @@ const IssueDetailsForm = ({ issue = null, editMode = false }) => {
         return prev[key] === values[key] ? acc : { ...acc, [key]: values[key] };
       }, {});
 
-      const updatedValuesWithEvent = createIssueEvent(
-        updatedValues,
-        prev.links?.length,
-        issue?.status || DRAFT,
-        issue?.feedback,
-      );
+      // const updatedValuesWithEvent = createIssueEvent(
+      //   updatedValues,
+      //   prev.links?.length,
+      //   issue?.status || DRAFT,
+      //   issue?.feedback,
+      // );
       setIsEditName(false);
       setFieldValue('status', '');
       setIssuePrevValues({ ...values, status: '' });
-      dispatch(updateAuditIssue(auditId, issueId, updatedValuesWithEvent));
+      dispatch(updateAuditIssue(auditId, issueId, updatedValues));
     } else {
       dispatch(addAuditIssue(auditId, values));
       navigate(`/audit-info/${auditId}/auditor`);
