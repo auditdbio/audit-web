@@ -75,7 +75,7 @@ const websocketMiddleware = () => {
                 type: REQUEST_DECLINE,
                 payload: message.payload.RequestDecline,
               });
-            } else if (message.kind.toLowerCase() === 'frontendupdate') {
+            } else if (message.kind.toLowerCase() === 'versionupdate') {
               store.dispatch({
                 type: NEED_UPDATE,
               });
