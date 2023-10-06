@@ -1,9 +1,11 @@
 import Cookies from 'js-cookie';
 import axios from 'axios';
 import {
+  DELETE_BADGE,
   GET_AUDITOR,
   GET_AUDITORS,
   GET_CURRENT_AUDITOR,
+  MERGE_ACCOUNT,
   SEARCH_AUDITOR,
   SEARCH_PROJECTS,
   UPDATE_AUDITOR,
@@ -143,7 +145,7 @@ export const searchAuditor = values => {
     `page=${searchValues.page}`,
     `sort_by=price`,
     `per_page=10`,
-    `kind=auditor`,
+    `kind=auditor badge`,
   ];
 
   if (searchValues.ready_to_wait) {
@@ -180,6 +182,32 @@ export const searchAuditor = values => {
       )
       .then(({ data }) => {
         dispatch({ type: GET_AUDITORS, payload: data });
+      })
+      .catch(({ response }) => {
+        console.error(response, 'res');
+      });
+  };
+};
+//
+export const deleteBadgeProfile = id => {
+  return dispatch => {
+    axios
+      .delete(`${API_URL}/badge/delete/${id}`)
+      .then(({ data }) => {
+        dispatch({ type: DELETE_BADGE, payload: data });
+      })
+      .catch(({ response }) => {
+        console.error(response, 'res');
+      });
+  };
+};
+
+export const mergeAccount = user => {
+  return dispatch => {
+    axios
+      .post(`${API_URL}/badge/merge/{badge_id}/${user.user_id}`, user)
+      .then(({ data }) => {
+        dispatch({ type: MERGE_ACCOUNT, payload: data });
       })
       .catch(({ response }) => {
         console.error(response, 'res');

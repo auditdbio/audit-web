@@ -44,6 +44,7 @@ import {
 import PublicProject from '../pages/PublicProject.jsx';
 import CustomSnackbar from '../components/custom/CustomSnackbar.jsx';
 import InvitePage from '../pages/Invite-page.jsx';
+import DeleteBadge from '../pages/Delete-badge.jsx';
 
 const AppRoutes = () => {
   const token = useSelector(s => s.user.token);
@@ -141,6 +142,7 @@ const AppRoutes = () => {
         <Route path={'/FAQ'} element={<Faq />} />
         <Route path={'/contact-us'} element={<ContactUs />} />
         <Route path={'/user/:id/:role'} element={<PublicProfile />} />
+        <Route path={'/delete/:id'} element={<DeleteBadge />} />
         <Route
           path="/profile/:tab"
           element={

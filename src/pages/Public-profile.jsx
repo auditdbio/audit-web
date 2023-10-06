@@ -127,6 +127,9 @@ const PublicProfile = () => {
               : theme.palette.primary.main,
           )}
         >
+          {data.kind === 'badge' && (
+            <Typography sx={badgeTitle}>Not in base AuditDB</Typography>
+          )}
           <Box sx={contentWrapper}>
             <CustomSnackbar
               autoHideDuration={3000}
@@ -239,8 +242,9 @@ const PublicProfile = () => {
           {/*{matchXs && <MobileTagsList data={data.tags} />}*/}
           {role.toLowerCase() === AUDITOR && (
             <Button
-              variant={'contained'}
-              sx={[submitAuditor, buttonSx]}
+              variant={data.kind === 'badge' ? 'outlined' : 'contained'}
+              sx={buttonSx}
+              color={'secondary'}
               onClick={handleInvite}
               {...addTestsLabel('invite-button')}
             >
@@ -285,6 +289,12 @@ const wrapper = (theme, color) => ({
       maxWidth: '380px',
     },
   },
+});
+
+const badgeTitle = theme => ({
+  textAlign: 'center',
+  color: '#B9B9B9',
+  fontWeight: 500,
 });
 
 const aboutWrapper = theme => ({
@@ -371,7 +381,6 @@ const contentWrapper = theme => ({
 const buttonSx = theme => ({
   margin: '0 auto',
   display: 'block',
-  color: theme.palette.background.default,
   textTransform: 'capitalize',
   fontWeight: 600,
   fontSize: '18px',
