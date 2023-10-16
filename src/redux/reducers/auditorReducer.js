@@ -6,6 +6,7 @@ import {
   LOG_OUT,
   GET_CURRENT_AUDITOR,
   DELETE_BADGE,
+  CLEAR_MESSAGES,
 } from '../actions/types.js';
 
 const initialState = {
@@ -40,9 +41,15 @@ export const auditorReducer = (state = initialState, action) => {
     case DELETE_BADGE:
       return {
         ...state,
+        error: 'This letter with instructions has been sent to your email.',
         auditors: state.auditors.filter(
           auditor => auditor.id !== action.payload,
         ),
+      };
+    case CLEAR_MESSAGES:
+      return {
+        ...state,
+        error: null,
       };
     default:
       return state;

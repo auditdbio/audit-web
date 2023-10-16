@@ -127,7 +127,7 @@ const AppRoutes = () => {
       <Routes>
         <Route path={'/'} element={<HomePage />} />
         <Route path={'/sign-up'} element={<SignupPage />} />
-        <Route path={'/invite-user'} element={<InvitePage />} />
+        <Route path={'/invite-user/:id/:secret'} element={<InvitePage />} />
         <Route path={'/sign-in'} element={<SigninPage />} />
         <Route
           path={'/restore-password/:token'}

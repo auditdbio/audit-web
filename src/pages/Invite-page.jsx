@@ -18,11 +18,13 @@ import { addTestsLabel } from '../lib/helper.js';
 import * as Yup from 'yup';
 import SubmitModal from '../components/modal/Submit-modal.jsx';
 import MergeModal from '../components/modal/Merge-modal.jsx';
+import { useParams } from 'react-router-dom';
 //
 const InvitePage = () => {
   const dispatch = useDispatch();
   const matchMd = useMediaQuery(theme.breakpoints.down('md'));
   const error = useSelector(s => s.user.error);
+  const { id, secret } = useParams();
   const [isOpenSubmit, setIsOpenSubmit] = useState(false);
   const [isOpenMerge, setIsOpenMerge] = useState(false);
   const initialValues = {
@@ -165,7 +167,13 @@ const cardWrapper = theme => ({
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
-  padding: '30px 40px',
+  padding: '50px 100px',
+  '& form': {
+    width: '100%',
+  },
+  [theme.breakpoints.down('xs')]: {
+    padding: '30px 50px',
+  },
 });
 
 const submitButton = theme => ({
@@ -183,8 +191,8 @@ const submitButton = theme => ({
     lineHeight: '23px',
   },
   [theme.breakpoints.down('sm')]: {
-    fontSize: '15px',
-    width: '230px',
+    fontSize: '15px!important',
+    width: '240px',
     padding: '12px',
   },
 });
@@ -207,8 +215,8 @@ const formStyle = theme => ({
 const fieldsWrapper = theme => ({
   display: 'flex',
   width: '100%',
-  gap: '70px',
-  flexDirection: 'row',
+  gap: '28px',
+  flexDirection: 'column',
   [theme.breakpoints.down('md')]: {
     gap: '20px',
   },
@@ -221,7 +229,7 @@ const fieldWrapper = theme => ({
   display: 'flex',
   gap: '28px',
   flexDirection: 'column',
-  width: '50%',
+  width: '100%',
   '& .password-wrapper, .field-wrapper': {
     flexDirection: 'row',
     alignItems: 'center',
