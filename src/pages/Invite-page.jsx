@@ -14,25 +14,33 @@ import { signUp } from '../redux/actions/userAction.js';
 import { Form, Formik } from 'formik';
 import SimpleField from '../components/forms/fields/simple-field.jsx';
 import PasswordField from '../components/forms/fields/password-field.jsx';
-import { addTestsLabel } from '../lib/helper.js';
+import { addTestsLabel, isAuth } from '../lib/helper.js';
 import * as Yup from 'yup';
 import SubmitModal from '../components/modal/Submit-modal.jsx';
 import MergeModal from '../components/modal/Merge-modal.jsx';
 import { useParams } from 'react-router-dom';
+import { mergeCurrentAccount } from '../redux/actions/auditorAction.js';
 //
 const InvitePage = () => {
   const dispatch = useDispatch();
   const matchMd = useMediaQuery(theme.breakpoints.down('md'));
+  const user = useSelector(s => s.auditor.auditor);
   const error = useSelector(s => s.user.error);
   const { id, secret } = useParams();
   const [isOpenSubmit, setIsOpenSubmit] = useState(false);
   const [isOpenMerge, setIsOpenMerge] = useState(false);
   const initialValues = {
-    current_role: '',
+    current_role: 'auditor',
     name: '',
     email: '',
     password: '',
     confirmPassword: '',
+  };
+
+  const handleMerge = () => {
+    isAuth()
+      ? dispatch(mergeCurrentAccount(user, secret))
+      : setIsOpenMerge(true);
   };
 
   return (
@@ -100,7 +108,7 @@ const InvitePage = () => {
                     type="button"
                     sx={submitButton}
                     variant={'contained'}
-                    onClick={() => setIsOpenMerge(true)}
+                    onClick={handleMerge}
                     {...addTestsLabel('sign-up-button')}
                   >
                     Merge in your account
@@ -119,18 +127,18 @@ const InvitePage = () => {
                   </ClickAwayListener>
                 </Box>
               )}
-              {isOpenMerge && (
-                <Box sx={modalWrapper}>
-                  <ClickAwayListener onClickAway={() => setIsOpenMerge(false)}>
-                    <Box>
-                      <MergeModal secret={secret} />
-                    </Box>
-                  </ClickAwayListener>
-                </Box>
-              )}
             </Form>
           )}
         </Formik>
+        {isOpenMerge && (
+          <Box sx={modalWrapper}>
+            <ClickAwayListener onClickAway={() => setIsOpenMerge(false)}>
+              <Box>
+                <MergeModal secret={secret} />
+              </Box>
+            </ClickAwayListener>
+          </Box>
+        )}
       </CustomCard>
     </Layout>
   );

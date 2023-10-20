@@ -8,7 +8,9 @@ import {
   MERGE_ACCOUNT,
   SEARCH_AUDITOR,
   SEARCH_PROJECTS,
+  SIGN_IN_ERROR,
   UPDATE_AUDITOR,
+  USER_SIGNIN,
 } from './types.js';
 import { history } from '../../services/history.js';
 import dayjs from 'dayjs';
@@ -101,7 +103,7 @@ export const getAuditors = (values = '', amount) => {
       .get(
         `${API_URL}/search?query=${values}&sort_by=price&tags=&sort_order=1&page=1&per_page=${
           amount ? amount : 0
-        }&kind=auditor`,
+        }&kind=auditor badge`,
         isAuth()
           ? {
               headers: {
@@ -202,20 +204,16 @@ export const deleteBadgeProfile = id => {
   };
 };
 
-export const mergeAccount = (user, secret) => {
+export const mergeCurrentAccount = (auditor, secret) => {
   const token = Cookies.get('token');
 
   return dispatch => {
     axios
-      .post(
-        `${API_URL}badge/merge/${secret}`,
-        {},
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+      .patch(`${API_URL}/badge/merge/${secret}`, auditor, {
+        headers: {
+          Authorization: `Bearer ${token}`,
         },
-      )
+      })
       .then(({ data }) => {
         dispatch({ type: MERGE_ACCOUNT, payload: data });
         history.push(
@@ -227,6 +225,36 @@ export const mergeAccount = (user, secret) => {
       })
       .catch(({ response }) => {
         console.error(response, 'res');
+      });
+  };
+};
+
+export const mergeAccount = (values, secret) => {
+  return dispatch => {
+    axios
+      .post(`${API_URL}/auth/login`, values)
+      .then(({ data }) => {
+        axios
+          .patch(`${API_URL}/badge/merge/${secret}`, data, {
+            headers: {
+              Authorization: `Bearer ${data.token}`,
+            },
+          })
+          .then(({ data }) => {
+            dispatch({ type: MERGE_ACCOUNT, payload: data });
+            history.push(
+              { pathname: `/profile/user-info` },
+              {
+                some: true,
+              },
+            );
+          })
+          .catch(({ response }) => {
+            console.error(response, 'res');
+          });
+      })
+      .catch(({ response }) => {
+        dispatch({ type: SIGN_IN_ERROR, payload: response.data });
       });
   };
 };
