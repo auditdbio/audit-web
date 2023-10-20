@@ -29,10 +29,13 @@ const CurrentChat = ({
   const navigate = useNavigate();
   const { id } = useParams();
   const { user } = useSelector(s => s.user);
+
   const [newMessage, setNewMessage] = useState('');
   const [attachModalIsOpen, setAttachModalIsOpen] = useState(false);
   const [displayedMessages, setDisplayedMessages] = useState(20);
+  const [messagesWindowHeight, setMessagesWindowHeight] = useState(0);
   const [userLinkData, setUserLinkData] = useState({});
+
   const messageBoxRef = useRef();
 
   useEffect(() => {
@@ -52,8 +55,17 @@ const CurrentChat = ({
   useEffect(() => {
     if (messageBoxRef.current) {
       messageBoxRef.current.scrollTop = messageBoxRef.current.scrollHeight;
+      setMessagesWindowHeight(messageBoxRef.current.scrollHeight);
     }
   }, [chatMessages]);
+
+  useEffect(() => {
+    if (messageBoxRef.current) {
+      const scrollHeight = messageBoxRef.current.scrollHeight;
+      messageBoxRef.current.scrollTop = scrollHeight - messagesWindowHeight;
+      setMessagesWindowHeight(scrollHeight);
+    }
+  }, [displayedMessages]);
 
   useEffect(() => {
     const chat = chatList.find(chat => chat.id === currentChat?.chatId);
