@@ -123,7 +123,7 @@ const InvitePage = () => {
                 <Box sx={modalWrapper}>
                   <ClickAwayListener onClickAway={() => setIsOpenMerge(false)}>
                     <Box>
-                      <MergeModal />
+                      <MergeModal secret={secret} />
                     </Box>
                   </ClickAwayListener>
                 </Box>
@@ -149,7 +149,8 @@ const SignupSchema = Yup.object().shape({
 });
 
 const modalWrapper = theme => ({
-  position: 'absolute',
+  position: 'fixed',
+  overflow: 'hidden',
   top: '0',
   left: '0',
   width: '100%',

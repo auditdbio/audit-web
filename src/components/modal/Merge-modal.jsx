@@ -4,8 +4,15 @@ import SimpleField from '../forms/fields/simple-field.jsx';
 import { TextField } from 'formik-mui';
 import { addTestsLabel } from '../../lib/helper.js';
 import { FastField } from 'formik';
-//
-const MergeModal = () => {
+import { useDispatch } from 'react-redux';
+import { mergeAccount } from '../../redux/actions/auditorAction.js';
+
+const MergeModal = ({ secret }) => {
+  const dispatch = useDispatch();
+  const handleSubmit = () => {
+    dispatch(mergeAccount(secret));
+  };
+
   return (
     <Box sx={modalInnerWrapper}>
       <Typography>Please enter your account email for merging</Typography>
@@ -14,10 +21,10 @@ const MergeModal = () => {
         name={'email'}
         label={'Email'}
         fullWidth={true}
-        disabled={false}
+        disabled={true}
         inputProps={{ ...addTestsLabel(`${name}-input`) }}
       />
-      <Button variant={'contained'} sx={btnStyle}>
+      <Button variant={'contained'} onClick={handleSubmit} sx={btnStyle}>
         Merge
       </Button>
     </Box>

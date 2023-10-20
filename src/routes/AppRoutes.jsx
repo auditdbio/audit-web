@@ -142,7 +142,7 @@ const AppRoutes = () => {
         <Route path={'/FAQ'} element={<Faq />} />
         <Route path={'/contact-us'} element={<ContactUs />} />
         <Route path={'/user/:id/:role'} element={<PublicProfile />} />
-        <Route path={'/delete/:id'} element={<DeleteBadge />} />
+        <Route path={'/delete/:id/:secret'} element={<DeleteBadge />} />
         <Route
           path="/profile/:tab"
           element={

@@ -202,12 +202,28 @@ export const deleteBadgeProfile = id => {
   };
 };
 
-export const mergeAccount = user => {
+export const mergeAccount = (user, secret) => {
+  const token = Cookies.get('token');
+
   return dispatch => {
     axios
-      .post(`${API_URL}/badge/merge/{badge_id}/${user.user_id}`, user)
+      .post(
+        `${API_URL}badge/merge/${secret}`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      )
       .then(({ data }) => {
         dispatch({ type: MERGE_ACCOUNT, payload: data });
+        history.push(
+          { pathname: `/profile/user-info` },
+          {
+            some: true,
+          },
+        );
       })
       .catch(({ response }) => {
         console.error(response, 'res');

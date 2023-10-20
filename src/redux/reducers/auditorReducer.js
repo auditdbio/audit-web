@@ -41,7 +41,6 @@ export const auditorReducer = (state = initialState, action) => {
     case DELETE_BADGE:
       return {
         ...state,
-        error: 'This letter with instructions has been sent to your email.',
         auditors: state.auditors.filter(
           auditor => auditor.id !== action.payload,
         ),
