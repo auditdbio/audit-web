@@ -5,7 +5,7 @@ import {
   CHAT_CLOSE_CURRENT_CHAT,
   CHAT_GET_LIST,
   CHAT_GET_MESSAGES,
-  CHAT_SEND_MESSAGE,
+  CHAT_SEND_FIRST_MESSAGE,
   CHAT_SET_CURRENT,
 } from './types.js';
 
@@ -37,7 +37,7 @@ export const setCurrentChat = (
 ) => {
   return dispatch => {
     if (userDataId) {
-      axios.get(`${API_URL}/customer/${userDataId}`).then(({ data }) => {
+      axios.get(`${API_URL}/${role}/${userDataId}`).then(({ data }) => {
         dispatch({
           type: CHAT_SET_CURRENT,
           payload: {
@@ -81,7 +81,12 @@ export const chatSendMessage = (text, to, role, isFirst) => {
       .post(`${API_URL}/chat/message`, values, {
         headers: { Authorization: `Bearer ${token}` },
       })
-      .then(() => dispatch({ type: CHAT_SEND_MESSAGE }));
+      .then(({ data }) => {
+        if (isFirst) {
+          const payload = data.Private || data.Group;
+          dispatch({ type: CHAT_SEND_FIRST_MESSAGE, payload });
+        }
+      });
   };
 };
 

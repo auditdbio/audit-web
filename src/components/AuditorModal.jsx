@@ -26,7 +26,7 @@ import {
 } from '../redux/actions/userAction.js';
 import * as Yup from 'yup';
 import CustomSnackbar from './custom/CustomSnackbar.jsx';
-import { getChatList, setCurrentChat } from '../redux/actions/chatActions.js';
+import { setCurrentChat } from '../redux/actions/chatActions.js';
 
 export default function AuditorModal({
   open,
@@ -101,12 +101,6 @@ export default function AuditorModal({
     );
     navigate(`/chat/${existingChat ? existingChat.id : auditor?.user_id}`);
   };
-
-  useEffect(() => {
-    if (open) {
-      dispatch(getChatList(user.current_role));
-    }
-  }, [user, open]);
 
   useEffect(() => {
     if (open && !isForm) {

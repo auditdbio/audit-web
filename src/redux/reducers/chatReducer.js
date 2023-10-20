@@ -3,7 +3,7 @@ import {
   CHAT_GET_LIST,
   CHAT_GET_MESSAGES,
   CHAT_NEW_MESSAGE,
-  CHAT_SEND_MESSAGE,
+  CHAT_SEND_FIRST_MESSAGE,
   CHAT_SET_CURRENT,
 } from '../actions/types.js';
 
@@ -26,11 +26,15 @@ export const chatReducer = (state = initialState, action) => {
         ...state,
         chatMessages: [...state.chatMessages, action.payload],
       };
-    // case CHAT_SEND_MESSAGE:
-    //   return {
-    //     ...state,
-    //     chatMessages: [...state.chatMessages, action.payload],
-    //   };
+    case CHAT_SEND_FIRST_MESSAGE:
+      return {
+        ...state,
+        currentChat: {
+          ...state.currentChat,
+          isNew: false,
+          chatId: action.payload?._id?.$oid, // todo: change id field in backend
+        },
+      };
     case CHAT_CLOSE_CURRENT_CHAT:
       return { ...state, chatMessages: [], currentChat: null };
     default:

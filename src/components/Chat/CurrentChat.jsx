@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Link as RouterLink } from 'react-router-dom';
+import { Link as RouterLink, useNavigate, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { Avatar, Box, Button, IconButton, Link } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu.js';
@@ -14,6 +14,7 @@ import CustomTextarea from '../custom/CustomTextarea.jsx';
 import {
   chatSendMessage,
   closeCurrentChat,
+  getChatList,
   getChatMessages,
 } from '../../redux/actions/chatActions.js';
 import AttachFileModal from './AttachFileModal.jsx';
@@ -25,6 +26,8 @@ const CurrentChat = ({
   setChatListIsOpen,
 }) => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { id } = useParams();
   const { user } = useSelector(s => s.user);
   const [newMessage, setNewMessage] = useState('');
   const [attachModalIsOpen, setAttachModalIsOpen] = useState(false);
@@ -40,6 +43,13 @@ const CurrentChat = ({
   }, [currentChat]);
 
   useEffect(() => {
+    if (currentChat?.chatId && id !== currentChat?.chatId) {
+      navigate(`/chat/${currentChat?.chatId}`);
+      dispatch(getChatList(user.current_role));
+    }
+  }, [currentChat?.chatId]);
+
+  useEffect(() => {
     if (messageBoxRef.current) {
       messageBoxRef.current.scrollTop = messageBoxRef.current.scrollHeight;
     }
@@ -47,8 +57,8 @@ const CurrentChat = ({
 
   useEffect(() => {
     const chat = chatList.find(chat => chat.id === currentChat?.chatId);
-    const companion = chat?.members?.find(member => member.id !== user.id);
-    setUserLinkData({ id: companion?.id, role: companion?.role });
+    const interlocutor = chat?.members?.find(member => member.id !== user.id);
+    setUserLinkData({ id: interlocutor?.id, role: interlocutor?.role });
   }, [currentChat, chatList]);
 
   useEffect(() => {
@@ -108,7 +118,10 @@ const CurrentChat = ({
             <MenuIcon fontSize="large" />
           </IconButton>
 
-          <RouterLink to={`/user/${userLinkData.id}/${userLinkData.role}`}>
+          <RouterLink
+            to={`/user/${userLinkData.id}/${userLinkData.role}`}
+            style={userLinkData.id ? null : disabledLink}
+          >
             <Avatar
               src={
                 currentChat?.avatar
@@ -123,7 +136,7 @@ const CurrentChat = ({
             <Link
               component={RouterLink}
               to={`/user/${userLinkData.id}/${userLinkData.role}`}
-              sx={userNameSx}
+              sx={[userNameSx, userLinkData.id ? null : disabledLink]}
               {...addTestsLabel('profile-link')}
             >
               {currentChat?.name}
@@ -356,3 +369,7 @@ const sendButton = theme => ({
     padding: '10px 20px',
   },
 });
+
+const disabledLink = {
+  pointerEvents: 'none',
+};
