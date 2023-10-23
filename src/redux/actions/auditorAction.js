@@ -215,7 +215,7 @@ export const mergeCurrentAccount = (auditor, secret) => {
         },
       })
       .then(({ data }) => {
-        dispatch({ type: MERGE_ACCOUNT, payload: data });
+        dispatch({ type: MERGE_ACCOUNT, payload: data.user });
         history.push(
           { pathname: `/profile/user-info` },
           {
@@ -235,7 +235,7 @@ export const mergeAccount = (values, secret) => {
       .post(`${API_URL}/auth/login`, values)
       .then(({ data }) => {
         axios
-          .patch(`${API_URL}/badge/merge/${secret}`, data, {
+          .patch(`${API_URL}/badge/merge/${secret}`, data.user, {
             headers: {
               Authorization: `Bearer ${data.token}`,
             },
