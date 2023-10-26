@@ -11,7 +11,7 @@ import { useParams } from 'react-router-dom';
 const DeleteBadge = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { secret } = useParams();
+  const { id, secret } = useParams();
   const handleDelete = () => {
     dispatch(deleteBadgeProfile(secret));
   };
@@ -32,7 +32,7 @@ const DeleteBadge = () => {
           </Button>
           <Button
             variant={'contained'}
-            onClick={() => navigate('/invite-user')}
+            onClick={() => navigate(`/invite-user/${id}/${secret}`)}
           >
             Cancel
           </Button>

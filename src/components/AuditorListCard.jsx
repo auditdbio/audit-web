@@ -164,7 +164,7 @@ const AuditorListCard = ({ auditor, projectIdToInvite, budge }) => {
         >
           Invite to project
         </Button>
-        {budge && <Typography sx={budgeTitle}>not registrated</Typography>}
+        {budge && <Typography sx={budgeTitle}>not registered</Typography>}
       </Box>
     </Box>
   );

@@ -11,7 +11,7 @@ const SubmitModal = ({ close }) => {
         You can merge your email with an existing account.
       </Typography>
       <Box sx={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
-        <Button sx={btnStyle} variant={'contained'}>
+        <Button sx={btnStyle} type={'submit'} variant={'contained'}>
           Submit
         </Button>
         <Button
@@ -26,7 +26,7 @@ const SubmitModal = ({ close }) => {
     </Box>
   );
 };
-
+//
 export default SubmitModal;
 
 const btnStyle = theme => ({

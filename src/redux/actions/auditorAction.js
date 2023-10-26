@@ -197,6 +197,12 @@ export const deleteBadgeProfile = id => {
       .delete(`${API_URL}/badge/delete/${id}`)
       .then(({ data }) => {
         dispatch({ type: DELETE_BADGE, payload: data });
+        history.push(
+          { pathname: `/` },
+          {
+            some: true,
+          },
+        );
       })
       .catch(({ response }) => {
         console.error(response, 'res');
