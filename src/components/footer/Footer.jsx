@@ -4,13 +4,12 @@ import YouTubeIcon from '@mui/icons-material/YouTube';
 import MenuItem from '@mui/material/MenuItem';
 import { useMediaQuery } from '@mui/material';
 import { Link } from 'react-router-dom/dist';
-import Tiktok from '../icons/Tiktok.jsx';
-import Vk from '../icons/Vk.jsx';
-import Instagram from '../icons/Instagram.jsx';
+//
 import Discord from '../icons/Discord.jsx';
 import Telegram from '../icons/Telegram.jsx';
 import MediumLogo from '../icons/Medium-logo.jsx';
 import { addTestsLabel } from '../../lib/helper.js';
+import XTwitterLogo from '../icons/XTwitter-logo.jsx';
 
 const Footer = () => {
   const isMobile = useMediaQuery('(max-width: 768px)');
@@ -40,18 +39,7 @@ const Footer = () => {
                 {...addTestsLabel('footer_twitter-link')}
               >
                 {/*<TwitterIcon sx={iconStyle} />*/}
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="18"
-                  // height="20"
-                  viewBox="0 0 1200 1227"
-                  fill="rgb(82, 23, 109)"
-                >
-                  <path
-                    d="M714.163 519.284L1160.89 0H1055.03L667.137 450.887L357.328 0H0L468.492 681.821L0 1226.37H105.866L515.491 750.218L842.672 1226.37H1200L714.137 519.284H714.163ZM569.165 687.828L521.697 619.934L144.011 79.6944H306.615L611.412 515.685L658.88 583.579L1055.08 1150.3H892.476L569.165 687.854V687.828Z"
-                    fill="rgb(82, 23, 109)"
-                  />
-                </svg>
+                <XTwitterLogo />
               </a>
               <a
                 target="_blank"
