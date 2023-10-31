@@ -27,6 +27,14 @@ const Footer = () => {
             <Box sx={iconsStyle}>
               <a
                 target="_blank"
+                href="https://discord.gg/2Wg6GGs93C"
+                aria-label="Discord"
+                {...addTestsLabel('footer_discord-link')}
+              >
+                <Discord style={iconStyle} />
+              </a>
+              <a
+                target="_blank"
                 href="https://twitter.com/auditdbio?t=oOdybhqGYlv129TyT8y-2g&s=09"
                 aria-label="Twitter"
                 {...addTestsLabel('footer_twitter-link')}
@@ -34,7 +42,7 @@ const Footer = () => {
                 {/*<TwitterIcon sx={iconStyle} />*/}
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  width="20"
+                  width="18"
                   // height="20"
                   viewBox="0 0 1200 1227"
                   fill="rgb(82, 23, 109)"
@@ -44,14 +52,6 @@ const Footer = () => {
                     fill="rgb(82, 23, 109)"
                   />
                 </svg>
-              </a>
-              <a
-                target="_blank"
-                href="https://discord.gg/2Wg6GGs93C"
-                aria-label="Discord"
-                {...addTestsLabel('footer_discord-link')}
-              >
-                <Discord style={iconStyle} />
               </a>
               <a
                 target="_blank"
