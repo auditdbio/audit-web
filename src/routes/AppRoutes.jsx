@@ -43,6 +43,8 @@ import {
 } from '../redux/actions/websocketAction.js';
 import PublicProject from '../pages/PublicProject.jsx';
 import CustomSnackbar from '../components/custom/CustomSnackbar.jsx';
+import InvitePage from '../pages/Invite-page.jsx';
+import DeleteBadge from '../pages/Delete-badge.jsx';
 
 const AppRoutes = () => {
   const token = useSelector(s => s.user.token);
@@ -125,6 +127,7 @@ const AppRoutes = () => {
       <Routes>
         <Route path={'/'} element={<HomePage />} />
         <Route path={'/sign-up'} element={<SignupPage />} />
+        <Route path={'/invite-user/:id/:secret'} element={<InvitePage />} />
         <Route path={'/sign-in'} element={<SigninPage />} />
         <Route
           path={'/restore-password/:token'}
@@ -139,6 +142,7 @@ const AppRoutes = () => {
         <Route path={'/FAQ'} element={<Faq />} />
         <Route path={'/contact-us'} element={<ContactUs />} />
         <Route path={'/user/:id/:role'} element={<PublicProfile />} />
+        <Route path={'/delete/:id/:secret'} element={<DeleteBadge />} />
         <Route
           path="/profile/:tab"
           element={

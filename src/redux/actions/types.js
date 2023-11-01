@@ -82,3 +82,5 @@ export const GET_NEW_REQUEST = 'GET_NEW_REQUEST';
 export const GET_NEW_AUDIT = 'GET_NEW_AUDIT';
 export const REQUEST_DECLINE = 'REQUEST_DECLINE';
 export const NEED_UPDATE = 'NEED_UPDATE';
+export const MERGE_ACCOUNT = 'MERGE_ACCOUNT';
+export const DELETE_BADGE = 'DELETE_BADGE';
