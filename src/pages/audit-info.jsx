@@ -79,12 +79,15 @@ const AuditInfo = ({ audit, auditRequest, issues, confirmed }) => {
       ),
     );
     const chatId = existingChat ? existingChat.id : audit?.auditor_id;
+    const members = [audit?.auditor_id, user.id];
+
     dispatch(
       setCurrentChat(chatId, {
         name: audit?.auditor_first_name,
         avatar: audit.avatar,
         role: AUDITOR,
         isNew: !existingChat,
+        members,
       }),
     );
 
@@ -263,6 +266,7 @@ const AuditInfo = ({ audit, auditRequest, issues, confirmed }) => {
               variant="contained"
               sx={[buttonSx, { mb: '20px' }]}
               onClick={handleSendMessage}
+              disabled={audit?.auditor_id === user.id}
               {...addTestsLabel('message-button')}
             >
               Send a message

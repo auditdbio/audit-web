@@ -21,7 +21,7 @@ const ChatLabel = () => {
         {/*</CustomBadge>*/}
       </Link>
 
-      <Box sx={notice(25)}>25</Box>
+      <Box sx={notice(0)}>0</Box>
     </Box>
   );
 };

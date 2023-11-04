@@ -82,9 +82,11 @@ const CurrentChat = ({
   };
 
   const handleSend = () => {
+    if (!newMessage.trim()) return;
+
     dispatch(
       chatSendMessage(
-        newMessage,
+        newMessage.trim(),
         { id: currentChat?.chatId, role: currentChat?.role },
         user.current_role,
         currentChat?.isNew,
@@ -115,6 +117,8 @@ const CurrentChat = ({
       <AttachFileModal
         isOpen={attachModalIsOpen}
         setIsOpen={setAttachModalIsOpen}
+        currentChat={currentChat}
+        user={user}
       />
 
       <Box sx={wrapper}>

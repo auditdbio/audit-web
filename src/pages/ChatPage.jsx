@@ -19,8 +19,14 @@ const ChatPage = () => {
   useEffect(() => {
     if (id && !currentChat?.isNew) {
       const chat = chatList.find(it => it.id === id);
+      const members = chat?.members.map(member => member.id);
+
       dispatch(
-        setCurrentChat(chat?.id, { name: chat?.name, avatar: chat?.avatar }),
+        setCurrentChat(chat?.id, {
+          name: chat?.name,
+          avatar: chat?.avatar,
+          members,
+        }),
       );
     }
   }, [id, chatList]);

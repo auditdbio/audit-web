@@ -90,6 +90,7 @@ export default function AuditorModal({
       ),
     );
     const chatId = existingChat ? existingChat.id : auditor?.user_id;
+    const members = [auditor?.user_id, user.id];
 
     dispatch(
       setCurrentChat(chatId, {
@@ -97,6 +98,7 @@ export default function AuditorModal({
         avatar: auditor.avatar,
         role: AUDITOR,
         isNew: !existingChat,
+        members,
       }),
     );
     navigate(`/chat/${existingChat ? existingChat.id : auditor?.user_id}`);
@@ -227,6 +229,7 @@ export default function AuditorModal({
                 variant="contained"
                 sx={[findButton, messageButton]}
                 onClick={handleSendMessage}
+                disabled={auditor?.user_id === user.id}
                 {...addTestsLabel('message-button')}
               >
                 Send a message

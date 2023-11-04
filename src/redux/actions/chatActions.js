@@ -33,9 +33,11 @@ export const getChatMessages = id => {
 
 export const setCurrentChat = (
   chatId,
-  { name, avatar, role, isNew = false, userDataId = false },
+  { name, avatar, role, members, isNew = false, userDataId = false },
 ) => {
   return dispatch => {
+    dispatch({ type: CHAT_CLOSE_CURRENT_CHAT });
+
     if (userDataId) {
       axios.get(`${API_URL}/${role}/${userDataId}`).then(({ data }) => {
         dispatch({
@@ -46,6 +48,7 @@ export const setCurrentChat = (
             avatar: data.avatar,
             isNew,
             role,
+            members,
           },
         });
       });
@@ -53,12 +56,12 @@ export const setCurrentChat = (
 
     dispatch({
       type: CHAT_SET_CURRENT,
-      payload: { chatId, name, avatar, isNew, role },
+      payload: { chatId, name, avatar, isNew, role, members },
     });
   };
 };
 
-export const chatSendMessage = (text, to, role, isFirst) => {
+export const chatSendMessage = (text, to, role, isFirst, kind = 'Text') => {
   const token = Cookies.get('token');
   return dispatch => {
     let values;
@@ -68,12 +71,14 @@ export const chatSendMessage = (text, to, role, isFirst) => {
         to: { id: to.id, role: to.role },
         role,
         text,
+        kind,
       };
     } else {
       values = {
         chat: to.id,
         role,
         text,
+        kind,
       };
     }
 

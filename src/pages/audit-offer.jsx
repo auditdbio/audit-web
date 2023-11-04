@@ -96,12 +96,14 @@ const AuditOffer = () => {
       ),
     );
     const chatId = existingChat ? existingChat.id : audit?.customer_id;
+    const members = [audit?.customer_id, user.id];
 
     dispatch(
       setCurrentChat(chatId, {
         role: CUSTOMER,
         isNew: !existingChat,
         userDataId: audit?.customer_id,
+        members,
       }),
     );
 
@@ -307,6 +309,7 @@ const AuditOffer = () => {
                           color="secondary"
                           sx={[buttonSx, sendMessageButton]}
                           onClick={handleSendMessage}
+                          disabled={audit?.customer_id === user.id}
                           {...addTestsLabel('message-button')}
                         >
                           Send a message

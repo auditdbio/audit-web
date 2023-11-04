@@ -13,8 +13,14 @@ const ChatListItem = ({ user, setListIsOpen, chat }) => {
 
   const setChatHandle = () => {
     setListIsOpen(false);
+    const members = chat?.members.map(member => member.id);
+
     dispatch(
-      setCurrentChat(chat?.id, { name: chat?.name, avatar: chat?.avatar }),
+      setCurrentChat(chat?.id, {
+        name: chat?.name,
+        avatar: chat?.avatar,
+        members,
+      }),
     );
   };
 
@@ -50,11 +56,11 @@ const ChatListItem = ({ user, setListIsOpen, chat }) => {
         >
           <Box sx={userNameSx}>{chat?.name}</Box>
         </Tooltip>
-        <Box sx={userStatusSx({ online: true })}>Online</Box>
+        {/*<Box sx={userStatusSx({ online: true })}>Online</Box>*/}
       </Box>
 
       <Box sx={messagesInfo}>
-        <Box sx={messagesCount({ user, count: 245 })}>245</Box>
+        <Box sx={messagesCount({ user, count: 0 })}>0</Box>
         <Box sx={lastMessageTime}>{convertDate(chat.last_message?.time)}</Box>
       </Box>
     </Link>

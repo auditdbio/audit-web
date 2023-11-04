@@ -1,9 +1,12 @@
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import { Avatar, Box, Typography } from '@mui/material';
+import Cookies from 'js-cookie';
+import { Avatar, Box, Link, Typography } from '@mui/material';
 import { ASSET_URL } from '../../services/urls.js';
 import theme from '../../styles/themes.js';
 import { AUDITOR, CUSTOMER } from '../../redux/actions/types.js';
+import ImageMessage from './ImageMessage.jsx';
+import axios from 'axios';
 
 const Message = ({ message, user, currentChat }) => {
   const { customer } = useSelector(state => state.customer);
@@ -26,11 +29,39 @@ const Message = ({ message, user, currentChat }) => {
     return currentChat?.avatar ? `${ASSET_URL}/${currentChat.avatar}` : null;
   };
 
+  const downloadFile = () => {
+    const token = Cookies.get('token');
+    axios
+      .get(`${ASSET_URL}/${message.text}`, {
+        responseType: 'blob',
+        withCredentials: true,
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .then(({ data }) => {
+        const url = window.URL.createObjectURL(new Blob([data]));
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', message.text.replace(/%20/g, ' '));
+        document.body.appendChild(link);
+        link.click();
+      });
+  };
+
   return (
     <Box sx={messageSx({ isOwn: message.from?.id === user.id })}>
       <Avatar src={getMessageAvatar()} sx={messageAvatarSx} alt="User photo" />
       <Box sx={messageTextSx({ isOwn: message.from?.id === user.id })}>
-        <Typography sx={{ whiteSpace: 'pre-wrap' }}>{message.text}</Typography>
+        {message.kind === 'Image' ? (
+          <ImageMessage message={message} />
+        ) : message.kind === 'File' ? (
+          <Typography title="Download" sx={linkMessage} onClick={downloadFile}>
+            <span>{message.text.replace(/%20/g, ' ')}</span>
+          </Typography>
+        ) : (
+          <Typography sx={{ whiteSpace: 'pre-wrap' }}>
+            {makeLinksClickable(message.text)}
+          </Typography>
+        )}
         <Box sx={messageTimeSx}>
           {new Date(message?.time / 1000)
             .toLocaleTimeString()
@@ -42,6 +73,22 @@ const Message = ({ message, user, currentChat }) => {
 };
 
 export default Message;
+
+function makeLinksClickable(text) {
+  const urlRegex = /((?:https?|ftp):\/\/[^\s/$.?#].[^\s]*)/g;
+  const parts = text.split(urlRegex);
+
+  return parts.map((part, idx) => {
+    if (urlRegex.test(part)) {
+      return (
+        <a key={idx} href={part} target="_blank" rel="noopener noreferrer">
+          {part}
+        </a>
+      );
+    }
+    return part;
+  });
+}
 
 const messageSx = ({ isOwn }) => ({
   display: 'flex',
@@ -98,6 +145,15 @@ const messageTextSx = ({ isOwn }) => ({
     },
   },
 });
+
+const linkMessage = {
+  whiteSpace: 'pre-wrap',
+  '& span': {
+    cursor: 'pointer',
+    textDecoration: 'none',
+    color: '#152BEA !important',
+  },
+};
 
 const messageTimeSx = theme => ({
   position: 'absolute',

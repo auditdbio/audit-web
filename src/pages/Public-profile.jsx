@@ -89,6 +89,7 @@ const PublicProfile = () => {
       ),
     );
     const chatId = existingChat ? existingChat.id : data?.user_id;
+    const members = [data?.user_id, user.id];
 
     dispatch(
       setCurrentChat(chatId, {
@@ -96,6 +97,7 @@ const PublicProfile = () => {
         avatar: data.avatar,
         role,
         isNew: !existingChat,
+        members,
       }),
     );
 
@@ -277,6 +279,7 @@ const PublicProfile = () => {
               variant="contained"
               color={role === AUDITOR ? 'secondary' : 'primary'}
               sx={buttonSx}
+              disabled={id === user.id}
               onClick={() => handleSendMessage(data)}
               {...addTestsLabel('message-button')}
             >
