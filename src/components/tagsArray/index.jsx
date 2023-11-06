@@ -12,10 +12,13 @@ const TagsArray = ({ name }) => {
       sx={{ display: 'flex', gap: '15px', flexWrap: 'wrap' }}
       className={'tags-array-wrapper'}
     >
-      {meta.error && (
+      {meta.touched && meta.error && (
         <Typography
           variant={'body1'}
-          sx={{ color: `${theme.palette.error.main}!important` }}
+          sx={{
+            color: `${theme.palette.error.main}!important`,
+            fontSize: '16px',
+          }}
         >
           Tags required
         </Typography>

@@ -8,6 +8,7 @@ import { AUDITOR, CUSTOMER, DONE } from '../redux/actions/types.js';
 import Loader from './Loader.jsx';
 import CustomSnackbar from './custom/CustomSnackbar.jsx';
 import { addTestsLabel } from '../lib/helper.js';
+import ProjectCardList from './Project-card-list.jsx';
 
 const Projects = ({ role }) => {
   const navigate = useNavigate();
@@ -67,13 +68,7 @@ const Projects = ({ role }) => {
           text={error}
         />
 
-        <Grid container spacing={2}>
-          {projectReducer?.map(project => (
-            <Grid key={project.id} item sx={gridItemStyle}>
-              <ProjectCard project={project} type={role} />
-            </Grid>
-          ))}
-        </Grid>
+        <ProjectCardList projects={projectReducer} role={role} />
       </Box>
     );
   }

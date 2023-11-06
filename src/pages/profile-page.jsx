@@ -53,11 +53,16 @@ const ProfilePage = () => {
         />
         <InfoCard role={currentRole}>
           {chooseTab === 'audits' && currentRole === CUSTOMER && <Audits />}
-          {chooseTab === 'user-info' && <UserInfo role={currentRole} />}
-          {chooseTab === 'projects' && <Projects role={currentRole} />}
           {chooseTab === 'audits' && currentRole === AUDITOR && (
+            <Projects role={currentRole} />
+          )}
+          {chooseTab === 'projects' && currentRole === CUSTOMER && (
+            <Projects role={currentRole} />
+          )}
+          {chooseTab === 'audit-requests' && currentRole === AUDITOR && (
             <AuditRequest />
           )}
+          {chooseTab === 'user-info' && <UserInfo role={currentRole} />}
         </InfoCard>
       </Box>
     </Layout>
@@ -68,11 +73,11 @@ export default ProfilePage;
 
 const auditorTabs = [
   {
-    value: 'projects',
+    value: 'audits',
     label: 'Audits',
   },
   {
-    value: 'audits',
+    value: 'audit-requests',
     label: 'Audit requests',
   },
   {

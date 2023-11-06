@@ -5,8 +5,12 @@ import { userReducer } from './reducers/userReducer';
 import { customerReducer } from './reducers/customerReducer.js';
 import { auditorReducer } from './reducers/auditorReducer.js';
 import { projectReducer } from './reducers/projectReducer.js';
-import { auditReducer } from './reducers/auditReducer.jsx';
+import { auditReducer } from './reducers/auditReducer.js';
 import { contactUsReducer } from './reducers/contactUsReducer.js';
+import websocketMiddleware from './middleware/websocketMiddleware.js';
+import { websocketReducer } from './reducers/websocketReducer.js';
+import { issueReducer } from './reducers/issueReducer.js';
+import { notFoundReducer } from './reducers/notFoundReducer.js';
 
 export const store = createStore(
   combineReducers({
@@ -15,7 +19,10 @@ export const store = createStore(
     customer: customerReducer,
     auditor: auditorReducer,
     audits: auditReducer,
+    issues: issueReducer,
     contactUs: contactUsReducer,
+    websocket: websocketReducer,
+    notFound: notFoundReducer,
   }),
-  composeWithDevTools(applyMiddleware(thunk)),
+  composeWithDevTools(applyMiddleware(thunk, websocketMiddleware())),
 );

@@ -1,4 +1,9 @@
-import { GET_CUSTOMER, LOG_OUT, UPDATE_CUSTOMER } from '../actions/types.js';
+import {
+  GET_CURRENT_CUSTOMER,
+  GET_CUSTOMER,
+  LOG_OUT,
+  UPDATE_CUSTOMER,
+} from '../actions/types.js';
 
 const initialState = {
   customer: null,
@@ -13,6 +18,11 @@ export const customerReducer = (state = initialState, action) => {
       return { ...state, customer: action.payload };
     case 'NEW_VALUES':
       return { ...state, customer: action.payload };
+    case GET_CURRENT_CUSTOMER:
+      return {
+        ...state,
+        currentCustomer: action.payload,
+      };
     case LOG_OUT:
       return initialState;
     default:

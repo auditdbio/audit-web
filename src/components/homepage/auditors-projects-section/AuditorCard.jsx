@@ -47,6 +47,8 @@ const AuditorCard = ({ auditor }) => {
         handleClose={handleCloseModal}
         auditor={auditor}
         handleError={handleError}
+        setError={setErrorMessage}
+        budge={auditor.kind === 'badge'}
       />
       <CustomSnackbar
         autoHideDuration={3000}
@@ -101,6 +103,7 @@ const AuditorCard = ({ auditor }) => {
         </Box>
         <CustomButton
           sx={buttonStyle}
+          variant={auditor.kind === 'badge' ? 'outlined' : 'contained'}
           onClick={handleView}
           {...addTestsLabel('auditor_more-info-button')}
         >
@@ -112,9 +115,9 @@ const AuditorCard = ({ auditor }) => {
 };
 
 const buttonStyle = {
-  backgroundColor: 'orange',
-  color: 'white',
-  ':hover': { backgroundColor: 'orange', color: 'white' },
+  // backgroundColor: 'orange',
+  // color: 'white',
+  // ':hover': { backgroundColor: 'orange', color: 'white' },
   [theme.breakpoints.down('sm')]: {
     fontSize: '13px',
   },

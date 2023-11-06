@@ -106,7 +106,7 @@ export const UserMenu = ({ open, handleClose, anchor, userAvatar, pages }) => {
           onClick={handleMyAccountClick}
           {...addTestsLabel('header_my-account')}
         >
-          My Account
+          My account
         </Button>
       </MenuItem>
       {matchSm &&
@@ -257,6 +257,7 @@ const tabSx = theme => ({
   width: '50%',
   color: '#222222',
   fontSize: '16px',
+  fontWeight: 600,
   textTransform: 'capitalize',
   [theme.breakpoints.down('md')]: {
     minHeight: '41px',

@@ -17,6 +17,7 @@ const AuditorsPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const matchSm = useMediaQuery(theme.breakpoints.down('sm'));
+  const matchXs = useMediaQuery(theme.breakpoints.down('xs'));
   const [searchParams, setSearchParams] = useSearchParams();
   const [query, setQuery] = useState(undefined);
   const auditors = useSelector(s => s.auditor.auditors);
@@ -98,7 +99,7 @@ const AuditorsPage = () => {
   return (
     <Layout>
       <Box sx={wrapper}>
-        <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+        <Box sx={headWrapper}>
           <Button
             onClick={() => navigate(-1)}
             aria-label="Go back"
@@ -120,12 +121,15 @@ const AuditorsPage = () => {
           sx={{ mb: '20px' }}
           page={currentPage}
           onChange={handleChangePage}
+          showFirstLast={!matchXs}
+          size={matchXs ? 'small' : 'medium'}
         />
         {auditors?.length > 0 && (
           <Box sx={contentWrapper}>
-            {auditors?.map(auditor => (
+            {auditors?.map((auditor, idx) => (
               <Box sx={auditorContainerStyle} key={auditor.user_id}>
                 <AuditorListCard
+                  budge={auditor.kind === 'badge'}
                   auditor={auditor}
                   projectIdToInvite={projectIdToInvite}
                 />
@@ -143,6 +147,8 @@ const AuditorsPage = () => {
           sx={{ display: 'flex', justifyContent: 'flex-end' }}
           page={currentPage}
           onChange={handleChangePage}
+          showFirstLast={!matchXs}
+          size={matchXs ? 'small' : 'medium'}
         />
       </Box>
     </Layout>
@@ -165,6 +171,14 @@ const wrapper = theme => ({
     '0px 1.97661px 1.58129px rgba(0, 0, 0, 0.0196802)',
   borderRadius: '10.7143px',
   minHeight: '1000px',
+});
+
+const headWrapper = theme => ({
+  display: 'flex',
+  justifyContent: 'space-between',
+  [theme.breakpoints.down('sm')]: {
+    mb: '10px',
+  },
 });
 
 const contentWrapper = {

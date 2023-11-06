@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Button } from '@mui/material';
+import { Box, Button, Typography, useMediaQuery } from '@mui/material';
 import theme, { radiusOfComponents } from '../styles/themes.js';
 import { useNavigate } from 'react-router-dom/dist';
 import TagsArray from './tagsArray/index.jsx';
@@ -25,7 +25,7 @@ import * as Yup from 'yup';
 import { useLocation, useSearchParams } from 'react-router-dom';
 import { getAuditsRequest } from '../redux/actions/auditAction.js';
 import { AuditRequestsArray } from './custom/AuditRequestsArray.jsx';
-import Markdown from './custom/Markdown-editor.jsx';
+import MarkdownEditor from './markdown/Markdown-editor.jsx';
 import SalarySlider from './forms/salary-slider/salary-slider.jsx';
 import CloseProjectModal from './CloseProjectModal.jsx';
 import { DONE } from '../redux/actions/types.js';
@@ -36,6 +36,8 @@ const CreateProjectCard = ({ projectInfo }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [getSearchParam] = useSearchParams();
+  const matchMd = useMediaQuery(theme.breakpoints.down('md'));
+  const matchXs = useMediaQuery(theme.breakpoints.down('xs'));
   const customerReducer = useSelector(state => state.customer);
   const auditReducer = useSelector(state => state.audits);
   const [auditRequests, setAuditRequests] = useState([]);
@@ -147,12 +149,19 @@ const CreateProjectCard = ({ projectInfo }) => {
         }
       }}
     >
-      {({ handleSubmit, values, setFieldValue }) => {
+      {({
+        handleSubmit,
+        values,
+        setFieldValue,
+        setFieldTouched,
+        touched,
+        errors,
+      }) => {
         return (
           <Box sx={mainBox}>
             <Button
               sx={backButtonSx}
-              onClick={() => navigate('/profile/projects')}
+              onClick={() => navigate(-1)}
               aria-label="Ga back"
               {...addTestsLabel('go-back-button')}
             >
@@ -176,6 +185,7 @@ const CreateProjectCard = ({ projectInfo }) => {
               handleClose={handleCloseInviteModal}
               handleSubmit={handleSubmit}
               setState={setState}
+              setError={setError}
             />
 
             {/*<CloseProjectModal*/}
@@ -240,14 +250,29 @@ const CreateProjectCard = ({ projectInfo }) => {
                   <Box sx={formAllFields}>
                     <Box sx={formWrapper}>
                       <Box sx={fieldWrapper}>
-                        <SimpleField name={'name'} label={'Name'} />
-                        <TagsField name={'tags'} label={'Tags'} />
-                        <TagsArray name={'tags'} />
+                        <SimpleField
+                          size={matchMd ? 'small' : 'medium'}
+                          name="name"
+                          label="Name"
+                          emptyPH
+                        />
+                        <TagsField
+                          size={matchMd ? 'small' : 'medium'}
+                          name="tags"
+                          label="Tags"
+                          setFieldTouched={setFieldTouched}
+                        />
+                        <TagsArray name="tags" />
                       </Box>
                       <Box sx={fieldWrapper}>
-                        <TagsField name={'scope'} label={'Project links'} />
-                        <ProjectLinksList name={'scope'} />
-                        <SalarySlider name={'price'} />
+                        <TagsField
+                          size={matchMd ? 'small' : 'medium'}
+                          name="scope"
+                          label="Project links"
+                          setFieldTouched={setFieldTouched}
+                        />
+                        <ProjectLinksList name="scope" />
+                        <SalarySlider name="price" />
                       </Box>
                     </Box>
 
@@ -255,8 +280,29 @@ const CreateProjectCard = ({ projectInfo }) => {
                     {/*  <AuditRequestsArray requests={auditRequests ?? []} />*/}
                     {/*</Box>*/}
                   </Box>
-                  <Box className="description-box" sx={descriptionFieldWrapper}>
-                    <Markdown name={'description'} />
+                  <Box
+                    className="description-box"
+                    sx={descriptionFieldWrapper(
+                      touched.description && errors.description,
+                    )}
+                  >
+                    <MarkdownEditor
+                      name="description"
+                      setFieldTouched={setFieldTouched}
+                      mdProps={{
+                        view: { menu: true, md: true, html: !matchXs },
+                      }}
+                    />
+                    {touched.description && errors.description && (
+                      <Typography
+                        sx={{
+                          color: `${theme.palette.error.main}!important`,
+                          fontSize: '14px',
+                        }}
+                      >
+                        {errors.description}
+                      </Typography>
+                    )}
                   </Box>
                   <Button
                     type={'submit'}
@@ -334,7 +380,7 @@ const inviteButton = {
   padding: '8px 42px',
   whiteSpace: 'nowrap',
   color: '#FCFAF6',
-  fontWeight: '500',
+  fontWeight: '600',
   borderRadius: '4px',
   maxWidth: '180px',
   margin: '0 auto',
@@ -357,7 +403,7 @@ const publishButton = {
   padding: '8px 42px',
   whiteSpace: 'nowrap',
   color: '#FCFAF6',
-  fontWeight: '500',
+  fontWeight: '600',
   borderRadius: '4px',
   maxWidth: '180px',
   margin: '0 auto',
@@ -439,8 +485,9 @@ const fieldWrapper = theme => ({
     width: '100%',
   },
 });
-const descriptionFieldWrapper = theme => ({
+const descriptionFieldWrapper = error => ({
   width: '100%',
+  border: error ? '1px solid red' : '1px solid transparent',
 });
 
 const formAllFields = {

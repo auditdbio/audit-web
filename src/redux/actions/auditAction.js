@@ -8,14 +8,19 @@ import {
   CUSTOMER,
   DELETE_AUDIT,
   DELETE_REQUEST,
+  DOWNLOAD_REPORT_START,
+  GET_AUDIT,
   GET_AUDIT_REQUEST,
   GET_AUDITS,
-  PROJECT_CREATE,
+  GET_REQUEST,
+  IN_PROGRESS,
+  NOT_FOUND,
   REQUEST_ERROR,
-  SUBMIT_AUDIT,
+  RESOLVED,
+  SET_CURRENT_AUDIT_PARTNER,
 } from './types.js';
 import { history } from '../../services/history.js';
-import dayjs from 'dayjs';
+import { ASSET_URL } from '../../services/urls.js';
 
 const API_URL = import.meta.env.VITE_API_BASE_URL;
 
@@ -73,6 +78,26 @@ export const getAuditsRequest = role => {
   };
 };
 
+export const getAuditRequest = id => {
+  return dispatch => {
+    const token = Cookies.get('token');
+    axios
+      .get(`${API_URL}/audit_request/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then(({ data }) => {
+        if (data.id) {
+          dispatch({ type: GET_REQUEST, payload: data });
+        } else {
+          dispatch({ type: NOT_FOUND });
+        }
+      })
+      .catch(() => dispatch({ type: NOT_FOUND }));
+  };
+};
+
 export const getAudits = role => {
   return dispatch => {
     const token = Cookies.get('token');
@@ -88,6 +113,26 @@ export const getAudits = role => {
         //     some: true
         // });
       });
+  };
+};
+
+export const getAudit = id => {
+  return dispatch => {
+    const token = Cookies.get('token');
+    axios
+      .get(`${API_URL}/audit/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then(({ data }) => {
+        if (data.id) {
+          dispatch({ type: GET_AUDIT, payload: data });
+        } else {
+          dispatch({ type: NOT_FOUND });
+        }
+      })
+      .catch(() => dispatch({ type: NOT_FOUND }));
   };
 };
 
@@ -155,7 +200,7 @@ export const acceptAudit = values => {
   };
 };
 
-export const confirmAudit = values => {
+export const confirmAudit = (values, shouldRedirect) => {
   return dispatch => {
     const token = Cookies.get('token');
     axios
@@ -165,9 +210,118 @@ export const confirmAudit = values => {
         },
       })
       .then(({ data }) => {
-        history.back();
+        if (!shouldRedirect) {
+          history.back();
+        }
         dispatch({ type: CONFIRM_AUDIT, payload: data });
       });
+  };
+};
+
+export const startAudit = (values, goBack) => {
+  const newValue = { ...values, action: 'start' };
+  return dispatch => {
+    const token = Cookies.get('token');
+    axios
+      .patch(`${API_URL}/audit/${values.id}`, newValue, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then(({ data }) => {
+        dispatch({ type: IN_PROGRESS, payload: data });
+        if (goBack) {
+          history.back();
+        } else {
+          history.push(`/audit-info/${values.id}/auditor`);
+        }
+      });
+  };
+};
+
+export const resolveAudit = values => {
+  return dispatch => {
+    const token = Cookies.get('token');
+    axios
+      .patch(
+        `${API_URL}/audit/${values.id}`,
+        { action: 'resolve' },
+        { headers: { Authorization: `Bearer ${token}` } },
+      )
+      .then(({ data }) => dispatch({ type: RESOLVED, payload: data }))
+      .catch(() => dispatch({ type: REQUEST_ERROR }));
+  };
+};
+
+export const setCurrentAuditPartner = audit => {
+  return (dispatch, getState) => {
+    const state = getState();
+    const { user } = state.user;
+    const { currentAuditPartner } = state.audits;
+
+    if (
+      currentAuditPartner?.user_id === audit?.customer_id ||
+      currentAuditPartner?.user_id === audit?.auditor_id
+    ) {
+      return;
+    }
+
+    if (audit && user?.id === audit?.auditor_id) {
+      axios
+        .get(`${API_URL}/customer/${audit?.customer_id}`)
+        .then(({ data }) => {
+          dispatch({ type: SET_CURRENT_AUDIT_PARTNER, payload: data });
+        });
+    } else if (audit && user?.id === audit?.customer_id) {
+      axios.get(`${API_URL}/auditor/${audit?.auditor_id}`).then(({ data }) => {
+        dispatch({ type: SET_CURRENT_AUDIT_PARTNER, payload: data });
+      });
+    }
+  };
+};
+
+export const downloadReport = (audit, { generate } = {}) => {
+  const token = Cookies.get('token');
+
+  const downloadResponse = (res, audit) => {
+    const url = window.URL.createObjectURL(new Blob([res.data]));
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute(
+      'download',
+      `${
+        audit?.report_name
+          ? audit?.report_name
+          : audit?.project_name + ' report.pdf'
+      }`,
+    );
+    document.body.appendChild(link);
+    link.click();
+  };
+
+  const getReport = (audit, filepath, dispatch) => {
+    axios
+      .get(`${ASSET_URL}/${filepath}`, {
+        responseType: 'blob',
+        withCredentials: true,
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .then(response => downloadResponse(response, audit))
+      .catch(() => dispatch({ type: REQUEST_ERROR }));
+  };
+
+  return dispatch => {
+    dispatch({ type: DOWNLOAD_REPORT_START });
+    if (generate) {
+      axios
+        .post(`${API_URL}/report/${audit.id}`, null, {
+          headers: { Authorization: `Bearer ${token}` },
+        })
+        .then(({ data }) => getReport(audit, data.path, dispatch))
+        .catch(() => dispatch({ type: REQUEST_ERROR }));
+    } else {
+      getReport(audit, audit?.report, dispatch);
+    }
   };
 };
 

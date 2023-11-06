@@ -5,15 +5,18 @@ import { FieldArray, useField } from 'formik';
 import React from 'react';
 import CustomLink from './CustomLink.jsx';
 
-export const ProjectLinksList = ({ name }) => {
+export const ProjectLinksList = ({ name, handleSubmit }) => {
   const [field, meta] = useField(name);
 
   return (
     <Box>
-      {meta.error && (
+      {meta.touched && meta.error && (
         <Typography
           variant={'body1'}
-          sx={{ color: `${theme.palette.error.main}!important` }}
+          sx={{
+            color: `${theme.palette.error.main}!important`,
+            fontSize: '16px',
+          }}
         >
           Links required
         </Typography>
@@ -29,7 +32,10 @@ export const ProjectLinksList = ({ name }) => {
 
                 <IconButton
                   sx={{ padding: '5px' }}
-                  onClick={() => arrayHelper.remove(idx)}
+                  onClick={() => {
+                    arrayHelper.remove(idx);
+                    if (handleSubmit) handleSubmit();
+                  }}
                 >
                   <CloseIcon
                     sx={{

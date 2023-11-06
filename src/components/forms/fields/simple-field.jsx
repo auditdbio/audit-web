@@ -1,25 +1,35 @@
 import React from 'react';
 import { Box, Typography } from '@mui/material';
-import { Field, FastField } from 'formik';
+import { FastField } from 'formik';
 import { TextField } from 'formik-mui';
 import { addTestsLabel } from '../../../lib/helper.js';
 
-const SimpleField = ({ name, label, emptyPH = false }) => {
+const SimpleField = ({
+  name,
+  label,
+  size = 'medium',
+  emptyPH = false,
+  outerLabel = false,
+  ...props
+}) => {
   return (
     <Box sx={wrapper} className={'field-wrapper'}>
-      <Typography variant={'body2'} sx={formLabelSx}>
-        {label}
-      </Typography>
+      {outerLabel && (
+        <Typography variant={'body2'} sx={formLabelSx}>
+          {label}
+        </Typography>
+      )}
       <FastField
         component={TextField}
         name={name}
+        label={label}
         placeholder={!emptyPH ? '● ● ● ● ● ● ●' : ''}
         fullWidth={true}
         disabled={false}
         sx={fieldSx}
-        inputProps={{
-          ...addTestsLabel(`${name}-input`),
-        }}
+        size={size}
+        inputProps={{ ...addTestsLabel(`${name}-input`) }}
+        {...props}
       />
     </Box>
   );
@@ -49,5 +59,16 @@ const formLabelSx = theme => ({
 const fieldSx = theme => ({
   '& input': {
     paddingLeft: '35px',
+  },
+  [theme.breakpoints.up('sm')]: {
+    '& input': {
+      fontSize: '18px',
+    },
+    '& textarea': {
+      fontSize: '18px',
+    },
+    '& .MuiFormLabel-root,.MuiInputLabel-root': {
+      fontSize: '18px',
+    },
   },
 });

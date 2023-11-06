@@ -12,6 +12,7 @@ import {
   Modal,
   Radio,
   Typography,
+  useMediaQuery,
 } from '@mui/material';
 import { Field } from 'formik';
 import { TextField } from 'formik-mui';
@@ -30,6 +31,7 @@ import { useEffect } from 'react';
 import { addTestsLabel } from '../../../lib/helper.js';
 
 const Filter = ({ target, submit, initial }) => {
+  const matchXs = useMediaQuery(theme.breakpoints.down('xs'));
   const [isOpen, setIsOpen] = useState(false);
 
   const mainColor = target === PROJECTS ? 'secondary' : 'primary';
@@ -102,9 +104,9 @@ const Filter = ({ target, submit, initial }) => {
                         <ArrowBack color={mainColor} />
                       </Button>
                       <TagsField
-                        name={'tags'}
-                        label={'Tags'}
-                        placeholder={'Tags'}
+                        name="tags"
+                        label="Tags"
+                        size={matchXs ? 'small' : 'medium'}
                       />
                       <TagsArray name={'tags'} />
                       <Field
@@ -335,7 +337,6 @@ const modalWrapper = theme => ({
     },
     '& .field-wrapper': {
       '& .MuiInputBase-root': {
-        height: '34px',
         '& svg': {
           width: '15px',
         },
@@ -380,6 +381,7 @@ const submitButton = theme => ({
   width: '438px',
   padding: '24px 0',
   margin: '25px auto 0',
+  fontWeight: 600,
   [theme.breakpoints.down('md')]: {
     width: '310px',
     padding: '15px 0',
@@ -446,6 +448,7 @@ const filterButton = theme => ({
   fontSize: '12px',
   padding: '14px 0',
   width: '160px',
+  fontWeight: 600,
   textTransform: 'unset',
   [theme.breakpoints.down('xs')]: {
     padding: '8px',

@@ -26,12 +26,14 @@ import SalarySlider from './forms/salary-slider/salary-slider.jsx';
 import * as Yup from 'yup';
 import { useParams } from 'react-router-dom';
 import { addTestsLabel } from '../lib/helper.js';
+import CustomSnackbar from './custom/CustomSnackbar.jsx';
 
 export default function AuditorSearchModal({
   open,
   handleClose,
   handleSubmit,
   setState,
+  setError,
 }) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -177,7 +179,11 @@ export default function AuditorSearchModal({
                 },
               };
               if (projectReducer.recentProject) {
-                dispatch(createRequest(newValue));
+                if (values.auditor_id !== values.customer_id) {
+                  dispatch(createRequest(newValue));
+                } else {
+                  setError('You cannot create an audit request with yourself');
+                }
                 handleClose();
               }
             }}
@@ -370,6 +376,7 @@ const customDropdown = {
 const findButton = {
   backgroundColor: theme.palette.secondary.main,
   color: theme.palette.background.default,
+  fontWeight: 600,
   borderRadius: '4px',
   padding: '12px 63px',
   height: '45px',

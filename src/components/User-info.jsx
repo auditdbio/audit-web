@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import {
   Avatar,
   Box,
@@ -7,28 +7,58 @@ import {
   Typography,
   useMediaQuery,
 } from '@mui/material';
-import theme, { radiusOfComponents } from '../styles/themes.js';
-import ClearIcon from '@mui/icons-material/Clear';
+import theme from '../styles/themes.js';
 import { useNavigate } from 'react-router-dom/dist';
-import TagsArray from './tagsArray/index.jsx';
 import { useDispatch, useSelector } from 'react-redux';
-import { getAuditor } from '../redux/actions/auditorAction.js';
-import { getCustomer } from '../redux/actions/customerAction.js';
 import Loader from './Loader.jsx';
 import { AUDITOR } from '../redux/actions/types.js';
 import TagsList from './tagsList';
-import { ASSET_URL } from '../services/urls.js';
+import { API_URL, ASSET_URL } from '../services/urls.js';
 import MobileTagsList from './MobileTagsList/index.jsx';
 import { addTestsLabel } from '../lib/helper.js';
+import LaunchRoundedIcon from '@mui/icons-material/LaunchRounded';
+import ClipboardJS from 'clipboard';
 
 const UserInfo = ({ role }) => {
   const navigate = useNavigate();
   const customer = useSelector(s => s.customer.customer);
   const auditor = useSelector(s => s.auditor.auditor);
   const matchXs = useMediaQuery(theme.breakpoints.down('xs'));
+  const buttonRef = useRef(null);
+  const [tooltipText, setTooltipText] = useState(null);
 
   const handleEdit = () => {
     navigate('/edit-profile');
+  };
+
+  const handleShare = () => {
+    const text =
+      role === AUDITOR
+        ? `${API_URL.slice(0, API_URL.length - 3)}user/${
+            auditor.user_id
+          }/auditor`
+        : `${API_URL.slice(0, API_URL.length - 3)}user/${
+            customer.user_id
+          }/customer`;
+
+    const clipboard = new ClipboardJS(buttonRef.current, {
+      text: () => text,
+    });
+
+    clipboard.on('success', () => {
+      setTooltipText('Copied');
+      clipboard.destroy();
+      setTimeout(() => {
+        setTooltipText(null);
+      }, 1500);
+    });
+
+    clipboard.on('error', () => {
+      console.error('Failed to copy URL to clipboard.');
+      clipboard.destroy();
+    });
+
+    clipboard.onClick(event);
   };
 
   const data = useMemo(() => {
@@ -45,7 +75,14 @@ const UserInfo = ({ role }) => {
     return (
       <Box sx={wrapper}>
         <Box sx={contentWrapper}>
-          <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              gap: '20px',
+            }}
+          >
             <Avatar
               src={data.avatar && `${ASSET_URL}/${data.avatar}`}
               sx={avatarStyle}
@@ -90,18 +127,55 @@ const UserInfo = ({ role }) => {
                 <Typography noWrap={true}>{data.contacts?.email}</Typography>
               </Box>
             </Box>
+            <Box sx={[infoWrapper, aboutWrapper]}>
+              <span>About</span>
+              <Typography
+                sx={{
+                  maxWidth: 'unset!important',
+                  width: '100%',
+                  wordBreak: 'break-word',
+                }}
+              >
+                {data.about}
+              </Typography>
+            </Box>
             {!matchXs && <TagsList data={data.tags} fullView={true} />}
           </Box>
         </Box>
         {matchXs && <MobileTagsList data={data.tags} />}
-        <Button
-          sx={[buttonSx, role === 'auditor' ? submitAuditor : {}]}
-          variant={'contained'}
-          onClick={handleEdit}
-          {...addTestsLabel('user_edit-button')}
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'center',
+            flexDirection: 'column',
+            alignItems: 'center',
+            gap: '20px',
+          }}
         >
-          Edit
-        </Button>
+          <Button
+            sx={shareBtn}
+            color={role === AUDITOR ? 'secondary' : 'primary'}
+            onClick={handleShare}
+            ref={buttonRef}
+          >
+            {!tooltipText ? (
+              <>
+                <LaunchRoundedIcon size={'small'} sx={{ marginRight: '5px' }} />{' '}
+                Share my profile
+              </>
+            ) : (
+              tooltipText
+            )}
+          </Button>
+          <Button
+            sx={[buttonSx, role === 'auditor' ? submitAuditor : {}]}
+            variant={'contained'}
+            onClick={handleEdit}
+            {...addTestsLabel('user_edit-button')}
+          >
+            Edit
+          </Button>
+        </Box>
       </Box>
     );
   }
@@ -109,13 +183,37 @@ const UserInfo = ({ role }) => {
 
 export default UserInfo;
 
+const shareBtn = theme => ({
+  textTransform: 'capitalize',
+});
+
+const aboutWrapper = theme => ({
+  width: '100%',
+  '& span': {
+    marginRight: '50px',
+    maxWidth: '125px',
+    width: '100%',
+  },
+  [theme.breakpoints.down('md')]: {
+    '& span': {
+      maxWidth: '90px',
+      marginRight: '20px',
+    },
+  },
+  [theme.breakpoints.down(450)]: {
+    '& span': {
+      maxWidth: '70px',
+    },
+  },
+});
+
 const wrapper = theme => ({
   width: '100%',
   minHeight: '520px',
   display: 'flex',
   flexDirection: 'column',
   padding: '100px 100px 60px',
-  gap: '50px',
+  gap: '30px',
   justifyContent: 'space-between',
   [theme.breakpoints.down('lg')]: {
     padding: '60px 40px 40px',
@@ -149,6 +247,7 @@ const infoStyle = theme => ({
   flexDirection: 'row',
   flexWrap: 'wrap',
   gap: '40px',
+  rowGap: '15px',
   '& .tagsWrapper': {
     width: '100%',
   },

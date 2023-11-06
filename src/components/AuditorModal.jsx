@@ -34,9 +34,10 @@ export default function AuditorModal({
   isForm,
   onSubmit,
   handleError,
+  setError,
+  budge,
 }) {
   const navigate = useNavigate();
-  const auditorReducer = useSelector(state => state.auditor.auditors);
   const customerReducer = useSelector(state => state.customer.customer);
   const user = useSelector(s => s.user.user);
   const [mode, setMode] = useState('info');
@@ -79,8 +80,10 @@ export default function AuditorModal({
   useEffect(() => {
     if (open && !isForm) {
       setMode('info');
-    } else {
+    } else if (open && isForm) {
       setMode('invite');
+    } else {
+      setMode('');
     }
   }, [open, isForm]);
 
@@ -176,18 +179,17 @@ export default function AuditorModal({
           </Box>
           <Box sx={fieldButtonContainer}>
             <Button
-              variant={'contained'}
-              sx={[
-                findButton,
-                { backgroundColor: theme.palette.secondary.main },
-              ]}
+              variant={budge ? 'outlined' : 'contained'}
+              color={'secondary'}
+              sx={findButton}
               onClick={handleClose}
               {...addTestsLabel('auditor-modal_back-button')}
             >
               Back
             </Button>
             <Button
-              variant={'contained'}
+              variant={budge ? 'outlined' : 'contained'}
+              color={'primary'}
               sx={findButton}
               onClick={handleInvite}
               {...addTestsLabel('auditor-modal_invite-button')}
@@ -226,7 +228,11 @@ export default function AuditorModal({
                 to: parseInt(values.price),
               },
             };
-            onSubmit(newValue);
+            if (newValue.auditor_id !== newValue.customer_id) {
+              onSubmit(newValue);
+            } else {
+              setError('You cannot create an audit request with yourself');
+            }
             handleClose();
             if (onClose) {
               onClose();
@@ -568,6 +574,7 @@ const sendButton = {
   borderRadius: '4px',
   padding: '12px 63px',
   height: '45px',
+  fontWeight: 600,
   width: '50%',
   textTransform: 'none',
   [theme.breakpoints.down('sm')]: {

@@ -128,25 +128,20 @@ const copyBtn = theme => ({
 });
 
 const actionButton = theme => ({
-  fontSize: '12px',
+  fontSize: '15px',
   fontWeight: 600,
   lineHeight: '25px',
-  width: '100%',
-  height: '34px',
+  width: '100px',
   textTransform: 'none',
-  borderRadius: '7px',
+  borderRadius: '10px',
   gap: '40px',
   padding: '9px 0',
+  maxWidth: '170px',
   [theme.breakpoints.down('md')]: {
-    width: '100px',
     height: '30px',
   },
   [theme.breakpoints.down('xs')]: {
     fontSize: '11px',
-    height: '26px',
-  },
-  [theme.breakpoints.down(450)]: {
-    width: '80px',
   },
 });
 

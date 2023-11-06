@@ -1,19 +1,29 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom/dist';
+import { useDispatch, useSelector } from 'react-redux';
 import { Box, Button, Tooltip, Typography } from '@mui/material';
 import Currency from './icons/Currency.jsx';
 import Star from './icons/Star.jsx';
-import { AUDITOR, DONE, SUBMITED } from '../redux/actions/types.js';
-import { useNavigate } from 'react-router-dom/dist';
-import { useSelector } from 'react-redux';
+import {
+  AUDITOR,
+  DONE,
+  RESOLVED,
+  SUBMITED,
+  WAITING_FOR_AUDITS,
+} from '../redux/actions/types.js';
 import { addTestsLabel } from '../lib/helper.js';
+import { startAudit } from '../redux/actions/auditAction.js';
+import ShareProjectButton from './custom/ShareProjectButton.jsx';
 
 const ProjectCard = ({ type, project }) => {
   const navigate = useNavigate();
   const currentRole = useSelector(s => s.user.user.current_role);
+  const dispatch = useDispatch();
 
   const handleClick = () => {
     if (type === AUDITOR) {
-      navigate(`/audit-request-offer/${project.id}`);
+      navigate(`/audit-info/${project.id}/auditor`);
+      window.scrollTo({ top: 0, left: 0 });
     } else {
       navigate(`/edit-project/${project.id}`);
     }
@@ -21,6 +31,10 @@ const ProjectCard = ({ type, project }) => {
 
   const handleMakeCopy = () => {
     navigate(`/edit-project/${project.id}?copy=true`);
+  };
+
+  const handleStartAudit = () => {
+    dispatch(startAudit(project));
   };
 
   return (
@@ -68,27 +82,22 @@ const ProjectCard = ({ type, project }) => {
           <Box sx={statusWrapper}>
             {project.status !== SUBMITED && (
               <>
-                {project.status === DONE ? (
+                {project.status.toLowerCase() === RESOLVED.toLowerCase() ? (
                   <Box sx={{ backgroundColor: '#52176D' }} />
                 ) : (
-                  project.status === 'pending' && (
+                  project.status.toLowerCase() ===
+                    WAITING_FOR_AUDITS.toLowerCase() && (
                     <Box sx={{ backgroundColor: '#FF9900' }} />
                   )
                 )}
-                {project.status !== 'pending' && project.status !== DONE && (
-                  <Box sx={{ backgroundColor: '#09C010' }} />
-                )}
+                {project.status.toLowerCase() !==
+                  WAITING_FOR_AUDITS.toLowerCase() &&
+                  project.status.toLowerCase() !== RESOLVED.toLowerCase() && (
+                    <Box sx={{ backgroundColor: '#09C010' }} />
+                  )}
               </>
             )}
-            <Typography>
-              {!project.status
-                ? 'Waiting for audit'
-                : project.status === DONE
-                ? 'Finished'
-                : project.status === SUBMITED
-                ? 'Submitted'
-                : 'In progress'}
-            </Typography>
+            <Typography>{project.status}</Typography>
           </Box>
         ) : (
           <Box sx={statusWrapper}>
@@ -114,16 +123,40 @@ const ProjectCard = ({ type, project }) => {
           onClick={handleClick}
           {...addTestsLabel(type === AUDITOR ? 'submit-button' : 'edit-button')}
         >
-          {type === AUDITOR ? 'Submit' : 'Edit'}
+          {type === AUDITOR
+            ? project?.status.toLowerCase() !==
+                WAITING_FOR_AUDITS.toLowerCase() &&
+              project?.status.toLowerCase() !== RESOLVED.toLowerCase()
+              ? 'Proceed'
+              : 'View'
+            : 'Edit'}
         </Button>
-        {project.name && (
-          <Button
-            sx={copyBtn}
-            onClick={handleMakeCopy}
-            {...addTestsLabel('make-copy-button')}
-          >
-            Make a copy
-          </Button>
+        {type !== AUDITOR ? (
+          <Box sx={smallButtonsBox}>
+            <Button
+              sx={copyBtn}
+              onClick={handleMakeCopy}
+              {...addTestsLabel('make-copy-button')}
+            >
+              Make a copy
+            </Button>
+            {project.publish_options.publish && (
+              <ShareProjectButton projectId={project.id} />
+            )}
+          </Box>
+        ) : (
+          project?.status.toLowerCase() ===
+            WAITING_FOR_AUDITS.toLowerCase() && (
+            <Button
+              sx={[editButton, { marginTop: '12px' }]}
+              variant={'contained'}
+              color={'primary'}
+              onClick={handleStartAudit}
+              {...addTestsLabel('make-copy-button')}
+            >
+              Start audit
+            </Button>
+          )
         )}
       </Box>
     </Box>
@@ -163,12 +196,25 @@ const cardInnerWrapper = theme => ({
   },
 });
 
-const copyBtn = theme => ({
-  textTransform: 'none',
-  fontSize: '10px',
+const smallButtonsBox = theme => ({
+  display: 'flex',
+  flexDirection: 'column',
+  justifyContent: 'center',
+  minWidth: '100px',
+  height: '60px',
   mt: '12px',
   [theme.breakpoints.down('xs')]: {
     mt: '5px',
+    height: '52px',
+    justifyContent: 'flex-start',
+  },
+});
+
+const copyBtn = theme => ({
+  textTransform: 'none',
+  fontSize: '10px',
+  [theme.breakpoints.down('xs')]: {
+    padding: '4px 6px',
   },
 });
 
@@ -207,14 +253,13 @@ const editButton = theme => ({
   fontSize: '15px',
   fontWeight: 600,
   lineHeight: '25px',
-  width: '110px',
+  width: '100px',
   textTransform: 'none',
   borderRadius: '10px',
   gap: '40px',
   padding: '9px 0',
   maxWidth: '170px',
   [theme.breakpoints.down('md')]: {
-    width: '100px',
     height: '30px',
   },
   [theme.breakpoints.down('xs')]: {
