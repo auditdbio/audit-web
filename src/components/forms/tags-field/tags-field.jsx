@@ -44,7 +44,8 @@ const TagsField = ({
           setState('');
           if (handleSubmit) handleSubmit();
         } else {
-          setError('Invalid link');
+          fieldHelper.setValue([...field.value, `https://${state}`]);
+          setState('');
         }
       } else {
         setError('The maximum number of links that can be added is 20');
