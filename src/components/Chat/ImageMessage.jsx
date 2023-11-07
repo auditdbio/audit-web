@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import Cookies from 'js-cookie';
+import { Buffer } from 'buffer';
 import { Box } from '@mui/material';
 import ImageModal from '../modal/ImageModal.jsx';
 import { ASSET_URL } from '../../services/urls.js';
@@ -17,9 +18,11 @@ const ImageMessage = ({ message }) => {
         responseType: 'arraybuffer',
       })
       .then(({ data, headers }) => {
-        const blob = new Blob([data]);
-        const url = URL.createObjectURL(blob);
-        setImgSrc(url);
+        const img = `data:${headers['content-type']};base64,${Buffer.from(
+          data,
+          'binary',
+        ).toString('base64')}`;
+        setImgSrc(img);
       });
   }, []);
 
