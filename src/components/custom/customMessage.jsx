@@ -41,7 +41,7 @@ const CustomMessage = ({ message }) => {
       );
     }
   }, [message.inner.substitutions, message.inner.message, messageRef]);
-  //
+
   return (
     <Box
       sx={[
@@ -55,7 +55,9 @@ const CustomMessage = ({ message }) => {
     >
       <Box>
         {message.inner.title && (
-          <Typography sx={titleStyle}>{message.inner.title}</Typography>
+          <Typography onClick={handleOpen} sx={titleStyle}>
+            {message.inner.title}
+          </Typography>
         )}
         <Typography
           sx={textStyle}
