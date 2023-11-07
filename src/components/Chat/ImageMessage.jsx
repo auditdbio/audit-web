@@ -1,25 +1,44 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import Cookies from 'js-cookie';
 import { Box } from '@mui/material';
 import ImageModal from '../modal/ImageModal.jsx';
 import { ASSET_URL } from '../../services/urls.js';
 
 const ImageMessage = ({ message }) => {
   const [imageModalIsOpen, setImageModalIsOpen] = useState(false);
+  const [imgSrc, setImgSrc] = useState(null);
+
+  useEffect(() => {
+    const token = Cookies.get('token');
+    axios
+      .get(`${ASSET_URL}/${message.text}`, {
+        headers: { Authorization: `Bearer ${token}` },
+        responseType: 'arraybuffer',
+      })
+      .then(({ data, headers }) => {
+        const blob = new Blob([data]);
+        const url = URL.createObjectURL(blob);
+        setImgSrc(url);
+      });
+  }, []);
 
   return (
     <>
       <Box sx={wrapper}>
-        <Box
-          component="img"
-          src={`${ASSET_URL}/${message.text}`}
-          alt="chat-img"
-          sx={imageMessage}
-          onClick={() => setImageModalIsOpen(true)}
-        />
+        {imgSrc && (
+          <Box
+            component="img"
+            src={imgSrc}
+            alt="chat-img"
+            sx={imageMessage}
+            onClick={() => setImageModalIsOpen(true)}
+          />
+        )}
       </Box>
 
       <ImageModal
-        image={`${ASSET_URL}/${message.text}`}
+        image={imgSrc}
         isOpen={imageModalIsOpen}
         setIsOpen={setImageModalIsOpen}
       />

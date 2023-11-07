@@ -46,16 +46,16 @@ const AttachFileModal = ({ isOpen, setIsOpen, currentChat, user }) => {
   };
 
   const handleAgree = () => {
+    if (!file) return;
+
     const token = Cookies.get('token');
     const path = +new Date() + file.name;
 
-    if (file) {
-      formData.append('file', file);
-      formData.append('path', path);
-      formData.append('original_name', file.name);
-      formData.append('private', 'true');
-      formData.append('full_access', currentChat?.members.join(' '));
-    }
+    formData.append('file', file);
+    formData.append('path', path);
+    formData.append('original_name', file.name);
+    formData.append('private', 'true');
+    formData.append('full_access', currentChat?.members.join(' '));
 
     axios
       .post(ASSET_URL, formData, {
@@ -63,7 +63,7 @@ const AttachFileModal = ({ isOpen, setIsOpen, currentChat, user }) => {
       })
       .then(() => {
         const fileUrl = path.replace(/ /g, '%20');
-        const fileType = file?.type.startsWith('image') ? 'Image' : 'File';
+        const fileType = file.type.startsWith('image') ? 'Image' : 'File';
 
         dispatch(
           chatSendMessage(
@@ -110,7 +110,11 @@ const AttachFileModal = ({ isOpen, setIsOpen, currentChat, user }) => {
           <Box sx={inputWrapper}>{file?.name}</Box>
           <Button {...addTestsLabel('attach-file-button')}>
             <label htmlFor="file-upload">
-              <CreateNewFolderOutlinedIcon fontSize="large" color="disabled" />
+              <CreateNewFolderOutlinedIcon
+                fontSize="large"
+                color="disabled"
+                sx={{ cursor: 'pointer' }}
+              />
             </label>
           </Button>
           <input
@@ -136,6 +140,7 @@ const AttachFileModal = ({ isOpen, setIsOpen, currentChat, user }) => {
             variant="contained"
             color="secondary"
             sx={buttonSx}
+            disabled={!file}
             {...addTestsLabel('resolve-agree-button')}
           >
             Send
