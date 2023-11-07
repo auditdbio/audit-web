@@ -18,47 +18,16 @@ import MobileTagsList from './MobileTagsList/index.jsx';
 import { addTestsLabel } from '../lib/helper.js';
 import LaunchRoundedIcon from '@mui/icons-material/LaunchRounded';
 import ClipboardJS from 'clipboard';
+import ShareProfileButton from './custom/ShareProfileButton.jsx';
 
 const UserInfo = ({ role }) => {
   const navigate = useNavigate();
   const customer = useSelector(s => s.customer.customer);
   const auditor = useSelector(s => s.auditor.auditor);
   const matchXs = useMediaQuery(theme.breakpoints.down('xs'));
-  const buttonRef = useRef(null);
-  const [tooltipText, setTooltipText] = useState(null);
 
   const handleEdit = () => {
     navigate('/edit-profile');
-  };
-
-  const handleShare = () => {
-    const text =
-      role === AUDITOR
-        ? `${API_URL.slice(0, API_URL.length - 3)}user/${
-            auditor.user_id
-          }/auditor`
-        : `${API_URL.slice(0, API_URL.length - 3)}user/${
-            customer.user_id
-          }/customer`;
-
-    const clipboard = new ClipboardJS(buttonRef.current, {
-      text: () => text,
-    });
-
-    clipboard.on('success', () => {
-      setTooltipText('Copied');
-      clipboard.destroy();
-      setTimeout(() => {
-        setTooltipText(null);
-      }, 1500);
-    });
-
-    clipboard.on('error', () => {
-      console.error('Failed to copy URL to clipboard.');
-      clipboard.destroy();
-    });
-
-    clipboard.onClick(event);
   };
 
   const data = useMemo(() => {
@@ -152,21 +121,10 @@ const UserInfo = ({ role }) => {
             gap: '20px',
           }}
         >
-          <Button
-            sx={shareBtn}
-            color={role === AUDITOR ? 'secondary' : 'primary'}
-            onClick={handleShare}
-            ref={buttonRef}
-          >
-            {!tooltipText ? (
-              <>
-                <LaunchRoundedIcon size={'small'} sx={{ marginRight: '5px' }} />{' '}
-                Share my profile
-              </>
-            ) : (
-              tooltipText
-            )}
-          </Button>
+          <ShareProfileButton
+            role={role}
+            userId={role === AUDITOR ? auditor.user_id : customer.user_id}
+          />
           <Button
             sx={[buttonSx, role === 'auditor' ? submitAuditor : {}]}
             variant={'contained'}
@@ -182,10 +140,6 @@ const UserInfo = ({ role }) => {
 };
 
 export default UserInfo;
-
-const shareBtn = theme => ({
-  textTransform: 'capitalize',
-});
 
 const aboutWrapper = theme => ({
   width: '100%',
