@@ -100,7 +100,7 @@ const SigninForm = () => {
                   {...addTestsLabel('sign-in-button')}
                   disabled={isAuth()}
                 >
-                  Sing in
+                  Sign in
                 </Button>
                 <Button
                   color={'primary'}

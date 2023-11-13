@@ -129,7 +129,7 @@ const SignupForm = () => {
                 disabled={isAuth()}
                 {...addTestsLabel('sign-up-button')}
               >
-                Sing up
+                Sign up
               </Button>
               <Button
                 sx={[submitButton, { paddingX: '0' }]}

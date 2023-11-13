@@ -117,7 +117,10 @@ const AuditorListCard = ({ auditor, projectIdToInvite, budge }) => {
           </Box>
           <Box sx={descriptionStyle(theme)}>
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
-              <Box sx={{ display: 'grid' }}>
+              <Box
+                sx={{ display: 'grid', cursor: 'pointer' }}
+                onClick={handleView}
+              >
                 <Tooltip
                   title={`${auditor.first_name} ${auditor.last_name}`}
                   arrow
