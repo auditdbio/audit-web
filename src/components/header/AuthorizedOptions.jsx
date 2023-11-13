@@ -130,13 +130,16 @@ const desktopWrapper = {
   gap: '15px',
 };
 
-const userGreeting = {
+const userGreeting = theme => ({
   display: 'flex',
   alignItems: 'center',
   fontSize: '26px',
   fontWeight: '500',
   whiteSpace: 'nowrap',
-};
+  [theme.breakpoints.down(1200)]: {
+    display: 'none',
+  },
+});
 
 const avatarStyle = role => ({
   width: '60px',

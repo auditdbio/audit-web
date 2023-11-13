@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
-import { Box, IconButton } from '@mui/material';
+import { Box, Button, IconButton } from '@mui/material';
 import Layout from '../styles/Layout.jsx';
 import { CustomCard } from '../components/custom/Card';
 import ChatList from '../components/Chat/ChatList.jsx';
@@ -9,12 +9,14 @@ import CurrentChat from '../components/Chat/CurrentChat.jsx';
 import { setCurrentChat } from '../redux/actions/chatActions.js';
 import theme from '../styles/themes.js';
 import MenuIcon from '@mui/icons-material/Menu.js';
+import { useNavigate } from 'react-router-dom/dist';
 
 const ChatPage = () => {
   const dispatch = useDispatch();
   const { id } = useParams();
   const [chatListIsOpen, setChatListIsOpen] = useState(false);
   const { chatList, chatMessages, currentChat } = useSelector(s => s.chat);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (id && !currentChat?.isNew) {
@@ -34,6 +36,13 @@ const ChatPage = () => {
   return (
     <Layout sx={layoutSx}>
       <CustomCard sx={wrapper}>
+        <Button
+          variant={'contained'}
+          sx={{ textTransform: 'unset' }}
+          onClick={() => navigate(-1)}
+        >
+          Back
+        </Button>
         <Box sx={chatWrapper}>
           <ChatList
             chatList={chatList}
@@ -82,9 +91,12 @@ const layoutSx = theme => ({
 
 const wrapper = theme => ({
   minHeight: '300px',
-  padding: '65px 40px 100px',
+  padding: '20px 40px 100px',
   position: 'relative',
   display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'flex-start',
+  gap: '15px',
   [theme.breakpoints.down('sm')]: {
     padding: '30px 30px 50px',
     minHeight: '300px',
