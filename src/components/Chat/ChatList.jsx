@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
+import React, { useEffect, useState, useTransition } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   Box,
   IconButton,
@@ -12,14 +12,28 @@ import CloseIcon from '@mui/icons-material/Close';
 import { addTestsLabel } from '../../lib/helper.js';
 import ChatListItem from './ChatListItem.jsx';
 import { AUDITOR } from '../../redux/actions/types.js';
+import { searchAuditor } from '../../redux/actions/auditorAction.js';
 
 const ChatList = ({ chatList, chatListIsOpen, setChatListIsOpen }) => {
-  const [search, setSearch] = useState('');
+  const dispatch = useDispatch();
+  const { auditors } = useSelector(s => s.auditor);
   const { user } = useSelector(s => s.user);
+
+  const [, startTransition] = useTransition();
+  const [search, setSearch] = useState('');
 
   const handleSearch = e => {
     setSearch(e.target.value);
   };
+
+  useEffect(() => {
+    startTransition(() => {
+      if (search.trim()) {
+        dispatch(searchAuditor({ search, perPage: 0 }));
+        // TODO: add customers search
+      }
+    });
+  }, [search]);
 
   return (
     <>
@@ -63,23 +77,56 @@ const ChatList = ({ chatList, chatListIsOpen, setChatListIsOpen }) => {
         </Box>
 
         <Box sx={chatListSx}>
-          {chatList.length > 0 ? (
-            chatList
-              ?.filter(chat =>
-                chat.name?.toLowerCase().includes(search.toLowerCase().trim()),
+          {chatList.length > 0
+            ? chatList
+                ?.filter(chat =>
+                  chat.name
+                    ?.toLowerCase()
+                    .includes(search.toLowerCase().trim()),
+                )
+                .reverse()
+                .map(chat => (
+                  <ChatListItem
+                    key={chat.id}
+                    chat={chat}
+                    user={user}
+                    setListIsOpen={setChatListIsOpen}
+                  />
+                ))
+            : !search && (
+                <Box sx={emptyListLabel}>You haven't written to anyone yet</Box>
+              )}
+
+          {search &&
+            auditors
+              .filter(
+                auditor =>
+                  !chatList.some(chat =>
+                    chat.members.some(member => member.id === auditor.user_id),
+                  ),
               )
-              .reverse()
-              .map(chat => (
+              .map(auditor => (
                 <ChatListItem
-                  key={chat.id}
-                  chat={chat}
+                  key={auditor.user_id}
                   user={user}
                   setListIsOpen={setChatListIsOpen}
+                  isNew={true}
+                  role={AUDITOR}
+                  chat={{
+                    id: auditor.user_id,
+                    name: `${auditor.first_name} ${auditor.last_name}`,
+                    avatar: auditor.avatar,
+                    members: [auditor.user_id, user.id],
+                  }}
                 />
-              ))
-          ) : (
-            <Box sx={emptyListLabel}>You haven't written to anyone yet</Box>
-          )}
+              ))}
+
+          {/*TODO: Add customers search*/}
+
+          {chatList.length > 0 &&
+            !chatList.find(chat =>
+              chat.name?.toLowerCase().includes(search.toLowerCase().trim()),
+            ) && <Box sx={emptyListLabel}>No search results</Box>}
         </Box>
       </Box>
       <Box
