@@ -16,6 +16,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { clearUserError, signUp } from '../../../redux/actions/userAction.js';
 import CustomSnackbar from '../../custom/CustomSnackbar.jsx';
 import { addTestsLabel, isAuth } from '../../../lib/helper.js';
+import GitHubIcon from '@mui/icons-material/GitHub';
 
 const SignupForm = () => {
   const [isAuditor, setIsAuditor] = useState('auditor');
@@ -28,6 +29,13 @@ const SignupForm = () => {
     email: '',
     password: '',
     confirmPassword: '',
+  };
+
+  const handleAuthGithub = () => {
+    window.open(
+      `https://github.com/login/oauth/authorize?client_id=62c90b6467b0880506a7&redirect_uri=http://localhost:5173/github/${isAuditor}&scope=read:user,user:email`,
+      '_self',
+    );
   };
 
   return (
@@ -112,15 +120,26 @@ const SignupForm = () => {
                 />
               </Box>
             </Box>
-            <Button
-              type="submit"
-              sx={submitButton}
-              variant={'contained'}
-              disabled={isAuth()}
-              {...addTestsLabel('sign-up-button')}
-            >
-              Sing up
-            </Button>
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: '25px' }}>
+              <Button
+                type="submit"
+                sx={submitButton}
+                color={'secondary'}
+                variant={'contained'}
+                disabled={isAuth()}
+                {...addTestsLabel('sign-up-button')}
+              >
+                Sing up
+              </Button>
+              <Button
+                sx={[submitButton, { paddingX: '0' }]}
+                variant={'contained'}
+                onClick={handleAuthGithub}
+              >
+                <GitHubIcon sx={{ marginRight: '15px' }} />
+                Sign up with Github
+              </Button>
+            </Box>
           </Box>
         </Form>
       )}
@@ -154,13 +173,13 @@ const titleStyle = theme => ({
 });
 
 const submitButton = theme => ({
-  backgroundColor: theme.palette.secondary.main,
   padding: '15px 140px',
   color: '#FCFAF6',
   fontSize: '25px',
   fontWeight: 600,
   borderRadius: radiusOfComponents,
   maxWidth: '402px',
+  width: '100%',
   margin: '0 auto',
   [theme.breakpoints.down('md')]: {
     fontSize: '20px',

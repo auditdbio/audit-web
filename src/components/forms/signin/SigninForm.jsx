@@ -6,14 +6,17 @@ import { Form, Formik } from 'formik';
 import * as Yup from 'yup';
 import SimpleField from '../fields/simple-field.jsx';
 import { useDispatch, useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
 import {
   clearUserError,
   clearUserSuccess,
   signIn,
+  signInGithub,
 } from '../../../redux/actions/userAction.js';
 import CustomSnackbar from '../../custom/CustomSnackbar.jsx';
 import RestorePassword from '../../RestorePassword.jsx';
 import { addTestsLabel, isAuth } from '../../../lib/helper.js';
+import GitHubIcon from '@mui/icons-material/GitHub.js';
 
 const SigninForm = () => {
   const dispatch = useDispatch();
@@ -29,6 +32,12 @@ const SigninForm = () => {
     setOpen(false);
   };
 
+  const handleAuthGithub = () => {
+    window.open(
+      `https://github.com/login/oauth/authorize?client_id=62c90b6467b0880506a7&redirect_uri=http://localhost:5173/github&scope=read:user,user:email`,
+      '_self',
+    );
+  };
   return (
     <Formik
       initialValues={initialValues}
@@ -86,11 +95,21 @@ const SigninForm = () => {
                 <Button
                   type={'submit'}
                   variant={'contained'}
+                  color={'secondary'}
                   sx={submitButton}
                   {...addTestsLabel('sign-in-button')}
                   disabled={isAuth()}
                 >
                   Sing in
+                </Button>
+                <Button
+                  color={'primary'}
+                  sx={[submitButton, { mt: '25px' }]}
+                  variant={'contained'}
+                  onClick={handleAuthGithub}
+                >
+                  <GitHubIcon sx={{ marginRight: '15px' }} />
+                  Sign up with Github
                 </Button>
                 <Button
                   type={'button'}
@@ -145,8 +164,7 @@ const formWrapper = theme => ({
 });
 
 const submitButton = theme => ({
-  backgroundColor: theme.palette.secondary.main,
-  padding: '11px 140px',
+  padding: '11px 0',
   color: '#FCFAF6',
   fontWeight: 600,
   borderRadius: radiusOfComponents,
@@ -154,9 +172,10 @@ const submitButton = theme => ({
   margin: '0 auto',
   fontSize: '16px',
   paddingY: '11px',
+  width: '100%',
   [theme.breakpoints.down('sm')]: {
     width: '225px',
-    padding: '13px 80px',
+    padding: '13px 0',
     fontSize: '14px',
   },
 });
