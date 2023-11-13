@@ -14,7 +14,6 @@ import {
   updateAuditIssue,
 } from '../../../redux/actions/issueAction.js';
 import CustomSnackbar from '../../custom/CustomSnackbar.jsx';
-import { createIssueEvent } from '../../../lib/createIssueEvent.js';
 import DescriptionBlock from './DescriptionBlock.jsx';
 import StatusSeverityBlock from './StatusSeverityBlock.jsx';
 import { DRAFT } from '../constants.js';
@@ -66,16 +65,10 @@ const IssueDetailsForm = ({ issue = null, editMode = false }) => {
         return prev[key] === values[key] ? acc : { ...acc, [key]: values[key] };
       }, {});
 
-      const updatedValuesWithEvent = createIssueEvent(
-        updatedValues,
-        prev.links?.length,
-        issue?.status || DRAFT,
-        issue?.feedback,
-      );
       setIsEditName(false);
       setFieldValue('status', '');
       setIssuePrevValues({ ...values, status: '' });
-      dispatch(updateAuditIssue(auditId, issueId, updatedValuesWithEvent));
+      dispatch(updateAuditIssue(auditId, issueId, updatedValues));
     } else {
       dispatch(addAuditIssue(auditId, values));
       navigate(`/audit-info/${auditId}/auditor`);

@@ -6,6 +6,7 @@ import {
   GET_NEW_AUDIT,
   GET_NEW_REQUEST,
   IN_PROGRESS,
+  NEED_UPDATE,
   REQUEST_DECLINE,
   WEBSOCKET_CONNECT,
   WEBSOCKET_CONNECTED,
@@ -74,6 +75,10 @@ const websocketMiddleware = () => {
               store.dispatch({
                 type: REQUEST_DECLINE,
                 payload: message.payload.RequestDecline,
+              });
+            } else if (message.kind.toLowerCase() === 'versionupdate') {
+              store.dispatch({
+                type: NEED_UPDATE,
               });
             }
           };

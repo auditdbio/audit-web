@@ -3,6 +3,7 @@ import {
   CUSTOMER,
   DISCONNECTED_WS,
   LOG_OUT,
+  NEED_UPDATE,
   READ_MESSAGE,
   RECEIVE_AUDITOR_MESSAGE,
   RECEIVE_CUSTOMER_MESSAGE,
@@ -18,6 +19,7 @@ const initialState = {
   customerMessages: [],
   auditorMessages: [],
   reconnect: false,
+  needUpdate: false,
 };
 
 export const websocketReducer = (state = initialState, action) => {
@@ -77,6 +79,11 @@ export const websocketReducer = (state = initialState, action) => {
         auditorMessages: state.auditorMessages.filter(
           message => message.id !== action.payload.id,
         ),
+      };
+    case NEED_UPDATE:
+      return {
+        ...state,
+        needUpdate: true,
       };
     case LOG_OUT:
       return initialState;
