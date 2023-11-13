@@ -13,7 +13,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs from 'dayjs';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { addTestsLabel, isAuth } from '../lib/helper.js';
 import { ASSET_URL } from '../services/urls.js';
@@ -28,6 +28,7 @@ import * as Yup from 'yup';
 import CustomSnackbar from './custom/CustomSnackbar.jsx';
 import ShareProfileButton from './custom/ShareProfileButton.jsx';
 import { setCurrentChat } from '../redux/actions/chatActions.js';
+import ChatIcon from './icons/ChatIcon.jsx';
 
 export default function AuditorModal({
   open,
@@ -213,7 +214,7 @@ export default function AuditorModal({
               </Box>
             </Box>
             <Box sx={fieldButtonContainer}>
-              <Box sx={{ mb: '10px' }}>
+              <Box sx={{ mb: '10px', display: 'flex' }}>
                 <Button
                   variant={budge ? 'outlined' : 'contained'}
                   color="secondary"
@@ -232,16 +233,14 @@ export default function AuditorModal({
                 >
                   Invite to project
                 </Button>
-              </Box>
-              <Box sx={{ display: 'flex', justifyContent: 'center' }}>
                 <Button
-                  variant="contained"
-                  sx={[findButton, messageButton]}
+                  variant="text"
+                  // sx={[findButton, messageButton]}
                   onClick={handleSendMessage}
                   disabled={auditor?.user_id === user.id}
                   {...addTestsLabel('message-button')}
                 >
-                  Send a message
+                  <ChatIcon />
                 </Button>
               </Box>
             </Box>
@@ -425,6 +424,12 @@ const modalWindow = theme => ({
   },
 });
 
+const chatWrapper = theme => ({
+  // position: 'absolute',
+  // right: '20px',
+  // top: '20px',
+});
+
 const findButton = theme => ({
   padding: '19px 0',
   fontSize: '18px',
@@ -441,32 +446,14 @@ const findButton = theme => ({
     width: '170px',
   },
   [theme.breakpoints.down('xs')]: {
-    width: '134px',
+    width: '110px',
     height: '50px',
     fontSize: '12px',
     mr: '6px',
   },
-  [theme.breakpoints.down('xxs')]: {
-    width: '122px',
-  },
-});
-
-const messageButton = theme => ({
-  width: '440px',
-  padding: '4px 0',
-  [theme.breakpoints.down('md')]: {
-    padding: '4px 0',
-  },
-  [theme.breakpoints.down('sm')]: {
-    width: '360px',
-  },
-  [theme.breakpoints.down('xs')]: {
-    width: '274px',
-    height: 'unset',
-  },
-  [theme.breakpoints.down('xxs')]: {
-    width: '254px',
-  },
+  // [theme.breakpoints.down('xxs')]: {
+  //   width: '122px',
+  // },
 });
 
 const infoInnerStyle = theme => ({
@@ -581,6 +568,11 @@ const fieldButtonContainer = theme => ({
   display: 'flex',
   flexDirection: 'column',
   mb: '10px',
+  [theme.breakpoints.down('xs')]: {
+    '& svg': {
+      width: '50px',
+    },
+  },
 });
 
 const offerDialogStyle = {
