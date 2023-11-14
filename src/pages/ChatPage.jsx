@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
-import { Box, Button, IconButton } from '@mui/material';
+import { Box, Button, IconButton, Typography } from '@mui/material';
 import Layout from '../styles/Layout.jsx';
 import { CustomCard } from '../components/custom/Card';
 import ChatList from '../components/Chat/ChatList.jsx';
@@ -10,6 +10,7 @@ import { setCurrentChat } from '../redux/actions/chatActions.js';
 import theme from '../styles/themes.js';
 import MenuIcon from '@mui/icons-material/Menu.js';
 import { useNavigate } from 'react-router-dom/dist';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack.js';
 
 const ChatPage = () => {
   const dispatch = useDispatch();
@@ -37,11 +38,11 @@ const ChatPage = () => {
     <Layout sx={layoutSx}>
       <CustomCard sx={wrapper}>
         <Button
-          variant={'contained'}
-          sx={{ textTransform: 'unset' }}
-          onClick={() => navigate(-1)}
+          variant={'text'}
+          sx={{ textTransform: 'unset', ml: '-15px', paddingLeft: '0' }}
+          onClick={() => navigate(-1, { state: { from: 'chat' } })}
         >
-          Back
+          <ArrowBackIcon />
         </Button>
         <Box sx={chatWrapper}>
           <ChatList

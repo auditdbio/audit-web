@@ -36,6 +36,7 @@ import { getIssues } from '../redux/actions/issueAction.js';
 import NotFound from './Not-Found.jsx';
 import { FIXED, NOT_FIXED } from '../components/issuesPage/constants.js';
 import { setCurrentChat } from '../redux/actions/chatActions.js';
+import ChatIcon from '../components/icons/ChatIcon.jsx';
 
 const AuditOffer = () => {
   const { auditId } = useParams();
@@ -305,14 +306,14 @@ const AuditOffer = () => {
 
                       <Box sx={{ display: 'flex', justifyContent: 'center' }}>
                         <Button
-                          variant="contained"
+                          variant="text"
                           color="secondary"
                           sx={[buttonSx, sendMessageButton]}
                           onClick={handleSendMessage}
                           disabled={audit?.customer_id === user.id}
                           {...addTestsLabel('message-button')}
                         >
-                          Send a message
+                          <ChatIcon />
                         </Button>
                       </Box>
 

@@ -26,6 +26,7 @@ import CustomLink from './custom/CustomLink.jsx';
 import OfferModal from './modal/OfferModal.jsx';
 import ShareProjectButton from './custom/ShareProjectButton.jsx';
 import { setCurrentChat } from '../redux/actions/chatActions.js';
+import ChatIcon from './icons/ChatIcon.jsx';
 
 const AuditRequestInfo = ({
   project,
@@ -421,16 +422,16 @@ const AuditRequestInfo = ({
         >
           Make offer
         </Button>
+        <Button
+          variant="text"
+          // sx={[buttonSx, messageButton]}
+          onClick={handleSendMessage}
+          disabled={project?.customer_id === user.id}
+          {...addTestsLabel('message-button')}
+        >
+          <ChatIcon />
+        </Button>
       </Box>
-      <Button
-        variant="contained"
-        sx={[buttonSx, messageButton]}
-        onClick={handleSendMessage}
-        disabled={project?.customer_id === user.id}
-        {...addTestsLabel('message-button')}
-      >
-        Send a message
-      </Button>
 
       <Modal
         open={open}
@@ -487,7 +488,11 @@ const wrapper = theme => ({
 
 const buttonWrapper = {
   mt: '40px',
+  display: 'flex',
   mb: '10px',
+  maxWidth: '450px',
+  width: '100%',
+  justifyContent: 'center',
 };
 
 const contentWrapper = {
@@ -561,7 +566,7 @@ const buttonSx = theme => ({
   textTransform: 'unset',
   fontWeight: 600,
   mr: '20px',
-  width: '270px',
+  width: '100%',
   borderRadius: '10px',
   '&:last-child': { mr: 0 },
   [theme.breakpoints.down('md')]: {

@@ -19,6 +19,7 @@ import {
   changeRolePublicCustomerNoRedirect,
 } from '../redux/actions/userAction.js';
 import { setCurrentChat } from '../redux/actions/chatActions.js';
+import ChatIcon from '../components/icons/ChatIcon.jsx';
 
 const PublicProfile = () => {
   const { role, id } = useParams();
@@ -266,7 +267,14 @@ const PublicProfile = () => {
             </Box>
           )}
           {/*{matchXs && <MobileTagsList data={data.tags} />}*/}
-          <Box>
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'center',
+              gap: '15px',
+              alignItems: 'center',
+            }}
+          >
             {role.toLowerCase() === AUDITOR && (
               <Button
                 variant={data.kind === 'badge' ? 'outlined' : 'contained'}
@@ -279,14 +287,14 @@ const PublicProfile = () => {
               </Button>
             )}
             <Button
-              variant="contained"
+              variant="text"
               color={role === AUDITOR ? 'secondary' : 'primary'}
               sx={buttonSx}
               disabled={id === user.id}
               onClick={() => handleSendMessage(data)}
               {...addTestsLabel('message-button')}
             >
-              Send a message
+              <ChatIcon />
             </Button>
           </Box>
         </Box>
@@ -417,7 +425,6 @@ const contentWrapper = theme => ({
 });
 
 const buttonSx = theme => ({
-  margin: '0 auto 15px',
   display: 'block',
   textTransform: 'capitalize',
   fontWeight: 600,

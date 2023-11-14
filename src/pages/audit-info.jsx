@@ -27,6 +27,7 @@ import { ASSET_URL } from '../services/urls.js';
 import { addTestsLabel } from '../lib/helper.js';
 import CustomSnackbar from '../components/custom/CustomSnackbar.jsx';
 import { setCurrentChat } from '../redux/actions/chatActions.js';
+import ChatIcon from '../components/icons/ChatIcon.jsx';
 
 const AuditInfo = ({ audit, auditRequest, issues, confirmed }) => {
   const navigate = useNavigate();
@@ -261,20 +262,62 @@ const AuditInfo = ({ audit, auditRequest, issues, confirmed }) => {
           )}
         </Box>
         <Box>
-          <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              mt: '20px',
+              gap: '15px',
+            }}
+          >
+            {auditRequest && (
+              <Button
+                variant={'contained'}
+                sx={buttonSx}
+                disabled={audit?.last_changer?.toLowerCase() === CUSTOMER}
+                onClick={handleConfirm}
+                {...addTestsLabel('accept-button')}
+              >
+                Accept
+              </Button>
+            )}
+            {!audit?.status && (
+              <Button
+                variant="contained"
+                color="secondary"
+                onClick={handleDecline}
+                sx={buttonSx}
+                {...addTestsLabel('decline-button')}
+              >
+                Decline
+              </Button>
+            )}
+            {audit?.report && !issues?.length && (
+              <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+                <Button
+                  variant={'contained'}
+                  color={'secondary'}
+                  onClick={() => dispatch(downloadReport(audit))}
+                  sx={[buttonSx]}
+                  {...addTestsLabel('report-button')}
+                >
+                  Download Report
+                </Button>
+              </Box>
+            )}
             <Button
-              variant="contained"
-              sx={[buttonSx, { mb: '20px' }]}
+              variant="text"
               onClick={handleSendMessage}
               disabled={audit?.auditor_id === user.id}
               {...addTestsLabel('message-button')}
             >
-              Send a message
+              <ChatIcon />
             </Button>
           </Box>
 
-          {audit?.report && (
-            <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+          {audit?.report && !!issues?.length && (
+            <Box sx={{ display: 'flex', justifyContent: 'center', mt: '15px' }}>
               <Button
                 variant={'contained'}
                 color={'secondary'}
@@ -286,17 +329,6 @@ const AuditInfo = ({ audit, auditRequest, issues, confirmed }) => {
               </Button>
             </Box>
           )}
-          {auditRequest && (
-            <Button
-              variant={'contained'}
-              sx={buttonSx}
-              disabled={audit?.last_changer?.toLowerCase() === CUSTOMER}
-              onClick={handleConfirm}
-              {...addTestsLabel('accept-button')}
-            >
-              Accept
-            </Button>
-          )}
           {audit?.status !== SUBMITED && audit?.status === DONE && (
             <Button
               variant={'contained'}
@@ -305,17 +337,6 @@ const AuditInfo = ({ audit, auditRequest, issues, confirmed }) => {
               {...addTestsLabel('confirm-button')}
             >
               Confirm
-            </Button>
-          )}
-          {!audit?.status && (
-            <Button
-              variant="contained"
-              color="secondary"
-              onClick={handleDecline}
-              sx={buttonSx}
-              {...addTestsLabel('decline-button')}
-            >
-              Decline
             </Button>
           )}
 
@@ -331,7 +352,7 @@ const AuditInfo = ({ audit, auditRequest, issues, confirmed }) => {
                 color="primary"
                 type="button"
                 onClick={goToIssues}
-                sx={buttonSx}
+                sx={[buttonSx, { mt: '7px' }]}
                 {...addTestsLabel('issues-button')}
               >
                 Issues ({issues?.length})
@@ -465,7 +486,6 @@ const buttonSx = theme => ({
   fontSize: '18px',
   textTransform: 'unset',
   fontWeight: 600,
-  mr: '15px',
   width: '270px',
   borderRadius: '10px',
   ':last-child': { mr: 0 },
@@ -477,7 +497,7 @@ const buttonSx = theme => ({
     width: '170px',
   },
   [theme.breakpoints.down('xs')]: {
-    width: '120px',
+    width: '100px',
   },
 });
 
