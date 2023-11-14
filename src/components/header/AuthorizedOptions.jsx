@@ -51,7 +51,7 @@ const AuthorizedOptions = () => {
       {/*   Mobile Screen  */}
       {matchSm && (
         <Box sx={mobileWrapper}>
-          {isAuth() && matchXs && <ChatLabel />}
+          {isAuth() && <ChatLabel />}
           <CustomBadge />
           <Avatar
             src={userAvatar ? `${ASSET_URL}/${userAvatar}` : ''}
@@ -88,6 +88,7 @@ const AuthorizedOptions = () => {
               buttonText={page.name}
             />
           ))}
+          <ChatLabel />
           <CustomBadge />
           <Typography sx={userGreeting}>Hello, {currentUsername}!</Typography>
           <IconButton

@@ -31,7 +31,7 @@ const Header = () => {
                   <Logo />
                 </Box>
               </Link>
-              {isAuth() && !matchXs && <ChatLabel />}
+              {/*{isAuth() && !matchXs && <ChatLabel />}*/}
             </Box>
             {isAuth() && <AuthorizedOptions />}
             {!isAuth() && <UnauthorizedOptions />}

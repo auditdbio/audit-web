@@ -30,13 +30,13 @@ export default ChatLabel;
 
 const wrapper = theme => ({
   position: 'relative',
-  [theme.breakpoints.down('sm')]: {
-    transform: 'scale(0.7)',
-  },
-  [theme.breakpoints.down('xs')]: {
-    transform: 'scale(0.44)',
-    mr: '-20px',
-  },
+  // [theme.breakpoints.down('sm')]: {
+  //   transform: 'scale(0.7)',
+  // },
+  // [theme.breakpoints.down('xs')]: {
+  //   transform: 'scale(0.44)',
+  //   mr: '-20px',
+  // },
   // '& .MuiBadge-badge': {
   //   [theme.breakpoints.down('sm')]: {
   //     position: 'relative',
@@ -48,10 +48,10 @@ const wrapper = theme => ({
   //   },
   // },
 });
-
+//
 const iconWrapper = theme => ({
-  width: '80px',
-  height: '80px',
+  width: '40px',
+  height: '40px',
   background: '#e5e5e5',
   borderRadius: '50%',
   display: 'flex',
@@ -59,9 +59,17 @@ const iconWrapper = theme => ({
   alignItems: 'center',
   boxShadow: '0px 4px 6px 0px rgba(190, 190, 190, 1)',
   transition: '0.3s',
+  '& svg': {
+    width: '35px',
+    [theme.breakpoints.down('xs')]: {
+      width: 'unset',
+    },
+  },
   ':hover': { background: '#d1d1d1' },
   [theme.breakpoints.down('xs')]: {
     boxShadow: 'none',
+    // width: '80px',
+    // height: '80px',
   },
 });
 
@@ -81,8 +89,8 @@ const notice = count => ({
   color: 'white',
   pointerEvents: 'none',
   [theme.breakpoints.down('xs')]: {
-    transform: 'scale(1.55)',
-    border: '2px solid white',
-    fontSize: count < 100 ? '16px' : '11px',
+    // transform: 'scale(1.55)',
+    border: '1px solid white',
+    fontSize: count < 100 ? '12px' : '10px',
   },
 });
