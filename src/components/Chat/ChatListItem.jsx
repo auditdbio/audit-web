@@ -8,7 +8,14 @@ import theme from '../../styles/themes.js';
 import { addTestsLabel } from '../../lib/helper.js';
 import { setCurrentChat } from '../../redux/actions/chatActions.js';
 
-const ChatListItem = ({ user, setListIsOpen, chat }) => {
+const ChatListItem = ({
+  user,
+  setListIsOpen,
+  chat,
+  isNew = false,
+  userDataId = false,
+  role,
+}) => {
   const dispatch = useDispatch();
 
   const setChatHandle = () => {
@@ -20,6 +27,9 @@ const ChatListItem = ({ user, setListIsOpen, chat }) => {
         name: chat?.name,
         avatar: chat?.avatar,
         members,
+        isNew,
+        userDataId,
+        role,
       }),
     );
   };
@@ -60,8 +70,10 @@ const ChatListItem = ({ user, setListIsOpen, chat }) => {
       </Box>
 
       <Box sx={messagesInfo}>
-        <Box sx={messagesCount({ user, count: 0 })}>0</Box>
-        <Box sx={lastMessageTime}>{convertDate(chat.last_message?.time)}</Box>
+        {!isNew && <Box sx={messagesCount({ user, count: 0 })}>0</Box>}
+        {!isNew && (
+          <Box sx={lastMessageTime}>{convertDate(chat.last_message?.time)}</Box>
+        )}
       </Box>
     </Link>
   );

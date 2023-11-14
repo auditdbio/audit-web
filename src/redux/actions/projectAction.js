@@ -196,7 +196,7 @@ export const getProjectById = id => {
 export const searchProjects = values => {
   const searchValues = {
     query: values?.search || '',
-    tags: values?.tags || '',
+    tags: values?.tags || [],
     ready_to_wait: values?.ready_to_wait || '',
     dateFrom:
       +new Date() + 60000 < +new Date(values?.dateFrom)
@@ -206,10 +206,11 @@ export const searchProjects = values => {
       +new Date() + 60000 < +new Date(values?.dateTo)
         ? dayjs().valueOf(values?.dateTo)
         : '',
-    priceFrom: parseInt(values?.price.from) || '',
-    priceTo: parseInt(values?.price.to) || '',
+    priceFrom: parseInt(values?.price?.from) || '',
+    priceTo: parseInt(values?.price?.to) || '',
     sort: values?.sort || 1,
     page: values?.page || 0,
+    perPage: values?.perPage ?? 10,
   };
 
   const queryParams = [
@@ -218,9 +219,11 @@ export const searchProjects = values => {
     `sort_order=${searchValues.sort}`,
     `page=${searchValues.page}`,
     `sort_by=price`,
-    `per_page=10`,
+    `per_page=${searchValues.perPage}`,
     `kind=project`,
   ];
+
+  console.log(searchValues);
 
   if (searchValues.ready_to_wait) {
     queryParams.push(`ready_to_wait=${searchValues.ready_to_wait}`);
