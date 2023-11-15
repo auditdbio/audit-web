@@ -130,7 +130,7 @@ const ChatList = ({ chatList, chatListIsOpen, setChatListIsOpen }) => {
         </Box>
       </Box>
       <Box
-        sx={chatListIsOpen && mobileChatListOpenBackground}
+        sx={chatListIsOpen ? mobileChatListOpenBackground : {}}
         onClick={() => setChatListIsOpen(false)}
       />
     </>
