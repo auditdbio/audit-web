@@ -7,6 +7,7 @@ import { useMediaQuery } from '@mui/material';
 import { addTestsLabel, isAuth } from '../../lib/helper.js';
 import { useDispatch, useSelector } from 'react-redux';
 import { changeRole } from '../../redux/actions/userAction.js';
+import { Link as MuiLink } from '@mui/material';
 
 const MainText = () => {
   const isMobile = useMediaQuery('(max-width: 768px)');
@@ -59,26 +60,16 @@ const MainText = () => {
           <Typography sx={paragraphStyle} theme={theme} variant="body1">
             {paragraphText}
           </Typography>
-          <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-            <a
-              style={{
-                textAlign: 'center',
-                padding: '12px 0',
-                fontWeight: 600,
-                maxWidth: '345px',
-                width: '100%',
-                fontSize: '22px',
-                borderRadius: '14px',
-                backgroundColor: '#44944A',
-                color: '#fff',
-              }}
-              href={
-                'https://explorer.gitcoin.co/#/round/424/0x98720dd1925d34a2453ebc1f91c9d48e7e89ec29/0x98720dd1925d34a2453ebc1f91c9d48e7e89ec29-91'
-              }
-              target={'_blank'}
-            >
-              Support us on gitcoin
-            </a>
+          <Box sx={buttonsStyle(isMobile)}>
+            <CustomButton sx={[auditorButton, gitCoinSx]}>
+              <MuiLink
+                target="_blank"
+                sx={{ color: '#fff', textDecoration: 'none' }}
+                href="https://explorer.gitcoin.co/#/round/424/0x98720dd1925d34a2453ebc1f91c9d48e7e89ec29/0x98720dd1925d34a2453ebc1f91c9d48e7e89ec29-91"
+              >
+                Support us on gitcoin
+              </MuiLink>
+            </CustomButton>
           </Box>
           <Box sx={buttonsStyle(isMobile)}>
             <CustomButton
@@ -188,8 +179,11 @@ const buttonsStyle = isMobile => ({
   flexDirection: isMobile ? 'column' : 'row',
   marginX: 'auto',
   minWidth: { xs: '300px', md: '100%' },
-  justifyContent: 'space-around',
+  justifyContent: 'center',
   gap: '2rem',
+  [theme.breakpoints.down('xs')]: {
+    width: '90%',
+  },
 });
 
 const imagesStyle = {
@@ -218,5 +212,10 @@ const personBitcoinStyle = {
   backgroundRepeat: 'no-repeat',
   margin: '0 auto',
 };
+
+const gitCoinSx = theme => ({
+  backgroundColor: '#44944A',
+  color: 'white!important',
+});
 
 export default MainText;
