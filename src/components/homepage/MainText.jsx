@@ -215,7 +215,6 @@ const personBitcoinStyle = {
 
 const gitCoinSx = theme => ({
   backgroundColor: '#44944A',
-  color: 'white!important',
 });
 
 export default MainText;
