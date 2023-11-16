@@ -19,6 +19,9 @@ import { addTestsLabel } from '../lib/helper.js';
 import LaunchRoundedIcon from '@mui/icons-material/LaunchRounded';
 import ClipboardJS from 'clipboard';
 import ShareProfileButton from './custom/ShareProfileButton.jsx';
+import GitHubIcon from '@mui/icons-material/GitHub';
+import LinkedInIcon from '@mui/icons-material/LinkedIn';
+import { Link as RouterLink } from 'react-router-dom';
 
 const UserInfo = ({ role }) => {
   const navigate = useNavigate();
@@ -112,6 +115,27 @@ const UserInfo = ({ role }) => {
           </Box>
         </Box>
         {matchXs && <MobileTagsList data={data.tags} />}
+        <Box sx={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: '7px' }}>
+            <RouterLink
+              href={'https://github.com/auditdbio/audit-web/tree/prod'}
+            >
+              <GitHubIcon />
+            </RouterLink>
+          </Box>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: '7px' }}>
+            <LinkedInIcon />
+            <RouterLink
+              href={'https://github.com/auditdbio/audit-web/tree/prod'}
+            ></RouterLink>
+          </Box>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: '7px' }}>
+            <LinkedInIcon />
+            <RouterLink
+              href={'https://github.com/auditdbio/audit-web/tree/prod'}
+            ></RouterLink>
+          </Box>
+        </Box>
         <Box
           sx={{
             display: 'flex',
