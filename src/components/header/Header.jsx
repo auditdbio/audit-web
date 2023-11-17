@@ -9,7 +9,7 @@ import Logo from '../icons/Logo.jsx';
 import AuthorizedOptions from './AuthorizedOptions.jsx';
 import UnauthorizedOptions from './UnauthorizedOptions.jsx';
 import { addTestsLabel, isAuth } from '../../lib/helper.js';
-
+//
 const Header = () => {
   return (
     <AppBar position="static" color="transparent" elevation={0}>
@@ -26,6 +26,7 @@ const Header = () => {
                 <Logo />
               </Box>
             </Link>
+            <Link to={'/create-report'}>Constructor</Link>
             {!isAuth() && <UnauthorizedOptions />}
             {isAuth() && <AuthorizedOptions />}
           </Box>

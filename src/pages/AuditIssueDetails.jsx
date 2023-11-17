@@ -36,7 +36,7 @@ const AuditIssueDetails = () => {
       dispatch(getIssues(auditId));
     }
   }, []);
-
+  //
   if (!issue) {
     return (
       <Box

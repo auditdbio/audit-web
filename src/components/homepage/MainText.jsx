@@ -174,7 +174,7 @@ const imageStyle = isMobile => ({
   display: isMobile ? 'none' : 'inline',
   minWidth: '25%',
 });
-
+//
 const buttonsStyle = isMobile => ({
   flexGrow: 0,
   display: 'flex',

@@ -42,7 +42,8 @@ import {
   websocketDisconnect,
 } from '../redux/actions/websocketAction.js';
 import PublicProject from '../pages/PublicProject.jsx';
-
+import PublicConstructor from '../pages/PublicConstructor.jsx';
+//
 const AppRoutes = () => {
   const token = useSelector(s => s.user.token);
   const currentRole = useSelector(s => s.user.user.current_role);
@@ -93,7 +94,7 @@ const AppRoutes = () => {
       };
     }
   }, [reconnect, connected]);
-
+  //
   useEffect(() => {
     return () => {
       dispatch(websocketDisconnect());
@@ -110,6 +111,7 @@ const AppRoutes = () => {
           path={'/restore-password/:token'}
           element={<RestorePasswordPage />}
         />
+        <Route path={'/create-report'} element={<PublicConstructor />} />
         <Route path={'/projects'} element={<ProjectPage />} />
         <Route path={'/projects/:id'} element={<PublicProject />} />
         <Route path={'/for-customers'} element={<ForCustomer />} />
