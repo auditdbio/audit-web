@@ -9,6 +9,7 @@ import { ProjectLinksList } from '../../custom/ProjectLinksList.jsx';
 import CustomLink from '../../custom/CustomLink.jsx';
 import theme from '../../../styles/themes.js';
 import TagsField from '../../forms/tags-field/tags-field.jsx';
+import { useFormik, useFormikContext } from 'formik';
 
 const DescriptionBlock = ({
   editMode,
@@ -23,7 +24,7 @@ const DescriptionBlock = ({
   setIsEditFeedback,
 }) => {
   const matchXs = useMediaQuery(theme.breakpoints.down('xs'));
-
+  const { isValid } = useFormikContext();
   const [addLinkField, setAddLinkField] = useState(false);
   const [mdRef, setMdRef] = useState(null);
   const [feedbackRef, setFeedbackRef] = useState(null);
@@ -93,7 +94,7 @@ const DescriptionBlock = ({
         />
       </Box>
 
-      {user.current_role === AUDITOR &&
+      {user.current_role !== CUSTOMER &&
         audit?.status?.toLowerCase() !== RESOLVED.toLowerCase() && (
           <Box
             sx={[
@@ -133,7 +134,7 @@ const DescriptionBlock = ({
         )}
 
       <Box sx={linksList}>
-        {user.current_role === AUDITOR &&
+        {user.current_role !== CUSTOMER &&
         audit?.status?.toLowerCase() !== RESOLVED.toLowerCase() ? (
           <ProjectLinksList name="links" handleSubmit={handleSubmit} />
         ) : (
@@ -158,7 +159,7 @@ const DescriptionBlock = ({
 
       {addLinkField && (
         <Box sx={{ mt: '10px' }}>
-          {user.current_role === AUDITOR && (
+          {user.current_role !== CUSTOMER && (
             <TagsField
               size="small"
               name="links"
@@ -192,6 +193,7 @@ const DescriptionBlock = ({
                 aria-label="Edit feedback"
                 onClick={() => handleFeedbackEdit(handleSubmit)}
                 sx={editButton}
+                disabled={!isValid}
                 {...addTestsLabel('edit-feedback-button')}
               >
                 <EditIcon color="secondary" fontSize="small" />

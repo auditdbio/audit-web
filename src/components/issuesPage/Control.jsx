@@ -14,11 +14,14 @@ import {
 import MenuIcon from '@mui/icons-material/Menu';
 import IconButton from '@mui/material/IconButton';
 import { addTestsLabel } from '../../lib/helper.js';
-import { AUDITOR, RESOLVED } from '../../redux/actions/types.js';
+import { AUDITOR, CUSTOMER, RESOLVED } from '../../redux/actions/types.js';
 import ResolveAuditConfirmation from './ResolveAuditConfirmation.jsx';
 import { discloseAllIssues } from '../../redux/actions/issueAction.js';
 import { DRAFT, FIXED, NOT_FIXED } from './constants.js';
-import { downloadReport } from '../../redux/actions/auditAction.js';
+import {
+  downloadReport,
+  getPublicReport,
+} from '../../redux/actions/auditAction.js';
 
 const Control = ({ issues, search, setSearch, setPage, setSearchParams }) => {
   const dispatch = useDispatch();
@@ -31,7 +34,10 @@ const Control = ({ issues, search, setSearch, setPage, setSearchParams }) => {
   const audit = useSelector(s =>
     s.audits.audits?.find(audit => audit.id === auditId),
   );
+  const issuesArray = useSelector(s => s.issues.issues);
+  const report = JSON.parse(localStorage.getItem('report'));
 
+  const isPublic = localStorage.getItem('isPublic');
   const handleSearch = e => {
     setSearch(e.target.value);
     setPage(1);
@@ -57,8 +63,111 @@ const Control = ({ issues, search, setSearch, setPage, setSearchParams }) => {
   };
 
   const handleGenerateReport = () => {
-    dispatch(downloadReport(audit, { generate: true }));
-    setMenuAnchorEl(null);
+    if (isPublic) {
+      const newData = {
+        auditor_name: report.auditor_name,
+        auditor_email: report.email,
+        profile_link: 'https://auditDb.io',
+        project_name: report.project_name,
+        report_data: [
+          {
+            type: 'plain_text',
+            title: 'Summary',
+            include_in_toc: true,
+            subsections: [
+              {
+                type: 'project_description',
+                title: 'Project description',
+                text: report.description,
+                include_in_toc: true,
+              },
+              {
+                type: 'scope',
+                title: 'Scope',
+                text: '',
+                include_in_toc: true,
+                links: report.scope,
+              },
+            ],
+          },
+          {
+            type: 'statistics',
+            title: 'Issue statistics',
+            include_in_toc: true,
+            statistics: {
+              total: issuesArray.length,
+              fixed: {
+                critical: issuesArray.filter(
+                  issue =>
+                    issue.severity === 'Critical' && issue.status === 'Fixed',
+                ).length,
+                major: issuesArray.filter(
+                  issue =>
+                    issue.severity === 'Major' && issue.status === 'Fixed',
+                ).length,
+                medium: issuesArray.filter(
+                  issue =>
+                    issue.severity === 'Medium' && issue.status === 'Fixed',
+                ).length,
+                minor: issuesArray.filter(
+                  issue =>
+                    issue.severity === 'Minor' && issue.status === 'Fixed',
+                ).length,
+              },
+              not_fixed: {
+                critical: issuesArray.filter(
+                  issue =>
+                    issue.severity === 'Critical' && issue.status !== 'Fixed',
+                ).length,
+                major: issuesArray.filter(
+                  issue =>
+                    issue.severity === 'Major' && issue.status !== 'Fixed',
+                ).length,
+                medium: issuesArray.filter(
+                  issue =>
+                    issue.severity === 'Medium' && issue.status !== 'Fixed',
+                ).length,
+                minor: issuesArray.filter(
+                  issue =>
+                    issue.severity === 'Minor' && issue.status !== 'Fixed',
+                ).length,
+              },
+            },
+          },
+          {
+            type: 'plain_text',
+            title: 'Issues',
+            text: '',
+            include_in_toc: true,
+            subsections: issuesArray.map(issue => {
+              return {
+                type: 'issue_data',
+                title: issue.name,
+                text: issue.description,
+                include_in_toc: true,
+                issue_data: {
+                  links: issue.links,
+                  severity: issue.severity,
+                  status: issue.status,
+                },
+              };
+            }),
+          },
+          // {
+          //   type: 'plain_text',
+          //   title: '',
+          //   text: '',
+          //   include_in_toc: true,
+          // },
+        ],
+      };
+      dispatch(getPublicReport(newData, { generate: true }));
+
+      setMenuAnchorEl(null);
+    } else {
+      dispatch(downloadReport(audit, { generate: true }));
+      setMenuAnchorEl(null);
+    }
   };
 
   const handleDownloadReport = () => {
@@ -117,10 +226,12 @@ const Control = ({ issues, search, setSearch, setPage, setSearchParams }) => {
                 Disclose all
               </MenuItem>
             )}
-            <MenuItem disabled onClick={handleCloseMenu}>
-              Mark all as read
-            </MenuItem>
-            {user.current_role === AUDITOR && (
+            {!isPublic && (
+              <MenuItem disabled onClick={handleCloseMenu}>
+                Mark all as read
+              </MenuItem>
+            )}
+            {user.current_role !== CUSTOMER && (
               <MenuItem onClick={handleGenerateReport}>
                 Generate report
               </MenuItem>
@@ -144,7 +255,7 @@ const Control = ({ issues, search, setSearch, setPage, setSearchParams }) => {
           />
         </Box>
 
-        {user?.current_role === AUDITOR ? (
+        {user?.current_role !== CUSTOMER ? (
           <Box sx={buttonBoxSx}>
             {audit?.status?.toLowerCase() !== RESOLVED.toLowerCase() ? (
               <>
@@ -160,28 +271,30 @@ const Control = ({ issues, search, setSearch, setPage, setSearchParams }) => {
                 >
                   New issue
                 </Button>
-                <Tooltip
-                  arrow
-                  placement="top"
-                  title={
-                    allIssuesClosed
-                      ? ''
-                      : "To resolve an audit, it is necessary that the status of all issues be 'Fixed' or 'Not fixed'. Or do not include some issues in the audit."
-                  }
-                >
-                  <span>
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      onClick={() => setResolveConfirmation(true)}
-                      disabled={!allIssuesClosed}
-                      sx={buttonSx}
-                      {...addTestsLabel('resolve-button')}
-                    >
-                      Resolve audit
-                    </Button>
-                  </span>
-                </Tooltip>
+                {!isPublic && (
+                  <Tooltip
+                    arrow
+                    placement="top"
+                    title={
+                      allIssuesClosed
+                        ? ''
+                        : "To resolve an audit, it is necessary that the status of all issues be 'Fixed' or 'Not fixed'. Or do not include some issues in the audit."
+                    }
+                  >
+                    <span>
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={() => setResolveConfirmation(true)}
+                        disabled={!allIssuesClosed}
+                        sx={buttonSx}
+                        {...addTestsLabel('resolve-button')}
+                      >
+                        Resolve audit
+                      </Button>
+                    </span>
+                  </Tooltip>
+                )}
               </>
             ) : (
               <Button

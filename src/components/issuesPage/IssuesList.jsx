@@ -26,7 +26,7 @@ const IssuesList = ({ auditId }) => {
   const { issues } = useSelector(s => s.issues);
   const { user } = useSelector(s => s.user);
   const { successMessage, error } = useSelector(s => s.audits);
-
+  const isPublic = localStorage.getItem('isPublic');
   const [search, setSearch] = useState(searchParams.get('search') || '');
   const [page, setPage] = useState(+searchParams.get('page') || 1);
   const [sortType, setSortType] = useState(
@@ -165,7 +165,9 @@ const IssuesList = ({ auditId }) => {
           ))}
       </Box>
 
-      {getSearchResultsLength() === 0 && <Box sx={noResults}>Empty</Box>}
+      {getSearchResultsLength() === 0 && (
+        <Box sx={[noResults, isPublic ? { paddingTop: 0 } : {}]}>Empty</Box>
+      )}
 
       <CustomPagination
         show={getSearchResultsLength() > 10}

@@ -41,7 +41,9 @@ const StatusSeverityBlock = ({
   setIsEditFeedback,
 }) => {
   const [severityListOpen, setSeverityListOpen] = useState(false);
+  const [statusListOpen, setStatusListOpen] = useState(false);
   const [categoryPrevVal, setCategoryPrevVal] = useState(issue?.category || '');
+  const isPublic = localStorage.getItem('isPublic');
 
   return (
     <Box sx={issueStatusBlock}>
@@ -51,12 +53,58 @@ const StatusSeverityBlock = ({
             <Typography sx={statusBlockTitle}>
               <span>Status</span>
             </Typography>
-            <Typography sx={statusValueSx(issue?.status || values.status)}>
-              {addSpacesToCamelCase(issue?.status || values.status)}
-            </Typography>
+            {!isPublic ? (
+              <Typography sx={statusValueSx(issue?.status || values.status)}>
+                {addSpacesToCamelCase(issue?.status || values.status)}
+              </Typography>
+            ) : (
+              <Field
+                open={statusListOpen}
+                onClose={() => setStatusListOpen(false)}
+                onOpen={() => setStatusListOpen(true)}
+                onChange={e => {
+                  setFieldValue('status', e.target.value);
+                  if (editMode) handleSubmit();
+                }}
+                disabled={false}
+                component={Select}
+                name="status"
+                sx={selectFieldSx}
+                renderValue={selected => {
+                  return (
+                    <Box sx={{ textAlign: 'center' }}>
+                      <IssueSeverity text={selected} />
+                    </Box>
+                  );
+                }}
+              >
+                <MenuItem
+                  value={FIXED}
+                  sx={severityMenuItem}
+                  classes={{ selected: 'selected-severity' }}
+                >
+                  Fixed
+                </MenuItem>
+                <MenuItem
+                  value={NOT_FIXED}
+                  sx={severityMenuItem}
+                  classes={{ selected: 'selected-severity' }}
+                >
+                  NotFixed
+                </MenuItem>
+                <MenuItem
+                  value={IN_PROGRESS}
+                  sx={severityMenuItem}
+                  classes={{ selected: 'selected-severity' }}
+                >
+                  InProgress
+                </MenuItem>
+              </Field>
+            )}
           </Box>
 
           {editMode &&
+            !isPublic &&
             audit?.status?.toLowerCase() !== RESOLVED.toLowerCase() && (
               <StatusControl
                 status={issue.status}
@@ -65,7 +113,7 @@ const StatusSeverityBlock = ({
             )}
         </Box>
 
-        {user.current_role === AUDITOR &&
+        {user.current_role !== CUSTOMER &&
         audit?.status?.toLowerCase() !== RESOLVED.toLowerCase() ? (
           <Box sx={severityWrapper}>
             <Typography
@@ -188,9 +236,11 @@ const StatusSeverityBlock = ({
           </Box>
         ) : (
           <Box sx={[statusBlockAlign, { mt: '20px' }]}>
-            <Typography sx={statusBlockTitle}>
-              <span>Category</span>
-            </Typography>
+            {!isPublic && (
+              <Typography sx={statusBlockTitle}>
+                <span>Category</span>
+              </Typography>
+            )}
             <Typography sx={statusBlockTitle}>{values.category}</Typography>
           </Box>
         )}
@@ -208,7 +258,7 @@ const StatusSeverityBlock = ({
                   checked={values.include}
                   color="secondary"
                   disabled={
-                    user.current_role !== AUDITOR ||
+                    user.current_role === CUSTOMER ||
                     audit?.status?.toLowerCase() === RESOLVED.toLowerCase()
                   }
                   onChange={e => {
@@ -223,7 +273,7 @@ const StatusSeverityBlock = ({
         )}
       </Box>
 
-      {user.current_role === AUDITOR && !editMode && (
+      {user.current_role !== CUSTOMER && !editMode && (
         <Box sx={buttonsBox}>
           <Button
             variant="contained"

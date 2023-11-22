@@ -22,9 +22,17 @@ const AuditIssueDetails = () => {
   const audit = useSelector(s =>
     s.audits.audits?.find(audit => audit.id === auditId),
   );
+  const isPublic = localStorage.getItem('isPublic');
 
   const issue = useMemo(() => {
-    return issues?.find(issue => issue.id === +issueId);
+    if (!isPublic) {
+      return issues?.find(issue => issue.id === +issueId);
+    } else {
+      const publicIssies = JSON.parse(
+        localStorage.getItem('publicIssies') || '[]',
+      );
+      return publicIssies.find(issue => issue.id === +issueId);
+    }
   }, [issues]);
 
   useEffect(() => {
@@ -32,11 +40,11 @@ const AuditIssueDetails = () => {
   }, [audit?.id]);
 
   useEffect(() => {
-    if (issuesAuditId !== auditId) {
+    if (issuesAuditId !== auditId && !isPublic) {
       dispatch(getIssues(auditId));
     }
   }, []);
-  //
+
   if (!issue) {
     return (
       <Box

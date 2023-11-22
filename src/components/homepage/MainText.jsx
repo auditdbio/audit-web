@@ -14,6 +14,8 @@ const MainText = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const user = useSelector(state => state.user.user);
+  const report = JSON.parse(localStorage.getItem('report') || '{}');
+  const auditId = report.auditId ? report.auditId : Date.now();
 
   const handleSignUp = () => {
     navigate('/sign-up');
@@ -88,6 +90,14 @@ const MainText = () => {
               {...addTestsLabel('hero_show-project-button')}
             >
               Show your project
+            </CustomButton>
+          </Box>
+          <Box>
+            <CustomButton
+              sx={[gitCoinSx, { color: '#fff' }]}
+              onClick={() => navigate(`/create-report/${auditId}`)}
+            >
+              Create report
             </CustomButton>
           </Box>
         </Box>

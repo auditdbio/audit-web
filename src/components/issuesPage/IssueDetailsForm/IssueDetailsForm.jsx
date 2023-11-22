@@ -7,11 +7,13 @@ import * as Yup from 'yup';
 import EditIcon from '@mui/icons-material/Edit';
 import { Box, IconButton, InputAdornment, Tooltip } from '@mui/material';
 import { addTestsLabel } from '../../../lib/helper.js';
-import { AUDITOR, RESOLVED } from '../../../redux/actions/types.js';
+import { AUDITOR, CUSTOMER, RESOLVED } from '../../../redux/actions/types.js';
 import { clearMessage } from '../../../redux/actions/auditAction.js';
 import {
   addAuditIssue,
+  addPublicIssue,
   updateAuditIssue,
+  updatePublicIssue,
 } from '../../../redux/actions/issueAction.js';
 import CustomSnackbar from '../../custom/CustomSnackbar.jsx';
 import { createIssueEvent } from '../../../lib/createIssueEvent.js';
@@ -23,6 +25,7 @@ const IssueDetailsForm = ({ issue = null, editMode = false }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { auditId, issueId } = useParams();
+  const publicIssies = JSON.parse(localStorage.getItem('publicIssies') || '[]');
 
   const user = useSelector(s => s.user.user);
   const { successMessage, error } = useSelector(s => s.issues);
@@ -43,6 +46,8 @@ const IssueDetailsForm = ({ issue = null, editMode = false }) => {
     setTimeout(() => nameInputRef.current?.focus(), 100);
   };
 
+  const isPublic = localStorage.getItem('isPublic');
+
   const initialValues = {
     name: issue?.name || '',
     status: issue?.status || DRAFT,
@@ -57,6 +62,7 @@ const IssueDetailsForm = ({ issue = null, editMode = false }) => {
   const handleSubmitForm = (values, { setFieldValue }) => {
     if (editMode) {
       const prev = issuePrevValues || initialValues;
+
       const updatedValues = Object.keys(prev).reduce((acc, key) => {
         if (Array.isArray(values[key])) {
           return String(prev[key]) === String(values[key])
@@ -75,10 +81,35 @@ const IssueDetailsForm = ({ issue = null, editMode = false }) => {
       setIsEditName(false);
       setFieldValue('status', '');
       setIssuePrevValues({ ...values, status: '' });
-      dispatch(updateAuditIssue(auditId, issueId, updatedValuesWithEvent));
+      if (!isPublic) {
+        dispatch(updateAuditIssue(auditId, issueId, updatedValuesWithEvent));
+      } else {
+        const newValues = {
+          ...prev,
+          ...updatedValuesWithEvent,
+          id: +issueId,
+          auditId: +auditId,
+        };
+        delete newValues.events;
+        const newArray = publicIssies.map(el => {
+          return el.id === +issueId ? newValues : el;
+        });
+        dispatch(updatePublicIssue(newValues));
+        localStorage.setItem('publicIssies', JSON.stringify(newArray));
+      }
     } else {
-      dispatch(addAuditIssue(auditId, values));
-      navigate(`/audit-info/${auditId}/auditor`);
+      if (!isPublic) {
+        dispatch(addAuditIssue(auditId, values));
+        navigate(`/audit-info/${auditId}/auditor`);
+      } else {
+        const newValue = { ...values, auditId: Date.now(), id: Date.now() };
+        localStorage.setItem(
+          'publicIssies',
+          JSON.stringify([...publicIssies, newValue]),
+        );
+        dispatch(addPublicIssue(newValue));
+        navigate(-1);
+      }
     }
   };
 
@@ -132,7 +163,7 @@ const IssueDetailsForm = ({ issue = null, editMode = false }) => {
                   inputRef={nameInputRef}
                   inputProps={{ ...addTestsLabel('issue-name-input') }}
                   InputProps={
-                    user.current_role === AUDITOR &&
+                    user.current_role !== CUSTOMER &&
                     audit?.status?.toLowerCase() !== RESOLVED.toLowerCase() &&
                     editMode
                       ? {

@@ -26,7 +26,6 @@ const Header = () => {
                 <Logo />
               </Box>
             </Link>
-            <Link to={'/create-report'}>Constructor</Link>
             {!isAuth() && <UnauthorizedOptions />}
             {isAuth() && <AuthorizedOptions />}
           </Box>
