@@ -41,6 +41,7 @@ const MarkdownEditor = ({
   mdProps = {},
   plugins = [],
   setFieldTouched,
+  handleBlur,
 }) => {
   const [markdownField, meta, markdownHelper] = useField(name);
   const [markdown, setMarkdown] = useState('');
@@ -71,6 +72,9 @@ const MarkdownEditor = ({
     markdownHelper.setValue(markdown);
     if (setFieldTouched && !meta.touched) {
       setFieldTouched(name);
+    }
+    if (handleBlur) {
+      handleBlur();
     }
   };
 

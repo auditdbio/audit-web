@@ -3,12 +3,12 @@ import SimpleField from '../forms/fields/simple-field.jsx';
 import { Box, Button, Typography, useMediaQuery } from '@mui/material';
 import ClickAwayListener from '@mui/material/ClickAwayListener';
 import theme from '../../styles/themes.js';
-import { useField } from 'formik';
+import { FastField, useField } from 'formik';
+import { TextField } from 'formik-mui';
+import { addTestsLabel } from '../../lib/helper.js';
 
-const FieldEditor = ({ name, label }) => {
+const FieldEditor = ({ name, label, handleBlur }) => {
   const matchMd = useMediaQuery(theme.breakpoints.down('md'));
-  const [editMode, setEditMode] = useState(false);
-  const [fieldValue] = useField(name);
   return (
     <Box
       sx={{
@@ -19,26 +19,57 @@ const FieldEditor = ({ name, label }) => {
         height: '58px',
       }}
     >
-      <SimpleField
-        size={matchMd ? 'small' : 'medium'}
-        name={name}
-        label={label}
-        emptyPH
-        sx={{ width: '100%' }}
-      />
+      <Box sx={[wrapper]} className={'field-wrapper'}>
+        <FastField
+          component={TextField}
+          name={name}
+          label={label}
+          fullWidth={true}
+          disabled={false}
+          sx={[fieldSx, { width: '100%' }]}
+          size={matchMd ? 'small' : 'medium'}
+          inputProps={{ ...addTestsLabel(`${name}-input`) }}
+          onBlur={handleBlur}
+        />
+      </Box>
     </Box>
   );
 };
 
 export default FieldEditor;
 
-const titleSx = theme => ({
-  width: '100%',
-  fontSize: '24px',
-  [theme.breakpoints.down('md')]: {
-    fontSize: '20px',
+const wrapper = theme => ({
+  display: 'flex',
+  gap: '28px',
+  flexDirection: 'column',
+  '& p.Mui-error': {
+    display: 'none',
   },
-  [theme.breakpoints.down('sm')]: {
-    // fontSize: '16px',
+});
+
+const formLabelSx = theme => ({
+  fontWeight: 500,
+  fontSize: '14px',
+  lineHeight: '24px',
+  color: '#434242',
+  [theme.breakpoints.down('lg')]: {
+    fontSize: '14px',
+  },
+});
+
+const fieldSx = theme => ({
+  '& input': {
+    paddingLeft: '35px',
+  },
+  [theme.breakpoints.up('sm')]: {
+    '& input': {
+      fontSize: '18px',
+    },
+    '& textarea': {
+      fontSize: '18px',
+    },
+    '& .MuiFormLabel-root,.MuiInputLabel-root': {
+      fontSize: '18px',
+    },
   },
 });

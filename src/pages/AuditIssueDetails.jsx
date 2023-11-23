@@ -78,7 +78,7 @@ const AuditIssueDetails = () => {
             auditId={auditId}
           />
         )}
-        <AddComment auditId={auditId} issueId={issueId} />
+        {!isPublic && <AddComment auditId={auditId} issueId={issueId} />}
       </CustomCard>
     </Layout>
   );

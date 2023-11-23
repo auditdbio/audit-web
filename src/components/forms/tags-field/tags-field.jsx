@@ -17,6 +17,7 @@ const TagsField = ({
   sx = {},
   setFieldTouched,
   handleSubmit,
+  onBlur,
 }) => {
   const role = useSelector(s => s.user.user.current_role);
   const [field, meta, fieldHelper] = useField(name);
@@ -49,6 +50,10 @@ const TagsField = ({
       } else {
         setError('The maximum number of links that can be added is 20');
       }
+    }
+
+    if (onBlur) {
+      onBlur();
     }
   };
 
@@ -153,6 +158,11 @@ const TagsField = ({
                             'The maximum number of tags that can be added is 20',
                           );
                         }
+
+                        if (onBlur) {
+                          onBlur();
+                        }
+
                         if (field.value.length === 19) {
                           handleClose();
                         }

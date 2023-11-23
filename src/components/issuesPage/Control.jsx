@@ -66,8 +66,7 @@ const Control = ({ issues, search, setSearch, setPage, setSearchParams }) => {
     if (isPublic) {
       const newData = {
         auditor_name: report.auditor_name,
-        auditor_email: report.email,
-        profile_link: 'https://auditDb.io',
+        // profile_link: 'https://auditDb.io',
         project_name: report.project_name,
         report_data: [
           {
@@ -200,43 +199,57 @@ const Control = ({ issues, search, setSearch, setPage, setSearchParams }) => {
 
       <Box sx={wrapper}>
         <Box sx={searchBlock}>
-          <IconButton
-            aria-label="Menu"
-            color="secondary"
-            onClick={handleOpenMenu}
-            sx={menuButton}
-          >
-            <MenuIcon fontSize="large" sx={{ color: 'white' }} />
-          </IconButton>
-          <Menu
-            open={!!menuAnchorEl}
-            anchorEl={menuAnchorEl}
-            anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
-            transformOrigin={{ vertical: 'top', horizontal: 'left' }}
-            onClose={handleCloseMenu}
-            PaperProps={{
-              sx: { width: '250px', borderRadius: '10px !important' },
-            }}
-          >
-            {user.current_role === AUDITOR && (
-              <MenuItem
-                disabled={checkDraftIssues()}
-                onClick={handleDiscloseAll}
-              >
-                Disclose all
-              </MenuItem>
-            )}
-            {!isPublic && (
-              <MenuItem disabled onClick={handleCloseMenu}>
-                Mark all as read
-              </MenuItem>
-            )}
-            {user.current_role !== CUSTOMER && (
-              <MenuItem onClick={handleGenerateReport}>
-                Generate report
-              </MenuItem>
-            )}
-          </Menu>
+          {isPublic ? (
+            <Button
+              variant="contained"
+              color="secondary"
+              sx={buttonSx}
+              onClick={handleGenerateReport}
+            >
+              Generate report
+            </Button>
+          ) : (
+            <IconButton
+              aria-label="Menu"
+              color="secondary"
+              onClick={handleOpenMenu}
+              sx={menuButton}
+            >
+              <MenuIcon fontSize="large" sx={{ color: 'white' }} />
+            </IconButton>
+          )}
+
+          {!isPublic && (
+            <Menu
+              open={!!menuAnchorEl}
+              anchorEl={menuAnchorEl}
+              anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+              transformOrigin={{ vertical: 'top', horizontal: 'left' }}
+              onClose={handleCloseMenu}
+              PaperProps={{
+                sx: { width: '250px', borderRadius: '10px !important' },
+              }}
+            >
+              {user.current_role === AUDITOR && (
+                <MenuItem
+                  disabled={checkDraftIssues()}
+                  onClick={handleDiscloseAll}
+                >
+                  Disclose all
+                </MenuItem>
+              )}
+              {!isPublic && (
+                <MenuItem disabled onClick={handleCloseMenu}>
+                  Mark all as read
+                </MenuItem>
+              )}
+              {user.current_role !== CUSTOMER && (
+                <MenuItem onClick={handleGenerateReport}>
+                  Generate report
+                </MenuItem>
+              )}
+            </Menu>
+          )}
 
           <TextField
             variant="outlined"

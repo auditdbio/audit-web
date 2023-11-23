@@ -18,6 +18,7 @@ import {
   IN_PROGRESS,
   NOT_FOUND,
   REQUEST_ERROR,
+  RESET_PUBLIC_AUDIT,
   RESOLVED,
   SET_CURRENT_AUDIT_PARTNER,
 } from './types.js';
@@ -316,7 +317,6 @@ export const getPublicReport = (data, { generate }) => {
 
 export const createPublicReport = data => {
   return dispatch => {
-    localStorage.setItem('report', JSON.stringify(data));
     dispatch({ type: CREATE_PUBLIC_REPORT, payload: data });
   };
 };
@@ -376,6 +376,13 @@ export const downloadReport = (audit, { generate } = {}) => {
     } else {
       getReport(audit, audit?.report, dispatch);
     }
+  };
+};
+
+export const handleResetPublicAudit = () => {
+  return dispatch => {
+    localStorage.removeItem('report');
+    dispatch({ type: RESET_PUBLIC_AUDIT });
   };
 };
 

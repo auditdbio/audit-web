@@ -19,7 +19,7 @@ import CustomSnackbar from '../../custom/CustomSnackbar.jsx';
 import { createIssueEvent } from '../../../lib/createIssueEvent.js';
 import DescriptionBlock from './DescriptionBlock.jsx';
 import StatusSeverityBlock from './StatusSeverityBlock.jsx';
-import { DRAFT } from '../constants.js';
+import { DRAFT, NOT_FIXED } from '../constants.js';
 
 const IssueDetailsForm = ({ issue = null, editMode = false }) => {
   const dispatch = useDispatch();
@@ -32,6 +32,7 @@ const IssueDetailsForm = ({ issue = null, editMode = false }) => {
   const audit = useSelector(s =>
     s.audits.audits?.find(audit => audit.id === auditId),
   );
+  const issues = useSelector(s => s.issues.issues);
 
   const [isEditName, setIsEditName] = useState(!editMode);
   const [issuePrevValues, setIssuePrevValues] = useState(null);
@@ -50,7 +51,7 @@ const IssueDetailsForm = ({ issue = null, editMode = false }) => {
 
   const initialValues = {
     name: issue?.name || '',
-    status: issue?.status || DRAFT,
+    status: !isPublic ? issue?.status || DRAFT : issue?.status || NOT_FIXED,
     severity: issue?.severity || 'Medium',
     category: issue?.category || '',
     description: issue?.description || '',
@@ -79,7 +80,11 @@ const IssueDetailsForm = ({ issue = null, editMode = false }) => {
         issue?.feedback,
       );
       setIsEditName(false);
-      setFieldValue('status', '');
+
+      if (!isPublic) {
+        setFieldValue('status', '');
+      }
+
       setIssuePrevValues({ ...values, status: '' });
       if (!isPublic) {
         dispatch(updateAuditIssue(auditId, issueId, updatedValuesWithEvent));
@@ -108,7 +113,9 @@ const IssueDetailsForm = ({ issue = null, editMode = false }) => {
           JSON.stringify([...publicIssies, newValue]),
         );
         dispatch(addPublicIssue(newValue));
-        navigate(-1);
+        if (issues.length) {
+          navigate(-1);
+        }
       }
     }
   };

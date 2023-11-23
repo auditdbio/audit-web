@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Form, Formik } from 'formik';
 import { CustomCard } from '../components/custom/Card.jsx';
 import Layout from '../styles/Layout.jsx';
-import { Box, Button, Typography, useMediaQuery } from '@mui/material';
+import { Box, Button, Modal, Typography, useMediaQuery } from '@mui/material';
 import SimpleField from '../components/forms/fields/simple-field.jsx';
 import theme from '../styles/themes.js';
 import FieldEditor from '../components/editor/FieldEditor.jsx';
@@ -21,6 +21,8 @@ import { isAuth } from '../lib/helper.js';
 import {
   clearMessage,
   createPublicReport,
+  getPublicAuditReport,
+  handleResetPublicAudit,
 } from '../redux/actions/auditAction.js';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import CustomSnackbar from '../components/custom/CustomSnackbar.jsx';
@@ -30,9 +32,11 @@ const PublicConstructor = () => {
   const matchMd = useMediaQuery(theme.breakpoints.down('md'));
   const report = JSON.parse(localStorage.getItem('report') || '{}');
   const publicIssies = JSON.parse(localStorage.getItem('publicIssies') || '[]');
+  const publicReport = useSelector(state => state.audits.publicReport);
   const dispatch = useDispatch();
   const issues = useSelector(state => state.issues.issues);
   const [openMessage, setOpenMessage] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
   useEffect(() => {
     dispatch(getPublicIssues(publicIssies, report.auditId));
   }, []);
@@ -44,6 +48,22 @@ const PublicConstructor = () => {
       localStorage.removeItem('isPublic');
     }
   }, []);
+
+  const handleResetForm = setFieldValue => {
+    setFieldValue('project_name', '');
+    setFieldValue('report', '');
+    setFieldValue('report_name', '');
+    setFieldValue('description', '');
+    setFieldValue('scope', []);
+    setFieldValue('tags', []);
+    setFieldValue('issues', []);
+    setFieldValue('isCreated', false);
+    setFieldValue('auditor_name', '');
+    setFieldValue('auditId', Date.now());
+    dispatch(handleResetPublicAudit());
+    localStorage.removeItem('report');
+    localStorage.removeItem('publicIssies');
+  };
 
   return (
     <Layout>
@@ -62,7 +82,6 @@ const PublicConstructor = () => {
             tags: report?.tags?.length ? report?.tags : [],
             issues: report?.issues?.length ? report?.issues : publicIssies,
             isCreated: report?.isCreated || false,
-            email: report?.email || '',
             auditor_name: report?.auditor_name || '',
           }}
           onSubmit={values => {
@@ -81,6 +100,7 @@ const PublicConstructor = () => {
             setFieldTouched,
             dirty,
             values,
+            resetForm,
           }) => {
             return (
               <Form
@@ -90,13 +110,13 @@ const PublicConstructor = () => {
                   maxWidth: '1300px',
                 }}
               >
-                <CustomSnackbar
-                  autoHideDuration={5000}
-                  open={openMessage}
-                  severity={'success'}
-                  text={'Saved successfully'}
-                  onClose={() => setOpenMessage(false)}
-                />
+                {/*<CustomSnackbar*/}
+                {/*  autoHideDuration={5000}*/}
+                {/*  open={openMessage}*/}
+                {/*  severity={'success'}*/}
+                {/*  text={'Saved successfully'}*/}
+                {/*  onClose={() => setOpenMessage(false)}*/}
+                {/*/>*/}
                 <Typography sx={titleSx} variant={'h4'}>
                   Create audit report
                 </Typography>
@@ -105,23 +125,23 @@ const PublicConstructor = () => {
                     mt: '20px',
                   }}
                 >
-                  <FieldEditor name={'project_name'} label={'Project name'} />
+                  <FieldEditor
+                    handleBlur={handleSubmit}
+                    name={'project_name'}
+                    label={'Project name'}
+                  />
                 </Box>
                 <Box
                   sx={{
                     mt: '20px',
                   }}
                 >
-                  <FieldEditor name={'auditor_name'} label={'Auditor name'} />
+                  <FieldEditor
+                    handleBlur={handleSubmit}
+                    name={'auditor_name'}
+                    label={'Auditor name'}
+                  />
                 </Box>
-                <Box
-                  sx={{
-                    mt: '20px',
-                  }}
-                >
-                  <FieldEditor name={'email'} label={'email'} />
-                </Box>
-
                 <Box
                   sx={{
                     display: 'flex',
@@ -136,6 +156,7 @@ const PublicConstructor = () => {
                     </Typography>
                     <MarkdownEditor
                       name="description"
+                      handleBlur={handleSubmit}
                       setFieldTouched={setFieldTouched}
                       mdProps={{
                         view: { menu: true, md: true, html: !matchXs },
@@ -150,6 +171,7 @@ const PublicConstructor = () => {
                         name="tags"
                         label="Tags"
                         setFieldTouched={setFieldTouched}
+                        onBlur={handleSubmit}
                       />
                       <TagsArray name="tags" />
                     </Box>
@@ -166,52 +188,127 @@ const PublicConstructor = () => {
                         name="scope"
                         label="Project links"
                         setFieldTouched={setFieldTouched}
+                        onBlur={handleSubmit}
                       />
                       <ProjectLinksList name="scope" />
                     </Box>
                   </Box>
                 </Box>
-                <Button
-                  variant={'contained'}
-                  type={'submit'}
-                  sx={{
-                    marginLeft: 'auto',
-                    mt: '25px',
-                    marginRight: 0,
-                    display: 'block',
-                  }}
-                  disabled={!dirty}
+                <Modal
+                  open={isOpen}
+                  onClose={() => setIsOpen(false)}
+                  aria-labelledby="modal-modal-title"
+                  aria-describedby="modal-modal-description"
                 >
-                  Save
-                </Button>
+                  <Box sx={modalSx}>
+                    <Typography
+                      id="modal-modal-title"
+                      variant="h6"
+                      component="h2"
+                    >
+                      Are you sure you want to delete the audit? You can save it
+                      after registration.
+                    </Typography>
+                    <Box
+                      sx={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                        gap: '15px',
+                        mt: '25px',
+                      }}
+                    >
+                      <Button
+                        variant={'contained'}
+                        onClick={() => {
+                          handleResetForm(setFieldValue);
+                          setIsOpen(false);
+                        }}
+                        color={'secondary'}
+                      >
+                        Reset
+                      </Button>
+                      <Button
+                        variant={'contained'}
+                        onClick={() => setIsOpen(false)}
+                      >
+                        Close
+                      </Button>
+                    </Box>
+                  </Box>
+                </Modal>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    gap: '25px',
+                    mt: '25px',
+                    justifyContent: 'flex-end',
+                  }}
+                >
+                  <Button
+                    variant={'contained'}
+                    type={'button'}
+                    color={'secondary'}
+                    onClick={() => setIsOpen(true)}
+                    sx={{
+                      display: 'block',
+                    }}
+                  >
+                    Reset form
+                  </Button>
+                  {/*<Button*/}
+                  {/*  variant={'contained'}*/}
+                  {/*  type={'submit'}*/}
+                  {/*  sx={{*/}
+                  {/*    display: 'block',*/}
+                  {/*  }}*/}
+                  {/*  disabled={!dirty}*/}
+                  {/*>*/}
+                  {/*  Save*/}
+                  {/*</Button>*/}
+                </Box>
+                {!!issues?.length && (
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      gap: '20px',
+                      width: '100%',
+                      mt: '25px',
+                      [theme.breakpoints.down('xs')]: {
+                        gap: '10px',
+                      },
+                    }}
+                  >
+                    <IssuesList
+                      handleSubmit={handleSubmit}
+                      auditId={report.auditId}
+                    />
+                  </Box>
+                )}
               </Form>
             );
           }}
         </Formik>
-        {/*{issues?.length ? (*/}
-        <Box
-          sx={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            gap: '20px',
-            width: '100%',
-            [theme.breakpoints.down('xs')]: {
-              gap: '10px',
-            },
-          }}
-        >
-          <IssuesList auditId={report.auditId} />
-        </Box>
-        {/*) : (*/}
-        {/*  <IssueDetailsForm />*/}
-        {/*)}*/}
+        {!issues?.length && <IssueDetailsForm />}
       </CustomCard>
     </Layout>
   );
 };
 
 export default PublicConstructor;
+
+const modalSx = () => ({
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: 400,
+  bgcolor: 'background.paper',
+  boxShadow: 24,
+  borderRadius: '10px',
+  p: 4,
+});
 
 const titleSx = theme => ({
   textAlign: 'center',
@@ -224,7 +321,6 @@ const SubmitValidation = Yup.object().shape({
   project_name: Yup.string().required('File is required'),
   report_name: Yup.string().required('File is required'),
   description: Yup.string().required('File is required'),
-  email: Yup.string().required('File is required'),
   auditor_name: Yup.string().required('File is required'),
 });
 

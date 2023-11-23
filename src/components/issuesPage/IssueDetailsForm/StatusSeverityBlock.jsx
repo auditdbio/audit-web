@@ -92,13 +92,6 @@ const StatusSeverityBlock = ({
                 >
                   NotFixed
                 </MenuItem>
-                <MenuItem
-                  value={IN_PROGRESS}
-                  sx={severityMenuItem}
-                  classes={{ selected: 'selected-severity' }}
-                >
-                  InProgress
-                </MenuItem>
               </Field>
             )}
           </Box>

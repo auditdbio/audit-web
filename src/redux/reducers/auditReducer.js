@@ -22,6 +22,7 @@ import {
   DOWNLOAD_REPORT_START,
   CREATE_PUBLIC_REPORT,
   GET_PUBLIC_REPORT,
+  RESET_PUBLIC_AUDIT,
 } from '../actions/types.js';
 
 const initialState = {
@@ -68,7 +69,11 @@ export const auditReducer = (state = initialState, action) => {
           audit.id === action.payload.id ? action.payload : audit,
         ),
       };
-    //
+    case RESET_PUBLIC_AUDIT:
+      return {
+        ...state,
+        publicReport: {},
+      };
     case GET_NEW_AUDIT:
       return {
         ...state,

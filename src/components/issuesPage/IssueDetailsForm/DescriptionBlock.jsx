@@ -29,7 +29,7 @@ const DescriptionBlock = ({
   const [mdRef, setMdRef] = useState(null);
   const [feedbackRef, setFeedbackRef] = useState(null);
   const [isEditDescription, setIsEditDescription] = useState(!editMode);
-
+  const isPublic = localStorage.getItem('isPublic');
   useEffect(() => {
     setTimeout(() => feedbackRef?.current?.nodeMdText?.current?.focus(), 100);
   }, [feedbackRef]);
@@ -186,7 +186,7 @@ const DescriptionBlock = ({
             }}
           />
 
-          {user.current_role === CUSTOMER && (
+          {(user.current_role === CUSTOMER || isPublic) && (
             <Box sx={editFeedbackButtonWrapper}>
               <IconButton
                 type="button"
