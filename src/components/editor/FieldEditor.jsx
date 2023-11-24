@@ -17,6 +17,7 @@ const FieldEditor = ({ name, label, handleBlur }) => {
         maxWidth: '500px',
         gap: '15px',
         height: '58px',
+        width: '100%',
       }}
     >
       <Box sx={[wrapper]} className={'field-wrapper'}>
@@ -39,6 +40,10 @@ const FieldEditor = ({ name, label, handleBlur }) => {
 export default FieldEditor;
 
 const wrapper = theme => ({
+  width: '100%',
+  '& .MuiFormControl-root': {
+    width: '100%',
+  },
   // display: 'flex',
   // gap: '28px',
   // flexDirection: 'column',

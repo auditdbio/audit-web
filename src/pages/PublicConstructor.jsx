@@ -110,7 +110,7 @@ const PublicConstructor = () => {
                 </Typography>
                 <Box
                   sx={{
-                    mt: '20px',
+                    mt: '40px',
                   }}
                 >
                   <FieldEditor
