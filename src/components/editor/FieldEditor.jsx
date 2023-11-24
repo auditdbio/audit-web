@@ -10,16 +10,7 @@ import { addTestsLabel } from '../../lib/helper.js';
 const FieldEditor = ({ name, label, handleBlur }) => {
   const matchMd = useMediaQuery(theme.breakpoints.down('md'));
   return (
-    <Box
-      sx={{
-        display: 'flex',
-        alignItems: 'center',
-        maxWidth: '500px',
-        gap: '15px',
-        height: '58px',
-        width: '100%',
-      }}
-    >
+    <Box sx={fieldWrapper}>
       <Box sx={[wrapper]} className={'field-wrapper'}>
         <FastField
           component={TextField}
@@ -52,13 +43,15 @@ const wrapper = theme => ({
   },
 });
 
-const formLabelSx = theme => ({
-  fontWeight: 500,
-  fontSize: '14px',
-  lineHeight: '24px',
-  color: '#434242',
-  [theme.breakpoints.down('lg')]: {
-    fontSize: '14px',
+const fieldWrapper = theme => ({
+  display: 'flex',
+  alignItems: 'center',
+  minWidth: '390px',
+  gap: '15px',
+  height: '58px',
+  width: '100%',
+  [theme.breakpoints.down('xs')]: {
+    minWidth: 'unset',
   },
 });
 

@@ -51,6 +51,7 @@ const StatusSeverityBlock = ({
         <Box sx={{ mb: '20px' }}>
           <Box sx={statusBlockAlign}>
             <Typography sx={statusBlockTitle}>
+              {isPublic && <ArrowIcon />}
               <span>Status</span>
             </Typography>
             {!isPublic ? (
@@ -106,7 +107,7 @@ const StatusSeverityBlock = ({
             )}
         </Box>
 
-        {user.current_role !== CUSTOMER &&
+        {(user.current_role !== CUSTOMER || isPublic) &&
         audit?.status?.toLowerCase() !== RESOLVED.toLowerCase() ? (
           <Box sx={severityWrapper}>
             <Typography
@@ -266,7 +267,7 @@ const StatusSeverityBlock = ({
         )}
       </Box>
 
-      {user.current_role !== CUSTOMER && !editMode && (
+      {(user.current_role !== CUSTOMER || isPublic) && !editMode && (
         <Box sx={buttonsBox}>
           <Button
             variant="contained"
@@ -281,7 +282,7 @@ const StatusSeverityBlock = ({
         </Box>
       )}
 
-      {user.current_role === CUSTOMER && !isEditFeedback && !issue.feedback && (
+      {isPublic && editMode && !issue?.feedback && !isEditFeedback && (
         <Box sx={buttonsBox}>
           <Button
             variant="contained"
@@ -294,6 +295,23 @@ const StatusSeverityBlock = ({
           </Button>
         </Box>
       )}
+
+      {!isPublic &&
+        user.current_role === CUSTOMER &&
+        !isEditFeedback &&
+        !issue?.feedback && (
+          <Box sx={buttonsBox}>
+            <Button
+              variant="contained"
+              color="primary"
+              sx={[issueButton, feedbackButton]}
+              onClick={() => setIsEditFeedback(prev => !prev)}
+              {...addTestsLabel('feedback-button')}
+            >
+              Send feedback
+            </Button>
+          </Box>
+        )}
     </Box>
   );
 };

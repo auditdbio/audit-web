@@ -70,7 +70,7 @@ const DescriptionBlock = ({
   };
 
   const getFeedbackView = () => {
-    if (user.current_role === CUSTOMER && isEditFeedback) {
+    if ((user.current_role === CUSTOMER || isPublic) && isEditFeedback) {
       return { menu: true, md: true, html: false };
     }
     return { menu: false, md: false, html: true };
@@ -171,7 +171,6 @@ const DescriptionBlock = ({
           )}
         </Box>
       )}
-
       {(values.feedback || isEditFeedback) && (
         <Box sx={feedbackWrapper}>
           {!isEditFeedback && <Box sx={feedbackHeader}>Feedback</Box>}
@@ -186,7 +185,6 @@ const DescriptionBlock = ({
                 : feedbackMarkdownSx,
             }}
           />
-
           {(user.current_role === CUSTOMER || isPublic) && (
             <Box sx={editFeedbackButtonWrapper}>
               <IconButton

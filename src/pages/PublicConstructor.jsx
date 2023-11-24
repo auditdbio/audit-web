@@ -54,7 +54,7 @@ const PublicConstructor = () => {
     <Layout>
       <CustomCard sx={wrapper}>
         <Button
-          onClick={() => navigate(-1)}
+          onClick={() => navigate('/')}
           sx={{ position: 'absolute', top: '10px', left: '10px' }}
         >
           <ArrowBackIcon color={'secondary'} />
@@ -108,28 +108,20 @@ const PublicConstructor = () => {
                 <Typography sx={titleSx} variant={'h4'}>
                   Create audit report
                 </Typography>
-                <Box
-                  sx={{
-                    mt: '40px',
-                  }}
-                >
+                <Box sx={fieldsWrapperSx}>
                   <FieldEditor
                     handleBlur={handleSubmit}
                     name={'project_name'}
                     label={'Project name'}
                   />
-                </Box>
-                <Box
-                  sx={{
-                    mt: '20px',
-                  }}
-                >
+
                   <FieldEditor
                     handleBlur={handleSubmit}
                     name={'auditor_name'}
                     label={'Auditor name'}
                   />
                 </Box>
+
                 <Box
                   sx={{
                     display: 'flex',
@@ -237,9 +229,7 @@ const PublicConstructor = () => {
                     type={'button'}
                     color={'secondary'}
                     onClick={() => setIsOpen(true)}
-                    sx={{
-                      display: 'block',
-                    }}
+                    sx={btnSx}
                   >
                     Reset form
                   </Button>
@@ -282,6 +272,16 @@ const PublicConstructor = () => {
 };
 
 export default PublicConstructor;
+
+const fieldsWrapperSx = theme => ({
+  mt: '40px',
+  display: 'flex',
+  gap: '20px',
+  justifyContent: 'center',
+  [theme.breakpoints.down('sm')]: {
+    flexWrap: 'wrap',
+  },
+});
 
 const modalSx = () => ({
   position: 'absolute',
@@ -332,5 +332,32 @@ const wrapper = theme => ({
     '& h3': {
       fontSize: '24px',
     },
+  },
+});
+
+const btnSx = theme => ({
+  padding: '15px 24px',
+  flexShrink: 0,
+  fontWeight: '600!important',
+  fontSize: '20px',
+  lineHeight: '25px',
+  textTransform: 'none',
+  borderRadius: '10px',
+  mr: '20px',
+  '&:last-child': { mr: 0 },
+  [theme.breakpoints.down('lg')]: {
+    padding: '12px 24px',
+  },
+  [theme.breakpoints.down('md')]: {
+    padding: '10px 24px',
+    fontWeight: 500,
+  },
+  [theme.breakpoints.down('sm')]: {
+    padding: '7px 24px',
+    fontSize: '16px',
+  },
+  [theme.breakpoints.down('xs')]: {
+    padding: '7px 10px',
+    fontWeight: 400,
   },
 });

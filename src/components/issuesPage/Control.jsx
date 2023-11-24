@@ -154,6 +154,7 @@ const Control = ({
                 title: issue.name,
                 text: issue.description,
                 include_in_toc: true,
+                feedback: issue.feedback,
                 issue_data: {
                   links: issue.links,
                   severity: issue.severity,
@@ -207,8 +208,8 @@ const Control = ({
         audit={audit}
       />
 
-      <Box sx={wrapper}>
-        <Box sx={searchBlock}>
+      <Box sx={!isPublic ? wrapper : wrapperPublic}>
+        <Box sx={!isPublic ? searchBlock : publicSearchBlock}>
           {isPublic ? (
             <Button
               variant="contained"
@@ -285,7 +286,7 @@ const Control = ({
                 <Button
                   variant="contained"
                   color="secondary"
-                  sx={buttonSx}
+                  sx={[buttonSx, isPublic ? publicBtnSx : {}]}
                   disabled={
                     audit?.status?.toLowerCase() === RESOLVED.toLowerCase()
                   }
@@ -331,7 +332,7 @@ const Control = ({
               </Button>
             )}
           </Box>
-        ) : (
+        ) : !isPublic ? (
           <Button
             variant="contained"
             color="primary"
@@ -341,6 +342,17 @@ const Control = ({
             {...addTestsLabel('customer-report-button')}
           >
             Download report
+          </Button>
+        ) : (
+          <Button
+            variant="contained"
+            color="secondary"
+            sx={buttonSx}
+            disabled={audit?.status?.toLowerCase() === RESOLVED.toLowerCase()}
+            onClick={handleNewIssue}
+            {...addTestsLabel('new-issue-button')}
+          >
+            New issue
           </Button>
         )}
       </Box>
@@ -359,12 +371,34 @@ const wrapper = theme => ({
   },
 });
 
+const wrapperPublic = theme => ({
+  display: 'flex',
+  width: '100%',
+  mb: '10px',
+  [theme.breakpoints.down(555)]: {
+    flexDirection: 'column-reverse',
+  },
+});
+
 const searchBlock = theme => ({
   display: 'flex',
   flexGrow: 1,
   alignItems: 'center',
   [theme.breakpoints.down('xs')]: {
     mt: '20px',
+  },
+});
+
+const publicSearchBlock = theme => ({
+  display: 'flex',
+  flexGrow: 1,
+  alignItems: 'center',
+  [theme.breakpoints.down('xs')]: {
+    mr: '15px',
+  },
+  [theme.breakpoints.down(555)]: {
+    mt: '20px',
+    mr: 0,
   },
 });
 
@@ -432,5 +466,12 @@ const buttonSx = theme => ({
   [theme.breakpoints.down('xs')]: {
     padding: '7px 10px',
     fontWeight: 400,
+  },
+});
+
+const publicBtnSx = theme => ({
+  [theme.breakpoints.down(555)]: {
+    width: '100%',
+    mr: 0,
   },
 });
