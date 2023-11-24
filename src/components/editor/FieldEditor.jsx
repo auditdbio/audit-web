@@ -24,10 +24,10 @@ const FieldEditor = ({ name, label, handleBlur }) => {
           component={TextField}
           name={name}
           label={label}
-          fullWidth={true}
+          // fullWidth={true}
           disabled={false}
-          sx={[fieldSx, { width: '100%' }]}
-          size={matchMd ? 'small' : 'medium'}
+          sx={fieldSx}
+          // size={matchMd ? 'small' : 'medium'}
           inputProps={{ ...addTestsLabel(`${name}-input`) }}
           onBlur={handleBlur}
         />
@@ -39,9 +39,9 @@ const FieldEditor = ({ name, label, handleBlur }) => {
 export default FieldEditor;
 
 const wrapper = theme => ({
-  display: 'flex',
-  gap: '28px',
-  flexDirection: 'column',
+  // display: 'flex',
+  // gap: '28px',
+  // flexDirection: 'column',
   '& p.Mui-error': {
     display: 'none',
   },
@@ -58,18 +58,21 @@ const formLabelSx = theme => ({
 });
 
 const fieldSx = theme => ({
+  // '& input': {
+  //   paddingLeft: '35px',
+  // },
   '& input': {
-    paddingLeft: '35px',
+    fontSize: '22px',
   },
-  [theme.breakpoints.up('sm')]: {
-    '& input': {
-      fontSize: '18px',
-    },
-    '& textarea': {
-      fontSize: '18px',
-    },
-    '& .MuiFormLabel-root,.MuiInputLabel-root': {
-      fontSize: '18px',
-    },
-  },
+  // [theme.breakpoints.up('sm')]: {
+  //   '& input': {
+  //     fontSize: '18px',
+  //   },
+  //   '& textarea': {
+  //     fontSize: '18px',
+  //   },
+  //   '& .MuiFormLabel-root,.MuiInputLabel-root': {
+  //     fontSize: '18px',
+  //   },
+  // },
 });

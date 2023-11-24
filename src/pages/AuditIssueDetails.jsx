@@ -12,8 +12,9 @@ import AddComment from '../components/issuesPage/AddComment.jsx';
 import Loader from '../components/Loader.jsx';
 import { setCurrentAuditPartner } from '../redux/actions/auditAction.js';
 import { getIssues } from '../redux/actions/issueAction.js';
+import PublicIssueDetailsForm from './PublicIssueDetailForm.jsx';
 
-const AuditIssueDetails = () => {
+const AuditIssueDetails = ({ isPublic }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { auditId, issueId } = useParams();
@@ -22,7 +23,6 @@ const AuditIssueDetails = () => {
   const audit = useSelector(s =>
     s.audits.audits?.find(audit => audit.id === auditId),
   );
-  const isPublic = localStorage.getItem('isPublic');
 
   const issue = useMemo(() => {
     if (!isPublic) {
@@ -70,7 +70,11 @@ const AuditIssueDetails = () => {
         >
           <ArrowBackIcon color="secondary" />
         </Button>
-        <IssueDetailsForm issue={issue} editMode={true} />
+        {!isPublic ? (
+          <IssueDetailsForm issue={issue} editMode={true} />
+        ) : (
+          <PublicIssueDetailsForm issue={issue} editMode={true} />
+        )}
         {!!issue.events?.length && (
           <EventsList
             issue={issue}

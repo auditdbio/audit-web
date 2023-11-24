@@ -39,11 +39,11 @@ const StatusSeverityBlock = ({
   audit,
   isEditFeedback,
   setIsEditFeedback,
+  isPublic,
 }) => {
   const [severityListOpen, setSeverityListOpen] = useState(false);
   const [statusListOpen, setStatusListOpen] = useState(false);
   const [categoryPrevVal, setCategoryPrevVal] = useState(issue?.category || '');
-  const isPublic = localStorage.getItem('isPublic');
 
   return (
     <Box sx={issueStatusBlock}>

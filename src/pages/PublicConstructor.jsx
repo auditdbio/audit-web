@@ -3,29 +3,21 @@ import { Form, Formik } from 'formik';
 import { CustomCard } from '../components/custom/Card.jsx';
 import Layout from '../styles/Layout.jsx';
 import { Box, Button, Modal, Typography, useMediaQuery } from '@mui/material';
-import SimpleField from '../components/forms/fields/simple-field.jsx';
 import theme from '../styles/themes.js';
 import FieldEditor from '../components/editor/FieldEditor.jsx';
 import MarkdownEditor from '../components/markdown/Markdown-editor.jsx';
-import Markdown from '../components/markdown/Markdown.jsx';
 import TagsField from '../components/forms/tags-field/tags-field.jsx';
 import TagsArray from '../components/tagsArray/index.jsx';
 import { ProjectLinksList } from '../components/custom/ProjectLinksList.jsx';
 import IssuesList from '../components/issuesPage/IssuesList.jsx';
-import { GET_AUDIT, RESOLVED } from '../redux/actions/types.js';
-import IssueDetailsForm from '../components/issuesPage/IssueDetailsForm/IssueDetailsForm.jsx';
 import { useDispatch, useSelector } from 'react-redux';
 import { getPublicIssues } from '../redux/actions/issueAction.js';
 import * as Yup from 'yup';
 import { isAuth } from '../lib/helper.js';
-import {
-  clearMessage,
-  createPublicReport,
-  getPublicAuditReport,
-  handleResetPublicAudit,
-} from '../redux/actions/auditAction.js';
+import { handleResetPublicAudit } from '../redux/actions/auditAction.js';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import CustomSnackbar from '../components/custom/CustomSnackbar.jsx';
+import PublicIssueDetailsForm from './PublicIssueDetailForm.jsx';
+import { useNavigate } from 'react-router-dom/dist';
 
 const PublicConstructor = () => {
   const matchXs = useMediaQuery(theme.breakpoints.down('xs'));
@@ -34,19 +26,12 @@ const PublicConstructor = () => {
   const publicIssies = JSON.parse(localStorage.getItem('publicIssies') || '[]');
   const publicReport = useSelector(state => state.audits.publicReport);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const issues = useSelector(state => state.issues.issues);
   const [openMessage, setOpenMessage] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   useEffect(() => {
     dispatch(getPublicIssues(publicIssies, report.auditId));
-  }, []);
-
-  useEffect(() => {
-    if (!isAuth()) {
-      localStorage.setItem('isPublic', true);
-    } else {
-      localStorage.removeItem('isPublic');
-    }
   }, []);
 
   const handleResetForm = setFieldValue => {
@@ -68,7 +53,10 @@ const PublicConstructor = () => {
   return (
     <Layout>
       <CustomCard sx={wrapper}>
-        <Button sx={{ position: 'absolute', top: '10px', left: '10px' }}>
+        <Button
+          onClick={() => navigate(-1)}
+          sx={{ position: 'absolute', top: '10px', left: '10px' }}
+        >
           <ArrowBackIcon color={'secondary'} />
         </Button>
         <Formik
@@ -152,7 +140,7 @@ const PublicConstructor = () => {
                 >
                   <Box>
                     <Typography sx={{ mb: '10px' }} variant={'h6'}>
-                      Description
+                      Project description
                     </Typography>
                     <MarkdownEditor
                       name="description"
@@ -280,17 +268,14 @@ const PublicConstructor = () => {
                       },
                     }}
                   >
-                    <IssuesList
-                      handleSubmit={handleSubmit}
-                      auditId={report.auditId}
-                    />
+                    <IssuesList auditId={report.auditId} isPublic={true} />
                   </Box>
                 )}
               </Form>
             );
           }}
         </Formik>
-        {!issues?.length && <IssueDetailsForm />}
+        {!issues?.length && <PublicIssueDetailsForm />}
       </CustomCard>
     </Layout>
   );
@@ -336,14 +321,14 @@ const wrapper = theme => ({
     fontWeight: 500,
   },
   [theme.breakpoints.down('md')]: {
-    padding: '38px 44px 20px',
+    padding: '38px 44px 30px',
     '& h3': {
       fontSize: '30px',
     },
   },
   [theme.breakpoints.down('sm')]: {
     gap: '20px',
-    padding: '38px 20px 20px',
+    padding: '38px 20px 30px',
     '& h3': {
       fontSize: '24px',
     },

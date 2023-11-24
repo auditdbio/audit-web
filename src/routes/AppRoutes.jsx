@@ -191,18 +191,26 @@ const AppRoutes = () => {
         <Route
           path="/issues/audit-issue/:auditId/:issueId"
           element={
-            // <PrivateRoute auth={{ isAuthenticated: isAuth() }}>
-            <AuditIssueDetails />
-            // </PrivateRoute>
+            <PrivateRoute auth={{ isAuthenticated: isAuth() }}>
+              <AuditIssueDetails />
+            </PrivateRoute>
           }
+        />
+        <Route
+          path="/public-issues/audit-issue/:auditId/:issueId"
+          element={<AuditIssueDetails isPublic={true} />}
         />
         <Route
           path="/issues/new-issue/:auditId"
           element={
-            // <PrivateRoute auth={{ isAuthenticated: isAuth() }}>
-            <CreateIssuePage />
-            // </PrivateRoute>
+            <PrivateRoute auth={{ isAuthenticated: isAuth() }}>
+              <CreateIssuePage />
+            </PrivateRoute>
           }
+        />
+        <Route
+          path="/public-issues/new-issue/:auditId"
+          element={<CreateIssuePage isPublic={true} />}
         />
         <Route
           path="/create-project"

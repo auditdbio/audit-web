@@ -381,7 +381,6 @@ export const downloadReport = (audit, { generate } = {}) => {
 
 export const handleResetPublicAudit = () => {
   return dispatch => {
-    localStorage.removeItem('report');
     dispatch({ type: RESET_PUBLIC_AUDIT });
   };
 };

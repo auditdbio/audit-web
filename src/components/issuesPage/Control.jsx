@@ -23,7 +23,14 @@ import {
   getPublicReport,
 } from '../../redux/actions/auditAction.js';
 
-const Control = ({ issues, search, setSearch, setPage, setSearchParams }) => {
+const Control = ({
+  issues,
+  search,
+  setSearch,
+  setPage,
+  setSearchParams,
+  isPublic,
+}) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { auditId } = useParams();
@@ -37,7 +44,6 @@ const Control = ({ issues, search, setSearch, setPage, setSearchParams }) => {
   const issuesArray = useSelector(s => s.issues.issues);
   const report = JSON.parse(localStorage.getItem('report'));
 
-  const isPublic = localStorage.getItem('isPublic');
   const handleSearch = e => {
     setSearch(e.target.value);
     setPage(1);
@@ -45,7 +51,11 @@ const Control = ({ issues, search, setSearch, setPage, setSearchParams }) => {
   };
 
   const handleNewIssue = () => {
-    navigate(`/issues/new-issue/${auditId}`);
+    if (!isPublic) {
+      navigate(`/issues/new-issue/${auditId}`);
+    } else {
+      navigate(`/public-issues/new-issue/${auditId}`);
+    }
     window.scrollTo(0, 0);
   };
 

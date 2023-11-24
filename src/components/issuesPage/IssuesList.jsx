@@ -20,13 +20,12 @@ import IssueListItem from './IssueListItem.jsx';
 import { clearMessage } from '../../redux/actions/auditAction.js';
 import CustomSnackbar from '../custom/CustomSnackbar.jsx';
 
-const IssuesList = ({ auditId }) => {
+const IssuesList = ({ auditId, isPublic }) => {
   const dispatch = useDispatch();
   const [searchParams, setSearchParams] = useSearchParams();
   const { issues } = useSelector(s => s.issues);
   const { user } = useSelector(s => s.user);
   const { successMessage, error } = useSelector(s => s.audits);
-  const isPublic = localStorage.getItem('isPublic');
   const [search, setSearch] = useState(searchParams.get('search') || '');
   const [page, setPage] = useState(+searchParams.get('page') || 1);
   const [sortType, setSortType] = useState(
@@ -114,6 +113,7 @@ const IssuesList = ({ auditId }) => {
         setSearch={setSearch}
         setPage={setPage}
         setSearchParams={setSearchParams}
+        isPublic={isPublic}
       />
 
       <Box
@@ -161,12 +161,15 @@ const IssuesList = ({ auditId }) => {
               key={issue.id}
               auditId={auditId}
               user={user}
+              isPublic={isPublic}
             />
           ))}
       </Box>
 
       {getSearchResultsLength() === 0 && (
-        <Box sx={[noResults, isPublic ? { paddingTop: 0 } : {}]}>Empty</Box>
+        <Box sx={[noResults, isPublic ? { paddingTop: 0 } : {}]}>
+          No issue fits the search criteria
+        </Box>
       )}
 
       <CustomPagination

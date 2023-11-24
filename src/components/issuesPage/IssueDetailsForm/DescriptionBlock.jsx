@@ -22,6 +22,7 @@ const DescriptionBlock = ({
   audit,
   isEditFeedback,
   setIsEditFeedback,
+  isPublic,
 }) => {
   const matchXs = useMediaQuery(theme.breakpoints.down('xs'));
   const { isValid } = useFormikContext();
@@ -29,7 +30,6 @@ const DescriptionBlock = ({
   const [mdRef, setMdRef] = useState(null);
   const [feedbackRef, setFeedbackRef] = useState(null);
   const [isEditDescription, setIsEditDescription] = useState(!editMode);
-  const isPublic = localStorage.getItem('isPublic');
   useEffect(() => {
     setTimeout(() => feedbackRef?.current?.nodeMdText?.current?.focus(), 100);
   }, [feedbackRef]);
@@ -83,12 +83,13 @@ const DescriptionBlock = ({
           name="description"
           setMdRef={setMdRef}
           setFieldTouched={setFieldTouched}
+          isPublic={isPublic}
           mdProps={{
             view: getMarkdownInitialView(),
             placeholder:
               touched.description && errors.description
                 ? 'Description is required'
-                : 'Description',
+                : 'Issue description',
             style: markdownSx(matchXs),
           }}
         />
