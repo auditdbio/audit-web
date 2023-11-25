@@ -60,6 +60,7 @@ const PublicConstructor = () => {
           <ArrowBackIcon color={'secondary'} />
         </Button>
         <Formik
+          validationSchema={SubmitValidation}
           initialValues={{
             auditId: report?.auditId || Date.now(),
             project_name: report?.project_name || '',
@@ -86,6 +87,7 @@ const PublicConstructor = () => {
             handleSubmit,
             setFieldValue,
             setFieldTouched,
+            errors,
             dirty,
             values,
             resetForm,
@@ -131,7 +133,7 @@ const PublicConstructor = () => {
                   }}
                 >
                   <Box>
-                    <Typography sx={{ mb: '10px' }} variant={'h6'}>
+                    <Typography sx={[{ mb: '10px' }]} variant={'h6'}>
                       Project description
                     </Typography>
                     <MarkdownEditor
@@ -224,15 +226,17 @@ const PublicConstructor = () => {
                     justifyContent: 'flex-end',
                   }}
                 >
-                  <Button
-                    variant={'contained'}
-                    type={'button'}
-                    color={'secondary'}
-                    onClick={() => setIsOpen(true)}
-                    sx={btnSx}
-                  >
-                    Reset form
-                  </Button>
+                  {!issues.length && (
+                    <Button
+                      variant={'contained'}
+                      type={'button'}
+                      color={'secondary'}
+                      onClick={() => setIsOpen(true)}
+                      sx={btnSx}
+                    >
+                      Reset form
+                    </Button>
+                  )}
                   {/*<Button*/}
                   {/*  variant={'contained'}*/}
                   {/*  type={'submit'}*/}
@@ -258,7 +262,11 @@ const PublicConstructor = () => {
                       },
                     }}
                   >
-                    <IssuesList auditId={report.auditId} isPublic={true} />
+                    <IssuesList
+                      setIsOpenReset={setIsOpen}
+                      auditId={report.auditId}
+                      isPublic={true}
+                    />
                   </Box>
                 )}
               </Form>
@@ -304,7 +312,6 @@ const titleSx = theme => ({
 
 const SubmitValidation = Yup.object().shape({
   project_name: Yup.string().required('File is required'),
-  report_name: Yup.string().required('File is required'),
   description: Yup.string().required('File is required'),
   auditor_name: Yup.string().required('File is required'),
 });

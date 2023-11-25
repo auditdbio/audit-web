@@ -30,6 +30,7 @@ const Control = ({
   setPage,
   setSearchParams,
   isPublic,
+  setIsOpenReset,
 }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -207,19 +208,30 @@ const Control = ({
         setIsOpen={setResolveConfirmation}
         audit={audit}
       />
-
+      {isPublic && (
+        <Box sx={publicBtnWrapper}>
+          <Button
+            variant="contained"
+            color="secondary"
+            sx={[buttonSx, { marginRight: '0!important' }]}
+            onClick={handleGenerateReport}
+          >
+            Generate report
+          </Button>
+          <Button
+            variant={'contained'}
+            type={'button'}
+            color={'secondary'}
+            onClick={() => setIsOpenReset(true)}
+            sx={buttonSx}
+          >
+            Reset form
+          </Button>
+        </Box>
+      )}
       <Box sx={!isPublic ? wrapper : wrapperPublic}>
         <Box sx={!isPublic ? searchBlock : publicSearchBlock}>
-          {isPublic ? (
-            <Button
-              variant="contained"
-              color="secondary"
-              sx={buttonSx}
-              onClick={handleGenerateReport}
-            >
-              Generate report
-            </Button>
-          ) : (
+          {!isPublic && (
             <IconButton
               aria-label="Menu"
               color="secondary"
@@ -361,6 +373,17 @@ const Control = ({
 };
 
 export default Control;
+
+const publicBtnWrapper = theme => ({
+  display: 'flex',
+  width: '100%',
+  mb: '10px',
+  justifyContent: 'space-between',
+  [theme.breakpoints.down(555)]: {
+    flexDirection: 'column-reverse',
+    gap: '15px',
+  },
+});
 
 const wrapper = theme => ({
   display: 'flex',

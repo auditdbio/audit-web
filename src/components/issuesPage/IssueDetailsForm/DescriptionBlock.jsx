@@ -171,15 +171,19 @@ const DescriptionBlock = ({
           )}
         </Box>
       )}
-      {(values.feedback || isEditFeedback) && (
+      {(values.feedback || isEditFeedback || (isPublic && editMode)) && (
         <Box sx={feedbackWrapper}>
-          {!isEditFeedback && <Box sx={feedbackHeader}>Feedback</Box>}
+          {!isEditFeedback && (
+            <Box sx={feedbackHeader}>
+              {isPublic ? 'Customer feedback' : 'Feedback'}
+            </Box>
+          )}
           <MarkdownEditor
             name="feedback"
             setMdRef={setFeedbackRef}
             mdProps={{
               view: getFeedbackView(),
-              placeholder: 'Feedback',
+              placeholder: isPublic ? 'Customer feedback' : 'Feedback',
               style: isEditFeedback
                 ? { ...feedbackMarkdownSx, height: '238px' }
                 : feedbackMarkdownSx,

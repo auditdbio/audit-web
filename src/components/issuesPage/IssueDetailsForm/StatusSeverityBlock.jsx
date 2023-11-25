@@ -50,7 +50,10 @@ const StatusSeverityBlock = ({
       <Box>
         <Box sx={{ mb: '20px' }}>
           <Box sx={statusBlockAlign}>
-            <Typography sx={statusBlockTitle}>
+            <Typography
+              onClick={() => isPublic && setStatusListOpen(true)}
+              sx={statusBlockTitle}
+            >
               {isPublic && <ArrowIcon />}
               <span>Status</span>
             </Typography>
@@ -278,20 +281,6 @@ const StatusSeverityBlock = ({
             {...addTestsLabel('new-issue-button')}
           >
             Add issue
-          </Button>
-        </Box>
-      )}
-
-      {isPublic && editMode && !issue?.feedback && !isEditFeedback && (
-        <Box sx={buttonsBox}>
-          <Button
-            variant="contained"
-            color="primary"
-            sx={[issueButton, feedbackButton]}
-            onClick={() => setIsEditFeedback(prev => !prev)}
-            {...addTestsLabel('feedback-button')}
-          >
-            Send feedback
           </Button>
         </Box>
       )}
