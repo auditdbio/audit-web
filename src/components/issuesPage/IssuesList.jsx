@@ -20,7 +20,7 @@ import IssueListItem from './IssueListItem.jsx';
 import { clearMessage } from '../../redux/actions/auditAction.js';
 import CustomSnackbar from '../custom/CustomSnackbar.jsx';
 
-const IssuesList = ({ auditId, isPublic, setIsOpenReset }) => {
+const IssuesList = ({ auditId, isPublic, setIsOpenReset, handleSubmit }) => {
   const dispatch = useDispatch();
   const [searchParams, setSearchParams] = useSearchParams();
   const { issues } = useSelector(s => s.issues);
@@ -115,6 +115,7 @@ const IssuesList = ({ auditId, isPublic, setIsOpenReset }) => {
         setSearchParams={setSearchParams}
         isPublic={isPublic}
         setIsOpenReset={setIsOpenReset}
+        handleSubmit={handleSubmit}
       />
 
       <Box

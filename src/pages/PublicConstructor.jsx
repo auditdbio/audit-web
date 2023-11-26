@@ -266,6 +266,7 @@ const PublicConstructor = () => {
                       setIsOpenReset={setIsOpen}
                       auditId={report.auditId}
                       isPublic={true}
+                      handleSubmit={handleSubmit}
                     />
                   </Box>
                 )}

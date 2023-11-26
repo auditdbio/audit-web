@@ -22,6 +22,7 @@ import {
   downloadReport,
   getPublicReport,
 } from '../../redux/actions/auditAction.js';
+import CustomSnackbar from '../custom/CustomSnackbar.jsx';
 
 const Control = ({
   issues,
@@ -31,6 +32,7 @@ const Control = ({
   setSearchParams,
   isPublic,
   setIsOpenReset,
+  handleSubmit,
 }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -44,6 +46,7 @@ const Control = ({
   );
   const issuesArray = useSelector(s => s.issues.issues);
   const report = JSON.parse(localStorage.getItem('report'));
+  const [openMessage, setOpenMessage] = useState(false);
 
   const handleSearch = e => {
     setSearch(e.target.value);
@@ -75,104 +78,109 @@ const Control = ({
 
   const handleGenerateReport = () => {
     if (isPublic) {
-      const newData = {
-        auditor_name: report.auditor_name,
-        // profile_link: 'https://auditDb.io',
-        project_name: report.project_name,
-        report_data: [
-          {
-            type: 'plain_text',
-            title: 'Summary',
-            include_in_toc: true,
-            subsections: [
-              {
-                type: 'project_description',
-                title: 'Project description',
-                text: report.description,
-                include_in_toc: true,
-              },
-              {
-                type: 'scope',
-                title: 'Scope',
-                text: '',
-                include_in_toc: true,
-                links: report.scope,
-              },
-            ],
-          },
-          {
-            type: 'statistics',
-            title: 'Issue statistics',
-            include_in_toc: true,
-            statistics: {
-              total: issuesArray.length,
-              fixed: {
-                critical: issuesArray.filter(
-                  issue =>
-                    issue.severity === 'Critical' && issue.status === 'Fixed',
-                ).length,
-                major: issuesArray.filter(
-                  issue =>
-                    issue.severity === 'Major' && issue.status === 'Fixed',
-                ).length,
-                medium: issuesArray.filter(
-                  issue =>
-                    issue.severity === 'Medium' && issue.status === 'Fixed',
-                ).length,
-                minor: issuesArray.filter(
-                  issue =>
-                    issue.severity === 'Minor' && issue.status === 'Fixed',
-                ).length,
-              },
-              not_fixed: {
-                critical: issuesArray.filter(
-                  issue =>
-                    issue.severity === 'Critical' && issue.status !== 'Fixed',
-                ).length,
-                major: issuesArray.filter(
-                  issue =>
-                    issue.severity === 'Major' && issue.status !== 'Fixed',
-                ).length,
-                medium: issuesArray.filter(
-                  issue =>
-                    issue.severity === 'Medium' && issue.status !== 'Fixed',
-                ).length,
-                minor: issuesArray.filter(
-                  issue =>
-                    issue.severity === 'Minor' && issue.status !== 'Fixed',
-                ).length,
+      if (report?.auditor_name && report?.project_name && report?.description) {
+        const newData = {
+          auditor_name: report.auditor_name,
+          // profile_link: 'https://auditDb.io',
+          project_name: report.project_name,
+          report_data: [
+            {
+              type: 'plain_text',
+              title: 'Summary',
+              include_in_toc: true,
+              subsections: [
+                {
+                  type: 'project_description',
+                  title: 'Project description',
+                  text: report.description,
+                  include_in_toc: true,
+                },
+                {
+                  type: 'scope',
+                  title: 'Scope',
+                  text: '',
+                  include_in_toc: true,
+                  links: report.scope,
+                },
+              ],
+            },
+            {
+              type: 'statistics',
+              title: 'Issue statistics',
+              include_in_toc: true,
+              statistics: {
+                total: issuesArray.length,
+                fixed: {
+                  critical: issuesArray.filter(
+                    issue =>
+                      issue.severity === 'Critical' && issue.status === 'Fixed',
+                  ).length,
+                  major: issuesArray.filter(
+                    issue =>
+                      issue.severity === 'Major' && issue.status === 'Fixed',
+                  ).length,
+                  medium: issuesArray.filter(
+                    issue =>
+                      issue.severity === 'Medium' && issue.status === 'Fixed',
+                  ).length,
+                  minor: issuesArray.filter(
+                    issue =>
+                      issue.severity === 'Minor' && issue.status === 'Fixed',
+                  ).length,
+                },
+                not_fixed: {
+                  critical: issuesArray.filter(
+                    issue =>
+                      issue.severity === 'Critical' && issue.status !== 'Fixed',
+                  ).length,
+                  major: issuesArray.filter(
+                    issue =>
+                      issue.severity === 'Major' && issue.status !== 'Fixed',
+                  ).length,
+                  medium: issuesArray.filter(
+                    issue =>
+                      issue.severity === 'Medium' && issue.status !== 'Fixed',
+                  ).length,
+                  minor: issuesArray.filter(
+                    issue =>
+                      issue.severity === 'Minor' && issue.status !== 'Fixed',
+                  ).length,
+                },
               },
             },
-          },
-          {
-            type: 'plain_text',
-            title: 'Issues',
-            text: '',
-            include_in_toc: true,
-            subsections: issuesArray.map(issue => {
-              return {
-                type: 'issue_data',
-                title: issue.name,
-                text: issue.description,
-                include_in_toc: true,
-                feedback: issue.feedback,
-                issue_data: {
-                  links: issue.links,
-                  severity: issue.severity,
-                  status: issue.status,
-                },
-              };
-            }),
-          },
-          // {
-          //   type: 'plain_text',
-          //   title: '',
-          //   text: '',
-          //   include_in_toc: true,
-          // },
-        ],
-      };
-      dispatch(getPublicReport(newData, { generate: true }));
+            {
+              type: 'plain_text',
+              title: 'Issues',
+              text: '',
+              include_in_toc: true,
+              subsections: issuesArray.map(issue => {
+                return {
+                  type: 'issue_data',
+                  title: issue.name,
+                  text: issue.description,
+                  include_in_toc: true,
+                  feedback: issue.feedback,
+                  issue_data: {
+                    links: issue.links,
+                    severity: issue.severity,
+                    status: issue.status,
+                  },
+                };
+              }),
+            },
+            // {
+            //   type: 'plain_text',
+            //   title: '',
+            //   text: '',
+            //   include_in_toc: true,
+            // },
+          ],
+        };
+        dispatch(getPublicReport(newData, { generate: true }));
+      } else {
+        handleSubmit();
+        setOpenMessage(true);
+      }
 
       setMenuAnchorEl(null);
     } else {
@@ -210,6 +218,13 @@ const Control = ({
       />
       {isPublic && (
         <Box sx={publicBtnWrapper}>
+          <CustomSnackbar
+            autoHideDuration={5000}
+            open={openMessage}
+            severity={'error'}
+            text={'Some fields required'}
+            onClose={() => setOpenMessage(false)}
+          />
           <Button
             variant="contained"
             color="secondary"
