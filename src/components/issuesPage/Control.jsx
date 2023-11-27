@@ -222,7 +222,7 @@ const Control = ({
             autoHideDuration={5000}
             open={openMessage}
             severity={'error'}
-            text={'Some fields required'}
+            text={'Please fill in all mandatory fields'}
             onClose={() => setOpenMessage(false)}
           />
           <Button

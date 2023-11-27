@@ -1,4 +1,7 @@
 import { AUDITOR, CUSTOMER } from '../../redux/actions/types.js';
+const report = JSON.parse(localStorage.getItem('report') || '{}');
+
+const auditId = report.auditId ? report.auditId : Date.now();
 
 export const authorizedPages = [
   {
@@ -67,6 +70,24 @@ export const authorizedPages = [
       },
     ],
   },
+  {
+    id: 3,
+    name: 'Tools',
+    menuOptions: [
+      {
+        id: 331,
+        role: AUDITOR,
+        itemName: 'Report builder',
+        link: `/report-builder/${auditId}`,
+      },
+      {
+        id: 3312,
+        role: CUSTOMER,
+        itemName: 'Report builder',
+        link: `/report-builder/${auditId}`,
+      },
+    ],
+  },
 ];
 
 export const pages = [
@@ -88,6 +109,17 @@ export const pages = [
         id: 13,
         itemName: 'For auditors',
         link: '/for-auditors',
+      },
+    ],
+  },
+  {
+    id: 3,
+    name: 'Tools',
+    menuOptions: [
+      {
+        id: 31,
+        itemName: 'Report builder',
+        link: `/report-builder/${auditId}`,
       },
     ],
   },

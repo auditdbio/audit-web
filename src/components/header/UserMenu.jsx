@@ -23,7 +23,7 @@ export const UserMenu = ({ open, handleClose, anchor, userAvatar, pages }) => {
   const dispatch = useDispatch();
   const reduxUser = useSelector(state => state.user.user);
   const navigate = useNavigate();
-  const matchSm = useMediaQuery(theme.breakpoints.down('sm'));
+  const matchSm = useMediaQuery(theme.breakpoints.down(1080));
   const currentRole = useSelector(s => s.user.user.current_role);
 
   const user = {

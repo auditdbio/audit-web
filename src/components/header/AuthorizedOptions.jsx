@@ -14,7 +14,7 @@ import { authorizedPages } from './constants.js';
 import { addTestsLabel } from '../../lib/helper.js';
 
 const AuthorizedOptions = () => {
-  const matchSm = useMediaQuery(theme.breakpoints.down('sm'));
+  const matchSm = useMediaQuery(theme.breakpoints.down(1080));
 
   const reduxUser = useSelector(state => state.user.user);
   const auditor = useSelector(state => state.auditor.auditor);
