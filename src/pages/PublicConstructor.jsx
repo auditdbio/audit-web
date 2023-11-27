@@ -187,8 +187,8 @@ const PublicConstructor = () => {
                       variant="h6"
                       component="h2"
                     >
-                      Are you sure you want to delete the audit? You can save it
-                      after registration.
+                      Are you sure you want to delete the audit? All data will
+                      be lost.
                     </Typography>
                     <Box
                       sx={{

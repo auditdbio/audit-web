@@ -89,7 +89,7 @@ const AuditInfo = ({ audit, auditRequest, issues, confirmed }) => {
         >
           <ArrowBackIcon />
         </Button>
-        <Box sx={{ display: 'flex', width: '100%' }}>
+        <Box sx={{ display: 'flex', width: '100%', justifyContent: 'center' }}>
           {confirmed ? (
             <Box
               sx={{
