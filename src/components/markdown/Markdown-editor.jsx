@@ -85,7 +85,9 @@ const MarkdownEditor = ({
         wrapper,
         {
           border: `1px solid ${
-            handleBlur && !markdown && meta.error ? 'red' : 'transparent'
+            handleBlur && meta.touched && !markdownField.value
+              ? 'red'
+              : 'transparent'
           }`,
         },
       ]}

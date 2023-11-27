@@ -9,6 +9,12 @@ import { addTestsLabel } from '../../lib/helper.js';
 
 const FieldEditor = ({ name, label, handleBlur }) => {
   const matchMd = useMediaQuery(theme.breakpoints.down('md'));
+  const [field, meta, fieldHelper] = useField(name);
+  const handleChange = e => {
+    fieldHelper.setValue(e.target.value);
+    handleBlur();
+  };
+
   return (
     <Box sx={fieldWrapper}>
       <Box sx={[wrapper]} className={'field-wrapper'}>
@@ -18,7 +24,15 @@ const FieldEditor = ({ name, label, handleBlur }) => {
           label={label}
           // fullWidth={true}
           disabled={false}
-          sx={fieldSx}
+          sx={[
+            fieldSx,
+            !field.value && meta.touched
+              ? { '& fieldset': { borderColor: 'red' } }
+              : {},
+          ]}
+          onChange={e => {
+            handleChange(e);
+          }}
           // size={matchMd ? 'small' : 'medium'}
           inputProps={{ ...addTestsLabel(`${name}-input`) }}
           onBlur={handleBlur}

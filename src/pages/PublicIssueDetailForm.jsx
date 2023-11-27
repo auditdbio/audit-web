@@ -25,7 +25,7 @@ const PublicIssueDetailsForm = ({ issue = null, editMode = false }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { auditId, issueId } = useParams();
-  const publicIssies = JSON.parse(localStorage.getItem('publicIssies') || '[]');
+  const publicIssues = JSON.parse(localStorage.getItem('publicIssues') || '[]');
 
   const user = useSelector(s => s.user.user);
   const { successMessage, error } = useSelector(s => s.issues);
@@ -87,16 +87,16 @@ const PublicIssueDetailsForm = ({ issue = null, editMode = false }) => {
         auditId: +auditId,
       };
       delete newValues.events;
-      const newArray = publicIssies.map(el => {
+      const newArray = publicIssues.map(el => {
         return el.id === +issueId ? newValues : el;
       });
       dispatch(updatePublicIssue(newValues));
-      localStorage.setItem('publicIssies', JSON.stringify(newArray));
+      localStorage.setItem('publicIssues', JSON.stringify(newArray));
     } else {
       const newValue = { ...values, auditId: Date.now(), id: Date.now() };
       localStorage.setItem(
-        'publicIssies',
-        JSON.stringify([...publicIssies, newValue]),
+        'publicIssues',
+        JSON.stringify([...publicIssues, newValue]),
       );
       dispatch(addPublicIssue(newValue));
       if (issues.length) {
@@ -155,7 +155,6 @@ const PublicIssueDetailsForm = ({ issue = null, editMode = false }) => {
                   inputRef={nameInputRef}
                   inputProps={{ ...addTestsLabel('issue-name-input') }}
                   InputProps={
-                    user.current_role !== CUSTOMER &&
                     audit?.status?.toLowerCase() !== RESOLVED.toLowerCase() &&
                     editMode
                       ? {

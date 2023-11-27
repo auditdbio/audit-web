@@ -81,7 +81,7 @@ const Control = ({
       if (report?.auditor_name && report?.project_name && report?.description) {
         const newData = {
           auditor_name: report.auditor_name,
-          // profile_link: 'https://auditDb.io',
+          profile_link: 'https://auditDb.io',
           project_name: report.project_name,
           report_data: [
             {
@@ -228,7 +228,7 @@ const Control = ({
           <Button
             variant="contained"
             color="secondary"
-            sx={[buttonSx, { marginRight: '0!important' }]}
+            sx={[buttonSx, { marginRight: '0!important' }, publicBtnSx]}
             onClick={handleGenerateReport}
           >
             Generate report
@@ -238,7 +238,7 @@ const Control = ({
             type={'button'}
             color={'secondary'}
             onClick={() => setIsOpenReset(true)}
-            sx={buttonSx}
+            sx={[buttonSx, publicBtnSx]}
           >
             Reset form
           </Button>
@@ -313,7 +313,7 @@ const Control = ({
                 <Button
                   variant="contained"
                   color="secondary"
-                  sx={[buttonSx, isPublic ? publicBtnSx : {}]}
+                  sx={[buttonSx]}
                   disabled={
                     audit?.status?.toLowerCase() === RESOLVED.toLowerCase()
                   }
@@ -393,10 +393,10 @@ const publicBtnWrapper = theme => ({
   display: 'flex',
   width: '100%',
   mb: '10px',
-  justifyContent: 'space-between',
+  justifyContent: 'center',
+  gap: '15px',
   [theme.breakpoints.down(555)]: {
     flexDirection: 'column-reverse',
-    gap: '15px',
   },
 });
 
@@ -508,6 +508,10 @@ const buttonSx = theme => ({
 });
 
 const publicBtnSx = theme => ({
+  width: '213px',
+  [theme.breakpoints.down('sm')]: {
+    width: '185px',
+  },
   [theme.breakpoints.down(555)]: {
     width: '100%',
     mr: 0,

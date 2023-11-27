@@ -95,7 +95,7 @@ const DescriptionBlock = ({
         />
       </Box>
 
-      {user.current_role !== CUSTOMER &&
+      {(user.current_role !== CUSTOMER || isPublic) &&
         audit?.status?.toLowerCase() !== RESOLVED.toLowerCase() && (
           <Box
             sx={[

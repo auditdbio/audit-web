@@ -23,15 +23,14 @@ const PublicConstructor = () => {
   const matchXs = useMediaQuery(theme.breakpoints.down('xs'));
   const matchMd = useMediaQuery(theme.breakpoints.down('md'));
   const report = JSON.parse(localStorage.getItem('report') || '{}');
-  const publicIssies = JSON.parse(localStorage.getItem('publicIssies') || '[]');
-  const publicReport = useSelector(state => state.audits.publicReport);
+  const publicIssues = JSON.parse(localStorage.getItem('publicIssues') || '[]');
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const issues = useSelector(state => state.issues.issues);
   const [openMessage, setOpenMessage] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   useEffect(() => {
-    dispatch(getPublicIssues(publicIssies, report.auditId));
+    dispatch(getPublicIssues(publicIssues, report.auditId));
   }, []);
 
   const handleResetForm = setFieldValue => {
@@ -47,7 +46,7 @@ const PublicConstructor = () => {
     setFieldValue('auditId', Date.now());
     dispatch(handleResetPublicAudit());
     localStorage.removeItem('report');
-    localStorage.removeItem('publicIssies');
+    localStorage.removeItem('publicIssues');
   };
 
   return (
@@ -60,7 +59,7 @@ const PublicConstructor = () => {
           <ArrowBackIcon color={'secondary'} />
         </Button>
         <Formik
-          validationSchema={SubmitValidation}
+          // validationSchema={SubmitValidation}
           initialValues={{
             auditId: report?.auditId || Date.now(),
             project_name: report?.project_name || '',
@@ -69,7 +68,7 @@ const PublicConstructor = () => {
             description: report?.description || '',
             scope: report?.scope?.length ? report?.scope : [],
             tags: report?.tags?.length ? report?.tags : [],
-            issues: report?.issues?.length ? report?.issues : publicIssies,
+            issues: report?.issues?.length ? report?.issues : publicIssues,
             isCreated: report?.isCreated || false,
             auditor_name: report?.auditor_name || '',
           }}
@@ -108,7 +107,7 @@ const PublicConstructor = () => {
                 {/*  onClose={() => setOpenMessage(false)}*/}
                 {/*/>*/}
                 <Typography sx={titleSx} variant={'h4'}>
-                  Create audit report
+                  Audit builder
                 </Typography>
                 <Box sx={fieldsWrapperSx}>
                   <FieldEditor

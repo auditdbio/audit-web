@@ -28,10 +28,10 @@ const AuditIssueDetails = ({ isPublic }) => {
     if (!isPublic) {
       return issues?.find(issue => issue.id === +issueId);
     } else {
-      const publicIssies = JSON.parse(
-        localStorage.getItem('publicIssies') || '[]',
+      const publicIssues = JSON.parse(
+        localStorage.getItem('publicIssues') || '[]',
       );
-      return publicIssies.find(issue => issue.id === +issueId);
+      return publicIssues.find(issue => issue.id === +issueId);
     }
   }, [issues]);
 

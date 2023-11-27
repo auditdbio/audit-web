@@ -35,7 +35,9 @@ const IssuesList = ({ auditId, isPublic, setIsOpenReset, handleSubmit }) => {
   const getNumberOfPages = () => Math.ceil(getSearchResultsLength() / 10);
 
   const getSearchResultsLength = () => {
-    return issues?.filter(issue => issue.name?.includes(search)).length;
+    return issues?.filter(issue =>
+      issue.name?.toLowerCase().includes(search.toLowerCase()),
+    ).length;
   };
 
   const handlePageChange = (e, page) => {

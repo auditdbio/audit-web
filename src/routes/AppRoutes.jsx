@@ -112,7 +112,7 @@ const AppRoutes = () => {
           element={<RestorePasswordPage />}
         />
         <Route
-          path={'/create-report/:auditId'}
+          path={'/report-builder/:auditId'}
           element={<PublicConstructor />}
         />
         <Route path={'/projects'} element={<ProjectPage />} />
