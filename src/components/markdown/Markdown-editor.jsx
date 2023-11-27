@@ -41,6 +41,7 @@ const MarkdownEditor = ({
   mdProps = {},
   plugins = [],
   setFieldTouched,
+  handleBlur,
 }) => {
   const [markdownField, meta, markdownHelper] = useField(name);
   const [markdown, setMarkdown] = useState('');
@@ -55,7 +56,10 @@ const MarkdownEditor = ({
 
   useEffect(() => {
     setMarkdown(markdownField.value);
-  }, [markdownField.value]);
+    if (handleBlur && meta.touched) {
+      handleBlur();
+    }
+  }, [markdownField.value, meta.touched]);
 
   useEffect(() => {
     if (setMdRef) {
@@ -75,7 +79,19 @@ const MarkdownEditor = ({
   };
 
   return (
-    <Box data-color-mode="light" sx={wrapper}>
+    <Box
+      data-color-mode="light"
+      sx={[
+        wrapper,
+        {
+          border: `1px solid ${
+            handleBlur && meta.touched && !markdownField.value
+              ? 'red'
+              : 'transparent'
+          }`,
+        },
+      ]}
+    >
       <MdEditor
         renderHTML={renderHTML}
         value={markdown}

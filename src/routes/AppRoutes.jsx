@@ -42,7 +42,8 @@ import {
   websocketDisconnect,
 } from '../redux/actions/websocketAction.js';
 import PublicProject from '../pages/PublicProject.jsx';
-
+import PublicConstructor from '../pages/PublicConstructor.jsx';
+//
 const AppRoutes = () => {
   const token = useSelector(s => s.user.token);
   const currentRole = useSelector(s => s.user.user.current_role);
@@ -93,7 +94,7 @@ const AppRoutes = () => {
       };
     }
   }, [reconnect, connected]);
-
+  //
   useEffect(() => {
     return () => {
       dispatch(websocketDisconnect());
@@ -109,6 +110,10 @@ const AppRoutes = () => {
         <Route
           path={'/restore-password/:token'}
           element={<RestorePasswordPage />}
+        />
+        <Route
+          path={'/report-builder/:auditId'}
+          element={<PublicConstructor />}
         />
         <Route path={'/projects'} element={<ProjectPage />} />
         <Route path={'/projects/:id'} element={<PublicProject />} />
@@ -192,12 +197,20 @@ const AppRoutes = () => {
           }
         />
         <Route
+          path="/public-issues/audit-issue/:auditId/:issueId"
+          element={<AuditIssueDetails isPublic={true} />}
+        />
+        <Route
           path="/issues/new-issue/:auditId"
           element={
             <PrivateRoute auth={{ isAuthenticated: isAuth() }}>
               <CreateIssuePage />
             </PrivateRoute>
           }
+        />
+        <Route
+          path="/public-issues/new-issue/:auditId"
+          element={<CreateIssuePage isPublic={true} />}
         />
         <Route
           path="/create-project"

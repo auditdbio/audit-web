@@ -14,6 +14,8 @@ const MainText = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const user = useSelector(state => state.user.user);
+  const report = JSON.parse(localStorage.getItem('report') || '{}');
+  const auditId = report.auditId ? report.auditId : Date.now();
 
   const handleSignUp = () => {
     navigate('/sign-up');
@@ -89,6 +91,14 @@ const MainText = () => {
               {...addTestsLabel('hero_show-project-button')}
             >
               Show your project
+            </CustomButton>
+          </Box>
+          <Box sx={buttonsStyle(isMobile)}>
+            <CustomButton
+              sx={[gitCoinSx, { color: '#fff' }]}
+              onClick={() => navigate(`/report-builder/${auditId}`)}
+            >
+              Try audit builder
             </CustomButton>
           </Box>
         </Box>
@@ -175,7 +185,7 @@ const imageStyle = isMobile => ({
   display: isMobile ? 'none' : 'inline',
   minWidth: '25%',
 });
-
+//
 const buttonsStyle = isMobile => ({
   flexGrow: 0,
   display: 'flex',
