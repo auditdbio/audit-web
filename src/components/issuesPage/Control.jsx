@@ -81,7 +81,6 @@ const Control = ({
       if (report?.auditor_name && report?.project_name && report?.description) {
         const newData = {
           auditor_name: report.auditor_name,
-          profile_link: 'https://auditDb.io',
           project_name: report.project_name,
           report_data: [
             {
