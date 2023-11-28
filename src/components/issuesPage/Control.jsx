@@ -78,6 +78,8 @@ const Control = ({
 
   const handleGenerateReport = () => {
     if (isPublic) {
+      const severityOrder = { Minor: 1, Medium: 2, Major: 3, Critical: 4 }; // Определите порядок severity
+
       if (report?.auditor_name && report?.project_name && report?.description) {
         const newData = {
           auditor_name: report.auditor_name,
@@ -152,20 +154,24 @@ const Control = ({
               title: 'Issues',
               text: '',
               include_in_toc: true,
-              subsections: issuesArray.map(issue => {
-                return {
-                  type: 'issue_data',
-                  title: issue.name,
-                  text: issue.description,
-                  include_in_toc: true,
-                  feedback: issue.feedback,
-                  issue_data: {
-                    links: issue.links,
-                    severity: issue.severity,
-                    status: issue.status,
-                  },
-                };
-              }),
+              subsections: issuesArray
+                .sort((a, b) => {
+                  return severityOrder[b.severity] - severityOrder[a.severity];
+                })
+                .map(issue => {
+                  return {
+                    type: 'issue_data',
+                    title: issue.name,
+                    text: issue.description,
+                    include_in_toc: true,
+                    feedback: issue.feedback,
+                    issue_data: {
+                      links: issue.links,
+                      severity: issue.severity,
+                      status: issue.status,
+                    },
+                  };
+                }),
             },
             // {
             //   type: 'plain_text',
