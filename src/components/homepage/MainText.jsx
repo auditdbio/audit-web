@@ -95,7 +95,7 @@ const MainText = () => {
           <Box sx={buttonsStyle(isMobile)}>
             <CustomButton
               sx={[gitCoinSx, { color: '#fff' }]}
-              onClick={() => navigate(`/report-builder/${auditId}`)}
+              onClick={() => navigate(`/audit-builder/${auditId}`)}
             >
               Try audit builder
             </CustomButton>
