@@ -62,9 +62,13 @@ const AvatarForm = ({ role, name }) => {
       axios
         .get(avatarField.value, { responseType: 'blob' })
         .then(({ data }) => {
-          const filename = user.id + user.current_role + Date.now();
+          const filename =
+            user.id +
+            user.current_role +
+            Date.now() +
+            data.type.replace(/image\//, '.');
           formData.append('file', data);
-          formData.append('path', user.id + user.current_role + filename);
+          formData.append('path', filename);
           formData.append('original_name', filename);
           formData.append('private', 'false');
           sendAvatar();
@@ -74,7 +78,13 @@ const AvatarForm = ({ role, name }) => {
 
   return (
     <>
-      <Avatar src={avatarField.value && `${ASSET_URL}/${avatarField.value}`} />
+      <Avatar
+        src={
+          avatarField.value &&
+          !/^https?:\/\//i.test(avatarField.value) &&
+          `${ASSET_URL}/${avatarField.value}`
+        }
+      />
 
       <CustomSnackbar
         autoHideDuration={10000}
