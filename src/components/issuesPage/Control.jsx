@@ -19,10 +19,13 @@ import ResolveAuditConfirmation from './ResolveAuditConfirmation.jsx';
 import { discloseAllIssues } from '../../redux/actions/issueAction.js';
 import { DRAFT, FIXED, NOT_FIXED } from './constants.js';
 import {
+  clearMessage,
   downloadReport,
   getPublicReport,
+  savePublicReport,
 } from '../../redux/actions/auditAction.js';
 import CustomSnackbar from '../custom/CustomSnackbar.jsx';
+import { changeRolePublicAuditor } from '../../redux/actions/userAction.js';
 
 const Control = ({
   issues,
@@ -44,9 +47,11 @@ const Control = ({
   const audit = useSelector(s =>
     s.audits.audits?.find(audit => audit.id === auditId),
   );
+  const auditor = useSelector(s => s.auditor.auditor);
   const issuesArray = useSelector(s => s.issues.issues);
   const report = JSON.parse(localStorage.getItem('report'));
   const [openMessage, setOpenMessage] = useState(false);
+  const successMessage = useSelector(s => s.audits.successMessage);
 
   const handleSearch = e => {
     setSearch(e.target.value);
@@ -74,6 +79,42 @@ const Control = ({
   const handleDiscloseAll = () => {
     dispatch(discloseAllIssues(auditId));
     setMenuAnchorEl(null);
+  };
+
+  const handleSavePublicAudit = async () => {
+    if (user.current_role === CUSTOMER) {
+      try {
+        await dispatch(changeRolePublicAuditor(AUDITOR, user.id));
+
+        const data = {
+          auditor_id: auditor.user_id,
+          auditor_first_name: auditor.first_name,
+          auditor_last_name: auditor.last_name,
+          auditor_contacts: auditor.contacts,
+          avatar: auditor.avatar,
+          ...report,
+          isPublic: true,
+          issues: [...issuesArray],
+        };
+
+        await dispatch(savePublicReport(data));
+      } catch (e) {
+        console.log(e);
+      }
+    } else {
+      const data = {
+        auditor_id: auditor.user_id,
+        auditor_first_name: auditor.first_name,
+        auditor_last_name: auditor.last_name,
+        auditor_contacts: auditor.contacts,
+        avatar: auditor.avatar,
+        ...report,
+        isPublic: true,
+        issues: [...issuesArray],
+      };
+
+      await dispatch(savePublicReport(data));
+    }
   };
 
   const handleGenerateReport = () => {
@@ -219,10 +260,17 @@ const Control = ({
         <Box sx={publicBtnWrapper}>
           <CustomSnackbar
             autoHideDuration={5000}
-            open={openMessage}
-            severity={'error'}
-            text={'Please fill in all mandatory fields'}
-            onClose={() => setOpenMessage(false)}
+            open={openMessage || successMessage}
+            severity={successMessage ? 'success' : 'error'}
+            text={
+              successMessage
+                ? successMessage
+                : 'Please fill in all mandatory fields'
+            }
+            onClose={() => {
+              dispatch(clearMessage());
+              setOpenMessage(false);
+            }}
           />
           <Button
             variant="contained"
@@ -237,9 +285,18 @@ const Control = ({
             type={'button'}
             color={'secondary'}
             onClick={() => setIsOpenReset(true)}
-            sx={[buttonSx, publicBtnSx]}
+            sx={[buttonSx, { marginRight: '0!important' }, publicBtnSx]}
           >
             Reset form
+          </Button>
+          <Button
+            sx={[buttonSx, { marginRight: '0!important' }, publicBtnSx]}
+            onClick={() => {
+              handleSavePublicAudit();
+            }}
+            variant={'contained'}
+          >
+            Save
           </Button>
         </Box>
       )}

@@ -385,6 +385,20 @@ export const handleResetPublicAudit = () => {
   };
 };
 
+export const savePublicReport = data => {
+  const token = Cookies.get('token');
+  return dispatch => {
+    axios
+      .post(`${API_URL}/no_customer_audit`, data, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .then(({ data }) => {
+        console.log(data);
+      });
+  };
+  // .catch(() => dispatch({ type: REQUEST_ERROR }));
+};
+
 export const clearMessage = () => {
   return { type: CLEAR_MESSAGES };
 };

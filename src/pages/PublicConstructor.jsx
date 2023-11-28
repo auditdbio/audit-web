@@ -64,13 +64,13 @@ const PublicConstructor = () => {
             auditId: report?.auditId || Date.now(),
             project_name: report?.project_name || '',
             report: report?.report || '',
-            report_name: report?.report_name || '',
             description: report?.description || '',
             scope: report?.scope?.length ? report?.scope : [],
             tags: report?.tags?.length ? report?.tags : [],
             issues: report?.issues?.length ? report?.issues : publicIssues,
-            isCreated: report?.isCreated || false,
             auditor_name: report?.auditor_name || '',
+            status: 'Started',
+            last_modified: Date.now(),
           }}
           onSubmit={values => {
             if (values.id) {
