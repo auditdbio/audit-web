@@ -10,6 +10,7 @@ import {
   MenuItem,
   TextField,
   Tooltip,
+  useMediaQuery,
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import IconButton from '@mui/material/IconButton';
@@ -29,6 +30,7 @@ import {
   changeRolePublicAuditor,
   clearUserSuccess,
 } from '../../redux/actions/userAction.js';
+import theme from '../../styles/themes.js';
 
 const Control = ({
   issues,
@@ -55,6 +57,7 @@ const Control = ({
   const report = JSON.parse(localStorage.getItem('report'));
   const [openMessage, setOpenMessage] = useState(false);
   const auditMessage = useSelector(s => s.audits.successMessage);
+  const xss = useMediaQuery(theme.breakpoints.down(555));
 
   const handleSearch = e => {
     setSearch(e.target.value);
@@ -371,7 +374,7 @@ const Control = ({
                 <Button
                   variant="contained"
                   color="secondary"
-                  sx={[buttonSx]}
+                  sx={[buttonSx, isPublic && xss ? publicBtnSx : {}]}
                   disabled={
                     audit?.status?.toLowerCase() === RESOLVED.toLowerCase()
                   }
@@ -432,7 +435,7 @@ const Control = ({
           <Button
             variant="contained"
             color="secondary"
-            sx={buttonSx}
+            sx={[buttonSx]}
             disabled={audit?.status?.toLowerCase() === RESOLVED.toLowerCase()}
             onClick={handleNewIssue}
             {...addTestsLabel('new-issue-button')}
@@ -453,7 +456,7 @@ const publicBtnWrapper = theme => ({
   mb: '10px',
   justifyContent: 'center',
   gap: '15px',
-  [theme.breakpoints.down(555)]: {
+  [theme.breakpoints.down(690)]: {
     flexDirection: 'column-reverse',
   },
 });
@@ -570,7 +573,7 @@ const publicBtnSx = theme => ({
   [theme.breakpoints.down('sm')]: {
     width: '185px',
   },
-  [theme.breakpoints.down(555)]: {
+  [theme.breakpoints.down(690)]: {
     width: '100%',
     mr: 0,
   },
