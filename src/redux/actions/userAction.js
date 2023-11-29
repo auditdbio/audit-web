@@ -27,7 +27,7 @@ const API_URL = import.meta.env.VITE_API_BASE_URL;
 export const signUpGithub = (code, role) => {
   return dispatch => {
     axios
-      .post(`${API_URL}/auth/github`, { code, role })
+      .post(`${API_URL}/auth/github`, { code, current_role: role })
       .then(({ data }) => {
         console.log(data);
         Cookies.set('token', data.token, { expires: 1 });
@@ -60,7 +60,7 @@ export const signUpGithub = (code, role) => {
 export const signInGithub = code => {
   return dispatch => {
     axios
-      .post(`${API_URL}/auth/github`, { code })
+      .post(`${API_URL}/auth/github`, { code, current_role: 'auditor' })
       .then(({ data }) => {
         console.log(data);
         Cookies.set('token', data.token, { expires: 1 });
