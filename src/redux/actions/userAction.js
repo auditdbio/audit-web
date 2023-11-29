@@ -34,7 +34,11 @@ export const signInGithub = (code, role) => {
         localStorage.setItem('token', JSON.stringify(data.token));
         localStorage.setItem('user', JSON.stringify(data.user));
         dispatch({ type: USER_SIGNIN, payload: data });
-
+        if (data.user?.is_new) {
+          history.push({ pathname: `/edit-profile` }, { some: true });
+        } else {
+          history.push({ pathname: `/profile/user-info` }, { some: true });
+        }
         // axios.patch(
         //   `${API_URL}/user/${data.user?.id}`,
         //   { is_new: false },

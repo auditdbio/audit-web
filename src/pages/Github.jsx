@@ -15,9 +15,9 @@ const Github = () => {
   const { role } = useParams();
   const dispatch = useDispatch();
   console.log(searchParam.get('code'), role);
-  // useEffect(() => {
-  //   dispatch(signInGithub(searchParam.get('code'), role));
-  // }, []);
+  useEffect(() => {
+    dispatch(signInGithub(searchParam.get('code'), role));
+  }, []);
   return (
     <Layout>
       <CustomCard sx={cardWrapper}>

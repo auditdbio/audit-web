@@ -18,6 +18,8 @@ import CustomSnackbar from '../../custom/CustomSnackbar.jsx';
 import { addTestsLabel, isAuth } from '../../../lib/helper.js';
 import GitHubIcon from '@mui/icons-material/GitHub';
 
+const GITHUB_ID = import.meta.env.VITE_GITHUB_CLIENT_ID;
+
 const SignupForm = () => {
   const [isAuditor, setIsAuditor] = useState('auditor');
   const dispatch = useDispatch();
@@ -30,10 +32,10 @@ const SignupForm = () => {
     password: '',
     confirmPassword: '',
   };
-
+  console.log('GITHUB_ID', GITHUB_ID);
   const handleAuthGithub = () => {
     window.open(
-      `https://github.com/login/oauth/authorize?client_id=62c90b6467b0880506a7&redirect_uri=http://localhost:5173/github/${isAuditor}&scope=read:user,user:email`,
+      `https://github.com/login/oauth/authorize?client_id=${GITHUB_ID}&redirect_uri=http://localhost:5173/github/${isAuditor}&scope=read:user,user:email`,
       '_self',
     );
   };
