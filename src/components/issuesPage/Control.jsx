@@ -13,7 +13,7 @@ import {
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import IconButton from '@mui/material/IconButton';
-import { addTestsLabel } from '../../lib/helper.js';
+import { addTestsLabel, isAuth } from '../../lib/helper.js';
 import { AUDITOR, CUSTOMER, RESOLVED } from '../../redux/actions/types.js';
 import ResolveAuditConfirmation from './ResolveAuditConfirmation.jsx';
 import { discloseAllIssues } from '../../redux/actions/issueAction.js';
@@ -25,7 +25,10 @@ import {
   savePublicReport,
 } from '../../redux/actions/auditAction.js';
 import CustomSnackbar from '../custom/CustomSnackbar.jsx';
-import { changeRolePublicAuditor } from '../../redux/actions/userAction.js';
+import {
+  changeRolePublicAuditor,
+  clearUserSuccess,
+} from '../../redux/actions/userAction.js';
 
 const Control = ({
   issues,
@@ -51,7 +54,7 @@ const Control = ({
   const issuesArray = useSelector(s => s.issues.issues);
   const report = JSON.parse(localStorage.getItem('report'));
   const [openMessage, setOpenMessage] = useState(false);
-  const successMessage = useSelector(s => s.audits.successMessage);
+  const auditMessage = useSelector(s => s.audits.successMessage);
 
   const handleSearch = e => {
     setSearch(e.target.value);
@@ -82,38 +85,33 @@ const Control = ({
   };
 
   const handleSavePublicAudit = async () => {
-    if (user.current_role === CUSTOMER) {
-      try {
-        await dispatch(changeRolePublicAuditor(AUDITOR, user.id));
-
-        const data = {
-          auditor_id: auditor.user_id,
-          auditor_first_name: auditor.first_name,
-          auditor_last_name: auditor.last_name,
-          auditor_contacts: auditor.contacts,
-          avatar: auditor.avatar,
-          ...report,
-          isPublic: true,
-          issues: [...issuesArray],
-        };
-
-        await dispatch(savePublicReport(data));
-      } catch (e) {
-        console.log(e);
+    if (report?.auditor_name && report?.project_name && report?.description) {
+      if (isAuth()) {
+        if (user.current_role === CUSTOMER) {
+          const data = {
+            ...report,
+            isPublic: true,
+            issues: [...issuesArray],
+          };
+          await dispatch(changeRolePublicAuditor(AUDITOR, user.id, data, true));
+        } else {
+          const data = {
+            auditor_id: auditor.user_id,
+            auditor_first_name: auditor.first_name,
+            auditor_last_name: auditor.last_name,
+            auditor_contacts: auditor.contacts,
+            avatar: auditor.avatar,
+            ...report,
+            isPublic: true,
+            issues: [...issuesArray],
+          };
+          await dispatch(savePublicReport(data));
+        }
+      } else {
+        navigate('/sign-in');
       }
     } else {
-      const data = {
-        auditor_id: auditor.user_id,
-        auditor_first_name: auditor.first_name,
-        auditor_last_name: auditor.last_name,
-        auditor_contacts: auditor.contacts,
-        avatar: auditor.avatar,
-        ...report,
-        isPublic: true,
-        issues: [...issuesArray],
-      };
-
-      await dispatch(savePublicReport(data));
+      setOpenMessage(true);
     }
   };
 
@@ -249,6 +247,13 @@ const Control = ({
     setAllIssuesClosed(allClosed);
   }, [issues]);
 
+  const handleCloseSnack = () => {
+    setOpenMessage(false);
+    if (auditMessage) {
+      dispatch(clearMessage());
+    }
+  };
+
   return (
     <>
       <ResolveAuditConfirmation
@@ -260,17 +265,14 @@ const Control = ({
         <Box sx={publicBtnWrapper}>
           <CustomSnackbar
             autoHideDuration={5000}
-            open={openMessage || successMessage}
-            severity={successMessage ? 'success' : 'error'}
+            open={openMessage || auditMessage}
+            severity={(auditMessage && 'success') || (openMessage && 'error')}
             text={
-              successMessage
-                ? successMessage
-                : 'Please fill in all mandatory fields'
+              auditMessage
+                ? auditMessage
+                : openMessage && 'Please fill in all mandatory fields'
             }
-            onClose={() => {
-              dispatch(clearMessage());
-              setOpenMessage(false);
-            }}
+            onClose={handleCloseSnack}
           />
           <Button
             variant="contained"
@@ -281,15 +283,6 @@ const Control = ({
             Generate report
           </Button>
           <Button
-            variant={'contained'}
-            type={'button'}
-            color={'secondary'}
-            onClick={() => setIsOpenReset(true)}
-            sx={[buttonSx, { marginRight: '0!important' }, publicBtnSx]}
-          >
-            Reset form
-          </Button>
-          <Button
             sx={[buttonSx, { marginRight: '0!important' }, publicBtnSx]}
             onClick={() => {
               handleSavePublicAudit();
@@ -297,6 +290,15 @@ const Control = ({
             variant={'contained'}
           >
             Save
+          </Button>
+          <Button
+            variant={'contained'}
+            type={'button'}
+            color={'secondary'}
+            onClick={() => setIsOpenReset(true)}
+            sx={[buttonSx, { marginRight: '0!important' }, publicBtnSx]}
+          >
+            Reset form
           </Button>
         </Box>
       )}

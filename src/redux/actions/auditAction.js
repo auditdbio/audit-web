@@ -20,6 +20,7 @@ import {
   REQUEST_ERROR,
   RESET_PUBLIC_AUDIT,
   RESOLVED,
+  SAVE_PUBLIC_REPORT,
   SET_CURRENT_AUDIT_PARTNER,
 } from './types.js';
 import { history } from '../../services/history.js';
@@ -393,7 +394,13 @@ export const savePublicReport = data => {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then(({ data }) => {
-        console.log(data);
+        dispatch({ type: SAVE_PUBLIC_REPORT, payload: data });
+        const handleRedirect = setTimeout(() => {
+          history.push('/profile/audits');
+        }, 3000);
+        localStorage.removeItem('report');
+        localStorage.removeItem('publicIssues');
+        return () => clearTimeout(handleRedirect);
       });
   };
   // .catch(() => dispatch({ type: REQUEST_ERROR }));
