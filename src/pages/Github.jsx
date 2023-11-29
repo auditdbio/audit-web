@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import { CustomCard } from '../components/custom/Card.jsx';
 import Layout from '../styles/Layout.jsx';
 import { useSearchParams } from 'react-router-dom/dist';
-import { signInGithub } from '../redux/actions/userAction.js';
+import { signInGithub, signUpGithub } from '../redux/actions/userAction.js';
 import { useDispatch } from 'react-redux';
 import Loader from '../components/Loader.jsx';
 import { Box } from '@mui/system';
@@ -16,7 +16,11 @@ const Github = () => {
   const dispatch = useDispatch();
   console.log(searchParam.get('code'), role);
   useEffect(() => {
-    dispatch(signInGithub(searchParam.get('code'), role));
+    if (searchParam.get('code') && role) {
+      dispatch(signUpGithub(searchParam.get('code'), role));
+    } else {
+      dispatch(signInGithub(searchParam.get('code')));
+    }
   }, []);
   return (
     <Layout>

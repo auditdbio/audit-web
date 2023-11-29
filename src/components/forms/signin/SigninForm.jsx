@@ -17,6 +17,8 @@ import CustomSnackbar from '../../custom/CustomSnackbar.jsx';
 import RestorePassword from '../../RestorePassword.jsx';
 import { addTestsLabel, isAuth } from '../../../lib/helper.js';
 import GitHubIcon from '@mui/icons-material/GitHub.js';
+import { API_URL } from '../../../services/urls.js';
+const GITHUB_ID = import.meta.env.VITE_GITHUB_CLIENT_ID;
 
 const SigninForm = () => {
   const dispatch = useDispatch();
@@ -34,7 +36,7 @@ const SigninForm = () => {
 
   const handleAuthGithub = () => {
     window.open(
-      `https://github.com/login/oauth/authorize?client_id=62c90b6467b0880506a7&redirect_uri=http://localhost:5173/github&scope=read:user,user:email`,
+      `https://github.com/login/oauth/authorize?client_id=${GITHUB_ID}&redirect_uri=${API_URL}/github/${isAuditor}&scope=read:user,user:email`,
       '_self',
     );
   };
