@@ -36,7 +36,7 @@ const SigninForm = () => {
 
   const handleAuthGithub = () => {
     window.open(
-      `https://github.com/login/oauth/authorize?client_id=${GITHUB_ID}&redirect_uri=${API_URL}/github/${isAuditor}&scope=read:user,user:email`,
+      `https://github.com/login/oauth/authorize?client_id=${GITHUB_ID}&redirect_uri=${API_URL}/github/auditor&scope=read:user,user:email`,
       '_self',
     );
   };

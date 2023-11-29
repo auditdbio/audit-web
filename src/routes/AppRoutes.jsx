@@ -45,7 +45,7 @@ import PublicProject from '../pages/PublicProject.jsx';
 import CustomSnackbar from '../components/custom/CustomSnackbar.jsx';
 import InvitePage from '../pages/Invite-page.jsx';
 import DeleteBadge from '../pages/Delete-badge.jsx';
-import Github from '../pages/github.jsx';
+import Github from '../pages/Github.jsx';
 
 const AppRoutes = () => {
   const token = useSelector(s => s.user.token);
