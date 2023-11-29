@@ -19,7 +19,7 @@ import { addTestsLabel, isAuth } from '../../../lib/helper.js';
 import GitHubIcon from '@mui/icons-material/GitHub';
 
 const GITHUB_ID = import.meta.env.VITE_GITHUB_CLIENT_ID;
-const API_URL = import.meta.env.VITE_API_BASE_URL;
+const BASE_URL = import.meta.env.VITE_BASE_URL;
 
 const SignupForm = () => {
   const [isAuditor, setIsAuditor] = useState('auditor');
@@ -34,13 +34,10 @@ const SignupForm = () => {
     confirmPassword: '',
   };
   console.log('GITHUB_ID', GITHUB_ID);
-  console.log('API_URL', API_URL.slice(0, API_URL.indexOf('io') + 2));
+  console.log('API_URL', BASE_URL);
   const handleAuthGithub = () => {
     window.open(
-      `https://github.com/login/oauth/authorize?client_id=${GITHUB_ID}&redirect_url=${API_URL.slice(
-        0,
-        API_URL.indexOf('io') + 2,
-      )}/role=${isAuditor}/github/${isAuditor}&scope=read:user,user:email`,
+      `https://github.com/login/oauth/authorize?client_id=${GITHUB_ID}&redirect_uri=${BASE_URL}/github/${isAuditor}&scope=read:user,user:email`,
       '_self',
     );
   };
