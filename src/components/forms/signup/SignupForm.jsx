@@ -34,9 +34,13 @@ const SignupForm = () => {
     confirmPassword: '',
   };
   console.log('GITHUB_ID', GITHUB_ID);
+  console.log('API_URL', API_URL.slice(0, API_URL.indexOf('io') + 2));
   const handleAuthGithub = () => {
     window.open(
-      `https://github.com/login/oauth/authorize?client_id=${GITHUB_ID}&redirect_uri=${API_URL}/github/${isAuditor}&scope=read:user,user:email`,
+      `https://github.com/login/oauth/authorize?client_id=${GITHUB_ID}&redirect_url=${API_URL.slice(
+        0,
+        API_URL.indexOf('io') + 2,
+      )}/role=${isAuditor}/github/${isAuditor}&scope=read:user,user:email`,
       '_self',
     );
   };
