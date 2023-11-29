@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import { CustomCard } from '../components/custom/Card.jsx';
 import Layout from '../styles/Layout.jsx';
 import { useSearchParams } from 'react-router-dom/dist';
-import { signInGithub, signUpGithub } from '../redux/actions/userAction.js';
+import { signUpGithub } from '../redux/actions/userAction.js';
 import { useDispatch } from 'react-redux';
 import Loader from '../components/Loader.jsx';
 import { Box } from '@mui/system';

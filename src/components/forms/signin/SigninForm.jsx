@@ -11,7 +11,6 @@ import {
   clearUserError,
   clearUserSuccess,
   signIn,
-  signInGithub,
 } from '../../../redux/actions/userAction.js';
 import CustomSnackbar from '../../custom/CustomSnackbar.jsx';
 import RestorePassword from '../../RestorePassword.jsx';
