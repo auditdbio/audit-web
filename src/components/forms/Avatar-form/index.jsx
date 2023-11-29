@@ -24,10 +24,6 @@ const AvatarForm = ({ role, name }) => {
       })
       .then(() => {
         fieldHelper.setValue(formData.get('path'));
-        formData.delete('file');
-        formData.delete('path');
-        formData.delete('original_name');
-        formData.delete('private');
       })
       .catch(err => {
         if (err?.code === 'ERR_NETWORK') {
@@ -35,6 +31,8 @@ const AvatarForm = ({ role, name }) => {
         } else {
           setError('Error while uploading file');
         }
+      })
+      .finally(() => {
         formData.delete('file');
         formData.delete('path');
         formData.delete('original_name');
