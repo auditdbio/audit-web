@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useField } from 'formik';
 import axios from 'axios';
 import Cookies from 'js-cookie';
@@ -17,6 +17,31 @@ const AvatarForm = ({ role, name }) => {
   const formData = new FormData();
   const [error, setError] = useState(null);
 
+  const sendAvatar = () => {
+    axios
+      .post(ASSET_URL, formData, {
+        headers: { Authorization: 'Bearer ' + Cookies.get('token') },
+      })
+      .then(() => {
+        fieldHelper.setValue(formData.get('path'));
+        formData.delete('file');
+        formData.delete('path');
+        formData.delete('original_name');
+        formData.delete('private');
+      })
+      .catch(err => {
+        if (err?.code === 'ERR_NETWORK') {
+          setError('File size is too big');
+        } else {
+          setError('Error while uploading file');
+        }
+        formData.delete('file');
+        formData.delete('path');
+        formData.delete('original_name');
+        formData.delete('private');
+      });
+  };
+
   const handleUpdateAvatar = e => {
     const file = e.target.files[0];
     const fileSize = file.size;
@@ -27,34 +52,39 @@ const AvatarForm = ({ role, name }) => {
       formData.append('path', user.id + user.current_role + file.name);
       formData.append('original_name', file.name);
       formData.append('private', 'false');
-      axios
-        .post(ASSET_URL, formData, {
-          headers: { Authorization: 'Bearer ' + Cookies.get('token') },
-        })
-        .then(data => {
-          fieldHelper.setValue(formData.get('path'));
-          formData.delete('file');
-          formData.delete('path');
-          formData.delete('original_name');
-          formData.delete('private');
-        })
-        .catch(err => {
-          if (err?.code === 'ERR_NETWORK') {
-            setError('File size is too big');
-          } else {
-            setError('Error while uploading file');
-          }
-          formData.delete('file');
-          formData.delete('path');
-          formData.delete('original_name');
-          formData.delete('private');
-        });
+      sendAvatar();
     }
   };
 
+  useEffect(() => {
+    const isThirdPartyImage = /^https?:\/\//i.test(avatarField.value);
+    if (isThirdPartyImage) {
+      axios
+        .get(avatarField.value, { responseType: 'blob' })
+        .then(({ data }) => {
+          const filename =
+            user.id +
+            user.current_role +
+            Date.now() +
+            data.type.replace(/image\//, '.');
+          formData.append('file', data);
+          formData.append('path', filename);
+          formData.append('original_name', filename);
+          formData.append('private', 'false');
+          sendAvatar();
+        });
+    }
+  }, []);
+
   return (
     <>
-      <Avatar src={avatarField.value && `${ASSET_URL}/${avatarField.value}`} />
+      <Avatar
+        src={
+          avatarField.value &&
+          !/^https?:\/\//i.test(avatarField.value) &&
+          `${ASSET_URL}/${avatarField.value}`
+        }
+      />
 
       <CustomSnackbar
         autoHideDuration={10000}

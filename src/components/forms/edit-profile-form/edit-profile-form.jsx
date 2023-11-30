@@ -57,7 +57,7 @@ const EditProfileForm = ({ role }) => {
       <Formik
         initialValues={{
           userId: data.user_id || '',
-          avatar: data.avatar || '',
+          avatar: data.avatar || user?.linked_accounts?.[0]?.avatar || '',
           free_at: '',
           first_name: data?.first_name || user?.name?.split(' ')[0] || '',
           last_name: data?.last_name || getPrefilledLastName(),
