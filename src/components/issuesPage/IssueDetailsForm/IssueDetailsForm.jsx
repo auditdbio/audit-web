@@ -206,7 +206,7 @@ const issueValidationSchema = Yup.object().shape({
   description: Yup.string().required('Description required'),
   severity: Yup.string().required('Required'),
   category: Yup.string(),
-  links: Yup.array().of(Yup.string().url()),
+  links: Yup.array().of(Yup.string()),
   include: Yup.boolean(),
   feedback: Yup.string(),
 });
