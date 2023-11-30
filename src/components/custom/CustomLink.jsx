@@ -11,7 +11,7 @@ const linkShortener = (link, shortLinkLength) => {
     return (
       shortLink
         .slice(0, shortLinkLength - 1)
-        .replace(/(?<=[\/\-_.])[^\/\-_.]*$/, '') +
+        .replace(/([\/\-_.])[\/\-_.]*$/, '') +
       '…' +
       shortLink.slice(-shortLinkLength)
     );
