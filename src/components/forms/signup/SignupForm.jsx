@@ -33,8 +33,7 @@ const SignupForm = () => {
     password: '',
     confirmPassword: '',
   };
-  console.log('GITHUB_ID', GITHUB_ID);
-  console.log('API_URL', BASE_URL);
+
   const handleAuthGithub = () => {
     window.open(
       `https://github.com/login/oauth/authorize?client_id=${GITHUB_ID}&redirect_uri=${BASE_URL}github/${isAuditor}&scope=read:user,user:email`,

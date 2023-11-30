@@ -14,7 +14,6 @@ const Github = () => {
   const [searchParam] = useSearchParams();
   const { role } = useParams();
   const dispatch = useDispatch();
-  console.log(searchParam.get('code'), role);
   useEffect(() => {
     dispatch(signUpGithub(searchParam.get('code'), role));
   }, [searchParam.get('code'), role]);
