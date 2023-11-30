@@ -27,7 +27,7 @@ const IssueListItem = ({ issue, auditId, user, isPublic }) => {
   }, []);
 
   const checkUnread = () => {
-    return user?.id !== issue.events?.at(-1)?.user &&
+    return user?.id !== issue.events[issue.events.length - 1]?.user &&
       issue.events?.length &&
       issue.events?.length >= issue.read
       ? unreadChanges
