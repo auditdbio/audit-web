@@ -180,6 +180,7 @@ const StatusSeverityBlock = ({
         )}
 
         {user.current_role === AUDITOR &&
+        !isPublic &&
         audit?.status?.toLowerCase() !== RESOLVED.toLowerCase() ? (
           <Box>
             <Typography sx={[statusBlockTitle]}>
@@ -242,7 +243,7 @@ const StatusSeverityBlock = ({
           </Box>
         )}
 
-        {editMode && user.current_role === AUDITOR && (
+        {editMode && user.current_role === AUDITOR && !isPublic && (
           <Box sx={[statusBlockAlign, { mt: '20px' }]}>
             <FormControlLabel
               label={
