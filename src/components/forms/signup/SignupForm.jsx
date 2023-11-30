@@ -123,7 +123,15 @@ const SignupForm = () => {
                 />
               </Box>
             </Box>
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: '25px' }}>
+            <Box
+              sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '25px',
+                width: '100%',
+                alignItems: 'center',
+              }}
+            >
               <Button
                 type="submit"
                 sx={submitButton}
@@ -176,22 +184,18 @@ const titleStyle = theme => ({
 });
 
 const submitButton = theme => ({
-  padding: '15px 140px',
+  padding: '11px 0',
   color: '#FCFAF6',
-  fontSize: '25px',
   fontWeight: 600,
   borderRadius: radiusOfComponents,
-  maxWidth: '402px',
+  maxWidth: '262px',
+  fontSize: '16px',
+  paddingY: '11px',
   width: '100%',
-  margin: '0 auto',
-  [theme.breakpoints.down('md')]: {
-    fontSize: '20px',
-    lineHeight: '23px',
-  },
   [theme.breakpoints.down('sm')]: {
-    fontSize: '15px',
-    width: '230px',
-    padding: '12px 60px',
+    width: '225px',
+    padding: '8px 0',
+    fontSize: '14px',
   },
 });
 

@@ -110,7 +110,7 @@ const SigninForm = () => {
                   onClick={handleAuthGithub}
                 >
                   <GitHubIcon sx={{ marginRight: '15px' }} />
-                  Sign up with Github
+                  Sign in with Github
                 </Button>
                 <Button
                   type={'button'}
@@ -176,7 +176,7 @@ const submitButton = theme => ({
   width: '100%',
   [theme.breakpoints.down('sm')]: {
     width: '225px',
-    padding: '13px 0',
+    padding: '8px 0',
     fontSize: '14px',
   },
 });
