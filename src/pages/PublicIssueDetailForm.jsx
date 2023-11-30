@@ -19,7 +19,6 @@ import { addTestsLabel } from '../lib/helper.js';
 import DescriptionBlock from '../components/issuesPage/IssueDetailsForm/DescriptionBlock.jsx';
 import StatusSeverityBlock from '../components/issuesPage/IssueDetailsForm/StatusSeverityBlock.jsx';
 import { DRAFT, NOT_FIXED } from '../components/issuesPage/constants.js';
-import { createIssueEvent } from '../lib/createIssueEvent.js';
 
 const PublicIssueDetailsForm = ({ issue = null, editMode = false }) => {
   const dispatch = useDispatch();
@@ -71,18 +70,11 @@ const PublicIssueDetailsForm = ({ issue = null, editMode = false }) => {
         return prev[key] === values[key] ? acc : { ...acc, [key]: values[key] };
       }, {});
 
-      const updatedValuesWithEvent = createIssueEvent(
-        updatedValues,
-        prev.links?.length,
-        issue?.status || DRAFT,
-        issue?.feedback,
-      );
       setIsEditName(false);
-
       setIssuePrevValues({ ...values, status: '' });
       const newValues = {
         ...prev,
-        ...updatedValuesWithEvent,
+        ...updatedValues,
         id: +issueId,
         auditId: +auditId,
       };
