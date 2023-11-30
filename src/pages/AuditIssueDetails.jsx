@@ -12,8 +12,9 @@ import AddComment from '../components/issuesPage/AddComment.jsx';
 import Loader from '../components/Loader.jsx';
 import { setCurrentAuditPartner } from '../redux/actions/auditAction.js';
 import { getIssues } from '../redux/actions/issueAction.js';
+import PublicIssueDetailsForm from './PublicIssueDetailForm.jsx';
 
-const AuditIssueDetails = () => {
+const AuditIssueDetails = ({ isPublic }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { auditId, issueId } = useParams();
@@ -24,7 +25,14 @@ const AuditIssueDetails = () => {
   );
 
   const issue = useMemo(() => {
-    return issues?.find(issue => issue.id === +issueId);
+    if (!isPublic) {
+      return issues?.find(issue => issue.id === +issueId);
+    } else {
+      const publicIssues = JSON.parse(
+        localStorage.getItem('publicIssues') || '[]',
+      );
+      return publicIssues.find(issue => issue.id === +issueId);
+    }
   }, [issues]);
 
   useEffect(() => {
@@ -32,7 +40,7 @@ const AuditIssueDetails = () => {
   }, [audit?.id]);
 
   useEffect(() => {
-    if (issuesAuditId !== auditId) {
+    if (issuesAuditId !== auditId && !isPublic) {
       dispatch(getIssues(auditId));
     }
   }, []);
@@ -62,7 +70,11 @@ const AuditIssueDetails = () => {
         >
           <ArrowBackIcon color="secondary" />
         </Button>
-        <IssueDetailsForm issue={issue} editMode={true} />
+        {!isPublic ? (
+          <IssueDetailsForm issue={issue} editMode={true} />
+        ) : (
+          <PublicIssueDetailsForm issue={issue} editMode={true} />
+        )}
         {!!issue.events?.length && (
           <EventsList
             issue={issue}
@@ -70,7 +82,7 @@ const AuditIssueDetails = () => {
             auditId={auditId}
           />
         )}
-        <AddComment auditId={auditId} issueId={issueId} />
+        {!isPublic && <AddComment auditId={auditId} issueId={issueId} />}
       </CustomCard>
     </Layout>
   );
