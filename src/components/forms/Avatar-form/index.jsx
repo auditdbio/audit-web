@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { useField } from 'formik';
 import axios from 'axios';
 import Cookies from 'js-cookie';
-import { useSelector } from 'react-redux';
 import { Avatar, Button } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit.js';
 import ClearIcon from '@mui/icons-material/Clear';
@@ -11,20 +11,31 @@ import theme from '../../../styles/themes.js';
 import { ASSET_URL } from '../../../services/urls.js';
 import CustomSnackbar from '../../custom/CustomSnackbar.jsx';
 import { addTestsLabel } from '../../../lib/helper.js';
+import { updateAuditor } from '../../../redux/actions/auditorAction.js';
+import { updateCustomer } from '../../../redux/actions/customerAction.js';
 
 const AvatarForm = ({ role, name }) => {
+  const dispatch = useDispatch();
   const { user } = useSelector(state => state.user);
   const [avatarField, , fieldHelper] = useField(name);
   const formData = new FormData();
   const [error, setError] = useState(null);
 
-  const sendAvatar = () => {
+  const sendAvatar = (withSave = false) => {
     axios
       .post(ASSET_URL, formData, {
         headers: { Authorization: 'Bearer ' + Cookies.get('token') },
       })
       .then(() => {
-        fieldHelper.setValue(formData.get('path'));
+        const avatar = formData.get('path');
+        fieldHelper.setValue(avatar);
+        if (withSave) {
+          if (role === AUDITOR) {
+            dispatch(updateAuditor({ avatar }, false));
+          } else {
+            dispatch(updateCustomer({ avatar }, false));
+          }
+        }
       })
       .catch(err => {
         if (err?.code === 'ERR_NETWORK') {
@@ -59,24 +70,22 @@ const AvatarForm = ({ role, name }) => {
 
   useEffect(() => {
     if (user.is_new && !avatarField.value) {
-      const avatar = user?.linked_accounts?.[0]?.avatar;
-      const isThirdPartyImage = /^https?:\/\//i.test(avatar);
+      const avatarLink = user?.linked_accounts?.[0]?.avatar;
+      const isThirdPartyImage = /^https?:\/\//i.test(avatarLink);
 
       if (isThirdPartyImage) {
-        axios
-          .get(avatarField.value, { responseType: 'blob' })
-          .then(({ data }) => {
-            const filename =
-              user.id +
-              user.current_role +
-              Date.now() +
-              data.type.replace(/image\//, '.');
-            formData.append('file', data);
-            formData.append('path', filename);
-            formData.append('original_name', filename);
-            formData.append('private', 'false');
-            sendAvatar();
-          });
+        axios.get(avatarLink, { responseType: 'blob' }).then(({ data }) => {
+          const filename =
+            user.id +
+            user.current_role +
+            Date.now() +
+            data.type.replace(/image\//, '.');
+          formData.append('file', data);
+          formData.append('path', filename);
+          formData.append('original_name', filename);
+          formData.append('private', 'false');
+          sendAvatar(true);
+        });
       }
     }
   }, [user]);
@@ -89,11 +98,7 @@ const AvatarForm = ({ role, name }) => {
     <>
       <Avatar
         sx={{ mb: '35px' }}
-        src={
-          avatarField.value &&
-          !/^https?:\/\//i.test(avatarField.value) &&
-          `${ASSET_URL}/${avatarField.value}`
-        }
+        src={avatarField.value && `${ASSET_URL}/${avatarField.value}`}
       />
 
       <CustomSnackbar
