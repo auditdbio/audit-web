@@ -160,6 +160,7 @@ const Control = ({
                   include_in_toc: true,
                   feedback: issue.feedback,
                   issue_data: {
+                    category: issue.category,
                     links: issue.links,
                     severity: issue.severity,
                     status: issue.status,
