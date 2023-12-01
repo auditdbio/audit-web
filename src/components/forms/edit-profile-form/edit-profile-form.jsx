@@ -32,8 +32,8 @@ const EditProfileForm = ({ role }) => {
   const matchXs = useMediaQuery(theme.breakpoints.down('xs'));
   const dispatch = useDispatch();
   const { user } = useSelector(s => s.user);
-  const customer = useSelector(s => s.customer.customer);
-  const auditor = useSelector(s => s.auditor.auditor);
+  const { customer } = useSelector(s => s.customer);
+  const { auditor } = useSelector(s => s.auditor);
 
   const data = useMemo(() => {
     if (role === AUDITOR) {
@@ -45,8 +45,8 @@ const EditProfileForm = ({ role }) => {
 
   const getPrefilledLastName = () => {
     const usernameParts = user?.name?.split(' ');
-    return usernameParts && usernameParts.length > 1
-      ? usernameParts.at(-1)
+    return user.is_new && usernameParts?.length > 1
+      ? usernameParts[usernameParts.length - 1]
       : '';
   };
 
@@ -57,7 +57,7 @@ const EditProfileForm = ({ role }) => {
       <Formik
         initialValues={{
           userId: data.user_id || '',
-          avatar: data.avatar || user?.linked_accounts?.[0]?.avatar || '',
+          avatar: data.avatar || '',
           free_at: '',
           first_name: data?.first_name || user?.name?.split(' ')[0] || '',
           last_name: data?.last_name || getPrefilledLastName(),
@@ -356,7 +356,6 @@ const buttonSx = theme => ({
 const avatarWrapper = theme => ({
   '& button': {
     textTransform: 'unset',
-    marginTop: '35px',
     '& svg': {
       marginRight: '5px',
     },
