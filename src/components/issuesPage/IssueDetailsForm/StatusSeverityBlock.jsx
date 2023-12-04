@@ -179,7 +179,7 @@ const StatusSeverityBlock = ({
           </Box>
         )}
 
-        {user.current_role === AUDITOR &&
+        {(user.current_role === AUDITOR || isPublic) &&
         audit?.status?.toLowerCase() !== RESOLVED.toLowerCase() ? (
           <Box>
             <Typography sx={[statusBlockTitle]}>
@@ -192,6 +192,12 @@ const StatusSeverityBlock = ({
               disabled={false}
               fullWidth={true}
               sx={categoryInput}
+              onBlur={e => {
+                if (isPublic) {
+                  setCategoryPrevVal(values.category);
+                  handleSubmit();
+                }
+              }}
               inputProps={{
                 sx: [
                   { padding: '4px 2px', fontSize: '18px' },
@@ -203,6 +209,7 @@ const StatusSeverityBlock = ({
               }}
               InputProps={
                 user.current_role === AUDITOR &&
+                !isPublic &&
                 editMode &&
                 categoryPrevVal !== values.category
                   ? {
@@ -242,7 +249,7 @@ const StatusSeverityBlock = ({
           </Box>
         )}
 
-        {editMode && user.current_role === AUDITOR && (
+        {editMode && user.current_role === AUDITOR && !isPublic && (
           <Box sx={[statusBlockAlign, { mt: '20px' }]}>
             <FormControlLabel
               label={

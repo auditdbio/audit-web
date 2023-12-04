@@ -77,14 +77,14 @@ export const authorizedPages = [
       {
         id: 331,
         role: AUDITOR,
-        itemName: 'Report builder',
-        link: `/report-builder/${auditId}`,
+        itemName: 'Audit builder',
+        link: `/audit-builder/${auditId}`,
       },
       {
         id: 3312,
         role: CUSTOMER,
-        itemName: 'Report builder',
-        link: `/report-builder/${auditId}`,
+        itemName: 'Audit builder',
+        link: `/audit-builder/${auditId}`,
       },
     ],
   },
@@ -118,8 +118,8 @@ export const pages = [
     menuOptions: [
       {
         id: 31,
-        itemName: 'Report builder',
-        link: `/report-builder/${auditId}`,
+        itemName: 'Audit builder',
+        link: `/audit-builder/${auditId}`,
       },
     ],
   },

@@ -43,6 +43,7 @@ const MarkdownEditor = ({
   plugins = [],
   setFieldTouched,
   handleBlur,
+  isPublic,
 }) => {
   const [markdownField, meta, markdownHelper] = useField(name);
   const [markdown, setMarkdown] = useState('');
@@ -87,7 +88,7 @@ const MarkdownEditor = ({
         wrapper,
         {
           border: `1px solid ${
-            handleBlur && meta.touched && !markdownField.value
+            (handleBlur || isPublic) && meta.touched && !markdownField.value
               ? 'red'
               : 'transparent'
           }`,

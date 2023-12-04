@@ -87,7 +87,7 @@ const DescriptionBlock = ({
           mdProps={{
             view: getMarkdownInitialView(),
             placeholder:
-              touched.description && errors.description
+              touched.description && (errors.description || !values.description)
                 ? 'Description is required'
                 : 'Issue description',
             style: markdownSx(matchXs),
