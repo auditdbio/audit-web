@@ -170,7 +170,11 @@ const Control = ({
                 {
                   type: 'plain_text',
                   title: 'Critical',
-                  text: '',
+                  text: issuesArray.filter(
+                    issue => issue.severity === 'Critical',
+                  ).length
+                    ? ''
+                    : 'No critical issues found',
                   include_in_toc: true,
                   subsections: issuesArray
                     .filter(issue => issue.severity === 'Critical')
@@ -195,7 +199,10 @@ const Control = ({
                 {
                   type: 'plain_text',
                   title: 'Major',
-                  text: '',
+                  text: issuesArray.filter(issue => issue.severity === 'Major')
+                    .length
+                    ? ''
+                    : 'No major issues found',
                   include_in_toc: true,
                   subsections: issuesArray
                     .filter(issue => issue.severity === 'Major')
@@ -205,12 +212,14 @@ const Control = ({
                         title: issue.name,
                         text: issue.description,
                         include_in_toc: true,
-                        feedback: issue.feedback,
                         issue_data: {
                           links: issue.links,
                           category: issue.category,
                           severity: issue.severity,
                           status: issue.status,
+                          fixed_time: issue.fixed_time,
+                          fixed_by: issue.fixed_by,
+                          fixed_comment: issue.fixed_comment,
                         },
                       };
                     }),
@@ -218,7 +227,10 @@ const Control = ({
                 {
                   type: 'plain_text',
                   title: 'Medium',
-                  text: '',
+                  text: issuesArray.filter(issue => issue.severity === 'Medium')
+                    .length
+                    ? ''
+                    : 'No medium issues found',
                   include_in_toc: true,
                   subsections: issuesArray
                     .filter(issue => issue.severity === 'Medium')
@@ -228,12 +240,14 @@ const Control = ({
                         title: issue.name,
                         text: issue.description,
                         include_in_toc: true,
-                        feedback: issue.feedback,
                         issue_data: {
                           links: issue.links,
                           category: issue.category,
                           severity: issue.severity,
                           status: issue.status,
+                          fixed_time: issue.fixed_time,
+                          fixed_by: issue.fixed_by,
+                          fixed_comment: issue.fixed_comment,
                         },
                       };
                     }),
@@ -241,7 +255,10 @@ const Control = ({
                 {
                   type: 'plain_text',
                   title: 'Minor',
-                  text: '',
+                  text: issuesArray.filter(issue => issue.severity === 'Minor')
+                    .length
+                    ? ''
+                    : 'No minor issues found',
                   include_in_toc: true,
                   subsections: issuesArray
                     .filter(issue => issue.severity === 'Minor')
@@ -251,12 +268,14 @@ const Control = ({
                         title: issue.name,
                         text: issue.description,
                         include_in_toc: true,
-                        feedback: issue.feedback,
                         issue_data: {
                           links: issue.links,
                           category: issue.category,
                           severity: issue.severity,
                           status: issue.status,
+                          fixed_time: issue.fixed_time,
+                          fixed_by: issue.fixed_by,
+                          fixed_comment: issue.fixed_comment,
                         },
                       };
                     }),
