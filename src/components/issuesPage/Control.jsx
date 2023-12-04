@@ -96,7 +96,6 @@ const Control = ({
                 '\n' +
                 "3. It's always recommended to have multiple layers of checks and balances, including but not limited to, regular code reviews and updated audits.",
               include_in_toc: true,
-              subsections: [],
             },
             {
               type: 'plain_text',
@@ -167,21 +166,102 @@ const Control = ({
               title: 'Issues',
               text: '',
               include_in_toc: true,
-              subsections: issuesArray.map(issue => {
-                return {
-                  type: 'issue_data',
-                  title: issue.name,
-                  text: issue.description,
+              subsections: [
+                {
+                  type: 'plain_text',
+                  title: 'Critical',
+                  text: '',
                   include_in_toc: true,
-                  feedback: issue.feedback,
-                  issue_data: {
-                    category: issue.category,
-                    links: issue.links,
-                    severity: issue.severity,
-                    status: issue.status,
-                  },
-                };
-              }),
+                  subsections: issuesArray
+                    .filter(issue => issue.severity === 'Critical')
+                    .map(issue => {
+                      return {
+                        type: 'issue_data',
+                        title: issue.name,
+                        text: issue.description,
+                        include_in_toc: true,
+                        issue_data: {
+                          links: issue.links,
+                          category: issue.category,
+                          severity: issue.severity,
+                          status: issue.status,
+                          fixed_time: issue.fixed_time,
+                          fixed_by: issue.fixed_by,
+                          fixed_comment: issue.fixed_comment,
+                        },
+                      };
+                    }),
+                },
+                {
+                  type: 'plain_text',
+                  title: 'Major',
+                  text: '',
+                  include_in_toc: true,
+                  subsections: issuesArray
+                    .filter(issue => issue.severity === 'Major')
+                    .map(issue => {
+                      return {
+                        type: 'issue_data',
+                        title: issue.name,
+                        text: issue.description,
+                        include_in_toc: true,
+                        feedback: issue.feedback,
+                        issue_data: {
+                          links: issue.links,
+                          category: issue.category,
+                          severity: issue.severity,
+                          status: issue.status,
+                        },
+                      };
+                    }),
+                },
+                {
+                  type: 'plain_text',
+                  title: 'Medium',
+                  text: '',
+                  include_in_toc: true,
+                  subsections: issuesArray
+                    .filter(issue => issue.severity === 'Medium')
+                    .map(issue => {
+                      return {
+                        type: 'issue_data',
+                        title: issue.name,
+                        text: issue.description,
+                        include_in_toc: true,
+                        feedback: issue.feedback,
+                        issue_data: {
+                          links: issue.links,
+                          category: issue.category,
+                          severity: issue.severity,
+                          status: issue.status,
+                        },
+                      };
+                    }),
+                },
+                {
+                  type: 'plain_text',
+                  title: 'Minor',
+                  text: '',
+                  include_in_toc: true,
+                  subsections: issuesArray
+                    .filter(issue => issue.severity === 'Minor')
+                    .map(issue => {
+                      return {
+                        type: 'issue_data',
+                        title: issue.name,
+                        text: issue.description,
+                        include_in_toc: true,
+                        feedback: issue.feedback,
+                        issue_data: {
+                          links: issue.links,
+                          category: issue.category,
+                          severity: issue.severity,
+                          status: issue.status,
+                        },
+                      };
+                    }),
+                },
+              ],
             },
             // {
             //   type: 'plain_text',
