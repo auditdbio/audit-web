@@ -176,25 +176,30 @@ const Control = ({
                     ? ''
                     : 'No critical issues found',
                   include_in_toc: true,
-                  subsections: issuesArray
-                    .filter(issue => issue.severity === 'Critical')
-                    .map(issue => {
-                      return {
-                        type: 'issue_data',
-                        title: issue.name,
-                        text: issue.description,
-                        include_in_toc: true,
-                        issue_data: {
-                          links: issue.links,
-                          category: issue.category,
-                          severity: issue.severity,
-                          status: issue.status,
-                          fixed_time: issue.fixed_time,
-                          fixed_by: issue.fixed_by,
-                          fixed_comment: issue.fixed_comment,
-                        },
-                      };
-                    }),
+                  [issuesArray.filter(issue => issue.severity === 'Critical')
+                    .length
+                    ? 'subsections'
+                    : '']: [
+                    ...issuesArray
+                      .filter(issue => issue.severity === 'Critical')
+                      .map(issue => {
+                        return {
+                          type: 'issue_data',
+                          title: issue.name,
+                          text: issue.description,
+                          include_in_toc: true,
+                          issue_data: {
+                            links: issue.links,
+                            category: issue.category,
+                            severity: issue.severity,
+                            status: issue.status,
+                            fixed_time: issue.fixed_time,
+                            fixed_by: issue.fixed_by,
+                            fixed_comment: issue.fixed_comment,
+                          },
+                        };
+                      }),
+                  ],
                 },
                 {
                   type: 'plain_text',
