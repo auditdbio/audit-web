@@ -188,14 +188,12 @@ const Control = ({
                           title: issue.name,
                           text: issue.description,
                           include_in_toc: true,
+                          feedback: issue.feedback,
                           issue_data: {
                             links: issue.links,
                             category: issue.category,
                             severity: issue.severity,
                             status: issue.status,
-                            fixed_time: issue.fixed_time,
-                            fixed_by: issue.fixed_by,
-                            fixed_comment: issue.fixed_comment,
                           },
                         };
                       }),
@@ -209,25 +207,28 @@ const Control = ({
                     ? ''
                     : 'No major issues found',
                   include_in_toc: true,
-                  subsections: issuesArray
-                    .filter(issue => issue.severity === 'Major')
-                    .map(issue => {
-                      return {
-                        type: 'issue_data',
-                        title: issue.name,
-                        text: issue.description,
-                        include_in_toc: true,
-                        issue_data: {
-                          links: issue.links,
-                          category: issue.category,
-                          severity: issue.severity,
-                          status: issue.status,
-                          fixed_time: issue.fixed_time,
-                          fixed_by: issue.fixed_by,
-                          fixed_comment: issue.fixed_comment,
-                        },
-                      };
-                    }),
+                  [issuesArray.filter(issue => issue.severity === 'Major')
+                    .length
+                    ? 'subsections'
+                    : '']: [
+                    ...issuesArray
+                      .filter(issue => issue.severity === 'Major')
+                      .map(issue => {
+                        return {
+                          type: 'issue_data',
+                          title: issue.name,
+                          text: issue.description,
+                          include_in_toc: true,
+                          feedback: issue.feedback,
+                          issue_data: {
+                            links: issue.links,
+                            category: issue.category,
+                            severity: issue.severity,
+                            status: issue.status,
+                          },
+                        };
+                      }),
+                  ],
                 },
                 {
                   type: 'plain_text',
@@ -237,25 +238,28 @@ const Control = ({
                     ? ''
                     : 'No medium issues found',
                   include_in_toc: true,
-                  subsections: issuesArray
-                    .filter(issue => issue.severity === 'Medium')
-                    .map(issue => {
-                      return {
-                        type: 'issue_data',
-                        title: issue.name,
-                        text: issue.description,
-                        include_in_toc: true,
-                        issue_data: {
-                          links: issue.links,
-                          category: issue.category,
-                          severity: issue.severity,
-                          status: issue.status,
-                          fixed_time: issue.fixed_time,
-                          fixed_by: issue.fixed_by,
-                          fixed_comment: issue.fixed_comment,
-                        },
-                      };
-                    }),
+                  [issuesArray.filter(issue => issue.severity === 'Medium')
+                    .length
+                    ? 'subsections'
+                    : '']: [
+                    ...issuesArray
+                      .filter(issue => issue.severity === 'Medium')
+                      .map(issue => {
+                        return {
+                          type: 'issue_data',
+                          title: issue.name,
+                          text: issue.description,
+                          include_in_toc: true,
+                          feedback: issue.feedback,
+                          issue_data: {
+                            links: issue.links,
+                            category: issue.category,
+                            severity: issue.severity,
+                            status: issue.status,
+                          },
+                        };
+                      }),
+                  ],
                 },
                 {
                   type: 'plain_text',
@@ -265,25 +269,28 @@ const Control = ({
                     ? ''
                     : 'No minor issues found',
                   include_in_toc: true,
-                  subsections: issuesArray
-                    .filter(issue => issue.severity === 'Minor')
-                    .map(issue => {
-                      return {
-                        type: 'issue_data',
-                        title: issue.name,
-                        text: issue.description,
-                        include_in_toc: true,
-                        issue_data: {
-                          links: issue.links,
-                          category: issue.category,
-                          severity: issue.severity,
-                          status: issue.status,
-                          fixed_time: issue.fixed_time,
-                          fixed_by: issue.fixed_by,
-                          fixed_comment: issue.fixed_comment,
-                        },
-                      };
-                    }),
+                  [issuesArray.filter(issue => issue.severity === 'Minor')
+                    .length
+                    ? 'subsections'
+                    : '']: [
+                    ...issuesArray
+                      .filter(issue => issue.severity === 'Minor')
+                      .map(issue => {
+                        return {
+                          type: 'issue_data',
+                          title: issue.name,
+                          text: issue.description,
+                          include_in_toc: true,
+                          feedback: issue.feedback,
+                          issue_data: {
+                            links: issue.links,
+                            category: issue.category,
+                            severity: issue.severity,
+                            status: issue.status,
+                          },
+                        };
+                      }),
+                  ],
                 },
               ],
             },
