@@ -96,7 +96,6 @@ const Control = ({
                 '\n' +
                 "3. It's always recommended to have multiple layers of checks and balances, including but not limited to, regular code reviews and updated audits.",
               include_in_toc: true,
-              subsections: [],
             },
             {
               type: 'plain_text',
@@ -167,21 +166,133 @@ const Control = ({
               title: 'Issues',
               text: '',
               include_in_toc: true,
-              subsections: issuesArray.map(issue => {
-                return {
-                  type: 'issue_data',
-                  title: issue.name,
-                  text: issue.description,
+              subsections: [
+                {
+                  type: 'plain_text',
+                  title: 'Critical',
+                  text: issuesArray.filter(
+                    issue => issue.severity === 'Critical',
+                  ).length
+                    ? ''
+                    : 'No critical issues found',
                   include_in_toc: true,
-                  feedback: issue.feedback,
-                  issue_data: {
-                    category: issue.category,
-                    links: issue.links,
-                    severity: issue.severity,
-                    status: issue.status,
-                  },
-                };
-              }),
+                  [issuesArray.filter(issue => issue.severity === 'Critical')
+                    .length
+                    ? 'subsections'
+                    : '']: [
+                    ...issuesArray
+                      .filter(issue => issue.severity === 'Critical')
+                      .map(issue => {
+                        return {
+                          type: 'issue_data',
+                          title: issue.name,
+                          text: issue.description,
+                          include_in_toc: true,
+                          feedback: issue.feedback,
+                          issue_data: {
+                            links: issue.links,
+                            category: issue.category,
+                            severity: issue.severity,
+                            status: issue.status,
+                          },
+                        };
+                      }),
+                  ],
+                },
+                {
+                  type: 'plain_text',
+                  title: 'Major',
+                  text: issuesArray.filter(issue => issue.severity === 'Major')
+                    .length
+                    ? ''
+                    : 'No major issues found',
+                  include_in_toc: true,
+                  [issuesArray.filter(issue => issue.severity === 'Major')
+                    .length
+                    ? 'subsections'
+                    : '']: [
+                    ...issuesArray
+                      .filter(issue => issue.severity === 'Major')
+                      .map(issue => {
+                        return {
+                          type: 'issue_data',
+                          title: issue.name,
+                          text: issue.description,
+                          include_in_toc: true,
+                          feedback: issue.feedback,
+                          issue_data: {
+                            links: issue.links,
+                            category: issue.category,
+                            severity: issue.severity,
+                            status: issue.status,
+                          },
+                        };
+                      }),
+                  ],
+                },
+                {
+                  type: 'plain_text',
+                  title: 'Medium',
+                  text: issuesArray.filter(issue => issue.severity === 'Medium')
+                    .length
+                    ? ''
+                    : 'No medium issues found',
+                  include_in_toc: true,
+                  [issuesArray.filter(issue => issue.severity === 'Medium')
+                    .length
+                    ? 'subsections'
+                    : '']: [
+                    ...issuesArray
+                      .filter(issue => issue.severity === 'Medium')
+                      .map(issue => {
+                        return {
+                          type: 'issue_data',
+                          title: issue.name,
+                          text: issue.description,
+                          include_in_toc: true,
+                          feedback: issue.feedback,
+                          issue_data: {
+                            links: issue.links,
+                            category: issue.category,
+                            severity: issue.severity,
+                            status: issue.status,
+                          },
+                        };
+                      }),
+                  ],
+                },
+                {
+                  type: 'plain_text',
+                  title: 'Minor',
+                  text: issuesArray.filter(issue => issue.severity === 'Minor')
+                    .length
+                    ? ''
+                    : 'No minor issues found',
+                  include_in_toc: true,
+                  [issuesArray.filter(issue => issue.severity === 'Minor')
+                    .length
+                    ? 'subsections'
+                    : '']: [
+                    ...issuesArray
+                      .filter(issue => issue.severity === 'Minor')
+                      .map(issue => {
+                        return {
+                          type: 'issue_data',
+                          title: issue.name,
+                          text: issue.description,
+                          include_in_toc: true,
+                          feedback: issue.feedback,
+                          issue_data: {
+                            links: issue.links,
+                            category: issue.category,
+                            severity: issue.severity,
+                            status: issue.status,
+                          },
+                        };
+                      }),
+                  ],
+                },
+              ],
             },
             // {
             //   type: 'plain_text',
