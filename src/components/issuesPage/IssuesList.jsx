@@ -20,13 +20,12 @@ import IssueListItem from './IssueListItem.jsx';
 import { clearMessage } from '../../redux/actions/auditAction.js';
 import CustomSnackbar from '../custom/CustomSnackbar.jsx';
 
-const IssuesList = ({ auditId }) => {
+const IssuesList = ({ auditId, isPublic, setIsOpenReset, handleSubmit }) => {
   const dispatch = useDispatch();
   const [searchParams, setSearchParams] = useSearchParams();
   const { issues } = useSelector(s => s.issues);
   const { user } = useSelector(s => s.user);
   const { successMessage, error } = useSelector(s => s.audits);
-
   const [search, setSearch] = useState(searchParams.get('search') || '');
   const [page, setPage] = useState(+searchParams.get('page') || 1);
   const [sortType, setSortType] = useState(
@@ -36,7 +35,9 @@ const IssuesList = ({ auditId }) => {
   const getNumberOfPages = () => Math.ceil(getSearchResultsLength() / 10);
 
   const getSearchResultsLength = () => {
-    return issues?.filter(issue => issue.name?.includes(search)).length;
+    return issues?.filter(issue =>
+      issue.name?.toLowerCase().includes(search.toLowerCase()),
+    ).length;
   };
 
   const handlePageChange = (e, page) => {
@@ -114,6 +115,9 @@ const IssuesList = ({ auditId }) => {
         setSearch={setSearch}
         setPage={setPage}
         setSearchParams={setSearchParams}
+        isPublic={isPublic}
+        setIsOpenReset={setIsOpenReset}
+        handleSubmit={handleSubmit}
       />
 
       <Box
@@ -152,7 +156,9 @@ const IssuesList = ({ auditId }) => {
 
       <Box sx={{ width: '100%' }}>
         {issues
-          ?.filter(issue => issue.name?.includes(search))
+          ?.filter(issue =>
+            issue.name?.toLowerCase().includes(search.toLowerCase()),
+          )
           .sort(sortFunc)
           .slice((page - 1) * 10, page * 10)
           .map(issue => (
@@ -161,11 +167,16 @@ const IssuesList = ({ auditId }) => {
               key={issue.id}
               auditId={auditId}
               user={user}
+              isPublic={isPublic}
             />
           ))}
       </Box>
 
-      {getSearchResultsLength() === 0 && <Box sx={noResults}>Empty</Box>}
+      {getSearchResultsLength() === 0 && (
+        <Box sx={[noResults, isPublic ? { paddingTop: 0 } : {}]}>
+          No issue fits the search criteria
+        </Box>
+      )}
 
       <CustomPagination
         show={getSearchResultsLength() > 10}

@@ -12,7 +12,7 @@ import {
   VERIFICATION,
 } from './constants.js';
 
-const IssueListItem = ({ issue, auditId, user }) => {
+const IssueListItem = ({ issue, auditId, user, isPublic }) => {
   const [showTitleTooltip, setShowTitleTooltip] = useState(false);
   const titleBoxRef = useRef();
   const titleTextRef = useRef();
@@ -27,11 +27,13 @@ const IssueListItem = ({ issue, auditId, user }) => {
   }, []);
 
   const checkUnread = () => {
-    return user?.id !== issue.events?.at(-1)?.user &&
-      issue.events?.length &&
-      issue.events?.length >= issue.read
-      ? unreadChanges
-      : {};
+    if (user?.id && issue.events) {
+      return user?.id !== issue.events[issue.events?.length - 1]?.user &&
+        issue.events?.length &&
+        issue.events?.length >= issue.read
+        ? unreadChanges
+        : {};
+    }
   };
 
   return (
@@ -39,7 +41,11 @@ const IssueListItem = ({ issue, auditId, user }) => {
       sx={issueRow}
       component={RouterLink}
       onClick={() => window.scrollTo({ top: 0 })}
-      to={`/issues/audit-issue/${auditId}/${issue.id}`}
+      to={
+        isPublic
+          ? `/public-issues/audit-issue/${auditId}/${issue.id}`
+          : `/issues/audit-issue/${auditId}/${issue.id}`
+      }
       {...addTestsLabel('issue-details-link')}
     >
       <Tooltip
