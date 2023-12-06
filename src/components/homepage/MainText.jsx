@@ -63,20 +63,6 @@ const MainText = () => {
             {paragraphText}
           </Typography>
           <Box sx={buttonsStyle(isMobile)}>
-            <CustomButton sx={gitCoinSx}>
-              <MuiLink
-                target="_blank"
-                sx={{
-                  color: '#fff',
-                  textDecoration: 'none',
-                }}
-                href="https://explorer.gitcoin.co/#/round/424/0x98720dd1925d34a2453ebc1f91c9d48e7e89ec29/0x98720dd1925d34a2453ebc1f91c9d48e7e89ec29-91"
-              >
-                Support us on gitcoin
-              </MuiLink>
-            </CustomButton>
-          </Box>
-          <Box sx={buttonsStyle(isMobile)}>
             <CustomButton
               sx={auditorButton}
               onClick={isAuth() ? handleBecomeAuditor : handleSignUp}
@@ -228,6 +214,7 @@ const personBitcoinStyle = {
 
 const gitCoinSx = theme => ({
   backgroundColor: '#44944A',
+  paddingX: 0,
   '&:hover': {
     backgroundColor: '#326e34!important',
   },
