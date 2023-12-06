@@ -29,7 +29,7 @@ const ProfilePage = () => {
       navigate('/');
     }
   }, [isAuth()]);
-
+  //
   useEffect(() => {
     setChooseTab(tab);
   }, [tab, chooseTab]);

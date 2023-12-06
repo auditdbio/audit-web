@@ -6,6 +6,7 @@ import {
   Typography,
   Link,
   useMediaQuery,
+  Tooltip,
 } from '@mui/material';
 import GitHubIcon from '@mui/icons-material/GitHub.js';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
@@ -19,7 +20,6 @@ import { ASSET_URL } from '../services/urls.js';
 import MobileTagsList from './MobileTagsList/index.jsx';
 import { addTestsLabel } from '../lib/helper.js';
 import ShareProfileButton from './custom/ShareProfileButton.jsx';
-import GitHubIcon from '@mui/icons-material/GitHub';
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import { Link as RouterLink } from 'react-router-dom';
 
@@ -143,20 +143,24 @@ const UserInfo = ({ role }) => {
             <RouterLink
               href={'https://github.com/auditdbio/audit-web/tree/prod'}
             >
-              <GitHubIcon />
+              <Tooltip title="github.com" placement={'top'} arrow>
+                <GitHubIcon />
+              </Tooltip>
             </RouterLink>
           </Box>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: '7px' }}>
-            <LinkedInIcon />
             <RouterLink
               href={'https://github.com/auditdbio/audit-web/tree/prod'}
-            ></RouterLink>
+            >
+              <LinkedInIcon />
+            </RouterLink>
           </Box>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: '7px' }}>
-            <LinkedInIcon />
             <RouterLink
               href={'https://github.com/auditdbio/audit-web/tree/prod'}
-            ></RouterLink>
+            >
+              <LinkedInIcon />
+            </RouterLink>
           </Box>
         </Box>
         <Box
@@ -172,14 +176,19 @@ const UserInfo = ({ role }) => {
             role={role}
             userId={role === AUDITOR ? auditor.user_id : customer.user_id}
           />
-          <Button
-            sx={[buttonSx, role === 'auditor' ? submitAuditor : {}]}
-            variant={'contained'}
-            onClick={handleEdit}
-            {...addTestsLabel('user_edit-button')}
-          >
-            Edit
-          </Button>
+          <Box sx={{ display: 'flex', gap: '15px' }}>
+            <Button
+              sx={[buttonSx, role === 'auditor' ? submitAuditor : {}]}
+              variant={'contained'}
+              onClick={handleEdit}
+              {...addTestsLabel('user_edit-button')}
+            >
+              Edit
+            </Button>
+            <Button sx={buttonSx} variant={'contained'}>
+              Connect identity
+            </Button>
+          </Box>
         </Box>
       </Box>
     );
@@ -295,7 +304,7 @@ const buttonSx = theme => ({
   textTransform: 'capitalize',
   fontWeight: 600,
   fontSize: '18px',
-  padding: '9px 50px',
+  // padding: '9px 50px',
   width: '214px',
   borderRadius: '10px',
   [theme.breakpoints.down('xs')]: {
