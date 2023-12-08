@@ -20,7 +20,13 @@ import IssueListItem from './IssueListItem.jsx';
 import { clearMessage } from '../../redux/actions/auditAction.js';
 import CustomSnackbar from '../custom/CustomSnackbar.jsx';
 
-const IssuesList = ({ auditId, isPublic, setIsOpenReset, handleSubmit }) => {
+const IssuesList = ({
+  auditId,
+  isPublic,
+  setIsOpenReset,
+  handleSubmit,
+  saved,
+}) => {
   const dispatch = useDispatch();
   const [searchParams, setSearchParams] = useSearchParams();
   const { issues } = useSelector(s => s.issues);
@@ -97,6 +103,7 @@ const IssuesList = ({ auditId, isPublic, setIsOpenReset, handleSubmit }) => {
       page,
       sort: sortType,
     }));
+    return () => dispatch(clearMessage());
   }, [sortType]);
 
   return (
@@ -112,6 +119,7 @@ const IssuesList = ({ auditId, isPublic, setIsOpenReset, handleSubmit }) => {
       <Control
         issues={issues}
         search={search}
+        saved={saved}
         setSearch={setSearch}
         setPage={setPage}
         setSearchParams={setSearchParams}
@@ -163,6 +171,7 @@ const IssuesList = ({ auditId, isPublic, setIsOpenReset, handleSubmit }) => {
           .slice((page - 1) * 10, page * 10)
           .map(issue => (
             <IssueListItem
+              saved={saved}
               issue={issue}
               key={issue.id}
               auditId={auditId}
@@ -173,7 +182,7 @@ const IssuesList = ({ auditId, isPublic, setIsOpenReset, handleSubmit }) => {
       </Box>
 
       {getSearchResultsLength() === 0 && (
-        <Box sx={[noResults, isPublic ? { paddingTop: 0 } : {}]}>
+        <Box sx={[noResults, isPublic || saved ? { paddingTop: 0 } : {}]}>
           No issue fits the search criteria
         </Box>
       )}

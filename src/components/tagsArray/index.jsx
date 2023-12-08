@@ -4,7 +4,7 @@ import ClearIcon from '@mui/icons-material/Clear.js';
 import { FieldArray, useField } from 'formik';
 import theme from '../../styles/themes.js';
 
-const TagsArray = ({ name }) => {
+const TagsArray = ({ name, handleSubmit }) => {
   const [field, meta] = useField(name);
 
   return (
@@ -33,7 +33,12 @@ const TagsArray = ({ name }) => {
                   sx={chipSx}
                   label={tag}
                   variant="outlined"
-                  onDelete={() => arrayHelper.remove(idx)}
+                  onDelete={() => {
+                    arrayHelper.remove(idx);
+                    if (handleSubmit) {
+                      handleSubmit();
+                    }
+                  }}
                   deleteIcon={<ClearIcon sx={iconSx} />}
                 />
               </Tooltip>

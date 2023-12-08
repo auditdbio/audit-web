@@ -21,7 +21,7 @@ import StatusSeverityBlock from '../components/issuesPage/IssueDetailsForm/Statu
 import { DRAFT, NOT_FIXED } from '../components/issuesPage/constants.js';
 import { createIssueEvent } from '../lib/createIssueEvent.js';
 
-const PublicIssueDetailsForm = ({ issue = null, editMode = false }) => {
+const PublicIssueDetailsForm = ({ issue = null, editMode = false, saved }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { auditId, issueId } = useParams();
@@ -71,18 +71,18 @@ const PublicIssueDetailsForm = ({ issue = null, editMode = false }) => {
         return prev[key] === values[key] ? acc : { ...acc, [key]: values[key] };
       }, {});
 
-      const updatedValuesWithEvent = createIssueEvent(
-        updatedValues,
-        prev.links?.length,
-        issue?.status || DRAFT,
-        issue?.feedback,
-      );
+      // const updatedValuesWithEvent = createIssueEvent(
+      //   updatedValues,
+      //   prev.links?.length,
+      //   issue?.status || DRAFT,
+      //   issue?.feedback,
+      // );
       setIsEditName(false);
 
       setIssuePrevValues({ ...values, status: '' });
       const newValues = {
         ...prev,
-        ...updatedValuesWithEvent,
+        // ...updatedValuesWithEvent,
         id: +issueId,
         auditId: +auditId,
       };
@@ -90,17 +90,26 @@ const PublicIssueDetailsForm = ({ issue = null, editMode = false }) => {
       const newArray = publicIssues.map(el => {
         return el.id === +issueId ? newValues : el;
       });
-      dispatch(updatePublicIssue(newValues));
-      localStorage.setItem('publicIssues', JSON.stringify(newArray));
+      if (saved) {
+        dispatch(updateAuditIssue(auditId, issueId, updatedValues));
+      } else {
+        dispatch(updatePublicIssue(newValues));
+        localStorage.setItem('publicIssues', JSON.stringify(newArray));
+      }
     } else {
-      const newValue = { ...values, auditId: Date.now(), id: Date.now() };
-      localStorage.setItem(
-        'publicIssues',
-        JSON.stringify([...publicIssues, newValue]),
-      );
-      dispatch(addPublicIssue(newValue));
-      if (issues.length) {
+      if (saved) {
+        dispatch(addAuditIssue(auditId, values));
         navigate(-1);
+      } else {
+        const newValue = { ...values, auditId: Date.now(), id: Date.now() };
+        localStorage.setItem(
+          'publicIssues',
+          JSON.stringify([...publicIssues, newValue]),
+        );
+        dispatch(addPublicIssue(newValue));
+        if (issues.length) {
+          navigate(-1);
+        }
       }
     }
   };

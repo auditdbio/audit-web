@@ -113,7 +113,7 @@ const AppRoutes = () => {
         />
         <Route
           path={'/audit-builder/:auditId'}
-          element={<PublicConstructor />}
+          element={<PublicConstructor isPublic={true} />}
         />
         <Route path={'/projects'} element={<ProjectPage />} />
         <Route path={'/projects/:id'} element={<PublicProject />} />
@@ -153,6 +153,14 @@ const AppRoutes = () => {
           element={
             <PrivateRoute auth={{ isAuthenticated: isAuth() }}>
               <AuditInfoPage />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path={'/audit-builder/edit/:auditId'}
+          element={
+            <PrivateRoute auth={{ isAuthenticated: isAuth() }}>
+              <PublicConstructor saved={true} />
             </PrivateRoute>
           }
         />
@@ -201,6 +209,14 @@ const AppRoutes = () => {
           element={<AuditIssueDetails isPublic={true} />}
         />
         <Route
+          path="/private-issues/audit-issue/:auditId/:issueId"
+          element={
+            <PrivateRoute auth={{ isAuthenticated: isAuth() }}>
+              <AuditIssueDetails saved={true} />
+            </PrivateRoute>
+          }
+        />
+        <Route
           path="/issues/new-issue/:auditId"
           element={
             <PrivateRoute auth={{ isAuthenticated: isAuth() }}>
@@ -211,6 +227,10 @@ const AppRoutes = () => {
         <Route
           path="/public-issues/new-issue/:auditId"
           element={<CreateIssuePage isPublic={true} />}
+        />
+        <Route
+          path="/private-issues/new-issue/:auditId"
+          element={<CreateIssuePage saved={true} />}
         />
         <Route
           path="/create-project"

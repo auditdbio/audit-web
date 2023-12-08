@@ -41,6 +41,7 @@ const Control = ({
   isPublic,
   setIsOpenReset,
   handleSubmit,
+  saved,
 }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -66,10 +67,12 @@ const Control = ({
   };
 
   const handleNewIssue = () => {
-    if (!isPublic) {
-      navigate(`/issues/new-issue/${auditId}`);
-    } else {
+    if (isPublic) {
       navigate(`/public-issues/new-issue/${auditId}`);
+    } else if (saved) {
+      navigate(`/private-issues/new-issue/${auditId}`);
+    } else {
+      navigate(`/issues/new-issue/${auditId}`);
     }
     window.scrollTo(0, 0);
   };
@@ -404,37 +407,48 @@ const Control = ({
             }
             onClose={handleCloseSnack}
           />
-          <Button
-            variant="contained"
-            color="secondary"
-            sx={[buttonSx, { marginRight: '0!important' }, publicBtnSx]}
-            onClick={handleGenerateReport}
-          >
-            Generate report
-          </Button>
-          <Button
-            sx={[buttonSx, { marginRight: '0!important' }, publicBtnSx]}
-            onClick={() => {
-              handleSavePublicAudit();
-            }}
-            variant={'contained'}
-          >
-            Save
-          </Button>
-          <Button
-            variant={'contained'}
-            type={'button'}
-            color={'secondary'}
-            onClick={() => setIsOpenReset(true)}
-            sx={[buttonSx, { marginRight: '0!important' }, publicBtnSx]}
-          >
-            Reset form
-          </Button>
+          {!saved && (
+            <Button
+              variant="contained"
+              color="secondary"
+              sx={[buttonSx, { marginRight: '0!important' }, publicBtnSx]}
+              onClick={handleGenerateReport}
+            >
+              Generate report
+            </Button>
+          )}
+          {!saved && (
+            <Button
+              sx={[buttonSx, { marginRight: '0!important' }, publicBtnSx]}
+              onClick={() => {
+                handleSavePublicAudit();
+              }}
+              variant={'contained'}
+            >
+              Save
+            </Button>
+          )}
+          {!saved && (
+            <Button
+              variant={'contained'}
+              type={'button'}
+              color={'secondary'}
+              onClick={() => setIsOpenReset(true)}
+              sx={[buttonSx, { marginRight: '0!important' }, publicBtnSx]}
+            >
+              Reset form
+            </Button>
+          )}
         </Box>
       )}
       <Box sx={!isPublic ? wrapper : wrapperPublic}>
-        <Box sx={!isPublic ? searchBlock : publicSearchBlock}>
-          {!isPublic && (
+        <Box
+          sx={[
+            !isPublic ? searchBlock : publicSearchBlock,
+            saved && xss ? { flexDirection: 'column', rowGap: '20px' } : {},
+          ]}
+        >
+          {!isPublic && !saved && (
             <IconButton
               aria-label="Menu"
               color="secondary"
@@ -445,7 +459,7 @@ const Control = ({
             </IconButton>
           )}
 
-          {!isPublic && (
+          {!isPublic && !saved && (
             <Menu
               open={!!menuAnchorEl}
               anchorEl={menuAnchorEl}
@@ -475,6 +489,17 @@ const Control = ({
                 </MenuItem>
               )}
             </Menu>
+          )}
+
+          {saved && (
+            <Button
+              variant="contained"
+              color="secondary"
+              sx={[buttonSx, (isPublic || saved) && xss ? publicBtnSx : {}]}
+              onClick={handleGenerateReport}
+            >
+              Generate report
+            </Button>
           )}
 
           <TextField
@@ -510,7 +535,7 @@ const Control = ({
                 >
                   New issue
                 </Button>
-                {!isPublic && (
+                {!isPublic && !saved && (
                   <Tooltip
                     arrow
                     placement="top"

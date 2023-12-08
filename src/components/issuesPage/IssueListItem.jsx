@@ -1,9 +1,10 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import { addSpacesToCamelCase, addTestsLabel } from '../../lib/helper.js';
-import { Box, Link, Tooltip, Typography, Zoom } from '@mui/material';
+import { Box, Button, Link, Tooltip, Typography, Zoom } from '@mui/material';
 import IssueSeverity from './IssueSeverity.jsx';
 import theme from '../../styles/themes.js';
+import DeleteIcon from '@mui/icons-material/Delete';
 import {
   DRAFT,
   FIXED,
@@ -12,7 +13,7 @@ import {
   VERIFICATION,
 } from './constants.js';
 
-const IssueListItem = ({ issue, auditId, user, isPublic }) => {
+const IssueListItem = ({ issue, auditId, user, isPublic, saved }) => {
   const [showTitleTooltip, setShowTitleTooltip] = useState(false);
   const titleBoxRef = useRef();
   const titleTextRef = useRef();
@@ -36,16 +37,22 @@ const IssueListItem = ({ issue, auditId, user, isPublic }) => {
     }
   };
 
+  const url = () => {
+    if (isPublic) {
+      return `/public-issues/audit-issue/${auditId}/${issue.id}`;
+    } else if (saved) {
+      return `/private-issues/audit-issue/${auditId}/${issue.id}`;
+    } else {
+      return `/issues/audit-issue/${auditId}/${issue.id}`;
+    }
+  };
+
   return (
     <Link
       sx={issueRow}
       component={RouterLink}
       onClick={() => window.scrollTo({ top: 0 })}
-      to={
-        isPublic
-          ? `/public-issues/audit-issue/${auditId}/${issue.id}`
-          : `/issues/audit-issue/${auditId}/${issue.id}`
-      }
+      to={url()}
       {...addTestsLabel('issue-details-link')}
     >
       <Tooltip

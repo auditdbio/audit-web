@@ -172,7 +172,7 @@ export const deleteAudit = id => {
   };
 };
 
-export const addReportAudit = values => {
+export const addReportAudit = (values, noRedirect) => {
   return dispatch => {
     const token = Cookies.get('token');
     axios
@@ -182,7 +182,9 @@ export const addReportAudit = values => {
         },
       })
       .then(({ data }) => {
-        history.back();
+        if (!noRedirect) {
+          history.back();
+        }
         dispatch(getAudits(AUDITOR));
       });
   };

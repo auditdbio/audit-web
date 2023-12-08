@@ -7,12 +7,11 @@ import { FastField, useField } from 'formik';
 import { TextField } from 'formik-mui';
 import { addTestsLabel } from '../../lib/helper.js';
 
-const FieldEditor = ({ name, label, handleBlur }) => {
-  const matchMd = useMediaQuery(theme.breakpoints.down('md'));
+const FieldEditor = ({ name, label, handleBlur, disabled }) => {
   const [field, meta, fieldHelper] = useField(name);
   const handleChange = e => {
     fieldHelper.setValue(e.target.value);
-    handleBlur();
+    // handleBlur();
   };
 
   return (
@@ -22,8 +21,8 @@ const FieldEditor = ({ name, label, handleBlur }) => {
           component={TextField}
           name={name}
           label={label}
+          disabled={!!disabled}
           // fullWidth={true}
-          disabled={false}
           sx={[
             fieldSx,
             !field.value && meta.touched
@@ -35,7 +34,9 @@ const FieldEditor = ({ name, label, handleBlur }) => {
           }}
           // size={matchMd ? 'small' : 'medium'}
           inputProps={{ ...addTestsLabel(`${name}-input`) }}
-          onBlur={handleBlur}
+          onBlur={() => {
+            handleBlur();
+          }}
         />
       </Box>
     </Box>
