@@ -112,7 +112,7 @@ const TagsField = ({
         {name !== 'scope' && name !== 'links' && (
           <>
             <Button
-              sx={{ marginTop: '12px' }}
+              sx={{ mt: '5px' }}
               color={role !== AUDITOR ? 'primary' : 'secondary'}
               onClick={handleOpen}
             >

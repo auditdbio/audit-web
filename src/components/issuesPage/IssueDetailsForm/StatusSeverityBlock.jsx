@@ -347,16 +347,15 @@ const buttonsBox = {
 };
 
 const issueButton = theme => ({
-  padding: '16px 10px',
+  padding: '11px 10px',
   width: '100%',
   textTransform: 'none',
   fontWeight: 600,
-  fontSize: '20px',
+  fontSize: '18px',
   lineHeight: '25px',
   [theme.breakpoints.down('md')]: {
     padding: '12px 6px',
     letterSpacing: '-0.5px',
-    fontSize: '18px',
   },
   [theme.breakpoints.down('xs')]: {
     fontSize: '14px',

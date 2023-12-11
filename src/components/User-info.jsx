@@ -150,7 +150,7 @@ const UserInfo = ({ role }) => {
           />
           <Button
             sx={[buttonSx, role === 'auditor' ? submitAuditor : {}]}
-            variant={'contained'}
+            variant="contained"
             onClick={handleEdit}
             {...addTestsLabel('user_edit-button')}
           >
@@ -189,15 +189,9 @@ const wrapper = theme => ({
   minHeight: '520px',
   display: 'flex',
   flexDirection: 'column',
-  padding: '100px 100px 60px',
+  padding: '60px 40px 40px',
   gap: '30px',
   justifyContent: 'space-between',
-  [theme.breakpoints.down('lg')]: {
-    padding: '60px 40px 40px',
-  },
-  [theme.breakpoints.down('md')]: {
-    gap: '50px',
-  },
   [theme.breakpoints.down('sm')]: {
     gap: '20px',
     padding: '20px',
@@ -270,7 +264,6 @@ const buttonSx = theme => ({
   color: theme.palette.background.default,
   textTransform: 'capitalize',
   fontWeight: 600,
-  fontSize: '18px',
   padding: '9px 50px',
   width: '214px',
   borderRadius: '10px',
@@ -289,6 +282,7 @@ const submitAuditor = theme => ({
 
 const infoWrapper = theme => ({
   display: 'flex',
+  alignItems: 'center',
   fontWeight: 500,
   color: '#434242',
   '& p': {

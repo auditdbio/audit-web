@@ -105,7 +105,7 @@ const EditProfileForm = ({ role }) => {
                       flexDirection: 'column',
                     }}
                   >
-                    <AvatarForm name={'avatar'} role={role} />
+                    <AvatarForm name="avatar" role={role} />
                   </Box>
                   {matchSm && (
                     <Box sx={[fieldWrapper, { width: '100%' }]}>
@@ -158,8 +158,8 @@ const EditProfileForm = ({ role }) => {
                         }}
                       >
                         <Checkbox
-                          color={'success'}
-                          id={'hide-contacts'}
+                          color="success"
+                          id="hide-contacts"
                           checked={values.contacts?.public_contacts}
                           onChange={e => {
                             setFieldValue(
@@ -186,7 +186,7 @@ const EditProfileForm = ({ role }) => {
                         </label>
                       </Box>
                     </Box>
-                    {!matchSm && <TagsField name={'tags'} label={'Tags'} />}
+                    {!matchSm && <TagsField name="tags" label="Tags" />}
                   </Box>
                   <Box sx={fieldWrapper}>
                     {!matchSm && (
@@ -217,9 +217,7 @@ const EditProfileForm = ({ role }) => {
                           name="price_range"
                           value={values.price_range}
                           component={SliderRange}
-                          sx={{
-                            color: '#52176D',
-                          }}
+                          sx={{ color: theme.palette.secondary.main }}
                           min={0}
                           max={200}
                           onChange={(e, newValue) => {
@@ -246,12 +244,8 @@ const EditProfileForm = ({ role }) => {
               <Button
                 type="submit"
                 variant="contained"
-                sx={[
-                  buttonSx,
-                  role === AUDITOR
-                    ? { backgroundColor: theme.palette.secondary.main }
-                    : {},
-                ]}
+                color={role === AUDITOR ? 'secondary' : 'primary'}
+                sx={buttonSx}
                 {...addTestsLabel('save-button')}
               >
                 Save changes
@@ -338,20 +332,17 @@ const fieldWrapper = theme => ({
   },
 });
 
-const buttonSx = theme => ({
+const buttonSx = {
   display: 'block',
   margin: '70px auto 0',
   textTransform: 'unset',
   padding: '13px 0',
   fontWeight: 600,
-  fontSize: '18px',
+  fontSize: '14px',
+  lineHeight: 1.2,
   width: '200px',
   borderRadius: '10px',
-  [theme.breakpoints.down('md')]: {
-    fontSize: '14px',
-  },
-  [theme.breakpoints.down('sm')]: {},
-});
+};
 
 const avatarWrapper = theme => ({
   '& button': {

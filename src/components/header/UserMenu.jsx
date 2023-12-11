@@ -58,16 +58,7 @@ export const UserMenu = ({ open, handleClose, anchor, userAvatar, pages }) => {
             sx={avatarSx}
             alt="User photo"
           />
-          {/*<Button*/}
-          {/*  size="small"*/}
-          {/*  startIcon={<EditIcon />}*/}
-          {/*  sx={editTextStyle}*/}
-          {/*  disableRipple*/}
-          {/*>*/}
-          {/*  Edit photo*/}
-          {/*</Button>*/}
           <Typography sx={mainTextStyle}>{user.fullName}</Typography>
-          {/*<Typography sx={secondaryTextStyle}>{user.interests}</Typography>*/}
           <Typography sx={secondaryTextStyle}>{user.email}</Typography>
         </Box>
       </MenuItem>
@@ -76,7 +67,7 @@ export const UserMenu = ({ open, handleClose, anchor, userAvatar, pages }) => {
         onChange={(e, newValue) => {
           dispatch(changeRole(newValue, reduxUser.id));
         }}
-        name={'role'}
+        name="role"
         sx={tabsSx}
         indicatorColor="none"
       >
@@ -188,14 +179,8 @@ const menuPaperProps = {
   },
 };
 
-const editTextStyle = {
-  fontSize: '14px',
-  fontWeight: '500',
-  textTransform: 'none',
-};
-
 const popupLinkSx = role => ({
-  fontSize: '26px',
+  fontSize: '20px',
   fontWeight: '500',
   color: '#222222',
   textTransform: 'none',
@@ -224,28 +209,25 @@ const userInfoSx = {
 };
 
 const avatarSx = theme => ({
-  width: '100px',
-  height: '100px',
+  width: '80px',
+  height: '80px',
   [theme.breakpoints.down('sm')]: {
-    width: '80px',
-    height: '80px',
+    width: '70px',
+    height: '70px',
   },
 });
 
-const mainTextStyle = theme => ({
-  fontSize: '26px',
+const mainTextStyle = {
+  fontSize: '18px',
   fontWeight: '500',
   color: '#222222',
-  [theme.breakpoints.down('sm')]: {
-    fontSize: '18px',
-  },
-});
+};
 
 const secondaryTextStyle = theme => ({
-  fontSize: '18px',
+  fontSize: '16px !important',
   color: '#222222',
   [theme.breakpoints.down('sm')]: {
-    fontSize: '14px',
+    fontSize: '14px !important',
   },
 });
 

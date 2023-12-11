@@ -13,9 +13,9 @@ const SimpleField = ({
   ...props
 }) => {
   return (
-    <Box sx={wrapper} className={'field-wrapper'}>
+    <Box sx={wrapper} className="field-wrapper">
       {outerLabel && (
-        <Typography variant={'body2'} sx={formLabelSx}>
+        <Typography variant="body2" sx={formLabelSx}>
           {label}
         </Typography>
       )}

@@ -1,15 +1,15 @@
-import 'swiper/css/bundle';
-import { Button, Box } from '@mui/material';
-import { Swiper, SwiperSlide } from 'swiper/react';
 import { useRef } from 'react';
 import { Navigation, Pagination } from 'swiper';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Button, Box, useMediaQuery } from '@mui/material';
+import 'swiper/css/bundle';
 import FeedbackCard from './FeedbackCard';
-import useMediaQuery from '@mui/material/useMediaQuery';
 import { addTestsLabel } from '../../../lib/helper.js';
+import theme from '../../../styles/themes.js';
 
 const Carousel = () => {
   const swiperRef = useRef(null);
-  const isMobile = useMediaQuery('(max-width: 768px)');
+  const isMobile = useMediaQuery(theme.breakpoints.down('xs'));
 
   function handleNextClick() {
     swiperRef.current.slideNext();
@@ -23,32 +23,10 @@ const Carousel = () => {
   const prevBtnClass = 'swiper-button-prev';
 
   return (
-    <Box
-      sx={{
-        paddingTop: '2rem',
-        width: '100%',
-        marginBottom: '2rem',
-        maxWidth: '1512px',
-      }}
-      component="section"
-    >
+    <Box sx={wrapper} component="section">
       {/*here will be your opinion about auditDB*/}
       <Box sx={carouselTextStyle}>Who’s using AuditDB?</Box>
-      <Box
-        sx={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          zIndex: 100,
-          margin: '0 auto',
-          gap: '10px',
-          flexGrow: 0,
-          '& .swiper-slide': {
-            display: 'flex',
-            justifyContent: 'center',
-          },
-        }}
-      >
+      <Box sx={desktopSx}>
         {!isMobile && (
           <Button
             className={prevBtnClass}
@@ -61,7 +39,6 @@ const Carousel = () => {
         <Swiper
           slidesPerView={1}
           spaceBetween={20}
-          onSlideChange={() => console.log('slide change')}
           onSwiper={swiper => {
             swiperRef.current = swiper;
           }}
@@ -84,15 +61,9 @@ const Carousel = () => {
           />
         )}
       </Box>
+
       {isMobile && (
-        <Box
-          className="mobile-buttons"
-          sx={{
-            display: 'flex',
-            justifyContent: 'center',
-            gap: '1rem',
-          }}
-        >
+        <Box className="mobile-buttons" sx={mobileSx}>
           <Button
             className={prevBtnClass}
             onClick={handlePrevClick}
@@ -113,22 +84,52 @@ const Carousel = () => {
   );
 };
 
+const wrapper = {
+  paddingTop: '1.5rem',
+  width: '100%',
+  marginBottom: '1.5rem',
+  maxWidth: '1512px',
+};
+
 const carouselTextStyle = theme => ({
-  fontSize: '32px',
+  fontSize: '26px',
   fontWeight: '500',
   textAlign: 'center',
   marginBottom: '2rem',
-  [theme.breakpoints.down('sm')]: {
-    fontSize: '28px',
-  },
   [theme.breakpoints.down('xs')]: {
-    fontSize: '24px',
+    fontSize: '22px',
   },
 });
+
+const desktopSx = {
+  display: 'flex',
+  justifyContent: 'space-between',
+  alignItems: 'center',
+  zIndex: 100,
+  margin: '0 auto',
+  gap: '10px',
+  flexGrow: 0,
+  '& .swiper-slide': {
+    display: 'flex',
+    justifyContent: 'center',
+  },
+};
+
+const mobileSx = {
+  display: 'flex',
+  justifyContent: 'center',
+  gap: '1rem',
+};
 
 const items = [
   {
     id: 1,
+    name: 'Your name',
+    interests: 'Your company',
+    description: 'Here will be your opinion about AuditDB',
+  },
+  {
+    id: 2,
     name: 'Your name',
     interests: 'Your company',
     description: 'Here will be your opinion about AuditDB',

@@ -49,11 +49,10 @@ const simpleTab = theme => ({
 
 const tabSx = theme => ({
   color: '#222222',
-  fontSize: '19px',
+  fontSize: '16px',
   fontWeight: 600,
   textTransform: 'capitalize',
   borderRadius: '14.8672px 14.8672px 0px 0px',
-  // padding: '15px 40px',
   whiteSpace: 'inherit',
   width: '100%',
   [theme.breakpoints.down('sm')]: {
@@ -77,7 +76,6 @@ const tabsSx = theme => ({
     height: '35px',
     '& .MuiTabs-flexContainer': {
       gap: 0,
-      // display: 'block'
     },
   },
 });

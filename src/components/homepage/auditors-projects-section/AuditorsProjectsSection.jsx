@@ -1,26 +1,13 @@
 import { Box, Divider } from '@mui/material';
-import theme from '../../../styles/themes';
-
 import AuditorSection from './AuditorSection';
 import ProjectSection from './ProjectSection';
-import { useMediaQuery } from '@mui/material';
 
 const AuditorsProjectsSection = () => {
-  const isMobile = useMediaQuery('(max-width: 768px)');
-
   return (
     <Box sx={wrapperStyle} component="section">
-      <Box sx={AuditorsProjectsSectionStyle(isMobile)}>
+      <Box sx={AuditorsProjectsSectionStyle}>
         <AuditorSection />
-        <Divider
-          orientation="vertical"
-          flexItem
-          sx={{
-            backgroundColor: 'white',
-            color: 'white',
-          }}
-          light
-        />
+        <Divider orientation="vertical" flexItem sx={divider} light />
         <ProjectSection />
       </Box>
     </Box>
@@ -30,12 +17,13 @@ const AuditorsProjectsSection = () => {
 const wrapperStyle = {
   backgroundColor: '#52176D',
   width: '100%',
-  paddingY: '5rem',
+  paddingY: '3rem',
 };
-const AuditorsProjectsSectionStyle = () => ({
+
+const AuditorsProjectsSectionStyle = theme => ({
   width: '100%',
   maxWidth: '1512px',
-  backgroundColor: '#52176D',
+  backgroundColor: theme.palette.secondary.main,
   display: 'flex',
   flexDirection: 'column',
   justifyContent: 'space-between',
@@ -47,5 +35,10 @@ const AuditorsProjectsSectionStyle = () => ({
     gap: '1rem',
   },
 });
+
+const divider = {
+  backgroundColor: 'white',
+  color: 'white',
+};
 
 export default AuditorsProjectsSection;

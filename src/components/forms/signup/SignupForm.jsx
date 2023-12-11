@@ -16,9 +16,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { clearUserError, signUp } from '../../../redux/actions/userAction.js';
 import CustomSnackbar from '../../custom/CustomSnackbar.jsx';
 import { addTestsLabel, isAuth } from '../../../lib/helper.js';
+import { AUDITOR, CUSTOMER } from '../../../redux/actions/types.js';
 
 const SignupForm = () => {
-  const [isAuditor, setIsAuditor] = useState('auditor');
+  const [currentRole, setCurrentRole] = useState('auditor');
   const dispatch = useDispatch();
   const matchMd = useMediaQuery(theme.breakpoints.down('md'));
   const error = useSelector(s => s.user.error);
@@ -37,7 +38,7 @@ const SignupForm = () => {
       validateOnBlur={false}
       validateOnChange={false}
       onSubmit={values => {
-        const newValue = { ...values, current_role: isAuditor };
+        const newValue = { ...values, current_role: currentRole };
         dispatch(signUp(newValue));
       }}
     >
@@ -53,9 +54,9 @@ const SignupForm = () => {
               text={error}
             />
             <Tabs
-              value={isAuditor}
+              value={currentRole}
               onChange={(e, newValue) => {
-                setIsAuditor(newValue);
+                setCurrentRole(newValue);
               }}
               name="role"
               sx={tabsSx}
@@ -64,7 +65,7 @@ const SignupForm = () => {
               <Tab
                 value="auditor"
                 sx={[
-                  isAuditor === 'auditor'
+                  currentRole === AUDITOR
                     ? auditorTabSx
                     : { backgroundColor: '#D9D9D9' },
                   tabSx,
@@ -75,7 +76,7 @@ const SignupForm = () => {
               <Tab
                 value="customer"
                 sx={[
-                  isAuditor === 'customer'
+                  currentRole === CUSTOMER
                     ? customerTabSx
                     : { backgroundColor: '#D9D9D9' },
                   tabSx,
@@ -115,7 +116,7 @@ const SignupForm = () => {
             <Button
               type="submit"
               sx={submitButton}
-              variant={'contained'}
+              variant="contained"
               disabled={isAuth()}
               {...addTestsLabel('sign-up-button')}
             >
@@ -142,7 +143,7 @@ const SignupSchema = Yup.object().shape({
 
 const titleStyle = theme => ({
   fontWeight: 500,
-  fontSize: '20px',
+  fontSize: '16px !important',
   lineHeight: '24px',
   textAlign: 'center',
   [theme.breakpoints.down('md')]: {
@@ -155,21 +156,19 @@ const titleStyle = theme => ({
 
 const submitButton = theme => ({
   backgroundColor: theme.palette.secondary.main,
-  padding: '15px 140px',
+  padding: '11px 140px',
   color: '#FCFAF6',
-  fontSize: '25px',
+  fontSize: '14px',
   fontWeight: 600,
+  lineHeight: 1.2,
   borderRadius: radiusOfComponents,
   maxWidth: '402px',
   margin: '0 auto',
-  [theme.breakpoints.down('md')]: {
-    fontSize: '20px',
-    lineHeight: '23px',
-  },
+  paddingY: '11px',
   [theme.breakpoints.down('sm')]: {
-    fontSize: '15px',
-    width: '230px',
-    padding: '12px 60px',
+    width: '225px',
+    padding: '13px 80px',
+    fontSize: '12px',
   },
 });
 
@@ -179,10 +178,7 @@ const formStyle = theme => ({
   height: '100%',
   alignItems: 'center',
   width: '100%',
-  gap: '80px',
-  [theme.breakpoints.down('md')]: {
-    gap: '60px',
-  },
+  gap: '50px',
   [theme.breakpoints.down('sm')]: {
     gap: '32px',
   },
@@ -245,11 +241,10 @@ const fieldWrapper = theme => ({
 
 const tabsSx = theme => ({
   marginBottom: 0,
-  width: '420px',
-  marginTop: '-50px',
+  width: '340px',
+  marginTop: '-20px',
   [theme.breakpoints.down('md')]: {
     width: '320px',
-    marginTop: '-20px',
   },
   [theme.breakpoints.down('sm')]: {
     width: '250px',
@@ -258,14 +253,12 @@ const tabsSx = theme => ({
 });
 
 const tabSx = theme => ({
+  height: '40px',
+  minHeight: '40px',
   width: '50%',
   color: '#222222',
   fontSize: '16px',
   textTransform: 'capitalize',
-  [theme.breakpoints.down('md')]: {
-    minHeight: '41px',
-    height: '41px',
-  },
   [theme.breakpoints.down('sm')]: {
     fontSize: '14px',
   },

@@ -1,20 +1,20 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useParams } from 'react-router-dom';
+import { Form, Formik } from 'formik';
+import * as Yup from 'yup';
+import { Box, Button, Typography } from '@mui/material';
 import { CustomCard } from '../components/custom/Card.jsx';
 import Layout from '../styles/Layout.jsx';
 import {
   clearUserError,
   clearUserSuccess,
   restorePassword,
-  signIn,
 } from '../redux/actions/userAction.js';
-import { Form, Formik } from 'formik';
-import { Box, Button, Typography } from '@mui/material';
+
 import CustomSnackbar from '../components/custom/CustomSnackbar.jsx';
 import PasswordField from '../components/forms/fields/password-field.jsx';
-import * as Yup from 'yup';
 import { radiusOfComponents } from '../styles/themes.js';
-import { useDispatch, useSelector } from 'react-redux';
-import { useParams } from 'react-router-dom';
 import { addTestsLabel } from '../lib/helper.js';
 
 const RestorePasswordPage = () => {
@@ -55,19 +55,19 @@ const RestorePasswordPage = () => {
                     severity={successMessage ? 'success' : 'error'}
                     text={error || successMessage}
                   />
-                  <Typography variant={'h5'} sx={{ fontWeight: 600 }}>
+                  <Typography variant="h5" sx={titleStyle}>
                     Set a new password
                   </Typography>
                   <Box sx={fieldWrapper}>
-                    <PasswordField name={'password'} label={'New password'} />
+                    <PasswordField name="password" label="New password" />
                     <PasswordField
-                      name={'confirmPassword'}
-                      label={'Confirm password'}
+                      name="confirmPassword"
+                      label="Confirm password"
                     />
                   </Box>
                   <Button
-                    type={'submit'}
-                    variant={'contained'}
+                    type="submit"
+                    variant="contained"
                     sx={submitButton}
                     {...addTestsLabel('change-password-button')}
                   >
@@ -85,6 +85,13 @@ const RestorePasswordPage = () => {
 
 export default RestorePasswordPage;
 
+const RestorePasswordSchema = Yup.object().shape({
+  password: Yup.string().min(2, 'Too Short!').required('required'),
+  confirmPassword: Yup.string()
+    .oneOf([Yup.ref('password'), null], 'Passwords must match')
+    .required('Required'),
+});
+
 const cardWrapper = theme => ({
   display: 'flex',
   alignItems: 'center',
@@ -95,11 +102,17 @@ const cardWrapper = theme => ({
   },
 });
 
-const RestorePasswordSchema = Yup.object().shape({
-  password: Yup.string().min(2, 'Too Short!').required('required'),
-  confirmPassword: Yup.string()
-    .oneOf([Yup.ref('password'), null], 'Passwords must match')
-    .required('Required'),
+const titleStyle = theme => ({
+  fontWeight: 500,
+  fontSize: '16px !important',
+  lineHeight: '24px',
+  textAlign: 'center',
+  [theme.breakpoints.down('md')]: {
+    fontSize: '16px',
+  },
+  [theme.breakpoints.down('xs')]: {
+    fontSize: '12px',
+  },
 });
 
 const formWrapper = theme => ({
@@ -120,7 +133,8 @@ const submitButton = theme => ({
   fontWeight: 600,
   borderRadius: radiusOfComponents,
   margin: '0 auto',
-  fontSize: '16px',
+  fontSize: '14px',
+  lineHeight: 1.2,
   paddingY: '11px',
   width: '100%',
   [theme.breakpoints.down('md')]: {

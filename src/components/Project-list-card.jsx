@@ -6,7 +6,6 @@ import TagsList from './tagsList.jsx';
 import { clearMessage } from '../redux/actions/auditAction.js';
 import CustomSnackbar from './custom/CustomSnackbar.jsx';
 import { addTestsLabel } from '../lib/helper.js';
-import { useNavigate } from 'react-router-dom/dist';
 
 const ProjectListCard = ({ project }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -15,7 +14,6 @@ const ProjectListCard = ({ project }) => {
   const successMessage = useSelector(s => s.audits.successMessage);
   const dispatch = useDispatch();
   const [errorState, setErrorState] = useState(null);
-  const navigate = useNavigate();
 
   const handleOpen = () => {
     setIsOpen(true);
@@ -44,7 +42,7 @@ const ProjectListCard = ({ project }) => {
       />
 
       <Box sx={contentWrapper}>
-        <Tooltip title={project.name} arrow placement={'top'}>
+        <Tooltip title={project.name} arrow placement="top">
           <Typography onClick={handleOpen} sx={projectTitleWrapper}>
             {project.name}
           </Typography>
@@ -61,10 +59,10 @@ const ProjectListCard = ({ project }) => {
       >
         <Typography>${project.price}</Typography>
         <Button
-          color={'secondary'}
-          size={'small'}
+          color="secondary"
+          size="small"
           sx={viewButton}
-          variant={'contained'}
+          variant="contained"
           onClick={handleOpen}
           {...addTestsLabel('projects_view-more-button')}
         >
@@ -94,16 +92,15 @@ const ProjectListCard = ({ project }) => {
 
 export default ProjectListCard;
 
-const contentWrapper = theme => ({
+const contentWrapper = {
   display: 'flex',
   flexDirection: 'column',
-  '& .tagsWrapper': {},
-});
+};
 
 const projectTitleWrapper = theme => ({
-  marginBottom: '18px',
+  marginBottom: '10px',
   cursor: 'pointer',
-  height: '80px',
+  height: '90px',
   overflow: 'hidden',
   wordBreak: 'break-word',
   '-webkit-line-clamp': '2',
@@ -111,10 +108,10 @@ const projectTitleWrapper = theme => ({
   'text-overflow': 'ellipsis',
   display: '-webkit-box',
   [theme.breakpoints.down('lg')]: {
-    height: '70px',
+    height: '60px',
   },
   [theme.breakpoints.down('md')]: {
-    height: '60px',
+    height: '50px',
   },
   [theme.breakpoints.down('sm')]: {
     height: '45px',
@@ -133,7 +130,7 @@ const viewButton = theme => ({
 });
 
 const wrapper = theme => ({
-  padding: '22px 33px 22px 45px',
+  padding: '12px 20px 12px 45px',
   display: 'flex',
   justifyContent: 'space-between',
   height: '100%',

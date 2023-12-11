@@ -189,17 +189,14 @@ const columnsTitleBlock = theme => ({
   },
 });
 
-const columnTitle = theme => ({
+const columnTitle = {
   width: '50%',
   whiteSpace: 'nowrap',
   textTransform: 'none',
   display: 'flex',
   justifyContent: 'center',
   columnGap: '10px',
-  [theme.breakpoints.down('xs')]: {
-    fontSize: '16px',
-  },
-});
+};
 
 const columnTitleHidden = theme => ({
   [theme.breakpoints.down('xs')]: {
@@ -209,16 +206,10 @@ const columnTitleHidden = theme => ({
 
 const columnText = theme => ({
   color: '#434242',
-  fontSize: '20px',
+  fontSize: '16px',
   fontWeight: 500,
   lineHeight: '25px',
   padding: '0 25px',
-  [theme.breakpoints.down('lg')]: {
-    fontSize: '18px',
-  },
-  [theme.breakpoints.down('sm')]: {
-    fontSize: '16px',
-  },
   [theme.breakpoints.down('xs')]: {
     padding: '0 15px',
   },

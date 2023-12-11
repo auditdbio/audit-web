@@ -90,7 +90,7 @@ export default function AuditorModal({
 
   return (
     <Dialog open={open} onClose={handleClose}>
-      <Box className={'auditor-modal'}>
+      <Box className="auditor-modal">
         {mode === 'info' && (
           <DialogContent sx={modalWindow}>
             <CustomSnackbar
@@ -110,6 +110,7 @@ export default function AuditorModal({
               </Box>
               <ShareProfileButton
                 userId={auditor.user_id}
+                sx={{ fontSize: '12px' }}
                 isModal
                 role={AUDITOR}
                 isPublic
@@ -120,39 +121,41 @@ export default function AuditorModal({
                     <span>First Name</span>
                     <Typography noWrap={true}>{auditor.first_name}</Typography>
                   </Box>
-                  <Box sx={infoWrapper}>
-                    <span>Last name</span>
-                    <Typography noWrap={true}>{auditor.last_name}</Typography>
-                  </Box>
-                  <Box sx={infoWrapper}>
-                    <span>Telegram</span>
-                    <Box sx={{ display: 'grid' }}>
-                      <Tooltip
-                        title={
-                          auditor?.contacts?.public_contacts
-                            ? auditor.contacts?.telegram
-                            : 'Hidden'
-                        }
-                        arrow
-                        placement={'top'}
-                      >
-                        <Typography noWrap={true}>
-                          {auditor?.contacts?.public_contacts
-                            ? auditor.contacts?.telegram
-                            : 'Hidden'}
-                        </Typography>
-                      </Tooltip>
+                  {auditor.last_name && (
+                    <Box sx={infoWrapper}>
+                      <span>Last name</span>
+                      <Typography noWrap={true}>{auditor.last_name}</Typography>
                     </Box>
-                  </Box>
-                  <Box sx={infoWrapper}>
-                    <span>Price:</span>
-                    {auditor.price_range.from && (
+                  )}
+
+                  {auditor?.contacts?.public_contacts &&
+                    !!auditor.contacts?.telegram && (
+                      <Box sx={infoWrapper}>
+                        <span>Telegram</span>
+                        <Box sx={{ display: 'grid' }}>
+                          <Tooltip
+                            title={auditor.contacts.telegram}
+                            arrow
+                            placement="top"
+                          >
+                            <Typography noWrap={true}>
+                              {auditor.contacts.telegram}
+                            </Typography>
+                          </Tooltip>
+                        </Box>
+                      </Box>
+                    )}
+
+                  {!!auditor.price_range.from && (
+                    <Box sx={infoWrapper}>
+                      <span>Price:</span>
                       <Typography>
                         ${auditor.price_range.from} - {auditor.price_range.to}{' '}
                         per line
                       </Typography>
-                    )}
-                  </Box>
+                    </Box>
+                  )}
+
                   <Box sx={infoWrapper}>
                     <span>E-mail</span>
                     <Box sx={{ display: 'grid' }}>
@@ -163,7 +166,7 @@ export default function AuditorModal({
                             : 'Hidden'
                         }
                         arrow
-                        placement={'top'}
+                        placement="top"
                       >
                         <Typography noWrap={true}>
                           {auditor?.contacts?.public_contacts
@@ -173,6 +176,7 @@ export default function AuditorModal({
                       </Tooltip>
                     </Box>
                   </Box>
+
                   {auditor?.about && (
                     <Box sx={[infoWrapper, aboutSx]}>
                       <Typography>
@@ -182,13 +186,13 @@ export default function AuditorModal({
                   )}
                   <TagsList data={auditor.tags} fullView={true} />
                 </Box>
-                <Box sx={infoInnerStyle} />
               </Box>
             </Box>
+
             <Box sx={fieldButtonContainer}>
               <Button
                 variant={budge ? 'outlined' : 'contained'}
-                color={'secondary'}
+                color="secondary"
                 sx={findButton}
                 onClick={handleClose}
                 {...addTestsLabel('auditor-modal_back-button')}
@@ -197,7 +201,7 @@ export default function AuditorModal({
               </Button>
               <Button
                 variant={budge ? 'outlined' : 'contained'}
-                color={'primary'}
+                color="primary"
                 sx={findButton}
                 onClick={handleInvite}
                 {...addTestsLabel('auditor-modal_invite-button')}
@@ -207,6 +211,7 @@ export default function AuditorModal({
             </Box>
           </DialogContent>
         )}
+
         {mode === 'invite' && (
           <Formik
             validator={() => ({})}
@@ -369,11 +374,11 @@ const modalWindow = theme => ({
   overflow: 'unset',
   width: '600px',
   display: 'flex',
-  gap: '50px',
+  gap: '30px',
   flexDirection: 'column',
   justifyContent: 'center',
   alignItems: 'center',
-  padding: '45px',
+  padding: '30px',
   [theme.breakpoints.down('sm')]: {
     padding: '25px',
     height: '100%',
@@ -386,32 +391,27 @@ const modalWindow = theme => ({
 });
 
 const findButton = theme => ({
-  padding: '19px 0',
-  fontSize: '18px',
+  padding: '10px 0',
+  fontSize: '16px',
   textTransform: 'unset',
   fontWeight: 600,
-  margin: '0 12px',
+
   width: '180px',
   borderRadius: '10px',
-  [theme.breakpoints.down('md')]: {
-    width: '210px',
-    padding: '11px 0',
-  },
   [theme.breakpoints.down('sm')]: {
     width: '170px',
   },
   [theme.breakpoints.down('xs')]: {
-    width: '134px',
+    width: '130px',
     height: '50px',
     fontSize: '12px',
-    margin: '0 6px',
   },
 });
 
 const infoInnerStyle = theme => ({
   display: 'flex',
   flexDirection: 'column',
-  gap: '16px',
+  gap: '10px',
 });
 
 const infoStyle = theme => ({
@@ -429,8 +429,8 @@ const infoStyle = theme => ({
 });
 
 const avatarStyle = theme => ({
-  width: '150px',
-  height: '150px',
+  width: '120px',
+  height: '120px',
   [theme.breakpoints.down('xs')]: {
     width: '100px',
     height: '100px',
@@ -440,18 +440,16 @@ const avatarStyle = theme => ({
 const contentWrapper = theme => ({
   display: 'flex',
   flexDirection: 'column',
-  gap: '50px',
-  [theme.breakpoints.down('md')]: {
-    gap: '50px',
-  },
+  gap: '30px',
   [theme.breakpoints.down('sm')]: {
     flexDirection: 'column',
-    gap: '40px',
+    gap: '20px',
   },
 });
 
 const infoWrapper = theme => ({
   display: 'flex',
+  alignItems: 'center',
   fontWeight: 500,
   color: '#434242',
   '& p': {
@@ -462,7 +460,7 @@ const infoWrapper = theme => ({
     marginRight: '20px',
     color: '#B2B3B3',
   },
-  fontSize: '15px',
+  fontSize: '14px',
   [theme.breakpoints.down('md')]: {
     '& span': {
       width: '90px',
@@ -512,13 +510,12 @@ const backButton = {
   [theme.breakpoints.down('sm')]: {
     height: '30px',
     fontSize: '10px',
-    // padding: "6px 31px",
   },
 };
 
 const fieldButtonContainer = theme => ({
   display: 'flex',
-  gap: '10px',
+  gap: '20px',
   [theme.breakpoints.down('xs')]: {
     gap: '5px',
   },

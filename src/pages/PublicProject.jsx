@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom/dist';
 import { Avatar, Box, Button, Modal, Tooltip, Typography } from '@mui/material';
 import Layout from '../styles/Layout.jsx';
 import { getProjectById } from '../redux/actions/projectAction.js';
@@ -270,17 +270,14 @@ const wrapper = role => {
     minHeight: '520px',
     display: 'flex',
     flexDirection: 'column',
-    padding: '100px 100px 60px',
-    gap: '50px',
+    padding: '30px 60px 60px',
+    gap: '40px',
     backgroundColor: '#fff',
     borderRadius: '10px',
     border: `2px solid ${borderColor}`,
     justifyContent: 'space-between',
     [theme.breakpoints.down('lg')]: {
-      padding: '60px 40px 40px',
-    },
-    [theme.breakpoints.down('md')]: {
-      gap: '50px',
+      padding: '30px 40px',
     },
     [theme.breakpoints.down('sm')]: {
       gap: '20px',
@@ -290,7 +287,6 @@ const wrapper = role => {
     [theme.breakpoints.down('xs')]: {
       width: '100%',
       alignItems: 'center',
-      gap: '25px',
       '& .mobile-tag-wrapper': {
         maxWidth: '380px',
       },
@@ -314,7 +310,7 @@ const fieldLabel = theme => ({
 
 const projectNameSx = {
   width: '100%',
-  fontSize: '22px !important',
+  fontSize: '20px !important',
   textAlign: 'center',
   fontWeight: 500,
   wordBreak: 'break-word',
@@ -392,7 +388,7 @@ const readAllButton = theme => ({
   width: '100%',
   padding: '8px',
   fontWeight: 600,
-  fontSize: '21px',
+  fontSize: '16px',
   color: 'black',
   textTransform: 'none',
   lineHeight: '25px',
@@ -421,23 +417,20 @@ const linksList = {
   '& p': {
     display: 'flex',
     alignItems: 'center',
-    fontSize: '18px',
   },
 };
 
-const linkSx = theme => ({
-  fontSize: '18px',
-  [theme.breakpoints.down('sm')]: {
-    fontSize: '15px',
-  },
-});
+const linkSx = {
+  fontSize: '14px',
+};
 
 const buttonSx = theme => ({
   margin: '0 auto',
   display: 'block',
   textTransform: 'capitalize',
   fontWeight: 600,
-  fontSize: '18px',
+  fontSize: '16px',
+  lineHeight: 1.2,
   padding: '9px 50px',
   borderRadius: '10px',
   [theme.breakpoints.down('xs')]: {
