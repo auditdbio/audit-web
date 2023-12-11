@@ -83,6 +83,7 @@ const PublicIssueDetailsForm = ({ issue = null, editMode = false, saved }) => {
       const newValues = {
         ...prev,
         // ...updatedValuesWithEvent,
+        ...updatedValues,
         id: +issueId,
         auditId: +auditId,
       };

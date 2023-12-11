@@ -195,7 +195,9 @@ const StatusSeverityBlock = ({
               onBlur={e => {
                 if (isPublic) {
                   setCategoryPrevVal(values.category);
-                  handleSubmit();
+                  if (editMode) {
+                    handleSubmit();
+                  }
                 }
               }}
               inputProps={{
