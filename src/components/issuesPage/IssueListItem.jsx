@@ -12,11 +12,17 @@ import {
   NOT_FIXED,
   VERIFICATION,
 } from './constants.js';
+import { useDispatch } from 'react-redux';
+import {
+  deleteIssue,
+  deletePublicIssue,
+} from '../../redux/actions/issueAction.js';
 
 const IssueListItem = ({ issue, auditId, user, isPublic, saved }) => {
   const [showTitleTooltip, setShowTitleTooltip] = useState(false);
   const titleBoxRef = useRef();
   const titleTextRef = useRef();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const boxHeight = titleBoxRef.current?.offsetHeight;
@@ -47,6 +53,21 @@ const IssueListItem = ({ issue, auditId, user, isPublic, saved }) => {
     }
   };
 
+  const handleButtonClick = event => {
+    event.stopPropagation();
+    event.preventDefault();
+    if (isPublic) {
+      const array = JSON.parse(localStorage.getItem('publicIssues'));
+      const newArray = array.filter(item => item.id !== issue.id);
+      localStorage.setItem('publicIssues', JSON.stringify(newArray));
+      dispatch(deletePublicIssue(issue.id));
+    } else {
+      console.log(issue);
+      dispatch(deleteIssue(issue, auditId));
+    }
+    // Здесь вы можете добавить свою логику для обработки клика на кнопку
+  };
+
   return (
     <Link
       sx={issueRow}
@@ -73,14 +94,33 @@ const IssueListItem = ({ issue, auditId, user, isPublic, saved }) => {
       <Typography sx={[columnText, statusSx(issue.status)]}>
         {addSpacesToCamelCase(issue.status)}
       </Typography>
-      <Box sx={severityWrapper}>
-        <IssueSeverity text={issue.severity} />
+      <Box sx={isPublic || saved ? publicSeverityWrapper : severityWrapper}>
+        <IssueSeverity
+          sx={isPublic || saved ? publicSeverity : {}}
+          text={issue.severity}
+        />
+        {(isPublic || saved) && (
+          <Button color={'error'} onClick={handleButtonClick} sx={actionSx}>
+            <DeleteIcon />
+          </Button>
+        )}
       </Box>
     </Link>
   );
 };
 
 export default IssueListItem;
+
+const actionSx = theme => ({
+  minWidth: 'unset',
+  padding: '7px',
+  width: '30px',
+  marginLeft: '5px',
+  marginRight: '20px',
+  [theme.breakpoints.down('sm')]: {
+    marginRight: '5px',
+  },
+});
 
 const issueRow = theme => ({
   display: 'flex',
@@ -97,6 +137,12 @@ const issueRow = theme => ({
   },
   [theme.breakpoints.down('xs')]: {
     justifyContent: 'space-between',
+  },
+});
+
+const publicSeverity = theme => ({
+  [theme.breakpoints.down('xs')]: {
+    width: '60%',
   },
 });
 
@@ -156,6 +202,19 @@ const severityWrapper = {
   justifyContent: 'center',
   alignItems: 'center',
 };
+
+const publicSeverityWrapper = theme => ({
+  width: '15%',
+  display: 'flex',
+  justifyContent: 'space-between',
+  alignItems: 'center',
+  [theme.breakpoints.down('xs')]: {
+    width: '20%',
+  },
+  [theme.breakpoints.down(550)]: {
+    width: '30%',
+  },
+});
 
 const unreadChanges = theme => ({
   position: 'relative',

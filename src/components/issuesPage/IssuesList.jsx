@@ -129,7 +129,10 @@ const IssuesList = ({
       />
 
       <Box
-        sx={{ display: 'flex', width: '100%', justifyContent: 'space-between' }}
+        sx={[
+          { display: 'flex', width: '100%', justifyContent: 'space-between' },
+          isPublic || saved ? { paddingRight: '15px' } : {},
+        ]}
       >
         <Box sx={{ ml: '30px' }}>
           <Button sx={[columnText, columnTitle]} onClick={handleNameSort}>
@@ -149,7 +152,10 @@ const IssuesList = ({
               {sortType === STATUS_ASCENDING ? <ArrowUpIcon /> : <ArrowIcon />}
             </span>
           </Button>
-          <Button sx={[columnText, columnTitle]} onClick={handleSeveritySort}>
+          <Button
+            sx={[isPublic || saved ? columnPublic : columnText, columnTitle]}
+            onClick={handleSeveritySort}
+          >
             <span>Severity</span>
             <span>
               {sortType === SEVERITY_ASCENDING ? (
@@ -199,6 +205,23 @@ const IssuesList = ({
 };
 
 export default IssuesList;
+
+const columnPublic = theme => ({
+  color: '#434242',
+  fontSize: '20px',
+  fontWeight: 500,
+  lineHeight: '25px',
+  padding: '0 25px 0 0',
+  [theme.breakpoints.down('lg')]: {
+    fontSize: '18px',
+  },
+  [theme.breakpoints.down('sm')]: {
+    fontSize: '16px',
+  },
+  [theme.breakpoints.down('xs')]: {
+    padding: '0 15px',
+  },
+});
 
 const columnsTitleBlock = theme => ({
   display: 'flex',

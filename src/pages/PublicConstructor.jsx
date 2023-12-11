@@ -16,6 +16,7 @@ import * as Yup from 'yup';
 import { isAuth } from '../lib/helper.js';
 import {
   addReportAudit,
+  clearMessage,
   getAudit,
   handleResetPublicAudit,
 } from '../redux/actions/auditAction.js';
@@ -25,6 +26,7 @@ import { useNavigate } from 'react-router-dom/dist';
 import { CLEAR_AUDIT } from '../redux/actions/types.js';
 import { useParams } from 'react-router-dom';
 import Loader from '../components/Loader.jsx';
+import CustomSnackbar from '../components/custom/CustomSnackbar.jsx';
 
 const PublicConstructor = ({ saved, isPublic }) => {
   const matchXs = useMediaQuery(theme.breakpoints.down('xs'));
@@ -33,7 +35,7 @@ const PublicConstructor = ({ saved, isPublic }) => {
   const publicIssues = JSON.parse(localStorage.getItem('publicIssues') || '[]');
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const issues = useSelector(state => state.issues.issues);
+  const { issues, successMessage } = useSelector(state => state.issues);
   const [openMessage, setOpenMessage] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const audit = useSelector(s => s.audits.audit);
@@ -158,13 +160,13 @@ const PublicConstructor = ({ saved, isPublic }) => {
                     maxWidth: '1300px',
                   }}
                 >
-                  {/*<CustomSnackbar*/}
-                  {/*  autoHideDuration={5000}*/}
-                  {/*  open={openMessage}*/}
-                  {/*  severity={'success'}*/}
-                  {/*  text={'Saved successfully'}*/}
-                  {/*  onClose={() => setOpenMessage(false)}*/}
-                  {/*/>*/}
+                  <CustomSnackbar
+                    autoHideDuration={5000}
+                    open={!!successMessage}
+                    severity={'success'}
+                    text={successMessage}
+                    onClose={() => dispatch(clearMessage())}
+                  />
                   <Typography sx={titleSx} variant={'h4'}>
                     Audit builder
                   </Typography>
