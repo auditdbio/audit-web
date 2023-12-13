@@ -22,6 +22,7 @@ import { addTestsLabel } from '../lib/helper.js';
 import ShareProfileButton from './custom/ShareProfileButton.jsx';
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import { Link as RouterLink } from 'react-router-dom';
+import IdentitySetting from './IdentitySetting/IdentitySetting.jsx';
 
 const UserInfo = ({ role }) => {
   const navigate = useNavigate();
@@ -185,9 +186,7 @@ const UserInfo = ({ role }) => {
             >
               Edit
             </Button>
-            <Button sx={buttonSx} variant={'contained'}>
-              Connect identity
-            </Button>
+            <IdentitySetting />
           </Box>
         </Box>
       </Box>
