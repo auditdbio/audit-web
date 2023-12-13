@@ -30,6 +30,7 @@ const UserInfo = ({ role }) => {
   const auditor = useSelector(s => s.auditor.auditor);
   const { user } = useSelector(s => s.user);
   const matchXs = useMediaQuery(theme.breakpoints.down('xs'));
+  const matchXxs = useMediaQuery(theme.breakpoints.down(590));
 
   const handleEdit = () => {
     navigate('/edit-profile');
@@ -177,7 +178,12 @@ const UserInfo = ({ role }) => {
             role={role}
             userId={role === AUDITOR ? auditor.user_id : customer.user_id}
           />
-          <Box sx={{ display: 'flex', gap: '15px' }}>
+          <Box
+            sx={[
+              { display: 'flex', gap: '15px' },
+              matchXxs ? { flexDirection: 'column' } : {},
+            ]}
+          >
             <Button
               sx={[buttonSx, role === 'auditor' ? submitAuditor : {}]}
               variant={'contained'}
@@ -193,7 +199,7 @@ const UserInfo = ({ role }) => {
     );
   }
 };
-
+//
 export default UserInfo;
 
 const aboutWrapper = theme => ({
@@ -307,7 +313,6 @@ const buttonSx = theme => ({
   width: '214px',
   borderRadius: '10px',
   [theme.breakpoints.down('xs')]: {
-    width: '88px',
     padding: '9px 10px',
   },
 });

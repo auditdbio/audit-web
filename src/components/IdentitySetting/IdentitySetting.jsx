@@ -1,7 +1,20 @@
 import React, { useState } from 'react';
-import { Box, Button, Checkbox, ClickAwayListener, Modal } from '@mui/material';
+import {
+  Box,
+  Button,
+  Checkbox,
+  ClickAwayListener,
+  Modal,
+  Typography,
+} from '@mui/material';
 import { Link as RouterLink } from 'react-router-dom';
 import GitHubIcon from '@mui/icons-material/GitHub';
+import FacebookIcon from '../icons/FacebookIcon.jsx';
+import MediumLogo from '../icons/Medium-logo.jsx';
+import GitcoinIcon from '../icons/GitcoinIcon.jsx';
+import LinkedinIcon from '../icons/LinkedinIcon.jsx';
+import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 
 const IdentitySetting = () => {
   const [open, setOpen] = useState(false);
@@ -11,76 +24,119 @@ const IdentitySetting = () => {
   };
   return (
     <>
-      <Box>
-        <Modal
-          open={open}
-          onClose={handleClose}
-          aria-labelledby="parent-modal-title"
-          aria-describedby="parent-modal-description"
-        >
-          <Box sx={modalSx}>
-            <Box sx={{ height: '100%', padding: '30px' }}>
-              <Box
-                sx={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: '10px',
-                  height: '100%',
-                }}
-              >
-                <Box sx={{ display: 'flex' }}>
-                  <Box
-                    sx={{ display: 'flex', alignItems: 'center', gap: '7px' }}
-                  >
-                    <GitHubIcon />
-                    <RouterLink
-                      href={'https://github.com/auditdbio/audit-web/tree/prod'}
-                    >
-                      https://github.com/auditdbio/audit-web/tree/prod
-                    </RouterLink>
-                  </Box>
-                  <Checkbox defaultChecked />
+      <Modal
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="parent-modal-title"
+        aria-describedby="parent-modal-description"
+      >
+        <Box sx={modalSx}>
+          <Box sx={{ height: '100%' }}>
+            <Box
+              sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '10px',
+                height: '100%',
+              }}
+            >
+              <Box sx={[cardSx, { border: '1px solid green' }]}>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '7px',
+                    width: '100%',
+                  }}
+                >
+                  <GitHubIcon
+                    sx={{ width: '50px', height: '50px', padding: '4px' }}
+                  />
+                  <Typography>Github</Typography>
                 </Box>
-                <Box sx={{ display: 'flex' }}>
-                  <Box
-                    sx={{ display: 'flex', alignItems: 'center', gap: '7px' }}
-                  >
-                    <GitHubIcon />
-                    <RouterLink
-                      href={'https://github.com/auditdbio/audit-web/tree/prod'}
-                    >
-                      https://github.com/auditdbio/audit-web/tree/prod
-                    </RouterLink>
-                  </Box>
-                  <Checkbox defaultChecked />
-                </Box>
-                <Box sx={{ display: 'flex' }}>
-                  <Box
-                    sx={{ display: 'flex', alignItems: 'center', gap: '7px' }}
-                  >
-                    <GitHubIcon />
-                    <RouterLink
-                      href={'https://github.com/auditdbio/audit-web/tree/prod'}
-                    >
-                      https://github.com/auditdbio/audit-web/tree/prod
-                    </RouterLink>
-                  </Box>
-                  <Checkbox defaultChecked />
-                </Box>
+                <Checkbox
+                  defaultChecked
+                  icon={<VisibilityOffIcon />}
+                  checkedIcon={<RemoveRedEyeIcon />}
+                />
               </Box>
-              <Box
-                sx={{
-                  marginTop: 'auto',
-                  marginBottom: '0',
-                  display: 'flex',
-                  justifyContent: 'center',
-                }}
-              ></Box>
+              <Box sx={[cardSx, { border: '1px solid green' }]}>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '7px',
+                    width: '100%',
+                  }}
+                >
+                  <LinkedinIcon />
+                  <Typography>Linkedin</Typography>
+                </Box>
+                <Checkbox
+                  icon={<VisibilityOffIcon />}
+                  checkedIcon={<RemoveRedEyeIcon />}
+                />
+              </Box>
+              <Box sx={cardSx}>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '7px',
+                    width: '100%',
+                  }}
+                >
+                  <FacebookIcon />
+                  <Typography>Facebook</Typography>
+                </Box>
+                {/*<Checkbox*/}
+                {/*  icon={<VisibilityOffIcon />}*/}
+                {/*  checkedIcon={<RemoveRedEyeIcon />}*/}
+                {/*/>*/}
+              </Box>
+              <Box sx={[cardSx]}>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '7px',
+                    width: '100%',
+                  }}
+                >
+                  <MediumLogo
+                    width={'50px'}
+                    height={'50px'}
+                    color={'#000'}
+                    space
+                  />
+                  <Typography>Medium</Typography>
+                </Box>
+                {/*<Checkbox*/}
+                {/*  icon={<VisibilityOffIcon />}*/}
+                {/*  checkedIcon={<RemoveRedEyeIcon />}*/}
+                {/*/>*/}
+              </Box>
+              {/*<Box sx={{ display: 'flex' }}>*/}
+              {/*  <Box*/}
+              {/*    sx={{ display: 'flex', alignItems: 'center', gap: '7px' }}*/}
+              {/*  >*/}
+              {/*    <GitcoinIcon />*/}
+              {/*    Gitcoin*/}
+              {/*  </Box>*/}
+              {/*  <Checkbox defaultChecked />*/}
+              {/*</Box>*/}
             </Box>
-            <AddModal />
+            <Box
+              sx={{
+                marginTop: 'auto',
+                marginBottom: '0',
+                display: 'flex',
+                justifyContent: 'center',
+              }}
+            ></Box>
           </Box>
-        </Modal>
-      </Box>
+        </Box>
+      </Modal>
       <Button sx={buttonSx} variant={'contained'} onClick={() => setOpen(true)}>
         Connect identity
       </Button>
@@ -88,39 +144,27 @@ const IdentitySetting = () => {
   );
 };
 
-const AddModal = () => {
-  const [open, setOpen] = useState(false);
-  const handleOpen = () => {
-    setOpen(true);
-  };
-  const handleClose = () => {
-    setOpen(false);
-  };
-
-  return (
-    <>
-      <Button onClick={handleOpen} variant={'contained'} sx={buttonSx}>
-        Add account
-      </Button>
-      <Modal
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="child-modal-title"
-        aria-describedby="child-modal-description"
-      >
-        <Box sx={{ ...modalSx, width: 200 }}>
-          <h2 id="child-modal-title">Text in a child modal</h2>
-          <p id="child-modal-description">
-            Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-          </p>
-          <Button onClick={handleClose}>Close Child Modal</Button>
-        </Box>
-      </Modal>
-    </>
-  );
-};
-
 export default IdentitySetting;
+
+const cardSx = theme => ({
+  display: 'flex',
+  justifyContent: 'space-between',
+  alignItems: 'center',
+  padding: '10px 20px',
+  gap: '10px',
+  borderRadius: '10px',
+  border: '1px solid transparent',
+  '& p': {
+    fontWeight: 600,
+  },
+  boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.1)',
+  '&:hover': {
+    boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.2)',
+  },
+  [theme.breakpoints.down('xs')]: {
+    padding: '10px 10px',
+  },
+});
 
 const modalSx = theme => ({
   position: 'absolute',
@@ -129,11 +173,17 @@ const modalSx = theme => ({
   transform: 'translate(-50%, -50%)',
   width: 400,
   bgcolor: 'background.paper',
-  border: '2px solid #000',
+  borderRadius: '10px',
   boxShadow: 24,
   pt: 2,
   px: 4,
   pb: 3,
+  [theme.breakpoints.down('xs')]: {
+    width: '80%',
+    height: '345px',
+    overflow: 'auto',
+    padding: '10px 15px',
+  },
 });
 
 const buttonSx = theme => ({
@@ -147,7 +197,6 @@ const buttonSx = theme => ({
   width: '214px',
   borderRadius: '10px',
   [theme.breakpoints.down('xs')]: {
-    width: '88px',
     padding: '9px 10px',
   },
 });
