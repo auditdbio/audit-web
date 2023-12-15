@@ -120,6 +120,16 @@ const CreateProjectCard = ({ projectInfo }) => {
     }
   };
 
+  const handleGoBack = dirty => {
+    if (dirty) {
+      alert(
+        'You have unsaved changes. Please save them before leaving the page.',
+      );
+    } else {
+      navigate(-1);
+    }
+  };
+
   return (
     <Formik
       initialValues={initialValues}
@@ -154,6 +164,7 @@ const CreateProjectCard = ({ projectInfo }) => {
         values,
         setFieldValue,
         setFieldTouched,
+        dirty,
         touched,
         errors,
       }) => {
@@ -161,7 +172,7 @@ const CreateProjectCard = ({ projectInfo }) => {
           <Box sx={mainBox}>
             <Button
               sx={backButtonSx}
-              onClick={() => navigate(-1)}
+              onClick={() => handleGoBack(dirty)}
               aria-label="Ga back"
               {...addTestsLabel('go-back-button')}
             >

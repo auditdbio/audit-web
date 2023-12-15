@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Field, Form, Formik } from 'formik';
 import * as Yup from 'yup';
@@ -26,6 +26,8 @@ import {
   createAuditor,
   updateAuditor,
 } from '../../../redux/actions/auditorAction.js';
+import { useLocation, useNavigate } from 'react-router-dom';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 const EditProfileForm = ({ role }) => {
   const matchSm = useMediaQuery(theme.breakpoints.down('sm'));
@@ -34,6 +36,7 @@ const EditProfileForm = ({ role }) => {
   const { user } = useSelector(s => s.user);
   const customer = useSelector(s => s.customer.customer);
   const auditor = useSelector(s => s.auditor.auditor);
+  const navigate = useNavigate();
 
   const data = useMemo(() => {
     if (role === AUDITOR) {
@@ -48,6 +51,15 @@ const EditProfileForm = ({ role }) => {
     return usernameParts && usernameParts.length > 1
       ? usernameParts.at(-1)
       : '';
+  };
+  const handleGoBack = dirty => {
+    if (dirty) {
+      alert(
+        'You have unsaved changes. Please save them before leaving the page.',
+      );
+    } else {
+      navigate(-1);
+    }
   };
 
   if (!data) {
@@ -93,10 +105,15 @@ const EditProfileForm = ({ role }) => {
           }
         }}
       >
-        {({ handleSubmit, values, setFieldValue }) => {
+        {({ handleSubmit, values, setFieldValue, dirty }) => {
           return (
             <Form onSubmit={handleSubmit}>
               <Box sx={wrapper}>
+                <Button sx={backBtnSx} onClick={() => handleGoBack(dirty)}>
+                  <ArrowBackIcon
+                    color={role !== AUDITOR ? 'primary' : 'secondary'}
+                  />
+                </Button>
                 <Box sx={avatarWrapper}>
                   <Box
                     sx={{
@@ -277,8 +294,21 @@ const EditProfileSchema = Yup.object().shape({
   tags: Yup.array(),
 });
 
+const backBtnSx = theme => ({
+  position: 'absolute',
+  left: '-70px',
+  top: '-30px',
+  [theme.breakpoints.down('sm')]: {
+    left: '-50px',
+  },
+  [theme.breakpoints.down('xs')]: {
+    left: '-40px',
+  },
+});
+
 const wrapper = theme => ({
   display: 'flex',
+  position: 'relative',
   gap: '52px',
   [theme.breakpoints.down('sm')]: {
     flexDirection: 'column',
