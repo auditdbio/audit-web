@@ -27,6 +27,8 @@ import { CLEAR_AUDIT } from '../redux/actions/types.js';
 import { useParams } from 'react-router-dom';
 import Loader from '../components/Loader.jsx';
 import CustomSnackbar from '../components/custom/CustomSnackbar.jsx';
+import Markdown from '../components/markdown/Markdown.jsx';
+import TagsList from '../components/tagsList.jsx';
 
 const PublicConstructor = ({ saved, isPublic }) => {
   const matchXs = useMediaQuery(theme.breakpoints.down('xs'));
@@ -40,6 +42,8 @@ const PublicConstructor = ({ saved, isPublic }) => {
   const [isOpen, setIsOpen] = useState(false);
   const audit = useSelector(s => s.audits.audit);
   const { auditId } = useParams();
+  const descriptionRef = useRef();
+  const [showFull, setShowFull] = useState(false);
 
   useEffect(() => {
     if (saved) {
@@ -80,7 +84,8 @@ const PublicConstructor = ({ saved, isPublic }) => {
         scope: audit?.scope?.length ? audit?.scope : [],
         tags: audit?.tags?.length ? audit?.tags : [],
         issues: audit?.issues?.length ? audit?.issues : [],
-        auditor_first_name: audit?.auditor_first_name || '',
+        auditor_full_name:
+          audit?.auditor_first_name + ' ' + audit?.auditor_last_name || '',
         status: audit?.status,
         last_modified: audit?.last_modified || Date.now(),
         ...audit,
@@ -131,6 +136,7 @@ const PublicConstructor = ({ saved, isPublic }) => {
             initialValues={initialValues}
             onSubmit={values => {
               if (saved) {
+                delete values.auditor_full_name;
                 dispatch(addReportAudit(values, true));
               } else {
                 if (values.id) {
@@ -179,7 +185,7 @@ const PublicConstructor = ({ saved, isPublic }) => {
 
                     <FieldEditor
                       handleBlur={handleSubmit}
-                      name={saved ? 'auditor_first_name' : 'auditor_name'}
+                      name={saved ? 'auditor_full_name' : 'auditor_name'}
                       label={'Auditor name'}
                       disabled={saved}
                     />
@@ -197,47 +203,63 @@ const PublicConstructor = ({ saved, isPublic }) => {
                       <Typography sx={[{ mb: '10px' }]} variant={'h6'}>
                         Project description
                       </Typography>
-                      <MarkdownEditor
-                        saved={saved}
-                        name="description"
-                        handleBlur={handleSubmit}
-                        setFieldTouched={setFieldTouched}
-                        mdProps={{
-                          view: { menu: true, md: true, html: !matchXs },
-                        }}
-                      />
-                    </Box>
-
-                    <Box sx={{ display: 'flex', gap: '10px' }}>
                       <Box sx={{ width: '100%' }}>
-                        <TagsField
-                          size={matchMd ? 'small' : 'medium'}
-                          name="tags"
-                          label="Tags"
-                          setFieldTouched={setFieldTouched}
-                          onBlur={handleSubmit}
-                        />
-                        <TagsArray handleSubmit={handleSubmit} name="tags" />
-                      </Box>
-                      <Box
-                        sx={{
-                          display: 'flex',
-                          flexDirection: 'column',
-                          gap: '10px',
-                          width: '100%',
-                        }}
-                      >
-                        <TagsField
-                          size={matchMd ? 'small' : 'medium'}
-                          name="scope"
-                          label="Project links"
-                          setFieldTouched={setFieldTouched}
-                          onBlur={handleSubmit}
-                        />
-                        <ProjectLinksList
-                          handleSubmit={handleSubmit}
-                          name="scope"
-                        />
+                        <Box sx={descriptionSx(showFull)}>
+                          <Box ref={descriptionRef}>
+                            <MarkdownEditor
+                              saved={saved}
+                              name="description"
+                              handleBlur={handleSubmit}
+                              setFieldTouched={setFieldTouched}
+                              mdProps={{
+                                view: { menu: true, md: true, html: !matchXs },
+                              }}
+                            />{' '}
+                          </Box>
+                          <Box
+                            sx={{ display: 'flex', gap: '10px', my: '15px' }}
+                          >
+                            <Box sx={{ width: '100%' }}>
+                              <TagsField
+                                size={matchMd ? 'small' : 'medium'}
+                                name="tags"
+                                label="Tags"
+                                setFieldTouched={setFieldTouched}
+                                onBlur={handleSubmit}
+                              />
+                              <TagsArray
+                                handleSubmit={handleSubmit}
+                                name="tags"
+                              />
+                            </Box>
+                            <Box
+                              sx={{
+                                display: 'flex',
+                                flexDirection: 'column',
+                                gap: '10px',
+                                width: '100%',
+                              }}
+                            >
+                              <TagsField
+                                size={matchMd ? 'small' : 'medium'}
+                                name="scope"
+                                label="Project links"
+                                setFieldTouched={setFieldTouched}
+                                onBlur={handleSubmit}
+                              />
+                              <ProjectLinksList
+                                handleSubmit={handleSubmit}
+                                name="scope"
+                              />
+                            </Box>
+                          </Box>
+                        </Box>
+                        <Button
+                          onClick={() => setShowFull(!showFull)}
+                          sx={readAllButton}
+                        >
+                          {showFull ? 'Hide ▲' : `Expand ▼`}
+                        </Button>
                       </Box>
                     </Box>
                   </Box>
@@ -283,15 +305,15 @@ const PublicConstructor = ({ saved, isPublic }) => {
                       </Box>
                     </Box>
                   </Modal>
-                  <Box
-                    sx={{
-                      display: 'flex',
-                      gap: '25px',
-                      mt: '25px',
-                      justifyContent: 'flex-end',
-                    }}
-                  >
-                    {!issues.length && (
+                  {!issues.length && (
+                    <Box
+                      sx={{
+                        display: 'flex',
+                        gap: '25px',
+                        mt: '25px',
+                        justifyContent: 'flex-end',
+                      }}
+                    >
                       <Button
                         variant={'contained'}
                         type={'button'}
@@ -301,18 +323,8 @@ const PublicConstructor = ({ saved, isPublic }) => {
                       >
                         Reset form
                       </Button>
-                    )}
-                    {/*<Button*/}
-                    {/*  variant={'contained'}*/}
-                    {/*  type={'submit'}*/}
-                    {/*  sx={{*/}
-                    {/*    display: 'block',*/}
-                    {/*  }}*/}
-                    {/*  disabled={!dirty}*/}
-                    {/*>*/}
-                    {/*  Save*/}
-                    {/*</Button>*/}
-                  </Box>
+                    </Box>
+                  )}
                   {!!issues?.length && (
                     <Box
                       sx={{
@@ -348,6 +360,30 @@ const PublicConstructor = ({ saved, isPublic }) => {
 };
 
 export default PublicConstructor;
+
+const readAllButton = theme => ({
+  width: '100%',
+  padding: '8px',
+  fontWeight: 600,
+  fontSize: '21px',
+  color: 'black',
+  textTransform: 'none',
+  lineHeight: '25px',
+  background: '#E5E5E5',
+  borderRadius: 0,
+  boxShadow: '0px -24px 14px -8px rgba(252, 250, 246, 1)',
+  ':hover': { background: '#D5D5D5' },
+  [theme.breakpoints.down('xs')]: {
+    fontSize: '14px',
+    border: 'none',
+  },
+});
+const descriptionSx = full => ({
+  maxHeight: full ? 'unset' : '150px',
+  overflow: 'hidden',
+  transition: 'max-height 1s',
+  scrollBehavior: 'smooth',
+});
 
 const fieldsWrapperSx = theme => ({
   mt: '40px',

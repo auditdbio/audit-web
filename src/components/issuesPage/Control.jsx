@@ -14,7 +14,7 @@ import {
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import IconButton from '@mui/material/IconButton';
-import { addTestsLabel, isAuth } from '../../lib/helper.js';
+import { addTestsLabel, isAuth, reportBuilder } from '../../lib/helper.js';
 import { AUDITOR, CUSTOMER, RESOLVED } from '../../redux/actions/types.js';
 import ResolveAuditConfirmation from './ResolveAuditConfirmation.jsx';
 import { discloseAllIssues } from '../../redux/actions/issueAction.js';
@@ -58,7 +58,7 @@ const Control = ({
   const report = JSON.parse(localStorage.getItem('report'));
   const [openMessage, setOpenMessage] = useState(false);
   const auditMessage = useSelector(s => s.audits.successMessage);
-  const xss = useMediaQuery(theme.breakpoints.down(555));
+  const xss = useMediaQuery(theme.breakpoints.down(666));
 
   const handleSearch = e => {
     setSearch(e.target.value);
@@ -124,229 +124,7 @@ const Control = ({
   const handleGenerateReport = () => {
     if (isPublic) {
       if (report?.auditor_name && report?.project_name && report?.description) {
-        const newData = {
-          auditor_name: report.auditor_name,
-          project_name: report.project_name,
-          report_data: [
-            {
-              type: 'markdown',
-              title: 'Disclaimer',
-              text:
-                '\n' +
-                '## Important to remember:\n' +
-                '\n' +
-                "1. This audit was performed based on the current state of the code at the time of evaluation. Any subsequent changes or modifications to the codebase could render auditors' findings obsolete. Re-audit is recommended post any alterations.\n" +
-                '\n' +
-                '2. While we strive for accuracy, auditors cannot guarantee that all potential vulnerabilities or bugs have been identified. The auditor is not responsible for any overlooked issues.\n' +
-                '\n' +
-                "3. It's always recommended to have multiple layers of checks and balances, including but not limited to, regular code reviews and updated audits.",
-              include_in_toc: true,
-            },
-            {
-              type: 'plain_text',
-              title: 'Summary',
-              include_in_toc: true,
-              subsections: [
-                {
-                  type: 'project_description',
-                  title: 'Project description',
-                  text: report.description,
-                  include_in_toc: true,
-                },
-                {
-                  type: 'scope',
-                  title: 'Scope',
-                  text: '',
-                  include_in_toc: true,
-                  links: report.scope,
-                },
-              ],
-            },
-            {
-              type: 'statistics',
-              title: 'Issue statistics',
-              include_in_toc: true,
-              statistics: {
-                total: issuesArray.length,
-                fixed: {
-                  critical: issuesArray.filter(
-                    issue =>
-                      issue.severity === 'Critical' && issue.status === 'Fixed',
-                  ).length,
-                  major: issuesArray.filter(
-                    issue =>
-                      issue.severity === 'Major' && issue.status === 'Fixed',
-                  ).length,
-                  medium: issuesArray.filter(
-                    issue =>
-                      issue.severity === 'Medium' && issue.status === 'Fixed',
-                  ).length,
-                  minor: issuesArray.filter(
-                    issue =>
-                      issue.severity === 'Minor' && issue.status === 'Fixed',
-                  ).length,
-                },
-                not_fixed: {
-                  critical: issuesArray.filter(
-                    issue =>
-                      issue.severity === 'Critical' && issue.status !== 'Fixed',
-                  ).length,
-                  major: issuesArray.filter(
-                    issue =>
-                      issue.severity === 'Major' && issue.status !== 'Fixed',
-                  ).length,
-                  medium: issuesArray.filter(
-                    issue =>
-                      issue.severity === 'Medium' && issue.status !== 'Fixed',
-                  ).length,
-                  minor: issuesArray.filter(
-                    issue =>
-                      issue.severity === 'Minor' && issue.status !== 'Fixed',
-                  ).length,
-                },
-              },
-            },
-            {
-              type: 'plain_text',
-              title: 'Issues',
-              text: '',
-              include_in_toc: true,
-              subsections: [
-                {
-                  type: 'plain_text',
-                  title: 'Critical',
-                  text: issuesArray.filter(
-                    issue => issue.severity === 'Critical',
-                  ).length
-                    ? ''
-                    : 'No critical issues found',
-                  include_in_toc: true,
-                  [issuesArray.filter(issue => issue.severity === 'Critical')
-                    .length
-                    ? 'subsections'
-                    : '']: [
-                    ...issuesArray
-                      .filter(issue => issue.severity === 'Critical')
-                      .map(issue => {
-                        return {
-                          type: 'issue_data',
-                          title: issue.name,
-                          text: issue.description,
-                          include_in_toc: true,
-                          feedback: issue.feedback,
-                          issue_data: {
-                            links: issue.links,
-                            category: issue.category,
-                            severity: issue.severity,
-                            status: issue.status,
-                          },
-                        };
-                      }),
-                  ],
-                },
-                {
-                  type: 'plain_text',
-                  title: 'Major',
-                  text: issuesArray.filter(issue => issue.severity === 'Major')
-                    .length
-                    ? ''
-                    : 'No major issues found',
-                  include_in_toc: true,
-                  [issuesArray.filter(issue => issue.severity === 'Major')
-                    .length
-                    ? 'subsections'
-                    : '']: [
-                    ...issuesArray
-                      .filter(issue => issue.severity === 'Major')
-                      .map(issue => {
-                        return {
-                          type: 'issue_data',
-                          title: issue.name,
-                          text: issue.description,
-                          include_in_toc: true,
-                          feedback: issue.feedback,
-                          issue_data: {
-                            links: issue.links,
-                            category: issue.category,
-                            severity: issue.severity,
-                            status: issue.status,
-                          },
-                        };
-                      }),
-                  ],
-                },
-                {
-                  type: 'plain_text',
-                  title: 'Medium',
-                  text: issuesArray.filter(issue => issue.severity === 'Medium')
-                    .length
-                    ? ''
-                    : 'No medium issues found',
-                  include_in_toc: true,
-                  [issuesArray.filter(issue => issue.severity === 'Medium')
-                    .length
-                    ? 'subsections'
-                    : '']: [
-                    ...issuesArray
-                      .filter(issue => issue.severity === 'Medium')
-                      .map(issue => {
-                        return {
-                          type: 'issue_data',
-                          title: issue.name,
-                          text: issue.description,
-                          include_in_toc: true,
-                          feedback: issue.feedback,
-                          issue_data: {
-                            links: issue.links,
-                            category: issue.category,
-                            severity: issue.severity,
-                            status: issue.status,
-                          },
-                        };
-                      }),
-                  ],
-                },
-                {
-                  type: 'plain_text',
-                  title: 'Minor',
-                  text: issuesArray.filter(issue => issue.severity === 'Minor')
-                    .length
-                    ? ''
-                    : 'No minor issues found',
-                  include_in_toc: true,
-                  [issuesArray.filter(issue => issue.severity === 'Minor')
-                    .length
-                    ? 'subsections'
-                    : '']: [
-                    ...issuesArray
-                      .filter(issue => issue.severity === 'Minor')
-                      .map(issue => {
-                        return {
-                          type: 'issue_data',
-                          title: issue.name,
-                          text: issue.description,
-                          include_in_toc: true,
-                          feedback: issue.feedback,
-                          issue_data: {
-                            links: issue.links,
-                            category: issue.category,
-                            severity: issue.severity,
-                            status: issue.status,
-                          },
-                        };
-                      }),
-                  ],
-                },
-              ],
-            },
-            // {
-            //   type: 'plain_text',
-            //   title: '',
-            //   text: '',
-            //   include_in_toc: true,
-            // },
-          ],
-        };
+        const newData = reportBuilder(report, issuesArray);
         dispatch(getPublicReport(newData, { generate: true }));
       } else {
         handleSubmit();
@@ -394,7 +172,7 @@ const Control = ({
         setIsOpen={setResolveConfirmation}
         audit={audit}
       />
-      {isPublic && (
+      {isPublic ? (
         <Box sx={publicBtnWrapper}>
           <CustomSnackbar
             autoHideDuration={5000}
@@ -440,14 +218,22 @@ const Control = ({
             </Button>
           )}
         </Box>
+      ) : (
+        <Box sx={publicBtnWrapper}>
+          {xss && saved && (
+            <Button
+              variant="contained"
+              color="secondary"
+              sx={[buttonSx, (isPublic || saved) && xss ? publicBtnSx : {}]}
+              onClick={handleGenerateReport}
+            >
+              Generate report
+            </Button>
+          )}
+        </Box>
       )}
-      <Box sx={!isPublic ? wrapper : wrapperPublic}>
-        <Box
-          sx={[
-            !isPublic ? searchBlock : publicSearchBlock,
-            saved && xss ? { flexDirection: 'column', rowGap: '20px' } : {},
-          ]}
-        >
+      <Box sx={isPublic || saved ? wrapperPublic : wrapper}>
+        <Box sx={[isPublic || saved ? publicSearchBlock : searchBlock]}>
           {!isPublic && !saved && (
             <IconButton
               aria-label="Menu"
@@ -491,7 +277,7 @@ const Control = ({
             </Menu>
           )}
 
-          {saved && (
+          {saved && !xss && (
             <Button
               variant="contained"
               color="secondary"
@@ -526,7 +312,7 @@ const Control = ({
                 <Button
                   variant="contained"
                   color="secondary"
-                  sx={[buttonSx, isPublic && xss ? publicBtnSx : {}]}
+                  sx={[buttonSx, (isPublic || saved) && xss ? publicBtnSx : {}]}
                   disabled={
                     audit?.status?.toLowerCase() === RESOLVED.toLowerCase()
                   }
