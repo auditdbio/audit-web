@@ -18,9 +18,13 @@ const ChatListItem = ({
 }) => {
   const dispatch = useDispatch();
 
+  const getUnreadForUser = chat =>
+    chat.unread.find(unread => unread.id === user.id)?.unread || 0;
+
   const setChatHandle = () => {
     setListIsOpen(false);
     const members = chat?.members.map(member => member.id);
+    const unread = getUnreadForUser(chat);
 
     dispatch(
       setCurrentChat(chat?.id, {
@@ -30,6 +34,7 @@ const ChatListItem = ({
         isNew,
         userDataId,
         role,
+        unread,
       }),
     );
   };
@@ -70,7 +75,11 @@ const ChatListItem = ({
       </Box>
 
       <Box sx={messagesInfo}>
-        {!isNew && <Box sx={messagesCount({ user, count: 0 })}>0</Box>}
+        {!isNew && chat.unread && !!getUnreadForUser(chat) && (
+          <Box sx={messagesCount({ user, count: getUnreadForUser(chat) })}>
+            {getUnreadForUser(chat)}
+          </Box>
+        )}
         {!isNew && (
           <Box sx={lastMessageTime}>{convertDate(chat.last_message?.time)}</Box>
         )}

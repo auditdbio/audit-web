@@ -5,12 +5,15 @@ import {
   CHAT_NEW_MESSAGE,
   CHAT_SEND_FIRST_MESSAGE,
   CHAT_SET_CURRENT,
+  CHAT_UPDATE_READ,
+  CHAT_UPDATE_TOTAL_UNREAD,
 } from '../actions/types.js';
 
 const initialState = {
   chatList: [],
   chatMessages: [],
   currentChat: null,
+  unreadMessages: 0,
 };
 
 export const chatReducer = (state = initialState, action) => {
@@ -19,6 +22,27 @@ export const chatReducer = (state = initialState, action) => {
       return { ...state, chatList: action.payload };
     case CHAT_SET_CURRENT:
       return { ...state, currentChat: action.payload };
+    case CHAT_UPDATE_READ:
+      return {
+        ...state,
+        chatList: state.chatList.map(chat =>
+          chat.id === action.payload.chatId
+            ? {
+                ...chat,
+                unread: chat.unread.map(unread =>
+                  unread.id === action.payload.userId
+                    ? { ...unread, unread: action.payload.unread }
+                    : unread,
+                ),
+              }
+            : chat,
+        ),
+      };
+    case CHAT_UPDATE_TOTAL_UNREAD:
+      return {
+        ...state,
+        unreadMessages: action.payload,
+      };
     case CHAT_GET_MESSAGES:
       return { ...state, chatMessages: action.payload };
     case CHAT_NEW_MESSAGE:

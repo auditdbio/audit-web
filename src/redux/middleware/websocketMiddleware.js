@@ -18,6 +18,7 @@ import {
   receiveAuditorMessage,
   receiveCustomerMessage,
 } from '../actions/websocketAction.js';
+import { receiveNewChatMessage } from '../actions/chatActions.js';
 const API_URL = import.meta.env.VITE_API_WS_BASE_URL;
 
 const websocketMiddleware = () => {
@@ -67,10 +68,9 @@ const websocketMiddleware = () => {
                 payload: message.payload.AuditUpdate,
               });
             } else if (message.kind.toLowerCase() === 'chatmessage') {
-              store.dispatch({
-                type: CHAT_NEW_MESSAGE,
-                payload: message.payload.ChatMessage,
-              });
+              store.dispatch(
+                receiveNewChatMessage(message.payload.ChatMessage),
+              );
             } else if (message.kind.toLowerCase() === 'requestdecline') {
               store.dispatch({
                 type: REQUEST_DECLINE,

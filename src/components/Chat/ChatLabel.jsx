@@ -1,76 +1,63 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { Box } from '@mui/material';
 import theme from '../../styles/themes.js';
 import ChatIcon from '../icons/ChatIcon.jsx';
+import { CustomBadge } from '../custom/Badge.jsx';
+import { getTotalUnreadMessages } from '../../redux/actions/chatActions.js';
+import { AUDITOR } from '../../redux/actions/types.js';
 
 const ChatLabel = () => {
+  const dispatch = useDispatch();
+  const { chatList, unreadMessages } = useSelector(s => s.chat);
+  const { user } = useSelector(s => s.user);
+
+  useEffect(() => {
+    dispatch(getTotalUnreadMessages());
+  }, [chatList]);
+
   return (
     <Box sx={wrapper}>
       <Link to="/chat">
-        <Box sx={iconWrapper}>
-          <ChatIcon />
-        </Box>
-        {/*<CustomBadge*/}
-        {/*  badgeContent={25}*/}
-        {/*  color='secondary'*/}
-        {/*>*/}
-        {/*  <Box sx={iconWrapper}>*/}
-        {/*    <ChatIcon />*/}
-        {/*  </Box>*/}
-        {/*</CustomBadge>*/}
+        <CustomBadge
+          badgeContent={unreadMessages}
+          color={user.current_role === AUDITOR ? 'secondary' : 'primary'}
+        >
+          <Box sx={iconWrapper}>
+            <ChatIcon />
+          </Box>
+        </CustomBadge>
       </Link>
-
-      <Box sx={notice(0)}>0</Box>
     </Box>
   );
 };
 
 export default ChatLabel;
 
-const wrapper = theme => ({
+const wrapper = {
   position: 'relative',
-  // [theme.breakpoints.down('sm')]: {
-  //   transform: 'scale(0.7)',
-  // },
-  // [theme.breakpoints.down('xs')]: {
-  //   transform: 'scale(0.44)',
-  //   mr: '-20px',
-  // },
-  // '& .MuiBadge-badge': {
-  //   [theme.breakpoints.down('sm')]: {
-  //     position: 'relative',
-  //     top: '-16px',
-  //     transform: 'scale(1.4)',
-  //   },
-  //   [theme.breakpoints.down('xs')]: {
-  //     transform: 'scale(2.2)',
-  //   },
-  // },
-});
-//
+  '& .MuiBadge-badge': {
+    top: '5px',
+  },
+};
+
 const iconWrapper = theme => ({
-  width: '40px',
-  height: '40px',
+  width: '35px',
+  height: '35px',
   background: '#e5e5e5',
   borderRadius: '50%',
   display: 'flex',
   justifyContent: 'center',
   alignItems: 'center',
-  boxShadow: '0px 4px 6px 0px rgba(190, 190, 190, 1)',
   transition: '0.3s',
   '& svg': {
-    width: '35px',
+    width: '30px',
     [theme.breakpoints.down('xs')]: {
       width: 'unset',
     },
   },
   ':hover': { background: '#d1d1d1' },
-  [theme.breakpoints.down('xs')]: {
-    boxShadow: 'none',
-    // width: '80px',
-    // height: '80px',
-  },
 });
 
 const notice = count => ({
@@ -89,7 +76,6 @@ const notice = count => ({
   color: 'white',
   pointerEvents: 'none',
   [theme.breakpoints.down('xs')]: {
-    // transform: 'scale(1.55)',
     border: '1px solid white',
     fontSize: count < 100 ? '12px' : '10px',
   },

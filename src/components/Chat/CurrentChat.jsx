@@ -35,13 +35,15 @@ const CurrentChat = ({
   const [displayedMessages, setDisplayedMessages] = useState(20);
   const [messagesWindowHeight, setMessagesWindowHeight] = useState(0);
   const [userLinkData, setUserLinkData] = useState({});
+  const [unread, setUnread] = useState(0);
 
   const messageBoxRef = useRef();
+  const newMessagesTextRef = useRef();
 
   useEffect(() => {
     if (currentChat?.chatId && !currentChat?.isNew) {
       setDisplayedMessages(20);
-      dispatch(getChatMessages(currentChat.chatId));
+      dispatch(getChatMessages(currentChat.chatId, user.id));
     }
   }, [currentChat]);
 
@@ -53,11 +55,18 @@ const CurrentChat = ({
   }, [currentChat?.chatId]);
 
   useEffect(() => {
-    if (messageBoxRef.current) {
+    if (newMessagesTextRef.current) {
+      newMessagesTextRef.current.scrollIntoView({
+        behavior: 'auto',
+        block: 'nearest',
+        inline: 'nearest',
+      });
+      setMessagesWindowHeight(messageBoxRef.current.scrollHeight);
+    } else if (messageBoxRef.current) {
       messageBoxRef.current.scrollTop = messageBoxRef.current.scrollHeight;
       setMessagesWindowHeight(messageBoxRef.current.scrollHeight);
     }
-  }, [chatMessages]);
+  }, [chatMessages, newMessagesTextRef]);
 
   useEffect(() => {
     if (messageBoxRef.current) {
@@ -74,7 +83,17 @@ const CurrentChat = ({
   }, [currentChat, chatList]);
 
   useEffect(() => {
-    return () => dispatch(closeCurrentChat());
+    setUnread(currentChat?.unread || 0);
+  }, [currentChat]);
+
+  useEffect(() => {
+    if (unread > 20) {
+      setDisplayedMessages(unread);
+    }
+  }, [unread]);
+
+  useEffect(() => {
+    return () => dispatch(closeCurrentChat(currentChat?.chatId));
   }, []);
 
   const handleMessageInput = e => {
@@ -93,6 +112,7 @@ const CurrentChat = ({
       ),
     );
     setNewMessage('');
+    setUnread(0);
   };
 
   const messageHandleKeyDown = e => {
@@ -157,7 +177,7 @@ const CurrentChat = ({
             >
               {currentChat?.name}
             </Link>
-            <Box sx={userStatusSx({ online: true })}>Online</Box>
+            {/*<Box sx={userStatusSx({ online: true })}>Online</Box>*/}
           </Box>
 
           <IconButton
@@ -169,6 +189,7 @@ const CurrentChat = ({
             <AttachIcon />
           </IconButton>
         </Box>
+
         <Box sx={chatSx} ref={messageBoxRef}>
           {displayedMessages < chatMessages.length && (
             <Box sx={showMoreSx}>
@@ -177,15 +198,17 @@ const CurrentChat = ({
               </Button>
             </Box>
           )}
-          {chatMessages.slice(...getDisplayedMessages()).map(message => (
-            <Message
-              key={message.id}
-              user={user}
-              message={message}
-              currentChat={currentChat}
-            />
-          ))}
+          {chatMessages.slice(...getDisplayedMessages()).map((msg, idx, ar) => {
+            const unreadLabel = !!unread && ar.length - unread === idx;
+            return (
+              <Box key={msg.id} ref={unreadLabel ? newMessagesTextRef : null}>
+                {unreadLabel && <Box sx={newMessagesSx}>New messages:</Box>}
+                <Message user={user} message={msg} currentChat={currentChat} />
+              </Box>
+            );
+          })}
         </Box>
+
         <Box sx={sendBox}>
           <CustomTextarea
             maxRows={1}
@@ -365,6 +388,15 @@ const showMoreSx = {
   top: 0,
   left: '50%',
   transform: 'translateX(-50%)',
+};
+
+const newMessagesSx = {
+  fontSize: '14px',
+  fontWeight: 500,
+  color: theme.palette.secondary.main,
+  textTransform: 'uppercase',
+  textAlign: 'center',
+  mb: '20px',
 };
 
 const sendBox = {

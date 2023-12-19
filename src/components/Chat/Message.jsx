@@ -1,12 +1,12 @@
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import Cookies from 'js-cookie';
-import { Avatar, Box, Link, Typography } from '@mui/material';
+import axios from 'axios';
+import { Avatar, Box, Typography } from '@mui/material';
 import { ASSET_URL } from '../../services/urls.js';
 import theme from '../../styles/themes.js';
 import { AUDITOR, CUSTOMER } from '../../redux/actions/types.js';
 import ImageMessage from './ImageMessage.jsx';
-import axios from 'axios';
 
 const Message = ({ message, user, currentChat }) => {
   const { customer } = useSelector(state => state.customer);

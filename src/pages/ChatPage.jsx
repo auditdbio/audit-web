@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
-import { Box, Button, IconButton, Typography } from '@mui/material';
+import { Box, Button, IconButton } from '@mui/material';
 import Layout from '../styles/Layout.jsx';
 import { CustomCard } from '../components/custom/Card';
 import ChatList from '../components/Chat/ChatList.jsx';
@@ -21,7 +21,7 @@ const ChatPage = () => {
 
   useEffect(() => {
     if (id && !currentChat?.isNew) {
-      const chat = chatList.find(it => it.id === id);
+      const chat = chatList.find(chat => chat.id === id);
       const members = chat?.members.map(member => member.id);
 
       dispatch(
@@ -32,7 +32,7 @@ const ChatPage = () => {
         }),
       );
     }
-  }, [id, chatList]);
+  }, [id, chatList.length]);
 
   return (
     <Layout sx={layoutSx}>
