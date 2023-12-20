@@ -122,9 +122,12 @@ const CreateProjectCard = ({ projectInfo }) => {
 
   const handleGoBack = dirty => {
     if (dirty) {
-      alert(
+      const confirmed = window.confirm(
         'You have unsaved changes. Please save them before leaving the page.',
       );
+      if (confirmed) {
+        navigate(-1);
+      }
     } else {
       navigate(-1);
     }
