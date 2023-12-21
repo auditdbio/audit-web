@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Field, Form, Formik } from 'formik';
 import * as Yup from 'yup';
@@ -28,6 +28,7 @@ import {
 } from '../../../redux/actions/auditorAction.js';
 import { useLocation, useNavigate } from 'react-router-dom';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import { history } from '../../../services/history.js';
 
 const EditProfileForm = ({ role }) => {
   const matchSm = useMediaQuery(theme.breakpoints.down('sm'));
@@ -37,6 +38,7 @@ const EditProfileForm = ({ role }) => {
   const customer = useSelector(s => s.customer.customer);
   const auditor = useSelector(s => s.auditor.auditor);
   const navigate = useNavigate();
+  const [isDirty, setIsDirty] = useState(false);
 
   const data = useMemo(() => {
     if (role === AUDITOR) {
@@ -64,6 +66,35 @@ const EditProfileForm = ({ role }) => {
       navigate(-1);
     }
   };
+
+  useEffect(() => {
+    const unblock = history.block(({ location }) => {
+      console.log(location);
+      if (!isDirty) {
+        unblock();
+        return navigate(location);
+      }
+
+      const confirmed = window.confirm(
+        'You have unsaved changes. Please save them before leaving the page.',
+      );
+
+      if (confirmed) {
+        unblock();
+        return navigate(location);
+      } else {
+        return false;
+      }
+    });
+
+    if (!isDirty) {
+      unblock();
+    }
+
+    return () => {
+      unblock();
+    };
+  }, [history, isDirty]);
 
   if (!data) {
     return <Loader />;
@@ -109,6 +140,9 @@ const EditProfileForm = ({ role }) => {
         }}
       >
         {({ handleSubmit, values, setFieldValue, dirty }) => {
+          useEffect(() => {
+            setIsDirty(dirty);
+          }, [dirty]);
           return (
             <Form onSubmit={handleSubmit}>
               <Box sx={wrapper}>

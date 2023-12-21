@@ -31,6 +31,7 @@ import CloseProjectModal from './CloseProjectModal.jsx';
 import { DONE } from '../redux/actions/types.js';
 import CustomSnackbar from './custom/CustomSnackbar.jsx';
 import { addTestsLabel } from '../lib/helper.js';
+import { history } from '../services/history.js';
 
 const CreateProjectCard = ({ projectInfo }) => {
   const navigate = useNavigate();
@@ -51,7 +52,7 @@ const CreateProjectCard = ({ projectInfo }) => {
   );
   const [closeConfirmIsOpen, setCloseConfirmIsOpen] = useState(false);
   const [state, setState] = useState(false);
-
+  const [isDirty, setIsDirty] = useState(false);
   useEffect(() => {
     dispatch(getAuditsRequest('customer'));
   }, []);
@@ -133,6 +134,34 @@ const CreateProjectCard = ({ projectInfo }) => {
     }
   };
 
+  useEffect(() => {
+    const unblock = history.block(({ location }) => {
+      if (!isDirty) {
+        unblock();
+        return navigate(location);
+      }
+
+      const confirmed = window.confirm(
+        'You have unsaved changes. Please save them before leaving the page.',
+      );
+
+      if (confirmed) {
+        unblock();
+        return navigate(location);
+      } else {
+        return false;
+      }
+    });
+
+    if (!isDirty) {
+      unblock();
+    }
+
+    return () => {
+      unblock();
+    };
+  }, [history, isDirty]);
+
   return (
     <Formik
       initialValues={initialValues}
@@ -171,6 +200,9 @@ const CreateProjectCard = ({ projectInfo }) => {
         touched,
         errors,
       }) => {
+        useEffect(() => {
+          setIsDirty(dirty);
+        }, [dirty]);
         return (
           <Box sx={mainBox}>
             <Button
