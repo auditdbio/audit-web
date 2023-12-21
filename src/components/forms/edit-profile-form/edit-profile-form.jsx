@@ -69,7 +69,6 @@ const EditProfileForm = ({ role }) => {
 
   useEffect(() => {
     const unblock = history.block(({ location }) => {
-      console.log(location);
       if (!isDirty) {
         unblock();
         return navigate(location);
