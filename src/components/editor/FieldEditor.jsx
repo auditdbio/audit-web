@@ -29,6 +29,7 @@ const FieldEditor = ({ name, label, handleBlur, disabled }) => {
               ? { '& fieldset': { borderColor: 'red' } }
               : {},
           ]}
+          size={'small'}
           onChange={e => {
             handleChange(e);
           }}

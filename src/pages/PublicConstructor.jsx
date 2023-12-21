@@ -121,7 +121,7 @@ const PublicConstructor = ({ saved, isPublic }) => {
   //
   if ((saved && audit) || (!audit && !saved)) {
     return (
-      <Layout>
+      <Layout sx={layoutSx}>
         <CustomCard sx={wrapper}>
           <Button
             onClick={() =>
@@ -200,7 +200,7 @@ const PublicConstructor = ({ saved, isPublic }) => {
                     }}
                   >
                     <Box>
-                      <Typography sx={[{ mb: '10px' }]} variant={'h6'}>
+                      <Typography sx={descriptionTitleSx} variant={'h6'}>
                         Project description
                       </Typography>
                       <Box sx={{ width: '100%' }}>
@@ -361,6 +361,24 @@ const PublicConstructor = ({ saved, isPublic }) => {
 
 export default PublicConstructor;
 
+const layoutSx = theme => ({
+  paddingY: '10px',
+  [theme.breakpoints.down('md')]: {
+    padding: '10px 20px',
+  },
+  [theme.breakpoints.down('sm')]: {
+    padding: '10px 20px',
+  },
+  [theme.breakpoints.down('xs')]: {
+    padding: '20px 30px',
+  },
+});
+
+const descriptionTitleSx = theme => ({
+  mb: '10px',
+  fontSize: '16px',
+});
+
 const readAllButton = theme => ({
   width: '100%',
   padding: '8px',
@@ -379,14 +397,14 @@ const readAllButton = theme => ({
   },
 });
 const descriptionSx = full => ({
-  maxHeight: full ? 'unset' : '150px',
+  maxHeight: full ? 'unset' : '110px',
   overflow: 'hidden',
   transition: 'max-height 1s',
   scrollBehavior: 'smooth',
 });
 
 const fieldsWrapperSx = theme => ({
-  mt: '40px',
+  mt: '25px',
   display: 'flex',
   gap: '20px',
   justifyContent: 'center',
@@ -421,7 +439,7 @@ const SubmitValidation = Yup.object().shape({
 });
 
 const wrapper = theme => ({
-  padding: '48px 74px 40px',
+  padding: '28px 34px 20px',
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'center',
@@ -432,14 +450,14 @@ const wrapper = theme => ({
     fontWeight: 500,
   },
   [theme.breakpoints.down('md')]: {
-    padding: '38px 44px 30px',
+    padding: '18px 44px 20px',
     '& h3': {
       fontSize: '30px',
     },
   },
   [theme.breakpoints.down('sm')]: {
     gap: '20px',
-    padding: '38px 20px 30px',
+    padding: '18px 20px 20px',
     '& h3': {
       fontSize: '24px',
     },
