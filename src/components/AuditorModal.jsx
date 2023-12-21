@@ -19,13 +19,14 @@ import { addTestsLabel, isAuth } from '../lib/helper.js';
 import { ASSET_URL } from '../services/urls.js';
 import SalarySlider from './forms/salary-slider/salary-slider.jsx';
 import { Field, Form, Formik } from 'formik';
-import { CUSTOMER } from '../redux/actions/types.js';
+import { AUDITOR, CUSTOMER } from '../redux/actions/types.js';
 import {
   changeRolePublicCustomer,
   changeRolePublicCustomerNoRedirect,
 } from '../redux/actions/userAction.js';
 import * as Yup from 'yup';
 import CustomSnackbar from './custom/CustomSnackbar.jsx';
+import ShareProfileButton from './custom/ShareProfileButton.jsx';
 
 export default function AuditorModal({
   open,
@@ -35,9 +36,9 @@ export default function AuditorModal({
   onSubmit,
   handleError,
   setError,
+  budge,
 }) {
   const navigate = useNavigate();
-  const auditorReducer = useSelector(state => state.auditor.auditors);
   const customerReducer = useSelector(state => state.customer.customer);
   const user = useSelector(s => s.user.user);
   const [mode, setMode] = useState('info');
@@ -89,252 +90,264 @@ export default function AuditorModal({
 
   return (
     <Dialog open={open} onClose={handleClose}>
-      {mode === 'info' && (
-        <DialogContent sx={modalWindow}>
-          <CustomSnackbar
-            autoHideDuration={10000}
-            open={!!message}
-            onClose={() => setMessage(null)}
-            severity="error"
-            text={message}
-          />
-          <Box sx={contentWrapper}>
-            <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-              <Avatar
-                src={auditor.avatar && `${ASSET_URL}/${auditor.avatar}`}
-                sx={avatarStyle}
-                alt={`${auditor.first_name} photo`}
-              />
-            </Box>
-            <Box sx={infoStyle}>
-              <Box sx={infoInnerStyle}>
-                <Box sx={infoWrapper}>
-                  <span>First Name</span>
-                  <Typography noWrap={true}>{auditor.first_name}</Typography>
-                </Box>
-                <Box sx={infoWrapper}>
-                  <span>Last name</span>
-                  <Typography noWrap={true}>{auditor.last_name}</Typography>
-                </Box>
-                <Box sx={infoWrapper}>
-                  <span>Telegram</span>
-                  <Box sx={{ display: 'grid' }}>
-                    <Tooltip
-                      title={
-                        auditor?.contacts?.public_contacts
-                          ? auditor.contacts?.telegram
-                          : 'Hidden'
-                      }
-                      arrow
-                      placement={'top'}
-                    >
-                      <Typography noWrap={true}>
-                        {auditor?.contacts?.public_contacts
-                          ? auditor.contacts?.telegram
-                          : 'Hidden'}
-                      </Typography>
-                    </Tooltip>
-                  </Box>
-                </Box>
-                <Box sx={infoWrapper}>
-                  <span>Price:</span>
-                  {auditor.price_range.from && (
-                    <Typography>
-                      ${auditor.price_range.from} - {auditor.price_range.to} per
-                      line
-                    </Typography>
-                  )}
-                </Box>
-                <Box sx={infoWrapper}>
-                  <span>E-mail</span>
-                  <Box sx={{ display: 'grid' }}>
-                    <Tooltip
-                      title={
-                        auditor?.contacts?.public_contacts
-                          ? auditor.contacts?.email
-                          : 'Hidden'
-                      }
-                      arrow
-                      placement={'top'}
-                    >
-                      <Typography noWrap={true}>
-                        {auditor?.contacts?.public_contacts
-                          ? auditor.contacts?.email
-                          : 'Hidden'}
-                      </Typography>
-                    </Tooltip>
-                  </Box>
-                </Box>
-                {auditor?.about && (
-                  <Box sx={[infoWrapper, aboutSx]}>
-                    <Typography>
-                      <span>About</span> {auditor?.about}
-                    </Typography>
-                  </Box>
-                )}
-                <TagsList data={auditor.tags} fullView={true} />
+      <Box className="auditor-modal">
+        {mode === 'info' && (
+          <DialogContent sx={modalWindow}>
+            <CustomSnackbar
+              autoHideDuration={10000}
+              open={!!message}
+              onClose={() => setMessage(null)}
+              severity="error"
+              text={message}
+            />
+            <Box sx={contentWrapper}>
+              <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+                <Avatar
+                  src={auditor.avatar && `${ASSET_URL}/${auditor.avatar}`}
+                  sx={avatarStyle}
+                  alt={`${auditor.first_name} photo`}
+                />
               </Box>
-              <Box sx={infoInnerStyle} />
-            </Box>
-          </Box>
-          <Box sx={fieldButtonContainer}>
-            <Button
-              variant={'contained'}
-              sx={[
-                findButton,
-                { backgroundColor: theme.palette.secondary.main },
-              ]}
-              onClick={handleClose}
-              {...addTestsLabel('auditor-modal_back-button')}
-            >
-              Back
-            </Button>
-            <Button
-              variant={'contained'}
-              sx={findButton}
-              onClick={handleInvite}
-              {...addTestsLabel('auditor-modal_invite-button')}
-            >
-              Invite to project
-            </Button>
-          </Box>
-        </DialogContent>
-      )}
-      {mode === 'invite' && (
-        <Formik
-          validator={() => ({})}
-          validationSchema={MakeOfferSchema}
-          initialValues={{
-            auditor_id: auditor?.user_id,
-            auditor_contacts: { ...auditor?.contacts },
-            customer_contacts: { ...customerReducer?.contacts },
-            customer_id: customerReducer?.user_id,
-            last_changer: CUSTOMER,
-            price: '50',
-            price_range: {
-              from: '',
-              to: '',
-            },
-            time: {
-              from: new Date(),
-              to: new Date(),
-            },
-          }}
-          onSubmit={values => {
-            const newValue = {
-              ...values,
-              price: parseInt(values.price),
-              price_range: {
-                from: parseInt(values.price),
-                to: parseInt(values.price),
-              },
-            };
-            if (newValue.auditor_id !== newValue.customer_id) {
-              onSubmit(newValue);
-            } else {
-              setError('You cannot create an audit request with yourself');
-            }
-            handleClose();
-            if (onClose) {
-              onClose();
-            }
-          }}
-        >
-          {({ handleSubmit, setFieldValue, values }) => {
-            return (
-              <Form onSubmit={handleSubmit}>
-                <DialogContent sx={offerDialogStyle}>
-                  <Box
-                    sx={{
-                      height: '100%',
-                      width: '100%',
-                      display: 'flex',
-                      flexDirection: 'column',
-                    }}
-                  >
-                    <Box>
-                      <IconButton
-                        onClick={() => {
-                          handleClose();
-                        }}
-                        {...addTestsLabel('go-back-button')}
-                      >
-                        <ArrowBack style={{ color: 'orange' }} />
-                      </IconButton>
+              <ShareProfileButton
+                userId={auditor.user_id}
+                sx={{ fontSize: '12px' }}
+                isModal
+                role={AUDITOR}
+                isPublic
+              />
+              <Box sx={infoStyle}>
+                <Box sx={infoInnerStyle}>
+                  <Box sx={infoWrapper}>
+                    <span>First Name</span>
+                    <Typography noWrap={true}>{auditor.first_name}</Typography>
+                  </Box>
+                  {auditor.last_name && (
+                    <Box sx={infoWrapper}>
+                      <span>Last name</span>
+                      <Typography noWrap={true}>{auditor.last_name}</Typography>
                     </Box>
+                  )}
 
-                    <Box sx={{ paddingX: '10%' }}>
-                      <Typography
-                        style={{
-                          ...rateLabel(),
-                          color: 'black',
-                          marginBottom: '10px',
-                          fontSize: '13px',
-                        }}
+                  {auditor?.contacts?.public_contacts &&
+                    !!auditor.contacts?.telegram && (
+                      <Box sx={infoWrapper}>
+                        <span>Telegram</span>
+                        <Box sx={{ display: 'grid' }}>
+                          <Tooltip
+                            title={auditor.contacts.telegram}
+                            arrow
+                            placement="top"
+                          >
+                            <Typography noWrap={true}>
+                              {auditor.contacts.telegram}
+                            </Typography>
+                          </Tooltip>
+                        </Box>
+                      </Box>
+                    )}
+
+                  {!!auditor.price_range.from && (
+                    <Box sx={infoWrapper}>
+                      <span>Price:</span>
+                      <Typography>
+                        ${auditor.price_range.from} - {auditor.price_range.to}{' '}
+                        per line
+                      </Typography>
+                    </Box>
+                  )}
+
+                  <Box sx={infoWrapper}>
+                    <span>E-mail</span>
+                    <Box sx={{ display: 'grid' }}>
+                      <Tooltip
+                        title={
+                          auditor?.contacts?.public_contacts
+                            ? auditor.contacts?.email
+                            : 'Hidden'
+                        }
+                        arrow
+                        placement="top"
                       >
-                        Add some information
-                      </Typography>
-                      <Typography style={rateLabel()}>
-                        Choose audit timeline
-                      </Typography>
-                      <Box sx={dateWrapper}>
-                        <LocalizationProvider dateAdapter={AdapterDayjs}>
-                          <Field
-                            component={DatePicker}
-                            name={'time.from'}
-                            value={dayjs(values.time?.from)}
-                            sx={dateStyle}
-                            onChange={e => {
-                              const value = new Date(e);
-                              setFieldValue('time.from', value.toString());
-                            }}
-                            disablePast
-                            inputFormat="DD.MM.YYYY"
-                            minDate={new Date()}
-                          />
-                          <Typography variant={'caption'}>-</Typography>
-                          <Field
-                            component={DatePicker}
-                            name={'time.to'}
-                            value={dayjs(values.time?.to)}
-                            sx={dateStyle}
-                            onChange={e => {
-                              const value = new Date(e);
-                              setFieldValue('time.to', value.toString());
-                            }}
-                            disablePast
-                            inputFormat="DD.MM.YYYY"
-                            minDate={dayjs(values.time?.from)}
-                          />
-                        </LocalizationProvider>
-                      </Box>
-                      <Typography style={rateLabel()}>
-                        Price per line of code
-                      </Typography>
-                      <Box
-                        sx={{
-                          marginY: '20px',
-                        }}
-                      >
-                        <SalarySlider name={'price'} />
-                      </Box>
-                      <Box sx={{ justifyContent: 'center', display: 'flex' }}>
-                        <Button
-                          sx={sendButton}
-                          type={'submit'}
-                          {...addTestsLabel('send-button')}
-                        >
-                          Send
-                        </Button>
-                      </Box>
+                        <Typography noWrap={true}>
+                          {auditor?.contacts?.public_contacts
+                            ? auditor.contacts?.email
+                            : 'Hidden'}
+                        </Typography>
+                      </Tooltip>
                     </Box>
                   </Box>
-                </DialogContent>
-              </Form>
-            );
-          }}
-        </Formik>
-      )}
+
+                  {auditor?.about && (
+                    <Box sx={[infoWrapper, aboutSx]}>
+                      <Typography>
+                        <span>About</span> {auditor?.about}
+                      </Typography>
+                    </Box>
+                  )}
+                  <TagsList data={auditor.tags} fullView={true} />
+                </Box>
+              </Box>
+            </Box>
+
+            <Box sx={fieldButtonContainer}>
+              <Button
+                variant={budge ? 'outlined' : 'contained'}
+                color="secondary"
+                sx={findButton}
+                onClick={handleClose}
+                {...addTestsLabel('auditor-modal_back-button')}
+              >
+                Back
+              </Button>
+              <Button
+                variant={budge ? 'outlined' : 'contained'}
+                color="primary"
+                sx={findButton}
+                onClick={handleInvite}
+                {...addTestsLabel('auditor-modal_invite-button')}
+              >
+                Invite to project
+              </Button>
+            </Box>
+          </DialogContent>
+        )}
+
+        {mode === 'invite' && (
+          <Formik
+            validator={() => ({})}
+            validationSchema={MakeOfferSchema}
+            initialValues={{
+              auditor_id: auditor?.user_id,
+              auditor_contacts: { ...auditor?.contacts },
+              customer_contacts: { ...customerReducer?.contacts },
+              customer_id: customerReducer?.user_id,
+              last_changer: CUSTOMER,
+              price: '50',
+              price_range: {
+                from: '',
+                to: '',
+              },
+              time: {
+                from: new Date(),
+                to: new Date(),
+              },
+            }}
+            onSubmit={values => {
+              const newValue = {
+                ...values,
+                price: parseInt(values.price),
+                price_range: {
+                  from: parseInt(values.price),
+                  to: parseInt(values.price),
+                },
+              };
+              if (newValue.auditor_id !== newValue.customer_id) {
+                onSubmit(newValue);
+              } else {
+                setError('You cannot create an audit request with yourself');
+              }
+              handleClose();
+              if (onClose) {
+                onClose();
+              }
+            }}
+          >
+            {({ handleSubmit, setFieldValue, values }) => {
+              return (
+                <Form onSubmit={handleSubmit}>
+                  <DialogContent sx={offerDialogStyle}>
+                    <Box
+                      sx={{
+                        height: '100%',
+                        width: '100%',
+                        display: 'flex',
+                        flexDirection: 'column',
+                      }}
+                    >
+                      <Box>
+                        <IconButton
+                          onClick={() => {
+                            handleClose();
+                          }}
+                          {...addTestsLabel('go-back-button')}
+                        >
+                          <ArrowBack style={{ color: 'orange' }} />
+                        </IconButton>
+                      </Box>
+
+                      <Box sx={{ paddingX: '10%' }}>
+                        <Typography
+                          style={{
+                            ...rateLabel(),
+                            color: 'black',
+                            marginBottom: '10px',
+                            fontSize: '13px',
+                          }}
+                        >
+                          Add some information
+                        </Typography>
+                        <Typography style={rateLabel()}>
+                          Choose audit timeline
+                        </Typography>
+                        <Box sx={dateWrapper}>
+                          <LocalizationProvider dateAdapter={AdapterDayjs}>
+                            <Field
+                              component={DatePicker}
+                              name={'time.from'}
+                              value={dayjs(values.time?.from)}
+                              sx={dateStyle}
+                              onChange={e => {
+                                const value = new Date(e);
+                                setFieldValue('time.from', value.toString());
+                              }}
+                              disablePast
+                              inputFormat="DD.MM.YYYY"
+                              minDate={new Date()}
+                            />
+                            <Typography variant={'caption'}>-</Typography>
+                            <Field
+                              component={DatePicker}
+                              name={'time.to'}
+                              value={dayjs(values.time?.to)}
+                              sx={dateStyle}
+                              onChange={e => {
+                                const value = new Date(e);
+                                setFieldValue('time.to', value.toString());
+                              }}
+                              disablePast
+                              inputFormat="DD.MM.YYYY"
+                              minDate={dayjs(values.time?.from)}
+                            />
+                          </LocalizationProvider>
+                        </Box>
+                        <Typography style={rateLabel()}>
+                          Price per line of code
+                        </Typography>
+                        <Box
+                          sx={{
+                            marginY: '20px',
+                          }}
+                        >
+                          <SalarySlider name={'price'} />
+                        </Box>
+                        <Box sx={{ justifyContent: 'center', display: 'flex' }}>
+                          <Button
+                            sx={sendButton}
+                            type={'submit'}
+                            {...addTestsLabel('send-button')}
+                          >
+                            Send
+                          </Button>
+                        </Box>
+                      </Box>
+                    </Box>
+                  </DialogContent>
+                </Form>
+              );
+            }}
+          </Formik>
+        )}
+      </Box>
     </Dialog>
   );
 }
@@ -361,11 +374,11 @@ const modalWindow = theme => ({
   overflow: 'unset',
   width: '600px',
   display: 'flex',
-  gap: '50px',
+  gap: '30px',
   flexDirection: 'column',
   justifyContent: 'center',
   alignItems: 'center',
-  padding: '45px',
+  padding: '30px',
   [theme.breakpoints.down('sm')]: {
     padding: '25px',
     height: '100%',
@@ -378,32 +391,27 @@ const modalWindow = theme => ({
 });
 
 const findButton = theme => ({
-  padding: '19px 0',
-  fontSize: '18px',
+  padding: '10px 0',
+  fontSize: '16px',
   textTransform: 'unset',
   fontWeight: 600,
-  margin: '0 12px',
+
   width: '180px',
   borderRadius: '10px',
-  [theme.breakpoints.down('md')]: {
-    width: '210px',
-    padding: '11px 0',
-  },
   [theme.breakpoints.down('sm')]: {
     width: '170px',
   },
   [theme.breakpoints.down('xs')]: {
-    width: '134px',
+    width: '130px',
     height: '50px',
     fontSize: '12px',
-    margin: '0 6px',
   },
 });
 
 const infoInnerStyle = theme => ({
   display: 'flex',
   flexDirection: 'column',
-  gap: '16px',
+  gap: '10px',
 });
 
 const infoStyle = theme => ({
@@ -421,8 +429,8 @@ const infoStyle = theme => ({
 });
 
 const avatarStyle = theme => ({
-  width: '150px',
-  height: '150px',
+  width: '120px',
+  height: '120px',
   [theme.breakpoints.down('xs')]: {
     width: '100px',
     height: '100px',
@@ -432,18 +440,16 @@ const avatarStyle = theme => ({
 const contentWrapper = theme => ({
   display: 'flex',
   flexDirection: 'column',
-  gap: '50px',
-  [theme.breakpoints.down('md')]: {
-    gap: '50px',
-  },
+  gap: '30px',
   [theme.breakpoints.down('sm')]: {
     flexDirection: 'column',
-    gap: '40px',
+    gap: '20px',
   },
 });
 
 const infoWrapper = theme => ({
   display: 'flex',
+  alignItems: 'center',
   fontWeight: 500,
   color: '#434242',
   '& p': {
@@ -454,7 +460,7 @@ const infoWrapper = theme => ({
     marginRight: '20px',
     color: '#B2B3B3',
   },
-  fontSize: '15px',
+  fontSize: '14px',
   [theme.breakpoints.down('md')]: {
     '& span': {
       width: '90px',
@@ -504,13 +510,12 @@ const backButton = {
   [theme.breakpoints.down('sm')]: {
     height: '30px',
     fontSize: '10px',
-    // padding: "6px 31px",
   },
 };
 
 const fieldButtonContainer = theme => ({
   display: 'flex',
-  gap: '10px',
+  gap: '20px',
   [theme.breakpoints.down('xs')]: {
     gap: '5px',
   },

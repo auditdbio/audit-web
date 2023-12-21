@@ -23,12 +23,12 @@ const layoutStyle = theme => ({
   alignItems: 'center',
   justifyContent: 'center',
   width: '100%',
-  padding: '120px 100px',
+  padding: '50px 100px',
   [theme.breakpoints.down('md')]: {
-    padding: '80px 40px',
+    padding: '50px 40px',
   },
   [theme.breakpoints.down('sm')]: {
-    padding: '60px 30px',
+    padding: '50px 30px',
   },
   [theme.breakpoints.down('xs')]: {
     padding: '40px 30px',

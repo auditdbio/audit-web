@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom/dist';
 import { useDispatch, useSelector } from 'react-redux';
 import { Avatar, Button, Typography, useMediaQuery } from '@mui/material';
 import { AUDITOR, CUSTOMER } from '../redux/actions/types.js';
@@ -127,6 +127,9 @@ const PublicProfile = () => {
               : theme.palette.primary.main,
           )}
         >
+          {data.kind === 'badge' && (
+            <Typography sx={badgeTitle}>Not in base AuditDB</Typography>
+          )}
           <Box sx={contentWrapper}>
             <CustomSnackbar
               autoHideDuration={3000}
@@ -145,29 +148,36 @@ const PublicProfile = () => {
                 alt="User photo"
               />
             </Box>
+
             <Box sx={{ [theme.breakpoints.down(560)]: { width: '100%' } }}>
               <Box sx={infoStyle}>
                 <Box sx={infoInnerStyle}>
                   <Box sx={infoWrapper}>
-                    <span>First Name</span>
+                    <span>{data.last_name ? 'First Name' : 'Name'}</span>
                     <Typography noWrap={true}>{data.first_name}</Typography>
                   </Box>
-                  <Box sx={infoWrapper}>
-                    <span>Last name</span>
-                    <Typography noWrap={true}>{data.last_name}</Typography>
-                  </Box>
-                  {role === AUDITOR && (
+                  {data.last_name && (
+                    <Box sx={infoWrapper}>
+                      <span>Last name</span>
+                      <Typography noWrap={true}>{data.last_name}</Typography>
+                    </Box>
+                  )}
+
+                  {role.toLowerCase() === AUDITOR && (
                     <Box sx={infoWrapper}>
                       <span>Price range:</span>
-                      {data?.price_range?.from && data?.price_range?.to && (
+                      {data.price_range?.from && data.price_range?.to ? (
                         <Typography>
-                          ${data?.price_range?.from} - {data?.price_range?.to}{' '}
-                          per line
+                          ${data.price_range.from} - {data.price_range.to} per
+                          line
                         </Typography>
+                      ) : (
+                        <Typography>not specified</Typography>
                       )}
                     </Box>
                   )}
-                  {role !== AUDITOR && (
+
+                  {role.toLowerCase() !== AUDITOR && data.company && (
                     <Box sx={infoWrapper}>
                       <span>Company</span>
                       <Typography noWrap={true}>{data.company}</Typography>
@@ -193,7 +203,8 @@ const PublicProfile = () => {
                   </Box>
                 </Box>
               </Box>
-              {!matchSm && (
+
+              {!matchSm && (data.about || !!data.tags?.length) && (
                 <Box sx={aboutWrapper}>
                   <Box sx={infoWrapper}>
                     <Typography
@@ -202,7 +213,7 @@ const PublicProfile = () => {
                         maxWidth: 'unset!important',
                       }}
                     >
-                      <span className={'about-title'}>About</span>
+                      <span className="about-title">About</span>
                       {data.about}
                     </Typography>
                   </Box>
@@ -211,15 +222,17 @@ const PublicProfile = () => {
               )}
             </Box>
           </Box>
-          {matchSm && (
+
+          {matchSm && (data.about || !!data.tags?.length) && (
             <Box sx={aboutWrapper}>
               <Box sx={[infoWrapper, { flexDirection: 'column' }]}>
                 <span
-                  className={'about-title'}
+                  className="about-title"
                   style={{
                     display: 'block',
                     width: '100%',
                     textAlign: 'center',
+                    marginBottom: '10px',
                   }}
                 >
                   About
@@ -236,11 +249,12 @@ const PublicProfile = () => {
               <MobileTagsList data={data.tags} />
             </Box>
           )}
-          {/*{matchXs && <MobileTagsList data={data.tags} />}*/}
+
           {role.toLowerCase() === AUDITOR && (
             <Button
-              variant={'contained'}
-              sx={[submitAuditor, buttonSx]}
+              variant={data.kind === 'badge' ? 'outlined' : 'contained'}
+              sx={buttonSx}
+              color="secondary"
               onClick={handleInvite}
               {...addTestsLabel('invite-button')}
             >
@@ -260,18 +274,12 @@ const wrapper = (theme, color) => ({
   minHeight: '520px',
   display: 'flex',
   flexDirection: 'column',
-  padding: '100px 100px 60px',
+  padding: '60px 40px 40px',
   gap: '50px',
   backgroundColor: '#fff',
   borderRadius: '10px',
   border: `2px solid ${color}`,
   justifyContent: 'space-between',
-  [theme.breakpoints.down('lg')]: {
-    padding: '60px 40px 40px',
-  },
-  [theme.breakpoints.down('md')]: {
-    gap: '50px',
-  },
   [theme.breakpoints.down('sm')]: {
     gap: '20px',
     justifyContent: 'flex-start',
@@ -285,6 +293,12 @@ const wrapper = (theme, color) => ({
       maxWidth: '380px',
     },
   },
+});
+
+const badgeTitle = theme => ({
+  textAlign: 'center',
+  color: '#B9B9B9',
+  fontWeight: 500,
 });
 
 const aboutWrapper = theme => ({
@@ -371,10 +385,8 @@ const contentWrapper = theme => ({
 const buttonSx = theme => ({
   margin: '0 auto',
   display: 'block',
-  color: theme.palette.background.default,
   textTransform: 'capitalize',
   fontWeight: 600,
-  fontSize: '18px',
   padding: '9px 50px',
   borderRadius: '10px',
   [theme.breakpoints.down('xs')]: {
@@ -392,6 +404,7 @@ const submitAuditor = theme => ({
 
 const infoWrapper = theme => ({
   display: 'flex',
+  alignItems: 'center',
   fontWeight: 500,
   color: '#434242',
   '& .about-title': {

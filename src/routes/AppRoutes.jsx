@@ -1,21 +1,17 @@
 import React, { useEffect } from 'react';
 import { Route, Routes } from 'react-router-dom/dist';
+import { useDispatch, useSelector } from 'react-redux';
 import HomePage from '../pages/HomePage.jsx';
 import SignupPage from '../pages/SignupPage.jsx';
 import SigninPage from '../pages/SigninPage.jsx';
 import { PrivateRoute } from '../router/PrivateRoute.jsx';
-import { useDispatch, useSelector } from 'react-redux';
-import { authenticate } from '../redux/actions/userAction.js';
 import { isAuth } from '../lib/helper.js';
 import EditProfile from '../pages/edit-profile.jsx';
-import AuditInfo from '../pages/audit-info.jsx';
 import AuditOffer from '../pages/audit-offer.jsx';
 import CreateProject from '../pages/CreateProject.jsx';
 import ProfilePage from '../pages/profile-page.jsx';
-import { AUDITOR } from '../redux/actions/types.js';
-import { getAuditor, getAuditors } from '../redux/actions/auditorAction.js';
+import { getAuditor } from '../redux/actions/auditorAction.js';
 import { getCustomer } from '../redux/actions/customerAction.js';
-import Projects from '../components/Projects.jsx';
 import ProjectPage from '../pages/Project-page.jsx';
 import AuditRequestPage from '../pages/Audit-Request-Page.jsx';
 import { getProjects } from '../redux/actions/projectAction.js';
@@ -42,6 +38,10 @@ import {
   websocketDisconnect,
 } from '../redux/actions/websocketAction.js';
 import PublicProject from '../pages/PublicProject.jsx';
+import CustomSnackbar from '../components/custom/CustomSnackbar.jsx';
+import InvitePage from '../pages/Invite-page.jsx';
+import DeleteBadge from '../pages/Delete-badge.jsx';
+
 import PublicConstructor from '../pages/PublicConstructor.jsx';
 //
 const AppRoutes = () => {
@@ -50,7 +50,8 @@ const AppRoutes = () => {
   const customer = useSelector(s => s.customer.customer);
   const auditor = useSelector(s => s.auditor.auditor);
   const dispatch = useDispatch();
-  const { reconnect, connected } = useSelector(s => s.websocket);
+  const { reconnect, connected, needUpdate } = useSelector(s => s.websocket);
+  const [isOpen, setIsOpen] = React.useState(false);
 
   useEffect(() => {
     if (isAuth()) {
@@ -94,23 +95,52 @@ const AppRoutes = () => {
       };
     }
   }, [reconnect, connected]);
-  //
+
   useEffect(() => {
     return () => {
       dispatch(websocketDisconnect());
     };
   }, []);
 
+  useEffect(() => {
+    if (needUpdate) {
+      setIsOpen(true);
+    }
+  }, [needUpdate]);
+
+  const handleReload = () => {
+    setIsOpen(false);
+    window.location.reload();
+  };
+
   return (
     <>
+      <CustomSnackbar
+        open={isOpen}
+        action={handleReload}
+        autoHideDuration={50000}
+        onClose={() => setIsOpen(false)}
+        text="New version is available. Please reload the page"
+      />
       <Routes>
-        <Route path={'/'} element={<HomePage />} />
-        <Route path={'/sign-up'} element={<SignupPage />} />
-        <Route path={'/sign-in'} element={<SigninPage />} />
+        <Route path="/" element={<HomePage />} />
+        <Route path="/sign-up" element={<SignupPage />} />
+        <Route path="/sign-in" element={<SigninPage />} />
+        <Route path="/invite-user/:id/:secret" element={<InvitePage />} />
         <Route
-          path={'/restore-password/:token'}
+          path="/restore-password/:token"
           element={<RestorePasswordPage />}
         />
+        <Route path="/projects" element={<ProjectPage />} />
+        <Route path="/projects/:id" element={<PublicProject />} />
+        <Route path="/for-customers" element={<ForCustomer />} />
+        <Route path="/for-auditors" element={<ForAuditor />} />
+        <Route path="/auditors" element={<AuditorsPage />} />
+        <Route path="/audit-db" element={<AuditDb />} />
+        <Route path="/FAQ" element={<Faq />} />
+        <Route path="/contact-us" element={<ContactUs />} />
+        <Route path="/user/:id/:role" element={<PublicProfile />} />
+        <Route path="/delete/:id/:secret" element={<DeleteBadge />} />
         <Route
           path={'/audit-builder/:auditId'}
           element={<PublicConstructor isPublic={true} />}

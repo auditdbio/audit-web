@@ -448,8 +448,8 @@ const textFieldSx = theme => ({
 });
 
 const menuButton = theme => ({
-  width: '55px',
-  height: '55px',
+  width: '42px',
+  height: '42px',
   borderRadius: '8px',
   background: theme.palette.secondary.main,
   padding: 0,
@@ -457,14 +457,6 @@ const menuButton = theme => ({
   '&:hover': {
     filter: 'brightness(0.8)',
     background: theme.palette.secondary.main,
-  },
-  [theme.breakpoints.down('lg')]: {
-    width: '49px',
-    height: '49px',
-  },
-  [theme.breakpoints.down('md')]: {
-    width: '46px',
-    height: '46px',
   },
   [theme.breakpoints.down('sm')]: {
     width: '39px',
@@ -480,29 +472,23 @@ const buttonBoxSx = theme => ({
 });
 
 const buttonSx = theme => ({
-  padding: '15px 24px',
+  padding: '10px 24px',
   flexShrink: 0,
   fontWeight: '600!important',
-  fontSize: '20px',
+  fontSize: '16px',
   lineHeight: '25px',
   textTransform: 'none',
   borderRadius: '10px',
   mr: '20px',
   '&:last-child': { mr: 0 },
-  [theme.breakpoints.down('lg')]: {
-    padding: '12px 24px',
-  },
   [theme.breakpoints.down('md')]: {
-    padding: '10px 24px',
-    fontWeight: 500,
+    fontWeight: '500!important',
   },
   [theme.breakpoints.down('sm')]: {
     padding: '7px 24px',
-    fontSize: '16px',
   },
   [theme.breakpoints.down('xs')]: {
     padding: '7px 10px',
-    fontWeight: 400,
   },
 });
 

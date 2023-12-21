@@ -10,11 +10,11 @@ const TagsArray = ({ name, handleSubmit }) => {
   return (
     <Box
       sx={{ display: 'flex', gap: '15px', flexWrap: 'wrap' }}
-      className={'tags-array-wrapper'}
+      className="tags-array-wrapper"
     >
       {meta.touched && meta.error && (
         <Typography
-          variant={'body1'}
+          variant="body1"
           sx={{
             color: `${theme.palette.error.main}!important`,
             fontSize: '16px',

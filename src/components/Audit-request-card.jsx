@@ -2,7 +2,7 @@ import React from 'react';
 import { Box, Button, Tooltip, Typography } from '@mui/material';
 import Currency from './icons/Currency.jsx';
 import Star from './icons/Star.jsx';
-import theme, { radiusOfComponents } from '../styles/themes.js';
+import theme from '../styles/themes.js';
 import { useNavigate } from 'react-router-dom/dist';
 import { useDispatch } from 'react-redux';
 import { deleteAuditRequest } from '../redux/actions/auditAction.js';
@@ -16,8 +16,8 @@ const AuditRequestCard = ({ type, request }) => {
   return (
     <Box sx={cardWrapper}>
       <Box sx={cardInnerWrapper}>
-        <Tooltip title={request.project_name} arrow placement={'top'}>
-          <Typography variant={'h5'} sx={projectNameSx} textAlign={'center'}>
+        <Tooltip title={request.project_name} arrow placement="top">
+          <Typography variant="h5" sx={projectNameSx} textAlign="center">
             {request.project_name}
           </Typography>
         </Tooltip>
@@ -26,7 +26,7 @@ const AuditRequestCard = ({ type, request }) => {
           <Typography sx={dateStyle}>
             {dayjs((request || audit)?.time?.from).format('DD.MM.YYYY')}
           </Typography>
-          <Typography variant={'caption'}>-</Typography>
+          <Typography variant="caption">-</Typography>
           <Typography sx={dateStyle}>
             {dayjs((request || audit)?.time?.to).format('DD.MM.YYYY')}
           </Typography>
@@ -44,7 +44,7 @@ const AuditRequestCard = ({ type, request }) => {
       </Box>
       <Box sx={buttonWrapper}>
         <Button
-          variant={'contained'}
+          variant="contained"
           sx={[actionButton, type === 'auditor' ? editAuditor : {}]}
           onClick={() => navigate(`/audit-request/${request.id}`)}
           {...addTestsLabel('audit-req_view-button')}
@@ -54,7 +54,7 @@ const AuditRequestCard = ({ type, request }) => {
         <Button
           sx={[actionButton, copyBtn]}
           onClick={() => dispatch(deleteAuditRequest(request.id))}
-          variant={'contained'}
+          variant="contained"
           {...addTestsLabel('audit-req_decline-button')}
         >
           Decline
@@ -128,9 +128,9 @@ const copyBtn = theme => ({
 });
 
 const actionButton = theme => ({
-  fontSize: '15px',
+  fontSize: '14px',
   fontWeight: 600,
-  lineHeight: '25px',
+  lineHeight: '20px',
   width: '100px',
   textTransform: 'none',
   borderRadius: '10px',

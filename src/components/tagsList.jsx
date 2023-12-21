@@ -7,7 +7,7 @@ import theme from '../styles/themes.js';
 const TagsList = ({ data, fullView }) => {
   return (
     <Box
-      className={'tagsWrapper'}
+      className="tagsWrapper"
       sx={
         fullView
           ? {
@@ -22,7 +22,7 @@ const TagsList = ({ data, fullView }) => {
       }
     >
       {data?.map((tag, idx) => (
-        <Tooltip key={idx} title={tag} arrow placement={'top'}>
+        <Tooltip key={idx} title={tag} arrow placement="top">
           <Chip
             sx={chipStyle}
             label={tag}
@@ -53,6 +53,7 @@ const chipStyle = theme => ({
   color: '#434242',
   marginBottom: '10px',
   marginRight: '10px',
+  fontSize: '11px',
   fontWeight: 500,
   height: '24px',
   [theme.breakpoints.down('xs')]: {

@@ -42,8 +42,10 @@ const ProjectListCard = ({ project }) => {
       />
 
       <Box sx={contentWrapper}>
-        <Tooltip title={project.name} arrow placement={'top'}>
-          <Typography sx={projectTitleWrapper}>{project.name}</Typography>
+        <Tooltip title={project.name} arrow placement="top">
+          <Typography onClick={handleOpen} sx={projectTitleWrapper}>
+            {project.name}
+          </Typography>
         </Tooltip>
         <TagsList data={project.tags} />
       </Box>
@@ -57,10 +59,10 @@ const ProjectListCard = ({ project }) => {
       >
         <Typography>${project.price}</Typography>
         <Button
-          color={'secondary'}
-          size={'small'}
+          color="secondary"
+          size="small"
           sx={viewButton}
-          variant={'contained'}
+          variant="contained"
           onClick={handleOpen}
           {...addTestsLabel('projects_view-more-button')}
         >
@@ -90,15 +92,15 @@ const ProjectListCard = ({ project }) => {
 
 export default ProjectListCard;
 
-const contentWrapper = theme => ({
+const contentWrapper = {
   display: 'flex',
   flexDirection: 'column',
-  '& .tagsWrapper': {},
-});
+};
 
 const projectTitleWrapper = theme => ({
-  marginBottom: '18px',
-  height: '80px',
+  marginBottom: '10px',
+  cursor: 'pointer',
+  height: '90px',
   overflow: 'hidden',
   wordBreak: 'break-word',
   '-webkit-line-clamp': '2',
@@ -106,10 +108,10 @@ const projectTitleWrapper = theme => ({
   'text-overflow': 'ellipsis',
   display: '-webkit-box',
   [theme.breakpoints.down('lg')]: {
-    height: '70px',
+    height: '60px',
   },
   [theme.breakpoints.down('md')]: {
-    height: '60px',
+    height: '50px',
   },
   [theme.breakpoints.down('sm')]: {
     height: '45px',
@@ -128,7 +130,7 @@ const viewButton = theme => ({
 });
 
 const wrapper = theme => ({
-  padding: '22px 33px 22px 45px',
+  padding: '12px 20px 12px 45px',
   display: 'flex',
   justifyContent: 'space-between',
   height: '100%',

@@ -93,7 +93,7 @@ const AuditIssueDetails = ({ isPublic, saved }) => {
 export default AuditIssueDetails;
 
 const wrapper = theme => ({
-  padding: '48px 45px 80px',
+  padding: '40px 45px 80px',
   position: 'relative',
   display: 'flex',
   flexDirection: 'column',

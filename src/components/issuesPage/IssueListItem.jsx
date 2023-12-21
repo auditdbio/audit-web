@@ -148,16 +148,10 @@ const publicSeverity = theme => ({
 
 const columnText = theme => ({
   color: '#434242',
-  fontSize: '20px',
+  fontSize: '16px',
   fontWeight: 500,
   lineHeight: '25px',
   padding: '0 25px',
-  [theme.breakpoints.down('lg')]: {
-    fontSize: '18px',
-  },
-  [theme.breakpoints.down('sm')]: {
-    fontSize: '16px',
-  },
   [theme.breakpoints.down('xs')]: {
     padding: '0 15px',
   },

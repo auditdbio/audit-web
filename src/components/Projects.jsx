@@ -1,8 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom/dist';
 import { useDispatch, useSelector } from 'react-redux';
-import { Box, Button, Grid } from '@mui/material';
-import ProjectCard from './Project-card.jsx';
+import { Box, Button } from '@mui/material';
 import { getProjects } from '../redux/actions/projectAction.js';
 import { AUDITOR, CUSTOMER, DONE } from '../redux/actions/types.js';
 import Loader from './Loader.jsx';
@@ -79,24 +78,18 @@ export default Projects;
 const buttonWrapper = theme => ({
   display: 'flex',
   justifyContent: 'center',
-  mb: '46px',
+  mb: '30px',
   [theme.breakpoints.down('sm')]: {
-    mb: '28px',
+    mb: '20px',
   },
 });
 
 const wrapper = theme => ({
-  padding: '58px 52px 42px',
+  padding: '20px 40px 40px',
   width: '100%',
   alignSelf: 'baseline',
   [theme.breakpoints.down('md')]: {
-    padding: '45px 40px 33px',
-  },
-  [theme.breakpoints.down('sm')]: {
-    padding: '36px 25px 45px',
-  },
-  [theme.breakpoints.down('xs')]: {
-    padding: '16px 15px 15px',
+    padding: '20px 25px 40px',
   },
 });
 
@@ -113,7 +106,7 @@ const gridItemStyle = theme => ({
 const buttonSx = theme => ({
   padding: '9px 35px',
   borderRadius: '10px',
-  fontSize: '18px',
+  fontSize: '16px',
   fontWeight: 600,
   lineHeight: '30px',
   textTransform: 'none',
@@ -124,6 +117,7 @@ const buttonSx = theme => ({
     height: '40px',
   },
   [theme.breakpoints.down('xs')]: {
+    width: '130px',
     fontSize: '12px',
   },
 });

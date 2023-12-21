@@ -7,7 +7,7 @@ const ForCustomer = () => {
   return (
     <Layout>
       <CustomCard sx={wrapper}>
-        <Typography variant={'h3'}>For customers</Typography>
+        <Typography variant="h3">For customers</Typography>
         <Typography>
           When you're about to release your project into the wild, don't
           overlook the importance of getting an audit. This critical step could
@@ -52,40 +52,26 @@ export default ForCustomer;
 const wrapper = theme => ({
   padding: '40px',
   '& h3': {
-    fontSize: '28px',
+    fontSize: '20px',
     fontWeight: 600,
   },
   '& ul': {
-    fontSize: '22px',
+    fontSize: '16px',
     paddingLeft: '30px',
   },
   '& p': {
-    fontSize: '22px',
+    fontSize: '16px',
     marginY: '22px',
     '&:nth-of-type(2)': {
       marginBottom: '10px',
     },
   },
-  [theme.breakpoints.down('md')]: {
-    '& p': {
-      fontSize: '18px',
-    },
-    '& h3': {
-      fontSize: '22px',
-    },
-    '& ul': {
-      fontSize: '18px',
-    },
-  },
   [theme.breakpoints.down('xs')]: {
     '& p': {
-      fontSize: '16px',
+      fontSize: '14px',
     },
-    // '& h3': {
-    //     fontSize: '22px',
-    // },
     '& ul': {
-      fontSize: '16px',
+      fontSize: '14px',
       paddingLeft: '16px',
     },
   },

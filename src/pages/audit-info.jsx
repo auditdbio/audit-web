@@ -1,11 +1,12 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { CustomCard } from '../components/custom/Card.jsx';
-import Layout from '../styles/Layout.jsx';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate, Link } from 'react-router-dom/dist';
+import dayjs from 'dayjs';
 import { Avatar, Box, Button, Typography, Tooltip } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import { useNavigate, Link } from 'react-router-dom/dist';
+import { CustomCard } from '../components/custom/Card.jsx';
+import Layout from '../styles/Layout.jsx';
 import TagsList from '../components/tagsList.jsx';
-import { useDispatch, useSelector } from 'react-redux';
 import {
   acceptAudit,
   clearMessage,
@@ -20,7 +21,6 @@ import {
   SUBMITED,
   WAITING_FOR_AUDITS,
 } from '../redux/actions/types.js';
-import dayjs from 'dayjs';
 import Markdown from '../components/markdown/Markdown.jsx';
 import { ASSET_URL } from '../services/urls.js';
 import { addTestsLabel } from '../lib/helper.js';
@@ -97,10 +97,11 @@ const AuditInfo = ({ audit, auditRequest, issues, confirmed }) => {
                 flexDirection: 'column',
                 justifyContent: 'center',
                 alignItems: 'center',
+                width: '100%',
               }}
             >
               <Typography
-                variant={'h3'}
+                variant="h3"
                 sx={{
                   width: '100%',
                   textAlign: 'center',
@@ -120,7 +121,7 @@ const AuditInfo = ({ audit, auditRequest, issues, confirmed }) => {
             </Box>
           ) : (
             <Typography sx={{ width: '100%', textAlign: 'center' }}>
-              You have offer to audit for{' '}
+              You have offer to audit for&nbsp;
               <span style={{ fontWeight: 500, wordBreak: 'break-word' }}>
                 <Link
                   style={{ color: '#000' }}
@@ -128,8 +129,8 @@ const AuditInfo = ({ audit, auditRequest, issues, confirmed }) => {
                 >
                   {audit?.project_name}
                 </Link>
-              </span>{' '}
-              project!
+              </span>
+              &nbsp;project!
             </Typography>
           )}
         </Box>
@@ -140,21 +141,17 @@ const AuditInfo = ({ audit, auditRequest, issues, confirmed }) => {
                 src={audit?.avatar ? `${ASSET_URL}/${audit?.avatar}` : ''}
                 alt="auditor photo"
               />
-              <Box sx={{ display: 'grid' }}>
+              <Box sx={{ display: 'grid', textAlign: 'center' }}>
                 <Tooltip
                   title={audit?.auditor_first_name}
                   arrow
-                  placement={'top'}
+                  placement="top"
                 >
                   <Typography noWrap={true} sx={userNameWrapper}>
                     {audit?.auditor_first_name}
                   </Typography>
                 </Tooltip>
-                <Tooltip
-                  title={audit?.auditor_last_name}
-                  arrow
-                  placement={'top'}
-                >
+                <Tooltip title={audit?.auditor_last_name} arrow placement="top">
                   <Typography noWrap={true} sx={userNameWrapper}>
                     {audit?.auditor_last_name}
                   </Typography>
@@ -163,38 +160,38 @@ const AuditInfo = ({ audit, auditRequest, issues, confirmed }) => {
             </Box>
             <Box sx={userInfoWrapper}>
               <Box sx={infoWrapper}>
-                <span>E-mail</span>
+                <span>E-mail:</span>
                 <Box sx={{ display: 'grid' }}>
-                  {audit?.auditor_contacts?.email !== null ? (
+                  {!!audit?.auditor_contacts?.email ? (
                     <Tooltip
                       title={audit?.auditor_contacts?.email}
                       arrow
-                      placement={'top'}
+                      placement="top"
                     >
                       <Typography noWrap={true}>
                         {audit?.auditor_contacts?.email}
                       </Typography>
                     </Tooltip>
                   ) : (
-                    <Typography noWrap={true}>Hidden</Typography>
+                    <Typography noWrap={true}>Not specified</Typography>
                   )}
                 </Box>
               </Box>
               <Box sx={infoWrapper}>
-                <span>Telegram</span>
+                <span>Telegram:</span>
                 <Box sx={{ display: 'grid' }}>
-                  {audit?.auditor_contacts?.telegram !== null ? (
+                  {!!audit?.auditor_contacts?.telegram ? (
                     <Tooltip
                       title={audit?.auditor_contacts?.telegram}
                       arrow
-                      placement={'top'}
+                      placement="top"
                     >
                       <Typography noWrap={true}>
                         {audit?.auditor_contacts?.telegram}
                       </Typography>
                     </Tooltip>
                   ) : (
-                    <Typography noWrap={true}>Hidden</Typography>
+                    <Typography noWrap={true}>Not specified</Typography>
                   )}
                 </Box>
               </Box>
@@ -203,19 +200,24 @@ const AuditInfo = ({ audit, auditRequest, issues, confirmed }) => {
                 <Typography>${audit?.price} per line</Typography>
               </Box>
             </Box>
-            <Box sx={projectWrapper}>
-              <Typography>Time for project</Typography>
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                <Box sx={dateWrapper}>
-                  {dayjs(audit?.time?.from).format('DD.MM.YYYY')}
+
+            {!!audit?.time?.from && (
+              <Box sx={projectWrapper}>
+                <Typography>Time for project:</Typography>
+                <Box
+                  sx={{ display: 'flex', alignItems: 'center', gap: '10px' }}
+                >
+                  <Box sx={dateWrapper}>
+                    {dayjs(audit?.time?.from).format('DD.MM.YYYY')}
+                  </Box>
+                  -
+                  <Box sx={dateWrapper}>
+                    {dayjs(audit?.time?.to).format('DD.MM.YYYY')}
+                  </Box>
                 </Box>
-                -
-                <Box sx={dateWrapper}>
-                  {dayjs(audit?.time?.to).format('DD.MM.YYYY')}
-                </Box>
+                <TagsList />
               </Box>
-              <TagsList />
-            </Box>
+            )}
           </Box>
 
           <Box sx={descriptionSx(showFull)}>
@@ -233,8 +235,8 @@ const AuditInfo = ({ audit, auditRequest, issues, confirmed }) => {
           {audit?.report && (
             <Box sx={{ display: 'flex', justifyContent: 'center' }}>
               <Button
-                variant={'contained'}
-                color={'secondary'}
+                variant="contained"
+                color="secondary"
                 onClick={() => dispatch(downloadReport(audit))}
                 sx={[buttonSx, { marginBottom: '20px' }]}
                 {...addTestsLabel('report-button')}
@@ -245,7 +247,7 @@ const AuditInfo = ({ audit, auditRequest, issues, confirmed }) => {
           )}
           {auditRequest && (
             <Button
-              variant={'contained'}
+              variant="contained"
               sx={buttonSx}
               disabled={audit?.last_changer?.toLowerCase() === CUSTOMER}
               onClick={handleConfirm}
@@ -256,7 +258,7 @@ const AuditInfo = ({ audit, auditRequest, issues, confirmed }) => {
           )}
           {audit?.status !== SUBMITED && audit?.status === DONE && (
             <Button
-              variant={'contained'}
+              variant="contained"
               sx={buttonSx}
               onClick={handleAcceptAudit}
               {...addTestsLabel('confirm-button')}
@@ -304,40 +306,33 @@ const AuditInfo = ({ audit, auditRequest, issues, confirmed }) => {
 export default AuditInfo;
 
 const wrapper = theme => ({
-  padding: '48px 74px 80px',
+  padding: '30px 60px 60px',
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'center',
-  gap: '80px',
+  gap: '40px',
   position: 'relative',
   '& h3': {
-    fontSize: '37px',
+    fontSize: '24px',
     fontWeight: 500,
-  },
-  [theme.breakpoints.down('md')]: {
-    padding: '38px 44px 60px',
-    '& h3': {
-      fontSize: '30px',
-    },
   },
   [theme.breakpoints.down('sm')]: {
     gap: '40px',
-    padding: '38px 20px 30px',
+    padding: '25px 20px 30px',
     '& h3': {
-      fontSize: '24px',
+      fontSize: '20px',
     },
   },
 });
 
 const titleSx = theme => ({
   fontWeight: 500,
-  [theme.breakpoints.down('md')]: {
-    fontSize: '20px',
-  },
+  fontSize: '16px !important',
   [theme.breakpoints.down('sm')]: {
-    fontSize: '16px',
+    fontSize: '14px !important',
   },
 });
+
 const userNameWrapper = theme => ({
   maxWidth: '190px',
   [theme.breakpoints.down('sm')]: {
@@ -418,8 +413,8 @@ const userInfoWrapper = theme => ({
 });
 
 const buttonSx = theme => ({
-  padding: '19px 0',
-  fontSize: '18px',
+  padding: '11px 0',
+  fontSize: '16px',
   textTransform: 'unset',
   fontWeight: 600,
   mr: '15px',
@@ -428,7 +423,6 @@ const buttonSx = theme => ({
   ':last-child': { mr: 0 },
   [theme.breakpoints.down('md')]: {
     width: '210px',
-    padding: '11px 0',
   },
   [theme.breakpoints.down('sm')]: {
     width: '170px',
@@ -453,6 +447,7 @@ const dateWrapper = theme => ({
 
 const projectWrapper = theme => ({
   display: 'flex',
+  textAlign: 'center',
   flexDirection: 'column',
   gap: '25px',
   '& p': {
@@ -462,11 +457,20 @@ const projectWrapper = theme => ({
   },
   [theme.breakpoints.down('sm')]: {
     gap: '16px',
+    textAlign: 'left',
+  },
+  [theme.breakpoints.down('xs')]: {
+    fontSize: '12px',
+    gap: '5px',
+    '& p': {
+      fontSize: '12px',
+    },
   },
 });
 
 const infoWrapper = theme => ({
   display: 'flex',
+  alignItems: 'center',
   fontWeight: 500,
   color: '#434242',
   '& p': {
@@ -505,7 +509,7 @@ const readAllButton = theme => ({
   width: '100%',
   padding: '8px',
   fontWeight: 600,
-  fontSize: '21px',
+  fontSize: '16px',
   color: 'black',
   textTransform: 'none',
   lineHeight: '25px',

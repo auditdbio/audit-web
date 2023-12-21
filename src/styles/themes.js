@@ -1,29 +1,29 @@
 import { createTheme } from '@mui/material';
 import { styled } from '@mui/system';
 
-export const buttonResponsiveStyles = {
-  large: {
-    padding: '16px 48px',
-    fontSize: '18px',
-    borderRadius: '8px',
-    lineHeight: '24px',
-    height: '58px',
-  },
-  medium: {
-    padding: '14px 32px',
-    fontSize: '16px',
-    borderRadius: '6px',
-    lineHeight: '20px',
-    height: '48px',
-  },
-  small: {
-    padding: '10px 24px',
-    fontSize: '14px',
-    borderRadius: '6px',
-    lineHeight: '18px',
-    height: '38px',
-  },
-};
+// export const buttonResponsiveStyles = {
+//   large: {
+//     padding: '16px 48px',
+//     fontSize: '18px',
+//     borderRadius: '8px',
+//     lineHeight: '24px',
+//     height: '58px',
+//   },
+//   medium: {
+//     padding: '14px 32px',
+//     fontSize: '16px',
+//     borderRadius: '6px',
+//     lineHeight: '20px',
+//     height: '48px',
+//   },
+//   small: {
+//     padding: '10px 24px',
+//     fontSize: '14px',
+//     borderRadius: '6px',
+//     lineHeight: '18px',
+//     height: '38px',
+//   },
+// };
 
 const initialTheme = createTheme({
   shape: {
@@ -128,30 +128,27 @@ const theme = createTheme(initialTheme, {
   },
   typography: {
     h1: {
-      fontSize: '60px',
+      fontSize: '50px',
       [initialTheme.breakpoints.down('lg')]: {
-        fontSize: '52px',
+        fontSize: '42px',
       },
       [initialTheme.breakpoints.down('md')]: {
-        fontSize: '44px',
+        fontSize: '36px',
       },
       [initialTheme.breakpoints.down('sm')]: {
-        fontSize: '38px',
+        fontSize: '30px',
       },
       [initialTheme.breakpoints.down('xs')]: {
-        fontSize: '32px',
+        fontSize: '24px',
       },
     },
     body1: {
-      fontSize: '26px',
+      fontSize: '20px',
       [initialTheme.breakpoints.down('lg')]: {
-        fontSize: '22px',
+        fontSize: '18px',
       },
       [initialTheme.breakpoints.down('md')]: {
-        fontSize: '20px',
-      },
-      [initialTheme.breakpoints.down('sm')]: {
-        fontSize: '15px',
+        fontSize: '16px',
       },
     },
     body2: {

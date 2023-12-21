@@ -1,3 +1,6 @@
+import { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom/dist';
 import {
   Box,
   Typography,
@@ -9,11 +12,7 @@ import {
 import SearchIcon from '@mui/icons-material/Search';
 import PublicProjectCard from './PublicProjectCard';
 import theme from '../../../styles/themes';
-import { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import { getAllProjects } from '../../../redux/actions/projectAction.js';
-import MenuItem from '@mui/material/MenuItem';
-import { useNavigate } from 'react-router-dom/dist';
 import { clearMessage } from '../../../redux/actions/auditAction.js';
 import { gridItemStylePublic } from './AuditorSection.jsx';
 import { addTestsLabel } from '../../../lib/helper.js';
@@ -48,23 +47,14 @@ const ProjectSection = () => {
   }, [projectReducer]);
 
   return (
-    <Box
-      sx={{
-        width: '100%',
-      }}
-    >
+    <Box sx={{ width: '100%' }}>
       <Box sx={headerWrapper}>
         <Typography variant="h1" sx={{ fontWeight: 500 }}>
           Projects
         </Typography>
         <Box sx={searchWrapper}>
           <InputBase
-            sx={{
-              ml: 1,
-              flex: 1,
-              white: 'color',
-              padding: '0',
-            }}
+            sx={inputSx}
             inputProps={{
               'aria-label': 'search google maps',
               style: {
@@ -75,9 +65,7 @@ const ProjectSection = () => {
               ...addTestsLabel('homepage_projects-search-input'),
             }}
             value={searchInput}
-            onChange={e => {
-              setSearchInput(e.target.value);
-            }}
+            onChange={e => setSearchInput(e.target.value)}
             onKeyDown={e => {
               if (e.key === 'Enter') {
                 navigate(`/projects?search=${searchInput}`);
@@ -89,9 +77,7 @@ const ProjectSection = () => {
             sx={{ p: '10px', color: 'white' }}
             aria-label="search"
             disableRipple
-            onClick={() => {
-              navigate(`/projects?search=${searchInput}`);
-            }}
+            onClick={() => navigate(`/projects?search=${searchInput}`)}
             {...addTestsLabel('homepage_projects-search-button')}
           >
             <SearchIcon />
@@ -114,7 +100,6 @@ const ProjectSection = () => {
         container
         rowSpacing={matchSm ? 2 : 4}
         columnSpacing={matchSm ? 2 : 4}
-        // justifyContent="space-between"
       >
         {projectReducer &&
           projectReducer.slice(0, matchSm ? 4 : 3).map(project => (
@@ -123,15 +108,16 @@ const ProjectSection = () => {
             </Grid>
           ))}
       </Grid>
-      <Box
-        sx={{
-          display: 'flex',
-          justifyContent: 'end',
-          alignItems: 'center',
-        }}
-      >
-        {/*<Typography variant="body2">view more...</Typography>*/}
-      </Box>
+
+      {/*<Box*/}
+      {/*  sx={{*/}
+      {/*    display: 'flex',*/}
+      {/*    justifyContent: 'end',*/}
+      {/*    alignItems: 'center',*/}
+      {/*  }}*/}
+      {/*>*/}
+      {/*  <Typography variant="body2">view more...</Typography>*/}
+      {/*</Box>*/}
     </Box>
   );
 };
@@ -155,6 +141,13 @@ const searchWrapper = {
   [theme.breakpoints.down('sm')]: {
     width: '100%',
   },
+};
+
+const inputSx = {
+  ml: 1,
+  flex: 1,
+  white: 'color',
+  padding: '0',
 };
 
 export default ProjectSection;
