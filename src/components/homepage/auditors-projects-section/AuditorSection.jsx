@@ -14,11 +14,13 @@ import AuditorCard from './AuditorCard';
 import theme from '../../../styles/themes';
 import { getAuditors } from '../../../redux/actions/auditorAction.js';
 import { addTestsLabel } from '../../../lib/helper.js';
+import { sliceCards } from './AuditorsProjectsSection.jsx';
 
 const AuditorSection = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const matchSm = useMediaQuery(theme.breakpoints.down('xs'));
+  const matchSm = useMediaQuery(theme.breakpoints.down('sm'));
+  const matchXs = useMediaQuery(theme.breakpoints.down('xs'));
 
   const [searchInput, setSearchInput] = useState('');
   const [auditorFound, setAuditorFound] = useState(true);
@@ -92,17 +94,15 @@ const AuditorSection = () => {
           </Typography>
         </Box>
       )}
-      <Grid
-        container
-        rowSpacing={matchSm ? 2 : 4}
-        columnSpacing={matchSm ? 2 : 4}
-      >
+      <Grid container spacing={{ zero: 1, xs: 2, lg: 4 }}>
         {auditorReducer.auditors &&
-          auditorReducer?.auditors?.slice(0, matchSm ? 4 : 3)?.map(auditor => (
-            <Grid key={auditor.user_id} item sx={gridItemStylePublic}>
-              <AuditorCard auditor={auditor} />
-            </Grid>
-          ))}
+          auditorReducer?.auditors
+            ?.slice(...sliceCards(matchSm, matchXs))
+            ?.map(auditor => (
+              <Grid key={auditor.user_id} item zero={6} xs={4} sm={3}>
+                <AuditorCard auditor={auditor} />
+              </Grid>
+            ))}
       </Grid>
 
       {/*<Box*/}
@@ -117,13 +117,6 @@ const AuditorSection = () => {
     </Box>
   );
 };
-
-export const gridItemStylePublic = theme => ({
-  width: '33.330%',
-  [theme.breakpoints.down('xs')]: {
-    width: '50%',
-  },
-});
 
 const headerWrapper = {
   display: 'flex',

@@ -14,12 +14,13 @@ import PublicProjectCard from './PublicProjectCard';
 import theme from '../../../styles/themes';
 import { getAllProjects } from '../../../redux/actions/projectAction.js';
 import { clearMessage } from '../../../redux/actions/auditAction.js';
-import { gridItemStylePublic } from './AuditorSection.jsx';
 import { addTestsLabel } from '../../../lib/helper.js';
+import { sliceCards } from './AuditorsProjectsSection.jsx';
 
 const ProjectSection = () => {
   const dispatch = useDispatch();
-  const matchSm = useMediaQuery(theme.breakpoints.down('xs'));
+  const matchSm = useMediaQuery(theme.breakpoints.down('sm'));
+  const matchXs = useMediaQuery(theme.breakpoints.down('xs'));
   const [searchInput, setSearchInput] = useState('');
   const navigate = useNavigate();
   const [projectFound, setProjectFound] = useState(true);
@@ -96,14 +97,10 @@ const ProjectSection = () => {
           </Typography>
         </Box>
       )}
-      <Grid
-        container
-        rowSpacing={matchSm ? 2 : 4}
-        columnSpacing={matchSm ? 2 : 4}
-      >
+      <Grid container spacing={{ zero: 1, xs: 2, lg: 4 }}>
         {projectReducer &&
-          projectReducer.slice(0, matchSm ? 4 : 3).map(project => (
-            <Grid key={project.id} item sx={gridItemStylePublic}>
+          projectReducer.slice(...sliceCards(matchSm, matchXs)).map(project => (
+            <Grid key={project.id} item zero={6} xs={4} sm={3}>
               <PublicProjectCard project={project} />
             </Grid>
           ))}

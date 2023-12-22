@@ -42,6 +42,7 @@ const wrapper = {
   width: '100%',
   display: 'flex',
   flexDirection: 'row',
+  alignItems: 'center',
   justifyContent: 'space-between',
   gap: '1rem',
 };
@@ -52,10 +53,18 @@ const linkStyle = {
   justifyContent: 'center',
 };
 
-const logoStyle = {
+const logoStyle = theme => ({
   height: '40px',
   width: '160px',
   marginY: 'auto',
-};
+  [theme.breakpoints.down('xs')]: {
+    height: '30px',
+    width: '140px',
+  },
+  [theme.breakpoints.down('xxs')]: {
+    height: '25px',
+    width: '100px',
+  },
+});
 
 export default Header;

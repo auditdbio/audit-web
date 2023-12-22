@@ -114,12 +114,15 @@ const AuthorizedOptions = () => {
   );
 };
 
-const mobileWrapper = {
+const mobileWrapper = theme => ({
   flexGrow: 0,
   display: 'flex',
   alignItems: 'center',
   gap: '1rem',
-};
+  [theme.breakpoints.down('xxs')]: {
+    gap: '0.5rem',
+  },
+});
 
 const desktopWrapper = {
   display: 'flex',

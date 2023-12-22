@@ -9,7 +9,7 @@ import { deleteAuditRequest } from '../redux/actions/auditAction.js';
 import dayjs from 'dayjs';
 import { addTestsLabel } from '../lib/helper.js';
 
-const AuditRequestCard = ({ type, request }) => {
+const AuditRequestCard = ({ type, request, audit }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -118,8 +118,8 @@ const priceWrapper = theme => ({
     mt: '5px',
     marginLeft: '35px',
   },
-  [theme.breakpoints.down(450)]: {
-    marginLeft: '28px',
+  [theme.breakpoints.down('xxs')]: {
+    marginLeft: '15px',
   },
 });
 
@@ -183,6 +183,9 @@ const dateWrapper = {
       fontSize: '8px',
     },
   },
+  [theme.breakpoints.down('xxs')]: {
+    gap: '1px',
+  },
 };
 
 const dateStyle = {
@@ -202,8 +205,9 @@ const dateStyle = {
     width: '70px',
     fontSize: '8px!important',
   },
-  [theme.breakpoints.down(450)]: {
-    padding: '5px',
+  [theme.breakpoints.down('xxs')]: {
+    padding: '5px 2px',
+    width: '50px',
   },
 };
 

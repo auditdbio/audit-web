@@ -14,6 +14,12 @@ const AuditorsProjectsSection = () => {
   );
 };
 
+export const sliceCards = (sm, xs) => {
+  if (xs) return [0, 4];
+  if (sm) return [0, 3];
+  return [0, 4];
+};
+
 const wrapperStyle = {
   backgroundColor: '#52176D',
   width: '100%',

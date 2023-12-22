@@ -115,8 +115,11 @@ const AuditorCard = ({ auditor }) => {
 };
 
 const buttonStyle = {
+  [theme.breakpoints.down('md')]: {
+    fontSize: '14px',
+  },
   [theme.breakpoints.down('sm')]: {
-    fontSize: '13px',
+    fontSize: '12px',
   },
 };
 
@@ -137,8 +140,11 @@ const cardStyle = theme => ({
 
 const priceSx = theme => ({
   fontSize: '14px !important',
+  [theme.breakpoints.down('md')]: {
+    fontSize: '12px !important',
+  },
   [theme.breakpoints.down('sm')]: {
-    fontSize: '10px',
+    fontSize: '10px !important',
   },
 });
 
@@ -186,7 +192,16 @@ const badgeFontStyle = theme => ({
   'text-overflow': 'ellipsis',
   height: '86px',
   overflow: 'hidden',
+  [theme.breakpoints.down('lg')]: {
+    fontSize: '14px!important',
+  },
+  [theme.breakpoints.down('md')]: {
+    fontSize: '12px!important',
+  },
   [theme.breakpoints.down('sm')]: {
+    height: '45px',
+  },
+  [theme.breakpoints.down('xs')]: {
     fontSize: '10px!important',
     height: '45px',
   },

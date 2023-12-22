@@ -46,6 +46,9 @@ const wrapper = theme => ({
   [theme.breakpoints.down('md')]: {
     padding: '20px 25px 40px',
   },
+  [theme.breakpoints.down('xxs')]: {
+    padding: '20px 10px 40px',
+  },
 });
 
 const gridItemStyle = theme => ({
