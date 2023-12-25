@@ -25,6 +25,7 @@ import {
 import {
   CUSTOMER,
   DONE,
+  RESOLVED,
   SUBMITED,
   WAITING_FOR_AUDITS,
 } from '../redux/actions/types.js';
@@ -305,19 +306,20 @@ const AuditInfo = ({ audit, auditRequest, issues, confirmed }) => {
                 {showFull ? 'Hide ▲' : `Read all ▼`}
               </Button>
             )}
-            {!editMode && (
-              <Box
-                sx={{
-                  position: 'absolute',
-                  top: '-96px',
-                  right: '10px',
-                }}
-              >
-                <Button variant={'text'} onClick={handleEdit}>
-                  <EditIcon fontSize={'large'} />
-                </Button>
-              </Box>
-            )}
+            {!editMode &&
+              audit.status.toLowerCase() !== RESOLVED.toLowerCase() && (
+                <Box
+                  sx={{
+                    position: 'absolute',
+                    top: '-96px',
+                    right: '10px',
+                  }}
+                >
+                  <Button variant={'text'} onClick={handleEdit}>
+                    <EditIcon fontSize={'large'} />
+                  </Button>
+                </Box>
+              )}
           </Box>
         </Box>
         <Box>
