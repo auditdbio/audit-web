@@ -10,6 +10,7 @@ import {
   DELETE_AUDIT,
   DELETE_REQUEST,
   DOWNLOAD_REPORT_START,
+  EDIT_AUDIT_CUSTOMER,
   GET_AUDIT,
   GET_AUDIT_REQUEST,
   GET_AUDITS,
@@ -238,6 +239,21 @@ export const startAudit = (values, goBack) => {
         } else {
           history.push(`/audit-info/${values.id}/auditor`);
         }
+      });
+  };
+};
+
+export const editAuditCustomer = (values, goBack) => {
+  return dispatch => {
+    const token = Cookies.get('token');
+    axios
+      .patch(`${API_URL}/audit/${values.id}`, values, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then(({ data }) => {
+        dispatch({ type: EDIT_AUDIT_CUSTOMER, payload: data });
       });
   };
 };
