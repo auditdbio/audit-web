@@ -34,6 +34,8 @@ const initialState = {
   successMessage: null,
   currentAuditPartner: null,
   publicReport: {},
+  totalAudits: 0,
+  totalAuditRequests: 0,
 };
 export const auditReducer = (state = initialState, action) => {
   switch (action.type) {
@@ -44,7 +46,11 @@ export const auditReducer = (state = initialState, action) => {
         successMessage: 'Audit request created successfully',
       };
     case GET_AUDIT_REQUEST:
-      return { ...state, auditRequests: action.payload };
+      return {
+        ...state,
+        auditRequests: action.payload.result,
+        totalAuditRequests: action.payload.totalDocuments,
+      };
     case DELETE_REQUEST:
       return {
         ...state,
@@ -60,7 +66,11 @@ export const auditReducer = (state = initialState, action) => {
         ),
       };
     case GET_AUDITS:
-      return { ...state, audits: action.payload };
+      return {
+        ...state,
+        audits: action.payload.result,
+        totalAudits: action.payload.totalDocuments,
+      };
     case GET_REQUEST:
       return {
         ...state,

@@ -1,22 +1,37 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom/dist';
 import { useDispatch, useSelector } from 'react-redux';
-import { Box, Button, Grid } from '@mui/material';
+import { Box, Button, Grid, useMediaQuery } from '@mui/material';
 import ProjectCard from './Project-card.jsx';
 import { getProjects } from '../redux/actions/projectAction.js';
 import { AUDITOR, CUSTOMER, DONE } from '../redux/actions/types.js';
 import Loader from './Loader.jsx';
 import CustomSnackbar from './custom/CustomSnackbar.jsx';
-import { addTestsLabel } from '../lib/helper.js';
+import { addTestsLabel, calcTotalPages } from '../lib/helper.js';
 import ProjectCardList from './Project-card-list.jsx';
+import CustomPagination from './custom/CustomPagination.jsx';
+import { useSearchParams } from 'react-router-dom';
+import theme from '../styles/themes.js';
+import { getAudits } from '../redux/actions/auditAction.js';
 
 const Projects = ({ role }) => {
   const navigate = useNavigate();
   const projects = useSelector(state => state.audits.audits);
-  const myProjects = useSelector(state => state.project.myProjects);
+  const totalAudits = useSelector(state => state.audits.totalAudits);
+  const { myProjects, totalProjects } = useSelector(state => state.project);
   const customer = useSelector(state => state.customer.customer);
   const dispatch = useDispatch();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [error, setError] = useState(null);
+  const [query, setQuery] = useState(undefined);
+  const matchXs = useMediaQuery(theme.breakpoints.down('xs'));
+
+  useEffect(() => {
+    if (query) {
+      setSearchParams({ ...query });
+    }
+  }, [query]);
+
   const projectReducer = useMemo(() => {
     if (role === AUDITOR) {
       return projects;
@@ -28,9 +43,33 @@ const Projects = ({ role }) => {
     }
   }, [role, projects, myProjects]);
 
+  const [currentPage, setCurrentPage] = useState(
+    +searchParams.get('page') || 1,
+  );
+
+  const handleChangePage = (e, page) => {
+    setCurrentPage(page);
+    setQuery(prev => {
+      const { ...data } = prev || {};
+      return { ...data, page };
+    });
+  };
+
   useEffect(() => {
-    dispatch(getProjects());
-  }, []);
+    setCurrentPage(+searchParams.get('page') || 1);
+  }, [searchParams.toString()]);
+
+  useEffect(() => {
+    if (role === CUSTOMER) {
+      dispatch(getProjects(searchParams.get('page')));
+    }
+  }, [searchParams.get('page')]);
+
+  useEffect(() => {
+    if (role === AUDITOR) {
+      dispatch(getAudits(role, searchParams.get('page')));
+    }
+  }, [searchParams.get('page')]);
 
   const handleNavigate = () => {
     if (role === CUSTOMER) {
@@ -43,6 +82,8 @@ const Projects = ({ role }) => {
       navigate('/projects');
     }
   };
+
+  const totalPages = calcTotalPages(totalProjects || totalAudits || 0);
 
   if (!projectReducer) {
     return <Loader role={role} />;
@@ -69,6 +110,17 @@ const Projects = ({ role }) => {
         />
 
         <ProjectCardList projects={projectReducer} role={role} />
+
+        <CustomPagination
+          show={projectReducer?.length > 0}
+          count={totalPages}
+          sx={{ mt: '30px', display: 'flex', justifyContent: 'flex-end' }}
+          page={currentPage}
+          onChange={handleChangePage}
+          showFirstLast={!matchXs}
+          size={matchXs ? 'small' : 'medium'}
+          color={'primary'}
+        />
       </Box>
     );
   }

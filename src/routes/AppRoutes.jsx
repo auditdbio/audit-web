@@ -64,16 +64,6 @@ const AppRoutes = () => {
 
   useEffect(() => {
     if (isAuth()) {
-      dispatch(getProjects());
-      if (currentRole) {
-        dispatch(getAuditsRequest(currentRole));
-        dispatch(getAudits(currentRole));
-      }
-    }
-  }, [token, currentRole, isAuth()]);
-
-  useEffect(() => {
-    if (isAuth()) {
       if (currentRole === 'auditor' && !auditor) {
         dispatch(getAuditor());
       } else if (currentRole === 'customer' && !customer) {

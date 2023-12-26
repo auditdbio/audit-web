@@ -1,27 +1,47 @@
 import React, { useEffect, useState } from 'react';
 import { Tab, Tabs } from '@mui/material';
 import { useNavigate } from 'react-router-dom/dist';
-import { useParams } from 'react-router-dom';
+import { useParams, useSearchParams } from 'react-router-dom';
 import { addTestsLabel } from '../../lib/helper.js';
 
-const CustomTabs = ({ selectedTabSx, name, tabs, setTab, choosenTab }) => {
+const CustomTabs = ({
+  selectedTabSx,
+  name,
+  tabs,
+  setTab,
+  choosenTab,
+  tabStyle,
+  tabsStyle,
+  onChange,
+  custom,
+}) => {
   const { tab } = useParams();
   const [tabState, setTabState] = useState(choosenTab);
-  const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
+
   const handleChoose = value => {
-    navigate(`/profile/${value}`);
     setTabState(value);
     setTab(value);
+    if (onChange) onChange(value);
   };
   useEffect(() => {
-    setTabState(tab);
+    if (onChange && !custom) {
+      setTabState(tab);
+    }
   }, [tab, tabState]);
+
+  useEffect(() => {
+    if (onChange && custom) {
+      setTabState(searchParams.get('type') || 'audits');
+    }
+  }, [searchParams.get('type')]);
+
   return (
     <Tabs
       value={tabState}
       onChange={(e, newValue) => handleChoose(newValue)}
       name={name}
-      sx={tabsSx}
+      sx={[tabsStyle]}
       variant="fullWidth"
       indicatorColor="none"
     >
@@ -29,7 +49,11 @@ const CustomTabs = ({ selectedTabSx, name, tabs, setTab, choosenTab }) => {
         <Tab
           key={tab.value}
           value={tab.value}
-          sx={[tab.value === tabState ? selectedTabSx : simpleTab, tabSx]}
+          sx={[
+            tab.value === tabState ? selectedTabSx : simpleTab,
+            tabSx,
+            tabStyle,
+          ]}
           label={tab.label}
           {...addTestsLabel(`${tab.value}-tab`)}
         />
@@ -52,10 +76,8 @@ const tabSx = theme => ({
   fontSize: '19px',
   fontWeight: 600,
   textTransform: 'capitalize',
-  borderRadius: '14.8672px 14.8672px 0px 0px',
   // padding: '15px 40px',
   whiteSpace: 'inherit',
-  width: '100%',
   [theme.breakpoints.down('sm')]: {
     fontSize: '14px',
   },
@@ -64,20 +86,5 @@ const tabSx = theme => ({
     padding: '8px',
     height: '35px',
     minHeight: '35px',
-  },
-});
-
-const tabsSx = theme => ({
-  marginBottom: '-1px',
-  '& .MuiTabs-flexContainer': {
-    gap: '3px',
-  },
-  [theme.breakpoints.down('xs')]: {
-    minHeight: '35px',
-    height: '35px',
-    '& .MuiTabs-flexContainer': {
-      gap: 0,
-      // display: 'block'
-    },
   },
 });

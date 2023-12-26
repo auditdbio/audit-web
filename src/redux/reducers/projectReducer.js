@@ -20,6 +20,7 @@ const initialState = {
   message: null,
   searchTotalProjects: 0,
   currentProject: null,
+  totalProjects: 0,
 };
 export const projectReducer = (state = initialState, action) => {
   switch (action.type) {
@@ -79,7 +80,11 @@ export const projectReducer = (state = initialState, action) => {
         }),
       };
     case GET_MY_PROJECTS:
-      return { ...state, myProjects: action.payload };
+      return {
+        ...state,
+        myProjects: action.payload.result,
+        totalProjects: action.payload.totalDocuments,
+      };
     case SEARCH_PROJECTS:
       return {
         ...state,

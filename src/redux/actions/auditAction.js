@@ -63,15 +63,20 @@ export const createRequest = (values, redirect, navigateTo) => {
   };
 };
 
-export const getAuditsRequest = role => {
+export const getAuditsRequest = (role, page, perPage) => {
   return dispatch => {
     const token = Cookies.get('token');
     axios
-      .get(`${API_URL}/my_audit_request/${role}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
+      .get(
+        `${API_URL}/my_audit_request/${role}?page=${page || 1}&per_page=${
+          perPage || 12
+        }`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         },
-      })
+      )
       .then(({ data }) => {
         dispatch({ type: GET_AUDIT_REQUEST, payload: data });
         // history.push("/home-customer", {
@@ -101,15 +106,20 @@ export const getAuditRequest = id => {
   };
 };
 
-export const getAudits = role => {
+export const getAudits = (role, page = 1, perPage) => {
   return dispatch => {
     const token = Cookies.get('token');
     axios
-      .get(`${API_URL}/my_audit/${role}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
+      .get(
+        `${API_URL}/my_audit/${role}?page=${page || 1}&per_page=${
+          perPage || 12
+        }`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         },
-      })
+      )
       .then(({ data }) => {
         dispatch({ type: GET_AUDITS, payload: data });
         // history.push("/home-customer", {

@@ -33,6 +33,11 @@ const ProfilePage = () => {
   useEffect(() => {
     setChooseTab(tab);
   }, [tab, chooseTab]);
+
+  const handleChange = value => {
+    navigate(`/profile/${value}`);
+  };
+
   return (
     <Layout>
       <CustomSnackbar
@@ -50,6 +55,9 @@ const ProfilePage = () => {
           choosenTab={chooseTab}
           tabs={currentRole === AUDITOR ? auditorTabs : customerTabs}
           setTab={setChooseTab}
+          tabStyle={tabStyle}
+          tabsStyle={tabsStyle}
+          onChange={handleChange}
         />
         <InfoCard role={currentRole}>
           {chooseTab === 'audits' && currentRole === CUSTOMER && <Audits />}
@@ -107,6 +115,26 @@ const wrapper = theme => ({
   maxWidth: '1300px',
   minHeight: '560px',
   width: '100%',
+});
+
+const tabStyle = theme => ({
+  borderRadius: '14.8672px 14.8672px 0px 0px',
+  width: '100%',
+});
+
+const tabsStyle = theme => ({
+  marginBottom: '-1px',
+  '& .MuiTabs-flexContainer': {
+    gap: '3px',
+  },
+  [theme.breakpoints.down('xs')]: {
+    minHeight: '35px',
+    height: '35px',
+    '& .MuiTabs-flexContainer': {
+      gap: 0,
+      // display: 'block'
+    },
+  },
 });
 
 const customerTabSx = theme => ({

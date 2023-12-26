@@ -1,14 +1,21 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Box, Button, Grid } from '@mui/material';
 import AuditRequestCard from './Audit-request-card';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { addTestsLabel } from '../lib/helper.js';
 import { CUSTOMER } from '../redux/actions/types.js';
 import { useNavigate } from 'react-router-dom/dist';
+import { getAuditsRequest } from '../redux/actions/auditAction.js';
 
 const AuditRequest = () => {
   const auditRequests = useSelector(s => s.audits.auditRequests);
   const navigate = useNavigate();
+  const currentRole = useSelector(s => s.user.user.current_role);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(getAuditsRequest(currentRole));
+  }, []);
 
   const handleNavigate = () => {
     navigate('/projects');

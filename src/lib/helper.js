@@ -17,3 +17,7 @@ export const addTestsLabel = value => {
 export const addSpacesToCamelCase = str => {
   return typeof str === 'string' ? str.replace(/([a-z])([A-Z])/g, '$1 $2') : '';
 };
+
+export const calcTotalPages = totalCount => {
+  return Math.ceil(totalCount / 12);
+};

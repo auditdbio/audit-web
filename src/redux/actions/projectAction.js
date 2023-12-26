@@ -164,11 +164,11 @@ export const getAllProjects = (values = '', amount) => {
   };
 };
 
-export const getProjects = () => {
+export const getProjects = page => {
   const token = Cookies.get('token');
   return dispatch => {
     axios
-      .get(`${API_URL}/my_project`, {
+      .get(`${API_URL}/my_project?page=${page || 1}&per_page=12`, {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then(({ data }) => {
