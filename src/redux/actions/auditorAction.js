@@ -187,7 +187,7 @@ export const searchAuditor = values => {
       });
   };
 };
-//
+
 export const deleteBadgeProfile = id => {
   return dispatch => {
     axios
