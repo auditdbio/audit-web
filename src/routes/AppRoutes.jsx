@@ -98,7 +98,7 @@ const AppRoutes = () => {
       };
     }
   }, [reconnect, connected]);
-  //
+
   useEffect(() => {
     return () => {
       dispatch(websocketDisconnect());

@@ -21,7 +21,7 @@ import {
   receiveCustomerMessage,
   websocketConnect,
 } from '../actions/websocketAction.js';
-//
+
 const API_URL = import.meta.env.VITE_API_WS_BASE_URL;
 
 const websocketMiddleware = () => {
