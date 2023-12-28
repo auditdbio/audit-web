@@ -11,12 +11,14 @@ import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined.js';
 import CloseIcon from '@mui/icons-material/Close';
 import { addTestsLabel } from '../../lib/helper.js';
 import ChatListItem from './ChatListItem.jsx';
-import { AUDITOR } from '../../redux/actions/types.js';
+import { AUDITOR, CUSTOMER } from '../../redux/actions/types.js';
 import { searchAuditor } from '../../redux/actions/auditorAction.js';
+import { searchCustomers } from '../../redux/actions/customerAction.js';
 
 const ChatList = ({ chatList, chatListIsOpen, setChatListIsOpen }) => {
   const dispatch = useDispatch();
   const { auditors } = useSelector(s => s.auditor);
+  const { customers } = useSelector(s => s.customer);
   const { user } = useSelector(s => s.user);
 
   const [, startTransition] = useTransition();
@@ -29,8 +31,8 @@ const ChatList = ({ chatList, chatListIsOpen, setChatListIsOpen }) => {
   useEffect(() => {
     startTransition(() => {
       if (search.trim()) {
-        dispatch(searchAuditor({ search, perPage: 0 }));
-        // TODO: add customers search
+        dispatch(searchAuditor({ search, perPage: 20 }));
+        dispatch(searchCustomers({ search, perPage: 20 }));
       }
     });
   }, [search]);
@@ -121,9 +123,33 @@ const ChatList = ({ chatList, chatListIsOpen, setChatListIsOpen }) => {
                 />
               ))}
 
-          {/*TODO: Add customers search*/}
+          {search &&
+            customers
+              .filter(
+                customer =>
+                  !chatList.some(chat =>
+                    chat.members.some(member => member.id === customer.user_id),
+                  ),
+              )
+              .map(customer => (
+                <ChatListItem
+                  key={customer.user_id}
+                  user={user}
+                  setListIsOpen={setChatListIsOpen}
+                  isNew={true}
+                  role={CUSTOMER}
+                  chat={{
+                    id: customer.user_id,
+                    name: `${customer.first_name} ${customer.last_name}`,
+                    avatar: customer.avatar,
+                    members: [customer.user_id, user.id],
+                  }}
+                />
+              ))}
 
           {chatList.length > 0 &&
+            !customers.length &&
+            !auditors.length &&
             !chatList.find(chat =>
               chat.name?.toLowerCase().includes(search.toLowerCase().trim()),
             ) && <Box sx={emptyListLabel}>No search results</Box>}

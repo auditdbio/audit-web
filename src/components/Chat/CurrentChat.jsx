@@ -198,15 +198,28 @@ const CurrentChat = ({
               </Button>
             </Box>
           )}
-          {chatMessages.slice(...getDisplayedMessages()).map((msg, idx, ar) => {
-            const unreadLabel = !!unread && ar.length - unread === idx;
-            return (
-              <Box key={msg.id} ref={unreadLabel ? newMessagesTextRef : null}>
-                {unreadLabel && <Box sx={newMessagesSx}>New messages:</Box>}
-                <Message user={user} message={msg} currentChat={currentChat} />
-              </Box>
-            );
-          })}
+          {!currentChat?.isNew ? (
+            chatMessages
+              .slice(...getDisplayedMessages())
+              .map((msg, idx, ar) => {
+                const unreadLabel = !!unread && ar.length - unread === idx;
+                return (
+                  <Box
+                    key={msg.id}
+                    ref={unreadLabel ? newMessagesTextRef : null}
+                  >
+                    {unreadLabel && <Box sx={newMessagesSx}>New messages:</Box>}
+                    <Message
+                      user={user}
+                      message={msg}
+                      currentChat={currentChat}
+                    />
+                  </Box>
+                );
+              })
+          ) : (
+            <Box sx={newMessagesSx}>No messages here yet...</Box>
+          )}
         </Box>
 
         <Box sx={sendBox}>

@@ -1,14 +1,14 @@
 import axios from 'axios';
 import Cookies from 'js-cookie';
 import {
-  GET_CURRENT_AUDITOR,
+  GET_CUSTOMERS,
   GET_CURRENT_CUSTOMER,
   GET_CUSTOMER,
-  SIGN_IN_ERROR,
   UPDATE_CUSTOMER,
-  USER_SIGNIN,
 } from './types.js';
 import { history } from '../../services/history.js';
+import createSearchValues from '../../lib/createSearchValues.js';
+import { isAuth } from '../../lib/helper.js';
 
 const API_URL = import.meta.env.VITE_API_BASE_URL;
 
@@ -88,6 +88,25 @@ export const updateCustomer = values => {
       .catch(({ response }) => {
         console.log(response, 'res');
         // dispatch({type: SIGN_IN_ERROR})
+      });
+  };
+};
+
+export const searchCustomers = values => {
+  const queryString = createSearchValues(values, 'customer');
+
+  return dispatch => {
+    const token = Cookies.get('token');
+    axios
+      .get(
+        `${API_URL}/search?${queryString}`,
+        isAuth() ? { headers: { Authorization: `Bearer ${token}` } } : {},
+      )
+      .then(({ data }) => {
+        dispatch({ type: GET_CUSTOMERS, payload: data });
+      })
+      .catch(({ response }) => {
+        console.error(response, 'res');
       });
   };
 };

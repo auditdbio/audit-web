@@ -24,13 +24,15 @@ const ChatPage = () => {
       const chat = chatList.find(chat => chat.id === id);
       const members = chat?.members.map(member => member.id);
 
-      dispatch(
-        setCurrentChat(chat?.id, {
-          name: chat?.name,
-          avatar: chat?.avatar,
-          members,
-        }),
-      );
+      if (chat) {
+        dispatch(
+          setCurrentChat(chat?.id, {
+            name: chat?.name,
+            avatar: chat?.avatar,
+            members,
+          }),
+        );
+      }
     }
   }, [id, chatList.length]);
 

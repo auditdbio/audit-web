@@ -10,6 +10,7 @@ export const SELECT_ROLE = 'SELECT_ROLE';
 export const UPDATE_CUSTOMER = 'UPDATE_CUSTOMER';
 export const UPDATE_AUDITOR = 'UPDATE_AUDITOR';
 export const GET_CUSTOMER = 'GET_CUSTOMER';
+export const GET_CUSTOMERS = 'GET_CUSTOMERS';
 export const GET_AUDITOR = 'GET_AUDITOR';
 export const GET_AUDITORS = 'GET_AUDITORS';
 export const AUDITOR = 'auditor';
