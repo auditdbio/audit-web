@@ -6,29 +6,32 @@ import { TextField } from 'formik-mui';
 import * as Yup from 'yup';
 import EditIcon from '@mui/icons-material/Edit';
 import { Box, IconButton, InputAdornment, Tooltip } from '@mui/material';
-import { addTestsLabel } from '../../../lib/helper.js';
-import { AUDITOR, CUSTOMER, RESOLVED } from '../../../redux/actions/types.js';
-import { clearMessage } from '../../../redux/actions/auditAction.js';
 import {
   addAuditIssue,
   addPublicIssue,
   updateAuditIssue,
   updatePublicIssue,
-} from '../../../redux/actions/issueAction.js';
-import CustomSnackbar from '../../custom/CustomSnackbar.jsx';
-import DescriptionBlock from './DescriptionBlock.jsx';
-import StatusSeverityBlock from './StatusSeverityBlock.jsx';
-import { DRAFT, NOT_FIXED } from '../constants.js';
+} from '../redux/actions/issueAction.js';
+import CustomSnackbar from '../components/custom/CustomSnackbar.jsx';
+import { clearMessage } from '../redux/actions/auditAction.js';
+import { CUSTOMER, RESOLVED } from '../redux/actions/types.js';
+import { addTestsLabel } from '../lib/helper.js';
+import DescriptionBlock from '../components/issuesPage/IssueDetailsForm/DescriptionBlock.jsx';
+import StatusSeverityBlock from '../components/issuesPage/IssueDetailsForm/StatusSeverityBlock.jsx';
+import { DRAFT, NOT_FIXED } from '../components/issuesPage/constants.js';
 
-const IssueDetailsForm = ({ issue = null, editMode = false }) => {
+const PublicIssueDetailsForm = ({ issue = null, editMode = false }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { auditId, issueId } = useParams();
+  const publicIssues = JSON.parse(localStorage.getItem('publicIssues') || '[]');
+
   const user = useSelector(s => s.user.user);
   const { successMessage, error } = useSelector(s => s.issues);
   const audit = useSelector(s =>
     s.audits.audits?.find(audit => audit.id === auditId),
   );
+  const issues = useSelector(s => s.issues.issues);
 
   const [isEditName, setIsEditName] = useState(!editMode);
   const [issuePrevValues, setIssuePrevValues] = useState(null);
@@ -45,7 +48,7 @@ const IssueDetailsForm = ({ issue = null, editMode = false }) => {
 
   const initialValues = {
     name: issue?.name || '',
-    status: issue?.status || DRAFT,
+    status: issue?.status || NOT_FIXED,
     severity: issue?.severity || 'Medium',
     category: issue?.category || '',
     description: issue?.description || '',
@@ -68,13 +71,29 @@ const IssueDetailsForm = ({ issue = null, editMode = false }) => {
       }, {});
 
       setIsEditName(false);
-      setFieldValue('status', '');
-
       setIssuePrevValues({ ...values, status: '' });
-      dispatch(updateAuditIssue(auditId, issueId, updatedValues));
+      const newValues = {
+        ...prev,
+        ...updatedValues,
+        id: +issueId,
+        auditId: +auditId,
+      };
+      delete newValues.events;
+      const newArray = publicIssues.map(el => {
+        return el.id === +issueId ? newValues : el;
+      });
+      dispatch(updatePublicIssue(newValues));
+      localStorage.setItem('publicIssues', JSON.stringify(newArray));
     } else {
-      dispatch(addAuditIssue(auditId, values));
-      navigate(`/audit-info/${auditId}/auditor`);
+      const newValue = { ...values, auditId: Date.now(), id: Date.now() };
+      localStorage.setItem(
+        'publicIssues',
+        JSON.stringify([...publicIssues, newValue]),
+      );
+      dispatch(addPublicIssue(newValue));
+      if (issues.length) {
+        navigate(-1);
+      }
     }
   };
 
@@ -118,7 +137,7 @@ const IssueDetailsForm = ({ issue = null, editMode = false }) => {
                 <Field
                   component={TextField}
                   name="name"
-                  label="Title"
+                  label="Issue title"
                   fullWidth={true}
                   disabled={
                     !isEditName ||
@@ -128,7 +147,6 @@ const IssueDetailsForm = ({ issue = null, editMode = false }) => {
                   inputRef={nameInputRef}
                   inputProps={{ ...addTestsLabel('issue-name-input') }}
                   InputProps={
-                    user.current_role !== CUSTOMER &&
                     audit?.status?.toLowerCase() !== RESOLVED.toLowerCase() &&
                     editMode
                       ? {
@@ -158,6 +176,7 @@ const IssueDetailsForm = ({ issue = null, editMode = false }) => {
 
             <Box sx={infoWrapperSx}>
               <DescriptionBlock
+                isPublic={true}
                 editMode={editMode}
                 handleSubmit={handleSubmit}
                 errors={errors}
@@ -171,6 +190,7 @@ const IssueDetailsForm = ({ issue = null, editMode = false }) => {
               />
 
               <StatusSeverityBlock
+                isPublic={true}
                 user={user}
                 dirty={dirty}
                 values={values}
@@ -192,7 +212,7 @@ const IssueDetailsForm = ({ issue = null, editMode = false }) => {
   );
 };
 
-export default IssueDetailsForm;
+export default PublicIssueDetailsForm;
 
 const issueValidationSchema = Yup.object().shape({
   name: Yup.string().required('Title is required'),

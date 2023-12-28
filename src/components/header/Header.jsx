@@ -9,7 +9,6 @@ import Logo from '../icons/Logo.jsx';
 import AuthorizedOptions from './AuthorizedOptions.jsx';
 import UnauthorizedOptions from './UnauthorizedOptions.jsx';
 import { addTestsLabel, isAuth } from '../../lib/helper.js';
-
 const Header = () => {
   return (
     <AppBar position="static" color="transparent" elevation={0}>
@@ -48,7 +47,7 @@ const wrapper = {
   display: 'flex',
   flexDirection: 'row',
   justifyContent: 'space-between',
-  gap: '1rem',
+  gap: !isAuth() ? '16px' : '10px',
 };
 
 const linkStyle = {

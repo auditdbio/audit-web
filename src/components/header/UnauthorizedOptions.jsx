@@ -98,7 +98,7 @@ const UnauthorizedOptions = () => {
       {/*  Desktop Screen  */}
       {!matchSm && (
         <>
-          <Box sx={{ display: 'flex', gap: '0.5rem' }}>
+          <Box sx={{ display: 'flex', gap: '1rem' }}>
             {pages.map(page => (
               <CustomMenu
                 key={page.id}

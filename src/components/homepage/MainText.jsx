@@ -7,12 +7,15 @@ import { useMediaQuery } from '@mui/material';
 import { addTestsLabel, isAuth } from '../../lib/helper.js';
 import { useDispatch, useSelector } from 'react-redux';
 import { changeRole } from '../../redux/actions/userAction.js';
+import { Link as MuiLink } from '@mui/material';
 
 const MainText = () => {
   const isMobile = useMediaQuery('(max-width: 768px)');
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const user = useSelector(state => state.user.user);
+  const report = JSON.parse(localStorage.getItem('report') || '{}');
+  const auditId = report.auditId ? report.auditId : Date.now();
 
   const handleSignUp = () => {
     navigate('/sign-up');
@@ -73,6 +76,14 @@ const MainText = () => {
               {...addTestsLabel('hero_show-project-button')}
             >
               Show your project
+            </CustomButton>
+          </Box>
+          <Box sx={buttonsStyle(isMobile)}>
+            <CustomButton
+              sx={[gitCoinSx, { color: '#fff' }]}
+              onClick={() => navigate(`/audit-builder/${auditId}`)}
+            >
+              Try audit builder
             </CustomButton>
           </Box>
         </Box>
@@ -159,7 +170,7 @@ const imageStyle = isMobile => ({
   display: isMobile ? 'none' : 'inline',
   minWidth: '25%',
 });
-
+//
 const buttonsStyle = isMobile => ({
   flexGrow: 0,
   display: 'flex',
@@ -167,8 +178,11 @@ const buttonsStyle = isMobile => ({
   flexDirection: isMobile ? 'column' : 'row',
   marginX: 'auto',
   minWidth: { xs: '300px', md: '100%' },
-  justifyContent: 'space-around',
+  justifyContent: 'center',
   gap: '2rem',
+  [theme.breakpoints.down('xs')]: {
+    width: '90%',
+  },
 });
 
 const imagesStyle = {
@@ -197,5 +211,13 @@ const personBitcoinStyle = {
   backgroundRepeat: 'no-repeat',
   margin: '0 auto',
 };
+
+const gitCoinSx = theme => ({
+  backgroundColor: '#44944A',
+  paddingX: 0,
+  '&:hover': {
+    backgroundColor: '#326e34!important',
+  },
+});
 
 export default MainText;

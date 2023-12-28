@@ -6,8 +6,9 @@ import { addTestsLabel } from '../lib/helper.js';
 import Layout from '../styles/Layout.jsx';
 import { CustomCard } from '../components/custom/Card';
 import IssueDetailsForm from '../components/issuesPage/IssueDetailsForm/IssueDetailsForm.jsx';
+import PublicIssueDetailsForm from './PublicIssueDetailForm.jsx';
 
-const CreateIssuePage = () => {
+const CreateIssuePage = ({ isPublic }) => {
   const navigate = useNavigate();
 
   return (
@@ -20,7 +21,7 @@ const CreateIssuePage = () => {
         >
           <ArrowBackIcon color="secondary" />
         </Button>
-        <IssueDetailsForm />
+        {!isPublic ? <IssueDetailsForm /> : <PublicIssueDetailsForm />}
       </CustomCard>
     </Layout>
   );

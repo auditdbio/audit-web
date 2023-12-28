@@ -23,6 +23,24 @@ export const getIssues = auditId => {
   };
 };
 
+export const getPublicIssues = (data, auditId) => {
+  return dispatch => {
+    dispatch({ type: GET_AUDIT_ISSUES, payload: { auditId, issues: data } });
+  };
+};
+
+export const updatePublicIssue = data => {
+  return dispatch => {
+    dispatch({ type: UPDATE_AUDIT_ISSUE, payload: { issue: data } });
+  };
+};
+
+export const addPublicIssue = data => {
+  return dispatch => {
+    dispatch({ type: ADD_AUDIT_ISSUE, payload: { issue: data } });
+  };
+};
+
 export const addAuditIssue = (auditId, values) => {
   return dispatch => {
     const token = Cookies.get('token');
