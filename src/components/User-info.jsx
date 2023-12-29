@@ -23,6 +23,7 @@ import ShareProfileButton from './custom/ShareProfileButton.jsx';
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import { Link as RouterLink } from 'react-router-dom';
 import IdentitySetting from './IdentitySetting/IdentitySetting.jsx';
+import LinkedinIcon from './icons/LinkedinIcon.jsx';
 
 const UserInfo = ({ role }) => {
   const navigate = useNavigate();
@@ -146,7 +147,9 @@ const UserInfo = ({ role }) => {
               href={'https://github.com/auditdbio/audit-web/tree/prod'}
             >
               <Tooltip title="github.com" placement={'top'} arrow>
-                <GitHubIcon />
+                <GitHubIcon
+                  sx={{ width: '50px', height: '50px', padding: '4px' }}
+                />
               </Tooltip>
             </RouterLink>
           </Box>
@@ -154,7 +157,7 @@ const UserInfo = ({ role }) => {
             <RouterLink
               href={'https://github.com/auditdbio/audit-web/tree/prod'}
             >
-              <LinkedInIcon />
+              <LinkedinIcon />
             </RouterLink>
           </Box>
         </Box>

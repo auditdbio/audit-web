@@ -5,6 +5,7 @@ import {
   Checkbox,
   ClickAwayListener,
   Modal,
+  Tooltip,
   Typography,
 } from '@mui/material';
 import { Link as RouterLink } from 'react-router-dom';
@@ -54,11 +55,13 @@ const IdentitySetting = () => {
                   />
                   <Typography>Github</Typography>
                 </Box>
-                <Checkbox
-                  defaultChecked
-                  icon={<VisibilityOffIcon />}
-                  checkedIcon={<RemoveRedEyeIcon />}
-                />
+                <Tooltip placement={'top'} arrow title={'Show in profile'}>
+                  <Checkbox
+                    defaultChecked
+                    icon={<VisibilityOffIcon />}
+                    checkedIcon={<RemoveRedEyeIcon />}
+                  />
+                </Tooltip>
               </Box>
               <Box sx={[cardSx, { border: '1px solid green' }]}>
                 <Box
@@ -72,10 +75,12 @@ const IdentitySetting = () => {
                   <LinkedinIcon />
                   <Typography>Linkedin</Typography>
                 </Box>
-                <Checkbox
-                  icon={<VisibilityOffIcon />}
-                  checkedIcon={<RemoveRedEyeIcon />}
-                />
+                <Tooltip arrow placement={'top'} title={'Show in profile'}>
+                  <Checkbox
+                    icon={<VisibilityOffIcon />}
+                    checkedIcon={<RemoveRedEyeIcon />}
+                  />
+                </Tooltip>
               </Box>
               <Box sx={cardSx}>
                 <Box
@@ -187,9 +192,9 @@ const modalSx = theme => ({
   bgcolor: 'background.paper',
   borderRadius: '10px',
   boxShadow: 24,
-  pt: 2,
-  px: 4,
-  pb: 3,
+  pt: '24px',
+  px: '32px',
+  pb: '24px',
   [theme.breakpoints.down('xs')]: {
     width: '80%',
     height: '425px',
