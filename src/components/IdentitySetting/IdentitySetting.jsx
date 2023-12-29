@@ -125,6 +125,18 @@ const IdentitySetting = () => {
               {/*  </Box>*/}
               {/*  <Checkbox defaultChecked />*/}
               {/*</Box>*/}
+              <Box>
+                <Button
+                  sx={[
+                    buttonSx,
+                    { width: '100%', paddingY: '10px', marginTop: '15px' },
+                  ]}
+                  variant={'contained'}
+                  onClick={() => setOpen(false)}
+                >
+                  Close
+                </Button>
+              </Box>
             </Box>
             <Box
               sx={{
@@ -180,7 +192,7 @@ const modalSx = theme => ({
   pb: 3,
   [theme.breakpoints.down('xs')]: {
     width: '80%',
-    height: '345px',
+    height: '425px',
     overflow: 'auto',
     padding: '10px 15px',
   },

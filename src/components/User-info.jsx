@@ -157,13 +157,6 @@ const UserInfo = ({ role }) => {
               <LinkedInIcon />
             </RouterLink>
           </Box>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: '7px' }}>
-            <RouterLink
-              href={'https://github.com/auditdbio/audit-web/tree/prod'}
-            >
-              <LinkedInIcon />
-            </RouterLink>
-          </Box>
         </Box>
         <Box
           sx={{
