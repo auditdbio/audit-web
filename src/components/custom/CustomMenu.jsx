@@ -137,7 +137,6 @@ const menuButton = theme => ({
     backgroundColor: 'transparent',
     color: theme.palette.primary.main,
   },
-  textTransform: 'none',
   marginY: 'auto',
   [theme.breakpoints.down('md')]: {
     padding: '6px',
