@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Layout from '../styles/Layout.jsx';
 import { CustomCard } from '../components/custom/Card.jsx';
-import { Box, Button, Grid, Typography } from '@mui/material';
+import { Box, Button, Grid, Typography, useMediaQuery } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack.js';
 import { useNavigate } from 'react-router-dom/dist';
 import { useDispatch, useSelector } from 'react-redux';
@@ -11,32 +11,79 @@ import AuditorModal from '../components/AuditorModal.jsx';
 import { useParams, useSearchParams } from 'react-router-dom';
 import Loader from '../components/Loader.jsx';
 import { createRequest } from '../redux/actions/auditAction.js';
-import { getAuditors } from '../redux/actions/auditorAction.js';
-import { addTestsLabel } from '../lib/helper.js';
+import {
+  getAuditors,
+  getCurrentAuditor,
+} from '../redux/actions/auditorAction.js';
+import { addTestsLabel, calcTotalPages } from '../lib/helper.js';
 import CustomSnackbar from '../components/custom/CustomSnackbar.jsx';
+import CustomPagination from '../components/custom/CustomPagination.jsx';
+import theme from '../styles/themes.js';
+import { CLEAR_AUDITOR, CUSTOMER } from '../redux/actions/types.js';
+import { getMyProject, getProjects } from '../redux/actions/projectAction.js';
 
 const MyProjects = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const myProjects = useSelector(state => state.project.myProjects);
+  const { myProjects, totalProjects, myProject } = useSelector(
+    state => state.project,
+  );
   const params = useParams();
-  const [searchParams, setSearchParams] = useSearchParams();
   const [isOpenView, setIsOpenView] = useState(false);
+  const [query, setQuery] = useState(undefined);
   const [chosen, setChosen] = useState([]);
-  const auditor = useSelector(state =>
-    state?.auditor?.auditors?.find(auditor => auditor.user_id === params.id),
+  const [searchParams, setSearchParams] = useSearchParams();
+  const auditor = useSelector(state => state?.auditor?.currentAuditor);
+  const matchXs = useMediaQuery(theme.breakpoints.down('xs'));
+  const [currentPage, setCurrentPage] = useState(
+    +searchParams.get('page') || 1,
   );
   const [errorMessage, setErrorMessage] = useState(null);
+  //
+  useEffect(() => {
+    dispatch(getCurrentAuditor(params.id));
+
+    return () => {
+      dispatch({ type: CLEAR_AUDITOR });
+    };
+  }, [params.id]);
+  //
+  useEffect(() => {
+    if (searchParams.get('projectIdToInvite')) {
+      dispatch(getMyProject(searchParams.get('projectIdToInvite')));
+    }
+  }, [searchParams.get('projectIdToInvite')]);
 
   useEffect(() => {
-    if (!auditor) {
-      dispatch(getAuditors());
+    if (query && query.page) {
+      setSearchParams({
+        ...query,
+        projectIdToInvite: searchParams.get('projectIdToInvite'),
+      });
     }
-  }, []);
+  }, [query]);
 
+  useEffect(() => {
+    dispatch(getProjects(searchParams.get('page')));
+  }, [searchParams.get('page')]);
+  //
   const handleCloseView = () => {
     setIsOpenView(false);
   };
+
+  useEffect(() => {
+    const projects = JSON.parse(localStorage.getItem('project')) || [];
+    console.log(projects);
+    if (chosen.length > 0) {
+      localStorage.setItem(
+        'project',
+        JSON.stringify(
+          chosen,
+          projects?.filter(project => project?.id),
+        ),
+      );
+    }
+  }, [chosen]);
 
   const handleInviteAuditor = values => {
     if (chosen.length > 0) {
@@ -55,21 +102,41 @@ const MyProjects = () => {
   };
 
   useEffect(() => {
-    const chosenProject = searchParams.get('projectIdToInvite');
-    if (chosenProject && chosenProject !== 'null') {
-      const currentProject = myProjects?.find(
-        project => project.id === chosenProject,
-      );
-      setChosen([currentProject]);
+    // const chosenProject = searchParams.get('projectIdToInvite');
+    // if (chosenProject && chosenProject !== 'null') {
+    //   const currentProject = myProjects?.find(
+    //     project => project.id === chosenProject,
+    //   );
+    //   console.log(currentProject);
+    //   console.log(
+    //     currentProject?.id ===
+    //       chosen?.find(el => el.id === searchParams.get('projectIdToInvite')),
+    //   );
+    if (myProject) {
+      setChosen([myProject]);
     }
     return () => localStorage.removeItem('project');
-  }, [myProjects]);
+  }, [myProject]);
+
+  useEffect(() => {
+    setCurrentPage(+searchParams.get('page') || 1);
+  }, [searchParams.toString()]);
 
   const handleOpenView = () => {
-    localStorage.removeItem('project');
+    setChosen(JSON.parse(localStorage.getItem('project')));
     setIsOpenView(true);
   };
-
+  console.log(chosen);
+  const handleChangePage = (e, page) => {
+    setCurrentPage(page);
+    setQuery(prev => {
+      const { ...data } = prev || {};
+      return { ...data, page };
+    });
+  };
+  // TODO: сделать сохранение выбранного проекта при обновлении
+  const totalPages = calcTotalPages(totalProjects || 0);
+  console.log(chosen);
   return (
     <Layout>
       <CustomCard sx={wrapper}>
@@ -122,6 +189,16 @@ const MyProjects = () => {
         >
           Invite to project
         </Button>
+        <CustomPagination
+          show={totalProjects > 12}
+          count={totalPages}
+          sx={{ mt: '30px', display: 'flex', justifyContent: 'flex-end' }}
+          page={currentPage}
+          onChange={handleChangePage}
+          showFirstLast={!matchXs}
+          size={matchXs ? 'small' : 'medium'}
+          color={'primary'}
+        />
         {auditor && (
           <AuditorModal
             open={isOpenView}
@@ -136,7 +213,6 @@ const MyProjects = () => {
     </Layout>
   );
 };
-// };
 
 export default MyProjects;
 

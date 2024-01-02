@@ -39,7 +39,7 @@ const AuditorListCard = ({ auditor, projectIdToInvite, budge }) => {
     setErrorMessage(null);
     setMessage('Switched to customer role');
     const delayedFunc = setTimeout(() => {
-      if (userProjects.length) {
+      if (userProjects?.length) {
         navigate(`/my-projects/${auditor.user_id}`);
       } else {
         setMessage(null);
@@ -50,7 +50,7 @@ const AuditorListCard = ({ auditor, projectIdToInvite, budge }) => {
   };
 
   const handleInvite = () => {
-    if (user.current_role === CUSTOMER && isAuth() && myProjects.length) {
+    if (user.current_role === CUSTOMER && isAuth() && myProjects?.length) {
       if (projectIdToInvite) {
         return navigate(
           `/my-projects/${auditor.user_id}?projectIdToInvite=${projectIdToInvite}`,
@@ -77,7 +77,7 @@ const AuditorListCard = ({ auditor, projectIdToInvite, budge }) => {
     } else if (
       user.current_role === CUSTOMER &&
       isAuth() &&
-      !myProjects.length
+      !myProjects?.length
     ) {
       setErrorMessage('No active projects');
     } else {

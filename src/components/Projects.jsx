@@ -119,7 +119,7 @@ const Projects = ({ role }) => {
           onChange={handleChangePage}
           showFirstLast={!matchXs}
           size={matchXs ? 'small' : 'medium'}
-          color={'primary'}
+          color={role === CUSTOMER ? 'primary' : 'secondary'}
         />
       </Box>
     );

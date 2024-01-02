@@ -2,6 +2,7 @@ import {
   CLEAR_SUCCESS,
   CLOSE_THE_PROJECT,
   GET_CURRENT_PROJECT,
+  GET_MY_PROJECT,
   GET_MY_PROJECTS,
   GET_PROJECTS,
   NOT_FOUND,
@@ -187,6 +188,20 @@ export const getProjectById = id => {
       .then(({ data }) =>
         dispatch({ type: GET_CURRENT_PROJECT, payload: data }),
       )
+      .catch(({ response }) => {
+        if (response?.status === 403) dispatch({ type: NOT_FOUND });
+      });
+  };
+};
+
+export const getMyProject = id => {
+  const token = Cookies.get('token');
+  return dispatch => {
+    axios
+      .get(`${API_URL}/project/${id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .then(({ data }) => dispatch({ type: GET_MY_PROJECT, payload: data }))
       .catch(({ response }) => {
         if (response?.status === 403) dispatch({ type: NOT_FOUND });
       });

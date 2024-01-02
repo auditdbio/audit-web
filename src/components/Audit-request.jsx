@@ -1,25 +1,51 @@
-import React, { useEffect } from 'react';
-import { Box, Button, Grid } from '@mui/material';
+import React, { useEffect, useState } from 'react';
+import { Box, Button, Grid, useMediaQuery } from '@mui/material';
 import AuditRequestCard from './Audit-request-card';
 import { useDispatch, useSelector } from 'react-redux';
-import { addTestsLabel } from '../lib/helper.js';
+import { addTestsLabel, calcTotalPages } from '../lib/helper.js';
 import { CUSTOMER } from '../redux/actions/types.js';
 import { useNavigate } from 'react-router-dom/dist';
 import { getAuditsRequest } from '../redux/actions/auditAction.js';
+import CustomPagination from './custom/CustomPagination.jsx';
+import { useSearchParams } from 'react-router-dom';
+import theme from '../styles/themes.js';
 
 const AuditRequest = () => {
   const auditRequests = useSelector(s => s.audits.auditRequests);
+  const { totalAuditRequests } = useSelector(s => s.audits);
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
   const currentRole = useSelector(s => s.user.user.current_role);
   const dispatch = useDispatch();
-
-  useEffect(() => {
-    dispatch(getAuditsRequest(currentRole));
-  }, []);
+  const [query, setQuery] = useState(undefined);
+  const matchXs = useMediaQuery(theme.breakpoints.down('xs'));
+  const [currentRequestPage, setCurrentRequestPage] = useState(
+    +searchParams.get('page') || 1,
+  );
 
   const handleNavigate = () => {
     navigate('/projects');
   };
+
+  useEffect(() => {
+    dispatch(getAuditsRequest(currentRole, +searchParams.get('page')));
+  }, [searchParams.get('page')]);
+
+  useEffect(() => {
+    if (query) {
+      setSearchParams({ ...query });
+    }
+  }, [query]);
+
+  const handleChangeRequestPage = (e, page) => {
+    setCurrentRequestPage(page);
+    setQuery(prev => {
+      const { ...data } = prev || {};
+      return { ...data, page };
+    });
+  };
+
+  const totalAuditRequestPages = calcTotalPages(totalAuditRequests || 0);
 
   return (
     <Box sx={wrapper}>
@@ -41,6 +67,16 @@ const AuditRequest = () => {
           </Grid>
         ))}
       </Grid>
+      <CustomPagination
+        show={totalAuditRequests > 12}
+        count={totalAuditRequestPages}
+        sx={{ mt: '30px', display: 'flex', justifyContent: 'flex-end' }}
+        page={currentRequestPage}
+        onChange={handleChangeRequestPage}
+        showFirstLast={!matchXs}
+        size={matchXs ? 'small' : 'medium'}
+        color={'secondary'}
+      />
     </Box>
   );
 };

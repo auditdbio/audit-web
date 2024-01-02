@@ -36,7 +36,7 @@ const Audits = () => {
   }, [searchParams.get('pageAudit')]);
 
   useEffect(() => {
-    dispatch(getAuditsRequest(currentRole, searchParams.get('pageRequest'), 1));
+    dispatch(getAuditsRequest(currentRole, searchParams.get('pageRequest')));
   }, [searchParams.get('pageRequest')]);
 
   useEffect(() => {
