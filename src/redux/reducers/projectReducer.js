@@ -11,6 +11,7 @@ import {
   GET_CURRENT_PROJECT,
   GET_MY_PROJECT,
   CLEAR_MY_PROJECT,
+  GET_MY_PROJECTS_AMOUNT,
 } from '../actions/types.js';
 
 const initialState = {
@@ -39,6 +40,11 @@ export const projectReducer = (state = initialState, action) => {
         ...state,
         projects: action.payload.result,
         searchTotalProjects: action.payload.totalDocuments,
+      };
+    case GET_MY_PROJECTS_AMOUNT:
+      return {
+        ...state,
+        totalProjects: action.payload.totalDocuments,
       };
     case GET_CURRENT_PROJECT:
       return {

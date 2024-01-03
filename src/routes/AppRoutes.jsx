@@ -18,7 +18,7 @@ import { getCustomer } from '../redux/actions/customerAction.js';
 import Projects from '../components/Projects.jsx';
 import ProjectPage from '../pages/Project-page.jsx';
 import AuditRequestPage from '../pages/Audit-Request-Page.jsx';
-import { getProjects } from '../redux/actions/projectAction.js';
+import { getProjectsAmount } from '../redux/actions/projectAction.js';
 import { getAudits, getAuditsRequest } from '../redux/actions/auditAction.js';
 import EditProject from '../pages/EditProject.jsx';
 import ForCustomer from '../pages/For-customer.jsx';
@@ -105,6 +105,10 @@ const AppRoutes = () => {
     setIsOpen(false);
     window.location.reload();
   };
+
+  useEffect(() => {
+    dispatch(getProjectsAmount());
+  }, []);
 
   return (
     <>

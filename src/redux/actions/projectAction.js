@@ -4,6 +4,7 @@ import {
   GET_CURRENT_PROJECT,
   GET_MY_PROJECT,
   GET_MY_PROJECTS,
+  GET_MY_PROJECTS_AMOUNT,
   GET_PROJECTS,
   NOT_FOUND,
   PROJECT_CREATE,
@@ -88,7 +89,6 @@ export const editProjectNoRedirect = values => {
         },
       })
       .then(({ data }) => {
-        localStorage.setItem('project', JSON.stringify(data));
         dispatch({ type: PROJECT_UPDATE, payload: data });
       })
       .catch(({ response }) => {
@@ -174,6 +174,22 @@ export const getProjects = page => {
       })
       .then(({ data }) => {
         dispatch({ type: GET_MY_PROJECTS, payload: data });
+      })
+      .catch(({ response }) => {
+        console.log(response, 'res');
+      });
+  };
+};
+
+export const getProjectsAmount = page => {
+  const token = Cookies.get('token');
+  return dispatch => {
+    axios
+      .get(`${API_URL}/my_project?page=1&per_page=1`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .then(({ data }) => {
+        dispatch({ type: GET_MY_PROJECTS_AMOUNT, payload: data });
       })
       .catch(({ response }) => {
         console.log(response, 'res');

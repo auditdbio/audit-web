@@ -22,7 +22,7 @@ const AuditorListCard = ({ auditor, projectIdToInvite, budge }) => {
   const customerReducer = useSelector(state => state.customer.customer);
   const [message, setMessage] = useState('');
   const [isForm, setIsForm] = useState(false);
-  const myProjects = useSelector(state => state.project.myProjects);
+  const { myProjects, totalProjects } = useSelector(state => state.project);
   const dispatch = useDispatch();
   const userProjects = useSelector(s => s.project.myProjects);
   const [errorMessage, setErrorMessage] = useState(null);
@@ -50,7 +50,7 @@ const AuditorListCard = ({ auditor, projectIdToInvite, budge }) => {
   };
 
   const handleInvite = () => {
-    if (user.current_role === CUSTOMER && isAuth() && myProjects?.length) {
+    if (user.current_role === CUSTOMER && isAuth() && !!totalProjects) {
       if (projectIdToInvite) {
         return navigate(
           `/my-projects/${auditor.user_id}?projectIdToInvite=${projectIdToInvite}`,

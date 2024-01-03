@@ -31,7 +31,7 @@ const PublicProfile = () => {
   const [errorMessage, setErrorMessage] = useState(null);
   const [message, setMessage] = useState(null);
   const customerReducer = useSelector(state => state.customer.customer);
-  const myProjects = useSelector(state => state.project.myProjects);
+  const { totalProjects } = useSelector(state => state.project);
   const user = useSelector(state => state.user.user);
 
   const handleError = () => {
@@ -49,7 +49,7 @@ const PublicProfile = () => {
   };
 
   const handleInvite = () => {
-    if (user.current_role === CUSTOMER && isAuth() && myProjects.length) {
+    if (user.current_role === CUSTOMER && isAuth() && !!totalProjects) {
       navigate(`/my-projects/${auditor.user_id}`);
     } else if (
       user.current_role !== CUSTOMER &&
@@ -67,11 +67,7 @@ const PublicProfile = () => {
         changeRolePublicCustomerNoRedirect(CUSTOMER, user.id, customerReducer),
       );
       handleError();
-    } else if (
-      user.current_role === CUSTOMER &&
-      isAuth() &&
-      !myProjects.length
-    ) {
+    } else if (user.current_role === CUSTOMER && isAuth() && !totalProjects) {
       setErrorMessage('No active projects');
     } else {
       navigate('/sign-in');

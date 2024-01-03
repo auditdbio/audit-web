@@ -43,11 +43,11 @@ export default function AuditorModal({
   const user = useSelector(s => s.user.user);
   const [mode, setMode] = useState('info');
   const [message, setMessage] = useState('');
-  const myProjects = useSelector(state => state.project.myProjects);
+  const { totalProjects } = useSelector(state => state.project);
   const dispatch = useDispatch();
 
   const handleInvite = () => {
-    if (user.current_role === CUSTOMER && isAuth() && myProjects.length) {
+    if (user.current_role === CUSTOMER && isAuth() && !!totalProjects) {
       return navigate(`/my-projects/${auditor.user_id}`);
     } else if (
       user.current_role !== CUSTOMER &&
@@ -67,11 +67,7 @@ export default function AuditorModal({
         changeRolePublicCustomerNoRedirect(CUSTOMER, user.id, customerReducer),
       );
       handleError();
-    } else if (
-      user.current_role === CUSTOMER &&
-      isAuth() &&
-      !myProjects.length
-    ) {
+    } else if (user.current_role === CUSTOMER && isAuth() && !totalProjects) {
       setMessage('No active projects');
     } else {
       navigate('/sign-in');

@@ -7,21 +7,36 @@ import { AUDITOR, DONE, SUBMITED } from '../redux/actions/types.js';
 import { useNavigate } from 'react-router-dom/dist';
 import { addTestsLabel } from '../lib/helper.js';
 
-const MyProjectListCard = ({ type, project, setState, state, isChecked }) => {
+const MyProjectListCard = ({
+  defaultProject,
+  project,
+  setState,
+  state,
+  isChecked,
+}) => {
   const navigate = useNavigate();
   const [isDone, setIsDone] = useState(false);
 
-  const handleClick = e => {
-    setIsDone(e.target.checked);
-  };
+  useEffect(() => {
+    if (project.id === defaultProject?.id) {
+      setIsDone(true);
+    }
+  }, [defaultProject]);
 
   useEffect(() => {
-    if (isDone) {
+    if (defaultProject && !state.find(el => el.id === defaultProject.id)) {
+      setState([...state, defaultProject]);
+    }
+  }, [defaultProject]);
+
+  const handleClick = e => {
+    setIsDone(e.target.checked);
+    if (e.target.checked) {
       setState([...state, project]);
     } else {
       setState(state.filter(el => el?.id !== project.id));
     }
-  }, [isDone]);
+  };
 
   return (
     <Box sx={cardWrapper}>
@@ -73,7 +88,7 @@ const MyProjectListCard = ({ type, project, setState, state, isChecked }) => {
       >
         <Checkbox
           color={'success'}
-          checked={!!isChecked}
+          checked={isDone}
           onChange={handleClick}
           sx={checkBoxSx}
           inputProps={{ ...addTestsLabel('check-project-button') }}

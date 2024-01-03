@@ -39,7 +39,7 @@ const MyProjects = () => {
     +searchParams.get('page') || 1,
   );
   const [errorMessage, setErrorMessage] = useState(null);
-  //
+
   useEffect(() => {
     dispatch(getCurrentAuditor(params.id));
 
@@ -47,7 +47,7 @@ const MyProjects = () => {
       dispatch({ type: CLEAR_AUDITOR });
     };
   }, [params.id]);
-  //
+
   useEffect(() => {
     if (searchParams.get('projectIdToInvite')) {
       dispatch(getMyProject(searchParams.get('projectIdToInvite')));
@@ -66,24 +66,10 @@ const MyProjects = () => {
   useEffect(() => {
     dispatch(getProjects(searchParams.get('page')));
   }, [searchParams.get('page')]);
-  //
+
   const handleCloseView = () => {
     setIsOpenView(false);
   };
-
-  useEffect(() => {
-    const projects = JSON.parse(localStorage.getItem('project')) || [];
-    console.log(projects);
-    if (chosen.length > 0) {
-      localStorage.setItem(
-        'project',
-        JSON.stringify(
-          chosen,
-          projects?.filter(project => project?.id),
-        ),
-      );
-    }
-  }, [chosen]);
 
   const handleInviteAuditor = values => {
     if (chosen.length > 0) {
@@ -102,31 +88,12 @@ const MyProjects = () => {
   };
 
   useEffect(() => {
-    // const chosenProject = searchParams.get('projectIdToInvite');
-    // if (chosenProject && chosenProject !== 'null') {
-    //   const currentProject = myProjects?.find(
-    //     project => project.id === chosenProject,
-    //   );
-    //   console.log(currentProject);
-    //   console.log(
-    //     currentProject?.id ===
-    //       chosen?.find(el => el.id === searchParams.get('projectIdToInvite')),
-    //   );
-    if (myProject) {
-      setChosen([myProject]);
-    }
-    return () => localStorage.removeItem('project');
-  }, [myProject]);
-
-  useEffect(() => {
     setCurrentPage(+searchParams.get('page') || 1);
   }, [searchParams.toString()]);
 
   const handleOpenView = () => {
-    setChosen(JSON.parse(localStorage.getItem('project')));
     setIsOpenView(true);
   };
-  console.log(chosen);
   const handleChangePage = (e, page) => {
     setCurrentPage(page);
     setQuery(prev => {
@@ -134,9 +101,8 @@ const MyProjects = () => {
       return { ...data, page };
     });
   };
-  // TODO: сделать сохранение выбранного проекта при обновлении
+
   const totalPages = calcTotalPages(totalProjects || 0);
-  console.log(chosen);
   return (
     <Layout>
       <CustomCard sx={wrapper}>
@@ -172,6 +138,7 @@ const MyProjects = () => {
           {myProjects?.map(project => (
             <Grid key={project.id} item sx={gridItemStyle}>
               <MyProjectListCard
+                defaultProject={myProject}
                 setState={setChosen}
                 state={chosen}
                 project={project}
@@ -180,25 +147,34 @@ const MyProjects = () => {
             </Grid>
           ))}
         </Grid>
-        <Button
-          variant={'contained'}
-          sx={submitBtn}
-          onClick={handleOpenView}
-          disabled={chosen.length === 0 || !auditor}
-          {...addTestsLabel('invite-button')}
+        <Box
+          sx={{
+            width: '100%',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+          }}
         >
-          Invite to project
-        </Button>
-        <CustomPagination
-          show={totalProjects > 12}
-          count={totalPages}
-          sx={{ mt: '30px', display: 'flex', justifyContent: 'flex-end' }}
-          page={currentPage}
-          onChange={handleChangePage}
-          showFirstLast={!matchXs}
-          size={matchXs ? 'small' : 'medium'}
-          color={'primary'}
-        />
+          <Button
+            variant={'contained'}
+            sx={submitBtn}
+            onClick={handleOpenView}
+            disabled={chosen.length === 0 || !auditor}
+            {...addTestsLabel('invite-button')}
+          >
+            Invite to project
+          </Button>
+          <CustomPagination
+            show={totalProjects > 12}
+            count={totalPages}
+            sx={{ mt: '30px', display: 'flex', justifyContent: 'flex-end' }}
+            page={currentPage}
+            onChange={handleChangePage}
+            showFirstLast={!matchXs}
+            size={matchXs ? 'small' : 'medium'}
+            color={'primary'}
+          />
+        </Box>
         {auditor && (
           <AuditorModal
             open={isOpenView}
@@ -246,7 +222,6 @@ const wrapper = theme => ({
 
 const submitBtn = theme => ({
   textTransform: 'none',
-  margin: 'auto 0 0',
   width: '406px',
   padding: '22px 0',
   fontWeight: 600,

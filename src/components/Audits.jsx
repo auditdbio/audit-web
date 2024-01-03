@@ -17,7 +17,11 @@ const Audits = () => {
   const currentRole = useSelector(s => s.user.user.current_role);
   const dispatch = useDispatch();
   const [searchParams, setSearchParams] = useSearchParams();
-  const [query, setQuery] = useState(undefined);
+  const [query, setQuery] = useState({
+    type: searchParams.get('type') || 'audits',
+    pageAudit: searchParams.get('pageAudit') || 1,
+    pageRequest: searchParams.get('pageRequest') || 1,
+  });
   const matchXs = useMediaQuery(theme.breakpoints.down('xs'));
 
   const [currentAuditPage, setCurrentAuditPage] = useState(
