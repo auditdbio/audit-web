@@ -16,6 +16,7 @@ import GitcoinIcon from '../icons/GitcoinIcon.jsx';
 import LinkedinIcon from '../icons/LinkedinIcon.jsx';
 import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
+import XTwitterLogo from '../icons/XTwitter-logo.jsx';
 
 const IdentitySetting = () => {
   const [open, setOpen] = useState(false);
@@ -116,20 +117,39 @@ const IdentitySetting = () => {
                   />
                   <Typography>Medium</Typography>
                 </Box>
-                {/*<Checkbox*/}
-                {/*  icon={<VisibilityOffIcon />}*/}
-                {/*  checkedIcon={<RemoveRedEyeIcon />}*/}
-                {/*/>*/}
               </Box>
-              {/*<Box sx={{ display: 'flex' }}>*/}
-              {/*  <Box*/}
-              {/*    sx={{ display: 'flex', alignItems: 'center', gap: '7px' }}*/}
-              {/*  >*/}
-              {/*    <GitcoinIcon />*/}
-              {/*    Gitcoin*/}
-              {/*  </Box>*/}
-              {/*  <Checkbox defaultChecked />*/}
-              {/*</Box>*/}
+              <Box sx={[cardSx]}>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '7px',
+                    width: '100%',
+                    '& svg': {
+                      padding: '4px',
+                    },
+                  }}
+                >
+                  <XTwitterLogo width={'50px'} height={'50px'} space />
+                  <Typography>Twitter</Typography>
+                </Box>
+              </Box>
+              <Box sx={cardSx}>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '7px',
+                    width: '100%',
+                    '& svg': {
+                      padding: '4px',
+                    },
+                  }}
+                >
+                  <GitcoinIcon />
+                  <Typography>Gitcoin</Typography>
+                </Box>
+              </Box>
               <Box>
                 <Button
                   sx={[
@@ -197,7 +217,7 @@ const modalSx = theme => ({
   pb: '24px',
   [theme.breakpoints.down('xs')]: {
     width: '80%',
-    height: '425px',
+    height: '578px',
     overflow: 'auto',
     padding: '10px 15px',
   },

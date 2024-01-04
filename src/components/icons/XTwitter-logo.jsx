@@ -1,11 +1,11 @@
 import React from 'react';
 
-const XTwitterLogo = () => {
+const XTwitterLogo = ({ width = '18', height = '20px' }) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      width="18"
-      // height="20"
+      width={width}
+      height={height}
       viewBox="0 0 1200 1227"
       fill="rgb(82, 23, 109)"
     >
