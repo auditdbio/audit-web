@@ -11,7 +11,7 @@ const linkShortener = (link, shortLinkLength) => {
     return (
       shortLink
         .slice(0, shortLinkLength - 1)
-        .replace(/(?<=[\/\-_.])[^\/\-_.]*$/, '') +
+        .replace(/([\/\-_.])[\/\-_.]*$/, '') +
       '…' +
       shortLink.slice(-shortLinkLength)
     );
@@ -38,24 +38,24 @@ const CustomLink = ({ link, showIcon = true, sx = {} }) => {
 
   return (
     <Box sx={{ display: 'flex', width: '100%' }}>
-      <Tooltip title={link} arrow placement="top">
-        <Typography noWrap={true} sx={linkBoxSx}>
-          {showIcon &&
-            (/^https?:\/\/(www\.)?github\.com/.test(link) ? (
-              <GitHubIcon sx={{ mr: '8px' }} />
-            ) : (
-              <LinkIcon sx={{ mr: '8px' }} />
-            ))}
-          <Link
-            href={/^https?:\/\//.test(link) ? link : `https://${link}`}
-            target="_blank"
-            sx={[linkSx, sx]}
-            ref={linkBoxRef}
-          >
+      <Typography noWrap={true} sx={linkBoxSx}>
+        {showIcon &&
+          (/^https?:\/\/(www\.)?github\.com/.test(link) ? (
+            <GitHubIcon sx={{ mr: '8px' }} />
+          ) : (
+            <LinkIcon sx={{ mr: '8px' }} />
+          ))}
+        <Link
+          href={/^https?:\/\//.test(link) ? link : `https://${link}`}
+          target="_blank"
+          sx={[linkSx, sx]}
+          ref={linkBoxRef}
+        >
+          <Tooltip sx={{ width: 'unset' }} title={link} arrow placement="top">
             <span>{linkShortener(link, shortLinkLength)}</span>
-          </Link>
-        </Typography>
-      </Tooltip>
+          </Tooltip>
+        </Link>
+      </Typography>
     </Box>
   );
 };

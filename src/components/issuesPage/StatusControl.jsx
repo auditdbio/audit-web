@@ -72,7 +72,7 @@ const StatusControl = ({ status, setFieldValue }) => {
             key={action.action}
             variant="contained"
             type="submit"
-            color={user.current_role === AUDITOR ? 'secondary' : 'primary'}
+            color={user.current_role !== CUSTOMER ? 'secondary' : 'primary'}
             sx={{ textTransform: 'none', mb: '10px' }}
             onClick={() => handleChangeStatus(action.action)}
             {...addTestsLabel('change-status-button')}

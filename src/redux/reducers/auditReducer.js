@@ -20,6 +20,9 @@ import {
   GET_NEW_AUDIT,
   REQUEST_DECLINE,
   DOWNLOAD_REPORT_START,
+  CREATE_PUBLIC_REPORT,
+  GET_PUBLIC_REPORT,
+  RESET_PUBLIC_AUDIT,
 } from '../actions/types.js';
 
 const initialState = {
@@ -30,6 +33,7 @@ const initialState = {
   error: null,
   successMessage: null,
   currentAuditPartner: null,
+  publicReport: {},
 };
 export const auditReducer = (state = initialState, action) => {
   switch (action.type) {
@@ -65,7 +69,11 @@ export const auditReducer = (state = initialState, action) => {
           audit.id === action.payload.id ? action.payload : audit,
         ),
       };
-    //
+    case RESET_PUBLIC_AUDIT:
+      return {
+        ...state,
+        publicReport: {},
+      };
     case GET_NEW_AUDIT:
       return {
         ...state,
@@ -106,6 +114,16 @@ export const auditReducer = (state = initialState, action) => {
       return {
         ...state,
         audit: null,
+      };
+    case CREATE_PUBLIC_REPORT:
+      return {
+        ...state,
+        publicReport: action.payload,
+      };
+    case GET_PUBLIC_REPORT:
+      return {
+        ...state,
+        publicReport: action.payload,
       };
     case CONFIRM_AUDIT:
       return {

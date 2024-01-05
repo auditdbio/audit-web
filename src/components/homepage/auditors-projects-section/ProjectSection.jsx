@@ -17,6 +17,7 @@ import { useNavigate } from 'react-router-dom/dist';
 import { clearMessage } from '../../../redux/actions/auditAction.js';
 import { gridItemStylePublic } from './AuditorSection.jsx';
 import { addTestsLabel } from '../../../lib/helper.js';
+import { Link } from 'react-router-dom';
 
 const ProjectSection = () => {
   const dispatch = useDispatch();
@@ -54,8 +55,10 @@ const ProjectSection = () => {
       }}
     >
       <Box sx={headerWrapper}>
-        <Typography variant="h1" sx={{ fontWeight: 500 }}>
-          Projects
+        <Typography variant="h1" sx={titleSx}>
+          <Link style={{ color: '#fff' }} to={'/projects'}>
+            Projects
+          </Link>
         </Typography>
         <Box sx={searchWrapper}>
           <InputBase
@@ -135,6 +138,30 @@ const ProjectSection = () => {
     </Box>
   );
 };
+
+const titleSx = theme => ({
+  fontWeight: 500,
+  position: 'relative',
+  '&:hover::after': {
+    opacity: 1,
+    transform: 'scaleX(1)',
+  },
+  '&::after': {
+    content: '" "',
+    position: 'absolute',
+    left: 0,
+    bottom: '-2px',
+    width: '100%',
+    height: '2px',
+    opacity: 0,
+    transition: 'opacity 0.3s ease, transform 0.3s ease',
+    transform: 'scaleX(0)',
+    backgroundColor: '#fff',
+  },
+  [theme.breakpoints.down('xs')]: {
+    fontSize: '28px',
+  },
+});
 
 const headerWrapper = {
   display: 'flex',
