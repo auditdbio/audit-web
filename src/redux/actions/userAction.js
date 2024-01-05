@@ -24,6 +24,39 @@ import {
 
 const API_URL = import.meta.env.VITE_API_BASE_URL;
 
+export const signUpGithub = (code, role) => {
+  return dispatch => {
+    axios
+      .post(`${API_URL}/auth/github`, { code, current_role: role })
+      .then(({ data }) => {
+        console.log(data, 'data');
+        Cookies.set('token', data.token, { expires: 1 });
+        localStorage.setItem('token', JSON.stringify(data.token));
+        localStorage.setItem('user', JSON.stringify(data.user));
+        dispatch({ type: USER_SIGNIN, payload: data });
+        if (data.user?.is_new) {
+          history.push({ pathname: `/edit-profile` }, { some: true });
+        } else {
+          history.push({ pathname: `/profile/user-info` }, { some: true });
+        }
+        // axios.patch(
+        //   `${API_URL}/user/${data.user?.id}`,
+        //   { is_new: false },
+        //   { headers: { Authorization: `Bearer ${data.token}` } },
+        // );
+        //
+        // if (data.user?.is_new) {
+        //   history.push({ pathname: `/edit-profile` }, { some: true });
+        // } else {
+        //   history.push({ pathname: `/profile/user-info` }, { some: true });
+        // }
+      })
+      .catch(({ response }) => {
+        dispatch({ type: SIGN_IN_ERROR, payload: response.data });
+      });
+  };
+};
+
 export const signIn = values => {
   return dispatch => {
     axios

@@ -16,6 +16,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { clearUserError, signUp } from '../../../redux/actions/userAction.js';
 import CustomSnackbar from '../../custom/CustomSnackbar.jsx';
 import { addTestsLabel, isAuth } from '../../../lib/helper.js';
+import GitHubIcon from '@mui/icons-material/GitHub';
+
+const GITHUB_ID = import.meta.env.VITE_GITHUB_CLIENT_ID;
+const BASE_URL = import.meta.env.VITE_BASE_URL;
 
 const SignupForm = () => {
   const [isAuditor, setIsAuditor] = useState('auditor');
@@ -28,6 +32,13 @@ const SignupForm = () => {
     email: '',
     password: '',
     confirmPassword: '',
+  };
+
+  const handleAuthGithub = () => {
+    window.open(
+      `https://github.com/login/oauth/authorize?client_id=${GITHUB_ID}&redirect_uri=${BASE_URL}github/${isAuditor}&scope=read:user,user:email`,
+      '_self',
+    );
   };
 
   return (
@@ -112,15 +123,34 @@ const SignupForm = () => {
                 />
               </Box>
             </Box>
-            <Button
-              type="submit"
-              sx={submitButton}
-              variant={'contained'}
-              disabled={isAuth()}
-              {...addTestsLabel('sign-up-button')}
+            <Box
+              sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '25px',
+                width: '100%',
+                alignItems: 'center',
+              }}
             >
-              Sign up
-            </Button>
+              <Button
+                type="submit"
+                sx={submitButton}
+                color={'secondary'}
+                variant={'contained'}
+                disabled={isAuth()}
+                {...addTestsLabel('sign-up-button')}
+              >
+                Sign up
+              </Button>
+              <Button
+                sx={[submitButton, { paddingX: '0' }]}
+                variant={'contained'}
+                onClick={handleAuthGithub}
+              >
+                <GitHubIcon sx={{ marginRight: '15px' }} />
+                Sign up with Github
+              </Button>
+            </Box>
           </Box>
         </Form>
       )}
@@ -154,22 +184,18 @@ const titleStyle = theme => ({
 });
 
 const submitButton = theme => ({
-  backgroundColor: theme.palette.secondary.main,
-  padding: '15px 140px',
+  padding: '11px 0',
   color: '#FCFAF6',
-  fontSize: '25px',
   fontWeight: 600,
   borderRadius: radiusOfComponents,
-  maxWidth: '402px',
-  margin: '0 auto',
-  [theme.breakpoints.down('md')]: {
-    fontSize: '20px',
-    lineHeight: '23px',
-  },
+  maxWidth: '262px',
+  fontSize: '16px',
+  paddingY: '11px',
+  width: '100%',
   [theme.breakpoints.down('sm')]: {
-    fontSize: '15px',
-    width: '230px',
-    padding: '12px 60px',
+    width: '225px',
+    padding: '8px 0',
+    fontSize: '14px',
   },
 });
 
