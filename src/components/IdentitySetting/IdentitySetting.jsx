@@ -21,6 +21,20 @@ import XTwitterLogo from '../icons/XTwitter-logo.jsx';
 const IdentitySetting = () => {
   const [open, setOpen] = useState(false);
 
+  const handleConnectGithub = () => {
+    window.open(
+      `https://github.com/login/oauth/authorize?client_id=${GITHUB_ID}&redirect_uri=${BASE_URL}github/auditor&scope=read:user,user:email`,
+      '_self',
+    );
+  };
+
+  const handleConnectLinkedin = () => {
+    window.open(
+      `https://github.com/login/oauth/authorize?client_id=${GITHUB_ID}&redirect_uri=${BASE_URL}github/auditor&scope=read:user,user:email`,
+      '_self',
+    );
+  };
+
   const handleClose = () => {
     setOpen(false);
   };
@@ -42,7 +56,10 @@ const IdentitySetting = () => {
                 height: '100%',
               }}
             >
-              <Box sx={[cardSx, { border: '1px solid green' }]}>
+              <Box
+                sx={[cardSx, { border: '1px solid green' }]}
+                onClick={handleConnectGithub}
+              >
                 <Box
                   sx={{
                     display: 'flex',
@@ -64,7 +81,10 @@ const IdentitySetting = () => {
                   />
                 </Tooltip>
               </Box>
-              <Box sx={[cardSx, { border: '1px solid green' }]}>
+              <Box
+                sx={[cardSx, { border: '1px solid green' }]}
+                onClick={handleConnectLinkedin}
+              >
                 <Box
                   sx={{
                     display: 'flex',
