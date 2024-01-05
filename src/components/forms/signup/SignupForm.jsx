@@ -17,6 +17,7 @@ import { clearUserError, signUp } from '../../../redux/actions/userAction.js';
 import CustomSnackbar from '../../custom/CustomSnackbar.jsx';
 import { addTestsLabel, isAuth } from '../../../lib/helper.js';
 import GitHubIcon from '@mui/icons-material/GitHub';
+import RoleModal from '../../modal/RoleModal.jsx';
 
 const GITHUB_ID = import.meta.env.VITE_GITHUB_CLIENT_ID;
 const BASE_URL = import.meta.env.VITE_BASE_URL;
@@ -26,6 +27,7 @@ const SignupForm = () => {
   const dispatch = useDispatch();
   const matchMd = useMediaQuery(theme.breakpoints.down('md'));
   const error = useSelector(s => s.user.error);
+  const [open, setOpen] = useState(false);
   const initialValues = {
     current_role: '',
     name: '',
@@ -145,12 +147,20 @@ const SignupForm = () => {
               <Button
                 sx={[submitButton, { paddingX: '0' }]}
                 variant={'contained'}
-                onClick={handleAuthGithub}
+                onClick={() => setOpen(true)}
               >
                 <GitHubIcon sx={{ marginRight: '15px' }} />
                 Sign up with Github
               </Button>
             </Box>
+            {open && (
+              <RoleModal
+                onClose={() => setOpen(false)}
+                onClick={handleAuthGithub}
+                isAuditor={isAuditor}
+                setIsAuditor={setIsAuditor}
+              />
+            )}
           </Box>
         </Form>
       )}
