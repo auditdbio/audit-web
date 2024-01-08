@@ -501,7 +501,6 @@ const backButton = {
     md: '150px',
     lg: '230px',
   },
-  // padding: "12px 63px",
   height: '45px',
   textTransform: 'none',
   ':hover': {
@@ -552,7 +551,6 @@ const searchField = {
     padding: '0px',
     height: '45px',
     borderRadius: '4px',
-    // border: "1px solid #434242",
     paddingLeft: '8px',
     fontSize: '14px !important',
     width: '465px',

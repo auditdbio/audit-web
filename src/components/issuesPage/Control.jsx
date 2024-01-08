@@ -15,7 +15,12 @@ import {
 import MenuIcon from '@mui/icons-material/Menu';
 import IconButton from '@mui/material/IconButton';
 import { addTestsLabel, isAuth, reportBuilder } from '../../lib/helper.js';
-import { AUDITOR, CUSTOMER, RESOLVED } from '../../redux/actions/types.js';
+import {
+  AUDITOR,
+  CHANGE_ROLE_DONT_HAVE_PROFILE_AUDITOR,
+  CUSTOMER,
+  RESOLVED,
+} from '../../redux/actions/types.js';
 import ResolveAuditConfirmation from './ResolveAuditConfirmation.jsx';
 import { discloseAllIssues } from '../../redux/actions/issueAction.js';
 import { DRAFT, FIXED, NOT_FIXED } from './constants.js';
@@ -111,7 +116,15 @@ const Control = ({
             isPublic: true,
             issues: [...issuesArray],
           };
-          await dispatch(savePublicReport(data));
+          if (auditor?.user_id) {
+            await dispatch(savePublicReport(data));
+          } else {
+            dispatch({
+              type: CHANGE_ROLE_DONT_HAVE_PROFILE_AUDITOR,
+              payload: user,
+            });
+            navigate('/profile/user-info');
+          }
         }
       } else {
         navigate('/sign-in');
