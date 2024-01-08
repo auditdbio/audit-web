@@ -123,6 +123,7 @@ const EditProfileForm = ({ role }) => {
         validateOnBlur={false}
         validateOnChange={false}
         onSubmit={values => {
+          setIsDirty(false);
           if (role !== AUDITOR) {
             if (!data.first_name && !data.last_name) {
               dispatch(createCustomer(values));
@@ -145,7 +146,7 @@ const EditProfileForm = ({ role }) => {
           return (
             <Form onSubmit={handleSubmit}>
               <Box sx={wrapper}>
-                <Button sx={backBtnSx} onClick={() => handleGoBack(dirty)}>
+                <Button sx={backBtnSx} onClick={() => handleGoBack(isDirty)}>
                   <ArrowBackIcon
                     color={role !== AUDITOR ? 'primary' : 'secondary'}
                   />

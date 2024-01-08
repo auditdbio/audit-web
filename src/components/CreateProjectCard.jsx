@@ -168,6 +168,7 @@ const CreateProjectCard = ({ projectInfo }) => {
       validationSchema={validationSchema}
       onSubmit={values => {
         const newValue = { ...values, price: parseInt(values.price) };
+        setIsDirty(false);
         if (editMode && projectInfo.id) {
           if (!state) {
             dispatch(
@@ -207,7 +208,7 @@ const CreateProjectCard = ({ projectInfo }) => {
           <Box sx={mainBox}>
             <Button
               sx={backButtonSx}
-              onClick={() => handleGoBack(dirty)}
+              onClick={() => handleGoBack(isDirty)}
               aria-label="Ga back"
               {...addTestsLabel('go-back-button')}
             >
