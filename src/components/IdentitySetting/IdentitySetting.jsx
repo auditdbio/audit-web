@@ -127,24 +127,6 @@ const IdentitySetting = () => {
                     alignItems: 'center',
                     gap: '7px',
                     width: '100%',
-                  }}
-                >
-                  <MediumLogo
-                    width={'50px'}
-                    height={'50px'}
-                    color={'#000'}
-                    space
-                  />
-                  <Typography>Medium</Typography>
-                </Box>
-              </Box>
-              <Box sx={[cardSx]}>
-                <Box
-                  sx={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '7px',
-                    width: '100%',
                     '& svg': {
                       padding: '4px',
                     },
@@ -237,7 +219,7 @@ const modalSx = theme => ({
   pb: '24px',
   [theme.breakpoints.down('xs')]: {
     width: '80%',
-    height: '578px',
+    height: '497px',
     overflow: 'auto',
     padding: '10px 15px',
   },

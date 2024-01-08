@@ -22,8 +22,6 @@ const ConnectAccount = () => {
       dispatch(signUpGithub(searchParam.get('code'), role));
     } else if (servicename === 'facebook') {
       // TODO: connect facebook
-    } else if (servicename === 'medium') {
-      // TODO: connect medium
     } else if (servicename === 'twitter') {
       // TODO: connect twitter
     } else if (servicename === 'gitcoin') {
