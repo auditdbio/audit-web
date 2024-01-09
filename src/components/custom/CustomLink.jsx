@@ -4,7 +4,7 @@ import GitHubIcon from '@mui/icons-material/GitHub.js';
 import LinkIcon from '@mui/icons-material/Link';
 import theme from '../../styles/themes.js';
 
-const linkShortener = (link, shortLinkLength) => {
+export const linkShortener = (link, shortLinkLength) => {
   const regex = /(^https?:\/\/(www\.)?(github\.com\/)?)|(\?.*$)/g;
   const shortLink = link.replace(regex, '');
   if (shortLinkLength) {

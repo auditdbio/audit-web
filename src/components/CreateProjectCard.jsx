@@ -1,5 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Button, Typography, useMediaQuery } from '@mui/material';
+import {
+  Box,
+  Button,
+  FormControl,
+  InputLabel,
+  Typography,
+  Select,
+  useMediaQuery,
+} from '@mui/material';
 import theme, { radiusOfComponents } from '../styles/themes.js';
 import { useNavigate } from 'react-router-dom/dist';
 import TagsArray from './tagsArray/index.jsx';
@@ -31,6 +39,9 @@ import CloseProjectModal from './CloseProjectModal.jsx';
 import { DONE } from '../redux/actions/types.js';
 import CustomSnackbar from './custom/CustomSnackbar.jsx';
 import { addTestsLabel } from '../lib/helper.js';
+import MenuItem from '@mui/material/MenuItem';
+import axios from 'axios';
+import GithubSelection from './GithubSelection/GithubSelection.jsx';
 
 const CreateProjectCard = ({ projectInfo }) => {
   const navigate = useNavigate();
@@ -280,6 +291,7 @@ const CreateProjectCard = ({ projectInfo }) => {
                     {/*  <AuditRequestsArray requests={auditRequests ?? []} />*/}
                     {/*</Box>*/}
                   </Box>
+                  <GithubSelection />
                   <Box
                     className="description-box"
                     sx={descriptionFieldWrapper(
