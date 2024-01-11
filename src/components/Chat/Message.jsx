@@ -41,7 +41,10 @@ const Message = ({ message, user, currentChat }) => {
         const url = window.URL.createObjectURL(new Blob([data]));
         const link = document.createElement('a');
         link.href = url;
-        link.setAttribute('download', message.text.replace(/%20/g, ' '));
+        link.setAttribute(
+          'download',
+          decodeURIComponent(message.text).replace(/^\d*_/, ''),
+        );
         document.body.appendChild(link);
         link.click();
       });
@@ -55,7 +58,7 @@ const Message = ({ message, user, currentChat }) => {
           <ImageMessage message={message} />
         ) : message.kind === 'File' ? (
           <Typography title="Download" sx={linkMessage} onClick={downloadFile}>
-            <span>{message.text.replace(/%20/g, ' ')}</span>
+            <span>{decodeURIComponent(message.text).replace(/^\d*_/, '')}</span>
           </Typography>
         ) : (
           <Typography sx={{ whiteSpace: 'pre-wrap' }}>

@@ -49,7 +49,7 @@ const AttachFileModal = ({ isOpen, setIsOpen, currentChat, user }) => {
     if (!file) return;
 
     const token = Cookies.get('token');
-    const path = +new Date() + file.name;
+    const path = +new Date() + '_' + file.name;
 
     formData.append('file', file);
     formData.append('path', path);
@@ -62,7 +62,7 @@ const AttachFileModal = ({ isOpen, setIsOpen, currentChat, user }) => {
         headers: { Authorization: 'Bearer ' + token },
       })
       .then(() => {
-        const fileUrl = path.replace(/ /g, '%20');
+        const fileUrl = encodeURIComponent(path);
         const fileType = file.type.startsWith('image') ? 'Image' : 'File';
 
         dispatch(
