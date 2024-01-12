@@ -49,7 +49,14 @@ export const chatReducer = (state = initialState, action) => {
       return {
         ...state,
         chatMessages: [...state.chatMessages, action.payload],
-        currentChat: { ...state.currentChat, unread: 0 },
+        currentChat: {
+          ...state.currentChat,
+          unread: state.currentChat?.unread?.map(member =>
+            action.payload.from?.id !== member.id
+              ? { ...member, unread: member.unread + 1 }
+              : { ...member, unread: 0 },
+          ),
+        },
       };
     case CHAT_SEND_FIRST_MESSAGE:
       return {

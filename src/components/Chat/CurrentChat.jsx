@@ -82,12 +82,12 @@ const CurrentChat = ({
     const interlocutor = chat?.members?.find(member => member.id !== user.id);
     setUserLinkData({ id: interlocutor?.id, role: interlocutor?.role });
 
-    setUnread(currentChat?.unread || 0);
+    setUnread(
+      currentChat?.unread.find(member => member.id === user.id)?.unread || 0,
+    );
 
     setInterlocutorUnread(
-      chatList
-        .find(chat => chat.id === currentChat?.chatId)
-        ?.unread.find(member => member.id !== user.id)?.unread,
+      currentChat?.unread.find(member => member.id !== user.id)?.unread,
     );
   }, [currentChat, chatList]);
 
@@ -225,7 +225,9 @@ const CurrentChat = ({
                 );
               })
           ) : (
-            <Box sx={newMessagesSx}>No messages here yet...</Box>
+            <Box sx={[newMessagesSx, { borderBottom: 'none' }]}>
+              No messages here yet...
+            </Box>
           )}
         </Box>
 

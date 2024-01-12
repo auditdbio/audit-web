@@ -24,7 +24,6 @@ const ChatListItem = ({
   const setChatHandle = () => {
     setListIsOpen(false);
     const members = chat?.members.map(member => member.id);
-    const unread = isNew ? 0 : getUnreadForUser(chat);
 
     dispatch(
       setCurrentChat(chat?.id, {
@@ -34,7 +33,6 @@ const ChatListItem = ({
         isNew,
         userDataId,
         role,
-        unread,
       }),
     );
   };

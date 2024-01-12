@@ -52,18 +52,13 @@ export const getChatMessages = (chatId, userId) => {
 
 export const setCurrentChat = (
   chatId,
-  {
-    name,
-    avatar,
-    role,
-    members,
-    isNew = false,
-    userDataId = false,
-    unread = 0,
-  },
+  { name, avatar, role, members, isNew = false, userDataId = false },
 ) => {
   return (dispatch, getState) => {
     const { chat } = getState();
+    const chatList = chat.chatList;
+    const unread = chatList.find(chat => chat.id === chatId)?.unread || [];
+
     const previousChatId = chat?.currentChat?.chatId;
     if (previousChatId === chatId) return;
 
@@ -140,6 +135,23 @@ export const receiveNewChatMessage = message => {
       dispatch({
         type: CHAT_NEW_MESSAGE,
         payload: message,
+      });
+
+      const chat = chatState.chatList.find(chat => chat.id === message.chat);
+      const interlocutor = chat?.members.find(
+        member => member.id !== user.user?.id,
+      );
+      const unread = chat?.unread?.find(
+        member => member.id !== user.user?.id,
+      )?.unread;
+
+      dispatch({
+        type: CHAT_UPDATE_READ,
+        payload: {
+          chatId: message.chat,
+          userId: interlocutor?.id,
+          unread: unread + 1,
+        },
       });
     } else {
       const chat = chatState.chatList.find(it => it.id === message.chat);
