@@ -3,12 +3,13 @@ import { useSelector } from 'react-redux';
 import Cookies from 'js-cookie';
 import axios from 'axios';
 import { Avatar, Box, Typography } from '@mui/material';
+import DoneAllIcon from '@mui/icons-material/DoneAll';
 import { ASSET_URL } from '../../services/urls.js';
 import theme from '../../styles/themes.js';
 import { AUDITOR, CUSTOMER } from '../../redux/actions/types.js';
 import ImageMessage from './ImageMessage.jsx';
 
-const Message = ({ message, user, currentChat }) => {
+const Message = ({ message, user, currentChat, isRead }) => {
   const { customer } = useSelector(state => state.customer);
   const { auditor } = useSelector(state => state.auditor);
 
@@ -66,9 +67,14 @@ const Message = ({ message, user, currentChat }) => {
           </Typography>
         )}
         <Box sx={messageTimeSx}>
-          {new Date(message?.time / 1000)
-            .toLocaleTimeString()
-            .replace(/:\d\d(?=$|( AM| PM))/, '')}
+          <Box sx={{ mr: '5px' }}>
+            {new Date(message?.time / 1000)
+              .toLocaleTimeString()
+              .replace(/:\d\d(?=$|( AM| PM))/, '')}
+          </Box>
+          {isRead && user.id === message.from?.id && (
+            <DoneAllIcon fontSize="small" />
+          )}
         </Box>
       </Box>
     </Box>
@@ -119,7 +125,7 @@ const messageTextSx = ({ isOwn }) => ({
   background: '#e5e5e5',
   borderRadius: isOwn ? '15px 0 15px 15px' : '0 15px 15px 15px',
   '& p': {
-    padding: '15px 30px 20px',
+    padding: '15px 30px 25px',
     fontSize: '20px',
     fontWeight: 500,
     lineHeight: '25px',
@@ -159,6 +165,7 @@ const linkMessage = {
 };
 
 const messageTimeSx = theme => ({
+  display: 'flex',
   position: 'absolute',
   bottom: 2,
   right: 10,

@@ -36,6 +36,7 @@ const CurrentChat = ({
   const [messagesWindowHeight, setMessagesWindowHeight] = useState(0);
   const [userLinkData, setUserLinkData] = useState({});
   const [unread, setUnread] = useState(0);
+  const [interlocutorUnread, setInterlocutorUnread] = useState(0);
 
   const messageBoxRef = useRef();
   const newMessagesTextRef = useRef();
@@ -80,11 +81,15 @@ const CurrentChat = ({
     const chat = chatList.find(chat => chat.id === currentChat?.chatId);
     const interlocutor = chat?.members?.find(member => member.id !== user.id);
     setUserLinkData({ id: interlocutor?.id, role: interlocutor?.role });
-  }, [currentChat, chatList]);
 
-  useEffect(() => {
     setUnread(currentChat?.unread || 0);
-  }, [currentChat]);
+
+    setInterlocutorUnread(
+      chatList
+        .find(chat => chat.id === currentChat?.chatId)
+        ?.unread.find(member => member.id !== user.id)?.unread,
+    );
+  }, [currentChat, chatList]);
 
   useEffect(() => {
     if (unread > 20) {
@@ -203,6 +208,7 @@ const CurrentChat = ({
               .slice(...getDisplayedMessages())
               .map((msg, idx, ar) => {
                 const unreadLabel = !!unread && ar.length - unread === idx;
+                const isInterlocutorRead = idx < ar.length - interlocutorUnread;
                 return (
                   <Box
                     key={msg.id}
@@ -213,6 +219,7 @@ const CurrentChat = ({
                       user={user}
                       message={msg}
                       currentChat={currentChat}
+                      isRead={isInterlocutorRead}
                     />
                   </Box>
                 );
@@ -378,7 +385,7 @@ const chatSx = theme => ({
   flexGrow: 1,
   display: 'flex',
   flexDirection: 'column',
-  rowGap: '30px',
+  rowGap: '20px',
   overflowY: 'auto',
   '::-webkit-scrollbar': {
     width: '6px',
@@ -409,6 +416,7 @@ const newMessagesSx = {
   color: theme.palette.secondary.main,
   textTransform: 'uppercase',
   textAlign: 'center',
+  borderBottom: '1px solid #BBB',
   mb: '20px',
 };
 
