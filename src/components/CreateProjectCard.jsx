@@ -276,12 +276,15 @@ const CreateProjectCard = ({ projectInfo }) => {
                         <TagsArray name="tags" />
                       </Box>
                       <Box sx={fieldWrapper}>
-                        <TagsField
-                          size={matchMd ? 'small' : 'medium'}
-                          name="scope"
-                          label="Project links"
-                          setFieldTouched={setFieldTouched}
-                        />
+                        <Box sx={linkFieldWrapper}>
+                          <TagsField
+                            size={matchMd ? 'small' : 'medium'}
+                            name="scope"
+                            label="Project links"
+                            setFieldTouched={setFieldTouched}
+                          />
+                          <GithubSelection />
+                        </Box>
                         <ProjectLinksList name="scope" />
                         <SalarySlider name="price" />
                       </Box>
@@ -291,7 +294,6 @@ const CreateProjectCard = ({ projectInfo }) => {
                     {/*  <AuditRequestsArray requests={auditRequests ?? []} />*/}
                     {/*</Box>*/}
                   </Box>
-                  <GithubSelection />
                   <Box
                     className="description-box"
                     sx={descriptionFieldWrapper(
@@ -335,6 +337,22 @@ const CreateProjectCard = ({ projectInfo }) => {
 };
 export default CreateProjectCard;
 
+const linkFieldWrapper = theme => ({
+  display: 'flex',
+  gap: '7px',
+  alignItems: 'center',
+  '& .field-wrapper': {
+    width: '100%',
+  },
+  [theme.breakpoints.down(500)]: {
+    flexDirection: 'column',
+    gap: '10px',
+    '& .field-wrapper': {
+      width: '100%',
+    },
+  },
+});
+
 const mainBox = theme => ({
   position: 'relative',
   display: 'flex',
@@ -356,7 +374,7 @@ const backButtonSx = theme => ({
 });
 
 const wrapper = theme => ({
-  padding: '70px 90px',
+  padding: '70px',
   display: 'flex',
   flexDirection: 'column',
   [theme.breakpoints.down('sm')]: {

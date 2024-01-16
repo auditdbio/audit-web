@@ -1,119 +1,375 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Box, FormControl, InputLabel, Select, Tooltip } from '@mui/material';
-import MenuItem from '@mui/material/MenuItem';
+import {
+  Box,
+  Button,
+  FormControl,
+  InputLabel,
+  Modal,
+  Select,
+  Tooltip,
+  List,
+  Typography,
+  Divider,
+  InputAdornment,
+  IconButton,
+} from '@mui/material';
+import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import axios from 'axios';
-import { useField } from 'formik';
+import { Field, useField } from 'formik';
 import { linkShortener } from '../custom/CustomLink.jsx';
+import GithubBranchAutocomplete from '../GithubBranchAutocomplete.jsx';
+import CommitItem from './CommitItem.jsx';
+import dayjs from 'dayjs';
+import { TextField } from 'formik-mui';
+import { addTestsLabel } from '../../lib/helper.js';
+import { AUDITOR } from '../../redux/actions/types.js';
+import AddIcon from '@mui/icons-material/Add.js';
+import CustomSnackbar from '../custom/CustomSnackbar.jsx';
 
 const GithubSelection = () => {
-  const [field, meta] = useField('scope');
-  const [branches, setBranches] = useState([]);
+  const [urlRepo, setUrlRepo] = useState('');
   const [commits, setCommits] = useState([]);
   const [branch, setBranch] = useState('');
-  const [commit, setCommit] = useState(null);
+  const [isOpen, setIsOpen] = useState(false);
+  const [defaultBranch, setDefaultBranch] = useState('');
+  const [page, setPage] = useState(1);
+  const [totalCommits, setTotalCommits] = useState(0);
+  const [repository, setRepository] = useState(null);
+  const [error, setError] = useState('');
 
-  const repository = useMemo(() => {
-    if (field.value.some(el => el.includes('github.com/'))) {
-      const project = field?.value?.find(el => el.includes('github.com/'));
-      return linkShortener(project);
-    } else {
-      return null;
+  useEffect(() => {
+    const getTotalCommitsCount = async branch => {
+      try {
+        let pageCount = 1;
+        let totalCount = 0;
+
+        while (true) {
+          const response = await axios.get(
+            `https://api.github.com/repos/${repository}/commits`,
+            {
+              params: {
+                sha: branch,
+                per_page: 100,
+                page: pageCount,
+              },
+            },
+          );
+
+          const linkHeader = response.headers.link;
+          if (!linkHeader || !linkHeader.includes('rel="last"')) {
+            totalCount += response.data.length;
+            break;
+          }
+
+          const matches = linkHeader.match(/&page=(\d+)>; rel="last"/);
+          const lastPage = matches ? parseInt(matches[1]) : 1;
+
+          if (pageCount >= lastPage) {
+            totalCount += response.data.length;
+            break;
+          }
+
+          totalCount += response.data.length;
+          pageCount++;
+        }
+        setTotalCommits(Math.floor(totalCount / 100) + 1);
+      } catch (error) {
+        console.error('Error fetching commits:', error);
+      }
+    };
+
+    if (repository) {
+      getTotalCommitsCount(branch);
     }
-  }, [field?.value]);
+  }, [repository, branch]);
 
   useEffect(() => {
-    // if (!!repository) {
-    axios(`https://api.github.com/repos/${repository}/branches`)
-      .then(({ data }) => {
-        setBranches(data); // Обработка списка репозиториев
-        console.log(data); // Обработка списка репозиториев
-      })
-      .catch(error => {
-        console.error(error); // Обработка ошибок
-      });
-    // }
-  }, [repository]);
+    if (repository) {
+      axios(`https://api.github.com/repos/${repository}`).then(({ data }) =>
+        setDefaultBranch(data.default_branch),
+      );
+      axios(
+        `https://api.github.com/repos/${repository}/commits?sha=${branch}&per_page=50&page=${page}`,
+      )
+        .then(({ data }) => {
+          setCommits(data); // Обработка списка репозиториев
+        })
+        .catch(error => {
+          console.error(error); // Обработка ошибок
+        });
+    }
+  }, [branch, page, repository]);
 
-  useEffect(() => {
-    axios(
-      `https://api.github.com/repos/auditdbio/audit-web/commits?sha=${branch}`,
-    )
-      .then(({ data }) => {
-        setCommits(data); // Обработка списка репозиториев
-        console.log(data); // Обработка списка репозиториев
-      })
-      .catch(error => {
-        console.error(error); // Обработка ошибок
-      });
-  }, [branch]);
-
-  const handleChange = event => {
-    setBranch(event.target.value);
+  const handleAddProject = () => {
+    if (urlRepo.includes('github.com/')) {
+      setRepository(linkShortener(urlRepo));
+    } else {
+      setError('Please enter a valid Github repository url');
+    }
   };
 
-  const handleChangeCommits = event => {
-    setCommit(event.target.value);
+  const handleClose = () => {
+    setIsOpen(false);
+    setRepository(null);
+    setUrlRepo('');
   };
 
   return (
-    <Box
-      sx={{
-        display: 'flex',
-        gap: '25px',
-      }}
-    >
-      <Tooltip
-        title={!repository ? 'Please add your github project' : ''}
-        placement={'top'}
+    <Box sx={wrapper}>
+      <Modal
+        open={isOpen}
+        onClose={handleClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
       >
-        <FormControl fullWidth size={'small'}>
-          <InputLabel id="demo-simple-select-label">Branches</InputLabel>
-          <Select
-            labelId="demo-simple-select-label"
-            value={branch}
-            label="Branches"
-            disabled={!repository}
-            onChange={handleChange}
-          >
-            {branches?.map(el => (
-              <MenuItem
-                sx={{ maxWidth: '500px', overflow: 'auto' }}
-                key={el.name}
-                value={el.name}
+        <Box sx={modalSx}>
+          {!repository ? (
+            <Box>
+              <Button
+                sx={{
+                  marginLeft: '-15px',
+                  minWidth: '34px',
+                  marginBottom: '5px',
+                }}
+                onClick={handleClose}
               >
-                {el.name}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-      </Tooltip>
-      <Tooltip
-        title={!repository ? 'Please add your github project' : ''}
-        placement={'top'}
+                <CloseRoundedIcon />
+              </Button>
+              <Box sx={projectUrlWrapper}>
+                <CustomSnackbar
+                  autoHideDuration={3000}
+                  open={!!error}
+                  onClose={() => {
+                    setError('');
+                  }}
+                  severity={'error'}
+                  text={error}
+                />
+                <Field
+                  component={TextField}
+                  placeholder={'Github repository url'}
+                  fullWidth={true}
+                  name={'tag-field'}
+                  disabled={false}
+                  label={'Github repository url'}
+                  // size={size}
+                  value={urlRepo}
+                  onKeyDown={e => {
+                    if (e.key === 'Enter') {
+                      handleAddProject();
+                    }
+                  }}
+                  onChange={e => setUrlRepo(e.target.value)}
+                  // onBlur={handleBlur}
+                  sx={fieldSx}
+                  inputProps={{ ...addTestsLabel('project-input') }}
+                />
+                <Button
+                  onClick={handleAddProject}
+                  variant={'contained'}
+                  sx={btnSx}
+                >
+                  Submit
+                </Button>
+              </Box>
+            </Box>
+          ) : (
+            <Box
+              sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '15px',
+                height: '100%',
+              }}
+            >
+              <Box>
+                <Button
+                  sx={{
+                    marginLeft: '-15px',
+                    minWidth: '34px',
+                    marginBottom: '5px',
+                  }}
+                  onClick={handleClose}
+                >
+                  <CloseRoundedIcon />
+                </Button>
+              </Box>
+              <Box sx={fieldWrapper}>
+                <GithubBranchAutocomplete
+                  onClick={setBranch}
+                  repository={repository}
+                />
+                <Typography>
+                  Branch: {branch ? branch : defaultBranch}
+                </Typography>
+              </Box>
+              <Typography>Commits:</Typography>
+              <Divider />
+              <List sx={listWrapper}>
+                {commits?.map((commit, idx) => {
+                  return (
+                    <Box key={commit.sha}>
+                      {(dayjs(
+                        dayjs(commit.commit.committer.date).format(
+                          'YYYY-MM-DD',
+                        ),
+                      ).diff(
+                        dayjs(commits?.[idx + 1]?.commit.committer.date).format(
+                          'YYYY-MM-DD',
+                        ),
+                        'day',
+                      ) > 0 ||
+                        idx === 0) && (
+                        <Typography
+                          variant={'subtitle2'}
+                          color={'primary'}
+                          align={'center'}
+                        >
+                          {dayjs(commit.commit.committer.date).format(
+                            'DD MMMM YYYY',
+                          )}
+                        </Typography>
+                      )}
+                      <CommitItem commit={commit} repository={repository} />
+                    </Box>
+                  );
+                })}
+              </List>
+              <Box
+                sx={{
+                  display: 'flex',
+                  gap: '15px',
+                  justifyContent: 'center',
+                }}
+              >
+                {totalCommits > 1 && (
+                  <Button
+                    disabled={page === 1}
+                    onClick={() => setPage(page - 1)}
+                  >
+                    Prev
+                  </Button>
+                )}
+                {totalCommits > 1 && (
+                  <Button
+                    disabled={page === totalCommits}
+                    onClick={() => setPage(page + 1)}
+                  >
+                    Next
+                  </Button>
+                )}
+              </Box>
+            </Box>
+          )}
+        </Box>
+      </Modal>
+      <Button
+        onClick={() => setIsOpen(true)}
+        variant={'contained'}
+        sx={githubBtnSx}
       >
-        <FormControl fullWidth size={'small'}>
-          <InputLabel id="commits-simple-select-label">Commits</InputLabel>
-          <Select
-            labelId="commits-simple-select-label"
-            value={commit?.commit?.message}
-            label="Commits"
-            disabled={!repository}
-            onChange={handleChangeCommits}
-          >
-            {commits?.map(el => (
-              <MenuItem
-                key={el.sha}
-                sx={{ maxWidth: '500px', overflow: 'auto' }}
-                value={el}
-              >
-                {el.commit.message}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-      </Tooltip>
+        Use github
+      </Button>
     </Box>
   );
 };
 
 export default GithubSelection;
+
+const wrapper = theme => ({
+  height: '100%',
+  [theme.breakpoints.down(500)]: {
+    width: '100%',
+  },
+});
+
+const githubBtnSx = theme => ({
+  padding: '5px',
+  height: '100%',
+  width: '130px',
+  [theme.breakpoints.down('sm')]: {
+    width: '110px',
+  },
+  [theme.breakpoints.down('xs')]: {
+    paddingY: '9px',
+  },
+  [theme.breakpoints.down(500)]: {
+    width: '100%',
+  },
+});
+
+const projectUrlWrapper = theme => ({
+  display: 'flex',
+  gap: '15px',
+  justifyContent: 'center',
+  [theme.breakpoints.down(550)]: {
+    flexDirection: 'column',
+  },
+});
+
+const btnSx = theme => ({
+  maxWidth: '160px',
+  width: '100%',
+  fontSize: '18px',
+  textTransform: 'unset',
+  [theme.breakpoints.down('sm')]: {
+    fontSize: '16px',
+  },
+  [theme.breakpoints.down('xs')]: {
+    maxWidth: '120px',
+  },
+  [theme.breakpoints.down(550)]: {
+    maxWidth: '100%',
+  },
+});
+
+const fieldSx = theme => ({
+  maxWidth: '500px',
+  width: '100%',
+});
+
+const modalSx = theme => ({
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  bgcolor: 'background.paper',
+  boxShadow: 24,
+  borderRadius: '10px',
+  p: 4,
+  paddingTop: '5px!important',
+  width: '80%',
+  height: '80%',
+  zIndex: 44,
+  [theme.breakpoints.down('sm')]: {
+    width: '90%',
+    height: '90%',
+    padding: 2,
+  },
+});
+
+const fieldWrapper = theme => ({
+  display: 'flex',
+  justifyContent: 'space-between',
+  alignItems: 'center',
+  [theme.breakpoints.down('xs')]: {
+    flexDirection: 'column',
+    gap: '10px',
+  },
+});
+
+const listWrapper = theme => ({
+  display: 'flex',
+  flexDirection: 'column',
+  overflowY: 'auto',
+  gap: '10px',
+  marginRight: '-30px',
+  paddingRight: '14px',
+  marginLeft: '-20px',
+  overflowX: 'hidden',
+  [theme.breakpoints.down('sm')]: {
+    marginRight: '-10px',
+    paddingRight: '5px',
+    marginLeft: '-10px',
+  },
+});

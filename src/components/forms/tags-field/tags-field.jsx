@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Field, useField } from 'formik';
 import { TextField } from 'formik-mui';
 import { Box, Button, IconButton, InputAdornment, Modal } from '@mui/material';
@@ -57,6 +57,16 @@ const TagsField = ({
       onBlur();
     }
   };
+
+  useEffect(() => {
+    if (name === 'scope') {
+      fieldHelper.setValue(
+        field.value.filter(
+          (value, index, self) => self.indexOf(value) === index,
+        ),
+      );
+    }
+  }, [field.value]);
 
   const handleChange = e => {
     setState(e.target.value);
