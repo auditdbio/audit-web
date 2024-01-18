@@ -250,6 +250,7 @@ const PublicProfile = () => {
                 if (account.name.toLowerCase() === 'linkedin') {
                   return (
                     <Box
+                      key={account.id}
                       sx={{ display: 'flex', alignItems: 'center', gap: '7px' }}
                     >
                       <LinkedinIcon />
@@ -258,6 +259,7 @@ const PublicProfile = () => {
                 } else if (account.name.toLowerCase() === 'github') {
                   return (
                     <Box
+                      key={account.id}
                       sx={{ display: 'flex', alignItems: 'center', gap: '7px' }}
                     >
                       <GitHubIcon
@@ -268,6 +270,7 @@ const PublicProfile = () => {
                 } else if (account.name.toLowerCase() === 'gitcoin') {
                   return (
                     <Box
+                      key={account.id}
                       sx={{ display: 'flex', alignItems: 'center', gap: '7px' }}
                     >
                       <GitcoinIcon />
@@ -276,6 +279,7 @@ const PublicProfile = () => {
                 } else {
                   return (
                     <Box
+                      key={account.id}
                       sx={{ display: 'flex', alignItems: 'center', gap: '7px' }}
                     >
                       <XTwitterLogo width={'50px'} height={'50px'} space />

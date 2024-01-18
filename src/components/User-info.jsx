@@ -125,13 +125,19 @@ const UserInfo = ({ role }) => {
           {user.linked_accounts.map(account => {
             if (account.name.toLowerCase() === 'linkedin') {
               return (
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: '7px' }}>
+                <Box
+                  key={account.id}
+                  sx={{ display: 'flex', alignItems: 'center', gap: '7px' }}
+                >
                   <LinkedinIcon />
                 </Box>
               );
             } else if (account.name.toLowerCase() === 'github') {
               return (
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: '7px' }}>
+                <Box
+                  key={account.id}
+                  sx={{ display: 'flex', alignItems: 'center', gap: '7px' }}
+                >
                   <GitHubIcon
                     sx={{ width: '50px', height: '50px', padding: '4px' }}
                   />
@@ -139,13 +145,19 @@ const UserInfo = ({ role }) => {
               );
             } else if (account.name.toLowerCase() === 'gitcoin') {
               return (
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: '7px' }}>
+                <Box
+                  key={account.id}
+                  sx={{ display: 'flex', alignItems: 'center', gap: '7px' }}
+                >
                   <GitcoinIcon />
                 </Box>
               );
             } else {
               return (
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: '7px' }}>
+                <Box
+                  key={account.id}
+                  sx={{ display: 'flex', alignItems: 'center', gap: '7px' }}
+                >
                   <XTwitterLogo width={'50px'} height={'50px'} space />
                 </Box>
               );
