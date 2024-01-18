@@ -158,31 +158,12 @@ const UserInfo = ({ role }) => {
                   key={account.id}
                   sx={{ display: 'flex', alignItems: 'center', gap: '7px' }}
                 >
-                  <XTwitterLogo width={'50px'} height={'50px'} space />
+                  <XTwitterLogo width={'38px'} height={'38px'} />
                 </Box>
               );
             }
           })}
         </Box>
-        {/*<Box sx={{ display: 'flex', alignItems: 'center', gap: '7px' }}>*/}
-        {/*  <RouterLink*/}
-        {/*    href={'https://github.com/auditdbio/audit-web/tree/prod'}*/}
-        {/*  >*/}
-        {/*    <Tooltip title="github.com" placement={'top'} arrow>*/}
-        {/*      <GitHubIcon*/}
-        {/*        sx={{ width: '50px', height: '50px', padding: '4px' }}*/}
-        {/*      />*/}
-        {/*    </Tooltip>*/}
-        {/*  </RouterLink>*/}
-        {/*</Box>*/}
-        {/*<Box sx={{ display: 'flex', alignItems: 'center', gap: '7px' }}>*/}
-        {/*  <RouterLink*/}
-        {/*    href={'https://github.com/auditdbio/audit-web/tree/prod'}*/}
-        {/*  >*/}
-        {/*    <LinkedinIcon />*/}
-        {/*  </RouterLink>*/}
-        {/*</Box>*/}
-        {/*</Box>*/}
         <Box
           sx={{
             display: 'flex',

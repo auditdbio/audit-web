@@ -36,18 +36,18 @@ const IdentitySetting = () => {
   const handleConnectGithub = () => {
     if (!linkedAccounts?.find(el => el.name.toLowerCase() === 'github')) {
       window.open(
-        `https://github.com/login/oauth/authorize?client_id=${GITHUB_CLIENT_ID}&redirect_uri=${BASE_URL}oauth/callback&scope=read:user,user:email&state=${role}_Github`,
+        `https://github.com/login/oauth/authorize?client_id=${GITHUB_CLIENT_ID}&redirect_uri=${BASE_URL}oauth/callback&scope=read:user,user:email&state=${role}_GitHub`,
         '_self',
       );
     }
   };
   const handleConnectLinkedin = () => {
-    if (!linkedAccounts?.find(el => el.name.toLowerCase() === 'linkedin')) {
-      window.open(
-        `https://linkedin.com/oauth/v2/authorization?response_type=code&client_id=${LINKEDIN_CLIENT_ID}&redirect_uri=${BASE_URL}oauth/callback&scope=profile%20email%20openid&state=${role}_LinkedIn`,
-        '_self',
-      );
-    }
+    // if (!linkedAccounts?.find(el => el.name.toLowerCase() === 'linkedin')) {
+    window.open(
+      `https://linkedin.com/oauth/v2/authorization?response_type=code&client_id=${LINKEDIN_CLIENT_ID}&redirect_uri=${BASE_URL}oauth/callback&scope=profile%20email%20openid&state=${role}_LinkedIn`,
+      '_self',
+    );
+    // }
   };
 
   const handleConnectTwitter = () => {
@@ -139,9 +139,6 @@ const IdentitySetting = () => {
                     : {},
                 ]}
                 onClick={handleConnectLinkedin}
-                disabled={linkedAccounts?.find(
-                  el => el.name.toLowerCase() === 'linkedin',
-                )}
               >
                 <Box
                   sx={{
@@ -183,9 +180,6 @@ const IdentitySetting = () => {
               >
                 <Box
                   onClick={handleConnectTwitter}
-                  disabled={linkedAccounts?.find(
-                    el => el.name.toLowerCase() === 'x',
-                  )}
                   sx={{
                     display: 'flex',
                     alignItems: 'center',

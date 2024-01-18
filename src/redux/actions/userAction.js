@@ -156,12 +156,20 @@ export const connect_account = (user_id, values) => {
       })
       .then(({ data }) => {
         dispatch({ type: CONNECT_ACCOUNT, payload: data });
+        dispatch({ type: CHANGE_ACCOUNT_VISIBILITY, payload: data });
+        const user = JSON.parse(localStorage.getItem('user'));
+        const newData = {
+          ...user,
+          linked_accounts: [...user.linked_accounts, data],
+        };
+        localStorage.setItem('user', JSON.stringify(newData));
         history.push('/profile/user-info', {
           some: true,
         });
       })
-      .catch(({ response }) => {
-        console.log(response);
+      .catch(data => {
+        console.log(data);
+        console.log(data.response);
       });
   };
 };
