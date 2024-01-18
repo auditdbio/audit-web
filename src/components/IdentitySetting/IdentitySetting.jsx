@@ -34,7 +34,7 @@ const IdentitySetting = () => {
   const dispatch = useDispatch();
   const { user } = useSelector(s => s.user);
   const handleConnectGithub = () => {
-    if (!linkedAccounts.find(el => el.name.toLowerCase() === 'github')) {
+    if (!linkedAccounts?.find(el => el.name.toLowerCase() === 'github')) {
       window.open(
         `https://github.com/login/oauth/authorize?client_id=${GITHUB_CLIENT_ID}&redirect_uri=${BASE_URL}oauth/callback&scope=read:user,user:email&state=${role}_Github`,
         '_self',
@@ -42,7 +42,7 @@ const IdentitySetting = () => {
     }
   };
   const handleConnectLinkedin = () => {
-    if (!linkedAccounts.find(el => el.name.toLowerCase() === 'linkedin')) {
+    if (!linkedAccounts?.find(el => el.name.toLowerCase() === 'linkedin')) {
       window.open(
         `https://linkedin.com/oauth/v2/authorization?response_type=code&client_id=${LINKEDIN_CLIENT_ID}&redirect_uri=${BASE_URL}oauth/callback&scope=profile%20email%20openid&state=${role}_LinkedIn`,
         '_self',
@@ -51,7 +51,7 @@ const IdentitySetting = () => {
   };
 
   const handleConnectTwitter = () => {
-    if (!linkedAccounts.find(el => el.name.toLowerCase() === 'x')) {
+    if (!linkedAccounts?.find(el => el.name.toLowerCase() === 'x')) {
       window.open(
         `https://twitter.com/i/oauth2/authorize?response_type=code&client_id=${TWITTER_CLIENT_ID}&redirect_uri=${BASE_URL}oauth/callback&scope=tweet.read%20users.read%20follows.read%20offline.access&code_challenge=challenge&code_challenge_method=plain&state=${role}_X`,
         '_self',
@@ -91,7 +91,7 @@ const IdentitySetting = () => {
               <Box
                 sx={[
                   cardSx,
-                  linkedAccounts.find(el => el.name.toLowerCase() === 'github')
+                  linkedAccounts?.find(el => el.name.toLowerCase() === 'github')
                     ? { border: '1px solid green' }
                     : {},
                 ]}
@@ -111,8 +111,8 @@ const IdentitySetting = () => {
                   <Typography>Github</Typography>
                 </Box>
                 {linkedAccounts
-                  .filter(el => el.name.toLowerCase() === 'github')
-                  .map(el => (
+                  ?.filter(el => el.name.toLowerCase() === 'github')
+                  ?.map(el => (
                     <Tooltip
                       key={el.id}
                       arrow
@@ -132,14 +132,14 @@ const IdentitySetting = () => {
               <Box
                 sx={[
                   cardSx,
-                  linkedAccounts.find(
+                  linkedAccounts?.find(
                     el => el.name.toLowerCase() === 'linkedin',
                   )
                     ? { border: '1px solid green' }
                     : {},
                 ]}
                 onClick={handleConnectLinkedin}
-                disabled={linkedAccounts.find(
+                disabled={linkedAccounts?.find(
                   el => el.name.toLowerCase() === 'linkedin',
                 )}
               >
@@ -155,8 +155,8 @@ const IdentitySetting = () => {
                   <Typography>Linkedin</Typography>
                 </Box>
                 {linkedAccounts
-                  .filter(el => el.name.toLowerCase() === 'linkedin')
-                  .map(el => (
+                  ?.filter(el => el.name.toLowerCase() === 'linkedin')
+                  ?.map(el => (
                     <Tooltip
                       key={el.id}
                       arrow
@@ -176,14 +176,14 @@ const IdentitySetting = () => {
               <Box
                 sx={[
                   cardSx,
-                  linkedAccounts.find(el => el.name.toLowerCase() === 'x')
+                  linkedAccounts?.find(el => el.name.toLowerCase() === 'x')
                     ? { border: '1px solid green' }
                     : {},
                 ]}
               >
                 <Box
                   onClick={handleConnectTwitter}
-                  disabled={linkedAccounts.find(
+                  disabled={linkedAccounts?.find(
                     el => el.name.toLowerCase() === 'x',
                   )}
                   sx={{
@@ -200,8 +200,8 @@ const IdentitySetting = () => {
                   <Typography>Twitter</Typography>
                 </Box>
                 {linkedAccounts
-                  .filter(el => el.name.toLowerCase() === 'x')
-                  .map(el => (
+                  ?.filter(el => el.name.toLowerCase() === 'x')
+                  ?.map(el => (
                     <Tooltip
                       key={el.id}
                       arrow
@@ -221,7 +221,9 @@ const IdentitySetting = () => {
               <Box
                 sx={[
                   cardSx,
-                  linkedAccounts.find(el => el.name.toLowerCase() === 'gitcoin')
+                  linkedAccounts?.find(
+                    el => el.name.toLowerCase() === 'gitcoin',
+                  )
                     ? { border: '1px solid green' }
                     : {},
                 ]}
@@ -241,8 +243,8 @@ const IdentitySetting = () => {
                   <Typography>Gitcoin</Typography>
                 </Box>
                 {linkedAccounts
-                  .filter(el => el.name.toLowerCase() === 'gitcoin')
-                  .map(el => (
+                  ?.filter(el => el.name.toLowerCase() === 'gitcoin')
+                  ?.map(el => (
                     <Tooltip
                       key={el.id}
                       arrow

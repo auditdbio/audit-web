@@ -122,7 +122,7 @@ const UserInfo = ({ role }) => {
         </Box>
         {matchXs && <MobileTagsList data={data.tags} />}
         <Box sx={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
-          {user.linked_accounts.map(account => {
+          {user.linked_accounts?.map(account => {
             if (account.name.toLowerCase() === 'linkedin') {
               return (
                 <Box
