@@ -22,6 +22,8 @@ import {
   SEND_EMAIL,
   CONNECT_ACCOUNT,
   CHANGE_ACCOUNT_VISIBILITY,
+  ERROR_ADD_ACCOUNT,
+  ERROR_IDENTITY,
 } from './types.js';
 
 const API_URL = import.meta.env.VITE_API_BASE_URL;
@@ -137,7 +139,6 @@ export const changeAccountVisibility = (user_id, values, account_id) => {
           }),
         };
         localStorage.setItem('user', JSON.stringify(newData));
-        console.log(user);
       })
       .catch(({ response }) => {
         console.log(response);
@@ -168,8 +169,14 @@ export const connect_account = (user_id, values) => {
         });
       })
       .catch(data => {
-        console.log(data);
-        console.log(data.response);
+        if (data.response.status === 404) {
+          dispatch({ type: ERROR_ADD_ACCOUNT, payload: data.response });
+        } else {
+          dispatch({ type: ERROR_IDENTITY, payload: data.response });
+        }
+        history.push('/profile/user-info', {
+          some: true,
+        });
       });
   };
 };

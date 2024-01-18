@@ -18,6 +18,8 @@ import {
   SEND_EMAIL,
   CONNECT_ACCOUNT,
   CHANGE_ACCOUNT_VISIBILITY,
+  ERROR_ADD_ACCOUNT,
+  ERROR_IDENTITY,
 } from '../actions/types.js';
 
 const initialState = {
@@ -91,6 +93,16 @@ export const userReducer = (state = initialState, action) => {
         ...state,
         success:
           'Success! The letter was sent to your email, please check your email',
+      };
+    case ERROR_ADD_ACCOUNT:
+      return {
+        ...state,
+        error: 'Account has already been added',
+      };
+    case ERROR_IDENTITY:
+      return {
+        ...state,
+        error: 'Access token expired, please try again',
       };
     case CLEAR_SUCCESS:
       return { ...state, success: null };

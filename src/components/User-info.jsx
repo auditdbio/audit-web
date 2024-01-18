@@ -12,7 +12,7 @@ import GitHubIcon from '@mui/icons-material/GitHub.js';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import theme from '../styles/themes.js';
 import { useNavigate } from 'react-router-dom/dist';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import Loader from './Loader.jsx';
 import { AUDITOR } from '../redux/actions/types.js';
 import TagsList from './tagsList';
@@ -26,6 +26,8 @@ import IdentitySetting from './IdentitySetting/IdentitySetting.jsx';
 import LinkedinIcon from './icons/LinkedinIcon.jsx';
 import GitcoinIcon from './icons/GitcoinIcon.jsx';
 import XTwitterLogo from './icons/XTwitter-logo.jsx';
+import { clearUserError } from '../redux/actions/userAction.js';
+import CustomSnackbar from './custom/CustomSnackbar.jsx';
 
 const UserInfo = ({ role }) => {
   const navigate = useNavigate();
@@ -34,6 +36,8 @@ const UserInfo = ({ role }) => {
   const { user } = useSelector(s => s.user);
   const matchXs = useMediaQuery(theme.breakpoints.down('xs'));
   const matchXxs = useMediaQuery(theme.breakpoints.down(590));
+  const message = useSelector(s => s.user.error);
+  const dispatch = useDispatch();
 
   const handleEdit = () => {
     navigate('/edit-profile');
@@ -52,6 +56,13 @@ const UserInfo = ({ role }) => {
   } else {
     return (
       <Box sx={wrapper}>
+        <CustomSnackbar
+          autoHideDuration={3000}
+          open={!!message}
+          onClose={() => dispatch(clearUserError())}
+          severity="error"
+          text={message}
+        />
         <Box sx={contentWrapper}>
           <Box
             sx={{

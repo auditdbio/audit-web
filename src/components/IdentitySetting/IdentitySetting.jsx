@@ -42,12 +42,12 @@ const IdentitySetting = () => {
     }
   };
   const handleConnectLinkedin = () => {
-    // if (!linkedAccounts?.find(el => el.name.toLowerCase() === 'linkedin')) {
-    window.open(
-      `https://linkedin.com/oauth/v2/authorization?response_type=code&client_id=${LINKEDIN_CLIENT_ID}&redirect_uri=${BASE_URL}oauth/callback&scope=profile%20email%20openid&state=${role}_LinkedIn`,
-      '_self',
-    );
-    // }
+    if (!linkedAccounts?.find(el => el.name.toLowerCase() === 'linkedin')) {
+      window.open(
+        `https://linkedin.com/oauth/v2/authorization?response_type=code&client_id=${LINKEDIN_CLIENT_ID}&redirect_uri=${BASE_URL}oauth/callback&scope=profile%20email%20openid&state=${role}_LinkedIn`,
+        '_self',
+      );
+    }
   };
 
   const handleConnectTwitter = () => {
