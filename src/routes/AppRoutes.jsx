@@ -133,10 +133,7 @@ const AppRoutes = () => {
         <Route path={'/invite-user/:id/:secret'} element={<InvitePage />} />
         <Route path={'/sign-in'} element={<SigninPage />} />
         <Route path={'/github/:role'} element={<Github />} />
-        <Route
-          path={'add-account/:role/:servicename'}
-          element={<ConnectAccount />}
-        />
+        <Route path={'/oauth/callback'} element={<ConnectAccount />} />
         <Route
           path={'/restore-password/:token'}
           element={<RestorePasswordPage />}

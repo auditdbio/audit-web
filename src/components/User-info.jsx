@@ -102,28 +102,6 @@ const UserInfo = ({ role }) => {
                 <span>E-mail</span>
                 <Typography noWrap={true}>{data.contacts?.email}</Typography>
               </Box>
-              {user?.linked_accounts && (
-                <Box sx={[infoWrapper, { alignItems: 'center' }]}>
-                  <span>Accounts</span>
-                  <Box>
-                    {user.linked_accounts.map(account => (
-                      <Link
-                        sx={accountLink}
-                        href={account.url}
-                        target="_blank"
-                        title={`${account.name} ${account.email}`}
-                      >
-                        {account.name === 'GitHub' ? (
-                          <GitHubIcon sx={{ mr: '8px' }} />
-                        ) : (
-                          <OpenInNewIcon sx={{ mr: '8px' }} />
-                        )}
-                        {account.name}
-                      </Link>
-                    ))}
-                  </Box>
-                </Box>
-              )}
             </Box>
             <Box sx={[infoWrapper, aboutWrapper]}>
               <span>About</span>
@@ -142,25 +120,43 @@ const UserInfo = ({ role }) => {
         </Box>
         {matchXs && <MobileTagsList data={data.tags} />}
         <Box sx={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: '7px' }}>
-            <RouterLink
-              href={'https://github.com/auditdbio/audit-web/tree/prod'}
-            >
-              <Tooltip title="github.com" placement={'top'} arrow>
-                <GitHubIcon
-                  sx={{ width: '50px', height: '50px', padding: '4px' }}
-                />
-              </Tooltip>
-            </RouterLink>
-          </Box>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: '7px' }}>
-            <RouterLink
-              href={'https://github.com/auditdbio/audit-web/tree/prod'}
-            >
-              <LinkedinIcon />
-            </RouterLink>
-          </Box>
+          {user.linked_accounts.map(account => {
+            if (account.name.toLowerCase() === 'linkedin') {
+              return (
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: '7px' }}>
+                  <LinkedinIcon />
+                </Box>
+              );
+            } else {
+              return (
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: '7px' }}>
+                  <GitHubIcon
+                    sx={{ width: '50px', height: '50px', padding: '4px' }}
+                  />
+                </Box>
+              );
+            }
+          })}
         </Box>
+        {/*<Box sx={{ display: 'flex', alignItems: 'center', gap: '7px' }}>*/}
+        {/*  <RouterLink*/}
+        {/*    href={'https://github.com/auditdbio/audit-web/tree/prod'}*/}
+        {/*  >*/}
+        {/*    <Tooltip title="github.com" placement={'top'} arrow>*/}
+        {/*      <GitHubIcon*/}
+        {/*        sx={{ width: '50px', height: '50px', padding: '4px' }}*/}
+        {/*      />*/}
+        {/*    </Tooltip>*/}
+        {/*  </RouterLink>*/}
+        {/*</Box>*/}
+        {/*<Box sx={{ display: 'flex', alignItems: 'center', gap: '7px' }}>*/}
+        {/*  <RouterLink*/}
+        {/*    href={'https://github.com/auditdbio/audit-web/tree/prod'}*/}
+        {/*  >*/}
+        {/*    <LinkedinIcon />*/}
+        {/*  </RouterLink>*/}
+        {/*</Box>*/}
+        {/*</Box>*/}
         <Box
           sx={{
             display: 'flex',

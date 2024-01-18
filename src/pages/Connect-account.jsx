@@ -3,8 +3,8 @@ import { useParams } from 'react-router-dom';
 import { CustomCard } from '../components/custom/Card.jsx';
 import Layout from '../styles/Layout.jsx';
 import { useSearchParams } from 'react-router-dom/dist';
-import { signUpGithub } from '../redux/actions/userAction.js';
-import { useDispatch } from 'react-redux';
+import { connect_account, signUpGithub } from '../redux/actions/userAction.js';
+import { useDispatch, useSelector } from 'react-redux';
 import Loader from '../components/Loader.jsx';
 import { Box } from '@mui/system';
 import { Typography } from '@mui/material';
@@ -12,23 +12,22 @@ import GitHubIcon from '@mui/icons-material/GitHub.js';
 
 const ConnectAccount = () => {
   const [searchParam] = useSearchParams();
-  const { servicename, role } = useParams();
   const dispatch = useDispatch();
+  const user_id = useSelector(state => state.user.user.id);
 
   useEffect(() => {
-    if (servicename === 'linkedin') {
-      // TODO: connect linkedin
-    } else if (servicename === 'github') {
-      dispatch(signUpGithub(searchParam.get('code'), role));
-    } else if (servicename === 'facebook') {
-      // TODO: connect facebook
-    } else if (servicename === 'twitter') {
-      // TODO: connect twitter
-    } else if (servicename === 'gitcoin') {
-      // TODO: connect gitcoin
-    }
-  }, [searchParam.get('code'), role]);
-  //
+    const data = {
+      code: searchParam.get('code'),
+      current_role: searchParam
+        .get('state')
+        .slice(0, searchParam.get('state').indexOf('_')),
+      service: searchParam
+        .get('state')
+        .slice(searchParam.get('state').indexOf('_') + 1),
+    };
+    dispatch(connect_account(user_id, data));
+  }, []);
+
   return (
     <Layout>
       <CustomCard sx={cardWrapper}>

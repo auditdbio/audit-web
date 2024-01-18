@@ -20,6 +20,7 @@ import {
   GET_AUDITOR,
   RESTORE_PASSWORD,
   SEND_EMAIL,
+  CONNECT_ACCOUNT,
 } from './types.js';
 
 const API_URL = import.meta.env.VITE_API_BASE_URL;
@@ -100,6 +101,28 @@ export const signUp = values => {
       .then(({ data }) => {
         dispatch({ type: USER_SIGNUP, payload: data });
         history.push('/sign-in', {
+          some: true,
+        });
+      })
+      .catch(({ response }) => {
+        dispatch({ type: USER_IS_ALREADY_EXIST });
+      });
+  };
+};
+
+export const connect_account = (user_id, values) => {
+  console.log(values);
+  return dispatch => {
+    axios
+      .post(`${API_URL}/user/${user_id}/linked_account`, values, {
+        headers: {
+          Authorization: 'Bearer ' + Cookies.get('token'),
+          'Content-Type': 'application/json',
+        },
+      })
+      .then(({ data }) => {
+        dispatch({ type: CONNECT_ACCOUNT, payload: data });
+        history.push('/profile/user-info', {
           some: true,
         });
       })

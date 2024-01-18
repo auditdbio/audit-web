@@ -17,24 +17,43 @@ import LinkedinIcon from '../icons/LinkedinIcon.jsx';
 import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import XTwitterLogo from '../icons/XTwitter-logo.jsx';
+import { TWITTER_CLIENT_ID } from '../../services/urls.js';
+import { useSelector } from 'react-redux';
 
+const BASE_URL = import.meta.env.VITE_BASE_URL;
+const GITHUB_ID = import.meta.env.VITE_GITHUB_CLIENT_ID;
 const IdentitySetting = () => {
   const [open, setOpen] = useState(false);
-
+  const role = useSelector(state => state.user.user.current_role);
+  const linkedAccounts = useSelector(state => state.user.user.linked_accounts);
+  console.log(linkedAccounts);
   const handleConnectGithub = () => {
-    window.open(
-      `https://github.com/login/oauth/authorize?client_id=${GITHUB_ID}&redirect_uri=${BASE_URL}github/auditor&scope=read:user,user:email`,
-      '_self',
-    );
+    if (!linkedAccounts.find(el => el.name.toLowerCase() === 'github')) {
+      window.open(
+        `https://github.com/login/oauth/authorize?client_id=${GITHUB_ID}&redirect_uri=${BASE_URL}oauth/callback&scope=read:user,user:email`,
+        '_self',
+      );
+    }
   };
-
   const handleConnectLinkedin = () => {
-    window.open(
-      `https://github.com/login/oauth/authorize?client_id=${GITHUB_ID}&redirect_uri=${BASE_URL}github/auditor&scope=read:user,user:email`,
-      '_self',
-    );
+    if (!linkedAccounts.find(el => el.name.toLowerCase() === 'linkedin')) {
+      window.open(
+        `https://linkedin.com/oauth/v2/authorization?response_type=code&client_id=78jn81hcb0h5iu&redirect_uri=${BASE_URL}oauth/callback&scope=profile%20email%20openid&state=${role}_LinkedIn`,
+        '_self',
+      );
+    }
   };
 
+  const handleConnectTwitter = () => {
+    if (!linkedAccounts.find(el => el.name.toLowerCase() === 'x')) {
+      window.open(
+        `https://twitter.com/i/oauth2/authorize?response_type=code&client_id=${TWITTER_CLIENT_ID}&redirect_uri=${BASE_URL}oauth/callback&scope=tweet.read%20users.read%20follows.read%20offline.access&code_challenge=challenge&code_challenge_method=plain&state=${role}_X`,
+        '_self',
+      );
+    }
+  };
+
+  // https://twitter.com/i/oauth2/authorize?response_type=code&client_id=SS1uQ0JoYm9ra3FjR1BOMV9WMDE6MTpjaQ&redirect_uri=https://dev.auditdb.io/oauth/callback&scope=tweet.read%20users.read%20follows.read%20offline.access&code_challenge=challenge&code_challenge_method=plain&state=state
   const handleClose = () => {
     setOpen(false);
   };
@@ -57,7 +76,12 @@ const IdentitySetting = () => {
               }}
             >
               <Box
-                sx={[cardSx, { border: '1px solid green' }]}
+                sx={[
+                  cardSx,
+                  linkedAccounts.find(el => el.name.toLowerCase() === 'github')
+                    ? { border: '1px solid green' }
+                    : {},
+                ]}
                 onClick={handleConnectGithub}
               >
                 <Box
@@ -73,17 +97,31 @@ const IdentitySetting = () => {
                   />
                   <Typography>Github</Typography>
                 </Box>
-                <Tooltip placement={'top'} arrow title={'Show in profile'}>
-                  <Checkbox
-                    defaultChecked
-                    icon={<VisibilityOffIcon />}
-                    checkedIcon={<RemoveRedEyeIcon />}
-                  />
-                </Tooltip>
+                {linkedAccounts.find(
+                  el => el.name.toLowerCase() === 'github',
+                ) && (
+                  <Tooltip placement={'top'} arrow title={'Show in profile'}>
+                    <Checkbox
+                      defaultChecked
+                      icon={<VisibilityOffIcon />}
+                      checkedIcon={<RemoveRedEyeIcon />}
+                    />
+                  </Tooltip>
+                )}
               </Box>
               <Box
-                sx={[cardSx, { border: '1px solid green' }]}
+                sx={[
+                  cardSx,
+                  linkedAccounts.find(
+                    el => el.name.toLowerCase() === 'linkedin',
+                  )
+                    ? { border: '1px solid green' }
+                    : {},
+                ]}
                 onClick={handleConnectLinkedin}
+                disabled={linkedAccounts.find(
+                  el => el.name.toLowerCase() === 'linkedin',
+                )}
               >
                 <Box
                   sx={{
@@ -96,32 +134,30 @@ const IdentitySetting = () => {
                   <LinkedinIcon />
                   <Typography>Linkedin</Typography>
                 </Box>
-                <Tooltip arrow placement={'top'} title={'Show in profile'}>
-                  <Checkbox
-                    icon={<VisibilityOffIcon />}
-                    checkedIcon={<RemoveRedEyeIcon />}
-                  />
-                </Tooltip>
+                {linkedAccounts.find(
+                  el => el.name.toLowerCase() === 'linkedin',
+                ) && (
+                  <Tooltip arrow placement={'top'} title={'Show in profile'}>
+                    <Checkbox
+                      icon={<VisibilityOffIcon />}
+                      checkedIcon={<RemoveRedEyeIcon />}
+                    />
+                  </Tooltip>
+                )}
               </Box>
-              <Box sx={cardSx}>
+              <Box
+                sx={[
+                  cardSx,
+                  linkedAccounts.find(el => el.name.toLowerCase() === 'x')
+                    ? { border: '1px solid green' }
+                    : {},
+                ]}
+              >
                 <Box
-                  sx={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '7px',
-                    width: '100%',
-                  }}
-                >
-                  <FacebookIcon />
-                  <Typography>Facebook</Typography>
-                </Box>
-                {/*<Checkbox*/}
-                {/*  icon={<VisibilityOffIcon />}*/}
-                {/*  checkedIcon={<RemoveRedEyeIcon />}*/}
-                {/*/>*/}
-              </Box>
-              <Box sx={[cardSx]}>
-                <Box
+                  onClick={handleConnectTwitter}
+                  disabled={linkedAccounts.find(
+                    el => el.name.toLowerCase() === 'x',
+                  )}
                   sx={{
                     display: 'flex',
                     alignItems: 'center',
@@ -135,8 +171,23 @@ const IdentitySetting = () => {
                   <XTwitterLogo width={'50px'} height={'50px'} space />
                   <Typography>Twitter</Typography>
                 </Box>
+                {linkedAccounts.find(el => el.name.toLowerCase() === 'x') && (
+                  <Tooltip arrow placement={'top'} title={'Show in profile'}>
+                    <Checkbox
+                      icon={<VisibilityOffIcon />}
+                      checkedIcon={<RemoveRedEyeIcon />}
+                    />
+                  </Tooltip>
+                )}
               </Box>
-              <Box sx={cardSx}>
+              <Box
+                sx={[
+                  cardSx,
+                  linkedAccounts.find(el => el.name.toLowerCase() === 'gitcoin')
+                    ? { border: '1px solid green' }
+                    : {},
+                ]}
+              >
                 <Box
                   sx={{
                     display: 'flex',
@@ -151,6 +202,16 @@ const IdentitySetting = () => {
                   <GitcoinIcon />
                   <Typography>Gitcoin</Typography>
                 </Box>
+                {linkedAccounts.find(
+                  el => el.name.toLowerCase() === 'Gitcoin',
+                ) && (
+                  <Tooltip arrow placement={'top'} title={'Show in profile'}>
+                    <Checkbox
+                      icon={<VisibilityOffIcon />}
+                      checkedIcon={<RemoveRedEyeIcon />}
+                    />
+                  </Tooltip>
+                )}
               </Box>
               <Box>
                 <Button
@@ -219,9 +280,8 @@ const modalSx = theme => ({
   pb: '24px',
   [theme.breakpoints.down('xs')]: {
     width: '80%',
-    height: '497px',
     overflow: 'auto',
-    padding: '10px 15px',
+    padding: '15px',
   },
 });
 

@@ -16,6 +16,7 @@ import {
   CHANGE_ROLE_DONT_HAVE_PROFILE_AUDITOR,
   RESTORE_PASSWORD,
   SEND_EMAIL,
+  CONNECT_ACCOUNT,
 } from '../actions/types.js';
 
 const initialState = {
@@ -39,6 +40,14 @@ export const userReducer = (state = initialState, action) => {
         user: action.payload,
         success:
           'An authorization email has been sent to your email address, please check your email',
+      };
+    case CONNECT_ACCOUNT:
+      return {
+        ...state,
+        user: {
+          ...state.user,
+          linked_accounts: [...state.user.linked_accounts, action.payload],
+        },
       };
     case AUTH_TRUE:
       return { ...state, isAuth: true };
