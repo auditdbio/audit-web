@@ -144,15 +144,18 @@ export default function AuditorModal({
                       </Tooltip>
                     </Box>
                   </Box>
-                  <Box sx={infoWrapper}>
-                    <span>Price:</span>
-                    {auditor.price_range.from && (
-                      <Typography>
-                        ${auditor.price_range.from} - {auditor.price_range.to}{' '}
-                        per line
-                      </Typography>
-                    )}
-                  </Box>
+                  {auditor.price_range.from > 0 ||
+                    (auditor.price_range.to > 0 && (
+                      <Box sx={infoWrapper}>
+                        <span>Price:</span>
+                        {auditor.price_range.from && (
+                          <Typography>
+                            ${auditor.price_range.from} -{' '}
+                            {auditor.price_range.to} per line
+                          </Typography>
+                        )}
+                      </Box>
+                    ))}
                   <Box sx={infoWrapper}>
                     <span>E-mail</span>
                     <Box sx={{ display: 'grid' }}>

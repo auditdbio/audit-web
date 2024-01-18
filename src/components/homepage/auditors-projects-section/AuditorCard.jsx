@@ -90,12 +90,15 @@ const AuditorCard = ({ auditor }) => {
         }}
       >
         <Box sx={badgesStyle}>
-          <Box sx={infoStyle}>
-            <Currency />
-            <Typography sx={priceSx}>
-              {auditor.price_range.from} - {auditor.price_range.to}
-            </Typography>
-          </Box>
+          {auditor.price_range.from > 0 ||
+            (auditor.price_range.to > 0 && (
+              <Box sx={infoStyle}>
+                <Currency />
+                <Typography sx={priceSx}>
+                  {auditor.price_range.from} - {auditor.price_range.to}
+                </Typography>
+              </Box>
+            ))}
           <Box sx={infoStyle}>
             <Star />
             <Typography sx={priceSx}>150</Typography>
