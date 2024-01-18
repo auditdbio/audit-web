@@ -21,6 +21,7 @@ import {
   RESTORE_PASSWORD,
   SEND_EMAIL,
   CONNECT_ACCOUNT,
+  CHANGE_ACCOUNT_VISIBILITY,
 } from './types.js';
 
 const API_URL = import.meta.env.VITE_API_BASE_URL;
@@ -110,8 +111,41 @@ export const signUp = values => {
   };
 };
 
+export const changeAccountVisibility = (user_id, values, account_id) => {
+  return dispatch => {
+    axios
+      .patch(
+        `${API_URL}/user/${user_id}/linked_account/${account_id}`,
+        values,
+        {
+          headers: {
+            Authorization: 'Bearer ' + Cookies.get('token'),
+            'Content-Type': 'application/json',
+          },
+        },
+      )
+      .then(({ data }) => {
+        dispatch({ type: CHANGE_ACCOUNT_VISIBILITY, payload: data });
+        const user = JSON.parse(localStorage.getItem('user'));
+        const newData = {
+          ...user,
+          linked_accounts: user.linked_accounts.map(item => {
+            if (item.id === account_id) {
+              return data;
+            }
+            return item;
+          }),
+        };
+        localStorage.setItem('user', JSON.stringify(newData));
+        console.log(user);
+      })
+      .catch(({ response }) => {
+        console.log(response);
+      });
+  };
+};
+
 export const connect_account = (user_id, values) => {
-  console.log(values);
   return dispatch => {
     axios
       .post(`${API_URL}/user/${user_id}/linked_account`, values, {
@@ -127,7 +161,7 @@ export const connect_account = (user_id, values) => {
         });
       })
       .catch(({ response }) => {
-        dispatch({ type: USER_IS_ALREADY_EXIST });
+        console.log(response);
       });
   };
 };

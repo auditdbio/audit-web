@@ -17,6 +17,7 @@ import {
   RESTORE_PASSWORD,
   SEND_EMAIL,
   CONNECT_ACCOUNT,
+  CHANGE_ACCOUNT_VISIBILITY,
 } from '../actions/types.js';
 
 const initialState = {
@@ -47,6 +48,19 @@ export const userReducer = (state = initialState, action) => {
         user: {
           ...state.user,
           linked_accounts: [...state.user.linked_accounts, action.payload],
+        },
+      };
+    case CHANGE_ACCOUNT_VISIBILITY:
+      return {
+        ...state,
+        user: {
+          ...state.user,
+          linked_accounts: state.user.linked_accounts.map(account => {
+            if (account.id === action.payload.id) {
+              return action.payload;
+            }
+            return account;
+          }),
         },
       };
     case AUTH_TRUE:

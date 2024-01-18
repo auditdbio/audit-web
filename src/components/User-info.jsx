@@ -24,6 +24,8 @@ import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import { Link as RouterLink } from 'react-router-dom';
 import IdentitySetting from './IdentitySetting/IdentitySetting.jsx';
 import LinkedinIcon from './icons/LinkedinIcon.jsx';
+import GitcoinIcon from './icons/GitcoinIcon.jsx';
+import XTwitterLogo from './icons/XTwitter-logo.jsx';
 
 const UserInfo = ({ role }) => {
   const navigate = useNavigate();
@@ -127,12 +129,24 @@ const UserInfo = ({ role }) => {
                   <LinkedinIcon />
                 </Box>
               );
-            } else {
+            } else if (account.name.toLowerCase() === 'github') {
               return (
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: '7px' }}>
                   <GitHubIcon
                     sx={{ width: '50px', height: '50px', padding: '4px' }}
                   />
+                </Box>
+              );
+            } else if (account.name.toLowerCase() === 'gitcoin') {
+              return (
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: '7px' }}>
+                  <GitcoinIcon />
+                </Box>
+              );
+            } else {
+              return (
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: '7px' }}>
+                  <XTwitterLogo width={'50px'} height={'50px'} space />
                 </Box>
               );
             }
