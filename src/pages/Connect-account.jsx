@@ -16,29 +16,34 @@ const ConnectAccount = () => {
   const user_id = useSelector(state => state.user.user.id);
 
   useEffect(() => {
-    const data = {
-      code: searchParam.get('code'),
-      current_role: searchParam
-        .get('state')
-        .slice(0, searchParam.get('state').indexOf('_')),
-      service: searchParam
-        .get('state')
-        .slice(searchParam.get('state').indexOf('_') + 1),
-    };
     if (
       searchParam
         .get('state')
         .slice(searchParam.get('state').lastIndexOf('_') + 1) === 'auth'
     ) {
-      dispatch(
-        signUpGithub(
-          searchParam.get('code'),
-          searchParam
-            .get('state')
-            .slice(0, searchParam.get('state').indexOf('_')),
-        ),
-      );
+      const value = {
+        code: searchParam.get('code'),
+        current_role: searchParam
+          .get('state')
+          .slice(0, searchParam.get('state').indexOf('_')),
+        service: searchParam
+          .get('state')
+          .slice(
+            searchParam.get('state').indexOf('_') + 1,
+            searchParam.get('state').lastIndexOf('_'),
+          ),
+      };
+      dispatch(signUpGithub(value));
     } else {
+      const data = {
+        code: searchParam.get('code'),
+        current_role: searchParam
+          .get('state')
+          .slice(0, searchParam.get('state').indexOf('_')),
+        service: searchParam
+          .get('state')
+          .slice(searchParam.get('state').indexOf('_') + 1),
+      };
       dispatch(connect_account(user_id, data));
     }
   }, []);
