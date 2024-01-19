@@ -25,7 +25,22 @@ const ConnectAccount = () => {
         .get('state')
         .slice(searchParam.get('state').indexOf('_') + 1),
     };
-    dispatch(connect_account(user_id, data));
+    if (
+      searchParam
+        .get('state')
+        .slice(searchParam.get('state').lastIndexOf('_') + 1) === 'auth'
+    ) {
+      dispatch(
+        signUpGithub(
+          searchParam.get('code'),
+          searchParam
+            .get('state')
+            .slice(0, searchParam.get('state').indexOf('_')),
+        ),
+      );
+    } else {
+      dispatch(connect_account(user_id, data));
+    }
   }, []);
 
   return (
