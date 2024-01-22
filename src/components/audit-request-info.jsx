@@ -107,7 +107,7 @@ const AuditRequestInfo = ({
         members,
       }),
     );
-
+    localStorage.setItem('path', window.location.pathname);
     navigate(`/chat/${project?.customer_id}`);
   };
 

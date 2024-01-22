@@ -107,7 +107,7 @@ const AuditOffer = () => {
         members,
       }),
     );
-
+    localStorage.setItem('path', window.location.pathname);
     navigate(`/chat/${audit?.customer_id}`);
   };
 

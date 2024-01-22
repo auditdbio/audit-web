@@ -101,7 +101,7 @@ const PublicProfile = () => {
         members,
       }),
     );
-
+    localStorage.setItem('path', window.location.pathname);
     navigate(`/chat/${chatId}`);
   };
 

@@ -83,11 +83,11 @@ const CurrentChat = ({
     setUserLinkData({ id: interlocutor?.id, role: interlocutor?.role });
 
     setUnread(
-      currentChat?.unread.find(member => member.id === user.id)?.unread || 0,
+      currentChat?.unread?.find(member => member.id === user.id)?.unread || 0,
     );
 
     setInterlocutorUnread(
-      currentChat?.unread.find(member => member.id !== user.id)?.unread,
+      currentChat?.unread?.find(member => member.id !== user.id)?.unread,
     );
   }, [currentChat, chatList]);
 

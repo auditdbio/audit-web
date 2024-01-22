@@ -103,6 +103,7 @@ export default function AuditorModal({
         members,
       }),
     );
+    localStorage.setItem('path', window.location.pathname);
     navigate(`/chat/${existingChat ? existingChat.id : auditor?.user_id}`);
   };
 

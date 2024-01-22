@@ -91,7 +91,7 @@ const AuditInfo = ({ audit, auditRequest, issues, confirmed }) => {
         members,
       }),
     );
-
+    localStorage.setItem('path', window.location.pathname);
     navigate(`/chat/${audit?.auditor_id}`);
   };
 

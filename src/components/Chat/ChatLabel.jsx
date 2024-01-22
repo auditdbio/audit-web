@@ -17,9 +17,13 @@ const ChatLabel = () => {
     dispatch(getTotalUnreadMessages());
   }, [chatList]);
 
+  const handleClick = () => {
+    localStorage.setItem('path', window.location.pathname);
+  };
+
   return (
     <Box sx={wrapper}>
-      <Link to="/chat">
+      <Link to="/chat" onClick={handleClick}>
         <CustomBadge
           badgeContent={unreadMessages}
           color={user.current_role === AUDITOR ? 'secondary' : 'primary'}

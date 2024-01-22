@@ -36,13 +36,27 @@ const ChatPage = () => {
     }
   }, [id, chatList.length]);
 
+  const handleGoBack = () => {
+    if (localStorage.getItem('path')) {
+      navigate(localStorage.getItem('path'));
+    } else {
+      navigate(-1);
+    }
+  };
+
+  useEffect(() => {
+    return () => {
+      localStorage.removeItem('path');
+    };
+  }, []);
+
   return (
     <Layout sx={layoutSx}>
       <CustomCard sx={wrapper}>
         <Button
           variant={'text'}
           sx={{ textTransform: 'unset', ml: '-15px', paddingLeft: '0' }}
-          onClick={() => navigate(-1, { state: { from: 'chat' } })}
+          onClick={handleGoBack}
         >
           <ArrowBackIcon />
         </Button>
