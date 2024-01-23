@@ -11,6 +11,7 @@ const CommitModal = ({ sha, onClose, repository }) => {
   const [field, meta, fieldHelper] = useField('scope');
   const [data, setData] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
+  const [selected, setSelected] = useState([]);
   useEffect(() => {
     if (repository) {
       axios(`https://api.github.com/repos/${repository}/commits/${sha}`).then(
@@ -18,10 +19,24 @@ const CommitModal = ({ sha, onClose, repository }) => {
       );
     }
   }, [repository]);
-
   const handleAdd = file => {
-    fieldHelper.setValue([...field.value, file.blob_url]);
-    setModalOpen(true);
+    if (selected.includes(file.blob_url)) {
+      setSelected(selected.filter(item => item !== file.blob_url));
+    } else if (field.value.includes(file.blob_url)) {
+      fieldHelper.setValue(field.value.filter(item => item !== file.blob_url));
+    } else {
+      setSelected([...selected, file.blob_url]);
+    }
+  };
+
+  const handleSave = () => {
+    fieldHelper.setValue([...field.value, ...selected]);
+    onClose();
+  };
+
+  const handleReset = () => {
+    setSelected([]);
+    onClose();
   };
 
   return (
@@ -53,7 +68,7 @@ const CommitModal = ({ sha, onClose, repository }) => {
             left: 0,
             minWidth: '40px',
           }}
-          onClick={onClose}
+          onClick={handleReset}
         >
           <CloseRoundedIcon />
         </Button>
@@ -67,21 +82,40 @@ const CommitModal = ({ sha, onClose, repository }) => {
           </Typography>
           <Box
             sx={{
-              display: 'flex',
-              gap: '20px',
-              alignItems: 'center',
               marginY: '15px',
+              display: 'flex',
+              justifyContent: 'space-between',
             }}
           >
-            <Avatar
-              sx={{ width: 32, height: 32 }}
-              alt={data?.commit.author.name}
-              src={data?.author?.avatar_url}
-            />
-            <Typography>{data?.commit.author.name}</Typography>
-            <Typography sx={{ fontSize: '12px' }}>
-              {dayjs(data?.commit.author.date).format('DD MMM YYYY')}
-            </Typography>
+            <Box
+              sx={{
+                display: 'flex',
+                gap: '10px',
+                alignItems: 'center',
+              }}
+            >
+              <Avatar
+                sx={{ width: 32, height: 32 }}
+                alt={data?.commit.author.name}
+                src={data?.author?.avatar_url}
+              />
+              <Typography>{data?.commit.author.name}</Typography>
+              <Typography sx={{ fontSize: '12px' }}>
+                {dayjs(data?.commit.author.date).format('DD MMM YYYY')}
+              </Typography>
+            </Box>
+            <Box sx={{ display: 'flex', gap: '15px' }}>
+              <Button variant={'contained'} onClick={handleSave}>
+                Submit
+              </Button>
+              <Button
+                variant={'contained'}
+                onClick={handleReset}
+                color={'secondary'}
+              >
+                Reset
+              </Button>
+            </Box>
           </Box>
         </Box>
         {data?.files.length ? (
@@ -100,11 +134,22 @@ const CommitModal = ({ sha, onClose, repository }) => {
             {data?.files.map(file => (
               <Box
                 key={file.sha}
-                sx={{
-                  backgroundColor: '#dfdfdf',
-                  padding: '5px 7px',
-                  borderRadius: '7px',
-                }}
+                sx={[
+                  {
+                    backgroundColor: '#dfdfdf',
+                    border: '2px solid transparent',
+                    padding: '5px 7px',
+                    borderRadius: '7px',
+                    cursor: 'pointer',
+                  },
+                  selected.includes(file.blob_url) ||
+                  field.value.includes(file.blob_url)
+                    ? {
+                        border: '2px solid #FF9900',
+                        backgroundColor: '#c4c4c4',
+                      }
+                    : {},
+                ]}
                 onClick={() => handleAdd(file)}
               >
                 <Typography sx={{ overflowWrap: 'break-word' }}>

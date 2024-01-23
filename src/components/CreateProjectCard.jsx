@@ -76,7 +76,7 @@ const CreateProjectCard = ({ projectInfo }) => {
           ),
       );
     }
-  }, [auditReducer]);
+  }, [auditReducer.auditRequests]);
 
   let editMode = !!projectInfo;
 

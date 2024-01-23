@@ -1,23 +1,50 @@
 import React, { useState, useEffect } from 'react';
 import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
-import { CircularProgress, InputAdornment } from '@mui/material';
+import {
+  Box,
+  Button,
+  CircularProgress,
+  ClickAwayListener,
+  InputAdornment,
+  Typography,
+} from '@mui/material';
 import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
+import GithubBranchIcon from './icons/GithubBranchIcon.jsx';
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 
-const GithubBranchAutocomplete = ({ onClick, repository }) => {
+const GithubBranchAutocomplete = ({
+  onClick,
+  repository,
+  defaultBranch,
+  branch,
+}) => {
   const [branches, setBranches] = useState([]);
   const [loading, setLoading] = useState(false);
   const [inputValue, setInputValue] = useState('');
-  let currentPage = 1;
+  const [open, setOpen] = React.useState(false);
 
   const fetchInitialBranches = async () => {
     try {
       setLoading(true);
-      const response = await fetch(
-        `https://api.github.com/repos/${repository}/branches?per_page=50`,
-      );
-      const data = await response.json();
-      setBranches(data.map(branch => branch.name));
+      let allBranches = [];
+      let page = 1;
+      let perPage = 100; // Установите желаемое значение per_page
+
+      while (true) {
+        const response = await fetch(
+          `https://api.github.com/repos/${repository}/branches?per_page=${perPage}&page=${page}`,
+        );
+
+        const data = await response.json();
+        if (data.length === 0) {
+          break;
+        } else {
+          page++;
+        }
+        allBranches = [...allBranches, ...data.map(branch => branch.name)];
+      }
+      setBranches(allBranches);
     } catch (error) {
       console.error('Error fetching branches:', error);
     } finally {
@@ -26,85 +53,89 @@ const GithubBranchAutocomplete = ({ onClick, repository }) => {
   };
 
   useEffect(() => {
-    if (branches.length === 0) {
-      fetchInitialBranches();
-    }
-  }, [branches]); // Run only on the initial render
+    fetchInitialBranches();
+  }, []);
 
-  useEffect(() => {
-    const delayedFetchBranches = setTimeout(() => {
-      const fetchBranches = async () => {
-        try {
-          setLoading(true);
-          const response = await fetch(
-            `https://api.github.com/repos/${repository}/branches?q=${inputValue}&per_page=100&page=${currentPage}`,
-          );
-          const data = await response.json();
-          setBranches(prevBranches =>
-            [...prevBranches, ...data.map(branch => branch.name)].filter(
-              (value, index, self) => self.indexOf(value) === index,
-            ),
-          );
+  const handleClick = () => {
+    setOpen(prev => !prev);
+  };
 
-          if (data.length === 100) {
-            currentPage++;
-            fetchBranches();
-          }
-        } catch (error) {
-          console.error('Error fetching branches:', error);
-        } finally {
-          setLoading(false);
-        }
-      };
+  const handleClickAway = () => {
+    setInputValue('');
+    setOpen(false);
+  };
 
-      setBranches([]);
-      currentPage = 1;
-
-      if (inputValue.trim() !== '') {
-        fetchBranches();
-      }
-    }, 500); // 500 milliseconds delay
-
-    return () => clearTimeout(delayedFetchBranches);
-  }, [inputValue, repository]);
+  const handleChoose = branch => {
+    onClick(branch);
+    handleClickAway();
+  };
 
   return (
-    <Autocomplete
-      freeSolo
-      options={branches}
-      loading={loading}
-      disableClearable
-      sx={fieldSx}
-      getOptionLabel={option => option}
-      onInputChange={(event, newInputValue) => setInputValue(newInputValue)}
-      onChange={(event, newValue) => {
-        if (newValue) {
-          onClick(newValue);
-        }
-      }}
-      renderInput={params => (
-        <TextField
-          {...params}
-          label="Search branches"
-          variant="outlined"
-          InputProps={{
-            ...params.InputProps,
-            endAdornment: (
-              <>
-                {loading ? (
-                  <CircularProgress color="inherit" size={20} />
-                ) : (
-                  <InputAdornment position="start">
-                    <SearchOutlinedIcon style={{ color: '#6a737d' }} />
-                  </InputAdornment>
-                )}
-                {params.InputProps.endAdornment}
-              </>
-            ),
-          }}
-        />
-      )}
-    />
+    <ClickAwayListener onClickAway={handleClickAway}>
+      <Box sx={{ position: 'relative' }}>
+        <Button
+          sx={{ textTransform: 'unset', display: 'flex', gap: '5px' }}
+          variant={'contained'}
+          onClick={handleClick}
+        >
+          <GithubBranchIcon />
+          <Typography sx={branchTitleSx} noWrap={true} variant={'body2'}>
+            {branch ? branch : defaultBranch}
+          </Typography>
+          <ArrowDropDownIcon />
+        </Button>
+        {open ? (
+          <Box sx={modalWrapper}>
+            <TextField
+              sx={fieldSx}
+              label="Search branches"
+              variant="outlined"
+              size={'small'}
+              onChange={e => setInputValue(e.target.value)}
+              InputProps={{
+                endAdornment: (
+                  <>
+                    {loading ? (
+                      <CircularProgress color="inherit" size={20} />
+                    ) : (
+                      <InputAdornment position="start">
+                        <SearchOutlinedIcon style={{ color: '#6a737d' }} />
+                      </InputAdornment>
+                    )}
+                  </>
+                ),
+              }}
+            />
+            <Box sx={{ height: '100%', maxHeight: '350px', overflowY: 'auto' }}>
+              {branches
+                ?.filter(branch => branch.includes(inputValue))
+                ?.map((branch, idx) => (
+                  <Box
+                    onClick={() => handleChoose(branch)}
+                    sx={[
+                      {
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        py: 1,
+                        px: 2,
+                        overflowX: 'auto',
+                        border: '0.5px solid #d9d9d9',
+                        '&:hover': {
+                          bgcolor: '#f1f8ff',
+                        },
+                      },
+                    ]}
+                  >
+                    <Box>{branch}</Box>
+                    <Box></Box>
+                  </Box>
+                ))}
+            </Box>
+          </Box>
+        ) : null}
+      </Box>
+    </ClickAwayListener>
   );
 };
 
@@ -113,8 +144,36 @@ export default GithubBranchAutocomplete;
 const fieldSx = theme => ({
   maxWidth: '400px',
   width: '100%',
-  '& label': { top: '-5px' },
+  '& .MuiAutocomplete-popper': {
+    borderRadius: '0!important',
+  },
   [theme.breakpoints.down('xs')]: {
     maxWidth: '100%',
+  },
+});
+
+const branchTitleSx = theme => ({
+  [theme.breakpoints.down('xs')]: {
+    maxWidth: '300px',
+  },
+  [theme.breakpoints.down(500)]: {
+    maxWidth: '200px',
+  },
+});
+
+const modalWrapper = theme => ({
+  position: 'absolute',
+  top: '40px',
+  width: '350px',
+  left: 0,
+  zIndex: 777,
+  p: 1,
+  bgcolor: '#f8f8f8',
+  border: '1px solid #e1e1e1',
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '20px',
+  [theme.breakpoints.down(450)]: {
+    width: '300px',
   },
 });

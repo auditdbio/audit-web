@@ -58,16 +58,6 @@ const TagsField = ({
     }
   };
 
-  useEffect(() => {
-    if (name === 'scope') {
-      fieldHelper.setValue(
-        field.value.filter(
-          (value, index, self) => self.indexOf(value) === index,
-        ),
-      );
-    }
-  }, [field.value]);
-
   const handleChange = e => {
     setState(e.target.value);
   };

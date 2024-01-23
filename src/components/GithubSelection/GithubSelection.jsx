@@ -89,7 +89,7 @@ const GithubSelection = () => {
         setDefaultBranch(data.default_branch),
       );
       axios(
-        `https://api.github.com/repos/${repository}/commits?sha=${branch}&per_page=50&page=${page}`,
+        `https://api.github.com/repos/${repository}/commits?sha=${branch}&per_page=100&page=${page}`,
       )
         .then(({ data }) => {
           setCommits(data); // Обработка списка репозиториев
@@ -112,6 +112,8 @@ const GithubSelection = () => {
     setIsOpen(false);
     setRepository(null);
     setUrlRepo('');
+    setBranch('');
+    setPage(1);
   };
 
   return (
@@ -198,10 +200,9 @@ const GithubSelection = () => {
                 <GithubBranchAutocomplete
                   onClick={setBranch}
                   repository={repository}
+                  defaultBranch={defaultBranch}
+                  branch={branch}
                 />
-                <Typography>
-                  Branch: {branch ? branch : defaultBranch}
-                </Typography>
               </Box>
               <Typography>Commits:</Typography>
               <Divider />
@@ -352,10 +353,6 @@ const fieldWrapper = theme => ({
   display: 'flex',
   justifyContent: 'space-between',
   alignItems: 'center',
-  [theme.breakpoints.down('xs')]: {
-    flexDirection: 'column',
-    gap: '10px',
-  },
 });
 
 const listWrapper = theme => ({
