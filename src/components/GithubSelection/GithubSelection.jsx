@@ -102,7 +102,14 @@ const GithubSelection = () => {
 
   const handleAddProject = () => {
     if (urlRepo.includes('github.com/')) {
-      setRepository(linkShortener(urlRepo));
+      function parseGitHubUrl(gitHubUrl) {
+        const urlParts = gitHubUrl.split('/');
+        const owner = urlParts[3];
+        const repo = urlParts[4];
+
+        return `${owner}/${repo}`;
+      }
+      setRepository(parseGitHubUrl(urlRepo));
     } else {
       setError('Please enter a valid Github repository url');
     }
