@@ -35,7 +35,19 @@ const CommitItem = ({ commit, repository }) => {
             },
           }}
         >
-          <Typography>{commit.commit.message}</Typography>
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              gap: '10px',
+              width: '100%',
+            }}
+          >
+            <Typography>{commit.commit.message}</Typography>
+            <Typography variant={'caption'}>
+              {commit.sha.slice(0, 7)}
+            </Typography>
+          </Box>
         </Box>
         <Box sx={{ display: 'flex', gap: '7px', alignItems: 'center' }}>
           <Avatar

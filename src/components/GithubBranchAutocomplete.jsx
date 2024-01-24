@@ -128,7 +128,6 @@ const GithubBranchAutocomplete = ({
                     ]}
                   >
                     <Box>{branch}</Box>
-                    <Box></Box>
                   </Box>
                 ))}
             </Box>
