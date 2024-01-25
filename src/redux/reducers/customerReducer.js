@@ -1,12 +1,15 @@
 import {
   GET_CURRENT_CUSTOMER,
   GET_CUSTOMER,
+  GET_CUSTOMERS,
   LOG_OUT,
   UPDATE_CUSTOMER,
 } from '../actions/types.js';
 
 const initialState = {
   customer: null,
+  customers: [],
+  searchTotalCustomers: 0,
   error: null,
 };
 
@@ -22,6 +25,12 @@ export const customerReducer = (state = initialState, action) => {
       return {
         ...state,
         currentCustomer: action.payload,
+      };
+    case GET_CUSTOMERS:
+      return {
+        ...state,
+        customers: action.payload.result,
+        searchTotalCustomers: action.payload.totalDocuments,
       };
     case LOG_OUT:
       return initialState;
