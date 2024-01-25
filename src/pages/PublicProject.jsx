@@ -93,7 +93,6 @@ const PublicProject = () => {
 
   const handleSendMessage = () => {
     window.scrollTo(0, 0);
-    console.log(123);
     const existingChat = chatList.find(chat =>
       chat.members?.find(
         member =>
