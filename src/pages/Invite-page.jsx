@@ -20,7 +20,7 @@ import SubmitModal from '../components/modal/Submit-modal.jsx';
 import MergeModal from '../components/modal/Merge-modal.jsx';
 import { useParams } from 'react-router-dom';
 import { mergeCurrentAccount } from '../redux/actions/auditorAction.js';
-//
+
 const InvitePage = () => {
   const dispatch = useDispatch();
   const matchMd = useMediaQuery(theme.breakpoints.down('md'));
@@ -52,7 +52,8 @@ const InvitePage = () => {
           validateOnBlur={false}
           validateOnChange={false}
           onSubmit={values => {
-            dispatch(signUp(values));
+            const newValues = { ...values, secret };
+            dispatch(signUp(newValues));
           }}
         >
           {({ handleSubmit }) => (

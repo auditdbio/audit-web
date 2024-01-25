@@ -4,6 +4,7 @@ import {
   DISCLOSE_ALL_ISSUES,
   GET_AUDIT_ISSUES,
   REQUEST_ERROR,
+  RESET_PUBLIC_AUDIT,
   SET_READ_CHANGES,
   UPDATE_AUDIT_ISSUE,
 } from '../actions/types.js';
@@ -37,6 +38,8 @@ export const issueReducer = (state = initialState, action) => {
           issue.id === action.payload.issue.id ? action.payload.issue : issue,
         ),
       };
+    case RESET_PUBLIC_AUDIT:
+      return { ...state, issues: [] };
     case DISCLOSE_ALL_ISSUES:
       return {
         ...state,

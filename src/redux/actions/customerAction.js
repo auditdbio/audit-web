@@ -69,7 +69,7 @@ export const createCustomer = values => {
   };
 };
 
-export const updateCustomer = values => {
+export const updateCustomer = (values, redirect = true) => {
   const token = Cookies.get('token');
   return dispatch => {
     axios
@@ -78,12 +78,9 @@ export const updateCustomer = values => {
       })
       .then(({ data }) => {
         dispatch({ type: 'UPDATE_CUSTOMER', payload: data });
-        history.push(
-          { pathname: `/profile/user-info` },
-          {
-            some: true,
-          },
-        );
+        if (redirect) {
+          history.push({ pathname: `/profile/user-info` }, { some: true });
+        }
       })
       .catch(({ response }) => {
         console.log(response, 'res');

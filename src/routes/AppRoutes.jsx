@@ -44,6 +44,7 @@ import {
 import PublicProject from '../pages/PublicProject.jsx';
 import ChatPage from '../pages/ChatPage.jsx';
 import { getChatList } from '../redux/actions/chatActions.js';
+import PublicConstructor from '../pages/PublicConstructor.jsx';
 import CustomSnackbar from '../components/custom/CustomSnackbar.jsx';
 import InvitePage from '../pages/Invite-page.jsx';
 import DeleteBadge from '../pages/Delete-badge.jsx';
@@ -141,6 +142,10 @@ const AppRoutes = () => {
           path={'/restore-password/:token'}
           element={<RestorePasswordPage />}
         />
+        <Route
+          path={'/audit-builder/:auditId'}
+          element={<PublicConstructor />}
+        />
         <Route path={'/projects'} element={<ProjectPage />} />
         <Route path={'/projects/:id'} element={<PublicProject />} />
         <Route path={'/for-customers'} element={<ForCustomer />} />
@@ -224,12 +229,20 @@ const AppRoutes = () => {
           }
         />
         <Route
+          path="/public-issues/audit-issue/:auditId/:issueId"
+          element={<AuditIssueDetails isPublic={true} />}
+        />
+        <Route
           path="/issues/new-issue/:auditId"
           element={
             <PrivateRoute auth={{ isAuthenticated: isAuth() }}>
               <CreateIssuePage />
             </PrivateRoute>
           }
+        />
+        <Route
+          path="/public-issues/new-issue/:auditId"
+          element={<CreateIssuePage isPublic={true} />}
         />
         <Route
           path="/create-project"

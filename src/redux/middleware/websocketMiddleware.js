@@ -19,6 +19,7 @@ import {
   receiveCustomerMessage,
 } from '../actions/websocketAction.js';
 import { receiveNewChatMessage } from '../actions/chatActions.js';
+
 const API_URL = import.meta.env.VITE_API_WS_BASE_URL;
 
 const websocketMiddleware = () => {
@@ -90,18 +91,6 @@ const websocketMiddleware = () => {
           };
         }
         break;
-
-      // case CHAT_SEND_MESSAGE:
-      //   if (socket) {
-      //     const message = {
-      //       kind: 'ChatMessage',
-      //       text: action.payload?.text,
-      //       to: action.payload?.to,
-      //       is_first: action.payload?.isFirst || false,
-      //     };
-      //     socket.send(JSON.stringify(message));
-      //   }
-      //   break;
 
       case WEBSOCKET_DISCONNECT:
         if (socket) {

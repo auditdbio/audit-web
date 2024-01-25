@@ -1,29 +1,30 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useMemo } from 'react';
 import {
   Avatar,
   Box,
   Button,
-  Chip,
   Typography,
+  Link,
   useMediaQuery,
 } from '@mui/material';
+import GitHubIcon from '@mui/icons-material/GitHub.js';
+import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import theme from '../styles/themes.js';
 import { useNavigate } from 'react-router-dom/dist';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import Loader from './Loader.jsx';
 import { AUDITOR } from '../redux/actions/types.js';
 import TagsList from './tagsList';
-import { API_URL, ASSET_URL } from '../services/urls.js';
+import { ASSET_URL } from '../services/urls.js';
 import MobileTagsList from './MobileTagsList/index.jsx';
 import { addTestsLabel } from '../lib/helper.js';
-import LaunchRoundedIcon from '@mui/icons-material/LaunchRounded';
-import ClipboardJS from 'clipboard';
 import ShareProfileButton from './custom/ShareProfileButton.jsx';
 
 const UserInfo = ({ role }) => {
   const navigate = useNavigate();
   const customer = useSelector(s => s.customer.customer);
   const auditor = useSelector(s => s.auditor.auditor);
+  const { user } = useSelector(s => s.user);
   const matchXs = useMediaQuery(theme.breakpoints.down('xs'));
 
   const handleEdit = () => {
@@ -95,6 +96,28 @@ const UserInfo = ({ role }) => {
                 <span>E-mail</span>
                 <Typography noWrap={true}>{data.contacts?.email}</Typography>
               </Box>
+              {user?.linked_accounts && (
+                <Box sx={[infoWrapper, { alignItems: 'center' }]}>
+                  <span>Accounts</span>
+                  <Box>
+                    {user.linked_accounts.map(account => (
+                      <Link
+                        sx={accountLink}
+                        href={account.url}
+                        target="_blank"
+                        title={`${account.name} ${account.email}`}
+                      >
+                        {account.name === 'GitHub' ? (
+                          <GitHubIcon sx={{ mr: '8px' }} />
+                        ) : (
+                          <OpenInNewIcon sx={{ mr: '8px' }} />
+                        )}
+                        {account.name}
+                      </Link>
+                    ))}
+                  </Box>
+                </Box>
+              )}
             </Box>
             <Box sx={[infoWrapper, aboutWrapper]}>
               <span>About</span>
@@ -305,3 +328,11 @@ const infoWrapper = theme => ({
     },
   },
 });
+
+const accountLink = {
+  height: '30px',
+  display: 'flex',
+  alignItems: 'center',
+  color: 'black',
+  textDecoration: 'none',
+};

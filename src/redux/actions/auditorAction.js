@@ -71,7 +71,7 @@ export const createAuditor = values => {
   };
 };
 
-export const updateAuditor = values => {
+export const updateAuditor = (values, redirect = true) => {
   const token = Cookies.get('token');
   return dispatch => {
     axios
@@ -80,12 +80,9 @@ export const updateAuditor = values => {
       })
       .then(({ data }) => {
         dispatch({ type: UPDATE_AUDITOR, payload: data });
-        history.push(
-          { pathname: `/profile/user-info` },
-          {
-            some: true,
-          },
-        );
+        if (redirect) {
+          history.push({ pathname: `/profile/user-info` }, { some: true });
+        }
       })
       .catch(({ response }) => {
         // dispatch({type: SIGN_IN_ERROR})
