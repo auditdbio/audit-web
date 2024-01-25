@@ -25,6 +25,7 @@ import Markdown from '../components/markdown/Markdown.jsx';
 import { ASSET_URL } from '../services/urls.js';
 import { addTestsLabel } from '../lib/helper.js';
 import CustomSnackbar from '../components/custom/CustomSnackbar.jsx';
+import PriceCalculation from '../components/PriceCalculation.jsx';
 
 const AuditInfo = ({ audit, auditRequest, issues, confirmed }) => {
   const navigate = useNavigate();
@@ -230,6 +231,9 @@ const AuditInfo = ({ audit, auditRequest, issues, confirmed }) => {
             </Button>
           )}
         </Box>
+
+        <PriceCalculation price={audit?.price} sx={priceCalc} />
+
         <Box>
           {audit?.report && (
             <Box sx={{ display: 'flex', justifyContent: 'center' }}>
@@ -517,5 +521,19 @@ const readAllButton = theme => ({
   [theme.breakpoints.down('xs')]: {
     fontSize: '16px',
     border: 'none',
+  },
+});
+
+const priceCalc = theme => ({
+  width: '725px',
+  '& .head': { justifyContent: 'center' },
+  [theme.breakpoints.down('md')]: {
+    width: '590px',
+  },
+  [theme.breakpoints.down('sm')]: {
+    width: '80%',
+  },
+  [theme.breakpoints.down('xs')]: {
+    width: '100%',
   },
 });

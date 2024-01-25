@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Button, Typography, useMediaQuery } from '@mui/material';
+import { Box, Button, Tooltip, Typography, useMediaQuery } from '@mui/material';
 import theme, { radiusOfComponents } from '../styles/themes.js';
 import { useNavigate } from 'react-router-dom/dist';
 import TagsArray from './tagsArray/index.jsx';
@@ -8,6 +8,9 @@ import SimpleField from './forms/fields/simple-field.jsx';
 import { ProjectLinksList } from './custom/ProjectLinksList.jsx';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack.js';
 import MenuRoundedIcon from '@mui/icons-material/MenuRounded';
+import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import AuditorSearchModal from './AuditorSearchModal.jsx';
 import TagsField from './forms/tags-field/tags-field.jsx';
 import {
@@ -31,6 +34,7 @@ import CloseProjectModal from './CloseProjectModal.jsx';
 import { DONE } from '../redux/actions/types.js';
 import CustomSnackbar from './custom/CustomSnackbar.jsx';
 import { addTestsLabel } from '../lib/helper.js';
+import PriceCalculation from './PriceCalculation.jsx';
 
 const CreateProjectCard = ({ projectInfo }) => {
   const navigate = useNavigate();
@@ -272,9 +276,19 @@ const CreateProjectCard = ({ projectInfo }) => {
                           setFieldTouched={setFieldTouched}
                         />
                         <ProjectLinksList name="scope" />
-                        <SalarySlider name="price" />
+                        <Box>
+                          <Box sx={priceLabelSx}>Price per line of code</Box>
+                          <SalarySlider name="price" />
+                        </Box>
+                        {!matchMd && <PriceCalculation price={values.price} />}
                       </Box>
                     </Box>
+                    {matchMd && (
+                      <PriceCalculation
+                        price={values.price}
+                        sx={{ '& .head': { justifyContent: 'center' } }}
+                      />
+                    )}
 
                     {/*<Box>*/}
                     {/*  <AuditRequestsArray requests={auditRequests ?? []} />*/}
@@ -494,4 +508,10 @@ const formAllFields = {
   display: 'flex',
   flexDirection: 'column',
   gap: '20px',
+};
+
+const priceLabelSx = {
+  fontSize: '14px',
+  fontWeight: 500,
+  color: '#B3B3B3',
 };

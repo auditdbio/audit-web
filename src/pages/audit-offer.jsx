@@ -34,6 +34,7 @@ import CustomSnackbar from '../components/custom/CustomSnackbar.jsx';
 import { getIssues } from '../redux/actions/issueAction.js';
 import NotFound from './Not-Found.jsx';
 import { FIXED, NOT_FIXED } from '../components/issuesPage/constants.js';
+import PriceCalculation from '../components/PriceCalculation.jsx';
 
 const AuditOffer = () => {
   const { auditId } = useParams();
@@ -273,6 +274,12 @@ const AuditOffer = () => {
                           <CustomLink link={el} key={idx} />
                         ))}
                       </Box>
+
+                      <PriceCalculation
+                        price={audit?.price}
+                        sx={priceCalc}
+                        color="secondary"
+                      />
 
                       {audit?.status?.toLowerCase() ===
                       WAITING_FOR_AUDITS.toLowerCase() ? (
@@ -636,3 +643,9 @@ const workflowButton = useWorkflow => ({
     fontSize: '14px',
   },
 });
+
+const priceCalc = {
+  width: '100%',
+  mb: '30px',
+  '& .head': { justifyContent: 'center' },
+};

@@ -25,6 +25,7 @@ import {
 import CustomLink from './custom/CustomLink.jsx';
 import OfferModal from './modal/OfferModal.jsx';
 import ShareProjectButton from './custom/ShareProjectButton.jsx';
+import PriceCalculation from './PriceCalculation.jsx';
 
 const AuditRequestInfo = ({
   project,
@@ -370,6 +371,13 @@ const AuditRequestInfo = ({
           </Box>
         </Box>
       </Box>
+
+      <PriceCalculation
+        price={project?.price}
+        sx={priceCalc}
+        color="secondary"
+      />
+
       <Box sx={buttonWrapper} className={'audit-request-button-wrapper'}>
         <Button
           variant={'contained'}
@@ -538,3 +546,8 @@ const buttonSx = theme => ({
     fontSize: '12px',
   },
 });
+
+const priceCalc = {
+  width: '100%',
+  '& .head': { justifyContent: 'center' },
+};

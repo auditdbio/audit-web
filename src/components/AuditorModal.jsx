@@ -27,6 +27,7 @@ import {
 import * as Yup from 'yup';
 import CustomSnackbar from './custom/CustomSnackbar.jsx';
 import ShareProfileButton from './custom/ShareProfileButton.jsx';
+import PriceCalculation from './PriceCalculation.jsx';
 
 export default function AuditorModal({
   open,
@@ -89,8 +90,8 @@ export default function AuditorModal({
   }, [open, isForm]);
 
   return (
-    <Dialog open={open} onClose={handleClose}>
-      <Box className={'auditor-modal'}>
+    <Dialog open={open} onClose={handleClose} sx={dialogSx}>
+      <Box className={'auditor-modal'} sx={{ overflowX: 'hidden' }}>
         {mode === 'info' && (
           <DialogContent sx={modalWindow}>
             <CustomSnackbar
@@ -325,6 +326,10 @@ export default function AuditorModal({
                           }}
                         >
                           <SalarySlider name={'price'} />
+                          <PriceCalculation
+                            price={values.price}
+                            sx={priceCalc}
+                          />
                         </Box>
                         <Box sx={{ justifyContent: 'center', display: 'flex' }}>
                           <Button
@@ -438,6 +443,17 @@ const avatarStyle = theme => ({
   },
 });
 
+const dialogSx = theme => ({
+  '& .MuiPaper-root': {
+    [theme.breakpoints.down('md')]: {
+      width: '680px !important',
+    },
+    [theme.breakpoints.down('xs')]: {
+      width: '100% !important',
+    },
+  },
+});
+
 const contentWrapper = theme => ({
   display: 'flex',
   flexDirection: 'column',
@@ -528,7 +544,7 @@ const fieldButtonContainer = theme => ({
 const offerDialogStyle = {
   backgroundColor: 'white',
   padding: '10px',
-  width: '700px',
+  width: '720px',
   display: 'flex',
   justifyContent: 'center',
   alignItems: 'center',
@@ -647,4 +663,10 @@ const dateStyle = {
       fontSize: '10px',
     },
   },
+};
+
+const priceCalc = {
+  width: '100%',
+  margin: '30px 0',
+  '& .head': { justifyContent: 'center' },
 };
