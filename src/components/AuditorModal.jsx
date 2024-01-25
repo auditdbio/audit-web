@@ -13,7 +13,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs from 'dayjs';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { addTestsLabel, isAuth } from '../lib/helper.js';
 import { ASSET_URL } from '../services/urls.js';
@@ -426,12 +426,6 @@ const modalWindow = theme => ({
   },
 });
 
-const chatWrapper = theme => ({
-  // position: 'absolute',
-  // right: '20px',
-  // top: '20px',
-});
-
 const findButton = theme => ({
   padding: '19px 0',
   fontSize: '18px',
@@ -453,16 +447,13 @@ const findButton = theme => ({
     fontSize: '12px',
     mr: '6px',
   },
-  // [theme.breakpoints.down('xxs')]: {
-  //   width: '122px',
-  // },
 });
 
-const infoInnerStyle = theme => ({
+const infoInnerStyle = {
   display: 'flex',
   flexDirection: 'column',
   gap: '16px',
-});
+};
 
 const infoStyle = theme => ({
   display: 'flex',
