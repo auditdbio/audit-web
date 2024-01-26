@@ -9,11 +9,12 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  Paper,
+  Switch,
 } from '@mui/material';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline.js';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore.js';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess.js';
+import theme from '../styles/themes.js';
 
 // todo delete
 // files, blank, comment, code
@@ -26,6 +27,7 @@ const data = {
 
 const PriceCalculation = ({ price = 0, sx = {}, color = 'primary' }) => {
   const [priceCalculation, setPriceCalculation] = useState(null);
+  const [isDetailsPrice, setIsDetailsPrice] = useState(false);
   const [isDetailsMore, setIsDetailsMore] = useState(false);
 
   useEffect(() => {
@@ -49,7 +51,7 @@ const PriceCalculation = ({ price = 0, sx = {}, color = 'primary' }) => {
       <Box sx={head} className="head">
         <Box sx={{ mr: '5px' }}>Price calculation</Box>
         <Tooltip
-          title="Price calculation shows preliminary cost using scope and price per line"
+          title="Price calculation shows preliminary cost using scope and price per line. Blank lines and comments are not taken into account when calculating the cost."
           arrow
           placement="bottom"
           enterDelay={200}
@@ -68,9 +70,10 @@ const PriceCalculation = ({ price = 0, sx = {}, color = 'primary' }) => {
           Check
         </Button>
       </Box>
+
       {priceCalculation && (
         <Box sx={calcResult}>
-          <Box>
+          <Box sx={calcResultHead}>
             <Box>
               <Box sx={{ mb: '3px' }}>
                 Total price:&nbsp;
@@ -94,36 +97,69 @@ const PriceCalculation = ({ price = 0, sx = {}, color = 'primary' }) => {
               )}
             </Button>
           </Box>
+
           {isDetailsMore && (
-            <TableContainer sx={{ mt: '15px' }}>
-              <Table sx={tableSx} size="small" aria-label="Price table">
-                <TableHead>
-                  <TableRow>
-                    <TableCell>Language</TableCell>
-                    <TableCell align="right">Files</TableCell>
-                    <TableCell align="right">Code</TableCell>
-                    <TableCell align="right">Comment</TableCell>
-                    <TableCell align="right">Blank</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {priceCalculation.map(row => (
-                    <TableRow
-                      key={row.name}
-                      sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                    >
-                      <TableCell component="th" scope="row">
-                        {row.name}
-                      </TableCell>
-                      <TableCell align="right">{row.files}</TableCell>
-                      <TableCell align="right">{row.code}</TableCell>
-                      <TableCell align="right">{row.comment}</TableCell>
-                      <TableCell align="right">{row.blank}</TableCell>
+            <Box>
+              <Box sx={switchSx(color)}>
+                <Switch
+                  color={color}
+                  size="small"
+                  onChange={() => setIsDetailsPrice(prev => !prev)}
+                />
+                <span>{isDetailsPrice ? 'Price' : 'Code'}</span>
+              </Box>
+              <TableContainer>
+                <Table sx={tableSx} size="small" aria-label="Price table">
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>Language</TableCell>
+                      {isDetailsPrice ? (
+                        <>
+                          <TableCell align="right">Code</TableCell>
+                          <TableCell align="right">Price</TableCell>
+                        </>
+                      ) : (
+                        <>
+                          <TableCell align="right">Files</TableCell>
+                          <TableCell align="right">Code</TableCell>
+                          <TableCell align="right">Comment</TableCell>
+                          <TableCell align="right">Blank</TableCell>
+                        </>
+                      )}
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
+                  </TableHead>
+                  <TableBody>
+                    {priceCalculation.map(row => (
+                      <TableRow
+                        key={row.name}
+                        sx={{
+                          '&:last-child td, &:last-child th': { border: 0 },
+                        }}
+                      >
+                        <TableCell component="th" scope="row">
+                          {row.name}
+                        </TableCell>
+                        {isDetailsPrice ? (
+                          <>
+                            <TableCell align="right">{row.code}</TableCell>
+                            <TableCell align="right">
+                              {row.code * price}
+                            </TableCell>
+                          </>
+                        ) : (
+                          <>
+                            <TableCell align="right">{row.files}</TableCell>
+                            <TableCell align="right">{row.code}</TableCell>
+                            <TableCell align="right">{row.comment}</TableCell>
+                            <TableCell align="right">{row.blank}</TableCell>
+                          </>
+                        )}
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </Box>
           )}
         </Box>
       )}
@@ -133,16 +169,19 @@ const PriceCalculation = ({ price = 0, sx = {}, color = 'primary' }) => {
 
 export default PriceCalculation;
 
-const head = {
+const head = theme => ({
   display: 'flex',
   alignItems: 'center',
   color: '#333',
   fontSize: '14px',
   fontWeight: 500,
   mb: '15px',
-};
+  [theme.breakpoints.down('xxs')]: {
+    fontSize: '12px',
+  },
+});
 
-const checkButton = {
+const checkButton = theme => ({
   fontSize: '14px',
   fontWeight: '600',
   textTransform: 'none',
@@ -152,7 +191,12 @@ const checkButton = {
   ml: '15px',
   boxShadow: '0',
   ':hover': { boxShadow: '0' },
-};
+  [theme.breakpoints.down('xxs')]: {
+    fontSize: '12px',
+    padding: '5px 30px',
+    fontWeight: '500',
+  },
+});
 
 const calcResult = theme => ({
   border: '1px solid #e0e0e0',
@@ -162,16 +206,17 @@ const calcResult = theme => ({
   color: '#333',
   fontSize: '14px',
   fontWeight: 500,
-  '& > div': {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
   [theme.breakpoints.down('xs')]: {
     padding: '5px',
     fontSize: '12px',
   },
 });
+
+const calcResultHead = {
+  display: 'flex',
+  justifyContent: 'space-between',
+  alignItems: 'center',
+};
 
 const detailsButton = theme => ({
   fontSize: '14px',
@@ -181,6 +226,19 @@ const detailsButton = theme => ({
   padding: 0,
   [theme.breakpoints.down('xs')]: {
     fontSize: '12px',
+  },
+});
+
+const switchSx = color => ({
+  display: 'flex',
+  justifyContent: 'flex-end',
+  alignItems: 'center',
+  mb: '5px',
+  '& .MuiSwitch-thumb': {
+    color:
+      color === 'primary'
+        ? theme.palette.primary.main
+        : theme.palette.secondary.main,
   },
 });
 
@@ -200,6 +258,11 @@ const tableSx = theme => ({
     '& th, & td': {
       fontSize: '12px',
       '&:first-child': { pr: 0 },
+    },
+  },
+  [theme.breakpoints.down('xxs')]: {
+    '& th, & td': {
+      fontSize: '11px',
     },
   },
 });
