@@ -38,12 +38,14 @@ export default function AuditorModal({
   handleError,
   setError,
   budge,
+  chosen,
 }) {
   const navigate = useNavigate();
   const customerReducer = useSelector(state => state.customer.customer);
   const user = useSelector(s => s.user.user);
   const [mode, setMode] = useState('info');
   const [message, setMessage] = useState('');
+  const [scope, setScope] = useState([]);
   const myProjects = useSelector(state => state.project.myProjects);
   const dispatch = useDispatch();
 
@@ -88,6 +90,12 @@ export default function AuditorModal({
       setMode('');
     }
   }, [open, isForm]);
+
+  useEffect(() => {
+    if (chosen) {
+      setScope(chosen.reduce((acc, project) => [...acc, ...project.scope], []));
+    }
+  }, [chosen]);
 
   return (
     <Dialog open={open} onClose={handleClose} sx={dialogSx}>
@@ -209,6 +217,7 @@ export default function AuditorModal({
             </Box>
           </DialogContent>
         )}
+
         {mode === 'invite' && (
           <Formik
             validator={() => ({})}
@@ -329,6 +338,7 @@ export default function AuditorModal({
                           <PriceCalculation
                             price={values.price}
                             sx={priceCalc}
+                            scope={scope}
                           />
                         </Box>
                         <Box sx={{ justifyContent: 'center', display: 'flex' }}>

@@ -279,6 +279,7 @@ const AuditOffer = () => {
                         price={audit?.price}
                         sx={priceCalc}
                         color="secondary"
+                        scope={audit?.scope}
                       />
 
                       {audit?.status?.toLowerCase() ===

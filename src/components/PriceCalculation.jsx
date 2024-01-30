@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import GitUrlParse from 'git-url-parse';
 import {
   Box,
   Button,
@@ -25,7 +26,7 @@ const data = {
   SUM: [13, 4779, 6907, 31308],
 };
 
-const PriceCalculation = ({ price = 0, sx = {}, color = 'primary' }) => {
+const PriceCalculation = ({ scope, price = 0, color = 'primary', sx = {} }) => {
   const [priceCalculation, setPriceCalculation] = useState(null);
   const [isDetailsPrice, setIsDetailsPrice] = useState(false);
   const [isDetailsMore, setIsDetailsMore] = useState(false);
@@ -44,7 +45,47 @@ const PriceCalculation = ({ price = 0, sx = {}, color = 'primary' }) => {
     setPriceCalculation(cloc);
   }, [data]);
 
-  const handleCheckCost = () => {};
+  const handleCheckCost = () => {
+    if (scope) {
+      const clocReq = scope.reduce((acc, url) => {
+        const parsedUrl = GitUrlParse(url);
+
+        if (
+          parsedUrl.resource === 'github.com' ||
+          parsedUrl.source === 'github.com'
+        ) {
+          const author = parsedUrl.owner;
+          const repo = parsedUrl.name;
+          const commit = parsedUrl.commit;
+          const file = parsedUrl.filepath;
+
+          if (file && author && repo && commit) {
+            const commitIdx = acc.findIndex(
+              item =>
+                item.author === author &&
+                item.repo === repo &&
+                item.commit === commit,
+            );
+
+            if (commitIdx >= 0) {
+              acc[commitIdx].files.push(file);
+            } else {
+              acc.push({
+                author,
+                repo,
+                commit,
+                files: [file],
+              });
+            }
+          }
+        }
+
+        return acc;
+      }, []);
+
+      console.log(clocReq);
+    }
+  };
 
   return (
     <Box sx={sx}>
@@ -59,16 +100,18 @@ const PriceCalculation = ({ price = 0, sx = {}, color = 'primary' }) => {
         >
           <HelpOutlineIcon fontSize="small" cursor="pointer" />
         </Tooltip>
-        <Button
-          sx={checkButton}
-          color={color}
-          variant="contained"
-          type="button"
-          onClick={handleCheckCost}
-          disabled={!price}
-        >
-          Check
-        </Button>
+        {priceCalculation && (
+          <Button
+            sx={checkButton}
+            color={color}
+            variant="contained"
+            type="button"
+            onClick={handleCheckCost}
+            disabled={!price}
+          >
+            Check
+          </Button>
+        )}
       </Box>
 
       {priceCalculation && (
@@ -142,7 +185,7 @@ const PriceCalculation = ({ price = 0, sx = {}, color = 'primary' }) => {
                         {isDetailsPrice ? (
                           <>
                             <TableCell align="right">{row.code}</TableCell>
-                            <TableCell align="right">
+                            <TableCell align="right" sx={priceCellSx}>
                               {row.code * price}
                             </TableCell>
                           </>
@@ -170,6 +213,7 @@ const PriceCalculation = ({ price = 0, sx = {}, color = 'primary' }) => {
 export default PriceCalculation;
 
 const head = theme => ({
+  height: '28px',
   display: 'flex',
   alignItems: 'center',
   color: '#333',
@@ -266,3 +310,7 @@ const tableSx = theme => ({
     },
   },
 });
+
+const priceCellSx = {
+  minWidth: '80px',
+};

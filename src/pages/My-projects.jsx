@@ -130,13 +130,13 @@ const MyProjects = () => {
             isForm={true}
             onSubmit={handleInviteAuditor}
             setError={setErrorMessage}
+            chosen={chosen}
           />
         )}
       </CustomCard>
     </Layout>
   );
 };
-// };
 
 export default MyProjects;
 

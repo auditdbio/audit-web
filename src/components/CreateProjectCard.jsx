@@ -280,12 +280,18 @@ const CreateProjectCard = ({ projectInfo }) => {
                           <Box sx={priceLabelSx}>Price per line of code</Box>
                           <SalarySlider name="price" />
                         </Box>
-                        {!matchMd && <PriceCalculation price={values.price} />}
+                        {!matchMd && (
+                          <PriceCalculation
+                            price={values.price}
+                            scope={values.scope}
+                          />
+                        )}
                       </Box>
                     </Box>
                     {matchMd && (
                       <PriceCalculation
                         price={values.price}
+                        scope={values.scope}
                         sx={{ '& .head': { justifyContent: 'center' } }}
                       />
                     )}

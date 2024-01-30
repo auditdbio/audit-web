@@ -232,7 +232,11 @@ const AuditInfo = ({ audit, auditRequest, issues, confirmed }) => {
           )}
         </Box>
 
-        <PriceCalculation price={audit?.price} sx={priceCalc} />
+        <PriceCalculation
+          price={audit?.price}
+          sx={priceCalc}
+          scope={audit?.scope}
+        />
 
         <Box>
           {audit?.report && (
