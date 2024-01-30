@@ -10,7 +10,7 @@ import { createBlopUrl } from '../../services/urls.js';
 const GithubTreeNode = ({ node, handleAdd, selected }) => {
   const [field, meta, fieldHelper] = useField('scope');
   const { sha, repoOwner } = useSelector(state => state.github);
-  const [isTreeOpen, setIsTreeOpen] = React.useState(true);
+  const [isTreeOpen, setIsTreeOpen] = React.useState(false);
   const isTree = node.type === 'tree';
 
   const handleToogle = node => {
