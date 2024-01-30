@@ -12,6 +12,8 @@ import {
 import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
 import GithubBranchIcon from './icons/GithubBranchIcon.jsx';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+import { useDispatch, useSelector } from 'react-redux';
+import { getBranches } from '../redux/actions/githubAction.js';
 
 const GithubBranchAutocomplete = ({
   onClick,
@@ -19,42 +21,15 @@ const GithubBranchAutocomplete = ({
   defaultBranch,
   branch,
 }) => {
-  const [branches, setBranches] = useState([]);
+  const branches = useSelector(state => state.github.branches);
   const [loading, setLoading] = useState(false);
   const [inputValue, setInputValue] = useState('');
   const [open, setOpen] = React.useState(false);
-
-  const fetchInitialBranches = async () => {
-    try {
-      setLoading(true);
-      let allBranches = [];
-      let page = 1;
-      let perPage = 100; // Установите желаемое значение per_page
-
-      while (true) {
-        const response = await fetch(
-          `https://api.github.com/repos/${repository}/branches?per_page=${perPage}&page=${page}`,
-        );
-
-        const data = await response.json();
-        if (data.length === 0) {
-          break;
-        } else {
-          page++;
-        }
-        allBranches = [...allBranches, ...data.map(branch => branch.name)];
-      }
-      setBranches(allBranches);
-    } catch (error) {
-      console.error('Error fetching branches:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    fetchInitialBranches();
-  }, []);
+    dispatch(getBranches(repository));
+  }, [repository]);
 
   const handleClick = () => {
     setOpen(prev => !prev);
@@ -111,6 +86,7 @@ const GithubBranchAutocomplete = ({
                 ?.filter(branch => branch.includes(inputValue))
                 ?.map((branch, idx) => (
                   <Box
+                    key={idx + branch}
                     onClick={() => handleChoose(branch)}
                     sx={[
                       {

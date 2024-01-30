@@ -11,6 +11,7 @@ import websocketMiddleware from './middleware/websocketMiddleware.js';
 import { websocketReducer } from './reducers/websocketReducer.js';
 import { issueReducer } from './reducers/issueReducer.js';
 import { notFoundReducer } from './reducers/notFoundReducer.js';
+import { githubReducer } from './reducers/githubReducer.js';
 
 export const store = createStore(
   combineReducers({
@@ -23,6 +24,7 @@ export const store = createStore(
     contactUs: contactUsReducer,
     websocket: websocketReducer,
     notFound: notFoundReducer,
+    github: githubReducer,
   }),
   composeWithDevTools(applyMiddleware(thunk, websocketMiddleware())),
 );

@@ -25,80 +25,42 @@ import { addTestsLabel } from '../../lib/helper.js';
 import { AUDITOR } from '../../redux/actions/types.js';
 import AddIcon from '@mui/icons-material/Add.js';
 import CustomSnackbar from '../custom/CustomSnackbar.jsx';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  clearRepoOwner,
+  getCommits,
+  getDefaultBranch,
+  getRepoOwner,
+  getTotalCommits,
+} from '../../redux/actions/githubAction.js';
 
 const GithubSelection = () => {
   const [urlRepo, setUrlRepo] = useState('');
-  const [commits, setCommits] = useState([]);
+  const commits = useSelector(state => state.github.commits);
   const [branch, setBranch] = useState('');
   const [isOpen, setIsOpen] = useState(false);
-  const [defaultBranch, setDefaultBranch] = useState('');
+  const defaultBranch = useSelector(state => state.github.defaultBranch);
   const [page, setPage] = useState(1);
-  const [totalCommits, setTotalCommits] = useState(0);
+  const totalCommits = useSelector(state => state.github.totalCommits);
   const [repository, setRepository] = useState(null);
   const [error, setError] = useState('');
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    const getTotalCommitsCount = async branch => {
-      try {
-        let pageCount = 1;
-        let totalCount = 0;
-
-        while (true) {
-          const response = await axios.get(
-            `https://api.github.com/repos/${repository}/commits`,
-            {
-              params: {
-                sha: branch,
-                per_page: 100,
-                page: pageCount,
-              },
-            },
-          );
-
-          const linkHeader = response.headers.link;
-          if (!linkHeader || !linkHeader.includes('rel="last"')) {
-            totalCount += response.data.length;
-            break;
-          }
-
-          const matches = linkHeader.match(/&page=(\d+)>; rel="last"/);
-          const lastPage = matches ? parseInt(matches[1]) : 1;
-
-          if (pageCount >= lastPage) {
-            totalCount += response.data.length;
-            break;
-          }
-
-          totalCount += response.data.length;
-          pageCount++;
-        }
-        setTotalCommits(Math.floor(totalCount / 100) + 1);
-      } catch (error) {
-        console.error('Error fetching commits:', error);
-      }
-    };
-
-    if (repository) {
-      getTotalCommitsCount(branch);
+    if (repository && (branch || defaultBranch)) {
+      dispatch(getCommits(repository, branch, page));
     }
+  }, [repository, branch, page, defaultBranch]);
+
+  useEffect(() => {
+    if (repository) {
+      dispatch(getDefaultBranch(repository));
+    }
+  }, [repository]);
+
+  useEffect(() => {
+    dispatch(getTotalCommits(repository, branch));
   }, [repository, branch]);
-
-  useEffect(() => {
-    if (repository) {
-      axios(`https://api.github.com/repos/${repository}`).then(({ data }) =>
-        setDefaultBranch(data.default_branch),
-      );
-      axios(
-        `https://api.github.com/repos/${repository}/commits?sha=${branch}&per_page=100&page=${page}`,
-      )
-        .then(({ data }) => {
-          setCommits(data); // Обработка списка репозиториев
-        })
-        .catch(error => {
-          console.error(error); // Обработка ошибок
-        });
-    }
-  }, [branch, page, repository]);
 
   const handleAddProject = () => {
     if (urlRepo.includes('github.com/')) {
@@ -110,6 +72,7 @@ const GithubSelection = () => {
         return `${owner}/${repo}`;
       }
       setRepository(parseGitHubUrl(urlRepo));
+      dispatch(getRepoOwner(parseGitHubUrl(urlRepo)));
     } else {
       setError('Please enter a valid Github repository url');
     }
@@ -121,6 +84,7 @@ const GithubSelection = () => {
     setUrlRepo('');
     setBranch('');
     setPage(1);
+    dispatch(dispatch(clearRepoOwner()));
   };
 
   return (

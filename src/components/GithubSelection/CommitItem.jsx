@@ -1,14 +1,18 @@
 import React, { useState } from 'react';
 import { Avatar, Box, Modal, Typography } from '@mui/material';
 import CommitModal from './CommitModal.jsx';
+import { useDispatch } from 'react-redux';
+import { clearCommit } from '../../redux/actions/githubAction.js';
 
 const CommitItem = ({ commit, repository }) => {
   const [open, setOpen] = useState(false);
+  const dispatch = useDispatch();
   const handleOpenCommit = () => {
     setOpen(true);
   };
 
   const handleClose = () => {
+    dispatch(clearCommit());
     setOpen(false);
   };
 
