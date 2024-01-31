@@ -94,6 +94,14 @@ const GithubSelection = () => {
 
   const handleClose = () => {
     setIsOpen(false);
+    // setRepository(null);
+    // setUrlRepo('');
+    // setBranch('');
+    // setPage(1);
+    // dispatch(clearRepoOwner());
+  };
+
+  const handleReset = () => {
     setRepository(null);
     setUrlRepo('');
     setBranch('');
@@ -224,6 +232,19 @@ const GithubSelection = () => {
                   onClick={handleClose}
                 >
                   <CloseRoundedIcon />
+                </Button>
+                <Button
+                  sx={{
+                    marginLeft: '25px',
+                    minWidth: '34px',
+                    marginBottom: '5px',
+                    alignSelf: 'flex-end',
+                    fontWeight: 600,
+                  }}
+                  color={'secondary'}
+                  onClick={handleReset}
+                >
+                  Reset
                 </Button>
               </Box>
               <Box sx={fieldWrapper}>
