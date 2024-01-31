@@ -163,33 +163,44 @@ const GithubSelection = () => {
                   Submit
                 </Button>
               </Box>
-              <Typography
-                variant={'h4'}
-                sx={{ marginY: '15px', fontSize: '26px' }}
-              >
-                My repositories:
-              </Typography>
-              <Divider />
+              {githubData?.id ? (
+                <Typography
+                  variant={'h4'}
+                  sx={{ marginY: '15px', fontSize: '26px' }}
+                >
+                  My repositories:
+                </Typography>
+              ) : (
+                <Typography
+                  variant={'h5'}
+                  align={'center'}
+                  sx={{ marginY: '20px', fontSize: '22px', fontWeight: 600 }}
+                >
+                  To view your repositories, add your GitHub account.
+                </Typography>
+              )}
+              {githubData?.id && <Divider />}
               <List sx={[listWrapper, { marginLeft: '-10px' }]}>
-                {myRepositories?.map(repo => {
-                  return (
-                    <Box
-                      onClick={() => {
-                        setRepository(repo.full_name);
-                        dispatch(getRepoOwner(repo.full_name));
-                      }}
-                      key={repo.id}
-                      sx={{
-                        cursor: 'pointer',
-                        padding: '5px',
-                        paddingLeft: '20px',
-                        '&:hover': { backgroundColor: '#fbfbfb' },
-                      }}
-                    >
-                      <Typography>{repo.full_name}</Typography>
-                    </Box>
-                  );
-                })}
+                {githubData?.id &&
+                  myRepositories?.map(repo => {
+                    return (
+                      <Box
+                        onClick={() => {
+                          setRepository(repo.full_name);
+                          dispatch(getRepoOwner(repo.full_name));
+                        }}
+                        key={repo.id}
+                        sx={{
+                          cursor: 'pointer',
+                          padding: '5px',
+                          paddingLeft: '20px',
+                          '&:hover': { backgroundColor: '#fbfbfb' },
+                        }}
+                      >
+                        <Typography>{repo.full_name}</Typography>
+                      </Box>
+                    );
+                  })}
               </List>
             </Box>
           ) : (
