@@ -48,6 +48,7 @@ import PublicConstructor from '../pages/PublicConstructor.jsx';
 import CustomSnackbar from '../components/custom/CustomSnackbar.jsx';
 import InvitePage from '../pages/Invite-page.jsx';
 import DeleteBadge from '../pages/Delete-badge.jsx';
+import DisclaimerPage from '../pages/DisclaimerPage.jsx';
 
 const AppRoutes = () => {
   const token = useSelector(s => s.user.token);
@@ -156,6 +157,7 @@ const AppRoutes = () => {
         <Route path={'/contact-us'} element={<ContactUs />} />
         <Route path={'/user/:id/:role'} element={<PublicProfile />} />
         <Route path={'/delete/:id/:secret'} element={<DeleteBadge />} />
+        <Route path={'/disclaimer'} element={<DisclaimerPage />} />
         <Route
           path="/profile/:tab"
           element={
