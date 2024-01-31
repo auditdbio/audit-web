@@ -8,6 +8,7 @@ import {
   GET_DEFAULT_BRANCH,
   GET_REPO_OWNER,
   GET_TOTAL_COMMITS,
+  GET_MY_GITHUB_REPOSITORIES,
 } from '../actions/types.js';
 
 const initialState = {
@@ -20,6 +21,7 @@ const initialState = {
   commit: {},
   commitInfo: {},
   repoOwner: '',
+  myRepositories: [],
 };
 
 export const githubReducer = (state = initialState, action) => {
@@ -68,6 +70,11 @@ export const githubReducer = (state = initialState, action) => {
       return {
         ...state,
         repoOwner: '',
+      };
+    case GET_MY_GITHUB_REPOSITORIES:
+      return {
+        ...state,
+        myRepositories: action.payload,
       };
     default:
       return state;

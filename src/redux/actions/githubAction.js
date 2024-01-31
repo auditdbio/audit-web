@@ -6,6 +6,7 @@ import {
   GET_COMMIT_DATA,
   GET_COMMITS,
   GET_DEFAULT_BRANCH,
+  GET_MY_GITHUB_REPOSITORIES,
   GET_REPO_OWNER,
   GET_TOTAL_COMMITS,
 } from './types.js';
@@ -134,5 +135,17 @@ export const getTotalCommits = (repoOwner, branch) => {
 export const clearCommit = () => {
   return dispatch => {
     dispatch({ type: CLEAR_COMMIT });
+  };
+};
+
+export const getMyGithub = user => {
+  return dispatch => {
+    axios(`https://api.github.com/users/snjax/repos?per_page=100`)
+      .then(({ data }) => {
+        dispatch({ type: GET_MY_GITHUB_REPOSITORIES, payload: data });
+      })
+      .catch(error => {
+        console.error(error);
+      });
   };
 };

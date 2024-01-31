@@ -30,21 +30,25 @@ import {
   clearRepoOwner,
   getCommits,
   getDefaultBranch,
+  getMyGithub,
   getRepoOwner,
   getTotalCommits,
 } from '../../redux/actions/githubAction.js';
 
 const GithubSelection = () => {
   const [urlRepo, setUrlRepo] = useState('');
-  const commits = useSelector(state => state.github.commits);
   const [branch, setBranch] = useState('');
   const [isOpen, setIsOpen] = useState(false);
-  const defaultBranch = useSelector(state => state.github.defaultBranch);
+  const { defaultBranch, totalCommits, commits, myRepositories } = useSelector(
+    state => state.github,
+  );
   const [page, setPage] = useState(1);
-  const totalCommits = useSelector(state => state.github.totalCommits);
   const [repository, setRepository] = useState(null);
   const [error, setError] = useState('');
   const dispatch = useDispatch();
+  const githubData = useSelector(s =>
+    s.user.user.linked_accounts.find(el => el.name.toLowerCase() === 'github'),
+  );
 
   useEffect(() => {
     if (repository && (branch || defaultBranch)) {
@@ -59,8 +63,16 @@ const GithubSelection = () => {
   }, [repository]);
 
   useEffect(() => {
-    dispatch(getTotalCommits(repository, branch));
+    if (repository && (branch || defaultBranch)) {
+      dispatch(getTotalCommits(repository, branch));
+    }
   }, [repository, branch]);
+
+  useEffect(() => {
+    if (githubData?.username && !myRepositories?.length) {
+      dispatch(getMyGithub(githubData.username));
+    }
+  }, [githubData?.username]);
 
   const handleAddProject = () => {
     if (urlRepo.includes('github.com/')) {
@@ -84,7 +96,7 @@ const GithubSelection = () => {
     setUrlRepo('');
     setBranch('');
     setPage(1);
-    dispatch(dispatch(clearRepoOwner()));
+    dispatch(clearRepoOwner());
   };
 
   return (
@@ -97,12 +109,19 @@ const GithubSelection = () => {
       >
         <Box sx={modalSx}>
           {!repository ? (
-            <Box>
+            <Box
+              sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                height: '100%',
+              }}
+            >
               <Button
                 sx={{
                   marginLeft: '-15px',
                   minWidth: '34px',
                   marginBottom: '5px',
+                  alignSelf: 'flex-start',
                 }}
                 onClick={handleClose}
               >
@@ -133,7 +152,6 @@ const GithubSelection = () => {
                     }
                   }}
                   onChange={e => setUrlRepo(e.target.value)}
-                  // onBlur={handleBlur}
                   sx={fieldSx}
                   inputProps={{ ...addTestsLabel('project-input') }}
                 />
@@ -145,6 +163,34 @@ const GithubSelection = () => {
                   Submit
                 </Button>
               </Box>
+              <Typography
+                variant={'h4'}
+                sx={{ marginY: '15px', fontSize: '26px' }}
+              >
+                My repositories:
+              </Typography>
+              <Divider />
+              <List sx={[listWrapper, { marginLeft: '-10px' }]}>
+                {myRepositories?.map(repo => {
+                  return (
+                    <Box
+                      onClick={() => {
+                        setRepository(repo.full_name);
+                        dispatch(getRepoOwner(repo.full_name));
+                      }}
+                      key={repo.id}
+                      sx={{
+                        cursor: 'pointer',
+                        padding: '5px',
+                        paddingLeft: '20px',
+                        '&:hover': { backgroundColor: '#fbfbfb' },
+                      }}
+                    >
+                      <Typography>{repo.full_name}</Typography>
+                    </Box>
+                  );
+                })}
+              </List>
             </Box>
           ) : (
             <Box
