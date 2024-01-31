@@ -18,6 +18,8 @@ import {
   changeRolePublicCustomer,
   changeRolePublicCustomerNoRedirect,
 } from '../redux/actions/userAction.js';
+import { setCurrentChat } from '../redux/actions/chatActions.js';
+import ChatIcon from '../components/icons/ChatIcon.jsx';
 
 const PublicProfile = () => {
   const { role, id } = useParams();
@@ -32,7 +34,8 @@ const PublicProfile = () => {
   const [message, setMessage] = useState(null);
   const customerReducer = useSelector(state => state.customer.customer);
   const myProjects = useSelector(state => state.project.myProjects);
-  const user = useSelector(state => state.user.user);
+  const { user } = useSelector(state => state.user);
+  const { chatList } = useSelector(s => s.chat);
 
   const handleError = () => {
     setErrorMessage(null);
@@ -76,6 +79,30 @@ const PublicProfile = () => {
     } else {
       navigate('/sign-in');
     }
+  };
+
+  const handleSendMessage = data => {
+    const existingChat = chatList.find(chat =>
+      chat.members?.find(
+        member =>
+          member.id === data?.user_id &&
+          member.role?.toLowerCase() === role.toLowerCase(),
+      ),
+    );
+    const chatId = existingChat ? existingChat.id : data?.user_id;
+    const members = [data?.user_id, user.id];
+
+    dispatch(
+      setCurrentChat(chatId, {
+        name: data.first_name,
+        avatar: data.avatar,
+        role,
+        isNew: !existingChat,
+        members,
+      }),
+    );
+    localStorage.setItem('path', window.location.pathname);
+    navigate(`/chat/${chatId}`);
   };
 
   useEffect(() => {
@@ -240,17 +267,36 @@ const PublicProfile = () => {
             </Box>
           )}
           {/*{matchXs && <MobileTagsList data={data.tags} />}*/}
-          {role.toLowerCase() === AUDITOR && (
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'center',
+              gap: '15px',
+              alignItems: 'center',
+            }}
+          >
+            {role.toLowerCase() === AUDITOR && (
+              <Button
+                variant={data.kind === 'badge' ? 'outlined' : 'contained'}
+                sx={buttonSx}
+                color={'secondary'}
+                onClick={handleInvite}
+                {...addTestsLabel('invite-button')}
+              >
+                Invite to project
+              </Button>
+            )}
             <Button
-              variant={data.kind === 'badge' ? 'outlined' : 'contained'}
+              variant="text"
+              color={role === AUDITOR ? 'secondary' : 'primary'}
               sx={buttonSx}
-              color={'secondary'}
-              onClick={handleInvite}
-              {...addTestsLabel('invite-button')}
+              disabled={id === user.id}
+              onClick={() => handleSendMessage(data)}
+              {...addTestsLabel('message-button')}
             >
-              Invite to project
+              <ChatIcon />
             </Button>
-          )}
+          </Box>
         </Box>
       </Layout>
     );
@@ -379,23 +425,16 @@ const contentWrapper = theme => ({
 });
 
 const buttonSx = theme => ({
-  margin: '0 auto',
   display: 'block',
   textTransform: 'capitalize',
   fontWeight: 600,
   fontSize: '18px',
   padding: '9px 50px',
   borderRadius: '10px',
+  ':last-child': { mb: 0 },
   [theme.breakpoints.down('xs')]: {
     padding: '9px 20px',
     fontSize: '12px',
-  },
-});
-
-const submitAuditor = theme => ({
-  backgroundColor: theme.palette.secondary.main,
-  '&:hover': {
-    backgroundColor: '#450e5d',
   },
 });
 
