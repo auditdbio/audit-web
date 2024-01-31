@@ -12,11 +12,22 @@ import GitHubIcon from '@mui/icons-material/GitHub.js';
 
 const Github = () => {
   const [searchParam] = useSearchParams();
-  const { role } = useParams();
   const dispatch = useDispatch();
   useEffect(() => {
-    dispatch(signUpGithub(searchParam.get('code'), role));
-  }, [searchParam.get('code'), role]);
+    const value = {
+      code: searchParam.get('code'),
+      current_role: searchParam
+        .get('state')
+        .slice(0, searchParam.get('state').indexOf('_')),
+      service: searchParam
+        .get('state')
+        .slice(
+          searchParam.get('state').indexOf('_') + 1,
+          searchParam.get('state').lastIndexOf('_'),
+        ),
+    };
+    dispatch(signUpGithub(value));
+  }, [searchParam.get('code')]);
   return (
     <Layout>
       <CustomCard sx={cardWrapper}>
