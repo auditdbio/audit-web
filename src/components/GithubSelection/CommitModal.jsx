@@ -33,7 +33,7 @@ const CommitModal = ({ sha, onClose, repository }) => {
       for (let i = 0; i < parts.length; i++) {
         const part = parts[i];
 
-        let existingNode = current.find(node => node.name === part);
+        let existingNode = current?.find(node => node.name === part);
 
         if (!existingNode) {
           const newNode = {

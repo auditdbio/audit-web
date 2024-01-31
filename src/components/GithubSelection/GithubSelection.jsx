@@ -47,7 +47,9 @@ const GithubSelection = () => {
   const [error, setError] = useState('');
   const dispatch = useDispatch();
   const githubData = useSelector(s =>
-    s.user.user.linked_accounts.find(el => el.name.toLowerCase() === 'github'),
+    s.user?.user?.linked_accounts?.find(
+      el => el.name.toLowerCase() === 'github',
+    ),
   );
 
   useEffect(() => {

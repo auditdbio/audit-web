@@ -140,7 +140,7 @@ export const clearCommit = () => {
 
 export const getMyGithub = user => {
   return dispatch => {
-    axios(`https://api.github.com/users/snjax/repos?per_page=100`)
+    axios(`https://api.github.com/users/${user}/repos?per_page=100`)
       .then(({ data }) => {
         dispatch({ type: GET_MY_GITHUB_REPOSITORIES, payload: data });
       })
