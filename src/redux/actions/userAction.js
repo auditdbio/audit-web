@@ -175,6 +175,19 @@ export const connect_account = (user_id, values) => {
   };
 };
 
+export const connectWallet = (userId, wallet) => {
+  return dispatch => {
+    axios
+      .post(`${API_URL}/user/${userId}/wallet`, wallet, {
+        headers: {
+          Authorization: 'Bearer ' + Cookies.get('token'),
+          'Content-Type': 'application/json',
+        },
+      })
+      .then(({ data }) => console.log(data));
+  };
+};
+
 export const restorePassword = values => {
   return dispatch => {
     axios

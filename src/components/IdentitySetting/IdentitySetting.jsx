@@ -24,6 +24,7 @@ import {
 } from '../../services/urls.js';
 import { useDispatch, useSelector } from 'react-redux';
 import { changeAccountVisibility } from '../../redux/actions/userAction.js';
+import WalletConnect from './WalletConnect.jsx';
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 
@@ -255,6 +256,9 @@ const IdentitySetting = () => {
                     </Tooltip>
                   ))}
               </Box>
+
+              <WalletConnect sx={cardSx} />
+
               <Box>
                 <Button
                   sx={[

@@ -209,7 +209,7 @@ const UserInfo = ({ role }) => {
     );
   }
 };
-//
+
 export default UserInfo;
 
 const aboutWrapper = theme => ({
