@@ -1,29 +1,11 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import {
-  Box,
-  Button,
-  FormControl,
-  InputLabel,
-  Modal,
-  Select,
-  Tooltip,
-  List,
-  Typography,
-  Divider,
-  InputAdornment,
-  IconButton,
-} from '@mui/material';
+import { Box, Button, Divider, List, Modal, Typography } from '@mui/material';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
-import axios from 'axios';
-import { Field, useField } from 'formik';
-import { linkShortener } from '../custom/CustomLink.jsx';
+import { Field } from 'formik';
 import GithubBranchAutocomplete from '../GithubBranchAutocomplete.jsx';
 import CommitItem from './CommitItem.jsx';
-import dayjs from 'dayjs';
 import { TextField } from 'formik-mui';
 import { addTestsLabel } from '../../lib/helper.js';
-import { AUDITOR } from '../../redux/actions/types.js';
-import AddIcon from '@mui/icons-material/Add.js';
 import CustomSnackbar from '../custom/CustomSnackbar.jsx';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -34,6 +16,8 @@ import {
   getRepoOwner,
   getTotalCommits,
 } from '../../redux/actions/githubAction.js';
+import CommitIcon from '@mui/icons-material/Commit';
+import dayjs from 'dayjs';
 
 const GithubSelection = () => {
   const [urlRepo, setUrlRepo] = useState('');
@@ -94,12 +78,28 @@ const GithubSelection = () => {
 
   const handleClose = () => {
     setIsOpen(false);
-    // setRepository(null);
-    // setUrlRepo('');
-    // setBranch('');
-    // setPage(1);
-    // dispatch(clearRepoOwner());
   };
+
+  const newCommits = useMemo(() => {
+    const commitsByDate = {};
+
+    commits.forEach(commit => {
+      const commitDate = commit.commit.author.date.split('T')[0];
+
+      if (!commitsByDate[commitDate]) {
+        commitsByDate[commitDate] = [];
+      }
+
+      commitsByDate[commitDate].push({
+        ...commit,
+      });
+    });
+
+    return Object.keys(commitsByDate).map(date => ({
+      date,
+      commits: commitsByDate[date],
+    }));
+  }, [commits]);
 
   const handleReset = () => {
     setRepository(null);
@@ -258,32 +258,50 @@ const GithubSelection = () => {
               <Typography>Commits:</Typography>
               <Divider />
               <List sx={listWrapper}>
-                {commits?.map((commit, idx) => {
+                {newCommits?.map(commitObj => {
                   return (
-                    <Box key={commit.sha}>
-                      {(dayjs(
-                        dayjs(commit.commit.committer.date).format(
-                          'YYYY-MM-DD',
-                        ),
-                      ).diff(
-                        dayjs(commits?.[idx + 1]?.commit.committer.date).format(
-                          'YYYY-MM-DD',
-                        ),
-                        'day',
-                      ) > 0 ||
-                        idx === 0) && (
+                    <React.Fragment key={commitObj.sha}>
+                      <Box
+                        sx={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '5px',
+                        }}
+                      >
+                        <CommitIcon color={'primary'} />
                         <Typography
                           variant={'subtitle2'}
                           color={'primary'}
-                          align={'center'}
+                          sx={{ fontWeight: 600 }}
                         >
-                          {dayjs(commit.commit.committer.date).format(
-                            'DD MMMM YYYY',
-                          )}
+                          Commits on{' '}
+                          {dayjs(commitObj.date).format('MMM DD, YYYY')}
                         </Typography>
-                      )}
-                      <CommitItem commit={commit} repository={repository} />
-                    </Box>
+                      </Box>
+                      <List sx={{ padding: 0 }}>
+                        {commitObj.commits.map((commit, idx) => {
+                          return (
+                            <Box
+                              sx={[
+                                wrapperSx,
+                                commitObj.commits.length === 1
+                                  ? singleSx
+                                  : idx === 0
+                                  ? firstSx
+                                  : idx === commitObj.commits.length - 1
+                                  ? lastSx
+                                  : middleSx,
+                              ]}
+                            >
+                              <CommitItem
+                                commit={commit}
+                                repository={repository}
+                              />
+                            </Box>
+                          );
+                        })}
+                      </List>
+                    </React.Fragment>
                   );
                 })}
               </List>
@@ -327,6 +345,38 @@ const GithubSelection = () => {
 };
 
 export default GithubSelection;
+
+const middleSx = {
+  border: '1px solid',
+  borderBottom: 'none',
+};
+
+const lastSx = {
+  border: '1px solid',
+  borderRadius: '0 0 5px 5px',
+};
+
+const firstSx = {
+  border: '1px solid',
+  borderRadius: '5px 5px 0 0',
+  borderBottom: 'none',
+};
+
+const singleSx = {
+  border: '1px solid',
+  borderRadius: '5px',
+};
+
+const wrapperSx = theme => ({
+  cursor: 'pointer',
+  padding: '5px',
+  paddingX: '15px',
+  borderColor: `${theme.palette.secondary.main}!important`,
+  '&:hover': { backgroundColor: '#fbfbfb' },
+  [theme.breakpoints.down('xs')]: {
+    paddingX: '10px',
+  },
+});
 
 const wrapper = theme => ({
   height: '100%',
@@ -410,7 +460,7 @@ const listWrapper = theme => ({
   display: 'flex',
   flexDirection: 'column',
   overflowY: 'auto',
-  gap: '10px',
+  gap: '5px',
   marginRight: '-30px',
   paddingRight: '14px',
   marginLeft: '-20px',

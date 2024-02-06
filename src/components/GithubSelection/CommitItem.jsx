@@ -17,52 +17,46 @@ const CommitItem = ({ commit, repository }) => {
   };
 
   return (
-    <Box
-      sx={{
-        cursor: 'pointer',
-        padding: '5px',
-        paddingLeft: '20px',
-        '&:hover': { backgroundColor: '#fbfbfb' },
-      }}
-    >
-      <Box onClick={handleOpenCommit}>
-        <Box
-          sx={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            position: 'relative',
-            marginBottom: '5px',
-            '& p': {
-              fontSize: '16px',
-              fontWeight: 500,
-            },
-          }}
-        >
+    <>
+      <Box
+        onClick={handleOpenCommit}
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          gap: '20px',
+        }}
+      >
+        <Box>
+          <Box>
+            <Typography
+              sx={{
+                fontSize: '16px',
+                fontWeight: 600,
+              }}
+            >
+              {commit.commit.message}
+            </Typography>
+          </Box>
           <Box
             sx={{
               display: 'flex',
-              justifyContent: 'space-between',
-              gap: '10px',
-              width: '100%',
+              gap: '7px',
+              marginTop: '7px',
+              alignItems: 'center',
             }}
           >
-            <Typography>{commit.commit.message}</Typography>
-            <Typography variant={'caption'}>
-              {commit.sha.slice(0, 7)}
+            <Avatar
+              sx={{ width: 24, height: 24 }}
+              alt="Remy Sharp"
+              src={commit?.author?.avatar_url}
+            />
+            <Typography variant={'h5'} sx={authorTitle}>
+              {commit.commit.author.name}
             </Typography>
           </Box>
         </Box>
-        <Box sx={{ display: 'flex', gap: '7px', alignItems: 'center' }}>
-          <Avatar
-            sx={{ width: 24, height: 24 }}
-            alt="Remy Sharp"
-            src={commit?.author?.avatar_url}
-          />
-          <Typography variant={'h5'} sx={authorTitle}>
-            {commit.commit.author.name}
-          </Typography>
-        </Box>
+        <Typography variant={'caption'}>{commit.sha.slice(0, 7)}</Typography>
       </Box>
       <Modal
         open={open}
@@ -76,7 +70,7 @@ const CommitItem = ({ commit, repository }) => {
           onClose={handleClose}
         />
       </Modal>
-    </Box>
+    </>
   );
 };
 

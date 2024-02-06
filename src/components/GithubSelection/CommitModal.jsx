@@ -120,10 +120,12 @@ const CommitModal = ({ sha, onClose, repository }) => {
               top: 0,
               left: 0,
               minWidth: '40px',
+              textTransform: 'unset',
             }}
             onClick={handleReset}
           >
-            <CloseRoundedIcon />
+            {/*<CloseRoundedIcon />*/}
+            Back
           </Button>
           <Typography variant="h4">Commit</Typography>
           <Box>
