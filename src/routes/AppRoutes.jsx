@@ -42,15 +42,22 @@ import {
   websocketDisconnect,
 } from '../redux/actions/websocketAction.js';
 import PublicProject from '../pages/PublicProject.jsx';
+import ChatPage from '../pages/ChatPage.jsx';
+import { getChatList } from '../redux/actions/chatActions.js';
 import PublicConstructor from '../pages/PublicConstructor.jsx';
-//
+import CustomSnackbar from '../components/custom/CustomSnackbar.jsx';
+import InvitePage from '../pages/Invite-page.jsx';
+import DeleteBadge from '../pages/Delete-badge.jsx';
+import DisclaimerPage from '../pages/DisclaimerPage.jsx';
+
 const AppRoutes = () => {
   const token = useSelector(s => s.user.token);
   const currentRole = useSelector(s => s.user.user.current_role);
   const customer = useSelector(s => s.customer.customer);
   const auditor = useSelector(s => s.auditor.auditor);
   const dispatch = useDispatch();
-  const { reconnect, connected } = useSelector(s => s.websocket);
+  const { reconnect, connected, needUpdate } = useSelector(s => s.websocket);
+  const [isOpen, setIsOpen] = React.useState(false);
 
   useEffect(() => {
     if (isAuth()) {
@@ -94,18 +101,43 @@ const AppRoutes = () => {
       };
     }
   }, [reconnect, connected]);
-  //
+
+  useEffect(() => {
+    if (isAuth()) {
+      dispatch(getChatList(currentRole));
+    }
+  }, [currentRole]);
+
   useEffect(() => {
     return () => {
       dispatch(websocketDisconnect());
     };
   }, []);
 
+  useEffect(() => {
+    if (needUpdate) {
+      setIsOpen(true);
+    }
+  }, [needUpdate]);
+
+  const handleReload = () => {
+    setIsOpen(false);
+    window.location.reload();
+  };
+
   return (
     <>
+      <CustomSnackbar
+        open={isOpen}
+        action={handleReload}
+        autoHideDuration={50000}
+        onClose={() => setIsOpen(false)}
+        text={'New version is available. Please reload the page'}
+      />
       <Routes>
         <Route path={'/'} element={<HomePage />} />
         <Route path={'/sign-up'} element={<SignupPage />} />
+        <Route path={'/invite-user/:id/:secret'} element={<InvitePage />} />
         <Route path={'/sign-in'} element={<SigninPage />} />
         <Route
           path={'/restore-password/:token'}
@@ -124,6 +156,8 @@ const AppRoutes = () => {
         <Route path={'/FAQ'} element={<Faq />} />
         <Route path={'/contact-us'} element={<ContactUs />} />
         <Route path={'/user/:id/:role'} element={<PublicProfile />} />
+        <Route path={'/delete/:id/:secret'} element={<DeleteBadge />} />
+        <Route path={'/disclaimer'} element={<DisclaimerPage />} />
         <Route
           path="/profile/:tab"
           element={
@@ -225,6 +259,22 @@ const AppRoutes = () => {
           element={
             <PrivateRoute auth={{ isAuthenticated: isAuth() }}>
               <EditProject />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/chat"
+          element={
+            <PrivateRoute auth={{ isAuthenticated: isAuth() }}>
+              <ChatPage />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/chat/:id"
+          element={
+            <PrivateRoute auth={{ isAuthenticated: isAuth() }}>
+              <ChatPage />
             </PrivateRoute>
           }
         />

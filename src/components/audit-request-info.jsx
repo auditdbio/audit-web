@@ -17,7 +17,7 @@ import theme from '../styles/themes.js';
 import { deleteAuditRequest } from '../redux/actions/auditAction.js';
 import Markdown from './markdown/Markdown.jsx';
 import { addTestsLabel, isAuth } from '../lib/helper.js';
-import { AUDITOR } from '../redux/actions/types.js';
+import { AUDITOR, CUSTOMER } from '../redux/actions/types.js';
 import {
   changeRolePublicAuditor,
   changeRolePublicAuditorNoRedirect,
@@ -25,6 +25,8 @@ import {
 import CustomLink from './custom/CustomLink.jsx';
 import OfferModal from './modal/OfferModal.jsx';
 import ShareProjectButton from './custom/ShareProjectButton.jsx';
+import { setCurrentChat } from '../redux/actions/chatActions.js';
+import ChatIcon from './icons/ChatIcon.jsx';
 
 const AuditRequestInfo = ({
   project,
@@ -37,8 +39,9 @@ const AuditRequestInfo = ({
   const navigate = useNavigate();
   const matchXs = useMediaQuery(theme.breakpoints.down('xs'));
   const [open, setOpen] = useState(false);
-  const auditor = useSelector(s => s.auditor.auditor);
-  const user = useSelector(s => s.user.user);
+  const { auditor } = useSelector(s => s.auditor);
+  const { user } = useSelector(s => s.user);
+  const { chatList } = useSelector(s => s.chat);
   const dispatch = useDispatch();
 
   const handleOpen = () => {
@@ -81,6 +84,31 @@ const AuditRequestInfo = ({
     } else {
       navigate(-1);
     }
+  };
+
+  const handleSendMessage = () => {
+    window.scrollTo(0, 0);
+
+    const existingChat = chatList.find(chat =>
+      chat.members?.find(
+        member =>
+          member.id === project?.customer_id &&
+          member.role?.toLowerCase() === CUSTOMER,
+      ),
+    );
+    const chatId = existingChat ? existingChat.id : project?.customer_id;
+    const members = [project?.customer_id, user.id];
+
+    dispatch(
+      setCurrentChat(chatId, {
+        role: CUSTOMER,
+        isNew: !existingChat,
+        userDataId: project?.customer_id,
+        members,
+      }),
+    );
+    localStorage.setItem('path', window.location.pathname);
+    navigate(`/chat/${project?.customer_id}`);
   };
 
   return (
@@ -372,8 +400,9 @@ const AuditRequestInfo = ({
       </Box>
       <Box sx={buttonWrapper} className={'audit-request-button-wrapper'}>
         <Button
-          variant={'contained'}
-          sx={[buttonSx, { backgroundColor: theme.palette.secondary.main }]}
+          variant="contained"
+          color="secondary"
+          sx={buttonSx}
           onClick={() => {
             if (isModal) {
               handleBack();
@@ -386,14 +415,24 @@ const AuditRequestInfo = ({
           {isModal ? 'Cancel' : 'Decline'}
         </Button>
         <Button
-          variant={'contained'}
+          variant="contained"
           sx={buttonSx}
           onClick={handleOpen}
           {...addTestsLabel('project-modal_make-offer-button')}
         >
           Make offer
         </Button>
+        <Button
+          variant="text"
+          // sx={[buttonSx, messageButton]}
+          onClick={handleSendMessage}
+          disabled={project?.customer_id === user.id}
+          {...addTestsLabel('message-button')}
+        >
+          <ChatIcon />
+        </Button>
       </Box>
+
       <Modal
         open={open}
         onClose={handleClose}
@@ -448,7 +487,12 @@ const wrapper = theme => ({
 });
 
 const buttonWrapper = {
-  marginTop: '40px',
+  mt: '40px',
+  display: 'flex',
+  mb: '10px',
+  maxWidth: '450px',
+  width: '100%',
+  justifyContent: 'center',
 };
 
 const contentWrapper = {
@@ -522,7 +566,7 @@ const buttonSx = theme => ({
   textTransform: 'unset',
   fontWeight: 600,
   mr: '20px',
-  width: '270px',
+  width: '100%',
   borderRadius: '10px',
   '&:last-child': { mr: 0 },
   [theme.breakpoints.down('md')]: {
@@ -536,5 +580,26 @@ const buttonSx = theme => ({
     width: '140px',
     mr: '10px',
     fontSize: '12px',
+  },
+  [theme.breakpoints.down('xxs')]: {
+    width: '122px',
+  },
+});
+
+const messageButton = theme => ({
+  width: '560px',
+  padding: '4px 0',
+  [theme.breakpoints.down('md')]: {
+    width: '440px',
+    padding: '4px 0',
+  },
+  [theme.breakpoints.down('sm')]: {
+    width: '360px',
+  },
+  [theme.breakpoints.down('xs')]: {
+    width: '290px',
+  },
+  [theme.breakpoints.down('xxs')]: {
+    width: '254px',
   },
 });

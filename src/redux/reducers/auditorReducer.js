@@ -5,6 +5,8 @@ import {
   UPDATE_AUDITOR,
   LOG_OUT,
   GET_CURRENT_AUDITOR,
+  DELETE_BADGE,
+  CLEAR_MESSAGES,
 } from '../actions/types.js';
 
 const initialState = {
@@ -36,6 +38,18 @@ export const auditorReducer = (state = initialState, action) => {
       };
     case LOG_OUT:
       return { ...state, auditor: null, currentAuditor: null };
+    case DELETE_BADGE:
+      return {
+        ...state,
+        auditors: state.auditors.filter(
+          auditor => auditor.id !== action.payload,
+        ),
+      };
+    case CLEAR_MESSAGES:
+      return {
+        ...state,
+        error: null,
+      };
     default:
       return state;
   }

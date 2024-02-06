@@ -50,8 +50,8 @@ const EditProfileForm = ({ role }) => {
 
   const getPrefilledLastName = () => {
     const usernameParts = user?.name?.split(' ');
-    return usernameParts && usernameParts.length > 1
-      ? usernameParts.at(-1)
+    return user.is_new && usernameParts?.length > 1
+      ? usernameParts[usernameParts.length - 1]
       : '';
   };
 
@@ -83,7 +83,6 @@ const EditProfileForm = ({ role }) => {
         validateOnBlur={false}
         validateOnChange={false}
         onSubmit={values => {
-          setIsDirty(false);
           if (role !== AUDITOR) {
             if (!data.first_name && !data.last_name) {
               dispatch(createCustomer(values));

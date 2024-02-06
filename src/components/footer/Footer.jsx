@@ -4,13 +4,12 @@ import YouTubeIcon from '@mui/icons-material/YouTube';
 import MenuItem from '@mui/material/MenuItem';
 import { useMediaQuery } from '@mui/material';
 import { Link } from 'react-router-dom/dist';
-import Tiktok from '../icons/Tiktok.jsx';
-import Vk from '../icons/Vk.jsx';
-import Instagram from '../icons/Instagram.jsx';
+
 import Discord from '../icons/Discord.jsx';
 import Telegram from '../icons/Telegram.jsx';
 import MediumLogo from '../icons/Medium-logo.jsx';
 import { addTestsLabel } from '../../lib/helper.js';
+import XTwitterLogo from '../icons/XTwitter-logo.jsx';
 
 const Footer = () => {
   const isMobile = useMediaQuery('(max-width: 768px)');
@@ -27,19 +26,20 @@ const Footer = () => {
             <Box sx={iconsStyle}>
               <a
                 target="_blank"
-                href="https://twitter.com/auditdbio?t=oOdybhqGYlv129TyT8y-2g&s=09"
-                aria-label="Twitter"
-                {...addTestsLabel('footer_twitter-link')}
-              >
-                <TwitterIcon sx={iconStyle} />
-              </a>
-              <a
-                target="_blank"
                 href="https://discord.gg/2Wg6GGs93C"
                 aria-label="Discord"
                 {...addTestsLabel('footer_discord-link')}
               >
                 <Discord style={iconStyle} />
+              </a>
+              <a
+                target="_blank"
+                href="https://twitter.com/auditdbio?t=oOdybhqGYlv129TyT8y-2g&s=09"
+                aria-label="Twitter"
+                {...addTestsLabel('footer_twitter-link')}
+              >
+                {/*<TwitterIcon sx={iconStyle} />*/}
+                <XTwitterLogo />
               </a>
               <a
                 target="_blank"
