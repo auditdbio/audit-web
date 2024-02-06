@@ -266,6 +266,7 @@ const GithubSelection = () => {
                           display: 'flex',
                           alignItems: 'center',
                           gap: '5px',
+                          paddingLeft: '5px',
                         }}
                       >
                         <CommitIcon color={'primary'} />
@@ -278,7 +279,7 @@ const GithubSelection = () => {
                           {dayjs(commitObj.date).format('MMM DD, YYYY')}
                         </Typography>
                       </Box>
-                      <List sx={{ padding: 0 }}>
+                      <List>
                         {commitObj.commits.map((commit, idx) => {
                           return (
                             <Box
@@ -371,7 +372,7 @@ const wrapperSx = theme => ({
   cursor: 'pointer',
   padding: '5px',
   paddingX: '15px',
-  borderColor: `${theme.palette.secondary.main}!important`,
+  borderColor: `#c9c9c9!important`,
   '&:hover': { backgroundColor: '#fbfbfb' },
   [theme.breakpoints.down('xs')]: {
     paddingX: '10px',
