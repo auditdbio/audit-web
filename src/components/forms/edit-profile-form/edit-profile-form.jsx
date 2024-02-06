@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Field, Form, Formik } from 'formik';
 import * as Yup from 'yup';
@@ -38,7 +38,6 @@ const EditProfileForm = ({ role }) => {
   const customer = useSelector(s => s.customer.customer);
   const auditor = useSelector(s => s.auditor.auditor);
   const navigate = useNavigate();
-  const [isDirty, setIsDirty] = useState(false);
 
   const data = useMemo(() => {
     if (role === AUDITOR) {
