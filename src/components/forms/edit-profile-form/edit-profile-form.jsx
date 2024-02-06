@@ -54,46 +54,6 @@ const EditProfileForm = ({ role }) => {
       ? usernameParts.at(-1)
       : '';
   };
-  const handleGoBack = dirty => {
-    if (dirty) {
-      const confirmed = window.confirm(
-        'You have unsaved changes. Please save them before leaving the page.',
-      );
-      if (confirmed) {
-        navigate(-1);
-      }
-    } else {
-      navigate(-1);
-    }
-  };
-
-  useEffect(() => {
-    const unblock = history.block(({ location }) => {
-      if (!isDirty) {
-        unblock();
-        return navigate(location);
-      }
-
-      const confirmed = window.confirm(
-        'You have unsaved changes. Please save them before leaving the page.',
-      );
-
-      if (confirmed) {
-        unblock();
-        return navigate(location);
-      } else {
-        return false;
-      }
-    });
-
-    if (!isDirty) {
-      unblock();
-    }
-
-    return () => {
-      unblock();
-    };
-  }, [history, isDirty]);
 
   if (!data) {
     return <Loader />;
@@ -141,12 +101,38 @@ const EditProfileForm = ({ role }) => {
       >
         {({ handleSubmit, values, setFieldValue, dirty }) => {
           useEffect(() => {
-            setIsDirty(dirty);
-          }, [dirty]);
+            const unblock = history.block(({ location }) => {
+              if (!dirty) {
+                unblock();
+                return navigate(location);
+              }
+
+              const confirmed = window.confirm(
+                'Do you want to save changes before leaving the page?',
+              );
+
+              if (confirmed) {
+                handleSubmit(values);
+                unblock();
+                return navigate(location);
+              } else {
+                unblock();
+                return navigate(location);
+              }
+            });
+
+            if (!dirty) {
+              unblock();
+            }
+
+            return () => {
+              unblock();
+            };
+          }, [history, dirty]);
           return (
             <Form onSubmit={handleSubmit}>
               <Box sx={wrapper}>
-                <Button sx={backBtnSx} onClick={() => handleGoBack(isDirty)}>
+                <Button sx={backBtnSx} onClick={() => navigate(-1)}>
                   <ArrowBackIcon
                     color={role !== AUDITOR ? 'primary' : 'secondary'}
                   />

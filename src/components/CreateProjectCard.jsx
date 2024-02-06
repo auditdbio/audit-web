@@ -121,47 +121,6 @@ const CreateProjectCard = ({ projectInfo }) => {
     }
   };
 
-  const handleGoBack = dirty => {
-    if (dirty) {
-      const confirmed = window.confirm(
-        'You have unsaved changes. Please save them before leaving the page.',
-      );
-      if (confirmed) {
-        navigate(-1);
-      }
-    } else {
-      navigate(-1);
-    }
-  };
-
-  useEffect(() => {
-    const unblock = history.block(({ location }) => {
-      if (!isDirty) {
-        unblock();
-        return navigate(location);
-      }
-
-      const confirmed = window.confirm(
-        'You have unsaved changes. Please save them before leaving the page.',
-      );
-
-      if (confirmed) {
-        unblock();
-        return navigate(location);
-      } else {
-        return false;
-      }
-    });
-
-    if (!isDirty) {
-      unblock();
-    }
-
-    return () => {
-      unblock();
-    };
-  }, [history, isDirty]);
-
   return (
     <Formik
       initialValues={initialValues}
@@ -202,13 +161,39 @@ const CreateProjectCard = ({ projectInfo }) => {
         errors,
       }) => {
         useEffect(() => {
-          setIsDirty(dirty);
-        }, [dirty]);
+          const unblock = history.block(({ location }) => {
+            if (!dirty) {
+              unblock();
+              return navigate(location);
+            }
+
+            const confirmed = window.confirm(
+              'Do you want to save changes before leaving the page?',
+            );
+
+            if (confirmed) {
+              handleSubmit(values);
+              unblock();
+              return navigate(location);
+            } else {
+              unblock();
+              return navigate(location);
+            }
+          });
+
+          if (!dirty) {
+            unblock();
+          }
+
+          return () => {
+            unblock();
+          };
+        }, [history, dirty]);
         return (
           <Box sx={mainBox}>
             <Button
               sx={backButtonSx}
-              onClick={() => handleGoBack(isDirty)}
+              onClick={() => navigate(-1)}
               aria-label="Ga back"
               {...addTestsLabel('go-back-button')}
             >
