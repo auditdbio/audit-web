@@ -28,10 +28,25 @@ import { AuditRequestsArray } from './custom/AuditRequestsArray.jsx';
 import MarkdownEditor from './markdown/Markdown-editor.jsx';
 import SalarySlider from './forms/salary-slider/salary-slider.jsx';
 import CloseProjectModal from './CloseProjectModal.jsx';
-import { DONE } from '../redux/actions/types.js';
+import { AUDITOR, DONE } from '../redux/actions/types.js';
 import CustomSnackbar from './custom/CustomSnackbar.jsx';
 import { addTestsLabel } from '../lib/helper.js';
 import { history } from '../services/history.js';
+
+const GoBack = ({ role }) => {
+  const location = useLocation();
+  const navigate = useNavigate();
+  return (
+    <Button
+      sx={backButtonSx}
+      onClick={() => navigate(-1)}
+      aria-label="Ga back"
+      {...addTestsLabel('go-back-button')}
+    >
+      <ArrowBackIcon />
+    </Button>
+  );
+};
 
 const CreateProjectCard = ({ projectInfo }) => {
   const navigate = useNavigate();
@@ -195,14 +210,7 @@ const CreateProjectCard = ({ projectInfo }) => {
         }, [history, isDirty]);
         return (
           <Box sx={mainBox}>
-            <Button
-              sx={backButtonSx}
-              onClick={() => navigate(-1)}
-              aria-label="Ga back"
-              {...addTestsLabel('go-back-button')}
-            >
-              <ArrowBackIcon />
-            </Button>
+            <GoBack />
 
             <CustomSnackbar
               autoHideDuration={3000}
@@ -325,6 +333,7 @@ const CreateProjectCard = ({ projectInfo }) => {
                     <MarkdownEditor
                       name="description"
                       setFieldTouched={setFieldTouched}
+                      fastSave
                       mdProps={{
                         view: { menu: true, md: true, html: !matchXs },
                       }}

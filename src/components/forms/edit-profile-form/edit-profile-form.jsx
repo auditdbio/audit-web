@@ -30,6 +30,16 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { history } from '../../../services/history.js';
 
+const GoBack = ({ role }) => {
+  const location = useLocation();
+  const navigate = useNavigate();
+  return (
+    <Button sx={backBtnSx} onClick={() => navigate(-1)}>
+      <ArrowBackIcon color={role !== AUDITOR ? 'primary' : 'secondary'} />
+    </Button>
+  );
+};
+
 const EditProfileForm = ({ role }) => {
   const matchSm = useMediaQuery(theme.breakpoints.down('sm'));
   const matchXs = useMediaQuery(theme.breakpoints.down('xs'));
@@ -135,11 +145,7 @@ const EditProfileForm = ({ role }) => {
           return (
             <Form onSubmit={handleSubmit}>
               <Box sx={wrapper}>
-                <Button sx={backBtnSx} onClick={() => navigate(-1)}>
-                  <ArrowBackIcon
-                    color={role !== AUDITOR ? 'primary' : 'secondary'}
-                  />
-                </Button>
+                <GoBack role={role} />
                 <Box sx={avatarWrapper}>
                   <Box
                     sx={{
