@@ -19,6 +19,7 @@ const CommitModal = ({ sha, onClose, repository }) => {
   const [selected, setSelected] = useState([]);
   const dispatch = useDispatch();
   const [newObj, setNewObj] = useState(null);
+
   useEffect(() => {
     dispatch(getCommitData(repository, sha));
   }, [repository, sha]);
@@ -77,7 +78,22 @@ const CommitModal = ({ sha, onClose, repository }) => {
     } else if (field.value.includes(createUrl)) {
       fieldHelper.setValue(field.value.filter(item => item !== createUrl));
     } else {
-      setSelected([...selected, createUrl]);
+      setSelected(prevState => [...prevState, createUrl]);
+    }
+  };
+
+  const handleRemoveAll = file => {
+    const createUrl = createBlopUrl(repository, sha, file.path);
+    if (selected.includes(createUrl)) {
+      setSelected(prev => prev.filter(item => item !== createUrl));
+    } else {
+      fieldHelper.setValue(field.value.filter(item => item !== createUrl));
+    }
+  };
+
+  const handleSelectAll = file => {
+    if (file.type === 'tree') {
+      file.tree.map(el => handleAdd(el));
     }
   };
 
@@ -179,6 +195,8 @@ const CommitModal = ({ sha, onClose, repository }) => {
                 selected={selected}
                 setSelected={setSelected}
                 handleAdd={handleAdd}
+                handleSelectAll={handleSelectAll}
+                handleRemoveAll={handleRemoveAll}
               />
             </Box>
           ) : (
