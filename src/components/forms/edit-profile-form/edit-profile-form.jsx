@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Field, Form, Formik } from 'formik';
 import * as Yup from 'yup';
@@ -38,6 +38,7 @@ const EditProfileForm = ({ role }) => {
   const customer = useSelector(s => s.customer.customer);
   const auditor = useSelector(s => s.auditor.auditor);
   const navigate = useNavigate();
+  const [isDirty, setIsDirty] = useState(false);
 
   const data = useMemo(() => {
     if (role === AUDITOR) {
@@ -82,6 +83,7 @@ const EditProfileForm = ({ role }) => {
         validateOnBlur={false}
         validateOnChange={false}
         onSubmit={values => {
+          setIsDirty(false);
           if (role !== AUDITOR) {
             if (!data.first_name && !data.last_name) {
               dispatch(createCustomer(values));
@@ -99,8 +101,11 @@ const EditProfileForm = ({ role }) => {
       >
         {({ handleSubmit, values, setFieldValue, dirty }) => {
           useEffect(() => {
+            setIsDirty(dirty);
+          }, [dirty]);
+          useEffect(() => {
             const unblock = history.block(({ location }) => {
-              if (!dirty) {
+              if (!isDirty) {
                 unblock();
                 return navigate(location);
               }
@@ -119,14 +124,14 @@ const EditProfileForm = ({ role }) => {
               }
             });
 
-            if (!dirty) {
+            if (!isDirty) {
               unblock();
             }
 
             return () => {
               unblock();
             };
-          }, [history, dirty]);
+          }, [history, isDirty]);
           return (
             <Form onSubmit={handleSubmit}>
               <Box sx={wrapper}>

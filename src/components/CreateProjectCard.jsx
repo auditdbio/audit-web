@@ -161,8 +161,12 @@ const CreateProjectCard = ({ projectInfo }) => {
         errors,
       }) => {
         useEffect(() => {
+          setIsDirty(dirty);
+        }, [dirty]);
+
+        useEffect(() => {
           const unblock = history.block(({ location }) => {
-            if (!dirty) {
+            if (!isDirty) {
               unblock();
               return navigate(location);
             }
@@ -181,14 +185,14 @@ const CreateProjectCard = ({ projectInfo }) => {
             }
           });
 
-          if (!dirty) {
+          if (!isDirty) {
             unblock();
           }
 
           return () => {
             unblock();
           };
-        }, [history, dirty]);
+        }, [history, isDirty]);
         return (
           <Box sx={mainBox}>
             <Button
