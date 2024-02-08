@@ -27,7 +27,7 @@ const API_URL = import.meta.env.VITE_API_BASE_URL;
 export const signUpGithub = (code, role) => {
   return dispatch => {
     axios
-      .post(`${API_URL}/auth/github`, { code, current_role: role })
+      .post(`${API_URL}/auth/github`, code)
       .then(({ data }) => {
         Cookies.set('token', data.token, { expires: 1 });
         localStorage.setItem('token', JSON.stringify(data.token));
