@@ -18,6 +18,10 @@ import {
   changeRolePublicCustomer,
   changeRolePublicCustomerNoRedirect,
 } from '../redux/actions/userAction.js';
+import LinkedinIcon from '../components/icons/LinkedinIcon.jsx';
+import GitcoinIcon from '../components/icons/GitcoinIcon.jsx';
+import XTwitterLogo from '../components/icons/XTwitter-logo.jsx';
+import GitHubIcon from '@mui/icons-material/GitHub';
 
 const PublicProfile = () => {
   const { role, id } = useParams();
@@ -239,6 +243,51 @@ const PublicProfile = () => {
               <MobileTagsList data={data.tags} />
             </Box>
           )}
+          <Box sx={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
+            {user.linked_accounts
+              ?.filter(account => account.is_public)
+              .map(account => {
+                if (account.name.toLowerCase() === 'linkedin') {
+                  return (
+                    <Box
+                      key={account.id}
+                      sx={{ display: 'flex', alignItems: 'center', gap: '7px' }}
+                    >
+                      <LinkedinIcon />
+                    </Box>
+                  );
+                } else if (account.name.toLowerCase() === 'github') {
+                  return (
+                    <Box
+                      key={account.id}
+                      sx={{ display: 'flex', alignItems: 'center', gap: '7px' }}
+                    >
+                      <GitHubIcon
+                        sx={{ width: '50px', height: '50px', padding: '4px' }}
+                      />
+                    </Box>
+                  );
+                } else if (account.name.toLowerCase() === 'gitcoin') {
+                  return (
+                    <Box
+                      key={account.id}
+                      sx={{ display: 'flex', alignItems: 'center', gap: '7px' }}
+                    >
+                      <GitcoinIcon />
+                    </Box>
+                  );
+                } else {
+                  return (
+                    <Box
+                      key={account.id}
+                      sx={{ display: 'flex', alignItems: 'center', gap: '7px' }}
+                    >
+                      <XTwitterLogo width={'50px'} height={'50px'} space />
+                    </Box>
+                  );
+                }
+              })}
+          </Box>
           {/*{matchXs && <MobileTagsList data={data.tags} />}*/}
           {role.toLowerCase() === AUDITOR && (
             <Button

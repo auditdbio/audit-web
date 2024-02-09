@@ -16,6 +16,10 @@ import {
   CHANGE_ROLE_DONT_HAVE_PROFILE_AUDITOR,
   RESTORE_PASSWORD,
   SEND_EMAIL,
+  CONNECT_ACCOUNT,
+  CHANGE_ACCOUNT_VISIBILITY,
+  ERROR_ADD_ACCOUNT,
+  ERROR_IDENTITY,
 } from '../actions/types.js';
 
 const initialState = {
@@ -39,6 +43,27 @@ export const userReducer = (state = initialState, action) => {
         user: action.payload,
         success:
           'An authorization email has been sent to your email address, please check your email',
+      };
+    case CONNECT_ACCOUNT:
+      return {
+        ...state,
+        user: {
+          ...state.user,
+          linked_accounts: [...state.user.linked_accounts, action.payload],
+        },
+      };
+    case CHANGE_ACCOUNT_VISIBILITY:
+      return {
+        ...state,
+        user: {
+          ...state.user,
+          linked_accounts: state.user.linked_accounts.map(account => {
+            if (account.id === action.payload.id) {
+              return action.payload;
+            }
+            return account;
+          }),
+        },
       };
     case AUTH_TRUE:
       return { ...state, isAuth: true };
@@ -68,6 +93,16 @@ export const userReducer = (state = initialState, action) => {
         ...state,
         success:
           'Success! The letter was sent to your email, please check your email',
+      };
+    case ERROR_ADD_ACCOUNT:
+      return {
+        ...state,
+        error: 'Account has already been added',
+      };
+    case ERROR_IDENTITY:
+      return {
+        ...state,
+        error: 'Access token expired, please try again',
       };
     case CLEAR_SUCCESS:
       return { ...state, success: null };
