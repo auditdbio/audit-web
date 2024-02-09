@@ -15,7 +15,7 @@ const initialState = {
   sha: '',
   commits: [],
   branch: '',
-  totalCommits: 0,
+  totalCommitsPage: 0,
   defaultBranch: '',
   branches: [],
   commit: {},
@@ -46,7 +46,7 @@ export const githubReducer = (state = initialState, action) => {
     case GET_TOTAL_COMMITS:
       return {
         ...state,
-        totalCommits: action.payload,
+        totalCommitsPage: action.payload,
       };
     case GET_COMMIT_DATA:
       return {

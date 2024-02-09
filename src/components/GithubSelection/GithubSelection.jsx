@@ -23,9 +23,8 @@ const GithubSelection = () => {
   const [urlRepo, setUrlRepo] = useState('');
   const [branch, setBranch] = useState('');
   const [isOpen, setIsOpen] = useState(false);
-  const { defaultBranch, totalCommits, commits, myRepositories } = useSelector(
-    state => state.github,
-  );
+  const { defaultBranch, totalCommitsPage, commits, myRepositories } =
+    useSelector(state => state.github);
   const [page, setPage] = useState(1);
   const [repository, setRepository] = useState(null);
   const [error, setError] = useState('');
@@ -50,12 +49,12 @@ const GithubSelection = () => {
 
   useEffect(() => {
     if (repository && (branch || defaultBranch)) {
-      dispatch(getTotalCommits(repository, branch));
+      dispatch(getTotalCommits(repository, branch, page));
     }
-  }, [repository, branch]);
+  }, [repository, branch, page]);
 
   useEffect(() => {
-    if (githubData?.username && !myRepositories?.length) {
+    if (githubData?.token && !myRepositories?.length) {
       dispatch(getMyGithub(githubData.username));
     }
   }, [githubData?.username]);
@@ -173,7 +172,7 @@ const GithubSelection = () => {
                   Submit
                 </Button>
               </Box>
-              {githubData?.id ? (
+              {githubData?.token ? (
                 <Typography
                   variant={'h4'}
                   sx={{ marginY: '15px', fontSize: '26px' }}
@@ -181,33 +180,42 @@ const GithubSelection = () => {
                   My repositories:
                 </Typography>
               ) : (
-                <Typography
-                  variant={'h5'}
-                  align={'center'}
-                  sx={{ marginY: '20px', fontSize: '22px', fontWeight: 600 }}
-                >
-                  To view your repositories, add your GitHub account.
-                </Typography>
+                <Box sx={githubTitleSx}>
+                  <Typography variant={'h5'} align={'center'}>
+                    To view your repositories, authenticate through GitHub.
+                  </Typography>
+                  <Button sx={{ textTransform: 'unset' }} variant={'contained'}>
+                    Authenticate with GitHub{' '}
+                  </Button>
+                </Box>
               )}
-              {githubData?.id && <Divider />}
-              <List sx={[listWrapper, { marginLeft: '-10px' }]}>
+              {githubData?.token && <Divider />}
+              <List sx={[listWrapper, { marginX: '0px!important' }]}>
                 {githubData?.id &&
                   myRepositories?.map(repo => {
                     return (
                       <Box
                         onClick={() => {
                           setRepository(repo.full_name);
-                          dispatch(getRepoOwner(repo.full_name));
                         }}
                         key={repo.id}
                         sx={{
                           cursor: 'pointer',
                           padding: '5px',
-                          paddingLeft: '20px',
+                          borderBottom: '1px solid',
+                          display: 'flex',
+                          gap: '20px',
                           '&:hover': { backgroundColor: '#fbfbfb' },
                         }}
                       >
                         <Typography>{repo.full_name}</Typography>
+                        {repo.private && (
+                          <Typography
+                            sx={{ color: '#52176D', fontWeight: 600 }}
+                          >
+                            Private
+                          </Typography>
+                        )}
                       </Box>
                     );
                   })}
@@ -313,7 +321,7 @@ const GithubSelection = () => {
                   justifyContent: 'center',
                 }}
               >
-                {totalCommits > 1 && (
+                {totalCommitsPage > 1 && (
                   <Button
                     disabled={page === 1}
                     onClick={() => setPage(page - 1)}
@@ -321,9 +329,9 @@ const GithubSelection = () => {
                     Prev
                   </Button>
                 )}
-                {totalCommits > 1 && (
+                {totalCommitsPage > 1 && (
                   <Button
-                    disabled={page === totalCommits}
+                    disabled={page === totalCommitsPage}
                     onClick={() => setPage(page + 1)}
                   >
                     Next
@@ -383,6 +391,36 @@ const wrapper = theme => ({
   height: '100%',
   [theme.breakpoints.down(500)]: {
     width: '100%',
+  },
+});
+
+const githubTitleSx = theme => ({
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  marginTop: '45px',
+  gap: '25px',
+  '& h5': {
+    fontSize: '24px',
+    fontWeight: 600,
+  },
+  '& button': {
+    fontSize: '18px',
+  },
+  [theme.breakpoints.down('md')]: {
+    marginTop: '35px',
+    gap: '15px',
+    '& h5': {
+      fontSize: '20px',
+    },
+    '& button': {
+      fontSize: '16px',
+    },
+  },
+  [theme.breakpoints.down('xs')]: {
+    '& h5': {
+      fontSize: '16px',
+    },
   },
 });
 
