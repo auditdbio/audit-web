@@ -6,6 +6,7 @@ import TagsList from './tagsList.jsx';
 import { clearMessage } from '../redux/actions/auditAction.js';
 import CustomSnackbar from './custom/CustomSnackbar.jsx';
 import { addTestsLabel } from '../lib/helper.js';
+import { useNavigate } from 'react-router-dom/dist';
 
 const ProjectListCard = ({ project }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -14,6 +15,7 @@ const ProjectListCard = ({ project }) => {
   const successMessage = useSelector(s => s.audits.successMessage);
   const dispatch = useDispatch();
   const [errorState, setErrorState] = useState(null);
+  const navigate = useNavigate();
 
   const handleOpen = () => {
     setIsOpen(true);
@@ -43,7 +45,9 @@ const ProjectListCard = ({ project }) => {
 
       <Box sx={contentWrapper}>
         <Tooltip title={project.name} arrow placement={'top'}>
-          <Typography sx={projectTitleWrapper}>{project.name}</Typography>
+          <Typography onClick={handleOpen} sx={projectTitleWrapper}>
+            {project.name}
+          </Typography>
         </Tooltip>
         <TagsList data={project.tags} />
       </Box>
@@ -55,7 +59,7 @@ const ProjectListCard = ({ project }) => {
           height: '100%',
         }}
       >
-        <Typography>${project.price}</Typography>
+        {project.price > 0 && <Typography>${project.price}</Typography>}
         <Button
           color={'secondary'}
           size={'small'}
@@ -98,6 +102,7 @@ const contentWrapper = theme => ({
 
 const projectTitleWrapper = theme => ({
   marginBottom: '18px',
+  cursor: 'pointer',
   height: '80px',
   overflow: 'hidden',
   wordBreak: 'break-word',

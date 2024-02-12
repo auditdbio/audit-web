@@ -48,6 +48,7 @@ const AuditorCard = ({ auditor }) => {
         auditor={auditor}
         handleError={handleError}
         setError={setErrorMessage}
+        budge={auditor.kind === 'badge'}
       />
       <CustomSnackbar
         autoHideDuration={3000}
@@ -89,12 +90,14 @@ const AuditorCard = ({ auditor }) => {
         }}
       >
         <Box sx={badgesStyle}>
-          <Box sx={infoStyle}>
-            <Currency />
-            <Typography sx={priceSx}>
-              {auditor.price_range.from} - {auditor.price_range.to}
-            </Typography>
-          </Box>
+          {(auditor.price_range.from > 0 || auditor.price_range.to > 0) && (
+            <Box sx={infoStyle}>
+              <Currency />
+              <Typography sx={priceSx}>
+                {auditor.price_range.from} - {auditor.price_range.to}
+              </Typography>
+            </Box>
+          )}
           <Box sx={infoStyle}>
             <Star />
             <Typography sx={priceSx}>150</Typography>
@@ -102,6 +105,7 @@ const AuditorCard = ({ auditor }) => {
         </Box>
         <CustomButton
           sx={buttonStyle}
+          variant={auditor.kind === 'badge' ? 'outlined' : 'contained'}
           onClick={handleView}
           {...addTestsLabel('auditor_more-info-button')}
         >
@@ -113,9 +117,9 @@ const AuditorCard = ({ auditor }) => {
 };
 
 const buttonStyle = {
-  backgroundColor: 'orange',
-  color: 'white',
-  ':hover': { backgroundColor: 'orange', color: 'white' },
+  // backgroundColor: 'orange',
+  // color: 'white',
+  // ':hover': { backgroundColor: 'orange', color: 'white' },
   [theme.breakpoints.down('sm')]: {
     fontSize: '13px',
   },
