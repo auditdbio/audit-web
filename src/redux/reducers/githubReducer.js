@@ -9,6 +9,8 @@ import {
   GET_REPO_OWNER,
   GET_TOTAL_COMMITS,
   GET_MY_GITHUB_REPOSITORIES,
+  GET_MY_GITHUB_ORGANIZATION,
+  GET_MY_GITHUB_ORGANIZATION_REPOSITORIES,
 } from '../actions/types.js';
 
 const initialState = {
@@ -22,6 +24,8 @@ const initialState = {
   commitInfo: {},
   repoOwner: '',
   myRepositories: [],
+  myOrganizations: [],
+  organizationRepositories: [],
 };
 
 export const githubReducer = (state = initialState, action) => {
@@ -75,6 +79,16 @@ export const githubReducer = (state = initialState, action) => {
       return {
         ...state,
         myRepositories: action.payload,
+      };
+    case GET_MY_GITHUB_ORGANIZATION:
+      return {
+        ...state,
+        myOrganizations: action.payload,
+      };
+    case GET_MY_GITHUB_ORGANIZATION_REPOSITORIES:
+      return {
+        ...state,
+        organizationRepositories: action.payload,
       };
     default:
       return state;

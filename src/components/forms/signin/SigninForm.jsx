@@ -37,7 +37,7 @@ const SigninForm = () => {
   };
   const handleAuthGithub = () => {
     window.open(
-      `https://github.com/login/oauth/authorize?client_id=${GITHUB_ID}&redirect_uri=${BASE_URL}oauth/callback&scope=read:user,user:email,repo&state=${isAuditor}_GitHub_auth`,
+      `https://github.com/login/oauth/authorize?client_id=${GITHUB_ID}&redirect_uri=${BASE_URL}oauth/callback&scope=read:user,user:email&state=${isAuditor}_GitHub_auth`,
       '_self',
     );
   };

@@ -6,6 +6,8 @@ import {
   GET_COMMIT_DATA,
   GET_COMMITS,
   GET_DEFAULT_BRANCH,
+  GET_MY_GITHUB_ORGANIZATION,
+  GET_MY_GITHUB_ORGANIZATION_REPOSITORIES,
   GET_MY_GITHUB_REPOSITORIES,
   GET_REPO_OWNER,
   GET_TOTAL_COMMITS,
@@ -193,7 +195,40 @@ export const getMyGithub = user => {
       },
     })
       .then(({ data }) => {
-        dispatch({ type: GET_MY_GITHUB_REPOSITORIES, payload: data });
+        dispatch({
+          type: GET_MY_GITHUB_REPOSITORIES,
+          payload: data.filter(el => el.permissions.admin === true),
+        });
+      })
+      .catch(error => {
+        console.error(error);
+      });
+  };
+};
+
+export const getMyGithubOrgs = user => {
+  return dispatch => {
+    axios(`${API_URL}/github/user/orgs?per_page=100`, {
+      headers: {
+        Authorization: `Bearer ${Cookies.get('token')}`,
+      },
+    })
+      .then(({ data }) => {
+        dispatch({
+          type: GET_MY_GITHUB_ORGANIZATION,
+          payload: data,
+        });
+        if (!data.message) {
+          data?.map(org => {
+            axios(org.repos_url).then(({ data }) => {
+              dispatch({
+                type: GET_MY_GITHUB_ORGANIZATION_REPOSITORIES,
+                payload: data,
+              });
+              console.log(data);
+            });
+          });
+        }
       })
       .catch(error => {
         console.error(error);

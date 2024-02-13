@@ -1,5 +1,14 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Box, Button, Divider, List, Modal, Typography } from '@mui/material';
+import {
+  Box,
+  Button,
+  Divider,
+  List,
+  Modal,
+  Tab,
+  Tabs,
+  Typography,
+} from '@mui/material';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import { Field } from 'formik';
 import GithubBranchAutocomplete from '../GithubBranchAutocomplete.jsx';
@@ -13,18 +22,30 @@ import {
   getCommits,
   getDefaultBranch,
   getMyGithub,
+  getMyGithubOrgs,
   getRepoOwner,
   getTotalCommits,
 } from '../../redux/actions/githubAction.js';
 import CommitIcon from '@mui/icons-material/Commit';
 import dayjs from 'dayjs';
+import { logout } from '../../redux/actions/userAction.js';
+import GithubOwnRepositories from './GithubOwnRepositories.jsx';
+import GithubOwnOrgs from './GithubOwnOrgs.jsx';
+
+const GITHUB_ID = import.meta.env.VITE_GITHUB_CLIENT_ID;
+const BASE_URL = import.meta.env.VITE_BASE_URL;
 
 const GithubSelection = () => {
   const [urlRepo, setUrlRepo] = useState('');
   const [branch, setBranch] = useState('');
   const [isOpen, setIsOpen] = useState(false);
-  const { defaultBranch, totalCommitsPage, commits, myRepositories } =
-    useSelector(state => state.github);
+  const {
+    defaultBranch,
+    totalCommitsPage,
+    commits,
+    myOrganizations,
+    myRepositories,
+  } = useSelector(state => state.github);
   const [page, setPage] = useState(1);
   const [repository, setRepository] = useState(null);
   const [error, setError] = useState('');
@@ -34,6 +55,7 @@ const GithubSelection = () => {
       el => el.name.toLowerCase() === 'github',
     ),
   );
+  const orgs = useSelector(s => s.github.myOrganizations);
 
   useEffect(() => {
     if (repository && (branch || defaultBranch)) {
@@ -54,10 +76,11 @@ const GithubSelection = () => {
   }, [repository, branch, page]);
 
   useEffect(() => {
-    if (githubData?.token && !myRepositories?.length) {
+    if (githubData?.id && !myRepositories?.length) {
       dispatch(getMyGithub(githubData.username));
+      dispatch(getMyGithubOrgs(githubData.username));
     }
-  }, [githubData?.username]);
+  }, [githubData?.id]);
 
   const handleAddProject = () => {
     if (urlRepo.includes('github.com/')) {
@@ -79,6 +102,14 @@ const GithubSelection = () => {
     setIsOpen(false);
   };
 
+  const handleConnectGithub = () => {
+    // dispatch(logout());
+    window.open(
+      `https://github.com/login/oauth/authorize?client_id=${GITHUB_ID}&redirect_uri=${BASE_URL}oauth/callback&scope=read:user,user:email,repo&state=customer_GitHub_auth`,
+      '_self',
+    );
+  };
+  //
   const newCommits = useMemo(() => {
     const commitsByDate = {};
 
@@ -153,7 +184,7 @@ const GithubSelection = () => {
                   name={'tag-field'}
                   disabled={false}
                   label={'Github repository url'}
-                  // size={size}
+                  size={'small'}
                   value={urlRepo}
                   onKeyDown={e => {
                     if (e.key === 'Enter') {
@@ -172,54 +203,38 @@ const GithubSelection = () => {
                   Submit
                 </Button>
               </Box>
-              {githubData?.token ? (
-                <Typography
-                  variant={'h4'}
-                  sx={{ marginY: '15px', fontSize: '26px' }}
-                >
-                  My repositories:
-                </Typography>
+              {/*<Box sx={[githubTitleSx, { marginTop: '10px!important' }]}>*/}
+              {/*  <Typography variant={'h5'} align={'center'}>*/}
+              {/*    To view your repositories, authenticate through GitHub.*/}
+              {/*  </Typography>*/}
+              {/*  <Button*/}
+              {/*    onClick={handleConnectGithub}*/}
+              {/*    sx={{ textTransform: 'unset' }}*/}
+              {/*    variant={'contained'}*/}
+              {/*  >*/}
+              {/*    Authenticate with GitHub{' '}*/}
+              {/*  </Button>*/}
+              {/*</Box>*/}
+              {githubData?.id && !orgs.message ? (
+                <GithubOwnRepositories
+                  setRepository={setRepository}
+                  myRepositories={myRepositories}
+                  myOrganizations={myOrganizations}
+                />
               ) : (
                 <Box sx={githubTitleSx}>
                   <Typography variant={'h5'} align={'center'}>
-                    To view your repositories, authenticate through GitHub.
+                    Authenticate via GitHub to select from your repositories
                   </Typography>
-                  <Button sx={{ textTransform: 'unset' }} variant={'contained'}>
+                  <Button
+                    onClick={handleConnectGithub}
+                    sx={{ textTransform: 'unset' }}
+                    variant={'contained'}
+                  >
                     Authenticate with GitHub{' '}
                   </Button>
                 </Box>
               )}
-              {githubData?.token && <Divider />}
-              <List sx={[listWrapper, { marginX: '0px!important' }]}>
-                {githubData?.id &&
-                  myRepositories?.map(repo => {
-                    return (
-                      <Box
-                        onClick={() => {
-                          setRepository(repo.full_name);
-                        }}
-                        key={repo.id}
-                        sx={{
-                          cursor: 'pointer',
-                          padding: '5px',
-                          borderBottom: '1px solid',
-                          display: 'flex',
-                          gap: '20px',
-                          '&:hover': { backgroundColor: '#fbfbfb' },
-                        }}
-                      >
-                        <Typography>{repo.full_name}</Typography>
-                        {repo.private && (
-                          <Typography
-                            sx={{ color: '#52176D', fontWeight: 600 }}
-                          >
-                            Private
-                          </Typography>
-                        )}
-                      </Box>
-                    );
-                  })}
-              </List>
             </Box>
           ) : (
             <Box
@@ -402,7 +417,7 @@ const githubTitleSx = theme => ({
   gap: '25px',
   '& h5': {
     fontSize: '24px',
-    fontWeight: 600,
+    fontWeight: 500,
   },
   '& button': {
     fontSize: '18px',
@@ -420,6 +435,11 @@ const githubTitleSx = theme => ({
   [theme.breakpoints.down('xs')]: {
     '& h5': {
       fontSize: '16px',
+    },
+  },
+  [theme.breakpoints.down(550)]: {
+    '& button': {
+      width: '100%',
     },
   },
 });
