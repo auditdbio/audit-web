@@ -225,7 +225,6 @@ export const getMyGithubOrgs = user => {
                 type: GET_MY_GITHUB_ORGANIZATION_REPOSITORIES,
                 payload: data,
               });
-              console.log(data);
             });
           });
         }
