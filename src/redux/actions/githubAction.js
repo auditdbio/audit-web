@@ -197,7 +197,7 @@ export const getMyGithub = user => {
       .then(({ data }) => {
         dispatch({
           type: GET_MY_GITHUB_REPOSITORIES,
-          payload: data.filter(el => el.permissions.admin === true),
+          payload: data.filter(el => el.owner.type === 'User'),
         });
       })
       .catch(error => {
