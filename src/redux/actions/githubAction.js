@@ -73,14 +73,21 @@ export const getCommitData = (repoOwner, sha) => {
   return dispatch => {
     axios(
       `${API_URL}/github/repos/${repoOwner}/git/trees/${sha}?recursive=100`,
+      {
+        headers: {
+          Authorization: `Bearer ${Cookies.get('token')}`,
+        },
+      },
     ).then(({ data }) => {
       dispatch({ type: GET_COMMIT_DATA, payload: data });
     });
-    axios(`${API_URL}/github/repos/${repoOwner}/commits/${sha}`).then(
-      ({ data }) => {
-        dispatch({ type: GET_COMMIT, payload: data });
+    axios(`${API_URL}/github/repos/${repoOwner}/commits/${sha}`, {
+      headers: {
+        Authorization: `Bearer ${Cookies.get('token')}`,
       },
-    );
+    }).then(({ data }) => {
+      dispatch({ type: GET_COMMIT, payload: data });
+    });
   };
 };
 export const getDefaultBranch = repoOwner => {
