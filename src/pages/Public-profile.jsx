@@ -286,16 +286,18 @@ const PublicProfile = () => {
                 Invite to project
               </Button>
             )}
-            <Button
-              variant="text"
-              color={role === AUDITOR ? 'secondary' : 'primary'}
-              sx={buttonSx}
-              disabled={id === user.id}
-              onClick={() => handleSendMessage(data)}
-              {...addTestsLabel('message-button')}
-            >
-              <ChatIcon />
-            </Button>
+            {data.kind !== 'badge' && (
+              <Button
+                variant="text"
+                color={role === AUDITOR ? 'secondary' : 'primary'}
+                sx={buttonSx}
+                disabled={id === user.id}
+                onClick={() => handleSendMessage(data)}
+                {...addTestsLabel('message-button')}
+              >
+                <ChatIcon />
+              </Button>
+            )}
           </Box>
         </Box>
       </Layout>

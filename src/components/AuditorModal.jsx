@@ -235,15 +235,17 @@ export default function AuditorModal({
                 >
                   Invite to project
                 </Button>
-                <Button
-                  variant="text"
-                  // sx={[findButton, messageButton]}
-                  onClick={handleSendMessage}
-                  disabled={auditor?.user_id === user.id}
-                  {...addTestsLabel('message-button')}
-                >
-                  <ChatIcon />
-                </Button>
+                {!budge && (
+                  <Button
+                    variant="text"
+                    // sx={[findButton, messageButton]}
+                    onClick={handleSendMessage}
+                    disabled={auditor?.user_id === user.id}
+                    {...addTestsLabel('message-button')}
+                  >
+                    <ChatIcon />
+                  </Button>
+                )}
               </Box>
             </Box>
           </DialogContent>
