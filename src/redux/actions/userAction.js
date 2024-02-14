@@ -177,13 +177,8 @@ export const connect_account = (user_id, values) => {
 
 export const authGithub = (user_id, values) => {
   return dispatch => {
-    axios
-      .post(`${API_URL}/user/${user_id}/linked_account`, values, {
-        headers: {
-          Authorization: 'Bearer ' + Cookies.get('token'),
-          'Content-Type': 'application/json',
-        },
-      })
+    axios.post
+      .post(`${API_URL}/auth/github`, values)
       .then(({ data }) => {
         const user = JSON.parse(localStorage.getItem('user'));
         if (user.linked_accounts.find(el => el.name !== 'GitHub')) {
