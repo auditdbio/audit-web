@@ -53,7 +53,7 @@ const GithubSelection = () => {
   const dispatch = useDispatch();
   const githubData = useSelector(s =>
     s.user?.user?.linked_accounts?.find(
-      el => el.name.toLowerCase() === 'github',
+      el => el?.name?.toLowerCase() === 'github',
     ),
   );
   const orgs = useSelector(s => s.github.myOrganizations);

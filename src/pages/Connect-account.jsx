@@ -19,8 +19,10 @@ const ConnectAccount = () => {
   const [searchParam] = useSearchParams();
   const dispatch = useDispatch();
   const user_id = useSelector(state => state.user.user.id);
-  const github = useSelector(state =>
-    state.user.linked_accounts.find(el => el.name === 'GitHub'),
+  const github = useSelector(s =>
+    s.user?.user?.linked_accounts?.find(
+      el => el?.name?.toLowerCase() === 'github',
+    ),
   );
 
   useEffect(() => {
