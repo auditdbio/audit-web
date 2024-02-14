@@ -31,7 +31,7 @@ const ChatList = ({ chatList, chatListIsOpen, setChatListIsOpen }) => {
   useEffect(() => {
     startTransition(() => {
       if (search.trim()) {
-        dispatch(searchAuditor({ search, perPage: 20 }));
+        dispatch(searchAuditor({ search, perPage: 20 }, false));
         dispatch(searchCustomers({ search, perPage: 20 }));
       }
     });

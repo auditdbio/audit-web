@@ -115,8 +115,9 @@ export const getAuditors = (values = '', amount) => {
   };
 };
 
-export const searchAuditor = values => {
-  const queryString = createSearchValues(values, 'auditor badge');
+export const searchAuditor = (values, badges = true) => {
+  const kind = badges ? 'auditor badge' : 'auditor';
+  const queryString = createSearchValues(values, kind);
 
   return dispatch => {
     const token = Cookies.get('token');
