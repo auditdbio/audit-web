@@ -32,6 +32,7 @@ import { logout } from '../../redux/actions/userAction.js';
 import GithubOwnRepositories from './GithubOwnRepositories.jsx';
 import GithubOwnOrgs from './GithubOwnOrgs.jsx';
 import GitHubAuthComponent from './GitHubAuthComponent.jsx';
+import { CONNECT_ACCOUNT } from '../../redux/actions/types.js';
 
 const GITHUB_ID = import.meta.env.VITE_GITHUB_CLIENT_ID;
 const BASE_URL = import.meta.env.VITE_BASE_URL;
@@ -142,8 +143,12 @@ const GithubSelection = () => {
   useEffect(() => {
     const handleStorageChange = event => {
       if (event.key === 'authenticated' && event.newValue === 'true') {
-        dispatch(getMyGithub(githubData.username));
-        dispatch(getMyGithubOrgs(githubData.username));
+        dispatch(getMyGithub());
+        dispatch(getMyGithubOrgs());
+        if (!githubData?.id) {
+          const data = JSON.parse(localStorage.getItem('user'));
+          dispatch({ type: CONNECT_ACCOUNT, payload: data.linked_accounts });
+        }
       }
     };
 

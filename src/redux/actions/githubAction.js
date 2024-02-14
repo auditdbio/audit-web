@@ -196,7 +196,7 @@ export const clearCommit = () => {
   };
 };
 
-export const getMyGithub = user => {
+export const getMyGithub = () => {
   return dispatch => {
     axios(`${API_URL}/github/user/repos?per_page=100&`, {
       headers: {
@@ -216,7 +216,7 @@ export const getMyGithub = user => {
   };
 };
 
-export const getMyGithubOrgs = user => {
+export const getMyGithubOrgs = () => {
   return dispatch => {
     axios(`${API_URL}/github/user/orgs?per_page=100`, {
       headers: {
