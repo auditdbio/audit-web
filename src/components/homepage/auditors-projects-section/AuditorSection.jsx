@@ -35,8 +35,6 @@ const AuditorSection = () => {
     }
   }, [searchInput]);
 
-  useEffect(() => {}, [auditorReducer]);
-
   useEffect(() => {
     if (auditorReducer.auditors && auditorReducer.auditors.length != 0) {
       setAuditorFound(true);

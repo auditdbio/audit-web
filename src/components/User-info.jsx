@@ -96,28 +96,6 @@ const UserInfo = ({ role }) => {
                 <span>E-mail</span>
                 <Typography noWrap={true}>{data.contacts?.email}</Typography>
               </Box>
-              {user?.linked_accounts && (
-                <Box sx={[infoWrapper, { alignItems: 'center' }]}>
-                  <span>Accounts</span>
-                  <Box>
-                    {user.linked_accounts.map(account => (
-                      <Link
-                        sx={accountLink}
-                        href={account.url}
-                        target="_blank"
-                        title={`${account.name} ${account.email}`}
-                      >
-                        {account.name === 'GitHub' ? (
-                          <GitHubIcon sx={{ mr: '8px' }} />
-                        ) : (
-                          <OpenInNewIcon sx={{ mr: '8px' }} />
-                        )}
-                        {account.name}
-                      </Link>
-                    ))}
-                  </Box>
-                </Box>
-              )}
             </Box>
             <Box sx={[infoWrapper, aboutWrapper]}>
               <span>About</span>

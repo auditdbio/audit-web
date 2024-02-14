@@ -177,10 +177,12 @@ export default function AuditorModal({
                     auditor.price_range.to > 0) && (
                     <Box sx={infoWrapper}>
                       <span>Price:</span>
-                      <Typography>
-                        ${auditor.price_range.from} - {auditor.price_range.to}{' '}
-                        per line
-                      </Typography>
+                      {auditor.price_range.from && (
+                        <Typography>
+                          ${auditor.price_range.from} - {auditor.price_range.to}{' '}
+                          per line
+                        </Typography>
+                      )}
                     </Box>
                   )}
                   <Box sx={infoWrapper}>
