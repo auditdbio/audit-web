@@ -7,7 +7,6 @@ const BASE_URL = import.meta.env.VITE_BASE_URL;
 
 const GitHubAuthComponent = () => {
   const [authWindow, setAuthWindow] = useState(null);
-  const location = useLocation();
 
   const handleConnectGithub = () => {
     const authUrl = `https://github.com/login/oauth/authorize?client_id=${GITHUB_ID}&redirect_uri=${BASE_URL}oauth/callback&scope=read:user,user:email,repo&state=customer_GitHub_auth1`;
@@ -33,7 +32,7 @@ const GitHubAuthComponent = () => {
     return () => {
       authWindow.removeEventListener('beforeunload', handleAuthWindowClose);
     };
-  }, [authWindow, location.pathname]);
+  }, [authWindow]);
 
   return (
     <Box sx={githubTitleSx}>
