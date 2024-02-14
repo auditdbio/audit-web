@@ -192,6 +192,7 @@ export const authGithub = (user_id, values) => {
           dispatch({ type: CONNECT_ACCOUNT, payload: data });
           localStorage.setItem('user', JSON.stringify(newData));
           localStorage.setItem('authenticated', 'true');
+          window.close();
         }
       })
       .catch(data => {
