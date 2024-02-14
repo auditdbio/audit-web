@@ -1,16 +1,22 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useWeb3Modal, useWeb3ModalTheme } from '@web3modal/wagmi/react';
 import { useAccount, useSignMessage } from 'wagmi';
-import { Box, Button, Typography } from '@mui/material';
+import { Box, Button, Checkbox, Tooltip, Typography } from '@mui/material';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff.js';
+import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye.js';
 import WalletConnectIcon from '../icons/WalletConnectIcon.jsx';
-import { connectWallet } from '../../redux/actions/userAction.js';
+import {
+  changeAccountVisibility,
+  connectWallet,
+} from '../../redux/actions/userAction.js';
 
 const message = 'Verify your wallet';
 
-const WalletConnectButton = ({ sx = {} }) => {
+const WalletConnectButton = ({ linkedAccounts, sx = {} }) => {
   const dispatch = useDispatch();
   const { user } = useSelector(s => s.user);
+  const [linked, setLinked] = useState(null);
 
   const { open } = useWeb3Modal();
   const { setThemeMode, setThemeVariables } = useWeb3ModalTheme();
@@ -21,6 +27,17 @@ const WalletConnectButton = ({ sx = {} }) => {
     signMessage,
   } = useSignMessage({ message });
 
+  const handleOpen = async () => {
+    await open();
+  };
+
+  const handleVisibilityChange = (e, account) => {
+    const value = {
+      is_public: e.target.checked,
+    };
+    dispatch(changeAccountVisibility(user.id, value, account.id));
+  };
+
   useEffect(() => {
     setThemeMode('light');
     setThemeVariables({
@@ -29,9 +46,11 @@ const WalletConnectButton = ({ sx = {} }) => {
     });
   }, []);
 
-  const handleOpen = async () => {
-    await open();
-  };
+  useEffect(() => {
+    setLinked(
+      linkedAccounts?.find(acc => acc.name.toLowerCase() === 'walletconnect'),
+    );
+  }, [linkedAccounts]);
 
   useEffect(() => {
     if (isConnected && connector) {
@@ -40,22 +59,33 @@ const WalletConnectButton = ({ sx = {} }) => {
   }, [isConnected, connector]);
 
   useEffect(() => {
-    if (isSuccess && signature) {
+    if (isSuccess && signature && !linked) {
       const wallet = {
         address,
         message,
         signature,
       };
+      console.log(wallet);
 
       dispatch(connectWallet(user.id, wallet));
     }
-  }, [signature, isSuccess]);
+  }, [signature, isSuccess, linked]);
 
   return (
-    <Box sx={[sx, { padding: 0 }]}>
+    <Box sx={[sx, { padding: 0 }, linked ? { border: '1px solid green' } : {}]}>
       <Button sx={buttonSx} onClick={handleOpen}>
         <WalletConnectIcon />
         <Typography>Wallets</Typography>
+        {!!linked && (
+          <Tooltip arrow placement="top" title="Show in profile">
+            <Checkbox
+              checked={linked.is_public}
+              onChange={e => handleVisibilityChange(e, linked)}
+              icon={<VisibilityOffIcon />}
+              checkedIcon={<RemoveRedEyeIcon />}
+            />
+          </Tooltip>
+        )}
       </Button>
     </Box>
   );

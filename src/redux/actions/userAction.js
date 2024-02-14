@@ -184,7 +184,8 @@ export const connectWallet = (userId, wallet) => {
           'Content-Type': 'application/json',
         },
       })
-      .then(({ data }) => console.log(data));
+      .then(({ data }) => console.log(data))
+      .catch(res => console.log(res));
   };
 };
 

@@ -257,7 +257,7 @@ const IdentitySetting = () => {
                   ))}
               </Box>
 
-              <WalletConnect sx={cardSx} />
+              <WalletConnect sx={cardSx} linkedAccounts={linkedAccounts} />
 
               <Box>
                 <Button
