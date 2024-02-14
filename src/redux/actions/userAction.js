@@ -181,15 +181,17 @@ export const authGithub = (user_id, values) => {
       .post(`${API_URL}/auth/github`, values)
       .then(({ data }) => {
         const user = JSON.parse(localStorage.getItem('user'));
-        if (user.linked_accounts.find(el => el.name !== 'GitHub')) {
+        if (user.linked_accounts.find(el => el.name === 'GitHub')) {
+          localStorage.setItem('authenticated', 'true');
+        } else {
           const newData = {
             ...user,
             linked_accounts: [...user.linked_accounts, data],
           };
           dispatch({ type: CONNECT_ACCOUNT, payload: data });
           localStorage.setItem('user', JSON.stringify(newData));
+          localStorage.setItem('authenticated', 'true');
         }
-        localStorage.setItem('authenticated', 'true');
       })
       .catch(data => {
         if (data.response.status === 404) {

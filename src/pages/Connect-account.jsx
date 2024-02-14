@@ -50,7 +50,10 @@ const ConnectAccount = () => {
           .slice(0, searchParam.get('state').indexOf('_')),
         service: searchParam
           .get('state')
-          .slice(searchParam.get('state').indexOf('_') + 1),
+          .slice(
+            searchParam.get('state').indexOf('_') + 1,
+            searchParam.get('state').lastIndexOf('_'),
+          ),
       };
       dispatch(authGithub(user_id, data));
     } else {
