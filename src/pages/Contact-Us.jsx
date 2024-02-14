@@ -11,7 +11,6 @@ import {
   sendContactMessage,
 } from '../redux/actions/contactUsAction.js';
 import { useDispatch, useSelector } from 'react-redux';
-import { clearMessage } from '../redux/actions/auditAction.js';
 import * as Yup from 'yup';
 import CustomSnackbar from '../components/custom/CustomSnackbar.jsx';
 import { addTestsLabel } from '../lib/helper.js';

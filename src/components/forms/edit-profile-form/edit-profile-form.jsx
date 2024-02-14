@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Field, Form, Formik } from 'formik';
 import * as Yup from 'yup';
@@ -26,14 +26,29 @@ import {
   createAuditor,
   updateAuditor,
 } from '../../../redux/actions/auditorAction.js';
+import { useLocation, useNavigate } from 'react-router-dom';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import { history } from '../../../services/history.js';
+
+const GoBack = ({ role }) => {
+  const location = useLocation();
+  const navigate = useNavigate();
+  return (
+    <Button sx={backBtnSx} onClick={() => navigate(-1)}>
+      <ArrowBackIcon color={role !== AUDITOR ? 'primary' : 'secondary'} />
+    </Button>
+  );
+};
 
 const EditProfileForm = ({ role }) => {
   const matchSm = useMediaQuery(theme.breakpoints.down('sm'));
   const matchXs = useMediaQuery(theme.breakpoints.down('xs'));
   const dispatch = useDispatch();
   const { user } = useSelector(s => s.user);
-  const { customer } = useSelector(s => s.customer);
-  const { auditor } = useSelector(s => s.auditor);
+  const customer = useSelector(s => s.customer.customer);
+  const auditor = useSelector(s => s.auditor.auditor);
+  const navigate = useNavigate();
+  const [isDirty, setIsDirty] = useState(false);
 
   const data = useMemo(() => {
     if (role === AUDITOR) {
@@ -78,6 +93,7 @@ const EditProfileForm = ({ role }) => {
         validateOnBlur={false}
         validateOnChange={false}
         onSubmit={values => {
+          setIsDirty(false);
           if (role !== AUDITOR) {
             if (!data.first_name && !data.last_name) {
               dispatch(createCustomer(values));
@@ -93,10 +109,43 @@ const EditProfileForm = ({ role }) => {
           }
         }}
       >
-        {({ handleSubmit, values, setFieldValue }) => {
+        {({ handleSubmit, values, setFieldValue, dirty }) => {
+          useEffect(() => {
+            setIsDirty(dirty);
+          }, [dirty]);
+          useEffect(() => {
+            const unblock = history.block(({ location }) => {
+              if (!isDirty) {
+                unblock();
+                return navigate(location);
+              }
+
+              const confirmed = window.confirm(
+                'Do you want to save changes before leaving the page?',
+              );
+
+              if (confirmed) {
+                handleSubmit(values);
+                unblock();
+                return navigate(location);
+              } else {
+                unblock();
+                return navigate(location);
+              }
+            });
+
+            if (!isDirty) {
+              unblock();
+            }
+
+            return () => {
+              unblock();
+            };
+          }, [history, isDirty]);
           return (
             <Form onSubmit={handleSubmit}>
               <Box sx={wrapper}>
+                <GoBack role={role} />
                 <Box sx={avatarWrapper}>
                   <Box
                     sx={{
@@ -277,8 +326,21 @@ const EditProfileSchema = Yup.object().shape({
   tags: Yup.array(),
 });
 
+const backBtnSx = theme => ({
+  position: 'absolute',
+  left: '-70px',
+  top: '-30px',
+  [theme.breakpoints.down('sm')]: {
+    left: '-50px',
+  },
+  [theme.breakpoints.down('xs')]: {
+    left: '-40px',
+  },
+});
+
 const wrapper = theme => ({
   display: 'flex',
+  position: 'relative',
   gap: '52px',
   [theme.breakpoints.down('sm')]: {
     flexDirection: 'column',
@@ -356,6 +418,7 @@ const buttonSx = theme => ({
 const avatarWrapper = theme => ({
   '& button': {
     textTransform: 'unset',
+    marginTop: '35px',
     '& svg': {
       marginRight: '5px',
     },

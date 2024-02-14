@@ -42,10 +42,13 @@ import {
   websocketDisconnect,
 } from '../redux/actions/websocketAction.js';
 import PublicProject from '../pages/PublicProject.jsx';
+import ChatPage from '../pages/ChatPage.jsx';
+import { getChatList } from '../redux/actions/chatActions.js';
 import PublicConstructor from '../pages/PublicConstructor.jsx';
 import CustomSnackbar from '../components/custom/CustomSnackbar.jsx';
 import InvitePage from '../pages/Invite-page.jsx';
 import DeleteBadge from '../pages/Delete-badge.jsx';
+import DisclaimerPage from '../pages/DisclaimerPage.jsx';
 
 const AppRoutes = () => {
   const token = useSelector(s => s.user.token);
@@ -98,7 +101,13 @@ const AppRoutes = () => {
       };
     }
   }, [reconnect, connected]);
-  //
+
+  useEffect(() => {
+    if (isAuth()) {
+      dispatch(getChatList(currentRole));
+    }
+  }, [currentRole]);
+
   useEffect(() => {
     return () => {
       dispatch(websocketDisconnect());
@@ -148,6 +157,7 @@ const AppRoutes = () => {
         <Route path={'/contact-us'} element={<ContactUs />} />
         <Route path={'/user/:id/:role'} element={<PublicProfile />} />
         <Route path={'/delete/:id/:secret'} element={<DeleteBadge />} />
+        <Route path={'/disclaimer'} element={<DisclaimerPage />} />
         <Route
           path="/profile/:tab"
           element={
@@ -249,6 +259,22 @@ const AppRoutes = () => {
           element={
             <PrivateRoute auth={{ isAuthenticated: isAuth() }}>
               <EditProject />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/chat"
+          element={
+            <PrivateRoute auth={{ isAuthenticated: isAuth() }}>
+              <ChatPage />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/chat/:id"
+          element={
+            <PrivateRoute auth={{ isAuthenticated: isAuth() }}>
+              <ChatPage />
             </PrivateRoute>
           }
         />
