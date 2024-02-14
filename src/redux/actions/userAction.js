@@ -175,6 +175,37 @@ export const connect_account = (user_id, values) => {
   };
 };
 
+export const connect_auth_account = (user_id, values) => {
+  return dispatch => {
+    axios
+      .post(`${API_URL}/user/${user_id}/linked_account`, values, {
+        headers: {
+          Authorization: 'Bearer ' + Cookies.get('token'),
+          'Content-Type': 'application/json',
+        },
+      })
+      .then(({ data }) => {
+        dispatch({ type: CONNECT_ACCOUNT, payload: data });
+        const user = JSON.parse(localStorage.getItem('user'));
+        const newData = {
+          ...user,
+          linked_accounts: [...user.linked_accounts, data],
+        };
+        localStorage.setItem('user', JSON.stringify(newData));
+        localStorage.setItem('authenticated', 'true');
+        window.close();
+      })
+      .catch(data => {
+        if (data.response.status === 404) {
+          dispatch({ type: ERROR_ADD_ACCOUNT, payload: data.response });
+        } else {
+          dispatch({ type: ERROR_IDENTITY, payload: data.response });
+        }
+        window.close();
+      });
+  };
+};
+
 export const authGithub = (user_id, values) => {
   return dispatch => {
     axios
@@ -182,15 +213,6 @@ export const authGithub = (user_id, values) => {
       .then(({ data }) => {
         const user = JSON.parse(localStorage.getItem('user'));
         if (user.linked_accounts.find(el => el.name === 'GitHub')) {
-          localStorage.setItem('authenticated', 'true');
-          window.close();
-        } else {
-          const newData = {
-            ...user,
-            linked_accounts: [...user.linked_accounts, data],
-          };
-          dispatch({ type: CONNECT_ACCOUNT, payload: data });
-          localStorage.setItem('user', JSON.stringify(newData));
           localStorage.setItem('authenticated', 'true');
           window.close();
         }

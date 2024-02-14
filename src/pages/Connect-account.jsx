@@ -6,6 +6,7 @@ import { useSearchParams } from 'react-router-dom/dist';
 import {
   authGithub,
   connect_account,
+  connect_auth_account,
   signUpGithub,
 } from '../redux/actions/userAction.js';
 import { useDispatch, useSelector } from 'react-redux';
@@ -18,6 +19,9 @@ const ConnectAccount = () => {
   const [searchParam] = useSearchParams();
   const dispatch = useDispatch();
   const user_id = useSelector(state => state.user.user.id);
+  const github = useSelector(state =>
+    state.user.linked_accounts.find(el => el.name === 'GitHub'),
+  );
 
   useEffect(() => {
     if (
@@ -55,7 +59,11 @@ const ConnectAccount = () => {
             searchParam.get('state').lastIndexOf('_'),
           ),
       };
-      dispatch(authGithub(user_id, data));
+      if (github) {
+        dispatch(authGithub(user_id, data));
+      } else {
+        dispatch(connect_auth_account(user_id, data));
+      }
     } else {
       const data = {
         code: searchParam.get('code'),
