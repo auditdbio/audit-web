@@ -177,7 +177,7 @@ export const connect_account = (user_id, values) => {
 
 export const authGithub = (user_id, values) => {
   return dispatch => {
-    axios.post
+    axios
       .post(`${API_URL}/auth/github`, values)
       .then(({ data }) => {
         const user = JSON.parse(localStorage.getItem('user'));
