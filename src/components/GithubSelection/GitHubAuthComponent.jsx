@@ -6,8 +6,6 @@ const GITHUB_ID = import.meta.env.VITE_GITHUB_CLIENT_ID;
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 
 const GitHubAuthComponent = () => {
-  const [authWindow, setAuthWindow] = useState(null);
-
   const handleConnectGithub = () => {
     const authUrl = `https://github.com/login/oauth/authorize?client_id=${GITHUB_ID}&redirect_uri=${BASE_URL}oauth/callback&scope=read:user,user:email,repo&state=customer_GitHub_auth1`;
     const newAuthWindow = window.open(
@@ -15,24 +13,7 @@ const GitHubAuthComponent = () => {
       '_blank',
       'width=500,height=600',
     );
-    setAuthWindow(newAuthWindow);
   };
-
-  useEffect(() => {
-    if (!authWindow) return;
-
-    const handleAuthWindowClose = () => {
-      console.log('Authorization window closed');
-      localStorage.setItem('authenticated', 'true');
-      authWindow.close();
-    };
-
-    authWindow.addEventListener('beforeunload', handleAuthWindowClose);
-
-    return () => {
-      authWindow.removeEventListener('beforeunload', handleAuthWindowClose);
-    };
-  }, [authWindow]);
 
   return (
     <Box sx={githubTitleSx}>

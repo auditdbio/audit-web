@@ -96,6 +96,7 @@ export const getDefaultBranch = repoOwner => {
     axios(`${API_URL}/github/repos/${repoOwner}`, {
       headers: {
         Authorization: `Bearer ${token}`,
+        'Cache-Control': 'no-cache',
       },
     }).then(({ data }) => {
       console.log(repoOwner);
@@ -121,6 +122,7 @@ export const getTotalCommits = (repoOwner, branch) => {
     axios(`${API_URL}/github/repos/${repoOwner}/commits`, {
       headers: {
         Authorization: `Bearer ${Cookies.get('token')}`,
+        'Cache-Control': 'no-cache',
       },
       params: {
         sha: branch,
@@ -196,9 +198,10 @@ export const clearCommit = () => {
 
 export const getMyGithub = user => {
   return dispatch => {
-    axios(`${API_URL}/github/user/repos?per_page=100`, {
+    axios(`${API_URL}/github/user/repos?per_page=100&`, {
       headers: {
         Authorization: `Bearer ${Cookies.get('token')}`,
+        'Cache-Control': 'no-cache',
       },
     })
       .then(({ data }) => {
@@ -218,6 +221,7 @@ export const getMyGithubOrgs = user => {
     axios(`${API_URL}/github/user/orgs?per_page=100`, {
       headers: {
         Authorization: `Bearer ${Cookies.get('token')}`,
+        'Cache-Control': 'no-cache',
       },
     })
       .then(({ data }) => {
@@ -227,7 +231,11 @@ export const getMyGithubOrgs = user => {
         });
         if (!data.message) {
           data?.map(org => {
-            axios(org.repos_url).then(({ data }) => {
+            axios(`${API_URL}/github/orgs/${org.login}/repos`, {
+              headers: {
+                Authorization: `Bearer ${Cookies.get('token')}`,
+              },
+            }).then(({ data }) => {
               dispatch({
                 type: GET_MY_GITHUB_ORGANIZATION_REPOSITORIES,
                 payload: data,
