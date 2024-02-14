@@ -183,6 +183,7 @@ export const authGithub = (user_id, values) => {
         const user = JSON.parse(localStorage.getItem('user'));
         if (user.linked_accounts.find(el => el.name === 'GitHub')) {
           localStorage.setItem('authenticated', 'true');
+          window.close();
         } else {
           const newData = {
             ...user,
