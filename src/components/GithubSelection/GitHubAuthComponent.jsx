@@ -4,13 +4,13 @@ import { Box, Button, Typography } from '@mui/material';
 
 const GITHUB_ID = import.meta.env.VITE_GITHUB_CLIENT_ID;
 const BASE_URL = import.meta.env.VITE_BASE_URL;
-//
+
 const GitHubAuthComponent = () => {
   const [authWindow, setAuthWindow] = useState(null);
-  const location = useLocation(); // Получаем текущий URL с помощью хука useLocation
+  const location = useLocation();
 
   const handleConnectGithub = () => {
-    const authUrl = `https://github.com/login/oauth/authorize?client_id=${GITHUB_ID}&redirect_uri=${BASE_URL}oauth/callback&scope=read:user,user:email,repo&state=customer_GitHub_auth`;
+    const authUrl = `https://github.com/login/oauth/authorize?client_id=${GITHUB_ID}&redirect_uri=${BASE_URL}oauth/callback&scope=read:user,user:email,repo&state=customer_GitHub_auth1`;
     const newAuthWindow = window.open(
       authUrl,
       '_blank',
@@ -22,17 +22,10 @@ const GitHubAuthComponent = () => {
   useEffect(() => {
     if (!authWindow) return;
 
-    // Обработчик закрытия окна авторизации
     const handleAuthWindowClose = () => {
       console.log('Authorization window closed');
-      // Выполните необходимые действия после закрытия окна авторизации
-
-      // Пример: в зависимости от pathname выполняем различные действия
-      if (location.pathname === '/path1') {
-        console.log('User is on path1');
-      } else if (location.pathname === '/path2') {
-        console.log('User is on path2');
-      }
+      localStorage.setItem('authenticated', 'true');
+      authWindow.close();
     };
 
     authWindow.addEventListener('beforeunload', handleAuthWindowClose);

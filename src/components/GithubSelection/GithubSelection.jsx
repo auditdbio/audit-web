@@ -138,6 +138,21 @@ const GithubSelection = () => {
     setPage(1);
     dispatch(clearRepoOwner());
   };
+  useEffect(() => {
+    const handleStorageChange = event => {
+      if (event.key === 'authenticated' && event.newValue === 'true') {
+        dispatch(getMyGithub(githubData.username));
+        dispatch(getMyGithubOrgs(githubData.username));
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+      localStorage.removeItem('authenticated');
+    };
+  }, []);
 
   return (
     <Box sx={wrapper}>
