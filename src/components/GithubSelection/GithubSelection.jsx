@@ -31,6 +31,7 @@ import dayjs from 'dayjs';
 import { logout } from '../../redux/actions/userAction.js';
 import GithubOwnRepositories from './GithubOwnRepositories.jsx';
 import GithubOwnOrgs from './GithubOwnOrgs.jsx';
+import GitHubAuthComponent from './GitHubAuthComponent.jsx';
 
 const GITHUB_ID = import.meta.env.VITE_GITHUB_CLIENT_ID;
 const BASE_URL = import.meta.env.VITE_BASE_URL;
@@ -237,18 +238,7 @@ const GithubSelection = () => {
                   myOrganizations={myOrganizations}
                 />
               ) : (
-                <Box sx={githubTitleSx}>
-                  <Typography variant={'h5'} align={'center'}>
-                    Authenticate via GitHub to select from your repositories
-                  </Typography>
-                  <Button
-                    onClick={handleConnectGithub}
-                    sx={{ textTransform: 'unset' }}
-                    variant={'contained'}
-                  >
-                    Authenticate with GitHub{' '}
-                  </Button>
-                </Box>
+                <GitHubAuthComponent />
               )}
             </Box>
           ) : (
