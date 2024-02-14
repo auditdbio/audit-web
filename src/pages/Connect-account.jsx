@@ -1,9 +1,8 @@
 import React, { useEffect } from 'react';
-import { useParams } from 'react-router-dom';
 import { CustomCard } from '../components/custom/Card.jsx';
 import Layout from '../styles/Layout.jsx';
 import { useSearchParams } from 'react-router-dom/dist';
-import { connect_account, signUpGithub } from '../redux/actions/userAction.js';
+import { connectAccount, signUpGithub } from '../redux/actions/userAction.js';
 import { useDispatch, useSelector } from 'react-redux';
 import Loader from '../components/Loader.jsx';
 import { Box } from '@mui/system';
@@ -44,7 +43,7 @@ const ConnectAccount = () => {
           .get('state')
           .slice(searchParam.get('state').indexOf('_') + 1),
       };
-      dispatch(connect_account(user_id, data));
+      dispatch(connectAccount(user_id, data));
     }
   }, []);
 

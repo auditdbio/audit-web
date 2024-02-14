@@ -140,10 +140,14 @@ export const changeAccountVisibility = (user_id, values, account_id) => {
   };
 };
 
-export const connect_account = (user_id, values) => {
+export const connectAccount = (user_id, values, isWallet = false) => {
+  const url = isWallet
+    ? `${API_URL}/user/${user_id}/wallet`
+    : `${API_URL}/user/${user_id}/linked_account`;
+
   return dispatch => {
     axios
-      .post(`${API_URL}/user/${user_id}/linked_account`, values, {
+      .post(url, values, {
         headers: {
           Authorization: 'Bearer ' + Cookies.get('token'),
           'Content-Type': 'application/json',
@@ -158,9 +162,6 @@ export const connect_account = (user_id, values) => {
           linked_accounts: [...user.linked_accounts, data],
         };
         localStorage.setItem('user', JSON.stringify(newData));
-        history.push('/profile/user-info', {
-          some: true,
-        });
       })
       .catch(data => {
         if (data.response.status === 404) {
@@ -168,24 +169,12 @@ export const connect_account = (user_id, values) => {
         } else {
           dispatch({ type: ERROR_IDENTITY, payload: data.response });
         }
+      })
+      .finally(() => {
         history.push('/profile/user-info', {
           some: true,
         });
       });
-  };
-};
-
-export const connectWallet = (userId, wallet) => {
-  return dispatch => {
-    axios
-      .post(`${API_URL}/user/${userId}/wallet`, wallet, {
-        headers: {
-          Authorization: 'Bearer ' + Cookies.get('token'),
-          'Content-Type': 'application/json',
-        },
-      })
-      .then(({ data }) => console.log(data))
-      .catch(res => console.log(res));
   };
 };
 

@@ -8,7 +8,7 @@ import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye.js';
 import WalletConnectIcon from '../icons/WalletConnectIcon.jsx';
 import {
   changeAccountVisibility,
-  connectWallet,
+  connectAccount,
 } from '../../redux/actions/userAction.js';
 
 const message = 'Verify your wallet';
@@ -53,10 +53,10 @@ const WalletConnectButton = ({ linkedAccounts, sx = {} }) => {
   }, [linkedAccounts]);
 
   useEffect(() => {
-    if (isConnected && connector) {
+    if (isConnected && connector && !linked) {
       signMessage();
     }
-  }, [isConnected, connector]);
+  }, [isConnected, connector, linked]);
 
   useEffect(() => {
     if (isSuccess && signature && !linked) {
@@ -65,22 +65,24 @@ const WalletConnectButton = ({ linkedAccounts, sx = {} }) => {
         message,
         signature,
       };
-      console.log(wallet);
 
-      dispatch(connectWallet(user.id, wallet));
+      dispatch(connectAccount(user.id, wallet, true));
     }
   }, [signature, isSuccess, linked]);
 
   return (
     <Box sx={[sx, { padding: 0 }, linked ? { border: '1px solid green' } : {}]}>
       <Button sx={buttonSx} onClick={handleOpen}>
-        <WalletConnectIcon />
-        <Typography>Wallets</Typography>
+        <Box>
+          <WalletConnectIcon />
+          <Typography>Wallets</Typography>
+        </Box>
         {!!linked && (
           <Tooltip arrow placement="top" title="Show in profile">
             <Checkbox
               checked={linked.is_public}
               onChange={e => handleVisibilityChange(e, linked)}
+              onClick={e => e.stopPropagation()}
               icon={<VisibilityOffIcon />}
               checkedIcon={<RemoveRedEyeIcon />}
             />
@@ -96,10 +98,15 @@ export default WalletConnectButton;
 const buttonSx = {
   display: 'flex',
   alignItems: 'center',
-  justifyContent: 'initial',
+  justifyContent: 'space-between',
   gap: '7px',
   width: '100%',
   textTransform: 'none',
   color: 'black',
   padding: '10px 20px !important',
+  '& > div': {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '7px',
+  },
 };
