@@ -9,7 +9,7 @@ import { createBlopUrl } from '../../services/urls.js';
 
 const GithubTreeNode = ({
   node,
-  handleAdd,
+  handleAddRemove,
   selected,
   handleSelectAll,
   handleRemoveAll,
@@ -20,42 +20,50 @@ const GithubTreeNode = ({
   const isTree = node.type === 'tree';
   const [isIndeterminate, setIsIndeterminate] = useState(false);
 
-  const handleToogle = node => {
+  const handleToggle = () => {
     setIsTreeOpen(!isTreeOpen);
   };
 
-  const allChecked = useMemo(() => {
-    if (node.type === 'tree') {
-      if (node.tree.length === 0) return false; // Если у узла нет дочерних элементов, возвращаем false
-      return node.tree.every(childNode =>
-        selected.includes(createBlopUrl(repoOwner, sha, `${childNode.path}`)),
-      );
-    } else {
-      return null;
-    }
-  }, [selected]);
+  const isAllChecked = useMemo(() => {
+    const checkIfAllSelected = currentNode => {
+      if (currentNode.type === 'tree') {
+        if (currentNode.tree.length === 0) return false;
+
+        return currentNode.tree.every(childNode => {
+          if (childNode.type === 'blob') {
+            const blobUrl = createBlopUrl(repoOwner, sha, `${childNode.path}`);
+            return selected.includes(blobUrl) || field.value?.includes(blobUrl);
+          } else if (childNode.type === 'tree') {
+            return checkIfAllSelected(childNode);
+          }
+        });
+      } else {
+        return null;
+      }
+    };
+
+    return checkIfAllSelected(node);
+  }, [selected, field.value]);
 
   useEffect(() => {
-    if (node.type === 'tree') {
-      if (node.tree.length === 0) {
-        setIsIndeterminate(false); // Если у узла нет дочерних элементов, не устанавливаем промежуточное состояние
+    const checkIfIndeterminate = currentNode => {
+      if (currentNode.type === 'tree') {
+        if (currentNode.tree.length === 0) return false;
+
+        return currentNode.tree.some(childNode =>
+          checkIfIndeterminate(childNode),
+        );
+      } else if (currentNode.type === 'blob') {
+        const blobUrl = createBlopUrl(repoOwner, sha, `${currentNode.path}`);
+        return selected.includes(blobUrl) || field.value?.includes(blobUrl);
       } else {
-        const isChecked = node.tree.every(childNode =>
-          selected.includes(createBlopUrl(repoOwner, sha, `${childNode.path}`)),
-        );
-        const isUnchecked = node.tree.every(
-          childNode =>
-            !selected.includes(
-              createBlopUrl(repoOwner, sha, `${childNode.path}`),
-            ),
-        );
-        setIsIndeterminate(!isChecked && !isUnchecked);
+        return false;
       }
-    } else {
-      setIsIndeterminate(false);
-    }
-  }, [selected, node, repoOwner, sha]);
-  console.log(123);
+    };
+
+    setIsIndeterminate(checkIfIndeterminate(node));
+  }, [selected, field.value]);
+
   return (
     <Box>
       <Box
@@ -74,10 +82,12 @@ const GithubTreeNode = ({
       >
         {node.type === 'tree' ? (
           <Checkbox
-            checked={allChecked}
-            indeterminate={isIndeterminate}
+            checked={isAllChecked}
+            indeterminate={isIndeterminate && !isAllChecked}
             sx={{ padding: 0 }}
-            onChange={() => handleSelectAll(node)}
+            onChange={() =>
+              handleSelectAll(node, isAllChecked, isIndeterminate)
+            }
           />
         ) : (
           <Checkbox
@@ -89,7 +99,7 @@ const GithubTreeNode = ({
                 item => item === createBlopUrl(repoOwner, sha, node.path),
               )
             }
-            onChange={() => handleAdd(node)}
+            onChange={() => handleAddRemove(node)}
             sx={{ padding: 0 }}
           />
         )}
@@ -105,7 +115,7 @@ const GithubTreeNode = ({
         <Typography
           className={isTree ? 'folder' : 'file'}
           sx={{ cursor: 'pointer', fontWeight: 500 }}
-          onClick={() => (!isTree ? handleAdd(node) : handleToogle(node))}
+          onClick={() => (!isTree ? handleAddRemove(node) : handleToggle(node))}
         >
           {isTree ? node.name : node.name.split('/').pop()}{' '}
         </Typography>
@@ -125,7 +135,7 @@ const GithubTreeNode = ({
               <li key={index}>
                 <GithubTreeNode
                   node={childNode}
-                  handleAdd={handleAdd}
+                  handleAddRemove={handleAddRemove}
                   selected={selected}
                   handleSelectAll={handleSelectAll}
                   handleRemoveAll={handleRemoveAll}
@@ -140,7 +150,7 @@ const GithubTreeNode = ({
 
 const GithubTree = ({
   data,
-  handleAdd,
+  handleAddRemove,
   selected,
   handleSelectAll,
   handleRemoveAll,
@@ -159,7 +169,7 @@ const GithubTree = ({
         <li key={index}>
           <GithubTreeNode
             node={node}
-            handleAdd={handleAdd}
+            handleAddRemove={handleAddRemove}
             selected={selected}
             handleSelectAll={handleSelectAll}
             handleRemoveAll={handleRemoveAll}

@@ -71,29 +71,39 @@ const CommitModal = ({ sha, onClose, repository }) => {
     }
   }, [data]);
 
-  const handleAdd = file => {
-    const createUrl = createBlopUrl(repository, sha, file.path);
-    if (selected.includes(createUrl)) {
-      setSelected(selected.filter(item => item !== createUrl));
-    } else if (field.value.includes(createUrl)) {
-      fieldHelper.setValue(field.value.filter(item => item !== createUrl));
-    } else {
-      setSelected(prevState => [...prevState, createUrl]);
+  const handleAddRemove = (node, addAll = false) => {
+    if (node.type === 'blob') {
+      const createUrl = createBlopUrl(repository, sha, node.path);
+      if (selected.includes(createUrl) && !addAll) {
+        setSelected(prev => prev.filter(item => item !== createUrl));
+      } else if (field.value.includes(createUrl) && !addAll) {
+        fieldHelper.setValue(field.value.filter(item => item !== createUrl));
+      } else {
+        setSelected(prev => [...prev, createUrl]);
+      }
+    } else if (node.type === 'tree') {
+      node.tree.map(el => handleAddRemove(el, addAll));
     }
   };
 
-  const handleRemoveAll = file => {
-    const createUrl = createBlopUrl(repository, sha, file.path);
-    if (selected.includes(createUrl)) {
-      setSelected(prev => prev.filter(item => item !== createUrl));
-    } else {
-      fieldHelper.setValue(field.value.filter(item => item !== createUrl));
+  const handleRemoveAll = node => {
+    if (node.type === 'blob') {
+      const createUrl = createBlopUrl(repository, sha, node.path);
+      if (selected.includes(createUrl)) {
+        setSelected(prev => prev.filter(item => item !== createUrl));
+      } else {
+        fieldHelper.setValue(field.value.filter(item => item !== createUrl));
+      }
+    } else if (node.type === 'tree') {
+      node.tree.map(el => handleRemoveAll(el));
     }
   };
 
-  const handleSelectAll = file => {
-    if (file.type === 'tree') {
-      file.tree.map(el => handleAdd(el));
+  const handleSelectAll = (node, isAllChecked, isIndeterminate) => {
+    if (isAllChecked) {
+      node.tree.map(el => handleRemoveAll(el));
+    } else if (node.type === 'tree') {
+      node.tree.map(el => handleAddRemove(el, isIndeterminate));
     }
   };
 
@@ -194,7 +204,7 @@ const CommitModal = ({ sha, onClose, repository }) => {
                 data={newObj}
                 selected={selected}
                 setSelected={setSelected}
-                handleAdd={handleAdd}
+                handleAddRemove={handleAddRemove}
                 handleSelectAll={handleSelectAll}
                 handleRemoveAll={handleRemoveAll}
               />
