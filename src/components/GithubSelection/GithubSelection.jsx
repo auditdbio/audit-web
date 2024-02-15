@@ -82,7 +82,7 @@ const GithubSelection = () => {
       dispatch(getMyGithub());
       dispatch(getMyGithubOrgs());
     }
-  }, [githubData?.id]);
+  }, []);
 
   const handleAddProject = () => {
     if (urlRepo.includes('github.com/')) {
@@ -144,6 +144,8 @@ const GithubSelection = () => {
     const handleStorageChange = event => {
       if (event.key === 'authenticated' && event.newValue === 'true') {
         dispatch(getMyProfile());
+        dispatch(getMyGithub());
+        dispatch(getMyGithubOrgs());
       }
     };
 
