@@ -20,6 +20,7 @@ import {
   CHANGE_ACCOUNT_VISIBILITY,
   ERROR_ADD_ACCOUNT,
   ERROR_IDENTITY,
+  GET_MY_PROFILE,
 } from '../actions/types.js';
 
 const initialState = {
@@ -129,6 +130,11 @@ export const userReducer = (state = initialState, action) => {
         ...state,
         user: action.payload,
         success: 'Fill your auditor profile',
+      };
+    case GET_MY_PROFILE:
+      return {
+        ...state,
+        user: action.payload,
       };
     default:
       return state;

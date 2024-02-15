@@ -28,7 +28,7 @@ import {
 } from '../../redux/actions/githubAction.js';
 import CommitIcon from '@mui/icons-material/Commit';
 import dayjs from 'dayjs';
-import { logout } from '../../redux/actions/userAction.js';
+import { getMyProfile, logout } from '../../redux/actions/userAction.js';
 import GithubOwnRepositories from './GithubOwnRepositories.jsx';
 import GithubOwnOrgs from './GithubOwnOrgs.jsx';
 import GitHubAuthComponent from './GitHubAuthComponent.jsx';
@@ -143,12 +143,9 @@ const GithubSelection = () => {
   useEffect(() => {
     const handleStorageChange = event => {
       if (event.key === 'authenticated' && event.newValue === 'true') {
+        dispatch(getMyProfile());
         dispatch(getMyGithub());
         dispatch(getMyGithubOrgs());
-        if (!githubData?.id) {
-          const data = JSON.parse(localStorage.getItem('user'));
-          dispatch({ type: CONNECT_ACCOUNT, payload: data.linked_accounts });
-        }
       }
     };
 

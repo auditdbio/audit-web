@@ -24,6 +24,7 @@ import {
   CHANGE_ACCOUNT_VISIBILITY,
   ERROR_ADD_ACCOUNT,
   ERROR_IDENTITY,
+  GET_MY_PROFILE,
 } from './types.js';
 
 const API_URL = import.meta.env.VITE_API_BASE_URL;
@@ -171,6 +172,23 @@ export const connect_account = (user_id, values) => {
         history.push('/profile/user-info', {
           some: true,
         });
+      });
+  };
+};
+
+export const getMyProfile = () => {
+  return dispatch => {
+    axios(`${API_URL}/my_user`, {
+      headers: {
+        Authorization: 'Bearer ' + Cookies.get('token'),
+      },
+    })
+      .then(({ data }) => {
+        dispatch({ type: GET_MY_PROFILE, payload: data });
+        localStorage.setItem('user', JSON.stringify(data));
+      })
+      .catch(data => {
+        console.log(data);
       });
   };
 };
