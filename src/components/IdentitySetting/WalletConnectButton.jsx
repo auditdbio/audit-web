@@ -8,7 +8,7 @@ import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye.js';
 import WalletConnectIcon from '../icons/WalletConnectIcon.jsx';
 import {
   changeAccountVisibility,
-  connectAccount,
+  connect_account,
 } from '../../redux/actions/userAction.js';
 
 const message = 'Verify your wallet';
@@ -20,7 +20,7 @@ const WalletConnectButton = ({ linkedAccounts, sx = {} }) => {
 
   const { open } = useWeb3Modal();
   const { setThemeMode, setThemeVariables } = useWeb3ModalTheme();
-  const { address, isConnected, connector } = useAccount();
+  const { address, isConnected, isDisconnected, connector } = useAccount();
   const {
     data: signature,
     isSuccess,
@@ -66,7 +66,7 @@ const WalletConnectButton = ({ linkedAccounts, sx = {} }) => {
         signature,
       };
 
-      dispatch(connectAccount(user.id, wallet, true));
+      dispatch(connect_account(user.id, wallet, true));
     }
   }, [signature, isSuccess, linked]);
 

@@ -140,7 +140,7 @@ export const changeAccountVisibility = (user_id, values, account_id) => {
   };
 };
 
-export const connectAccount = (user_id, values, isWallet = false) => {
+export const connect_account = (user_id, values, isWallet = false) => {
   const url = isWallet
     ? `${API_URL}/user/${user_id}/wallet`
     : `${API_URL}/user/${user_id}/linked_account`;
