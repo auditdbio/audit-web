@@ -79,8 +79,8 @@ const GithubSelection = () => {
 
   useEffect(() => {
     if (githubData?.id && !myRepositories?.length) {
-      dispatch(getMyGithub(githubData.username));
-      dispatch(getMyGithubOrgs(githubData.username));
+      dispatch(getMyGithub());
+      dispatch(getMyGithubOrgs());
     }
   }, [githubData?.id]);
 
@@ -144,8 +144,6 @@ const GithubSelection = () => {
     const handleStorageChange = event => {
       if (event.key === 'authenticated' && event.newValue === 'true') {
         dispatch(getMyProfile());
-        dispatch(getMyGithub());
-        dispatch(getMyGithubOrgs());
       }
     };
 
