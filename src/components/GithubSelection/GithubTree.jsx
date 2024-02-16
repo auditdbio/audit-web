@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Box, Checkbox, FormControlLabel, Typography } from '@mui/material';
+import { Box, Checkbox, Typography } from '@mui/material';
 import FolderOpenIcon from '@mui/icons-material/FolderOpen';
 import FolderIcon from '@mui/icons-material/Folder';
 import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
@@ -15,7 +15,7 @@ const GithubTreeNode = ({
   handleSelectAll,
   handleRemoveAll,
 }) => {
-  const [field, meta, fieldHelper] = useField('scope');
+  const [field] = useField('scope');
   const { sha, repoOwner } = useSelector(state => state.github);
   const [isTreeOpen, setIsTreeOpen] = React.useState(true);
   const isTree = node.type === 'tree';
@@ -86,15 +86,7 @@ const GithubTreeNode = ({
       <Box
         sx={[
           { display: 'flex', alignItems: 'center', gap: '5px' },
-          node.type !== 'tree' &&
-          (selected.some(
-            item => item === createBlopUrl(repoOwner, sha, node.path),
-          ) ||
-            field.value.some(
-              item => item === createBlopUrl(repoOwner, sha, node.path),
-            ))
-            ? selectedSx
-            : itemsSx,
+          node.type !== 'tree' && checkSelected() ? selectedSx : itemsSx,
         ]}
       >
         {node.type === 'tree' ? (
@@ -130,16 +122,9 @@ const GithubTreeNode = ({
           {isTree ? node.name : node.name.split('/').pop()}{' '}
         </Typography>
       </Box>
+
       {isTree && (
-        <ul
-          style={{
-            paddingLeft: '15px',
-            listStyle: 'none',
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '3px',
-          }}
-        >
+        <ul style={ulStyle({ inner: true })}>
           {isTreeOpen &&
             node.tree.map((childNode, index) => (
               <li key={index}>
@@ -168,15 +153,7 @@ const GithubTree = ({
   handleRemoveAll,
 }) => {
   return (
-    <ul
-      style={{
-        padding: 0,
-        listStyle: 'none',
-        display: 'flex',
-        flexDirection: 'column',
-        gap: '3px',
-      }}
-    >
+    <ul style={ulStyle({ inner: false })}>
       {data.tree.map((node, index) => (
         <li key={index}>
           <GithubTreeNode
@@ -195,12 +172,20 @@ const GithubTree = ({
 
 export default GithubTree;
 
+const ulStyle = ({ inner }) => ({
+  listStyle: 'none',
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '3px',
+  padding: inner ? '0 0 0 15px' : 0,
+});
+
 const selectedSx = theme => ({
   border: `1px solid ${theme.palette.primary.main}`,
   backgroundColor: '#efefefa6',
   borderRadius: '5px',
 });
 
-const itemsSx = theme => ({
+const itemsSx = {
   border: '1px solid transparent',
-});
+};

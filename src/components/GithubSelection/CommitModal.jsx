@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { Avatar, Box, Button, Typography } from '@mui/material';
-import axios from 'axios';
+import { Box, Button, Typography } from '@mui/material';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
-import dayjs from 'dayjs';
 import { useField } from 'formik';
 import CustomSnackbar from '../custom/CustomSnackbar.jsx';
 import Loader from '../Loader.jsx';
@@ -24,13 +22,6 @@ const CommitModal = ({ sha, onClose, repository }) => {
   useEffect(() => {
     dispatch(getCommitData(repository, sha));
   }, [repository, sha]);
-
-  // useEffect(() => {
-  //   setSelected(prev => [
-  //     ...prev,
-  //     ...field.value.filter(el => !prev.includes(el)),
-  //   ]);
-  // }, [field.value]);
 
   const parseTree = tree => {
     const result = [];
@@ -86,14 +77,16 @@ const CommitModal = ({ sha, onClose, repository }) => {
 
       if (selected.includes(blobUrl) && !addAll) {
         setSelected(setStateFilter);
-      } else if (field.value.includes(blobUrl) && !addAll) {
+      } else if (field.value.includes(blobUrl)) {
         if (deletedFromField.includes(blobUrl)) {
           setDeletedFromField(setStateFilter);
-        } else {
+        } else if (!addAll) {
           setDeletedFromField(prev => [...prev, blobUrl]);
         }
-      } else {
-        setSelected(prev => [...prev, blobUrl]);
+      } else if (!field.value.includes(blobUrl)) {
+        setSelected(prev =>
+          !prev.includes(blobUrl) ? [...prev, blobUrl] : prev,
+        );
       }
     } else if (node.type === 'tree') {
       node.tree.map(el => handleAddRemove(el, addAll));
@@ -106,12 +99,9 @@ const CommitModal = ({ sha, onClose, repository }) => {
       if (selected.includes(blobUrl)) {
         setSelected(prev => prev.filter(item => item !== blobUrl));
       } else if (field.value.includes(blobUrl)) {
-        setDeletedFromField(prev => {
-          if (!prev.includes(blobUrl)) {
-            return [...prev, blobUrl];
-          }
-          return prev;
-        });
+        setDeletedFromField(prev =>
+          !prev.includes(blobUrl) ? [...prev, blobUrl] : prev,
+        );
       }
     } else if (node.type === 'tree') {
       node.tree.map(el => handleRemoveAll(el));
@@ -301,7 +291,7 @@ const actionWrapper = theme => ({
     gap: '10px',
   },
 });
-//
+
 const modalSx = theme => ({
   position: 'absolute',
   zIndex: 999,
