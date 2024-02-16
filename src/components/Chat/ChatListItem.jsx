@@ -22,6 +22,9 @@ const ChatListItem = ({
   const getUnreadForUser = chat =>
     chat.unread.find(unread => unread.id === user.id)?.unread || 0;
 
+  const getRole = () =>
+    role || chat.members.find(member => member.id !== user.id)?.role;
+
   const setChatHandle = () => {
     setListIsOpen(false);
     setSearch('');
@@ -57,13 +60,13 @@ const ChatListItem = ({
     >
       <Avatar
         src={chat?.avatar ? `${ASSET_URL}/${chat?.avatar}` : null}
-        sx={avatarStyle}
         alt="User photo"
+        sx={avatarStyle(getRole())}
       />
 
       <Box sx={userInfo}>
         <Tooltip
-          title={chat?.name}
+          title={`${chat?.name} (${getRole()})`}
           arrow
           placement="top"
           enterDelay={500}
@@ -107,10 +110,15 @@ const wrapper = theme => ({
   },
 });
 
-const avatarStyle = theme => ({
+const avatarStyle = role => ({
   width: '60px',
   height: '60px',
   mr: '30px',
+  border: `3px solid ${
+    role?.toLowerCase() === AUDITOR
+      ? theme.palette.secondary.main
+      : theme.palette.primary.main
+  }`,
   [theme.breakpoints.down('md')]: {
     width: '50px',
     height: '50px',
@@ -120,6 +128,7 @@ const avatarStyle = theme => ({
     width: '35px',
     height: '35px',
     mr: '10px',
+    borderWidth: '2px',
   },
 });
 
