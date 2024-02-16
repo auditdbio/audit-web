@@ -11,6 +11,7 @@ import { setCurrentChat } from '../../redux/actions/chatActions.js';
 const ChatListItem = ({
   user,
   setListIsOpen,
+  setSearch,
   chat,
   isNew = false,
   userDataId = false,
@@ -23,6 +24,7 @@ const ChatListItem = ({
 
   const setChatHandle = () => {
     setListIsOpen(false);
+    setSearch('');
     const members = chat?.members.map(member => member.id);
 
     dispatch(
@@ -61,7 +63,7 @@ const ChatListItem = ({
 
       <Box sx={userInfo}>
         <Tooltip
-          title="Mihael Qwerty Asdgdsg"
+          title={chat?.name}
           arrow
           placement="top"
           enterDelay={500}
