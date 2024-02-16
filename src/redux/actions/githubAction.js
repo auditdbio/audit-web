@@ -99,7 +99,6 @@ export const getDefaultBranch = repoOwner => {
         'Cache-Control': 'no-cache',
       },
     }).then(({ data }) => {
-      console.log(repoOwner);
       dispatch({ type: GET_DEFAULT_BRANCH, payload: data.default_branch });
     });
   };
