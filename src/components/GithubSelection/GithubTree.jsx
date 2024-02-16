@@ -11,6 +11,7 @@ const GithubTreeNode = ({
   node,
   handleAddRemove,
   selected,
+  deletedFromField,
   handleSelectAll,
   handleRemoveAll,
 }) => {
@@ -32,7 +33,11 @@ const GithubTreeNode = ({
         return currentNode.tree.every(childNode => {
           if (childNode.type === 'blob') {
             const blobUrl = createBlopUrl(repoOwner, sha, `${childNode.path}`);
-            return selected.includes(blobUrl) || field.value?.includes(blobUrl);
+            return (
+              selected.includes(blobUrl) ||
+              (field.value.includes(blobUrl) &&
+                !deletedFromField.includes(blobUrl))
+            );
           } else if (childNode.type === 'tree') {
             return checkIfAllSelected(childNode);
           }
@@ -41,9 +46,8 @@ const GithubTreeNode = ({
         return null;
       }
     };
-
     return checkIfAllSelected(node);
-  }, [selected, field.value]);
+  }, [selected, field.value, deletedFromField]);
 
   useEffect(() => {
     const checkIfIndeterminate = currentNode => {
@@ -55,14 +59,27 @@ const GithubTreeNode = ({
         );
       } else if (currentNode.type === 'blob') {
         const blobUrl = createBlopUrl(repoOwner, sha, `${currentNode.path}`);
-        return selected.includes(blobUrl) || field.value?.includes(blobUrl);
+        return (
+          selected.includes(blobUrl) ||
+          (field.value.includes(blobUrl) && !deletedFromField.includes(blobUrl))
+        );
       } else {
         return false;
       }
     };
 
     setIsIndeterminate(checkIfIndeterminate(node));
-  }, [selected, field.value]);
+  }, [selected, field.value, deletedFromField]);
+
+  const checkSelected = () => {
+    const blobUrl = createBlopUrl(repoOwner, sha, node.path);
+    const callback = item => item === blobUrl;
+
+    return (
+      selected.some(callback) ||
+      (field.value.some(callback) && !deletedFromField.includes(blobUrl))
+    );
+  };
 
   return (
     <Box>
@@ -91,14 +108,7 @@ const GithubTreeNode = ({
           />
         ) : (
           <Checkbox
-            checked={
-              selected.some(
-                item => item === createBlopUrl(repoOwner, sha, node.path),
-              ) ||
-              field.value.some(
-                item => item === createBlopUrl(repoOwner, sha, node.path),
-              )
-            }
+            checked={checkSelected()}
             onChange={() => handleAddRemove(node)}
             sx={{ padding: 0 }}
           />
@@ -137,6 +147,7 @@ const GithubTreeNode = ({
                   node={childNode}
                   handleAddRemove={handleAddRemove}
                   selected={selected}
+                  deletedFromField={deletedFromField}
                   handleSelectAll={handleSelectAll}
                   handleRemoveAll={handleRemoveAll}
                 />
@@ -152,6 +163,7 @@ const GithubTree = ({
   data,
   handleAddRemove,
   selected,
+  deletedFromField,
   handleSelectAll,
   handleRemoveAll,
 }) => {
@@ -171,6 +183,7 @@ const GithubTree = ({
             node={node}
             handleAddRemove={handleAddRemove}
             selected={selected}
+            deletedFromField={deletedFromField}
             handleSelectAll={handleSelectAll}
             handleRemoveAll={handleRemoveAll}
           />

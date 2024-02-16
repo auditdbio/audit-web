@@ -12,17 +12,25 @@ import GithubTree from './GithubTree.jsx';
 import { createBlopUrl } from '../../services/urls.js';
 
 const CommitModal = ({ sha, onClose, repository }) => {
-  const [field, meta, fieldHelper] = useField('scope');
+  const [field, _, fieldHelper] = useField('scope');
   const data = useSelector(state => state.github.commit);
   const commit = useSelector(state => state.github.commitInfo);
   const [modalOpen, setModalOpen] = useState(false);
   const [selected, setSelected] = useState([]);
+  const [deletedFromField, setDeletedFromField] = useState([]);
   const dispatch = useDispatch();
   const [newObj, setNewObj] = useState(null);
 
   useEffect(() => {
     dispatch(getCommitData(repository, sha));
   }, [repository, sha]);
+
+  // useEffect(() => {
+  //   setSelected(prev => [
+  //     ...prev,
+  //     ...field.value.filter(el => !prev.includes(el)),
+  //   ]);
+  // }, [field.value]);
 
   const parseTree = tree => {
     const result = [];
@@ -73,13 +81,19 @@ const CommitModal = ({ sha, onClose, repository }) => {
 
   const handleAddRemove = (node, addAll = false) => {
     if (node.type === 'blob') {
-      const createUrl = createBlopUrl(repository, sha, node.path);
-      if (selected.includes(createUrl) && !addAll) {
-        setSelected(prev => prev.filter(item => item !== createUrl));
-      } else if (field.value.includes(createUrl) && !addAll) {
-        fieldHelper.setValue(field.value.filter(item => item !== createUrl));
+      const blobUrl = createBlopUrl(repository, sha, node.path);
+      const setStateFilter = prev => prev.filter(item => item !== blobUrl);
+
+      if (selected.includes(blobUrl) && !addAll) {
+        setSelected(setStateFilter);
+      } else if (field.value.includes(blobUrl) && !addAll) {
+        if (deletedFromField.includes(blobUrl)) {
+          setDeletedFromField(setStateFilter);
+        } else {
+          setDeletedFromField(prev => [...prev, blobUrl]);
+        }
       } else {
-        setSelected(prev => [...prev, createUrl]);
+        setSelected(prev => [...prev, blobUrl]);
       }
     } else if (node.type === 'tree') {
       node.tree.map(el => handleAddRemove(el, addAll));
@@ -88,11 +102,16 @@ const CommitModal = ({ sha, onClose, repository }) => {
 
   const handleRemoveAll = node => {
     if (node.type === 'blob') {
-      const createUrl = createBlopUrl(repository, sha, node.path);
-      if (selected.includes(createUrl)) {
-        setSelected(prev => prev.filter(item => item !== createUrl));
-      } else {
-        fieldHelper.setValue(field.value.filter(item => item !== createUrl));
+      const blobUrl = createBlopUrl(repository, sha, node.path);
+      if (selected.includes(blobUrl)) {
+        setSelected(prev => prev.filter(item => item !== blobUrl));
+      } else if (field.value.includes(blobUrl)) {
+        setDeletedFromField(prev => {
+          if (!prev.includes(blobUrl)) {
+            return [...prev, blobUrl];
+          }
+          return prev;
+        });
       }
     } else if (node.type === 'tree') {
       node.tree.map(el => handleRemoveAll(el));
@@ -108,7 +127,10 @@ const CommitModal = ({ sha, onClose, repository }) => {
   };
 
   const handleSave = () => {
-    fieldHelper.setValue([...field.value, ...selected]);
+    fieldHelper.setValue([
+      ...field.value.filter(el => !deletedFromField.includes(el)),
+      ...selected,
+    ]);
     onClose();
   };
 
@@ -203,6 +225,7 @@ const CommitModal = ({ sha, onClose, repository }) => {
               <GithubTree
                 data={newObj}
                 selected={selected}
+                deletedFromField={deletedFromField}
                 setSelected={setSelected}
                 handleAddRemove={handleAddRemove}
                 handleSelectAll={handleSelectAll}
