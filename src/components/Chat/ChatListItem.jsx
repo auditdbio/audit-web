@@ -37,7 +37,7 @@ const ChatListItem = ({
         members,
         isNew,
         userDataId,
-        role,
+        role: getRole(),
       }),
     );
   };

@@ -169,7 +169,7 @@ const CurrentChat = ({
                   ? `${ASSET_URL}/${currentChat.avatar}`
                   : null
               }
-              sx={avatarStyle}
+              sx={avatarStyle(currentChat?.role)}
               alt="User photo"
             />
           </RouterLink>
@@ -294,10 +294,15 @@ const menuButtonSx = theme => ({
   },
 });
 
-const avatarStyle = theme => ({
+const avatarStyle = role => ({
   width: '60px',
   height: '60px',
   mr: '30px',
+  border: `3px solid ${
+    role?.toLowerCase() === AUDITOR
+      ? theme.palette.secondary.main
+      : theme.palette.primary.main
+  }`,
   [theme.breakpoints.down('sm')]: {
     width: '50px',
     height: '50px',
