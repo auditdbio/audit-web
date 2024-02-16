@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { Avatar, Box, Divider, List, Typography } from '@mui/material';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown.js';
+import { getRepoOwner } from '../../redux/actions/githubAction.js';
 
 const GithubOwnOrgs = ({ repo, setRepository, inputValue }) => {
+  const dispatch = useDispatch();
   const repositories = useSelector(s =>
     s.github.organizationRepositories
       .filter(el => el.owner.login === repo.login)
@@ -30,6 +32,7 @@ const GithubOwnOrgs = ({ repo, setRepository, inputValue }) => {
             <Box
               key={index}
               onClick={() => {
+                dispatch(getRepoOwner(repo.full_name));
                 setRepository(repo.full_name);
               }}
               sx={{

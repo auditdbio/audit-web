@@ -285,9 +285,9 @@ const GithubSelection = () => {
               <Typography>Commits:</Typography>
               <Divider />
               <List sx={listWrapper}>
-                {newCommits?.map(commitObj => {
+                {newCommits?.map((commitObj, idx) => {
                   return (
-                    <React.Fragment key={commitObj.sha}>
+                    <React.Fragment key={idx}>
                       <Box
                         sx={{
                           display: 'flex',
@@ -307,9 +307,10 @@ const GithubSelection = () => {
                         </Typography>
                       </Box>
                       <List>
-                        {commitObj.commits.map((commit, idx) => {
+                        {commitObj.commits.map(commit => {
                           return (
                             <Box
+                              key={commit.sha}
                               sx={[
                                 wrapperSx,
                                 commitObj.commits.length === 1

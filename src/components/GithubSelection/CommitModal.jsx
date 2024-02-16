@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { Avatar, Box, Button, Typography } from '@mui/material';
-import axios from 'axios';
+import { Box, Button, Typography } from '@mui/material';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
-import dayjs from 'dayjs';
 import { useField } from 'formik';
 import CustomSnackbar from '../custom/CustomSnackbar.jsx';
 import Loader from '../Loader.jsx';
@@ -12,14 +10,16 @@ import GithubTree from './GithubTree.jsx';
 import { createBlopUrl } from '../../services/urls.js';
 import CommitIcon from '@mui/icons-material/Commit.js';
 
-const CommitModal = ({ sha, handleCloseCommit, onClose, repository }) => {
-  const [field, meta, fieldHelper] = useField('scope');
+const CommitModal = ({ sha, onClose, repository }) => {
+  const [field, _, fieldHelper] = useField('scope');
   const data = useSelector(state => state.github.commit);
   const commit = useSelector(state => state.github.commitInfo);
   const [modalOpen, setModalOpen] = useState(false);
   const [selected, setSelected] = useState([]);
+  const [deletedFromField, setDeletedFromField] = useState([]);
   const dispatch = useDispatch();
   const [newObj, setNewObj] = useState(null);
+
   useEffect(() => {
     if (!commit.sha) {
       dispatch(getCommitData(repository, sha));
@@ -75,19 +75,57 @@ const CommitModal = ({ sha, handleCloseCommit, onClose, repository }) => {
     }
   }, [data]);
 
-  const handleAdd = file => {
-    const createUrl = createBlopUrl(repository, sha, file.path);
-    if (selected.includes(createUrl)) {
-      setSelected(selected.filter(item => item !== createUrl));
-    } else if (field.value.includes(createUrl)) {
-      fieldHelper.setValue(field.value.filter(item => item !== createUrl));
-    } else {
-      setSelected([...selected, createUrl]);
+  const handleAddRemove = (node, addAll = false) => {
+    if (node.type === 'blob') {
+      const blobUrl = createBlopUrl(repository, sha, node.path);
+      const setStateFilter = prev => prev.filter(item => item !== blobUrl);
+
+      if (selected.includes(blobUrl) && !addAll) {
+        setSelected(setStateFilter);
+      } else if (field.value.includes(blobUrl)) {
+        if (deletedFromField.includes(blobUrl)) {
+          setDeletedFromField(setStateFilter);
+        } else if (!addAll) {
+          setDeletedFromField(prev => [...prev, blobUrl]);
+        }
+      } else if (!field.value.includes(blobUrl)) {
+        setSelected(prev =>
+          !prev.includes(blobUrl) ? [...prev, blobUrl] : prev,
+        );
+      }
+    } else if (node.type === 'tree') {
+      node.tree.map(el => handleAddRemove(el, addAll));
+    }
+  };
+
+  const handleRemoveAll = node => {
+    if (node.type === 'blob') {
+      const blobUrl = createBlopUrl(repository, sha, node.path);
+      if (selected.includes(blobUrl)) {
+        setSelected(prev => prev.filter(item => item !== blobUrl));
+      } else if (field.value.includes(blobUrl)) {
+        setDeletedFromField(prev =>
+          !prev.includes(blobUrl) ? [...prev, blobUrl] : prev,
+        );
+      }
+    } else if (node.type === 'tree') {
+      node.tree.map(el => handleRemoveAll(el));
+    }
+  };
+
+  const handleSelectAll = (node, isAllChecked, isIndeterminate) => {
+    if (isAllChecked) {
+      node.tree.map(el => handleRemoveAll(el));
+    } else if (node.type === 'tree') {
+      node.tree.map(el => handleAddRemove(el, isIndeterminate));
     }
   };
 
   const handleSave = () => {
-    fieldHelper.setValue([...field.value, ...selected]);
+    fieldHelper.setValue([
+      ...field.value.filter(el => !deletedFromField.includes(el)),
+      ...selected,
+    ]);
     onClose();
   };
 
@@ -197,8 +235,11 @@ const CommitModal = ({ sha, handleCloseCommit, onClose, repository }) => {
               <GithubTree
                 data={newObj}
                 selected={selected}
+                deletedFromField={deletedFromField}
                 setSelected={setSelected}
-                handleAdd={handleAdd}
+                handleAddRemove={handleAddRemove}
+                handleSelectAll={handleSelectAll}
+                handleRemoveAll={handleRemoveAll}
               />
             </Box>
           ) : (
@@ -270,7 +311,7 @@ const actionWrapper = theme => ({
     gap: '10px',
   },
 });
-//
+
 const modalSx = theme => ({
   position: 'absolute',
   zIndex: 999,

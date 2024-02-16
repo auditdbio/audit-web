@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
 import {
   Avatar,
   Box,
@@ -13,14 +14,17 @@ import {
 import GithubOwnOrgs from './GithubOwnOrgs.jsx';
 import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined.js';
 import TextField from '@mui/material/TextField';
+import { getRepoOwner } from '../../redux/actions/githubAction.js';
 
 const GithubOwnRepositories = ({
   setRepository,
   myRepositories,
   myOrganizations,
 }) => {
+  const dispatch = useDispatch();
   const [inputValue, setInputValue] = useState('');
   const [tabValue, setTabValue] = useState(1);
+
   return (
     <>
       <Typography variant={'h4'} sx={{ marginY: '15px', fontSize: '26px' }}>
@@ -95,7 +99,10 @@ const GithubOwnRepositories = ({
               return (
                 <Box
                   onClick={() => {
-                    repo.full_name && setRepository(repo.full_name);
+                    if (repo.full_name) {
+                      dispatch(getRepoOwner(repo.full_name));
+                      setRepository(repo.full_name);
+                    }
                   }}
                   key={repo.id}
                   sx={{
