@@ -1,13 +1,19 @@
 import React from 'react';
 
-const MediumLogo = () => {
+const MediumLogo = ({
+  width = '28px',
+  height = '28px',
+  color = '#52176D',
+  space,
+}) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      width="28"
-      height="28"
+      width={width}
+      height={height}
       viewBox="0 0 24 24"
       fill="none"
+      style={space ? { padding: '4px' } : {}}
     >
       <path
         d="M13.4093 12.2471C13.4093 15.6973 10.6314 18.4944 7.20454
@@ -20,7 +26,7 @@ const MediumLogo = () => {
                       17.516C21.3063 17.516 20.8177 15.1563 20.8177 12.2471C20.8177
                        9.33792 21.3063 6.97822 21.9091 6.97822C22.5118 6.97822
                         23 9.33729 23 12.2471Z"
-        fill={'#52176D'}
+        fill={color}
       />
     </svg>
   );

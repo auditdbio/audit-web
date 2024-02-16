@@ -6,12 +6,13 @@ import {
   Typography,
   Link,
   useMediaQuery,
+  Tooltip,
 } from '@mui/material';
 import GitHubIcon from '@mui/icons-material/GitHub.js';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import theme from '../styles/themes.js';
 import { useNavigate } from 'react-router-dom/dist';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import Loader from './Loader.jsx';
 import { AUDITOR } from '../redux/actions/types.js';
 import TagsList from './tagsList';
@@ -19,6 +20,14 @@ import { ASSET_URL } from '../services/urls.js';
 import MobileTagsList from './MobileTagsList/index.jsx';
 import { addTestsLabel } from '../lib/helper.js';
 import ShareProfileButton from './custom/ShareProfileButton.jsx';
+import LinkedInIcon from '@mui/icons-material/LinkedIn';
+import { Link as RouterLink } from 'react-router-dom';
+import IdentitySetting from './IdentitySetting/IdentitySetting.jsx';
+import LinkedinIcon from './icons/LinkedinIcon.jsx';
+import GitcoinIcon from './icons/GitcoinIcon.jsx';
+import XTwitterLogo from './icons/XTwitter-logo.jsx';
+import { clearUserError } from '../redux/actions/userAction.js';
+import CustomSnackbar from './custom/CustomSnackbar.jsx';
 
 const UserInfo = ({ role }) => {
   const navigate = useNavigate();
@@ -26,6 +35,9 @@ const UserInfo = ({ role }) => {
   const auditor = useSelector(s => s.auditor.auditor);
   const { user } = useSelector(s => s.user);
   const matchXs = useMediaQuery(theme.breakpoints.down('xs'));
+  const matchXxs = useMediaQuery(theme.breakpoints.down(590));
+  const message = useSelector(s => s.user.error);
+  const dispatch = useDispatch();
 
   const handleEdit = () => {
     navigate('/edit-profile');
@@ -44,6 +56,13 @@ const UserInfo = ({ role }) => {
   } else {
     return (
       <Box sx={wrapper}>
+        <CustomSnackbar
+          autoHideDuration={3000}
+          open={!!message}
+          onClose={() => dispatch(clearUserError())}
+          severity="error"
+          text={message}
+        />
         <Box sx={contentWrapper}>
           <Box
             sx={{
@@ -96,28 +115,6 @@ const UserInfo = ({ role }) => {
                 <span>E-mail</span>
                 <Typography noWrap={true}>{data.contacts?.email}</Typography>
               </Box>
-              {user?.linked_accounts && (
-                <Box sx={[infoWrapper, { alignItems: 'center' }]}>
-                  <span>Accounts</span>
-                  <Box>
-                    {user.linked_accounts.map(account => (
-                      <Link
-                        sx={accountLink}
-                        href={account.url}
-                        target="_blank"
-                        title={`${account.name} ${account.email}`}
-                      >
-                        {account.name === 'GitHub' ? (
-                          <GitHubIcon sx={{ mr: '8px' }} />
-                        ) : (
-                          <OpenInNewIcon sx={{ mr: '8px' }} />
-                        )}
-                        {account.name}
-                      </Link>
-                    ))}
-                  </Box>
-                </Box>
-              )}
             </Box>
             <Box sx={[infoWrapper, aboutWrapper]}>
               <span>About</span>
@@ -135,6 +132,49 @@ const UserInfo = ({ role }) => {
           </Box>
         </Box>
         {matchXs && <MobileTagsList data={data.tags} />}
+        <Box sx={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
+          {user.linked_accounts?.map(account => {
+            if (account.name.toLowerCase() === 'linkedin') {
+              return (
+                <Box
+                  key={account.id}
+                  sx={{ display: 'flex', alignItems: 'center', gap: '7px' }}
+                >
+                  <LinkedinIcon />
+                </Box>
+              );
+            } else if (account.name.toLowerCase() === 'github') {
+              return (
+                <Box
+                  key={account.id}
+                  sx={{ display: 'flex', alignItems: 'center', gap: '7px' }}
+                >
+                  <GitHubIcon
+                    sx={{ width: '50px', height: '50px', padding: '4px' }}
+                  />
+                </Box>
+              );
+            } else if (account.name.toLowerCase() === 'gitcoin') {
+              return (
+                <Box
+                  key={account.id}
+                  sx={{ display: 'flex', alignItems: 'center', gap: '7px' }}
+                >
+                  <GitcoinIcon />
+                </Box>
+              );
+            } else {
+              return (
+                <Box
+                  key={account.id}
+                  sx={{ display: 'flex', alignItems: 'center', gap: '7px' }}
+                >
+                  <XTwitterLogo width={'38px'} height={'38px'} />
+                </Box>
+              );
+            }
+          })}
+        </Box>
         <Box
           sx={{
             display: 'flex',
@@ -148,20 +188,28 @@ const UserInfo = ({ role }) => {
             role={role}
             userId={role === AUDITOR ? auditor.user_id : customer.user_id}
           />
-          <Button
-            sx={[buttonSx, role === 'auditor' ? submitAuditor : {}]}
-            variant={'contained'}
-            onClick={handleEdit}
-            {...addTestsLabel('user_edit-button')}
+          <Box
+            sx={[
+              { display: 'flex', gap: '15px' },
+              matchXxs ? { flexDirection: 'column' } : {},
+            ]}
           >
-            Edit
-          </Button>
+            <Button
+              sx={[buttonSx, role === 'auditor' ? submitAuditor : {}]}
+              variant={'contained'}
+              onClick={handleEdit}
+              {...addTestsLabel('user_edit-button')}
+            >
+              Edit
+            </Button>
+            <IdentitySetting />
+          </Box>
         </Box>
       </Box>
     );
   }
 };
-
+//
 export default UserInfo;
 
 const aboutWrapper = theme => ({
@@ -271,11 +319,10 @@ const buttonSx = theme => ({
   textTransform: 'capitalize',
   fontWeight: 600,
   fontSize: '18px',
-  padding: '9px 50px',
+  // padding: '9px 50px',
   width: '214px',
   borderRadius: '10px',
   [theme.breakpoints.down('xs')]: {
-    width: '88px',
     padding: '9px 10px',
   },
 });

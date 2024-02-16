@@ -26,6 +26,8 @@ import {
   createAuditor,
   updateAuditor,
 } from '../../../redux/actions/auditorAction.js';
+import GitHubIcon from '@mui/icons-material/GitHub.js';
+import { Link as RouterLink } from 'react-router-dom';
 
 const EditProfileForm = ({ role }) => {
   const matchSm = useMediaQuery(theme.breakpoints.down('sm'));
