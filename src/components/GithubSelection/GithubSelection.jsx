@@ -100,18 +100,15 @@ const GithubSelection = () => {
     }
   };
 
+  const handleOpenOwnRepo = urlRepo => {
+    setRepository(urlRepo);
+    dispatch(getRepoOwner(urlRepo));
+  };
+
   const handleClose = () => {
     setIsOpen(false);
   };
 
-  const handleConnectGithub = () => {
-    // dispatch(logout());
-    window.open(
-      `https://github.com/login/oauth/authorize?client_id=${GITHUB_ID}&redirect_uri=${BASE_URL}oauth/callback&scope=read:user,user:email,repo&state=customer_GitHub_auth`,
-      '_self',
-    );
-  };
-  //
   const newCommits = useMemo(() => {
     const commitsByDate = {};
 
@@ -235,7 +232,7 @@ const GithubSelection = () => {
               {/*</Box>*/}
               {githubData?.id && !orgs.message ? (
                 <GithubOwnRepositories
-                  setRepository={setRepository}
+                  setRepository={handleOpenOwnRepo}
                   myRepositories={myRepositories}
                   myOrganizations={myOrganizations}
                 />
@@ -327,6 +324,7 @@ const GithubSelection = () => {
                               <CommitItem
                                 commit={commit}
                                 repository={repository}
+                                handleCloseModal={handleClose}
                               />
                             </Box>
                           );

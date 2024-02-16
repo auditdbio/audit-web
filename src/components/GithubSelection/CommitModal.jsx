@@ -10,8 +10,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getCommitData } from '../../redux/actions/githubAction.js';
 import GithubTree from './GithubTree.jsx';
 import { createBlopUrl } from '../../services/urls.js';
+import CommitIcon from '@mui/icons-material/Commit.js';
 
-const CommitModal = ({ sha, onClose, repository }) => {
+const CommitModal = ({ sha, handleCloseCommit, onClose, repository }) => {
   const [field, meta, fieldHelper] = useField('scope');
   const data = useSelector(state => state.github.commit);
   const commit = useSelector(state => state.github.commitInfo);
@@ -20,7 +21,9 @@ const CommitModal = ({ sha, onClose, repository }) => {
   const dispatch = useDispatch();
   const [newObj, setNewObj] = useState(null);
   useEffect(() => {
-    dispatch(getCommitData(repository, sha));
+    if (!commit.sha) {
+      dispatch(getCommitData(repository, sha));
+    }
   }, [repository, sha]);
 
   const parseTree = tree => {
@@ -53,9 +56,11 @@ const CommitModal = ({ sha, onClose, repository }) => {
       }
     };
 
-    tree?.forEach(item => {
-      processItem(item, result);
-    });
+    tree
+      ?.filter(el => !el.path.startsWith('.'))
+      .forEach(item => {
+        processItem(item, result);
+      });
 
     return result;
   };
@@ -91,6 +96,10 @@ const CommitModal = ({ sha, onClose, repository }) => {
     onClose();
   };
 
+  const handleChangeCommit = () => {
+    handleCloseCommit();
+  };
+
   if (data && commit && data.sha) {
     return (
       <Box sx={modalSx}>
@@ -107,26 +116,37 @@ const CommitModal = ({ sha, onClose, repository }) => {
           sx={{
             backgroundColor: 'white',
             height: '100%',
-            padding: '32px 24px 24px',
+            padding: '45px 24px 24px',
             borderRadius: '8px',
             position: 'relative',
             display: 'flex',
             flexDirection: 'column',
           }}
         >
-          <Button
+          <Box
             sx={{
               position: 'absolute',
-              top: 0,
-              left: 0,
-              minWidth: '40px',
+              top: '10px',
+              left: '10px',
               textTransform: 'unset',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '5px',
+              '& button': {
+                minWidth: '40px',
+              },
             }}
-            onClick={handleReset}
           >
-            {/*<CloseRoundedIcon />*/}
-            Back
-          </Button>
+            <Button onClick={handleReset}>
+              <CloseRoundedIcon />
+            </Button>
+            <Button
+              sx={{ textTransform: 'unset' }}
+              onClick={handleChangeCommit}
+            >
+              Back to commits
+            </Button>
+          </Box>
           <Typography variant="h4">Commit</Typography>
           <Box>
             <Box
@@ -138,7 +158,7 @@ const CommitModal = ({ sha, onClose, repository }) => {
             >
               <Typography
                 variant={'body1'}
-                sx={{ fontWeight: 500, overflowWrap: 'break-word' }}
+                sx={{ fontWeight: 500, overflowWrap: 'anywhere' }}
               >
                 {commit?.commit?.message}
               </Typography>

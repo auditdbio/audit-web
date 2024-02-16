@@ -26,9 +26,12 @@ const GithubBranchAutocomplete = ({
   const [inputValue, setInputValue] = useState('');
   const [open, setOpen] = React.useState(false);
   const dispatch = useDispatch();
+  const { repoOwner } = useSelector(state => state.github);
 
   useEffect(() => {
-    dispatch(getBranches(repository));
+    if (repository !== repoOwner || !branches.length) {
+      dispatch(getBranches(repository));
+    }
   }, [repository]);
 
   const handleClick = () => {

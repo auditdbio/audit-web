@@ -1,17 +1,25 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Avatar, Box, Modal, Typography } from '@mui/material';
 import CommitModal from './CommitModal.jsx';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { clearCommit } from '../../redux/actions/githubAction.js';
 
-const CommitItem = ({ commit, repository }) => {
-  const [open, setOpen] = useState(false);
+const CommitItem = ({ commit, repository, handleCloseModal }) => {
+  const { commitInfo } = useSelector(state => state.github);
+
+  const [open, setOpen] = useState(commitInfo.sha === commit.sha || false);
   const dispatch = useDispatch();
+
   const handleOpenCommit = () => {
     setOpen(true);
   };
 
   const handleClose = () => {
+    handleCloseModal();
+    setOpen(false);
+  };
+
+  const handleCloseCommit = () => {
     dispatch(clearCommit());
     setOpen(false);
   };
@@ -66,6 +74,7 @@ const CommitItem = ({ commit, repository }) => {
       >
         <CommitModal
           sha={commit.sha}
+          handleCloseCommit={handleCloseCommit}
           repository={repository}
           onClose={handleClose}
         />
