@@ -10,7 +10,7 @@ import GithubTree from './GithubTree.jsx';
 import { createBlopUrl } from '../../services/urls.js';
 import CommitIcon from '@mui/icons-material/Commit.js';
 
-const CommitModal = ({ sha, onClose, repository }) => {
+const CommitModal = ({ sha, onClose, repository, handleCloseCommit }) => {
   const [field, _, fieldHelper] = useField('scope');
   const data = useSelector(state => state.github.commit);
   const commit = useSelector(state => state.github.commitInfo);
