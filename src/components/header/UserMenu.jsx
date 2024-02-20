@@ -83,60 +83,44 @@ export const UserMenu = ({ open, handleClose, anchor, userAvatar, pages }) => {
         sx={tabsSx}
         indicatorColor="none"
       >
-        <Tooltip
+        <Tab
           title={
             differentRoleUnreadMessages > 0 &&
             reduxUser.current_role !== AUDITOR
               ? 'You have unread notifications for a different role profile'
               : ''
           }
-          arrow
-          placement="top"
-          enterDelay={500}
-          leaveDelay={0}
-        >
-          <Tab
-            value={AUDITOR}
-            sx={[
-              reduxUser.current_role === AUDITOR ? auditorTabSx : inactiveTabSx,
-              tabSx(
-                reduxUser.current_role,
-                AUDITOR,
-                differentRoleUnreadMessages > 0,
-              ),
-            ]}
-            label="Auditor"
-            {...addTestsLabel('header_auditor-button')}
-          />
-        </Tooltip>
-        <Tooltip
+          value={AUDITOR}
+          sx={[
+            reduxUser.current_role === AUDITOR ? auditorTabSx : inactiveTabSx,
+            tabSx(
+              reduxUser.current_role,
+              AUDITOR,
+              differentRoleUnreadMessages > 0,
+            ),
+          ]}
+          label="Auditor"
+          {...addTestsLabel('header_auditor-button')}
+        />
+        <Tab
           title={
             differentRoleUnreadMessages > 0 &&
             reduxUser.current_role !== CUSTOMER
               ? 'You have unread notifications for a different role profile'
               : ''
           }
-          arrow
-          placement="top"
-          enterDelay={500}
-          leaveDelay={0}
-        >
-          <Tab
-            value={CUSTOMER}
-            sx={[
-              reduxUser.current_role === CUSTOMER
-                ? customerTabSx
-                : inactiveTabSx,
-              tabSx(
-                reduxUser.current_role,
-                CUSTOMER,
-                differentRoleUnreadMessages > 0,
-              ),
-            ]}
-            label="Customer"
-            {...addTestsLabel('header_customer-button')}
-          />
-        </Tooltip>
+          value={CUSTOMER}
+          sx={[
+            reduxUser.current_role === CUSTOMER ? customerTabSx : inactiveTabSx,
+            tabSx(
+              reduxUser.current_role,
+              CUSTOMER,
+              differentRoleUnreadMessages > 0,
+            ),
+          ]}
+          label="Customer"
+          {...addTestsLabel('header_customer-button')}
+        />
       </Tabs>
 
       <MenuItem onClick={handleClose}>

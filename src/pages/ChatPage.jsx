@@ -6,19 +6,39 @@ import Layout from '../styles/Layout.jsx';
 import { CustomCard } from '../components/custom/Card';
 import ChatList from '../components/Chat/ChatList.jsx';
 import CurrentChat from '../components/Chat/CurrentChat.jsx';
-import { setCurrentChat } from '../redux/actions/chatActions.js';
+import { chatSetError, setCurrentChat } from '../redux/actions/chatActions.js';
 import theme from '../styles/themes.js';
 import MenuIcon from '@mui/icons-material/Menu.js';
 import { useNavigate } from 'react-router-dom/dist';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack.js';
+import { AUDITOR, CUSTOMER } from '../redux/actions/types.js';
 
 const ChatPage = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   const { id } = useParams();
   const [chatListIsOpen, setChatListIsOpen] = useState(false);
   const { chatList, chatMessages, currentChat } = useSelector(s => s.chat);
   const { user } = useSelector(s => s.user);
-  const navigate = useNavigate();
+  const { auditor } = useSelector(s => s.auditor);
+  const { customer } = useSelector(s => s.customer);
+
+  useEffect(() => {
+    if (
+      (user.current_role === AUDITOR &&
+        auditor &&
+        !auditor?.user_id &&
+        !auditor?.first_name) ||
+      (user.current_role === CUSTOMER &&
+        customer &&
+        !customer?.user_id &&
+        !customer?.first_name)
+    ) {
+      dispatch(chatSetError('Fill your profile'));
+      navigate('/profile/user-info');
+    }
+  }, [user, auditor, customer]);
 
   useEffect(() => {
     if (id && !currentChat?.isNew) {

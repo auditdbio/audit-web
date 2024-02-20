@@ -1,28 +1,56 @@
 import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom/dist';
 import { Box } from '@mui/material';
-import theme from '../../styles/themes.js';
 import ChatIcon from '../icons/ChatIcon.jsx';
 import { CustomBadge } from '../custom/Badge.jsx';
-import { getTotalUnreadMessages } from '../../redux/actions/chatActions.js';
-import { AUDITOR } from '../../redux/actions/types.js';
+import {
+  chatSetError,
+  getTotalUnreadMessages,
+} from '../../redux/actions/chatActions.js';
+import { AUDITOR, CUSTOMER } from '../../redux/actions/types.js';
+import CustomSnackbar from '../custom/CustomSnackbar.jsx';
 
 const ChatLabel = () => {
   const dispatch = useDispatch();
-  const { chatList, unreadMessages } = useSelector(s => s.chat);
+  const navigate = useNavigate();
+  const { chatList, unreadMessages, error } = useSelector(s => s.chat);
   const { user } = useSelector(s => s.user);
+  const { auditor } = useSelector(s => s.auditor);
+  const { customer } = useSelector(s => s.customer);
 
   useEffect(() => {
     dispatch(getTotalUnreadMessages(chatList));
   }, [chatList]);
 
-  const handleClick = () => {
-    localStorage.setItem('path', window.location.pathname);
+  const handleClick = e => {
+    e.preventDefault();
+    if (
+      (user.current_role === AUDITOR &&
+        auditor?.user_id &&
+        auditor?.first_name) ||
+      (user.current_role === CUSTOMER &&
+        customer?.user_id &&
+        customer?.first_name)
+    ) {
+      navigate('/chat');
+      localStorage.setItem('path', window.location.pathname);
+    } else {
+      navigate('/profile/user-info');
+      dispatch(chatSetError('Fill your profile'));
+    }
   };
 
   return (
     <Box sx={wrapper}>
+      <CustomSnackbar
+        autoHideDuration={5000}
+        open={!!error}
+        onClose={() => dispatch(chatSetError(null))}
+        severity="warning"
+        text={error}
+      />
+
       <Link to="/chat" onClick={handleClick}>
         <CustomBadge
           badgeContent={unreadMessages}
@@ -62,25 +90,4 @@ const iconWrapper = theme => ({
     },
   },
   ':hover': { background: '#d1d1d1' },
-});
-
-const notice = count => ({
-  position: 'absolute',
-  top: 0,
-  right: '-8px',
-  width: '25px',
-  height: '25px',
-  display: 'flex',
-  justifyContent: 'center',
-  alignItems: 'center',
-  background: '#FF0000',
-  borderRadius: '50%',
-  fontSize: count < 100 ? '18px' : '12px',
-  fontWeight: 600,
-  color: 'white',
-  pointerEvents: 'none',
-  [theme.breakpoints.down('xs')]: {
-    border: '1px solid white',
-    fontSize: count < 100 ? '12px' : '10px',
-  },
 });
