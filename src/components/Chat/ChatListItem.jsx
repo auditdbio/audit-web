@@ -189,6 +189,7 @@ const roleSx = role => ({
       : theme.palette.primary.main,
   fontWeight: 600,
   fontSize: '13px',
+  textTransform: 'capitalize',
   [theme.breakpoints.down('md')]: {
     height: '25px',
   },
