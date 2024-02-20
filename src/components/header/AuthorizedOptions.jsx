@@ -1,6 +1,12 @@
 import React, { useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { Typography, useMediaQuery, Avatar } from '@mui/material';
+import {
+  Typography,
+  useMediaQuery,
+  Avatar,
+  Badge,
+  Tooltip,
+} from '@mui/material';
 import Box from '@mui/material/Box';
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
@@ -21,6 +27,7 @@ const AuthorizedOptions = () => {
   const reduxUser = useSelector(state => state.user.user);
   const auditor = useSelector(state => state.auditor.auditor);
   const customer = useSelector(state => state.customer.customer);
+  const { differentRoleUnreadMessages } = useSelector(s => s.chat);
 
   const [currentUsername] = useState(reduxUser.name || 'User');
   const [anchorElUser, setAnchorElUser] = useState(null);
@@ -58,16 +65,23 @@ const AuthorizedOptions = () => {
             sx={mobileAvatarSx}
             alt="User photo"
           />
-          <IconButton
-            aria-label="account of current user"
-            aria-controls="menu-appbar"
-            aria-haspopup="true"
-            onClick={handleOpenUserMenu}
-            color="inherit"
-            sx={{ padding: 0 }}
+          <Badge
+            variant="dot"
+            component="span"
+            color={reduxUser.current_role === AUDITOR ? 'primary' : 'secondary'}
           >
-            <MenuIcon fontSize="large" />
-          </IconButton>
+            <IconButton
+              aria-label="account of current user"
+              aria-controls="menu-appbar"
+              aria-haspopup="true"
+              onClick={handleOpenUserMenu}
+              color="inherit"
+              sx={{ padding: 0 }}
+            >
+              <MenuIcon fontSize="large" />
+            </IconButton>
+          </Badge>
+
           <UserMenu
             pages={authorizedPages}
             userAvatar={userAvatar}
@@ -100,11 +114,32 @@ const AuthorizedOptions = () => {
             disableRipple
             {...addTestsLabel('header_usermenu-button')}
           >
-            <Avatar
-              src={userAvatar ? `${ASSET_URL}/${userAvatar}` : ''}
-              sx={avatarStyle(reduxUser.current_role)}
-              alt="User photo"
-            />
+            <Tooltip
+              title={
+                differentRoleUnreadMessages > 0
+                  ? 'You have unread notifications for a different role profile'
+                  : ''
+              }
+              arrow
+              placement="top"
+              enterDelay={500}
+              leaveDelay={0}
+            >
+              <Badge
+                variant="dot"
+                component="span"
+                invisible={differentRoleUnreadMessages <= 0}
+                color={
+                  reduxUser.current_role === AUDITOR ? 'primary' : 'secondary'
+                }
+              >
+                <Avatar
+                  src={userAvatar ? `${ASSET_URL}/${userAvatar}` : ''}
+                  sx={avatarStyle(reduxUser.current_role)}
+                  alt="User photo"
+                />
+              </Badge>
+            </Tooltip>
             <UserMenu
               open={isUserMenuOpen}
               userAvatar={userAvatar}
@@ -123,12 +158,26 @@ const mobileWrapper = {
   display: 'flex',
   alignItems: 'center',
   gap: '1rem',
+  '& .MuiBadge-dot': {
+    top: '8px',
+    right: '3px',
+    borderRadius: '50%',
+    height: '11px',
+    width: '11px',
+  },
 };
 
 const desktopWrapper = {
   display: 'flex',
   alignItems: 'center',
   gap: '15px',
+  '& .MuiBadge-dot': {
+    top: '6px',
+    right: '8px',
+    borderRadius: '50%',
+    height: '14px',
+    width: '14px',
+  },
 };
 
 const userGreeting = theme => ({

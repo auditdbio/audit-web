@@ -2,6 +2,8 @@ import Cookies from 'js-cookie';
 import axios from 'axios';
 import { API_URL } from '../../services/urls.js';
 import {
+  AUDITOR,
+  CUSTOMER,
   CHAT_CLOSE_CURRENT_CHAT,
   CHAT_GET_LIST,
   CHAT_GET_MESSAGES,
@@ -10,6 +12,7 @@ import {
   CHAT_SET_CURRENT,
   CHAT_UPDATE_READ,
   CHAT_UPDATE_TOTAL_UNREAD,
+  CHAT_UPDATE_DIFFERENT_ROLE_UNREAD,
 } from './types.js';
 
 export const getChatList = role => {
@@ -155,25 +158,32 @@ export const receiveNewChatMessage = message => {
       });
     } else {
       const chat = chatState.chatList.find(it => it.id === message.chat);
-      const unread =
-        chat?.unread?.find(unread => unread.id === user.user?.id)?.unread || 0;
+      if (chat) {
+        const unread =
+          chat.unread?.find(unread => unread.id === user.user?.id)?.unread || 0;
 
-      dispatch({
-        type: CHAT_UPDATE_READ,
-        payload: {
-          chatId: message.chat,
-          userId: user.user?.id,
-          unread: unread + 1,
-        },
-      });
+        dispatch({
+          type: CHAT_UPDATE_READ,
+          payload: {
+            chatId: message.chat,
+            userId: user.user?.id,
+            unread: unread + 1,
+          },
+        });
+      } else {
+        dispatch({
+          type: CHAT_UPDATE_DIFFERENT_ROLE_UNREAD,
+          payload: chatState.differentRoleUnreadMessages + 1,
+        });
+      }
     }
   };
 };
 
-export const getTotalUnreadMessages = () => {
+export const getTotalUnreadMessages = chatList => {
   return (dispatch, getState) => {
-    const { chat, user } = getState();
-    const unread = chat.chatList.reduce((acc, chat) => {
+    const { user } = getState();
+    const unread = chatList.reduce((acc, chat) => {
       return (
         acc +
         (chat?.unread?.find(unread => unread.id === user.user?.id)?.unread || 0)
@@ -181,6 +191,28 @@ export const getTotalUnreadMessages = () => {
     }, 0);
 
     dispatch({ type: CHAT_UPDATE_TOTAL_UNREAD, payload: unread });
+  };
+};
+
+export const getUnreadForDifferentRole = () => {
+  const token = Cookies.get('token');
+  return (dispatch, getState) => {
+    const { user } = getState();
+    const role = user.user.current_role === AUDITOR ? CUSTOMER : AUDITOR;
+    axios
+      .get(`${API_URL}/chat/preview/${role}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .then(({ data }) => {
+        const unread = data.reduce((acc, chat) => {
+          return (
+            acc +
+            (chat?.unread?.find(unread => unread.id === user.user?.id)
+              ?.unread || 0)
+          );
+        }, 0);
+        dispatch({ type: CHAT_UPDATE_DIFFERENT_ROLE_UNREAD, payload: unread });
+      });
   };
 };
 

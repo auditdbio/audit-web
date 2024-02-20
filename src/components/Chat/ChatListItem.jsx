@@ -58,34 +58,41 @@ const ChatListItem = ({
       onClick={setChatHandle}
       {...addTestsLabel('chat-link')}
     >
-      <Avatar
-        src={chat?.avatar ? `${ASSET_URL}/${chat?.avatar}` : null}
-        alt="User photo"
-        sx={avatarStyle(getRole())}
-      />
-
-      <Box sx={userInfo}>
-        <Tooltip
-          title={`${chat?.name} (${getRole()})`}
-          arrow
-          placement="top"
-          enterDelay={500}
-          leaveDelay={0}
-        >
-          <Box sx={userNameSx}>{chat?.name}</Box>
-        </Tooltip>
-        {/*<Box sx={userStatusSx({ online: true })}>Online</Box>*/}
+      <Box sx={avatarBorder(getRole())}>
+        <Avatar
+          src={chat?.avatar ? `${ASSET_URL}/${chat?.avatar}` : null}
+          alt="User photo"
+          sx={avatarStyle}
+        />
       </Box>
 
-      <Box sx={messagesInfo}>
-        {!isNew && chat.unread && !!getUnreadForUser(chat) && (
-          <Box sx={messagesCount({ user, count: getUnreadForUser(chat) })}>
-            {getUnreadForUser(chat)}
-          </Box>
-        )}
-        {!isNew && (
-          <Box sx={lastMessageTime}>{convertDate(chat.last_message?.time)}</Box>
-        )}
+      <Box sx={chatDataWrapper}>
+        <Box sx={chatData}>
+          <Tooltip
+            title={`${chat?.name}`}
+            arrow
+            placement="top"
+            enterDelay={500}
+            leaveDelay={0}
+          >
+            <Box sx={userNameSx}>{chat?.name}</Box>
+          </Tooltip>
+          {!isNew && (
+            <Box sx={lastMessageTime}>
+              {convertDate(chat.last_message?.time)}
+            </Box>
+          )}
+        </Box>
+
+        <Box sx={chatData}>
+          <Box sx={roleSx(getRole())}>{getRole()}</Box>
+          {!isNew && chat.unread && !!getUnreadForUser(chat) && (
+            <Box sx={messagesCount({ user, count: getUnreadForUser(chat) })}>
+              {getUnreadForUser(chat)}
+            </Box>
+          )}
+        </Box>
+        {/*<Box sx={userStatusSx({ online: true })}>Online</Box>*/}
       </Box>
     </Link>
   );
@@ -96,7 +103,6 @@ export default ChatListItem;
 const wrapper = theme => ({
   direction: 'ltr',
   display: 'flex',
-  alignItems: 'center',
   padding: '20px 15px',
   borderBottom: '2px solid #e5e5e5',
   cursor: 'pointer',
@@ -110,36 +116,52 @@ const wrapper = theme => ({
   },
 });
 
-const avatarStyle = role => ({
-  width: '60px',
-  height: '60px',
+const chatDataWrapper = {
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'space-between',
+  justifyContent: 'center',
+  flexGrow: 1,
+};
+
+const chatData = {
+  display: 'flex',
+  justifyContent: 'space-between',
+  alignItems: 'center',
+};
+
+const avatarBorder = role => ({
+  flexShrink: 0,
+  padding: '2px',
   mr: '30px',
-  border: `3px solid ${
+  width: '68px',
+  height: '68px',
+  borderRadius: '50%',
+  border: `4px solid ${
     role?.toLowerCase() === AUDITOR
       ? theme.palette.secondary.main
       : theme.palette.primary.main
   }`,
   [theme.breakpoints.down('md')]: {
-    width: '50px',
-    height: '50px',
+    width: '56px',
+    height: '56px',
     mr: '15px',
   },
   [theme.breakpoints.down('sm')]: {
-    width: '35px',
-    height: '35px',
+    width: '40px',
+    height: '40px',
     mr: '10px',
     borderWidth: '2px',
   },
 });
 
-const userInfo = {
-  flexGrow: 1,
-  display: 'flex',
-  flexDirection: 'column',
-  justifyContent: 'center',
+const avatarStyle = {
+  width: '100%',
+  height: '100%',
 };
 
 const userNameSx = theme => ({
+  pr: '5px',
   display: '-webkit-box',
   fontSize: '24px',
   fontWeight: 600,
@@ -154,6 +176,25 @@ const userNameSx = theme => ({
   },
   [theme.breakpoints.down('sm')]: {
     fontSize: '15px',
+  },
+});
+
+const roleSx = role => ({
+  display: 'flex',
+  alignItems: 'center',
+  height: '30px',
+  color:
+    role?.toLowerCase() === AUDITOR
+      ? theme.palette.secondary.main
+      : theme.palette.primary.main,
+  fontWeight: 600,
+  fontSize: '13px',
+  [theme.breakpoints.down('md')]: {
+    height: '25px',
+  },
+  [theme.breakpoints.down('sm')]: {
+    height: '20px',
+    fontSize: '10px',
   },
 });
 
@@ -184,13 +225,6 @@ const userStatusSx = ({ online }) => ({
   },
 });
 
-const messagesInfo = {
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'center',
-  justifyContent: 'center',
-};
-
 const messagesCount = ({ user, count }) => {
   const getFontSize = () => {
     if (count > 999) return '11px';
@@ -204,7 +238,6 @@ const messagesCount = ({ user, count }) => {
     alignItems: 'center',
     width: '30px',
     height: '30px',
-    mb: '5px',
     fontSize: getFontSize(),
     fontWeight: 600,
     color: 'white',
@@ -227,6 +260,8 @@ const messagesCount = ({ user, count }) => {
 };
 
 const lastMessageTime = theme => ({
+  alignSelf: 'baseline',
+  pt: '5px',
   fontSize: '16px',
   fontWeight: 500,
   color: '#B2B3B3',
@@ -235,5 +270,6 @@ const lastMessageTime = theme => ({
   },
   [theme.breakpoints.down('sm')]: {
     fontSize: '11px',
+    pt: '4px',
   },
 });

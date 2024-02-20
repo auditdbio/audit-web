@@ -37,16 +37,22 @@ const CurrentChat = ({
   const [userLinkData, setUserLinkData] = useState({});
   const [unread, setUnread] = useState(0);
   const [interlocutorUnread, setInterlocutorUnread] = useState(0);
+  const [chatId, setChatId] = useState(null);
 
   const messageBoxRef = useRef();
   const newMessagesTextRef = useRef();
 
   useEffect(() => {
-    if (currentChat?.chatId && !currentChat?.isNew) {
+    if (
+      currentChat?.chatId &&
+      !currentChat?.isNew &&
+      currentChat?.chatId !== chatId
+    ) {
       setDisplayedMessages(20);
+      setChatId(currentChat?.chatId);
       dispatch(getChatMessages(currentChat.chatId, user.id));
     }
-  }, [currentChat]);
+  }, [currentChat, chatId]);
 
   useEffect(() => {
     if (currentChat?.chatId && id !== currentChat?.chatId) {
@@ -163,15 +169,17 @@ const CurrentChat = ({
             to={`/user/${userLinkData.id}/${userLinkData.role}`}
             style={userLinkData.id ? null : disabledLink}
           >
-            <Avatar
-              src={
-                currentChat?.avatar
-                  ? `${ASSET_URL}/${currentChat.avatar}`
-                  : null
-              }
-              sx={avatarStyle(currentChat?.role)}
-              alt="User photo"
-            />
+            <Box sx={avatarWrapper(currentChat?.role)}>
+              <Avatar
+                src={
+                  currentChat?.avatar
+                    ? `${ASSET_URL}/${currentChat.avatar}`
+                    : null
+                }
+                sx={avatarStyle}
+                alt="User photo"
+              />
+            </Box>
           </RouterLink>
           <Box sx={userInfo}>
             <Link
@@ -294,11 +302,13 @@ const menuButtonSx = theme => ({
   },
 });
 
-const avatarStyle = role => ({
+const avatarWrapper = role => ({
   width: '60px',
   height: '60px',
   mr: '30px',
-  border: `3px solid ${
+  padding: '2px',
+  borderRadius: '50%',
+  border: `4px solid ${
     role?.toLowerCase() === AUDITOR
       ? theme.palette.secondary.main
       : theme.palette.primary.main
@@ -319,6 +329,11 @@ const avatarStyle = role => ({
   },
 });
 
+const avatarStyle = {
+  width: '100%',
+  height: '100%',
+};
+
 const userInfo = {
   flexGrow: 1,
   display: 'flex',
@@ -329,7 +344,7 @@ const userInfo = {
 const userNameSx = theme => ({
   display: '-webkit-box',
   alignSelf: 'flex-start',
-  fontSize: '26px',
+  fontSize: '24px',
   fontWeight: 600,
   textDecoration: 'none',
   color: 'black',

@@ -14,7 +14,7 @@ const ChatLabel = () => {
   const { user } = useSelector(s => s.user);
 
   useEffect(() => {
-    dispatch(getTotalUnreadMessages());
+    dispatch(getTotalUnreadMessages(chatList));
   }, [chatList]);
 
   const handleClick = () => {
