@@ -17,18 +17,21 @@ const ChatPage = () => {
   const { id } = useParams();
   const [chatListIsOpen, setChatListIsOpen] = useState(false);
   const { chatList, chatMessages, currentChat } = useSelector(s => s.chat);
+  const { user } = useSelector(s => s.user);
   const navigate = useNavigate();
 
   useEffect(() => {
     if (id && !currentChat?.isNew) {
       const chat = chatList.find(chat => chat.id === id);
       const members = chat?.members.map(member => member.id);
+      const role = chat?.members.find(member => member.id !== user.id)?.role;
 
       if (chat) {
         dispatch(
           setCurrentChat(chat?.id, {
             name: chat?.name,
             avatar: chat?.avatar,
+            role,
             members,
           }),
         );

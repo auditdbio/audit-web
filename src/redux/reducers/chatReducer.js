@@ -5,6 +5,7 @@ import {
   CHAT_NEW_MESSAGE,
   CHAT_SEND_FIRST_MESSAGE,
   CHAT_SET_CURRENT,
+  CHAT_UPDATE_DIFFERENT_ROLE_UNREAD,
   CHAT_UPDATE_READ,
   CHAT_UPDATE_TOTAL_UNREAD,
 } from '../actions/types.js';
@@ -14,6 +15,7 @@ const initialState = {
   chatMessages: [],
   currentChat: null,
   unreadMessages: 0,
+  differentRoleUnreadMessages: 0,
 };
 
 export const chatReducer = (state = initialState, action) => {
@@ -42,6 +44,11 @@ export const chatReducer = (state = initialState, action) => {
       return {
         ...state,
         unreadMessages: action.payload,
+      };
+    case CHAT_UPDATE_DIFFERENT_ROLE_UNREAD:
+      return {
+        ...state,
+        differentRoleUnreadMessages: action.payload,
       };
     case CHAT_GET_MESSAGES:
       return { ...state, chatMessages: action.payload };
