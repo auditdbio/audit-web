@@ -13,6 +13,7 @@ import {
   CHAT_UPDATE_READ,
   CHAT_UPDATE_TOTAL_UNREAD,
   CHAT_UPDATE_DIFFERENT_ROLE_UNREAD,
+  CHAT_SET_ERROR,
 } from './types.js';
 
 export const getChatList = role => {
@@ -225,4 +226,8 @@ export const closeCurrentChat = chatId => {
   }
 
   return { type: CHAT_CLOSE_CURRENT_CHAT };
+};
+
+export const chatSetError = error => {
+  return { type: CHAT_SET_ERROR, payload: error };
 };
