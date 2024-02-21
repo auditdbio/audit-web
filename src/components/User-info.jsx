@@ -1,19 +1,10 @@
 import React, { useMemo } from 'react';
-import {
-  Avatar,
-  Box,
-  Button,
-  Typography,
-  Link,
-  useMediaQuery,
-} from '@mui/material';
-import GitHubIcon from '@mui/icons-material/GitHub.js';
-import OpenInNewIcon from '@mui/icons-material/OpenInNew';
+import { Avatar, Box, Button, Typography, useMediaQuery } from '@mui/material';
 import theme from '../styles/themes.js';
 import { useNavigate } from 'react-router-dom/dist';
 import { useSelector } from 'react-redux';
 import Loader from './Loader.jsx';
-import { AUDITOR } from '../redux/actions/types.js';
+import { AUDITOR, CUSTOMER } from '../redux/actions/types.js';
 import TagsList from './tagsList';
 import { ASSET_URL } from '../services/urls.js';
 import MobileTagsList from './MobileTagsList/index.jsx';
@@ -122,10 +113,13 @@ const UserInfo = ({ role }) => {
             gap: '20px',
           }}
         >
-          <ShareProfileButton
-            role={role}
-            userId={role === AUDITOR ? auditor.user_id : customer.user_id}
-          />
+          {((role === AUDITOR && auditor.user_id) ||
+            (role === CUSTOMER && customer.user_id)) && (
+            <ShareProfileButton
+              role={role}
+              userId={role === AUDITOR ? auditor.user_id : customer.user_id}
+            />
+          )}
           <Button
             sx={[buttonSx, role === 'auditor' ? submitAuditor : {}]}
             variant={'contained'}
