@@ -86,7 +86,11 @@ const CurrentChat = ({
   useEffect(() => {
     const chat = chatList.find(chat => chat.id === currentChat?.chatId);
     const interlocutor = chat?.members?.find(member => member.id !== user.id);
-    setUserLinkData({ id: interlocutor?.id, role: interlocutor?.role });
+    if (!interlocutor) {
+      setUserLinkData({ id, role: currentChat?.role });
+    } else {
+      setUserLinkData({ id: interlocutor?.id, role: interlocutor?.role });
+    }
 
     setUnread(
       currentChat?.unread?.find(member => member.id === user.id)?.unread || 0,
@@ -165,10 +169,7 @@ const CurrentChat = ({
             <MenuIcon fontSize="large" />
           </IconButton>
 
-          <RouterLink
-            to={`/user/${userLinkData.id}/${userLinkData.role}`}
-            style={userLinkData.id ? null : disabledLink}
-          >
+          <RouterLink to={`/user/${userLinkData.id}/${userLinkData.role}`}>
             <Box sx={avatarWrapper(currentChat?.role)}>
               <Avatar
                 src={
@@ -185,7 +186,7 @@ const CurrentChat = ({
             <Link
               component={RouterLink}
               to={`/user/${userLinkData.id}/${userLinkData.role}`}
-              sx={[userNameSx, userLinkData.id ? null : disabledLink]}
+              sx={userNameSx}
               {...addTestsLabel('profile-link')}
             >
               {currentChat?.name}
@@ -460,7 +461,3 @@ const sendButton = theme => ({
     padding: '10px 20px',
   },
 });
-
-const disabledLink = {
-  pointerEvents: 'none',
-};
