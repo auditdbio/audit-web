@@ -68,6 +68,7 @@ const AuthorizedOptions = () => {
           <Badge
             variant="dot"
             component="span"
+            invisible={differentRoleUnreadMessages <= 0}
             color={reduxUser.current_role === AUDITOR ? 'primary' : 'secondary'}
           >
             <IconButton
