@@ -141,7 +141,7 @@ const messageTextSx = ({ isOwn }) => ({
     margin: '0 10px',
     '& p': {
       lineHeight: '20px',
-      padding: '10px 20px 15px',
+      padding: '10px 20px 18px',
       fontSize: '16px',
     },
   },
@@ -149,7 +149,7 @@ const messageTextSx = ({ isOwn }) => ({
     minWidth: '100px',
     '& p': {
       lineHeight: '18px',
-      padding: '5px 10px 15px',
+      padding: '5px 10px 18px',
       fontSize: '14px',
     },
   },
@@ -166,6 +166,7 @@ const linkMessage = {
 
 const messageTimeSx = theme => ({
   display: 'flex',
+  alignItems: 'center',
   position: 'absolute',
   bottom: 2,
   right: 10,

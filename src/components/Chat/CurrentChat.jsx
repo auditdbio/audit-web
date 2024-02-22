@@ -86,7 +86,11 @@ const CurrentChat = ({
   useEffect(() => {
     const chat = chatList.find(chat => chat.id === currentChat?.chatId);
     const interlocutor = chat?.members?.find(member => member.id !== user.id);
-    setUserLinkData({ id: interlocutor?.id, role: interlocutor?.role });
+    if (!interlocutor) {
+      setUserLinkData({ id, role: currentChat?.role });
+    } else {
+      setUserLinkData({ id: interlocutor?.id, role: interlocutor?.role });
+    }
 
     setUnread(
       currentChat?.unread?.find(member => member.id === user.id)?.unread || 0,
@@ -165,10 +169,7 @@ const CurrentChat = ({
             <MenuIcon fontSize="large" />
           </IconButton>
 
-          <RouterLink
-            to={`/user/${userLinkData.id}/${userLinkData.role}`}
-            style={userLinkData.id ? null : disabledLink}
-          >
+          <RouterLink to={`/user/${userLinkData.id}/${userLinkData.role}`}>
             <Box sx={avatarWrapper(currentChat?.role)}>
               <Avatar
                 src={
@@ -185,7 +186,7 @@ const CurrentChat = ({
             <Link
               component={RouterLink}
               to={`/user/${userLinkData.id}/${userLinkData.role}`}
-              sx={[userNameSx, userLinkData.id ? null : disabledLink]}
+              sx={userNameSx}
               {...addTestsLabel('profile-link')}
             >
               {currentChat?.name}
@@ -215,6 +216,10 @@ const CurrentChat = ({
             chatMessages
               .slice(...getDisplayedMessages())
               .map((msg, idx, ar) => {
+                const date = new Date(msg?.time / 1000).toDateString();
+                const prevMsgDate = new Date(
+                  ar[idx - 1]?.time / 1000,
+                ).toDateString();
                 const unreadLabel = !!unread && ar.length - unread === idx;
                 const isInterlocutorRead = idx < ar.length - interlocutorUnread;
                 return (
@@ -222,6 +227,9 @@ const CurrentChat = ({
                     key={msg.id}
                     ref={unreadLabel ? newMessagesTextRef : null}
                   >
+                    {date !== prevMsgDate && (
+                      <Box sx={msgDateSx}>{date.replace(/[^ ]+/, '')}</Box>
+                    )}
                     {unreadLabel && <Box sx={newMessagesSx}>New messages:</Box>}
                     <Message
                       user={user}
@@ -264,6 +272,8 @@ const CurrentChat = ({
 };
 
 export default CurrentChat;
+
+const yearNow = new Date().getFullYear();
 
 const wrapper = theme => ({
   width: '70%',
@@ -432,6 +442,15 @@ const showMoreSx = {
   transform: 'translateX(-50%)',
 };
 
+const msgDateSx = theme => ({
+  fontSize: '14px',
+  textAlign: 'center',
+  mb: '10px',
+  [theme.breakpoints.down('xs')]: {
+    fontSize: '12px',
+  },
+});
+
 const newMessagesSx = {
   fontSize: '14px',
   fontWeight: 500,
@@ -460,7 +479,3 @@ const sendButton = theme => ({
     padding: '10px 20px',
   },
 });
-
-const disabledLink = {
-  pointerEvents: 'none',
-};
