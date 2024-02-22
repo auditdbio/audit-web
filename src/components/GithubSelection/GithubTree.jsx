@@ -35,15 +35,13 @@ const GithubTreeNode = ({
       if (currentNode.type === 'tree') {
         if (currentNode.tree.length === 0) return false;
         let newData = {};
-        if (
-          currentNode.tree.every(el => !endsWithAny(el.name, github_filter))
-        ) {
+        if (currentNode.tree.every(el => endsWithAny(el.name, github_filter))) {
           newData = currentNode;
         } else {
           newData = {
             ...currentNode,
-            tree: currentNode.tree.filter(el =>
-              endsWithAny(el.name, github_filter),
+            tree: currentNode.tree.filter(
+              el => !endsWithAny(el.name, github_filter),
             ),
           };
         }
@@ -105,7 +103,7 @@ const GithubTreeNode = ({
         sx={[
           { display: 'flex', alignItems: 'center', gap: '5px' },
           node.type !== 'tree' && checkSelected() ? selectedSx : itemsSx,
-          node.type === 'blob' && !endsWithAny(node.name, github_filter)
+          node.type === 'blob' && endsWithAny(node.name, github_filter)
             ? filterItemSx
             : itemsSx,
         ]}
@@ -132,7 +130,7 @@ const GithubTreeNode = ({
               color={
                 node.tree.every(
                   el =>
-                    !endsWithAny(el.name, github_filter) ||
+                    endsWithAny(el.name, github_filter) ||
                     !node.name.includes('.'),
                 )
                   ? 'disabled'
@@ -144,7 +142,7 @@ const GithubTreeNode = ({
               color={
                 node.tree.every(
                   el =>
-                    !endsWithAny(el.name, github_filter) ||
+                    endsWithAny(el.name, github_filter) ||
                     !node.name.includes('.'),
                 )
                   ? 'disabled'
@@ -155,7 +153,7 @@ const GithubTreeNode = ({
         ) : (
           <InsertDriveFileIcon
             color={
-              !endsWithAny(node.name, github_filter) || !node.name.includes('.')
+              endsWithAny(node.name, github_filter) || !node.name.includes('.')
                 ? 'disabled'
                 : 'secondary'
             }
