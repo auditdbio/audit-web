@@ -106,6 +106,10 @@ const GithubTreeNode = ({
           node.type === 'blob' && endsWithAny(node.name, github_filter)
             ? filterItemSx
             : itemsSx,
+          node.type === 'tree' &&
+          node.tree.some(el => endsWithAny(el.name, github_filter))
+            ? filterItemSx
+            : itemsSx,
         ]}
       >
         {node.type === 'tree' ? (
@@ -128,25 +132,25 @@ const GithubTreeNode = ({
           isTreeOpen ? (
             <FolderOpenIcon
               color={
-                node.tree.every(
+                node.tree.some(
                   el =>
-                    endsWithAny(el.name, github_filter) ||
-                    !node.name.includes('.'),
+                    !endsWithAny(el.name, github_filter) &&
+                    el.name.includes('.'),
                 )
-                  ? 'disabled'
-                  : 'primary'
+                  ? 'primary'
+                  : 'disabled'
               }
             />
           ) : (
             <FolderIcon
               color={
-                node.tree.every(
+                node.tree.some(
                   el =>
-                    endsWithAny(el.name, github_filter) ||
-                    !node.name.includes('.'),
+                    !endsWithAny(el.name, github_filter) &&
+                    el.name.includes('.'),
                 )
-                  ? 'disabled'
-                  : 'primary'
+                  ? 'primary'
+                  : 'disabled'
               }
             />
           )
