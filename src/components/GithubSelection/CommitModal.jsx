@@ -8,7 +8,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getCommitData } from '../../redux/actions/githubAction.js';
 import GithubTree from './GithubTree.jsx';
 import { createBlopUrl } from '../../services/urls.js';
-import CommitIcon from '@mui/icons-material/Commit.js';
 
 const CommitModal = ({ sha, onClose, repository, handleCloseCommit }) => {
   const [field, _, fieldHelper] = useField('scope');
@@ -131,6 +130,11 @@ const CommitModal = ({ sha, onClose, repository, handleCloseCommit }) => {
 
   const handleReset = () => {
     setSelected([]);
+    fieldHelper.setValue([]);
+  };
+
+  const closeModal = () => {
+    setSelected([]);
     onClose();
   };
 
@@ -138,7 +142,7 @@ const CommitModal = ({ sha, onClose, repository, handleCloseCommit }) => {
     handleCloseCommit();
   };
 
-  if (data && commit && data.sha) {
+  if (data && commit && data.sha && newObj?.tree.length) {
     return (
       <Box sx={modalSx}>
         <CustomSnackbar
@@ -175,7 +179,7 @@ const CommitModal = ({ sha, onClose, repository, handleCloseCommit }) => {
               },
             }}
           >
-            <Button onClick={handleReset}>
+            <Button onClick={closeModal}>
               <CloseRoundedIcon />
             </Button>
             <Button

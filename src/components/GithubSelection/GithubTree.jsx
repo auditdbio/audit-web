@@ -6,6 +6,7 @@ import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
 import { useSelector } from 'react-redux';
 import { useField } from 'formik';
 import { createBlopUrl } from '../../services/urls.js';
+import { github_filter } from '../../config.js';
 
 const GithubTreeNode = ({
   node,
@@ -25,12 +26,29 @@ const GithubTreeNode = ({
     setIsTreeOpen(!isTreeOpen);
   };
 
+  const endsWithAny = (str, suffixes) => {
+    return suffixes.some(suffix => str.endsWith(suffix));
+  };
+
   const isAllChecked = useMemo(() => {
     const checkIfAllSelected = currentNode => {
       if (currentNode.type === 'tree') {
         if (currentNode.tree.length === 0) return false;
+        let newData = {};
+        if (
+          currentNode.tree.every(el => !endsWithAny(el.name, github_filter))
+        ) {
+          newData = currentNode;
+        } else {
+          newData = {
+            ...currentNode,
+            tree: currentNode.tree.filter(el =>
+              endsWithAny(el.name, github_filter),
+            ),
+          };
+        }
 
-        return currentNode.tree.every(childNode => {
+        return newData.tree.every(childNode => {
           if (childNode.type === 'blob') {
             const blobUrl = createBlopUrl(repoOwner, sha, `${childNode.path}`);
             return (
@@ -87,6 +105,9 @@ const GithubTreeNode = ({
         sx={[
           { display: 'flex', alignItems: 'center', gap: '5px' },
           node.type !== 'tree' && checkSelected() ? selectedSx : itemsSx,
+          node.type === 'blob' && !endsWithAny(node.name, github_filter)
+            ? filterItemSx
+            : itemsSx,
         ]}
       >
         {node.type === 'tree' ? (
@@ -107,12 +128,38 @@ const GithubTreeNode = ({
         )}
         {isTree ? (
           isTreeOpen ? (
-            <FolderOpenIcon color={'primary'} />
+            <FolderOpenIcon
+              color={
+                node.tree.every(
+                  el =>
+                    !endsWithAny(el.name, github_filter) ||
+                    !node.name.includes('.'),
+                )
+                  ? 'disabled'
+                  : 'primary'
+              }
+            />
           ) : (
-            <FolderIcon color={'primary'} />
+            <FolderIcon
+              color={
+                node.tree.every(
+                  el =>
+                    !endsWithAny(el.name, github_filter) ||
+                    !node.name.includes('.'),
+                )
+                  ? 'disabled'
+                  : 'primary'
+              }
+            />
           )
         ) : (
-          <InsertDriveFileIcon color={'secondary'} />
+          <InsertDriveFileIcon
+            color={
+              !endsWithAny(node.name, github_filter) || !node.name.includes('.')
+                ? 'disabled'
+                : 'secondary'
+            }
+          />
         )}
         <Typography
           className={isTree ? 'folder' : 'file'}
@@ -181,9 +228,16 @@ const ulStyle = ({ inner }) => ({
 });
 
 const selectedSx = theme => ({
-  border: `1px solid ${theme.palette.primary.main}`,
+  // border: `1px solid ${theme.palette.primary.main}`,
   backgroundColor: '#efefefa6',
   borderRadius: '5px',
+});
+
+const filterItemSx = theme => ({
+  borderRadius: '5px',
+  '& p': {
+    color: 'grey',
+  },
 });
 
 const itemsSx = {
