@@ -93,6 +93,7 @@ const ChatList = ({ chatList, chatListIsOpen, setChatListIsOpen }) => {
                     chat={chat}
                     user={user}
                     setListIsOpen={setChatListIsOpen}
+                    setSearch={setSearch}
                   />
                 ))
             : !search && (
@@ -104,7 +105,11 @@ const ChatList = ({ chatList, chatListIsOpen, setChatListIsOpen }) => {
               .filter(
                 auditor =>
                   !chatList.some(chat =>
-                    chat.members.some(member => member.id === auditor.user_id),
+                    chat.members.some(
+                      member =>
+                        member.id === auditor.user_id &&
+                        member.role?.toLowerCase() === AUDITOR,
+                    ),
                   ),
               )
               .map(auditor => (
@@ -112,6 +117,7 @@ const ChatList = ({ chatList, chatListIsOpen, setChatListIsOpen }) => {
                   key={auditor.user_id}
                   user={user}
                   setListIsOpen={setChatListIsOpen}
+                  setSearch={setSearch}
                   isNew={true}
                   role={AUDITOR}
                   chat={{
@@ -128,7 +134,11 @@ const ChatList = ({ chatList, chatListIsOpen, setChatListIsOpen }) => {
               .filter(
                 customer =>
                   !chatList.some(chat =>
-                    chat.members.some(member => member.id === customer.user_id),
+                    chat.members.some(
+                      member =>
+                        member.id === customer.user_id &&
+                        member.role?.toLowerCase() === CUSTOMER,
+                    ),
                   ),
               )
               .map(customer => (
@@ -136,6 +146,7 @@ const ChatList = ({ chatList, chatListIsOpen, setChatListIsOpen }) => {
                   key={customer.user_id}
                   user={user}
                   setListIsOpen={setChatListIsOpen}
+                  setSearch={setSearch}
                   isNew={true}
                   role={CUSTOMER}
                   chat={{

@@ -43,7 +43,10 @@ import {
 } from '../redux/actions/websocketAction.js';
 import PublicProject from '../pages/PublicProject.jsx';
 import ChatPage from '../pages/ChatPage.jsx';
-import { getChatList } from '../redux/actions/chatActions.js';
+import {
+  getChatList,
+  getUnreadForDifferentRole,
+} from '../redux/actions/chatActions.js';
 import PublicConstructor from '../pages/PublicConstructor.jsx';
 import CustomSnackbar from '../components/custom/CustomSnackbar.jsx';
 import InvitePage from '../pages/Invite-page.jsx';
@@ -105,6 +108,7 @@ const AppRoutes = () => {
   useEffect(() => {
     if (isAuth()) {
       dispatch(getChatList(currentRole));
+      dispatch(getUnreadForDifferentRole());
     }
   }, [currentRole]);
 

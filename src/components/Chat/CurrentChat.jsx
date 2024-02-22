@@ -37,16 +37,22 @@ const CurrentChat = ({
   const [userLinkData, setUserLinkData] = useState({});
   const [unread, setUnread] = useState(0);
   const [interlocutorUnread, setInterlocutorUnread] = useState(0);
+  const [chatId, setChatId] = useState(null);
 
   const messageBoxRef = useRef();
   const newMessagesTextRef = useRef();
 
   useEffect(() => {
-    if (currentChat?.chatId && !currentChat?.isNew) {
+    if (
+      currentChat?.chatId &&
+      !currentChat?.isNew &&
+      currentChat?.chatId !== chatId
+    ) {
       setDisplayedMessages(20);
+      setChatId(currentChat?.chatId);
       dispatch(getChatMessages(currentChat.chatId, user.id));
     }
-  }, [currentChat]);
+  }, [currentChat, chatId]);
 
   useEffect(() => {
     if (currentChat?.chatId && id !== currentChat?.chatId) {
@@ -80,7 +86,11 @@ const CurrentChat = ({
   useEffect(() => {
     const chat = chatList.find(chat => chat.id === currentChat?.chatId);
     const interlocutor = chat?.members?.find(member => member.id !== user.id);
-    setUserLinkData({ id: interlocutor?.id, role: interlocutor?.role });
+    if (!interlocutor) {
+      setUserLinkData({ id, role: currentChat?.role });
+    } else {
+      setUserLinkData({ id: interlocutor?.id, role: interlocutor?.role });
+    }
 
     setUnread(
       currentChat?.unread?.find(member => member.id === user.id)?.unread || 0,
@@ -159,25 +169,24 @@ const CurrentChat = ({
             <MenuIcon fontSize="large" />
           </IconButton>
 
-          <RouterLink
-            to={`/user/${userLinkData.id}/${userLinkData.role}`}
-            style={userLinkData.id ? null : disabledLink}
-          >
-            <Avatar
-              src={
-                currentChat?.avatar
-                  ? `${ASSET_URL}/${currentChat.avatar}`
-                  : null
-              }
-              sx={avatarStyle}
-              alt="User photo"
-            />
+          <RouterLink to={`/user/${userLinkData.id}/${userLinkData.role}`}>
+            <Box sx={avatarWrapper(currentChat?.role)}>
+              <Avatar
+                src={
+                  currentChat?.avatar
+                    ? `${ASSET_URL}/${currentChat.avatar}`
+                    : null
+                }
+                sx={avatarStyle}
+                alt="User photo"
+              />
+            </Box>
           </RouterLink>
           <Box sx={userInfo}>
             <Link
               component={RouterLink}
               to={`/user/${userLinkData.id}/${userLinkData.role}`}
-              sx={[userNameSx, userLinkData.id ? null : disabledLink]}
+              sx={userNameSx}
               {...addTestsLabel('profile-link')}
             >
               {currentChat?.name}
@@ -207,6 +216,10 @@ const CurrentChat = ({
             chatMessages
               .slice(...getDisplayedMessages())
               .map((msg, idx, ar) => {
+                const date = new Date(msg?.time / 1000).toDateString();
+                const prevMsgDate = new Date(
+                  ar[idx - 1]?.time / 1000,
+                ).toDateString();
                 const unreadLabel = !!unread && ar.length - unread === idx;
                 const isInterlocutorRead = idx < ar.length - interlocutorUnread;
                 return (
@@ -214,6 +227,9 @@ const CurrentChat = ({
                     key={msg.id}
                     ref={unreadLabel ? newMessagesTextRef : null}
                   >
+                    {date !== prevMsgDate && (
+                      <Box sx={msgDateSx}>{date.replace(/[^ ]+/, '')}</Box>
+                    )}
                     {unreadLabel && <Box sx={newMessagesSx}>New messages:</Box>}
                     <Message
                       user={user}
@@ -257,6 +273,8 @@ const CurrentChat = ({
 
 export default CurrentChat;
 
+const yearNow = new Date().getFullYear();
+
 const wrapper = theme => ({
   width: '70%',
   display: 'flex',
@@ -294,10 +312,17 @@ const menuButtonSx = theme => ({
   },
 });
 
-const avatarStyle = theme => ({
+const avatarWrapper = role => ({
   width: '60px',
   height: '60px',
   mr: '30px',
+  padding: '2px',
+  borderRadius: '50%',
+  border: `4px solid ${
+    role?.toLowerCase() === AUDITOR
+      ? theme.palette.secondary.main
+      : theme.palette.primary.main
+  }`,
   [theme.breakpoints.down('sm')]: {
     width: '50px',
     height: '50px',
@@ -314,6 +339,11 @@ const avatarStyle = theme => ({
   },
 });
 
+const avatarStyle = {
+  width: '100%',
+  height: '100%',
+};
+
 const userInfo = {
   flexGrow: 1,
   display: 'flex',
@@ -324,7 +354,7 @@ const userInfo = {
 const userNameSx = theme => ({
   display: '-webkit-box',
   alignSelf: 'flex-start',
-  fontSize: '26px',
+  fontSize: '24px',
   fontWeight: 600,
   textDecoration: 'none',
   color: 'black',
@@ -412,6 +442,15 @@ const showMoreSx = {
   transform: 'translateX(-50%)',
 };
 
+const msgDateSx = theme => ({
+  fontSize: '14px',
+  textAlign: 'center',
+  mb: '10px',
+  [theme.breakpoints.down('xs')]: {
+    fontSize: '12px',
+  },
+});
+
 const newMessagesSx = {
   fontSize: '14px',
   fontWeight: 500,
@@ -440,7 +479,3 @@ const sendButton = theme => ({
     padding: '10px 20px',
   },
 });
-
-const disabledLink = {
-  pointerEvents: 'none',
-};

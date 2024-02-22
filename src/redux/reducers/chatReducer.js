@@ -5,6 +5,8 @@ import {
   CHAT_NEW_MESSAGE,
   CHAT_SEND_FIRST_MESSAGE,
   CHAT_SET_CURRENT,
+  CHAT_SET_ERROR,
+  CHAT_UPDATE_DIFFERENT_ROLE_UNREAD,
   CHAT_UPDATE_READ,
   CHAT_UPDATE_TOTAL_UNREAD,
 } from '../actions/types.js';
@@ -14,6 +16,8 @@ const initialState = {
   chatMessages: [],
   currentChat: null,
   unreadMessages: 0,
+  differentRoleUnreadMessages: 0,
+  error: null,
 };
 
 export const chatReducer = (state = initialState, action) => {
@@ -43,6 +47,11 @@ export const chatReducer = (state = initialState, action) => {
         ...state,
         unreadMessages: action.payload,
       };
+    case CHAT_UPDATE_DIFFERENT_ROLE_UNREAD:
+      return {
+        ...state,
+        differentRoleUnreadMessages: action.payload,
+      };
     case CHAT_GET_MESSAGES:
       return { ...state, chatMessages: action.payload };
     case CHAT_NEW_MESSAGE:
@@ -69,6 +78,8 @@ export const chatReducer = (state = initialState, action) => {
       };
     case CHAT_CLOSE_CURRENT_CHAT:
       return { ...state, chatMessages: [], currentChat: null };
+    case CHAT_SET_ERROR:
+      return { ...state, error: action.payload };
     default:
       return state;
   }
