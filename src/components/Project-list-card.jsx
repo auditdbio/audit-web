@@ -57,7 +57,7 @@ const ProjectListCard = ({ project }) => {
           height: '100%',
         }}
       >
-        <Typography>${project.price}</Typography>
+        {project.price > 0 && <Typography>${project.price}</Typography>}
         <Button
           color="secondary"
           size="small"

@@ -45,7 +45,8 @@ const InvitePage = () => {
           validateOnBlur={false}
           validateOnChange={false}
           onSubmit={values => {
-            dispatch(signUp(values));
+            const newValues = { ...values, secret };
+            dispatch(signUp(newValues));
           }}
         >
           {({ handleSubmit }) => (

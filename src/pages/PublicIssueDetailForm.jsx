@@ -77,11 +77,9 @@ const PublicIssueDetailsForm = ({ issue = null, editMode = false, saved }) => {
       //   issue?.feedback,
       // );
       setIsEditName(false);
-
       setIssuePrevValues({ ...values, status: '' });
       const newValues = {
         ...prev,
-        // ...updatedValuesWithEvent,
         ...updatedValues,
         id: +issueId,
         auditId: +auditId,

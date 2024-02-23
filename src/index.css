@@ -36,6 +36,16 @@ a {
 	border: none!important;
 }
 
+@supports not selector(::-webkit-scrollbar) {
+	* {
+		/* IE */
+		scrollbar-base-color: #6a737d;
+		scrollbar-arrow-color: white;
+		/* Mozilla Firefox */
+		scrollbar-width: thin;
+		scrollbar-color: #6a737d transparent;
+	}
+}
 
 *::-webkit-scrollbar {
 	width: 14px;
@@ -55,16 +65,6 @@ a {
 
 *::-webkit-scrollbar-thumb:hover {
 	background: linear-gradient(180deg, #6a737d, #6a737d);
-}
-
-* {
-	/* Scrollbar */
-	/* IE */
-	scrollbar-base-color: #6a737d;
-	scrollbar-arrow-color: white;
-	/* Mozilla Firefox */
-	scrollbar-width: 14px;
-	scrollbar-color: #6a737d transparent;
 }
 
 .MuiDialog-container.MuiDialog-scrollPaper .MuiPaper-root.MuiPaper-elevation.MuiPaper-rounded {

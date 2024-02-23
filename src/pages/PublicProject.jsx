@@ -21,6 +21,8 @@ import {
 import CustomSnackbar from '../components/custom/CustomSnackbar.jsx';
 import OfferModal from '../components/modal/OfferModal.jsx';
 import { clearMessage } from '../redux/actions/auditAction.js';
+import { setCurrentChat } from '../redux/actions/chatActions.js';
+import ChatIcon from '../components/icons/ChatIcon.jsx';
 
 const PublicProject = () => {
   const dispatch = useDispatch();
@@ -33,6 +35,7 @@ const PublicProject = () => {
   const { currentProject: project } = useSelector(s => s.project);
   const { currentCustomer: customer } = useSelector(s => s.customer);
   const { error: notFound } = useSelector(s => s.notFound);
+  const { chatList } = useSelector(s => s.chat);
 
   const [message, setMessage] = useState(null);
   const [error, setError] = useState(null);
@@ -86,6 +89,30 @@ const PublicProject = () => {
     } else {
       navigate('/sign-in');
     }
+  };
+
+  const handleSendMessage = () => {
+    window.scrollTo(0, 0);
+    const existingChat = chatList.find(chat =>
+      chat.members?.find(
+        member =>
+          member.id === project?.customer_id &&
+          member.role?.toLowerCase() === CUSTOMER,
+      ),
+    );
+    const chatId = existingChat ? existingChat.id : project?.customer_id;
+    const members = [project?.customer_id, user.id];
+
+    dispatch(
+      setCurrentChat(chatId, {
+        role: CUSTOMER,
+        isNew: !existingChat,
+        userDataId: project?.customer_id,
+        members,
+      }),
+    );
+
+    navigate(`/chat/${project?.customer_id}`);
   };
 
   const handleCloseModal = () => {
@@ -242,17 +269,35 @@ const PublicProject = () => {
           })}
         </Box>
 
-        {user.id !== project.customer_id && (
+        <Box
+          sx={{
+            display: 'flex',
+            gap: '15px',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          {user.id !== project.customer_id && (
+            <Button
+              variant="contained"
+              color={user?.current_role === AUDITOR ? 'secondary' : 'primary'}
+              sx={buttonSx}
+              onClick={handleMakeOffer}
+              {...addTestsLabel('offer-button')}
+            >
+              Make Offer
+            </Button>
+          )}
           <Button
-            variant="contained"
-            color={user?.current_role === AUDITOR ? 'secondary' : 'primary'}
-            sx={buttonSx}
-            onClick={handleMakeOffer}
-            {...addTestsLabel('offer-button')}
+            variant="text"
+            // sx={[buttonSx, messageButton]}
+            onClick={handleSendMessage}
+            disabled={project?.customer_id === user.id}
+            {...addTestsLabel('message-button')}
           >
-            Make Offer
+            <ChatIcon />
           </Button>
-        )}
+        </Box>
       </Box>
     </Layout>
   );
@@ -425,7 +470,6 @@ const linkSx = {
 };
 
 const buttonSx = theme => ({
-  margin: '0 auto',
   display: 'block',
   textTransform: 'capitalize',
   fontWeight: 600,

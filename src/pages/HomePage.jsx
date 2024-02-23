@@ -14,7 +14,7 @@ const HomePage = () => {
     </Layout>
   );
 };
-//
+
 export default HomePage;
 
 const layout = {
