@@ -115,6 +115,7 @@ const Control = ({
             ...report,
             isPublic: true,
             issues: [...issuesArray],
+            status: 'Started',
           };
           if (auditor?.user_id) {
             await dispatch(savePublicReport(data));

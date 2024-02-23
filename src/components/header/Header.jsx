@@ -10,6 +10,7 @@ import AuthorizedOptions from './AuthorizedOptions.jsx';
 import UnauthorizedOptions from './UnauthorizedOptions.jsx';
 import { addTestsLabel, isAuth } from '../../lib/helper.js';
 import ChatLabel from '../Chat/ChatLabel.jsx';
+import theme from '../../styles/themes.js';
 
 const Header = () => {
   const matchXs = useMediaQuery(theme.breakpoints.down('xs'));
@@ -41,13 +42,13 @@ const Header = () => {
   );
 };
 
-const container = {
+const container = theme => ({
   maxWidth: '1512px',
   paddingTop: '20px',
   [theme.breakpoints.down('xs')]: {
     paddingTop: 0,
   },
-};
+});
 
 const wrapper = theme => ({
   width: '100%',
@@ -71,7 +72,7 @@ const linkStyle = {
   justifyContent: 'center',
 };
 
-const logoStyle = {
+const logoStyle = theme => ({
   height: '50px',
   width: '200px',
   marginY: 'auto',
@@ -90,6 +91,6 @@ const logoStyle = {
     height: '30px',
     width: '120px',
   },
-};
+});
 
 export default Header;
