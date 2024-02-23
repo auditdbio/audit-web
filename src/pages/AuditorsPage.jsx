@@ -99,7 +99,7 @@ const AuditorsPage = () => {
       <Box sx={wrapper}>
         <Box sx={headWrapper}>
           <Button
-            onClick={() => navigate(-1)}
+            onClick={() => navigate('/')}
             aria-label="Go back"
             {...addTestsLabel('go-back-button')}
           >
