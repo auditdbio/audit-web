@@ -27,6 +27,7 @@ import OfferModal from './modal/OfferModal.jsx';
 import ShareProjectButton from './custom/ShareProjectButton.jsx';
 import { setCurrentChat } from '../redux/actions/chatActions.js';
 import ChatIcon from './icons/ChatIcon.jsx';
+import ConfirmModal from './modal/ConfirmModal.jsx';
 
 const AuditRequestInfo = ({
   project,
@@ -39,6 +40,7 @@ const AuditRequestInfo = ({
   const navigate = useNavigate();
   const matchXs = useMediaQuery(theme.breakpoints.down('xs'));
   const [open, setOpen] = useState(false);
+  const [confirmDeclineOpen, setConfirmDeclineOpen] = useState(false);
   const { auditor } = useSelector(s => s.auditor);
   const { user } = useSelector(s => s.user);
   const { chatList } = useSelector(s => s.chat);
@@ -109,6 +111,11 @@ const AuditRequestInfo = ({
     );
     localStorage.setItem('path', window.location.pathname);
     navigate(`/chat/${project?.customer_id}`);
+  };
+
+  const handleDecline = () => {
+    setConfirmDeclineOpen(false);
+    dispatch(deleteAuditRequest(project.id));
   };
 
   return (
@@ -409,7 +416,7 @@ const AuditRequestInfo = ({
             if (isModal) {
               handleBack();
             } else {
-              dispatch(deleteAuditRequest(project.id));
+              setConfirmDeclineOpen(true);
             }
           }}
           {...addTestsLabel('project-modal_cancel-button')}
@@ -452,6 +459,12 @@ const AuditRequestInfo = ({
           handleClose={handleClose}
         />
       </Modal>
+
+      <ConfirmModal
+        isOpen={confirmDeclineOpen}
+        handleAgree={handleDecline}
+        handleDisagree={() => setConfirmDeclineOpen(false)}
+      />
     </CustomCard>
   );
 };

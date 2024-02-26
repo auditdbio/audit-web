@@ -28,12 +28,14 @@ import { addTestsLabel } from '../lib/helper.js';
 import CustomSnackbar from '../components/custom/CustomSnackbar.jsx';
 import { setCurrentChat } from '../redux/actions/chatActions.js';
 import ChatIcon from '../components/icons/ChatIcon.jsx';
+import ConfirmModal from '../components/modal/ConfirmModal.jsx';
 
 const AuditInfo = ({ audit, auditRequest, issues, confirmed }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [showFull, setShowFull] = useState(false);
   const [showReadMoreButton, setShowReadMoreButton] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const { successMessage, error } = useSelector(s => s.audits);
   const { user } = useSelector(s => s.user);
   const { chatList } = useSelector(s => s.chat);
@@ -286,7 +288,7 @@ const AuditInfo = ({ audit, auditRequest, issues, confirmed }) => {
               <Button
                 variant="contained"
                 color="secondary"
-                onClick={handleDecline}
+                onClick={() => setIsModalOpen(true)}
                 sx={buttonSx}
                 {...addTestsLabel('decline-button')}
               >
@@ -360,6 +362,12 @@ const AuditInfo = ({ audit, auditRequest, issues, confirmed }) => {
             )}
           {/*)}*/}
         </Box>
+
+        <ConfirmModal
+          isOpen={isModalOpen}
+          handleAgree={handleDecline}
+          handleDisagree={() => setIsModalOpen(false)}
+        />
       </CustomCard>
     </Layout>
   );
