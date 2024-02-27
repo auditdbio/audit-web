@@ -42,6 +42,7 @@ import { addTestsLabel } from '../lib/helper.js';
 import MenuItem from '@mui/material/MenuItem';
 import axios from 'axios';
 import GithubSelection from './GithubSelection/GithubSelection.jsx';
+import { getFilterData } from '../redux/actions/configAction.js';
 
 const CreateProjectCard = ({ projectInfo }) => {
   const navigate = useNavigate();
@@ -77,6 +78,10 @@ const CreateProjectCard = ({ projectInfo }) => {
       );
     }
   }, [auditReducer.auditRequests]);
+
+  useEffect(() => {
+    dispatch(getFilterData());
+  }, []);
 
   let editMode = !!projectInfo;
 

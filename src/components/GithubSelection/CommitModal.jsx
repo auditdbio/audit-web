@@ -8,7 +8,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getCommitData } from '../../redux/actions/githubAction.js';
 import GithubTree from './GithubTree.jsx';
 import { createBlopUrl } from '../../services/urls.js';
-
+const reg = /[a-z]/i;
 const CommitModal = ({ sha, onClose, repository, handleCloseCommit }) => {
   const [field, _, fieldHelper] = useField('scope');
   const data = useSelector(state => state.github.commit);
@@ -17,6 +17,7 @@ const CommitModal = ({ sha, onClose, repository, handleCloseCommit }) => {
   const [selected, setSelected] = useState([]);
   const [deletedFromField, setDeletedFromField] = useState([]);
   const dispatch = useDispatch();
+  const [filterGithub, setFilterGithub] = useState([]);
   const [newObj, setNewObj] = useState(null);
 
   useEffect(() => {
@@ -239,6 +240,7 @@ const CommitModal = ({ sha, onClose, repository, handleCloseCommit }) => {
               <GithubTree
                 data={newObj}
                 selected={selected}
+                filterGithub={filterGithub}
                 deletedFromField={deletedFromField}
                 setSelected={setSelected}
                 handleAddRemove={handleAddRemove}

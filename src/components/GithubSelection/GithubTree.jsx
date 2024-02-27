@@ -6,7 +6,6 @@ import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
 import { useSelector } from 'react-redux';
 import { useField } from 'formik';
 import { createBlopUrl } from '../../services/urls.js';
-import { github_filter } from '../../config.js';
 
 const GithubTreeNode = ({
   node,
@@ -21,13 +20,27 @@ const GithubTreeNode = ({
   const [isTreeOpen, setIsTreeOpen] = React.useState(true);
   const isTree = node.type === 'tree';
   const [isIndeterminate, setIsIndeterminate] = useState(false);
+  const { filterConfig } = useSelector(s => s.filter);
+  const [includes, setIncludes] = useState(false);
 
   const handleToggle = () => {
     setIsTreeOpen(!isTreeOpen);
   };
 
   const endsWithAny = (str, suffixes) => {
-    return suffixes.some(suffix => str.endsWith(suffix));
+    return suffixes.some(suffix => {
+      if (suffix.startsWith('*') && suffix.endsWith('*')) {
+        return str.includes(suffix.slice(1, -1));
+      } else if (suffix.startsWith('*')) {
+        return str.endsWith(suffix.slice(1));
+      } else if (suffix.endsWith('*')) {
+        return str.endsWith(suffix.slice(0, -1));
+      } else if (!str.includes('.')) {
+        return true;
+      } else {
+        return str.endsWith(suffix);
+      }
+    });
   };
 
   const isAllChecked = useMemo(() => {
@@ -35,13 +48,13 @@ const GithubTreeNode = ({
       if (currentNode.type === 'tree') {
         if (currentNode.tree.length === 0) return false;
         let newData = {};
-        if (currentNode.tree.every(el => endsWithAny(el.name, github_filter))) {
+        if (currentNode.tree.every(el => endsWithAny(el.name, filterConfig))) {
           newData = currentNode;
         } else {
           newData = {
             ...currentNode,
             tree: currentNode.tree.filter(
-              el => !endsWithAny(el.name, github_filter),
+              el => !endsWithAny(el.name, filterConfig),
             ),
           };
         }
@@ -64,7 +77,7 @@ const GithubTreeNode = ({
     };
     return checkIfAllSelected(node);
   }, [selected, field.value, deletedFromField]);
-
+  //
   useEffect(() => {
     const checkIfIndeterminate = currentNode => {
       if (currentNode.type === 'tree') {
@@ -86,7 +99,7 @@ const GithubTreeNode = ({
 
     setIsIndeterminate(checkIfIndeterminate(node));
   }, [selected, field.value, deletedFromField]);
-
+  //
   const checkSelected = () => {
     const blobUrl = createBlopUrl(repoOwner, sha, node.path);
     const callback = item => item === blobUrl;
@@ -97,19 +110,40 @@ const GithubTreeNode = ({
     );
   };
 
+  useEffect(() => {
+    const checkInnerFileFormatRecursive = (currentIndex, currentNode) => {
+      if (currentNode.type === 'tree') {
+        if (currentNode.tree.length === 0) return false;
+        return currentNode.tree.some((el, index) => {
+          if (el.type === 'blob') {
+            return !endsWithAny(el.name, filterConfig);
+          } else if (el.type === 'tree' && index !== currentIndex) {
+            return checkInnerFileFormatRecursive(index, el);
+          }
+          return false;
+        });
+      } else {
+        return false;
+      }
+    };
+    if (node.type === 'tree') {
+      setIncludes(checkInnerFileFormatRecursive(-1, node));
+    }
+  }, []);
+
   return (
     <Box>
       <Box
         sx={[
           { display: 'flex', alignItems: 'center', gap: '5px' },
           node.type !== 'tree' && checkSelected() ? selectedSx : itemsSx,
-          node.type === 'blob' && endsWithAny(node.name, github_filter)
+          node.type === 'blob' && endsWithAny(node.name, filterConfig)
             ? filterItemSx
             : itemsSx,
-          node.type === 'tree' &&
-          node.tree.some(el => endsWithAny(el.name, github_filter))
-            ? filterItemSx
-            : itemsSx,
+          // node.type === 'tree' &&
+          // node.tree.some(el => !endsWithAny(el.name, filterConfig))
+          //   ? filterItemSx
+          //   : itemsSx,
         ]}
       >
         {node.type === 'tree' ? (
@@ -130,34 +164,14 @@ const GithubTreeNode = ({
         )}
         {isTree ? (
           isTreeOpen ? (
-            <FolderOpenIcon
-              color={
-                node.tree.some(
-                  el =>
-                    !endsWithAny(el.name, github_filter) &&
-                    el.name.includes('.'),
-                )
-                  ? 'primary'
-                  : 'disabled'
-              }
-            />
+            <FolderOpenIcon color={includes ? 'primary' : 'disabled'} />
           ) : (
-            <FolderIcon
-              color={
-                node.tree.some(
-                  el =>
-                    !endsWithAny(el.name, github_filter) &&
-                    el.name.includes('.'),
-                )
-                  ? 'primary'
-                  : 'disabled'
-              }
-            />
+            <FolderIcon color={includes ? 'primary' : 'disabled'} />
           )
         ) : (
           <InsertDriveFileIcon
             color={
-              endsWithAny(node.name, github_filter) || !node.name.includes('.')
+              endsWithAny(node.name, filterConfig) || !node.name.includes('.')
                 ? 'disabled'
                 : 'secondary'
             }
@@ -200,6 +214,7 @@ const GithubTree = ({
   deletedFromField,
   handleSelectAll,
   handleRemoveAll,
+  filterGithub,
 }) => {
   return (
     <ul style={ulStyle({ inner: false })}>
@@ -209,6 +224,7 @@ const GithubTree = ({
             node={node}
             handleAddRemove={handleAddRemove}
             selected={selected}
+            filterGithub={filterGithub}
             deletedFromField={deletedFromField}
             handleSelectAll={handleSelectAll}
             handleRemoveAll={handleRemoveAll}
