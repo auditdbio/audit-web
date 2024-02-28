@@ -27,6 +27,8 @@ import {
 import * as Yup from 'yup';
 import CustomSnackbar from './custom/CustomSnackbar.jsx';
 import ShareProfileButton from './custom/ShareProfileButton.jsx';
+import { setCurrentChat } from '../redux/actions/chatActions.js';
+import ChatIcon from './icons/ChatIcon.jsx';
 
 export default function AuditorModal({
   open,
@@ -40,7 +42,8 @@ export default function AuditorModal({
 }) {
   const navigate = useNavigate();
   const customerReducer = useSelector(state => state.customer.customer);
-  const user = useSelector(s => s.user.user);
+  const { user } = useSelector(s => s.user);
+  const { chatList } = useSelector(s => s.chat);
   const [mode, setMode] = useState('info');
   const [message, setMessage] = useState('');
   const myProjects = useSelector(state => state.project.myProjects);
@@ -76,6 +79,32 @@ export default function AuditorModal({
     } else {
       navigate('/sign-in');
     }
+  };
+
+  const handleSendMessage = () => {
+    window.scrollTo(0, 0);
+
+    const existingChat = chatList.find(chat =>
+      chat.members?.find(
+        member =>
+          member.id === auditor?.user_id &&
+          member.role?.toLowerCase() === AUDITOR,
+      ),
+    );
+    const chatId = existingChat ? existingChat.id : auditor?.user_id;
+    const members = [auditor?.user_id, user.id];
+
+    dispatch(
+      setCurrentChat(chatId, {
+        name: auditor.first_name,
+        avatar: auditor.avatar,
+        role: AUDITOR,
+        isNew: !existingChat,
+        members,
+      }),
+    );
+    localStorage.setItem('path', window.location.pathname);
+    navigate(`/chat/${existingChat ? existingChat.id : auditor?.user_id}`);
   };
 
   useEffect(() => {
@@ -144,15 +173,18 @@ export default function AuditorModal({
                       </Tooltip>
                     </Box>
                   </Box>
-                  <Box sx={infoWrapper}>
-                    <span>Price:</span>
-                    {auditor.price_range.from && (
-                      <Typography>
-                        ${auditor.price_range.from} - {auditor.price_range.to}{' '}
-                        per line
-                      </Typography>
-                    )}
-                  </Box>
+                  {(auditor.price_range.from > 0 ||
+                    auditor.price_range.to > 0) && (
+                    <Box sx={infoWrapper}>
+                      <span>Price:</span>
+                      {auditor.price_range.from && (
+                        <Typography>
+                          ${auditor.price_range.from} - {auditor.price_range.to}{' '}
+                          per line
+                        </Typography>
+                      )}
+                    </Box>
+                  )}
                   <Box sx={infoWrapper}>
                     <span>E-mail</span>
                     <Box sx={{ display: 'grid' }}>
@@ -186,24 +218,37 @@ export default function AuditorModal({
               </Box>
             </Box>
             <Box sx={fieldButtonContainer}>
-              <Button
-                variant={budge ? 'outlined' : 'contained'}
-                color={'secondary'}
-                sx={findButton}
-                onClick={handleClose}
-                {...addTestsLabel('auditor-modal_back-button')}
-              >
-                Back
-              </Button>
-              <Button
-                variant={budge ? 'outlined' : 'contained'}
-                color={'primary'}
-                sx={findButton}
-                onClick={handleInvite}
-                {...addTestsLabel('auditor-modal_invite-button')}
-              >
-                Invite to project
-              </Button>
+              <Box sx={{ mb: '10px', display: 'flex' }}>
+                <Button
+                  variant={budge ? 'outlined' : 'contained'}
+                  color="secondary"
+                  sx={findButton}
+                  onClick={handleClose}
+                  {...addTestsLabel('auditor-modal_back-button')}
+                >
+                  Back
+                </Button>
+                <Button
+                  variant={budge ? 'outlined' : 'contained'}
+                  color="primary"
+                  sx={findButton}
+                  onClick={handleInvite}
+                  {...addTestsLabel('auditor-modal_invite-button')}
+                >
+                  Invite to project
+                </Button>
+                {!budge && (
+                  <Button
+                    variant="text"
+                    // sx={[findButton, messageButton]}
+                    onClick={handleSendMessage}
+                    disabled={auditor?.user_id === user.id}
+                    {...addTestsLabel('message-button')}
+                  >
+                    <ChatIcon />
+                  </Button>
+                )}
+              </Box>
             </Box>
           </DialogContent>
         )}
@@ -390,29 +435,29 @@ const findButton = theme => ({
   fontSize: '18px',
   textTransform: 'unset',
   fontWeight: 600,
-  margin: '0 12px',
-  width: '180px',
+  mr: '20px',
+  width: '210px',
   borderRadius: '10px',
+  ':last-child': { mr: 0 },
   [theme.breakpoints.down('md')]: {
-    width: '210px',
     padding: '11px 0',
   },
   [theme.breakpoints.down('sm')]: {
     width: '170px',
   },
   [theme.breakpoints.down('xs')]: {
-    width: '134px',
+    width: '110px',
     height: '50px',
     fontSize: '12px',
-    margin: '0 6px',
+    mr: '6px',
   },
 });
 
-const infoInnerStyle = theme => ({
+const infoInnerStyle = {
   display: 'flex',
   flexDirection: 'column',
   gap: '16px',
-});
+};
 
 const infoStyle = theme => ({
   display: 'flex',
@@ -518,9 +563,12 @@ const backButton = {
 
 const fieldButtonContainer = theme => ({
   display: 'flex',
-  gap: '10px',
+  flexDirection: 'column',
+  mb: '10px',
   [theme.breakpoints.down('xs')]: {
-    gap: '5px',
+    '& svg': {
+      width: '50px',
+    },
   },
 });
 

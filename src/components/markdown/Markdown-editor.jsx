@@ -44,6 +44,7 @@ const MarkdownEditor = ({
   setFieldTouched,
   handleBlur,
   isPublic,
+  fastSave,
 }) => {
   const [markdownField, meta, markdownHelper] = useField(name);
   const [markdown, setMarkdown] = useState('');
@@ -63,6 +64,12 @@ const MarkdownEditor = ({
       handleBlur();
     }
   }, [markdownField.value, meta.touched]);
+
+  useEffect(() => {
+    if (markdown && fastSave) {
+      markdownHelper.setValue(markdown);
+    }
+  }, [markdown]);
 
   useEffect(() => {
     if (setMdRef) {

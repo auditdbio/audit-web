@@ -26,6 +26,9 @@ import {
   changeRolePublicCustomerNoRedirect,
   getPublicProfile,
 } from '../redux/actions/userAction.js';
+import { setCurrentChat } from '../redux/actions/chatActions.js';
+import ChatIcon from '../components/icons/ChatIcon.jsx';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack.js';
 import LinkedinIcon from '../components/icons/LinkedinIcon.jsx';
 import GitcoinIcon from '../components/icons/GitcoinIcon.jsx';
 import XTwitterLogo from '../components/icons/XTwitter-logo.jsx';
@@ -44,7 +47,8 @@ const PublicProfile = () => {
   const [message, setMessage] = useState(null);
   const customerReducer = useSelector(state => state.customer.customer);
   const myProjects = useSelector(state => state.project.myProjects);
-  const user = useSelector(state => state.user.user);
+  const { user } = useSelector(state => state.user);
+  const { chatList } = useSelector(s => s.chat);
   const publicUser = useSelector(state => state.user.publicUser);
 
   const handleError = () => {
@@ -91,6 +95,30 @@ const PublicProfile = () => {
     }
   };
 
+  const handleSendMessage = data => {
+    const existingChat = chatList.find(chat =>
+      chat.members?.find(
+        member =>
+          member.id === data?.user_id &&
+          member.role?.toLowerCase() === role.toLowerCase(),
+      ),
+    );
+    const chatId = existingChat ? existingChat.id : data?.user_id;
+    const members = [data?.user_id, user.id];
+
+    dispatch(
+      setCurrentChat(chatId, {
+        name: data.first_name,
+        avatar: data.avatar,
+        role,
+        isNew: !existingChat,
+        members,
+      }),
+    );
+    localStorage.setItem('path', window.location.pathname);
+    navigate(`/chat/${chatId}`);
+  };
+
   useEffect(() => {
     if (role.toLowerCase() === AUDITOR) {
       dispatch(getCurrentAuditor(id));
@@ -99,6 +127,17 @@ const PublicProfile = () => {
     }
     dispatch(getPublicProfile(id, role));
   }, [id, role]);
+
+  useEffect(() => {
+    const handleBeforeUnload = () => {
+      localStorage.removeItem('go-back');
+    };
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => {
+      localStorage.removeItem('go-back');
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
+  }, [navigate]);
 
   const data = useMemo(() => {
     if (role.toLowerCase() === AUDITOR) {
@@ -141,6 +180,17 @@ const PublicProfile = () => {
               : theme.palette.primary.main,
           )}
         >
+          {localStorage.getItem('go-back') && (
+            <Button
+              variant="text"
+              color={role.toLowerCase() === AUDITOR ? 'secondary' : 'primary'}
+              sx={goBackSx}
+              onClick={() => navigate(-1)}
+            >
+              <ArrowBackIcon />
+            </Button>
+          )}
+
           {data.kind === 'badge' && (
             <Typography sx={badgeTitle}>Not in base AuditDB</Typography>
           )}
@@ -322,17 +372,38 @@ const PublicProfile = () => {
               })}
           </Box>
           {/*{matchXs && <MobileTagsList data={data.tags} />}*/}
-          {role.toLowerCase() === AUDITOR && (
-            <Button
-              variant={data.kind === 'badge' ? 'outlined' : 'contained'}
-              sx={buttonSx}
-              color={'secondary'}
-              onClick={handleInvite}
-              {...addTestsLabel('invite-button')}
-            >
-              Invite to project
-            </Button>
-          )}
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'center',
+              gap: '15px',
+              alignItems: 'center',
+            }}
+          >
+            {role.toLowerCase() === AUDITOR && (
+              <Button
+                variant={data.kind === 'badge' ? 'outlined' : 'contained'}
+                sx={buttonSx}
+                color={'secondary'}
+                onClick={handleInvite}
+                {...addTestsLabel('invite-button')}
+              >
+                Invite to project
+              </Button>
+            )}
+            {data.kind !== 'badge' && (
+              <Button
+                variant="text"
+                color={role === AUDITOR ? 'secondary' : 'primary'}
+                sx={buttonSx}
+                disabled={id === user.id}
+                onClick={() => handleSendMessage(data)}
+                {...addTestsLabel('message-button')}
+              >
+                <ChatIcon />
+              </Button>
+            )}
+          </Box>
         </Box>
       </Layout>
     );
@@ -342,6 +413,7 @@ const PublicProfile = () => {
 export default PublicProfile;
 
 const wrapper = (theme, color) => ({
+  position: 'relative',
   width: '100%',
   minHeight: '520px',
   display: 'flex',
@@ -372,6 +444,12 @@ const wrapper = (theme, color) => ({
     },
   },
 });
+
+const goBackSx = {
+  position: 'absolute',
+  top: '20px',
+  left: '30px',
+};
 
 const badgeTitle = theme => ({
   textAlign: 'center',
@@ -461,23 +539,16 @@ const contentWrapper = theme => ({
 });
 
 const buttonSx = theme => ({
-  margin: '0 auto',
   display: 'block',
   textTransform: 'capitalize',
   fontWeight: 600,
   fontSize: '18px',
   padding: '9px 50px',
   borderRadius: '10px',
+  ':last-child': { mb: 0 },
   [theme.breakpoints.down('xs')]: {
     padding: '9px 20px',
     fontSize: '12px',
-  },
-});
-
-const submitAuditor = theme => ({
-  backgroundColor: theme.palette.secondary.main,
-  '&:hover': {
-    backgroundColor: '#450e5d',
   },
 });
 
