@@ -21,6 +21,7 @@ import AuditUpload from '../components/forms/audit-upload/index.jsx';
 import Loader from '../components/Loader.jsx';
 import {
   CLEAR_AUDIT,
+  CUSTOMER,
   RESOLVED,
   SUBMITED,
   WAITING_FOR_AUDITS,
@@ -34,6 +35,8 @@ import CustomSnackbar from '../components/custom/CustomSnackbar.jsx';
 import { getIssues } from '../redux/actions/issueAction.js';
 import NotFound from './Not-Found.jsx';
 import { FIXED, NOT_FIXED } from '../components/issuesPage/constants.js';
+import { setCurrentChat } from '../redux/actions/chatActions.js';
+import ChatIcon from '../components/icons/ChatIcon.jsx';
 
 const AuditOffer = () => {
   const { auditId } = useParams();
@@ -42,7 +45,9 @@ const AuditOffer = () => {
   const role = useSelector(s => s.user?.user?.current_role);
   const { successMessage, error } = useSelector(s => s.issues);
   const { issues, issuesAuditId } = useSelector(s => s.issues);
-  const audit = useSelector(s => s.audits.audit);
+  const { audit } = useSelector(s => s.audits);
+  const { user } = useSelector(s => s.user);
+  const { chatList } = useSelector(s => s.chat);
   const notFound = useSelector(s => s.notFound.error);
 
   const [auditDBWorkflow, setAuditDBWorkflow] = useState(true);
@@ -80,6 +85,31 @@ const AuditOffer = () => {
       setAuditDBWorkflow(false);
     }
   }, [audit, issues]);
+
+  const handleSendMessage = () => {
+    window.scrollTo(0, 0);
+
+    const existingChat = chatList.find(chat =>
+      chat.members?.find(
+        member =>
+          member.id === audit?.customer_id &&
+          member.role?.toLowerCase() === CUSTOMER,
+      ),
+    );
+    const chatId = existingChat ? existingChat.id : audit?.customer_id;
+    const members = [audit?.customer_id, user.id];
+
+    dispatch(
+      setCurrentChat(chatId, {
+        role: CUSTOMER,
+        isNew: !existingChat,
+        userDataId: audit?.customer_id,
+        members,
+      }),
+    );
+    localStorage.setItem('path', window.location.pathname);
+    navigate(`/chat/${audit?.customer_id}`);
+  };
 
   if (!audit?.id && !notFound) {
     return (
@@ -274,6 +304,19 @@ const AuditOffer = () => {
                         ))}
                       </Box>
 
+                      <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+                        <Button
+                          variant="text"
+                          color="secondary"
+                          sx={[buttonSx, sendMessageButton]}
+                          onClick={handleSendMessage}
+                          disabled={audit?.customer_id === user.id}
+                          {...addTestsLabel('message-button')}
+                        >
+                          <ChatIcon />
+                        </Button>
+                      </Box>
+
                       {audit?.status?.toLowerCase() ===
                       WAITING_FOR_AUDITS.toLowerCase() ? (
                         <Box
@@ -286,13 +329,9 @@ const AuditOffer = () => {
                           }}
                         >
                           <Button
-                            sx={[
-                              workflowButton(auditDBWorkflow),
-                              {
-                                borderRadius: '10px',
-                                width: '180px',
-                              },
-                            ]}
+                            sx={buttonSx}
+                            variant="contained"
+                            color="secondary"
                             onClick={() => dispatch(startAudit(audit, true))}
                           >
                             Start audit
@@ -600,6 +639,15 @@ const buttonSx = theme => ({
   },
   [theme.breakpoints.down('xs')]: {
     margin: '0 6px',
+    padding: '12px 0',
+    fontSize: '14px',
+  },
+});
+
+const sendMessageButton = theme => ({
+  mb: '20px',
+  [theme.breakpoints.down('xs')]: {
+    mb: '15px',
   },
 });
 

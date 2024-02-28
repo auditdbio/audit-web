@@ -329,7 +329,6 @@ export const getPublicReport = (data, { generate }) => {
       });
   };
 };
-//
 
 export const createPublicReport = data => {
   return dispatch => {

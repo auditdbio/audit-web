@@ -46,7 +46,7 @@ const ChangePasswordFormik = () => {
             password: '',
             confirm_password: '',
           }}
-          validationSchema={validationSchema}
+          validationSchema={validationSchema(user?.is_passwordless)}
           validateOnBlur={false}
           validateOnChange={false}
           onSubmit={values => {
@@ -58,10 +58,12 @@ const ChangePasswordFormik = () => {
               <Form onSubmit={handleSubmit}>
                 <Box sx={wrapper}>
                   <Box sx={fieldsWrapper}>
-                    <PasswordField
-                      name="current_password"
-                      label="Current password"
-                    />
+                    {!user?.is_passwordless && (
+                      <PasswordField
+                        name="current_password"
+                        label="Current password"
+                      />
+                    )}
                     <PasswordField name="password" label="New password" />
                     <PasswordField
                       name="confirm_password"
@@ -85,7 +87,7 @@ const ChangePasswordFormik = () => {
                     {...addTestsLabel('change-password-button')}
                   >
                     <EditIcon />
-                    Change password
+                    {user?.is_passwordless ? 'Set password' : 'Change password'}
                   </Button>
                 </Box>
               </Form>
@@ -97,7 +99,7 @@ const ChangePasswordFormik = () => {
           color={user?.current_role === AUDITOR ? 'secondary' : 'primary'}
           onClick={() => setEditMode(true)}
         >
-          Change password
+          {user?.is_passwordless ? 'Set password' : 'Change password'}
         </Button>
       )}
     </Box>
@@ -106,13 +108,16 @@ const ChangePasswordFormik = () => {
 
 export default ChangePasswordFormik;
 
-const validationSchema = Yup.object().shape({
-  current_password: Yup.string().required('Required'),
-  password: Yup.string().min(6, 'Password too Short!').required('Required'),
-  confirm_password: Yup.string()
-    .required()
-    .oneOf([Yup.ref('password'), null], 'Passwords must match'),
-});
+const validationSchema = isPassworless =>
+  Yup.object().shape({
+    current_password: isPassworless
+      ? Yup.string()
+      : Yup.string().required('Required'),
+    password: Yup.string().min(6, 'Password too Short!').required('Required'),
+    confirm_password: Yup.string()
+      .required()
+      .oneOf([Yup.ref('password'), null], 'Passwords must match'),
+  });
 
 const wrapper = theme => ({
   width: '450px',

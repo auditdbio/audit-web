@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Box, Button, Tooltip, Typography } from '@mui/material';
 import Currency from './icons/Currency.jsx';
 import Star from './icons/Star.jsx';
@@ -8,10 +8,18 @@ import { useDispatch } from 'react-redux';
 import { deleteAuditRequest } from '../redux/actions/auditAction.js';
 import dayjs from 'dayjs';
 import { addTestsLabel } from '../lib/helper.js';
+import ConfirmModal from './modal/ConfirmModal.jsx';
 
 const AuditRequestCard = ({ type, request }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleDecline = () => {
+    setIsModalOpen(false);
+    dispatch(deleteAuditRequest(request.id));
+  };
 
   return (
     <Box sx={cardWrapper}>
@@ -53,13 +61,19 @@ const AuditRequestCard = ({ type, request }) => {
         </Button>
         <Button
           sx={[actionButton, copyBtn]}
-          onClick={() => dispatch(deleteAuditRequest(request.id))}
+          onClick={() => setIsModalOpen(true)}
           variant={'contained'}
           {...addTestsLabel('audit-req_decline-button')}
         >
           Decline
         </Button>
       </Box>
+
+      <ConfirmModal
+        isOpen={isModalOpen}
+        handleAgree={handleDecline}
+        handleDisagree={() => setIsModalOpen(false)}
+      />
     </Box>
   );
 };

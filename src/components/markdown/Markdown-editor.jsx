@@ -8,6 +8,7 @@ import renderHTML from './renderHTML.jsx';
 import MarkdownInlineMath from './plugins/MarkdownInlineMath.jsx';
 import MarkdownMath from './plugins/MarkdownMath.jsx';
 import MarkdownCheckedList from './plugins/MarkdownCheckedList.jsx';
+import ImageUploadPlugin from './plugins/ImageUploadPlugin.jsx';
 
 const initialPlugins = [
   'header',
@@ -23,7 +24,7 @@ const initialPlugins = [
   'block-code-inline',
   'block-code-block',
   'table',
-  'image',
+  'image-upload',
   'link',
   'divider',
   'inline-math',
@@ -43,6 +44,7 @@ const MarkdownEditor = ({
   setFieldTouched,
   handleBlur,
   isPublic,
+  fastSave,
 }) => {
   const [markdownField, meta, markdownHelper] = useField(name);
   const [markdown, setMarkdown] = useState('');
@@ -52,6 +54,7 @@ const MarkdownEditor = ({
     MdEditor.use(MarkdownInlineMath);
     MdEditor.use(MarkdownMath);
     MdEditor.use(MarkdownCheckedList);
+    MdEditor.use(ImageUploadPlugin);
     plugins.forEach(plugin => MdEditor.use(plugin));
   }, []);
 
@@ -61,6 +64,12 @@ const MarkdownEditor = ({
       handleBlur();
     }
   }, [markdownField.value, meta.touched]);
+
+  useEffect(() => {
+    if (markdown && fastSave) {
+      markdownHelper.setValue(markdown);
+    }
+  }, [markdown]);
 
   useEffect(() => {
     if (setMdRef) {
