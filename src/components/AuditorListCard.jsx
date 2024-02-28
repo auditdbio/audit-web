@@ -144,9 +144,11 @@ const AuditorListCard = ({ auditor, projectIdToInvite, budge }) => {
         </Box>
       </Box>
       <Box sx={cardRightSide}>
-        <Typography sx={priceStyle}>
-          ${auditor.price_range.from} - {auditor.price_range.to}
-        </Typography>
+        {(auditor.price_range.from > 0 || auditor.price_range.to > 0) && (
+          <Typography sx={priceStyle}>
+            ${auditor.price_range.from} - {auditor.price_range.to}
+          </Typography>
+        )}
         <Button
           color={'secondary'}
           size={'small'}

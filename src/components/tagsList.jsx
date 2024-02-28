@@ -17,6 +17,9 @@ const TagsList = ({ data, fullView }) => {
               [theme.breakpoints.down('xs')]: {
                 width: '290px',
               },
+              [theme.breakpoints.down('xxs')]: {
+                width: '235px',
+              },
             }
           : tagsList
       }
