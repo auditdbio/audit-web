@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Box,
   Button,
@@ -23,7 +23,12 @@ import {
   TWITTER_CLIENT_ID,
 } from '../../services/urls.js';
 import { useDispatch, useSelector } from 'react-redux';
-import { changeAccountVisibility } from '../../redux/actions/userAction.js';
+import {
+  changeAccountVisibility,
+  getMyProfile,
+  handleDeleteLinkedAccount,
+} from '../../redux/actions/userAction.js';
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 
@@ -70,6 +75,10 @@ const IdentitySetting = () => {
     dispatch(changeAccountVisibility(user.id, value, data.id));
   };
 
+  const handleDelete = id => {
+    dispatch(handleDeleteLinkedAccount(user.id, id));
+  };
+
   return (
     <>
       <Modal
@@ -113,20 +122,28 @@ const IdentitySetting = () => {
                 {linkedAccounts
                   ?.filter(el => el.name.toLowerCase() === 'github')
                   ?.map(el => (
-                    <Tooltip
-                      key={el.id}
-                      arrow
-                      placement="top"
-                      title="Show in profile"
-                    >
-                      <Checkbox
+                    <>
+                      <Tooltip
                         key={el.id}
-                        checked={el.is_public}
-                        onChange={e => handleCheckboxChange(e, el)}
-                        icon={<VisibilityOffIcon />}
-                        checkedIcon={<RemoveRedEyeIcon />}
-                      />
-                    </Tooltip>
+                        arrow
+                        placement="top"
+                        title="Show in profile"
+                      >
+                        <Checkbox
+                          key={el.id}
+                          checked={el.is_public}
+                          onChange={e => handleCheckboxChange(e, el)}
+                          icon={<VisibilityOffIcon />}
+                          checkedIcon={<RemoveRedEyeIcon />}
+                        />
+                      </Tooltip>
+                      <Button
+                        onClick={() => handleDelete(el.id)}
+                        sx={{ minWidth: '30px' }}
+                      >
+                        <DeleteForeverIcon color={'error'} />
+                      </Button>
+                    </>
                   ))}
               </Box>
               <Box
@@ -154,20 +171,28 @@ const IdentitySetting = () => {
                 {linkedAccounts
                   ?.filter(el => el.name.toLowerCase() === 'linkedin')
                   ?.map(el => (
-                    <Tooltip
-                      key={el.id}
-                      arrow
-                      placement="top"
-                      title="Show in profile"
-                    >
-                      <Checkbox
+                    <>
+                      <Tooltip
                         key={el.id}
-                        checked={el.is_public}
-                        onChange={e => handleCheckboxChange(e, el)}
-                        icon={<VisibilityOffIcon />}
-                        checkedIcon={<RemoveRedEyeIcon />}
-                      />
-                    </Tooltip>
+                        arrow
+                        placement="top"
+                        title="Show in profile"
+                      >
+                        <Checkbox
+                          key={el.id}
+                          checked={el.is_public}
+                          onChange={e => handleCheckboxChange(e, el)}
+                          icon={<VisibilityOffIcon />}
+                          checkedIcon={<RemoveRedEyeIcon />}
+                        />
+                      </Tooltip>
+                      <Button
+                        onClick={() => handleDelete(el.id)}
+                        sx={{ minWidth: '30px' }}
+                      >
+                        <DeleteForeverIcon color={'error'} />
+                      </Button>
+                    </>
                   ))}
               </Box>
               <Box
@@ -196,63 +221,28 @@ const IdentitySetting = () => {
                 {linkedAccounts
                   ?.filter(el => el.name.toLowerCase() === 'x')
                   ?.map(el => (
-                    <Tooltip
-                      key={el.id}
-                      arrow
-                      placement="top"
-                      title="Show in profile"
-                    >
-                      <Checkbox
+                    <>
+                      <Tooltip
                         key={el.id}
-                        checked={el.is_public}
-                        onChange={e => handleCheckboxChange(e, el)}
-                        icon={<VisibilityOffIcon />}
-                        checkedIcon={<RemoveRedEyeIcon />}
-                      />
-                    </Tooltip>
-                  ))}
-              </Box>
-              <Box
-                sx={[
-                  cardSx,
-                  linkedAccounts?.find(
-                    el => el.name.toLowerCase() === 'gitcoin',
-                  )
-                    ? { border: '1px solid green' }
-                    : {},
-                ]}
-              >
-                <Box
-                  sx={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '7px',
-                    width: '100%',
-                    '& svg': {
-                      padding: '4px',
-                    },
-                  }}
-                >
-                  <GitcoinIcon />
-                  <Typography>Gitcoin</Typography>
-                </Box>
-                {linkedAccounts
-                  ?.filter(el => el.name.toLowerCase() === 'gitcoin')
-                  ?.map(el => (
-                    <Tooltip
-                      key={el.id}
-                      arrow
-                      placement="top"
-                      title="Show in profile"
-                    >
-                      <Checkbox
-                        key={el.id}
-                        checked={el.is_public}
-                        onChange={e => handleCheckboxChange(e, el)}
-                        icon={<VisibilityOffIcon />}
-                        checkedIcon={<RemoveRedEyeIcon />}
-                      />
-                    </Tooltip>
+                        arrow
+                        placement="top"
+                        title="Show in profile"
+                      >
+                        <Checkbox
+                          key={el.id}
+                          checked={el.is_public}
+                          onChange={e => handleCheckboxChange(e, el)}
+                          icon={<VisibilityOffIcon />}
+                          checkedIcon={<RemoveRedEyeIcon />}
+                        />
+                      </Tooltip>
+                      <Button
+                        onClick={() => handleDelete(el.id)}
+                        sx={{ minWidth: '30px' }}
+                      >
+                        <DeleteForeverIcon color={'error'} />
+                      </Button>
+                    </>
                   ))}
               </Box>
               <Box>
@@ -293,6 +283,7 @@ const cardSx = theme => ({
   justifyContent: 'space-between',
   alignItems: 'center',
   padding: '10px 20px',
+  cursor: 'pointer',
   gap: '10px',
   borderRadius: '10px',
   border: '1px solid transparent',

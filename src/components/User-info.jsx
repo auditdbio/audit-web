@@ -140,7 +140,11 @@ const UserInfo = ({ role }) => {
                   key={account.id}
                   sx={{ display: 'flex', alignItems: 'center', gap: '7px' }}
                 >
-                  <LinkedinIcon />
+                  <Tooltip title={account.url} placement="top">
+                    <Link href={account.url} target={'_blank'}>
+                      <LinkedinIcon />
+                    </Link>
+                  </Tooltip>
                 </Box>
               );
             } else if (account.name.toLowerCase() === 'github') {
@@ -149,18 +153,17 @@ const UserInfo = ({ role }) => {
                   key={account.id}
                   sx={{ display: 'flex', alignItems: 'center', gap: '7px' }}
                 >
-                  <GitHubIcon
-                    sx={{ width: '50px', height: '50px', padding: '4px' }}
-                  />
-                </Box>
-              );
-            } else if (account.name.toLowerCase() === 'gitcoin') {
-              return (
-                <Box
-                  key={account.id}
-                  sx={{ display: 'flex', alignItems: 'center', gap: '7px' }}
-                >
-                  <GitcoinIcon />
+                  <Tooltip title={account.url} placement="top">
+                    <Link
+                      href={account.url}
+                      sx={{ color: 'initial' }}
+                      target={'_blank'}
+                    >
+                      <GitHubIcon
+                        sx={{ width: '50px', height: '50px', padding: '4px' }}
+                      />
+                    </Link>
+                  </Tooltip>
                 </Box>
               );
             } else {
@@ -169,7 +172,15 @@ const UserInfo = ({ role }) => {
                   key={account.id}
                   sx={{ display: 'flex', alignItems: 'center', gap: '7px' }}
                 >
-                  <XTwitterLogo width={'38px'} height={'38px'} />
+                  <Tooltip title={account.url} placement="top">
+                    <Link
+                      href={account.url}
+                      sx={{ color: 'initial' }}
+                      target={'_blank'}
+                    >
+                      <XTwitterLogo width={'38px'} height={'38px'} />
+                    </Link>
+                  </Tooltip>
                 </Box>
               );
             }

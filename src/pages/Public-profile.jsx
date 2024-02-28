@@ -1,7 +1,14 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { Avatar, Button, Typography, useMediaQuery } from '@mui/material';
+import {
+  Avatar,
+  Button,
+  Link,
+  Tooltip,
+  Typography,
+  useMediaQuery,
+} from '@mui/material';
 import { AUDITOR, CUSTOMER } from '../redux/actions/types.js';
 import Loader from '../components/Loader.jsx';
 import { Box } from '@mui/system';
@@ -17,6 +24,7 @@ import CustomSnackbar from '../components/custom/CustomSnackbar.jsx';
 import {
   changeRolePublicCustomer,
   changeRolePublicCustomerNoRedirect,
+  getPublicProfile,
 } from '../redux/actions/userAction.js';
 import LinkedinIcon from '../components/icons/LinkedinIcon.jsx';
 import GitcoinIcon from '../components/icons/GitcoinIcon.jsx';
@@ -37,6 +45,7 @@ const PublicProfile = () => {
   const customerReducer = useSelector(state => state.customer.customer);
   const myProjects = useSelector(state => state.project.myProjects);
   const user = useSelector(state => state.user.user);
+  const publicUser = useSelector(state => state.user.publicUser);
 
   const handleError = () => {
     setErrorMessage(null);
@@ -88,6 +97,7 @@ const PublicProfile = () => {
     } else {
       dispatch(getCurrentCustomer(id));
     }
+    dispatch(getPublicProfile(id, role));
   }, [id, role]);
 
   const data = useMemo(() => {
@@ -244,7 +254,7 @@ const PublicProfile = () => {
             </Box>
           )}
           <Box sx={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
-            {user.linked_accounts
+            {publicUser?.linked_accounts
               ?.filter(account => account.is_public)
               .map(account => {
                 if (account.name.toLowerCase() === 'linkedin') {
@@ -253,7 +263,19 @@ const PublicProfile = () => {
                       key={account.id}
                       sx={{ display: 'flex', alignItems: 'center', gap: '7px' }}
                     >
-                      <LinkedinIcon />
+                      {account.url ? (
+                        <Tooltip title={account.url} placement="top">
+                          <Link
+                            href={account.url}
+                            sx={{ color: 'initial' }}
+                            target={'_blank'}
+                          >
+                            <LinkedinIcon />
+                          </Link>
+                        </Tooltip>
+                      ) : (
+                        <LinkedinIcon />
+                      )}
                     </Box>
                   );
                 } else if (account.name.toLowerCase() === 'github') {
@@ -262,18 +284,21 @@ const PublicProfile = () => {
                       key={account.id}
                       sx={{ display: 'flex', alignItems: 'center', gap: '7px' }}
                     >
-                      <GitHubIcon
-                        sx={{ width: '50px', height: '50px', padding: '4px' }}
-                      />
-                    </Box>
-                  );
-                } else if (account.name.toLowerCase() === 'gitcoin') {
-                  return (
-                    <Box
-                      key={account.id}
-                      sx={{ display: 'flex', alignItems: 'center', gap: '7px' }}
-                    >
-                      <GitcoinIcon />
+                      <Tooltip title={account.url} placement="top">
+                        <Link
+                          href={account.url}
+                          sx={{ color: 'initial' }}
+                          target={'_blank'}
+                        >
+                          <GitHubIcon
+                            sx={{
+                              width: '50px',
+                              height: '50px',
+                              padding: '4px',
+                            }}
+                          />
+                        </Link>
+                      </Tooltip>
                     </Box>
                   );
                 } else {
@@ -282,7 +307,15 @@ const PublicProfile = () => {
                       key={account.id}
                       sx={{ display: 'flex', alignItems: 'center', gap: '7px' }}
                     >
-                      <XTwitterLogo width={'50px'} height={'50px'} space />
+                      <Tooltip title={account.url} placement="top">
+                        <Link
+                          href={account.url}
+                          sx={{ color: 'initial' }}
+                          target={'_blank'}
+                        >
+                          <XTwitterLogo width={'50px'} height={'50px'} space />
+                        </Link>
+                      </Tooltip>
                     </Box>
                   );
                 }
