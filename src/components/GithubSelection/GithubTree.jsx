@@ -131,6 +131,39 @@ const GithubTreeNode = ({
     }
   }, []);
 
+  const handleClick = () => {
+    const filterTree = currentNode => {
+      if (currentNode.type === 'tree') {
+        const filteredChildren = currentNode.tree.reduce((acc, child) => {
+          const filteredChild = filterTree(child);
+          if (filteredChild) {
+            acc.push(filteredChild);
+          }
+          return acc;
+        }, []);
+
+        if (filteredChildren.length > 0) {
+          return {
+            ...currentNode,
+            tree: filteredChildren,
+          };
+        } else {
+          return null;
+        }
+      } else if (
+        currentNode.type === 'blob' &&
+        !endsWithAny(currentNode.name, filterConfig)
+      ) {
+        return currentNode;
+      } else {
+        return null;
+      }
+    };
+
+    const filteredNode = filterTree(node);
+    handleSelectAll(filteredNode, isAllChecked, isIndeterminate);
+  };
+
   return (
     <Box>
       <Box
@@ -151,9 +184,11 @@ const GithubTreeNode = ({
             checked={isAllChecked}
             indeterminate={isIndeterminate && !isAllChecked}
             sx={{ padding: 0 }}
-            onChange={() =>
-              handleSelectAll(node, isAllChecked, isIndeterminate)
-            }
+            onChange={() => {
+              includes && !isAllChecked
+                ? handleClick()
+                : handleSelectAll(node, isAllChecked, isIndeterminate);
+            }}
           />
         ) : (
           <Checkbox
