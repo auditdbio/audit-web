@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack.js';
 import TelegramIcon from '@mui/icons-material/Telegram';
 import EmailIcon from '@mui/icons-material/Email';
+import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import {
   Box,
   Button,
@@ -127,7 +128,11 @@ const AuditRequestInfo = ({
           onClick={handleBack}
           {...addTestsLabel('go-back-button')}
         >
-          <ArrowBackIcon color={'secondary'} />
+          {onClose ? (
+            <CloseRoundedIcon color={'secondary'} />
+          ) : (
+            <ArrowBackIcon color={'secondary'} />
+          )}
         </Button>
         <Typography
           variant={'h3'}

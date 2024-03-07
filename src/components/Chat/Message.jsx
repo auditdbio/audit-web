@@ -1,17 +1,19 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import Cookies from 'js-cookie';
 import axios from 'axios';
-import { Avatar, Box, Typography } from '@mui/material';
+import { Avatar, Box, Button, Modal, Typography } from '@mui/material';
 import DoneAllIcon from '@mui/icons-material/DoneAll';
 import { ASSET_URL } from '../../services/urls.js';
 import theme from '../../styles/themes.js';
 import { AUDITOR, CUSTOMER } from '../../redux/actions/types.js';
 import ImageMessage from './ImageMessage.jsx';
+import AuditRequestInfo from '../audit-request-info.jsx';
 
-const Message = ({ message, user, currentChat, isRead }) => {
+const Message = ({ message, user, currentChat, isRead, type }) => {
   const { customer } = useSelector(state => state.customer);
   const { auditor } = useSelector(state => state.auditor);
+  const [isOpen, setIsOpen] = useState(false);
 
   const userAvatar = useMemo(() => {
     if (user.current_role === AUDITOR && !!auditor?.avatar) {
@@ -54,9 +56,85 @@ const Message = ({ message, user, currentChat, isRead }) => {
   return (
     <Box sx={messageSx({ isOwn: message.from?.id === user.id })}>
       <Avatar src={getMessageAvatar()} sx={messageAvatarSx} alt="User photo" />
-      <Box sx={messageTextSx({ isOwn: message.from?.id === user.id })}>
+      <Box
+        sx={
+          message.kind === 'Image'
+            ? requestTextSx({ isOwn: message.from?.id !== user.id })
+            : messageTextSx({ isOwn: message.from?.id !== user.id })
+        }
+      >
         {message.kind === 'Image' ? (
-          <ImageMessage message={message} />
+          // <ImageMessage message={message} />
+          <Box>
+            <Typography align={'center'}>Audit request</Typography>
+            <Typography align={'center'}>Project name</Typography>
+            <Box
+              sx={{
+                display: 'flex',
+                gap: '10px',
+                justifyContent: 'space-between',
+              }}
+            >
+              <Typography sx={{ fontSize: '14px!important' }}>
+                $10 per line
+              </Typography>
+              <Typography align={'center'}>Mar 05 2024</Typography>
+            </Box>
+            {message.from?.id !== user.id && (
+              <>
+                <Box sx={{ display: 'flex', gap: '20px', marginY: '10px' }}>
+                  <Button
+                    sx={{ textTransform: 'unset', width: '100%' }}
+                    variant={'contained'}
+                  >
+                    Accept
+                  </Button>
+                  <Button
+                    sx={{ textTransform: 'unset', width: '100%' }}
+                    variant={'contained'}
+                  >
+                    Decline
+                  </Button>
+                </Box>
+                <Box sx={{ display: 'flex', gap: '20px', marginY: '10px' }}>
+                  <Button
+                    sx={{
+                      textTransform: 'unset',
+                      width: '100%',
+                    }}
+                    color={'secondary'}
+                    variant={'contained'}
+                  >
+                    Make offer
+                  </Button>
+                  <Button
+                    sx={{
+                      textTransform: 'unset',
+                      width: '100%',
+                    }}
+                    onClick={() => setIsOpen(true)}
+                    color={'secondary'}
+                    variant={'contained'}
+                  >
+                    View more
+                  </Button>
+                  <Modal
+                    open={isOpen}
+                    onClose={() => setIsOpen(false)}
+                    aria-labelledby="modal-modal-title"
+                    aria-describedby="modal-modal-description"
+                  >
+                    <Box sx={modalSx}>
+                      <AuditRequestInfo
+                        project={data}
+                        onClose={() => setIsOpen(false)}
+                      />
+                    </Box>
+                  </Modal>
+                </Box>
+              </>
+            )}
+          </Box>
         ) : message.kind === 'File' ? (
           <Typography title="Download" sx={linkMessage} onClick={downloadFile}>
             <span>{decodeURIComponent(message.text).replace(/^\d*_/, '')}</span>
@@ -83,6 +161,36 @@ const Message = ({ message, user, currentChat, isRead }) => {
 
 export default Message;
 
+const data = {
+  id: '65e818517e49517efe2a0edd',
+  auditor_first_name: 'aqwe53596@gmail.com',
+  auditor_last_name: '',
+  customer_id: '65e6ed81a549cf898b575daa',
+  auditor_id: '65e6f20ca549cf898b575db2',
+  project_id: '65e6f9b7f8ed9eae507e3239',
+  description: 'dqwd asd wqd2r34feqwd q',
+  time: {
+    from: 1709709390824,
+    to: 1709709390824,
+  },
+  project_name: 'MetaMask22',
+  avatar: '',
+  project_scope: ['https://hello.com'],
+  tags: ['solidity', 'zkp'],
+  price: 40,
+  auditor_contacts: {
+    email: 'aqwe53596@gmail.com',
+    telegram: '',
+    public_contacts: true,
+  },
+  customer_contacts: {
+    email: 'asdqw2430@gmail.com',
+    telegram: '',
+    public_contacts: true,
+  },
+  last_changer: 'Auditor',
+};
+
 function makeLinksClickable(text) {
   const urlRegex = /((?:https?|ftp):\/\/[^\s/$.?#].[^\s]*)/g;
   const parts = text.split(urlRegex);
@@ -102,6 +210,31 @@ function makeLinksClickable(text) {
 const messageSx = ({ isOwn }) => ({
   display: 'flex',
   flexDirection: isOwn ? 'row-reverse' : 'row',
+});
+
+const modalSx = theme => ({
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: 700,
+  bgcolor: 'background.paper',
+  boxShadow: 24,
+  borderRadius: '10px',
+  [theme.breakpoints.down('xs')]: {
+    width: 380,
+  },
+  [theme.breakpoints.down('xxs')]: {
+    width: 310,
+  },
+});
+
+const contentSx = theme => ({
+  borderRadius: '10px',
+  padding: '15px 30px 25px',
+  '& p': {
+    padding: 'unset',
+  },
 });
 
 const messageAvatarSx = theme => ({
@@ -135,6 +268,52 @@ const messageTextSx = ({ isOwn }) => ({
   },
   [theme.breakpoints.down('md')]: {
     maxWidth: '360px',
+  },
+  [theme.breakpoints.down('sm')]: {
+    maxWidth: '290px',
+    margin: '0 10px',
+    '& p': {
+      lineHeight: '20px',
+      padding: '10px 20px 18px',
+      fontSize: '16px',
+    },
+  },
+  [theme.breakpoints.down('xs')]: {
+    minWidth: '100px',
+    '& p': {
+      lineHeight: '18px',
+      padding: '5px 10px 18px',
+      fontSize: '14px',
+    },
+  },
+});
+
+const requestTextSx = ({ isOwn }) => ({
+  position: 'relative',
+  minWidth: '150px',
+  maxWidth: '400px',
+  width: '100%',
+  margin: '0 20px',
+  background: '#e5e5e5',
+  padding: '15px',
+  borderRadius: isOwn ? '15px 0 15px 15px' : '0 15px 15px 15px',
+  '& p': {
+    padding: '15px',
+    fontSize: '20px',
+    fontWeight: 500,
+    lineHeight: '25px',
+    color: '#434242',
+    overflow: 'hidden',
+    wordBreak: 'break-word',
+  },
+  '& button': {
+    paddingX: '5px',
+  },
+  [theme.breakpoints.down('md')]: {
+    maxWidth: '360px',
+    '& .chat-request': {
+      paddingX: '10px',
+    },
   },
   [theme.breakpoints.down('sm')]: {
     maxWidth: '290px',
