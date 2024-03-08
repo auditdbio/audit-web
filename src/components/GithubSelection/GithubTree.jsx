@@ -53,9 +53,12 @@ const GithubTreeNode = ({
         } else {
           newData = {
             ...currentNode,
-            tree: currentNode.tree.filter(
-              el => !endsWithAny(el.name, filterConfig),
-            ),
+            tree: [
+              ...currentNode.tree.filter(
+                el => !endsWithAny(el.name, filterConfig),
+              ),
+              ...currentNode.tree.filter(el => el.type === 'tree'),
+            ],
           };
         }
 

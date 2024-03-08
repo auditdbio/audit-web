@@ -105,9 +105,7 @@ const GithubSelection = () => {
     dispatch(getRepoOwner(urlRepo));
   };
 
-  const handleClose = () => {
-    setIsOpen(false);
-  };
+  const handleClose = () => setIsOpen(false);
 
   const newCommits = useMemo(() => {
     const commitsByDate = {};
