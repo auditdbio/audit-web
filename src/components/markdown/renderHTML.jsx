@@ -12,13 +12,23 @@ const renderHTML = text => {
       rehypePlugins={[rehypeKatex]}
       children={text}
       components={{
-        code({ node, inline, className, children, ...props }) {
-          const match = /language-(\w+)/.exec(className || '');
-          return !inline && match ? (
+        code({ node, inline, className = '', children, ...props }) {
+          const language = /language-(\w+)/.exec(className);
+          const showLineNumbers = /=\d*$/.test(className);
+          const numbersFrom = +/\d+/.exec(className)?.[0] || 1;
+          return !inline ? (
             <SyntaxHighlighter
               {...props}
               children={String(children).replace(/\n$/, '')}
-              language={match[1]}
+              language={language?.[1] || 'text'}
+              showLineNumbers={showLineNumbers}
+              startingLineNumber={numbersFrom}
+              lineNumberStyle={{
+                borderRight: '3px solid #b9b9b9',
+                marginRight: '8px',
+                paddingRight: '5px',
+              }}
+              customStyle={{ padding: '2px' }}
               PreTag="div"
             />
           ) : (
