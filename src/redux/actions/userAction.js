@@ -20,14 +20,21 @@ import {
   GET_AUDITOR,
   RESTORE_PASSWORD,
   SEND_EMAIL,
+  CONNECT_ACCOUNT,
+  CHANGE_ACCOUNT_VISIBILITY,
+  ERROR_ADD_ACCOUNT,
+  ERROR_IDENTITY,
+  DELETE_LINKED_ACCOUNT,
+  GET_PROFILE,
+  GET_PUBLIC_PROFILE,
 } from './types.js';
 
 const API_URL = import.meta.env.VITE_API_BASE_URL;
 
-export const signUpGithub = (code, role) => {
+export const signUpGithub = data => {
   return dispatch => {
     axios
-      .post(`${API_URL}/auth/github`, code)
+      .post(`${API_URL}/auth/github`, data)
       .then(({ data }) => {
         Cookies.set('token', data.token, { expires: 1 });
         localStorage.setItem('token', JSON.stringify(data.token));
@@ -87,6 +94,31 @@ export const clearUserSuccess = () => {
   return { type: CLEAR_SUCCESS };
 };
 
+export const getMyProfile = id => {
+  return dispatch => {
+    axios
+      .get(`${API_URL}/user/${id}`, {
+        headers: {
+          Authorization: 'Bearer ' + Cookies.get('token'),
+          'Content-Type': 'application/json',
+        },
+      })
+      .then(({ data }) => {
+        dispatch({ type: GET_PROFILE, payload: data });
+        localStorage.setItem('user', JSON.stringify(data));
+      });
+  };
+};
+
+export const getPublicProfile = id => {
+  return dispatch => {
+    axios.get(`${API_URL}/user/${id}`).then(({ data }) => {
+      console.log(data);
+      dispatch({ type: GET_PUBLIC_PROFILE, payload: data });
+    });
+  };
+};
+
 export const signUp = values => {
   return dispatch => {
     axios
@@ -99,6 +131,90 @@ export const signUp = values => {
       })
       .catch(({ response }) => {
         dispatch({ type: USER_IS_ALREADY_EXIST });
+      });
+  };
+};
+
+export const handleDeleteLinkedAccount = (user_id, account_id) => {
+  return dispatch => {
+    axios
+      .delete(`${API_URL}/user/${user_id}/linked_account/${account_id}`, {
+        headers: {
+          Authorization: 'Bearer ' + Cookies.get('token'),
+          'Content-Type': 'application/json',
+        },
+      })
+      .then(({ data }) => {
+        dispatch(getMyProfile(user_id));
+        dispatch({ type: DELETE_LINKED_ACCOUNT, payload: data });
+      });
+  };
+};
+
+export const changeAccountVisibility = (user_id, values, account_id) => {
+  return dispatch => {
+    axios
+      .patch(
+        `${API_URL}/user/${user_id}/linked_account/${account_id}`,
+        values,
+        {
+          headers: {
+            Authorization: 'Bearer ' + Cookies.get('token'),
+            'Content-Type': 'application/json',
+          },
+        },
+      )
+      .then(({ data }) => {
+        dispatch({ type: CHANGE_ACCOUNT_VISIBILITY, payload: data });
+        const user = JSON.parse(localStorage.getItem('user'));
+        const newData = {
+          ...user,
+          linked_accounts: user.linked_accounts.map(item => {
+            if (item.id === account_id) {
+              return data;
+            }
+            return item;
+          }),
+        };
+        localStorage.setItem('user', JSON.stringify(newData));
+      })
+      .catch(({ response }) => {
+        console.log(response);
+      });
+  };
+};
+
+export const connect_account = (user_id, values) => {
+  return dispatch => {
+    axios
+      .post(`${API_URL}/user/${user_id}/linked_account`, values, {
+        headers: {
+          Authorization: 'Bearer ' + Cookies.get('token'),
+          'Content-Type': 'application/json',
+        },
+      })
+      .then(({ data }) => {
+        dispatch({ type: CONNECT_ACCOUNT, payload: data });
+        dispatch({ type: CHANGE_ACCOUNT_VISIBILITY, payload: data });
+        const user = JSON.parse(localStorage.getItem('user'));
+        const newData = {
+          ...user,
+          linked_accounts: [...user.linked_accounts, data],
+        };
+        localStorage.setItem('user', JSON.stringify(newData));
+        history.push('/profile/user-info', {
+          some: true,
+        });
+      })
+      .catch(data => {
+        if (data.response.status === 404) {
+          dispatch({ type: ERROR_ADD_ACCOUNT, payload: data.response });
+        } else {
+          dispatch({ type: ERROR_IDENTITY, payload: data.response });
+        }
+        history.push('/profile/user-info', {
+          some: true,
+        });
       });
   };
 };

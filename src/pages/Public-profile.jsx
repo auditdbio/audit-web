@@ -1,7 +1,14 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { Avatar, Button, Typography, useMediaQuery } from '@mui/material';
+import {
+  Avatar,
+  Button,
+  Link,
+  Tooltip,
+  Typography,
+  useMediaQuery,
+} from '@mui/material';
 import { AUDITOR, CUSTOMER } from '../redux/actions/types.js';
 import Loader from '../components/Loader.jsx';
 import { Box } from '@mui/system';
@@ -17,10 +24,15 @@ import CustomSnackbar from '../components/custom/CustomSnackbar.jsx';
 import {
   changeRolePublicCustomer,
   changeRolePublicCustomerNoRedirect,
+  getPublicProfile,
 } from '../redux/actions/userAction.js';
 import { setCurrentChat } from '../redux/actions/chatActions.js';
 import ChatIcon from '../components/icons/ChatIcon.jsx';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack.js';
+import LinkedinIcon from '../components/icons/LinkedinIcon.jsx';
+import GitcoinIcon from '../components/icons/GitcoinIcon.jsx';
+import XTwitterLogo from '../components/icons/XTwitter-logo.jsx';
+import GitHubIcon from '@mui/icons-material/GitHub';
 
 const PublicProfile = () => {
   const { role, id } = useParams();
@@ -37,6 +49,7 @@ const PublicProfile = () => {
   const myProjects = useSelector(state => state.project.myProjects);
   const { user } = useSelector(state => state.user);
   const { chatList } = useSelector(s => s.chat);
+  const publicUser = useSelector(state => state.user.publicUser);
 
   const handleError = () => {
     setErrorMessage(null);
@@ -112,6 +125,7 @@ const PublicProfile = () => {
     } else {
       dispatch(getCurrentCustomer(id));
     }
+    dispatch(getPublicProfile(id, role));
   }, [id, role]);
 
   useEffect(() => {
@@ -289,6 +303,74 @@ const PublicProfile = () => {
               <MobileTagsList data={data.tags} />
             </Box>
           )}
+          <Box sx={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
+            {publicUser?.linked_accounts
+              ?.filter(account => account.is_public)
+              .map(account => {
+                if (account.name.toLowerCase() === 'linkedin') {
+                  return (
+                    <Box
+                      key={account.id}
+                      sx={{ display: 'flex', alignItems: 'center', gap: '7px' }}
+                    >
+                      {account.url ? (
+                        <Tooltip title={account.url} placement="top">
+                          <Link
+                            href={account.url}
+                            sx={{ color: 'initial' }}
+                            target={'_blank'}
+                          >
+                            <LinkedinIcon />
+                          </Link>
+                        </Tooltip>
+                      ) : (
+                        <LinkedinIcon />
+                      )}
+                    </Box>
+                  );
+                } else if (account.name.toLowerCase() === 'github') {
+                  return (
+                    <Box
+                      key={account.id}
+                      sx={{ display: 'flex', alignItems: 'center', gap: '7px' }}
+                    >
+                      <Tooltip title={account.url} placement="top">
+                        <Link
+                          href={account.url}
+                          sx={{ color: 'initial' }}
+                          target={'_blank'}
+                        >
+                          <GitHubIcon
+                            sx={{
+                              width: '50px',
+                              height: '50px',
+                              padding: '4px',
+                            }}
+                          />
+                        </Link>
+                      </Tooltip>
+                    </Box>
+                  );
+                } else {
+                  return (
+                    <Box
+                      key={account.id}
+                      sx={{ display: 'flex', alignItems: 'center', gap: '7px' }}
+                    >
+                      <Tooltip title={account.url} placement="top">
+                        <Link
+                          href={account.url}
+                          sx={{ color: 'initial' }}
+                          target={'_blank'}
+                        >
+                          <XTwitterLogo width={'50px'} height={'50px'} space />
+                        </Link>
+                      </Tooltip>
+                    </Box>
+                  );
+                }
+              })}
+          </Box>
           {/*{matchXs && <MobileTagsList data={data.tags} />}*/}
           <Box
             sx={{
