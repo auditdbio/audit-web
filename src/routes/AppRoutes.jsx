@@ -52,6 +52,7 @@ import CustomSnackbar from '../components/custom/CustomSnackbar.jsx';
 import InvitePage from '../pages/Invite-page.jsx';
 import DeleteBadge from '../pages/Delete-badge.jsx';
 import DisclaimerPage from '../pages/DisclaimerPage.jsx';
+import Github from '../pages/Github.jsx';
 
 const AppRoutes = () => {
   const token = useSelector(s => s.user.token);
@@ -143,6 +144,7 @@ const AppRoutes = () => {
         <Route path={'/sign-up'} element={<SignupPage />} />
         <Route path={'/invite-user/:id/:secret'} element={<InvitePage />} />
         <Route path={'/sign-in'} element={<SigninPage />} />
+        <Route path={'/oauth/callback'} element={<Github />} />
         <Route
           path={'/restore-password/:token'}
           element={<RestorePasswordPage />}
