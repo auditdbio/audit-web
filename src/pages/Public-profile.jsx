@@ -20,6 +20,7 @@ import {
 } from '../redux/actions/userAction.js';
 import { setCurrentChat } from '../redux/actions/chatActions.js';
 import ChatIcon from '../components/icons/ChatIcon.jsx';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack.js';
 
 const PublicProfile = () => {
   const { role, id } = useParams();
@@ -113,6 +114,17 @@ const PublicProfile = () => {
     }
   }, [id, role]);
 
+  useEffect(() => {
+    const handleBeforeUnload = () => {
+      localStorage.removeItem('go-back');
+    };
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => {
+      localStorage.removeItem('go-back');
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
+  }, [navigate]);
+
   const data = useMemo(() => {
     if (role.toLowerCase() === AUDITOR) {
       return auditor;
@@ -154,6 +166,17 @@ const PublicProfile = () => {
               : theme.palette.primary.main,
           )}
         >
+          {localStorage.getItem('go-back') && (
+            <Button
+              variant="text"
+              color={role.toLowerCase() === AUDITOR ? 'secondary' : 'primary'}
+              sx={goBackSx}
+              onClick={() => navigate(-1)}
+            >
+              <ArrowBackIcon />
+            </Button>
+          )}
+
           {data.kind === 'badge' && (
             <Typography sx={badgeTitle}>Not in base AuditDB</Typography>
           )}
@@ -318,6 +341,7 @@ const PublicProfile = () => {
 export default PublicProfile;
 
 const wrapper = (theme, color) => ({
+  position: 'relative',
   width: '100%',
   minHeight: '520px',
   display: 'flex',
@@ -342,6 +366,12 @@ const wrapper = (theme, color) => ({
     },
   },
 });
+
+const goBackSx = {
+  position: 'absolute',
+  top: '20px',
+  left: '30px',
+};
 
 const badgeTitle = theme => ({
   textAlign: 'center',

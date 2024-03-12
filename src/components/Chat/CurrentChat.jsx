@@ -41,6 +41,7 @@ const CurrentChat = ({
 
   const messageBoxRef = useRef();
   const newMessagesTextRef = useRef();
+  const userLinkDataRef = useRef({});
 
   useEffect(() => {
     if (
@@ -108,7 +109,18 @@ const CurrentChat = ({
   }, [unread]);
 
   useEffect(() => {
-    return () => dispatch(closeCurrentChat(currentChat?.chatId));
+    userLinkDataRef.current = {
+      chatId: id,
+      userId: userLinkData.id,
+    };
+  }, [userLinkData, id]);
+
+  useEffect(() => {
+    return () => {
+      if (userLinkDataRef.current?.chatId !== userLinkDataRef.current?.userId) {
+        dispatch(closeCurrentChat(currentChat?.chatId));
+      }
+    };
   }, []);
 
   const handleMessageInput = e => {
@@ -147,6 +159,10 @@ const CurrentChat = ({
     setDisplayedMessages(displayedMessages + 10);
   };
 
+  const showUserProfile = () => {
+    localStorage.setItem('go-back', 'true');
+  };
+
   return (
     <>
       <AttachFileModal
@@ -169,7 +185,10 @@ const CurrentChat = ({
             <MenuIcon fontSize="large" />
           </IconButton>
 
-          <RouterLink to={`/user/${userLinkData.id}/${userLinkData.role}`}>
+          <RouterLink
+            to={`/user/${userLinkData.id}/${userLinkData.role}`}
+            onClick={showUserProfile}
+          >
             <Box sx={avatarWrapper(currentChat?.role)}>
               <Avatar
                 src={
@@ -187,6 +206,7 @@ const CurrentChat = ({
               component={RouterLink}
               to={`/user/${userLinkData.id}/${userLinkData.role}`}
               sx={userNameSx}
+              onClick={showUserProfile}
               {...addTestsLabel('profile-link')}
             >
               {currentChat?.name}
