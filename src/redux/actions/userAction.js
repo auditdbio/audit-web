@@ -73,7 +73,7 @@ export const signIn = values => {
           { is_new: false },
           { headers: { Authorization: `Bearer ${data.token}` } },
         );
-        //
+
         if (data.user?.is_new) {
           history.push({ pathname: `/edit-profile` }, { some: true });
         } else {
