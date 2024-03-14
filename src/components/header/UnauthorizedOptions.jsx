@@ -129,15 +129,6 @@ const UnauthorizedOptions = () => {
   );
 };
 
-const popupLinkSx = theme => ({
-  marginX: '1rem',
-  fontSize: '22px',
-  fontWeight: '500',
-  [theme.breakpoints.down('xs')]: {
-    fontSize: '16px',
-  },
-});
-
 const authBlock = {
   display: 'flex',
   flexDirection: 'column',
@@ -148,7 +139,7 @@ const authBlock = {
 
 const desktopAuthBlock = {
   flexGrow: 1,
-  maxWidth: '500px',
+  maxWidth: '320px',
   display: 'flex',
   gap: '1rem',
 };
@@ -156,35 +147,41 @@ const desktopAuthBlock = {
 const signInButton = {
   backgroundColor: 'orange',
   color: 'white',
+  border: '3px solid orange',
   ':hover': {
     backgroundColor: 'orange',
     transition: '0.2s',
     filter: 'brightness(90%)',
     color: 'white',
   },
-  [theme.breakpoints.down('xs')]: {
-    fontSize: '16px',
-  },
 };
 
 const signUpButton = {
   backgroundColor: 'transparent',
-  color: '#222222',
+  color: '#222',
   border: '3px solid #52176D',
   ':hover': {
     backgroundColor: 'rgba(0, 0, 0, .1)',
     color: 'black',
   },
-  [theme.breakpoints.down('xs')]: {
-    fontSize: '16px',
-  },
 };
 
 const mobileMenuOption = {
+  minHeight: '48px',
+  paddingY: 0,
   ':active': {
     backgroundColor: 'orange',
     color: 'color',
   },
+  [theme.breakpoints.down('xs')]: {
+    minHeight: '40px',
+  },
+};
+
+const popupLinkSx = {
+  marginX: '1rem',
+  fontSize: '18px',
+  fontWeight: '500',
 };
 
 export default UnauthorizedOptions;

@@ -1,5 +1,5 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack.js';
 import { Button } from '@mui/material';
 import { addTestsLabel } from '../lib/helper.js';
@@ -7,9 +7,14 @@ import Layout from '../styles/Layout.jsx';
 import { CustomCard } from '../components/custom/Card';
 import IssueDetailsForm from '../components/issuesPage/IssueDetailsForm/IssueDetailsForm.jsx';
 import PublicIssueDetailsForm from './PublicIssueDetailForm.jsx';
+import { useSelector } from 'react-redux';
 
-const CreateIssuePage = ({ isPublic }) => {
+const CreateIssuePage = ({ isPublic, saved }) => {
   const navigate = useNavigate();
+  const { auditId } = useParams();
+  const audit = useSelector(s =>
+    s.audits.audits.find(audit => audit.id === auditId),
+  );
 
   return (
     <Layout>
@@ -21,7 +26,11 @@ const CreateIssuePage = ({ isPublic }) => {
         >
           <ArrowBackIcon color="secondary" />
         </Button>
-        {!isPublic ? <IssueDetailsForm /> : <PublicIssueDetailsForm />}
+        {!isPublic && !saved ? (
+          <IssueDetailsForm />
+        ) : (
+          <PublicIssueDetailsForm saved={!!audit?.no_customer || saved} />
+        )}
       </CustomCard>
     </Layout>
   );
@@ -30,7 +39,7 @@ const CreateIssuePage = ({ isPublic }) => {
 export default CreateIssuePage;
 
 const wrapper = theme => ({
-  padding: '48px 45px 80px',
+  padding: '40px 45px 80px',
   position: 'relative',
   display: 'flex',
   flexDirection: 'column',

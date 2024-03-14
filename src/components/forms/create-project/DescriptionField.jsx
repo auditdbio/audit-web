@@ -6,18 +6,17 @@ import { addTestsLabel } from '../../../lib/helper.js';
 
 const DescriptionField = ({ name, label }) => {
   return (
-    <Box sx={wrapper} className={'field-wrapper'}>
-      <Typography variant={'body2'} sx={formLabelSx}>
+    <Box sx={wrapper} className="field-wrapper">
+      <Typography variant="body2" sx={formLabelSx}>
         {label}
       </Typography>
       <Field
         component={TextField}
-        // rows="9"
         maxRows="5"
         minRows="4"
         multiline
         name={name}
-        placeholder={''}
+        placeholder=""
         fullWidth={true}
         disabled={false}
         sx={fieldSx}
@@ -31,9 +30,9 @@ const DescriptionField = ({ name, label }) => {
 
 export default DescriptionField;
 
-const wrapper = theme => ({
+const wrapper = {
   display: 'flex',
-  gap: '28px',
+  gap: '10px',
   flexDirection: 'column',
   '& p.Mui-error': {
     display: 'none',
@@ -45,7 +44,7 @@ const wrapper = theme => ({
     flexDirection: 'column',
     justifyContent: 'start',
   },
-});
+};
 
 const formLabelSx = theme => ({
   fontWeight: 500,
@@ -57,7 +56,7 @@ const formLabelSx = theme => ({
   },
 });
 
-const fieldSx = theme => ({
+const fieldSx = {
   '& div': {
     paddingLeft: '15px',
     paddingRight: '5px',
@@ -66,4 +65,4 @@ const fieldSx = theme => ({
     paddingRight: '10px',
   },
   height: '100%',
-});
+};

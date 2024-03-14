@@ -115,8 +115,8 @@ const SigninForm = () => {
                   Sign in with Github
                 </Button>
                 <Button
-                  type={'button'}
-                  variant={'text'}
+                  type="button"
+                  variant="text"
                   sx={{ textTransform: 'unset', mt: '25px', fontSize: '12px' }}
                   onClick={() => setOpen(true)}
                   disabled={isAuth()}
@@ -177,11 +177,12 @@ const formWrapper = theme => ({
 const submitButton = theme => ({
   padding: '11px 0',
   color: '#FCFAF6',
+  fontSize: '14px',
   fontWeight: 600,
+  lineHeight: 1.2,
   borderRadius: radiusOfComponents,
   maxWidth: '402px',
   margin: '0 auto',
-  fontSize: '16px',
   paddingY: '11px',
   width: '100%',
   [theme.breakpoints.down('sm')]: {

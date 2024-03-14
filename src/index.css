@@ -10,7 +10,7 @@ body {
 }
 
 #root {
-	background-image: url(../public/welcome_page/background_img.webp);
+	background-image: url(/welcome_page/background_img.webp);
 	background-position: center;
 	background-repeat: no-repeat;
 	background-size: cover;
@@ -33,7 +33,6 @@ a {
 
 .MuiPaper-elevation,.MuiPaper-rounded,.MuiPaper-elevation24,.MuiDialog-paper {
 	border-radius: 15px !important;
-	/*transform: unset;*/
 	border: none!important;
 }
 

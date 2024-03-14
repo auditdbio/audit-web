@@ -20,6 +20,7 @@ import {
   REQUEST_ERROR,
   RESET_PUBLIC_AUDIT,
   RESOLVED,
+  SAVE_PUBLIC_REPORT,
   SET_CURRENT_AUDIT_PARTNER,
 } from './types.js';
 import { history } from '../../services/history.js';
@@ -171,7 +172,7 @@ export const deleteAudit = id => {
   };
 };
 
-export const addReportAudit = values => {
+export const addReportAudit = (values, noRedirect) => {
   return dispatch => {
     const token = Cookies.get('token');
     axios
@@ -181,7 +182,9 @@ export const addReportAudit = values => {
         },
       })
       .then(({ data }) => {
-        history.back();
+        if (!noRedirect) {
+          history.back();
+        }
         dispatch(getAudits(AUDITOR));
       });
   };
@@ -382,6 +385,26 @@ export const handleResetPublicAudit = () => {
   return dispatch => {
     dispatch({ type: RESET_PUBLIC_AUDIT });
   };
+};
+
+export const savePublicReport = data => {
+  const token = Cookies.get('token');
+  return dispatch => {
+    axios
+      .post(`${API_URL}/no_customer_audit`, data, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .then(({ data }) => {
+        dispatch({ type: SAVE_PUBLIC_REPORT, payload: data });
+        const handleRedirect = setTimeout(() => {
+          history.push('/profile/audits');
+        }, 3000);
+        localStorage.removeItem('report');
+        localStorage.removeItem('publicIssues');
+        return () => clearTimeout(handleRedirect);
+      });
+  };
+  // .catch(() => dispatch({ type: REQUEST_ERROR }));
 };
 
 export const clearMessage = () => {

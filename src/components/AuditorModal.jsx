@@ -119,7 +119,7 @@ export default function AuditorModal({
 
   return (
     <Dialog open={open} onClose={handleClose}>
-      <Box className={'auditor-modal'}>
+      <Box className="auditor-modal">
         {mode === 'info' && (
           <DialogContent sx={modalWindow}>
             <CustomSnackbar
@@ -139,6 +139,7 @@ export default function AuditorModal({
               </Box>
               <ShareProfileButton
                 userId={auditor.user_id}
+                sx={{ fontSize: '12px' }}
                 isModal
                 role={AUDITOR}
                 isPublic
@@ -195,7 +196,7 @@ export default function AuditorModal({
                             : 'Hidden'
                         }
                         arrow
-                        placement={'top'}
+                        placement="top"
                       >
                         <Typography noWrap={true}>
                           {auditor?.contacts?.public_contacts
@@ -205,6 +206,7 @@ export default function AuditorModal({
                       </Tooltip>
                     </Box>
                   </Box>
+
                   {auditor?.about && (
                     <Box sx={[infoWrapper, aboutSx]}>
                       <Typography>
@@ -214,9 +216,9 @@ export default function AuditorModal({
                   )}
                   <TagsList data={auditor.tags} fullView={true} />
                 </Box>
-                <Box sx={infoInnerStyle} />
               </Box>
             </Box>
+
             <Box sx={fieldButtonContainer}>
               <Box sx={{ mb: '10px', display: 'flex' }}>
                 <Button
@@ -252,6 +254,7 @@ export default function AuditorModal({
             </Box>
           </DialogContent>
         )}
+
         {mode === 'invite' && (
           <Formik
             validator={() => ({})}
@@ -414,11 +417,11 @@ const modalWindow = theme => ({
   overflow: 'unset',
   width: '600px',
   display: 'flex',
-  gap: '50px',
+  gap: '30px',
   flexDirection: 'column',
   justifyContent: 'center',
   alignItems: 'center',
-  padding: '45px',
+  padding: '30px',
   [theme.breakpoints.down('sm')]: {
     padding: '25px',
     height: '100%',
@@ -431,8 +434,8 @@ const modalWindow = theme => ({
 });
 
 const findButton = theme => ({
-  padding: '19px 0',
-  fontSize: '18px',
+  padding: '10px 0',
+  fontSize: '16px',
   textTransform: 'unset',
   fontWeight: 600,
   mr: '20px',
@@ -474,8 +477,8 @@ const infoStyle = theme => ({
 });
 
 const avatarStyle = theme => ({
-  width: '150px',
-  height: '150px',
+  width: '120px',
+  height: '120px',
   [theme.breakpoints.down('xs')]: {
     width: '100px',
     height: '100px',
@@ -485,18 +488,16 @@ const avatarStyle = theme => ({
 const contentWrapper = theme => ({
   display: 'flex',
   flexDirection: 'column',
-  gap: '50px',
-  [theme.breakpoints.down('md')]: {
-    gap: '50px',
-  },
+  gap: '30px',
   [theme.breakpoints.down('sm')]: {
     flexDirection: 'column',
-    gap: '40px',
+    gap: '20px',
   },
 });
 
 const infoWrapper = theme => ({
   display: 'flex',
+  alignItems: 'center',
   fontWeight: 500,
   color: '#434242',
   '& p': {
@@ -507,7 +508,7 @@ const infoWrapper = theme => ({
     marginRight: '20px',
     color: '#B2B3B3',
   },
-  fontSize: '15px',
+  fontSize: '14px',
   [theme.breakpoints.down('md')]: {
     '& span': {
       width: '90px',
@@ -548,7 +549,6 @@ const backButton = {
     md: '150px',
     lg: '230px',
   },
-  // padding: "12px 63px",
   height: '45px',
   textTransform: 'none',
   ':hover': {
@@ -557,7 +557,6 @@ const backButton = {
   [theme.breakpoints.down('sm')]: {
     height: '30px',
     fontSize: '10px',
-    // padding: "6px 31px",
   },
 };
 
@@ -603,7 +602,6 @@ const searchField = {
     padding: '0px',
     height: '45px',
     borderRadius: '4px',
-    // border: "1px solid #434242",
     paddingLeft: '8px',
     fontSize: '14px !important',
     width: '465px',

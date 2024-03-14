@@ -28,6 +28,7 @@ import {
   GET_PROFILE,
   GET_PUBLIC_PROFILE,
 } from './types.js';
+import { savePublicReport } from './auditAction.js';
 
 const API_URL = import.meta.env.VITE_API_BASE_URL;
 
@@ -328,7 +329,7 @@ export const changeRolePublicCustomer = (value, id, currentRole) => {
   };
 };
 
-export const changeRolePublicAuditor = (value, id, currentRole) => {
+export const changeRolePublicAuditor = (value, id, data, withData) => {
   const token = Cookies.get('token');
   return dispatch => {
     axios
@@ -357,6 +358,17 @@ export const changeRolePublicAuditor = (value, id, currentRole) => {
                 type: CHANGE_ROLE_HAVE_PROFILE_AUDITOR,
                 payload: user,
               });
+              if (withData) {
+                const newData = {
+                  auditor_id: auditor.user_id,
+                  auditor_first_name: auditor.first_name,
+                  auditor_last_name: auditor.last_name,
+                  auditor_contacts: auditor.contacts,
+                  avatar: auditor.avatar,
+                  ...data,
+                };
+                dispatch(savePublicReport(newData));
+              }
             } else {
               dispatch({
                 type: CHANGE_ROLE_DONT_HAVE_PROFILE_AUDITOR,
