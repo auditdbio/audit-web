@@ -49,16 +49,16 @@ const ProjectCard = ({ type, project }) => {
         <Tooltip
           title={project.name || project.project_name}
           arrow
-          placement={'top'}
+          placement="top"
         >
-          <Typography variant={'h5'} textAlign={'center'} sx={projectNameSx}>
+          <Typography variant="h5" textAlign="center" sx={projectNameSx}>
             {project.name || project.project_name}
           </Typography>
         </Tooltip>
         <Tooltip
           title={project?.tags?.map(el => el).join(', ') ?? ''}
           arrow
-          placement={'top'}
+          placement="top"
         >
           <Typography sx={categorySx}>
             {project?.tags?.map(el => el).join(', ') ?? ''}
@@ -139,7 +139,7 @@ const ProjectCard = ({ type, project }) => {
           </Box>
         )}
         <Button
-          variant={'contained'}
+          variant="contained"
           sx={[editButton, type === 'auditor' ? editAuditor : {}]}
           onClick={handleClick}
           {...addTestsLabel(type === AUDITOR ? 'submit-button' : 'edit-button')}
@@ -170,7 +170,7 @@ const ProjectCard = ({ type, project }) => {
             WAITING_FOR_AUDITS.toLowerCase() && (
             <Button
               sx={[editButton, { marginTop: '12px' }]}
-              variant={'contained'}
+              variant="contained"
               color={'primary'}
               onClick={handleStartAudit}
               {...addTestsLabel('make-copy-button')}
@@ -318,6 +318,7 @@ const categorySx = theme => ({
   textAlign: 'center',
   height: '55px',
   overflow: 'hidden',
+  wordBreak: 'break-word',
   '-webkit-line-clamp': '3',
   '-webkit-box-orient': 'vertical',
   'text-overflow': 'ellipsis',
@@ -330,6 +331,11 @@ const categorySx = theme => ({
     fontSize: '10px!important',
     textAlign: 'left',
     height: '40px',
+  },
+  [theme.breakpoints.down('xxs')]: {
+    height: '30px',
+    maxWidth: '90px',
+    '-webkit-line-clamp': '2',
   },
 });
 

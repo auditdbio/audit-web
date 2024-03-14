@@ -51,7 +51,7 @@ const Projects = ({ role }) => {
         <Box sx={buttonWrapper}>
           <Button
             sx={[buttonSx, role === 'auditor' ? buttonAuditorSx : {}]}
-            variant={'contained'}
+            variant="contained"
             onClick={handleNavigate}
             {...addTestsLabel('add-new-button')}
           >
@@ -91,6 +91,9 @@ const wrapper = theme => ({
   [theme.breakpoints.down('md')]: {
     padding: '20px 25px 40px',
   },
+  [theme.breakpoints.down('xxs')]: {
+    padding: '20px 10px 40px',
+  },
 });
 
 const gridItemStyle = theme => ({
@@ -117,7 +120,7 @@ const buttonSx = theme => ({
     height: '40px',
   },
   [theme.breakpoints.down('xs')]: {
-    width: '130px',
+    width: '140px',
     fontSize: '12px',
   },
 });

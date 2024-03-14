@@ -1,7 +1,7 @@
 import React from 'react';
 import Layout from '../styles/Layout.jsx';
 import { CustomCard } from '../components/custom/Card.jsx';
-import { Typography, Box, Button } from '@mui/material';
+import { Typography, Box } from '@mui/material';
 import { CustomButton } from '../components/custom/Button.jsx';
 import { useNavigate } from 'react-router-dom';
 

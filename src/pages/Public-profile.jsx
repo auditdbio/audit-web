@@ -30,7 +30,6 @@ import { setCurrentChat } from '../redux/actions/chatActions.js';
 import ChatIcon from '../components/icons/ChatIcon.jsx';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack.js';
 import LinkedinIcon from '../components/icons/LinkedinIcon.jsx';
-import GitcoinIcon from '../components/icons/GitcoinIcon.jsx';
 import XTwitterLogo from '../components/icons/XTwitter-logo.jsx';
 import GitHubIcon from '@mui/icons-material/GitHub';
 

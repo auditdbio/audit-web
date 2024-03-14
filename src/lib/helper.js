@@ -221,12 +221,6 @@ export const reportBuilder = (report, issuesArray) => {
           },
         ],
       },
-      // {
-      //   type: 'plain_text',
-      //   title: '',
-      //   text: '',
-      //   include_in_toc: true,
-      // },
     ],
   };
 };

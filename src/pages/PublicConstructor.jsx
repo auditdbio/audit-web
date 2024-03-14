@@ -13,7 +13,6 @@ import IssuesList from '../components/issuesPage/IssuesList.jsx';
 import { useDispatch, useSelector } from 'react-redux';
 import { getIssues, getPublicIssues } from '../redux/actions/issueAction.js';
 import * as Yup from 'yup';
-import { isAuth } from '../lib/helper.js';
 import {
   addReportAudit,
   clearMessage,

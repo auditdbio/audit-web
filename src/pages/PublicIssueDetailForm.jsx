@@ -14,11 +14,11 @@ import {
 } from '../redux/actions/issueAction.js';
 import CustomSnackbar from '../components/custom/CustomSnackbar.jsx';
 import { clearMessage } from '../redux/actions/auditAction.js';
-import { CUSTOMER, RESOLVED } from '../redux/actions/types.js';
+import { RESOLVED } from '../redux/actions/types.js';
 import { addTestsLabel } from '../lib/helper.js';
 import DescriptionBlock from '../components/issuesPage/IssueDetailsForm/DescriptionBlock.jsx';
 import StatusSeverityBlock from '../components/issuesPage/IssueDetailsForm/StatusSeverityBlock.jsx';
-import { DRAFT, NOT_FIXED } from '../components/issuesPage/constants.js';
+import { NOT_FIXED } from '../components/issuesPage/constants.js';
 
 const PublicIssueDetailsForm = ({ issue = null, editMode = false, saved }) => {
   const dispatch = useDispatch();

@@ -137,12 +137,12 @@ const AppRoutes = () => {
         text="New version is available. Please reload the page"
       />
       <Routes>
-        <Route path={'/'} element={<HomePage />} />
-        <Route path={'/sign-up'} element={<SignupPage />} />
-        <Route path={'/invite-user/:id/:secret'} element={<InvitePage />} />
-        <Route path={'/sign-in'} element={<SigninPage />} />
-        <Route path={'/oauth/callback'} element={<ConnectAccount />} />
-        <Route path={'/oauth/callback'} element={<Github />} />
+        <Route path="/" element={<HomePage />} />
+        <Route path="/sign-up" element={<SignupPage />} />
+        <Route path="/invite-user/:id/:secret" element={<InvitePage />} />
+        <Route path="/sign-in" element={<SigninPage />} />
+        <Route path="/oauth/callback" element={<ConnectAccount />} />
+        <Route path="/oauth/callback" element={<Github />} />
         <Route
           path="/restore-password/:token"
           element={<RestorePasswordPage />}
@@ -158,20 +158,20 @@ const AppRoutes = () => {
         <Route path="/user/:id/:role" element={<PublicProfile />} />
         <Route path="/delete/:id/:secret" element={<DeleteBadge />} />
         <Route
-          path={'/audit-builder/:auditId'}
+          path="/audit-builder/:auditId"
           element={<PublicConstructor isPublic={true} />}
         />
-        <Route path={'/projects'} element={<ProjectPage />} />
-        <Route path={'/projects/:id'} element={<PublicProject />} />
-        <Route path={'/for-customers'} element={<ForCustomer />} />
-        <Route path={'/for-auditors'} element={<ForAuditor />} />
-        <Route path={'/auditors'} element={<AuditorsPage />} />
-        <Route path={'/audit-db'} element={<AuditDb />} />
-        <Route path={'/FAQ'} element={<Faq />} />
-        <Route path={'/contact-us'} element={<ContactUs />} />
-        <Route path={'/user/:id/:role'} element={<PublicProfile />} />
-        <Route path={'/delete/:id/:secret'} element={<DeleteBadge />} />
-        <Route path={'/disclaimer'} element={<DisclaimerPage />} />
+        <Route path="/projects" element={<ProjectPage />} />
+        <Route path="/projects/:id" element={<PublicProject />} />
+        <Route path="/for-customers" element={<ForCustomer />} />
+        <Route path="/for-auditors" element={<ForAuditor />} />
+        <Route path="/auditors" element={<AuditorsPage />} />
+        <Route path="/audit-db" element={<AuditDb />} />
+        <Route path="/FAQ" element={<Faq />} />
+        <Route path="/contact-us" element={<ContactUs />} />
+        <Route path="/user/:id/:role" element={<PublicProfile />} />
+        <Route path="/delete/:id/:secret" element={<DeleteBadge />} />
+        <Route path="/disclaimer" element={<DisclaimerPage />} />
         <Route
           path="/profile/:tab"
           element={
@@ -205,7 +205,7 @@ const AppRoutes = () => {
           }
         />
         <Route
-          path={'/audit-builder/edit/:auditId'}
+          path="/audit-builder/edit/:auditId"
           element={
             <PrivateRoute auth={{ isAuthenticated: isAuth() }}>
               <PublicConstructor saved={true} />

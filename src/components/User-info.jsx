@@ -9,7 +9,6 @@ import {
   Tooltip,
 } from '@mui/material';
 import GitHubIcon from '@mui/icons-material/GitHub.js';
-import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import theme from '../styles/themes.js';
 import { useNavigate } from 'react-router-dom/dist';
 import { useDispatch, useSelector } from 'react-redux';
@@ -20,11 +19,8 @@ import { ASSET_URL } from '../services/urls.js';
 import MobileTagsList from './MobileTagsList/index.jsx';
 import { addTestsLabel } from '../lib/helper.js';
 import ShareProfileButton from './custom/ShareProfileButton.jsx';
-import LinkedInIcon from '@mui/icons-material/LinkedIn';
-import { Link as RouterLink } from 'react-router-dom';
 import IdentitySetting from './IdentitySetting/IdentitySetting.jsx';
 import LinkedinIcon from './icons/LinkedinIcon.jsx';
-import GitcoinIcon from './icons/GitcoinIcon.jsx';
 import XTwitterLogo from './icons/XTwitter-logo.jsx';
 import { clearUserError } from '../redux/actions/userAction.js';
 import CustomSnackbar from './custom/CustomSnackbar.jsx';
