@@ -1,7 +1,14 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom/dist';
 import { useDispatch, useSelector } from 'react-redux';
-import { Avatar, Button, Typography, useMediaQuery } from '@mui/material';
+import {
+  Avatar,
+  Button,
+  Link,
+  Tooltip,
+  Typography,
+  useMediaQuery,
+} from '@mui/material';
 import { AUDITOR, CUSTOMER } from '../redux/actions/types.js';
 import Loader from '../components/Loader.jsx';
 import { Box } from '@mui/system';
@@ -17,10 +24,15 @@ import CustomSnackbar from '../components/custom/CustomSnackbar.jsx';
 import {
   changeRolePublicCustomer,
   changeRolePublicCustomerNoRedirect,
+  getPublicProfile,
 } from '../redux/actions/userAction.js';
 import { setCurrentChat } from '../redux/actions/chatActions.js';
 import ChatIcon from '../components/icons/ChatIcon.jsx';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack.js';
+import LinkedinIcon from '../components/icons/LinkedinIcon.jsx';
+import GitcoinIcon from '../components/icons/GitcoinIcon.jsx';
+import XTwitterLogo from '../components/icons/XTwitter-logo.jsx';
+import GitHubIcon from '@mui/icons-material/GitHub';
 
 const PublicProfile = () => {
   const { role, id } = useParams();
@@ -37,6 +49,7 @@ const PublicProfile = () => {
   const myProjects = useSelector(state => state.project.myProjects);
   const { user } = useSelector(state => state.user);
   const { chatList } = useSelector(s => s.chat);
+  const publicUser = useSelector(state => state.user.publicUser);
 
   const handleError = () => {
     setErrorMessage(null);
@@ -112,6 +125,7 @@ const PublicProfile = () => {
     } else {
       dispatch(getCurrentCustomer(id));
     }
+    dispatch(getPublicProfile(id, role));
   }, [id, role]);
 
   useEffect(() => {
@@ -198,29 +212,36 @@ const PublicProfile = () => {
                 alt="User photo"
               />
             </Box>
+
             <Box sx={{ [theme.breakpoints.down(560)]: { width: '100%' } }}>
               <Box sx={infoStyle}>
                 <Box sx={infoInnerStyle}>
                   <Box sx={infoWrapper}>
-                    <span>First Name</span>
+                    <span>{data.last_name ? 'First Name' : 'Name'}</span>
                     <Typography noWrap={true}>{data.first_name}</Typography>
                   </Box>
-                  <Box sx={infoWrapper}>
-                    <span>Last name</span>
-                    <Typography noWrap={true}>{data.last_name}</Typography>
-                  </Box>
-                  {role === AUDITOR && (
+                  {data.last_name && (
+                    <Box sx={infoWrapper}>
+                      <span>Last name</span>
+                      <Typography noWrap={true}>{data.last_name}</Typography>
+                    </Box>
+                  )}
+
+                  {role.toLowerCase() === AUDITOR && (
                     <Box sx={infoWrapper}>
                       <span>Price range:</span>
-                      {data?.price_range?.from && data?.price_range?.to && (
+                      {data.price_range?.from && data.price_range?.to ? (
                         <Typography>
-                          ${data?.price_range?.from} - {data?.price_range?.to}{' '}
-                          per line
+                          ${data.price_range.from} - {data.price_range.to} per
+                          line
                         </Typography>
+                      ) : (
+                        <Typography>not specified</Typography>
                       )}
                     </Box>
                   )}
-                  {role !== AUDITOR && (
+
+                  {role.toLowerCase() !== AUDITOR && data.company && (
                     <Box sx={infoWrapper}>
                       <span>Company</span>
                       <Typography noWrap={true}>{data.company}</Typography>
@@ -246,7 +267,8 @@ const PublicProfile = () => {
                   </Box>
                 </Box>
               </Box>
-              {!matchSm && (
+
+              {!matchSm && (data.about || !!data.tags?.length) && (
                 <Box sx={aboutWrapper}>
                   <Box sx={infoWrapper}>
                     <Typography
@@ -255,7 +277,7 @@ const PublicProfile = () => {
                         maxWidth: 'unset!important',
                       }}
                     >
-                      <span className={'about-title'}>About</span>
+                      <span className="about-title">About</span>
                       {data.about}
                     </Typography>
                   </Box>
@@ -264,15 +286,17 @@ const PublicProfile = () => {
               )}
             </Box>
           </Box>
-          {matchSm && (
+
+          {matchSm && (data.about || !!data.tags?.length) && (
             <Box sx={aboutWrapper}>
               <Box sx={[infoWrapper, { flexDirection: 'column' }]}>
                 <span
-                  className={'about-title'}
+                  className="about-title"
                   style={{
                     display: 'block',
                     width: '100%',
                     textAlign: 'center',
+                    marginBottom: '10px',
                   }}
                 >
                   About
@@ -289,6 +313,74 @@ const PublicProfile = () => {
               <MobileTagsList data={data.tags} />
             </Box>
           )}
+          <Box sx={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
+            {publicUser?.linked_accounts
+              ?.filter(account => account.is_public)
+              .map(account => {
+                if (account.name.toLowerCase() === 'linkedin') {
+                  return (
+                    <Box
+                      key={account.id}
+                      sx={{ display: 'flex', alignItems: 'center', gap: '7px' }}
+                    >
+                      {account.url ? (
+                        <Tooltip title={account.url} placement="top">
+                          <Link
+                            href={account.url}
+                            sx={{ color: 'initial' }}
+                            target={'_blank'}
+                          >
+                            <LinkedinIcon />
+                          </Link>
+                        </Tooltip>
+                      ) : (
+                        <LinkedinIcon />
+                      )}
+                    </Box>
+                  );
+                } else if (account.name.toLowerCase() === 'github') {
+                  return (
+                    <Box
+                      key={account.id}
+                      sx={{ display: 'flex', alignItems: 'center', gap: '7px' }}
+                    >
+                      <Tooltip title={account.url} placement="top">
+                        <Link
+                          href={account.url}
+                          sx={{ color: 'initial' }}
+                          target={'_blank'}
+                        >
+                          <GitHubIcon
+                            sx={{
+                              width: '50px',
+                              height: '50px',
+                              padding: '4px',
+                            }}
+                          />
+                        </Link>
+                      </Tooltip>
+                    </Box>
+                  );
+                } else {
+                  return (
+                    <Box
+                      key={account.id}
+                      sx={{ display: 'flex', alignItems: 'center', gap: '7px' }}
+                    >
+                      <Tooltip title={account.url} placement="top">
+                        <Link
+                          href={account.url}
+                          sx={{ color: 'initial' }}
+                          target={'_blank'}
+                        >
+                          <XTwitterLogo width={'50px'} height={'50px'} space />
+                        </Link>
+                      </Tooltip>
+                    </Box>
+                  );
+                }
+              })}
+          </Box>
           {/*{matchXs && <MobileTagsList data={data.tags} />}*/}
           <Box
             sx={{
@@ -336,18 +428,12 @@ const wrapper = (theme, color) => ({
   minHeight: '520px',
   display: 'flex',
   flexDirection: 'column',
-  padding: '100px 100px 60px',
+  padding: '60px 40px 40px',
   gap: '50px',
   backgroundColor: '#fff',
   borderRadius: '10px',
   border: `2px solid ${color}`,
   justifyContent: 'space-between',
-  [theme.breakpoints.down('lg')]: {
-    padding: '60px 40px 40px',
-  },
-  [theme.breakpoints.down('md')]: {
-    gap: '50px',
-  },
   [theme.breakpoints.down('sm')]: {
     gap: '20px',
     justifyContent: 'flex-start',
@@ -460,7 +546,6 @@ const buttonSx = theme => ({
   display: 'block',
   textTransform: 'capitalize',
   fontWeight: 600,
-  fontSize: '18px',
   padding: '9px 50px',
   borderRadius: '10px',
   ':last-child': { mb: 0 },
@@ -472,6 +557,7 @@ const buttonSx = theme => ({
 
 const infoWrapper = theme => ({
   display: 'flex',
+  alignItems: 'center',
   fontWeight: 500,
   color: '#434242',
   '& .about-title': {

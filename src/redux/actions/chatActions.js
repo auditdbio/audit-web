@@ -125,8 +125,7 @@ export const chatSendMessage = (text, to, role, isFirst, kind = 'Text') => {
       })
       .then(({ data }) => {
         if (isFirst) {
-          const payload = data.Private || data.Group;
-          dispatch({ type: CHAT_SEND_FIRST_MESSAGE, payload });
+          dispatch({ type: CHAT_SEND_FIRST_MESSAGE, payload: data.id });
         }
       });
   };

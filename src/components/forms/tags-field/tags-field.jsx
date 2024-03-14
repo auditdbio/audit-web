@@ -47,7 +47,9 @@ const TagsField = ({
           fieldHelper.setValue([...field.value, `https://${state}`]);
           setState('');
         }
-        if (handleSubmit) handleSubmit();
+        if (handleSubmit) {
+          handleSubmit();
+        }
       } else {
         setError('The maximum number of links that can be added is 20');
       }
@@ -118,7 +120,7 @@ const TagsField = ({
         {name !== 'scope' && name !== 'links' && (
           <>
             <Button
-              sx={{ marginTop: '12px' }}
+              sx={{ mt: '5px' }}
               color={role !== AUDITOR ? 'primary' : 'secondary'}
               onClick={handleOpen}
             >

@@ -48,7 +48,7 @@ const ShareProfileButton = ({ role, userId, sx, isModal, isPublic }) => {
     >
       {!tooltipText ? (
         <>
-          <LaunchRoundedIcon size={'small'} sx={{ marginRight: '5px' }} />{' '}
+          <LaunchRoundedIcon size="small" sx={{ marginRight: '5px' }} />
           {isPublic ? 'Share profile' : 'Share my profile'}
         </>
       ) : (
