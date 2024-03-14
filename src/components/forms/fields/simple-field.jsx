@@ -10,10 +10,11 @@ const SimpleField = ({
   size = 'medium',
   emptyPH = false,
   outerLabel = false,
+  sx = {},
   ...props
 }) => {
   return (
-    <Box sx={wrapper} className="field-wrapper">
+    <Box sx={[wrapper, sx]} className={'field-wrapper'}>
       {outerLabel && (
         <Typography variant="body2" sx={formLabelSx}>
           {label}
@@ -26,7 +27,7 @@ const SimpleField = ({
         placeholder={!emptyPH ? '● ● ● ● ● ● ●' : ''}
         fullWidth={true}
         disabled={false}
-        sx={fieldSx}
+        sx={[fieldSx, sx]}
         size={size}
         inputProps={{ ...addTestsLabel(`${name}-input`) }}
         {...props}

@@ -39,8 +39,10 @@ const StatusSeverityBlock = ({
   audit,
   isEditFeedback,
   setIsEditFeedback,
+  isPublic,
 }) => {
   const [severityListOpen, setSeverityListOpen] = useState(false);
+  const [statusListOpen, setStatusListOpen] = useState(false);
   const [categoryPrevVal, setCategoryPrevVal] = useState(issue?.category || '');
 
   return (
@@ -48,15 +50,58 @@ const StatusSeverityBlock = ({
       <Box>
         <Box sx={{ mb: '20px' }}>
           <Box sx={statusBlockAlign}>
-            <Typography sx={statusBlockTitle}>
+            <Typography
+              onClick={() => isPublic && setStatusListOpen(true)}
+              sx={statusBlockTitle}
+            >
+              {isPublic && <ArrowIcon />}
               <span>Status</span>
             </Typography>
-            <Typography sx={statusValueSx(issue?.status || values.status)}>
-              {addSpacesToCamelCase(issue?.status || values.status)}
-            </Typography>
+            {!isPublic ? (
+              <Typography sx={statusValueSx(issue?.status || values.status)}>
+                {addSpacesToCamelCase(issue?.status || values.status)}
+              </Typography>
+            ) : (
+              <Field
+                open={statusListOpen}
+                onClose={() => setStatusListOpen(false)}
+                onOpen={() => setStatusListOpen(true)}
+                onChange={e => {
+                  setFieldValue('status', e.target.value);
+                  if (editMode) handleSubmit();
+                }}
+                disabled={false}
+                component={Select}
+                name="status"
+                sx={selectFieldSx}
+                renderValue={selected => {
+                  return (
+                    <Box sx={{ textAlign: 'center' }}>
+                      <IssueSeverity text={selected} />
+                    </Box>
+                  );
+                }}
+              >
+                <MenuItem
+                  value={FIXED}
+                  sx={severityMenuItem}
+                  classes={{ selected: 'selected-severity' }}
+                >
+                  Fixed
+                </MenuItem>
+                <MenuItem
+                  value={NOT_FIXED}
+                  sx={severityMenuItem}
+                  classes={{ selected: 'selected-severity' }}
+                >
+                  NotFixed
+                </MenuItem>
+              </Field>
+            )}
           </Box>
 
           {editMode &&
+            !isPublic &&
             audit?.status?.toLowerCase() !== RESOLVED.toLowerCase() && (
               <StatusControl
                 status={issue.status}
@@ -65,7 +110,7 @@ const StatusSeverityBlock = ({
             )}
         </Box>
 
-        {user.current_role === AUDITOR &&
+        {(user.current_role !== CUSTOMER || isPublic) &&
         audit?.status?.toLowerCase() !== RESOLVED.toLowerCase() ? (
           <Box sx={severityWrapper}>
             <Typography
@@ -134,7 +179,7 @@ const StatusSeverityBlock = ({
           </Box>
         )}
 
-        {user.current_role === AUDITOR &&
+        {(user.current_role === AUDITOR || isPublic) &&
         audit?.status?.toLowerCase() !== RESOLVED.toLowerCase() ? (
           <Box>
             <Typography sx={[statusBlockTitle]}>
@@ -147,6 +192,14 @@ const StatusSeverityBlock = ({
               disabled={false}
               fullWidth={true}
               sx={categoryInput}
+              onBlur={e => {
+                if (isPublic) {
+                  setCategoryPrevVal(values.category);
+                  if (editMode) {
+                    handleSubmit();
+                  }
+                }
+              }}
               inputProps={{
                 sx: [
                   { padding: '4px 2px', fontSize: '18px' },
@@ -158,6 +211,7 @@ const StatusSeverityBlock = ({
               }}
               InputProps={
                 user.current_role === AUDITOR &&
+                !isPublic &&
                 editMode &&
                 categoryPrevVal !== values.category
                   ? {
@@ -188,14 +242,16 @@ const StatusSeverityBlock = ({
           </Box>
         ) : (
           <Box sx={[statusBlockAlign, { mt: '20px' }]}>
-            <Typography sx={statusBlockTitle}>
-              <span>Category</span>
-            </Typography>
+            {!isPublic && (
+              <Typography sx={statusBlockTitle}>
+                <span>Category</span>
+              </Typography>
+            )}
             <Typography sx={statusBlockTitle}>{values.category}</Typography>
           </Box>
         )}
 
-        {editMode && user.current_role === AUDITOR && (
+        {editMode && user.current_role === AUDITOR && !isPublic && (
           <Box sx={[statusBlockAlign, { mt: '20px' }]}>
             <FormControlLabel
               label={
@@ -208,7 +264,7 @@ const StatusSeverityBlock = ({
                   checked={values.include}
                   color="secondary"
                   disabled={
-                    user.current_role !== AUDITOR ||
+                    user.current_role === CUSTOMER ||
                     audit?.status?.toLowerCase() === RESOLVED.toLowerCase()
                   }
                   onChange={e => {
@@ -223,7 +279,7 @@ const StatusSeverityBlock = ({
         )}
       </Box>
 
-      {user.current_role === AUDITOR && !editMode && (
+      {(user.current_role !== CUSTOMER || isPublic) && !editMode && (
         <Box sx={buttonsBox}>
           <Button
             variant="contained"
@@ -238,19 +294,22 @@ const StatusSeverityBlock = ({
         </Box>
       )}
 
-      {user.current_role === CUSTOMER && !isEditFeedback && !issue.feedback && (
-        <Box sx={buttonsBox}>
-          <Button
-            variant="contained"
-            color="primary"
-            sx={[issueButton, feedbackButton]}
-            onClick={() => setIsEditFeedback(prev => !prev)}
-            {...addTestsLabel('feedback-button')}
-          >
-            Send feedback
-          </Button>
-        </Box>
-      )}
+      {!isPublic &&
+        user.current_role === CUSTOMER &&
+        !isEditFeedback &&
+        !issue?.feedback && (
+          <Box sx={buttonsBox}>
+            <Button
+              variant="contained"
+              color="primary"
+              sx={[issueButton, feedbackButton]}
+              onClick={() => setIsEditFeedback(prev => !prev)}
+              {...addTestsLabel('feedback-button')}
+            >
+              Send feedback
+            </Button>
+          </Box>
+        )}
     </Box>
   );
 };

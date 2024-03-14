@@ -2,6 +2,8 @@ import Cookies from 'js-cookie';
 import axios from 'axios';
 import {
   ADD_AUDIT_ISSUE,
+  DELETE_ISSUE,
+  DELETE_PUBLIC_ISSUE,
   DISCLOSE_ALL_ISSUES,
   GET_AUDIT_ISSUES,
   REQUEST_ERROR,
@@ -20,6 +22,44 @@ export const getIssues = auditId => {
       .then(({ data: issues }) =>
         dispatch({ type: GET_AUDIT_ISSUES, payload: { auditId, issues } }),
       );
+  };
+};
+
+export const getPublicIssues = (data, auditId) => {
+  return dispatch => {
+    dispatch({ type: GET_AUDIT_ISSUES, payload: { auditId, issues: data } });
+  };
+};
+
+export const updatePublicIssue = data => {
+  return dispatch => {
+    dispatch({ type: UPDATE_AUDIT_ISSUE, payload: { issue: data } });
+  };
+};
+
+export const addPublicIssue = data => {
+  return dispatch => {
+    dispatch({ type: ADD_AUDIT_ISSUE, payload: { issue: data } });
+  };
+};
+
+export const deletePublicIssue = data => {
+  return dispatch => {
+    dispatch({ type: DELETE_PUBLIC_ISSUE, payload: { issue: data } });
+  };
+};
+
+export const deleteIssue = (issue, auditId) => {
+  const token = Cookies.get('token');
+
+  return dispatch => {
+    axios
+      .delete(`${API_URL}/audit/${auditId}/issue/${issue.id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .then(({ data }) => {
+        dispatch({ type: DELETE_ISSUE, payload: { issue: data } });
+      });
   };
 };
 

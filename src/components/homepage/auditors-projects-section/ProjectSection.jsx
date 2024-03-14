@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom/dist';
+import { useNavigate, Link } from 'react-router-dom/dist';
 import {
   Box,
   Typography,
@@ -50,8 +50,10 @@ const ProjectSection = () => {
   return (
     <Box sx={{ width: '100%' }}>
       <Box sx={headerWrapper}>
-        <Typography variant="h1" sx={{ fontWeight: 500 }}>
-          Projects
+        <Typography variant="h1" sx={titleSx}>
+          <Link style={{ color: '#fff' }} to={'/projects'}>
+            Projects
+          </Link>
         </Typography>
         <Box sx={searchWrapper}>
           <InputBase
@@ -118,6 +120,30 @@ const ProjectSection = () => {
     </Box>
   );
 };
+
+const titleSx = theme => ({
+  fontWeight: 500,
+  position: 'relative',
+  '&:hover::after': {
+    opacity: 1,
+    transform: 'scaleX(1)',
+  },
+  '&::after': {
+    content: '" "',
+    position: 'absolute',
+    left: 0,
+    bottom: '-2px',
+    width: '100%',
+    height: '2px',
+    opacity: 0,
+    transition: 'opacity 0.3s ease, transform 0.3s ease',
+    transform: 'scaleX(0)',
+    backgroundColor: '#fff',
+  },
+  [theme.breakpoints.down('xs')]: {
+    fontSize: '28px',
+  },
+});
 
 const headerWrapper = {
   display: 'flex',

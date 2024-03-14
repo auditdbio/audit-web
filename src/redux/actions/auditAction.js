@@ -5,6 +5,7 @@ import {
   AUDITOR,
   CLEAR_MESSAGES,
   CONFIRM_AUDIT,
+  CREATE_PUBLIC_REPORT,
   CUSTOMER,
   DELETE_AUDIT,
   DELETE_REQUEST,
@@ -12,11 +13,14 @@ import {
   GET_AUDIT,
   GET_AUDIT_REQUEST,
   GET_AUDITS,
+  GET_PUBLIC_REPORT,
   GET_REQUEST,
   IN_PROGRESS,
   NOT_FOUND,
   REQUEST_ERROR,
+  RESET_PUBLIC_AUDIT,
   RESOLVED,
+  SAVE_PUBLIC_REPORT,
   SET_CURRENT_AUDIT_PARTNER,
 } from './types.js';
 import { history } from '../../services/history.js';
@@ -168,7 +172,7 @@ export const deleteAudit = id => {
   };
 };
 
-export const addReportAudit = values => {
+export const addReportAudit = (values, noRedirect) => {
   return dispatch => {
     const token = Cookies.get('token');
     axios
@@ -178,7 +182,9 @@ export const addReportAudit = values => {
         },
       })
       .then(({ data }) => {
-        history.back();
+        if (!noRedirect) {
+          history.back();
+        }
         dispatch(getAudits(AUDITOR));
       });
   };
@@ -280,6 +286,56 @@ export const setCurrentAuditPartner = audit => {
   };
 };
 
+export const getPublicReport = (data, { generate }) => {
+  const downloadResponse = res => {
+    const blob = new Blob([res.data], { type: 'application/pdf' });
+    const url = window.URL.createObjectURL(blob);
+
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute(
+      'download',
+      `${
+        data?.report_name
+          ? data?.report_name
+          : data?.project_name + ' report.pdf'
+      }`,
+    );
+    document.body.appendChild(link);
+    link.click();
+
+    link.parentNode.removeChild(link);
+    window.URL.revokeObjectURL(url);
+  };
+  return dispatch => {
+    dispatch({ type: DOWNLOAD_REPORT_START });
+    axios
+      .post(`${API_URL}/generate-report`, data, { responseType: 'arraybuffer' })
+      .then(res => {
+        downloadResponse(res);
+      });
+  };
+};
+
+export const createPublicReport = data => {
+  return dispatch => {
+    dispatch({ type: CREATE_PUBLIC_REPORT, payload: data });
+  };
+};
+
+export const updatePublicReport = data => {
+  return dispatch => {
+    localStorage.setItem('report', JSON.stringify(data));
+    dispatch({ type: CREATE_PUBLIC_REPORT, payload: data });
+  };
+};
+
+export const getPublicAuditReport = () => {
+  return dispatch => {
+    const report = JSON.parse(localStorage.getItem('report') || '{}');
+    dispatch({ type: GET_PUBLIC_REPORT, payload: report });
+  };
+};
 export const downloadReport = (audit, { generate } = {}) => {
   const token = Cookies.get('token');
 
@@ -323,6 +379,32 @@ export const downloadReport = (audit, { generate } = {}) => {
       getReport(audit, audit?.report, dispatch);
     }
   };
+};
+
+export const handleResetPublicAudit = () => {
+  return dispatch => {
+    dispatch({ type: RESET_PUBLIC_AUDIT });
+  };
+};
+
+export const savePublicReport = data => {
+  const token = Cookies.get('token');
+  return dispatch => {
+    axios
+      .post(`${API_URL}/no_customer_audit`, data, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .then(({ data }) => {
+        dispatch({ type: SAVE_PUBLIC_REPORT, payload: data });
+        const handleRedirect = setTimeout(() => {
+          history.push('/profile/audits');
+        }, 3000);
+        localStorage.removeItem('report');
+        localStorage.removeItem('publicIssues');
+        return () => clearTimeout(handleRedirect);
+      });
+  };
+  // .catch(() => dispatch({ type: REQUEST_ERROR }));
 };
 
 export const clearMessage = () => {

@@ -1,9 +1,10 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import { addSpacesToCamelCase, addTestsLabel } from '../../lib/helper.js';
-import { Box, Link, Tooltip, Typography, Zoom } from '@mui/material';
+import { Box, Button, Link, Tooltip, Typography, Zoom } from '@mui/material';
 import IssueSeverity from './IssueSeverity.jsx';
 import theme from '../../styles/themes.js';
+import DeleteIcon from '@mui/icons-material/Delete';
 import {
   DRAFT,
   FIXED,
@@ -11,11 +12,17 @@ import {
   NOT_FIXED,
   VERIFICATION,
 } from './constants.js';
+import { useDispatch } from 'react-redux';
+import {
+  deleteIssue,
+  deletePublicIssue,
+} from '../../redux/actions/issueAction.js';
 
-const IssueListItem = ({ issue, auditId, user }) => {
+const IssueListItem = ({ issue, auditId, user, isPublic, saved }) => {
   const [showTitleTooltip, setShowTitleTooltip] = useState(false);
   const titleBoxRef = useRef();
   const titleTextRef = useRef();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const boxHeight = titleBoxRef.current?.offsetHeight;
@@ -27,11 +34,38 @@ const IssueListItem = ({ issue, auditId, user }) => {
   }, []);
 
   const checkUnread = () => {
-    return user?.id !== issue.events?.at(-1)?.user &&
-      issue.events?.length &&
-      issue.events?.length >= issue.read
-      ? unreadChanges
-      : {};
+    if (user?.id && issue.events) {
+      return user?.id !== issue.events[issue.events?.length - 1]?.user &&
+        issue.events?.length &&
+        issue.events?.length >= issue.read
+        ? unreadChanges
+        : {};
+    }
+  };
+
+  const url = () => {
+    if (isPublic) {
+      return `/public-issues/audit-issue/${auditId}/${issue.id}`;
+    } else if (saved) {
+      return `/private-issues/audit-issue/${auditId}/${issue.id}`;
+    } else {
+      return `/issues/audit-issue/${auditId}/${issue.id}`;
+    }
+  };
+
+  const handleButtonClick = event => {
+    event.stopPropagation();
+    event.preventDefault();
+    if (isPublic) {
+      const array = JSON.parse(localStorage.getItem('publicIssues'));
+      const newArray = array.filter(item => item.id !== issue.id);
+      localStorage.setItem('publicIssues', JSON.stringify(newArray));
+      dispatch(deletePublicIssue(issue.id));
+    } else {
+      console.log(issue);
+      dispatch(deleteIssue(issue, auditId));
+    }
+    // Здесь вы можете добавить свою логику для обработки клика на кнопку
   };
 
   return (
@@ -39,7 +73,7 @@ const IssueListItem = ({ issue, auditId, user }) => {
       sx={issueRow}
       component={RouterLink}
       onClick={() => window.scrollTo({ top: 0 })}
-      to={`/issues/audit-issue/${auditId}/${issue.id}`}
+      to={url()}
       {...addTestsLabel('issue-details-link')}
     >
       <Tooltip
@@ -60,14 +94,33 @@ const IssueListItem = ({ issue, auditId, user }) => {
       <Typography sx={[columnText, statusSx(issue.status)]}>
         {addSpacesToCamelCase(issue.status)}
       </Typography>
-      <Box sx={severityWrapper}>
-        <IssueSeverity text={issue.severity} />
+      <Box sx={isPublic || saved ? publicSeverityWrapper : severityWrapper}>
+        <IssueSeverity
+          sx={isPublic || saved ? publicSeverity : {}}
+          text={issue.severity}
+        />
+        {(isPublic || saved) && (
+          <Button color={'error'} onClick={handleButtonClick} sx={actionSx}>
+            <DeleteIcon />
+          </Button>
+        )}
       </Box>
     </Link>
   );
 };
 
 export default IssueListItem;
+
+const actionSx = theme => ({
+  minWidth: 'unset',
+  padding: '7px',
+  width: '30px',
+  marginLeft: '5px',
+  marginRight: '20px',
+  [theme.breakpoints.down('sm')]: {
+    marginRight: '5px',
+  },
+});
 
 const issueRow = theme => ({
   display: 'flex',
@@ -84,6 +137,12 @@ const issueRow = theme => ({
   },
   [theme.breakpoints.down('xs')]: {
     justifyContent: 'space-between',
+  },
+});
+
+const publicSeverity = theme => ({
+  [theme.breakpoints.down('xs')]: {
+    width: '60%',
   },
 });
 
@@ -137,6 +196,19 @@ const severityWrapper = {
   justifyContent: 'center',
   alignItems: 'center',
 };
+
+const publicSeverityWrapper = theme => ({
+  width: '15%',
+  display: 'flex',
+  justifyContent: 'space-between',
+  alignItems: 'center',
+  [theme.breakpoints.down('xs')]: {
+    width: '20%',
+  },
+  [theme.breakpoints.down(550)]: {
+    width: '30%',
+  },
+});
 
 const unreadChanges = theme => ({
   position: 'relative',

@@ -10,17 +10,44 @@ import {
   MenuItem,
   TextField,
   Tooltip,
+  useMediaQuery,
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import IconButton from '@mui/material/IconButton';
-import { addTestsLabel } from '../../lib/helper.js';
-import { AUDITOR, RESOLVED } from '../../redux/actions/types.js';
+import { addTestsLabel, isAuth, reportBuilder } from '../../lib/helper.js';
+import {
+  AUDITOR,
+  CHANGE_ROLE_DONT_HAVE_PROFILE_AUDITOR,
+  CUSTOMER,
+  RESOLVED,
+} from '../../redux/actions/types.js';
 import ResolveAuditConfirmation from './ResolveAuditConfirmation.jsx';
 import { discloseAllIssues } from '../../redux/actions/issueAction.js';
 import { DRAFT, FIXED, NOT_FIXED } from './constants.js';
-import { downloadReport } from '../../redux/actions/auditAction.js';
+import {
+  clearMessage,
+  downloadReport,
+  getPublicReport,
+  savePublicReport,
+} from '../../redux/actions/auditAction.js';
+import CustomSnackbar from '../custom/CustomSnackbar.jsx';
+import {
+  changeRolePublicAuditor,
+  clearUserSuccess,
+} from '../../redux/actions/userAction.js';
+import theme from '../../styles/themes.js';
 
-const Control = ({ issues, search, setSearch, setPage, setSearchParams }) => {
+const Control = ({
+  issues,
+  search,
+  setSearch,
+  setPage,
+  setSearchParams,
+  isPublic,
+  setIsOpenReset,
+  handleSubmit,
+  saved,
+}) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { auditId } = useParams();
@@ -31,6 +58,12 @@ const Control = ({ issues, search, setSearch, setPage, setSearchParams }) => {
   const audit = useSelector(s =>
     s.audits.audits?.find(audit => audit.id === auditId),
   );
+  const auditor = useSelector(s => s.auditor.auditor);
+  const issuesArray = useSelector(s => s.issues.issues);
+  const report = JSON.parse(localStorage.getItem('report'));
+  const [openMessage, setOpenMessage] = useState(false);
+  const auditMessage = useSelector(s => s.audits.successMessage);
+  const xss = useMediaQuery(theme.breakpoints.down(666));
 
   const handleSearch = e => {
     setSearch(e.target.value);
@@ -39,7 +72,13 @@ const Control = ({ issues, search, setSearch, setPage, setSearchParams }) => {
   };
 
   const handleNewIssue = () => {
-    navigate(`/issues/new-issue/${auditId}`);
+    if (isPublic) {
+      navigate(`/public-issues/new-issue/${auditId}`);
+    } else if (saved) {
+      navigate(`/private-issues/new-issue/${auditId}`);
+    } else {
+      navigate(`/issues/new-issue/${auditId}`);
+    }
     window.scrollTo(0, 0);
   };
 
@@ -56,9 +95,61 @@ const Control = ({ issues, search, setSearch, setPage, setSearchParams }) => {
     setMenuAnchorEl(null);
   };
 
+  const handleSavePublicAudit = async () => {
+    if (report?.auditor_name && report?.project_name && report?.description) {
+      if (isAuth()) {
+        if (user.current_role === CUSTOMER) {
+          const data = {
+            ...report,
+            isPublic: true,
+            issues: [...issuesArray],
+          };
+          await dispatch(changeRolePublicAuditor(AUDITOR, user.id, data, true));
+        } else {
+          const data = {
+            auditor_id: auditor.user_id,
+            auditor_first_name: auditor.first_name,
+            auditor_last_name: auditor.last_name,
+            auditor_contacts: auditor.contacts,
+            avatar: auditor.avatar,
+            ...report,
+            isPublic: true,
+            issues: [...issuesArray],
+            status: 'Started',
+          };
+          if (auditor?.user_id) {
+            await dispatch(savePublicReport(data));
+          } else {
+            dispatch({
+              type: CHANGE_ROLE_DONT_HAVE_PROFILE_AUDITOR,
+              payload: user,
+            });
+            navigate('/profile/user-info');
+          }
+        }
+      } else {
+        navigate('/sign-in');
+      }
+    } else {
+      setOpenMessage(true);
+    }
+  };
+
   const handleGenerateReport = () => {
-    dispatch(downloadReport(audit, { generate: true }));
-    setMenuAnchorEl(null);
+    if (isPublic) {
+      if (report?.auditor_name && report?.project_name && report?.description) {
+        const newData = reportBuilder(report, issuesArray);
+        dispatch(getPublicReport(newData, { generate: true }));
+      } else {
+        handleSubmit();
+        setOpenMessage(true);
+      }
+
+      setMenuAnchorEl(null);
+    } else {
+      dispatch(downloadReport(audit, { generate: true }));
+      setMenuAnchorEl(null);
+    }
   };
 
   const handleDownloadReport = () => {
@@ -81,6 +172,13 @@ const Control = ({ issues, search, setSearch, setPage, setSearchParams }) => {
     setAllIssuesClosed(allClosed);
   }, [issues]);
 
+  const handleCloseSnack = () => {
+    setOpenMessage(false);
+    if (auditMessage) {
+      dispatch(clearMessage());
+    }
+  };
+
   return (
     <>
       <ResolveAuditConfirmation
@@ -88,44 +186,121 @@ const Control = ({ issues, search, setSearch, setPage, setSearchParams }) => {
         setIsOpen={setResolveConfirmation}
         audit={audit}
       />
+      {isPublic ? (
+        <Box sx={publicBtnWrapper}>
+          <CustomSnackbar
+            autoHideDuration={5000}
+            open={openMessage || auditMessage}
+            severity={(auditMessage && 'success') || (openMessage && 'error')}
+            text={
+              auditMessage
+                ? auditMessage
+                : openMessage && 'Please fill in all mandatory fields'
+            }
+            onClose={handleCloseSnack}
+          />
+          {!saved && (
+            <Button
+              variant="contained"
+              color="secondary"
+              sx={[buttonSx, { marginRight: '0!important' }, publicBtnSx]}
+              onClick={handleGenerateReport}
+            >
+              Generate report
+            </Button>
+          )}
+          {!saved && (
+            <Button
+              sx={[buttonSx, { marginRight: '0!important' }, publicBtnSx]}
+              onClick={() => {
+                handleSavePublicAudit();
+              }}
+              variant={'contained'}
+            >
+              Save
+            </Button>
+          )}
+          {!saved && (
+            <Button
+              variant={'contained'}
+              type={'button'}
+              color={'secondary'}
+              onClick={() => setIsOpenReset(true)}
+              sx={[buttonSx, { marginRight: '0!important' }, publicBtnSx]}
+            >
+              Reset form
+            </Button>
+          )}
+        </Box>
+      ) : (
+        <Box sx={publicBtnWrapper}>
+          {xss && saved && (
+            <Button
+              variant="contained"
+              color="secondary"
+              sx={[buttonSx, (isPublic || saved) && xss ? publicBtnSx : {}]}
+              onClick={handleGenerateReport}
+            >
+              Generate report
+            </Button>
+          )}
+        </Box>
+      )}
+      <Box sx={isPublic || saved ? wrapperPublic : wrapper}>
+        <Box sx={[isPublic || saved ? publicSearchBlock : searchBlock]}>
+          {!isPublic && !saved && (
+            <IconButton
+              aria-label="Menu"
+              color="secondary"
+              onClick={handleOpenMenu}
+              sx={menuButton}
+            >
+              <MenuIcon fontSize="large" sx={{ color: 'white' }} />
+            </IconButton>
+          )}
 
-      <Box sx={wrapper}>
-        <Box sx={searchBlock}>
-          <IconButton
-            aria-label="Menu"
-            color="secondary"
-            onClick={handleOpenMenu}
-            sx={menuButton}
-          >
-            <MenuIcon fontSize="large" sx={{ color: 'white' }} />
-          </IconButton>
-          <Menu
-            open={!!menuAnchorEl}
-            anchorEl={menuAnchorEl}
-            anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
-            transformOrigin={{ vertical: 'top', horizontal: 'left' }}
-            onClose={handleCloseMenu}
-            PaperProps={{
-              sx: { width: '250px', borderRadius: '10px !important' },
-            }}
-          >
-            {user.current_role === AUDITOR && (
-              <MenuItem
-                disabled={checkDraftIssues()}
-                onClick={handleDiscloseAll}
-              >
-                Disclose all
-              </MenuItem>
-            )}
-            <MenuItem disabled onClick={handleCloseMenu}>
-              Mark all as read
-            </MenuItem>
-            {user.current_role === AUDITOR && (
-              <MenuItem onClick={handleGenerateReport}>
-                Generate report
-              </MenuItem>
-            )}
-          </Menu>
+          {!isPublic && !saved && (
+            <Menu
+              open={!!menuAnchorEl}
+              anchorEl={menuAnchorEl}
+              anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+              transformOrigin={{ vertical: 'top', horizontal: 'left' }}
+              onClose={handleCloseMenu}
+              PaperProps={{
+                sx: { width: '250px', borderRadius: '10px !important' },
+              }}
+            >
+              {user.current_role === AUDITOR && (
+                <MenuItem
+                  disabled={checkDraftIssues()}
+                  onClick={handleDiscloseAll}
+                >
+                  Disclose all
+                </MenuItem>
+              )}
+              {!isPublic && (
+                <MenuItem disabled onClick={handleCloseMenu}>
+                  Mark all as read
+                </MenuItem>
+              )}
+              {user.current_role !== CUSTOMER && (
+                <MenuItem onClick={handleGenerateReport}>
+                  Generate report
+                </MenuItem>
+              )}
+            </Menu>
+          )}
+
+          {saved && !xss && (
+            <Button
+              variant="contained"
+              color="secondary"
+              sx={[buttonSx, (isPublic || saved) && xss ? publicBtnSx : {}]}
+              onClick={handleGenerateReport}
+            >
+              Generate report
+            </Button>
+          )}
 
           <TextField
             variant="outlined"
@@ -144,14 +319,14 @@ const Control = ({ issues, search, setSearch, setPage, setSearchParams }) => {
           />
         </Box>
 
-        {user?.current_role === AUDITOR ? (
+        {user?.current_role !== CUSTOMER ? (
           <Box sx={buttonBoxSx}>
             {audit?.status?.toLowerCase() !== RESOLVED.toLowerCase() ? (
               <>
                 <Button
                   variant="contained"
                   color="secondary"
-                  sx={buttonSx}
+                  sx={[buttonSx, (isPublic || saved) && xss ? publicBtnSx : {}]}
                   disabled={
                     audit?.status?.toLowerCase() === RESOLVED.toLowerCase()
                   }
@@ -160,28 +335,30 @@ const Control = ({ issues, search, setSearch, setPage, setSearchParams }) => {
                 >
                   New issue
                 </Button>
-                <Tooltip
-                  arrow
-                  placement="top"
-                  title={
-                    allIssuesClosed
-                      ? ''
-                      : "To resolve an audit, it is necessary that the status of all issues be 'Fixed' or 'Not fixed'. Or do not include some issues in the audit."
-                  }
-                >
-                  <span>
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      onClick={() => setResolveConfirmation(true)}
-                      disabled={!allIssuesClosed}
-                      sx={buttonSx}
-                      {...addTestsLabel('resolve-button')}
-                    >
-                      Resolve audit
-                    </Button>
-                  </span>
-                </Tooltip>
+                {!isPublic && !saved && (
+                  <Tooltip
+                    arrow
+                    placement="top"
+                    title={
+                      allIssuesClosed
+                        ? ''
+                        : "To resolve an audit, it is necessary that the status of all issues be 'Fixed' or 'Not fixed'. Or do not include some issues in the audit."
+                    }
+                  >
+                    <span>
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={() => setResolveConfirmation(true)}
+                        disabled={!allIssuesClosed}
+                        sx={buttonSx}
+                        {...addTestsLabel('resolve-button')}
+                      >
+                        Resolve audit
+                      </Button>
+                    </span>
+                  </Tooltip>
+                )}
               </>
             ) : (
               <Button
@@ -195,7 +372,7 @@ const Control = ({ issues, search, setSearch, setPage, setSearchParams }) => {
               </Button>
             )}
           </Box>
-        ) : (
+        ) : !isPublic ? (
           <Button
             variant="contained"
             color="primary"
@@ -206,6 +383,17 @@ const Control = ({ issues, search, setSearch, setPage, setSearchParams }) => {
           >
             Download report
           </Button>
+        ) : (
+          <Button
+            variant="contained"
+            color="secondary"
+            sx={[buttonSx]}
+            disabled={audit?.status?.toLowerCase() === RESOLVED.toLowerCase()}
+            onClick={handleNewIssue}
+            {...addTestsLabel('new-issue-button')}
+          >
+            New issue
+          </Button>
         )}
       </Box>
     </>
@@ -213,6 +401,17 @@ const Control = ({ issues, search, setSearch, setPage, setSearchParams }) => {
 };
 
 export default Control;
+
+const publicBtnWrapper = theme => ({
+  display: 'flex',
+  width: '100%',
+  mb: '10px',
+  justifyContent: 'center',
+  gap: '15px',
+  [theme.breakpoints.down(690)]: {
+    flexDirection: 'column-reverse',
+  },
+});
 
 const wrapper = theme => ({
   display: 'flex',
@@ -223,12 +422,34 @@ const wrapper = theme => ({
   },
 });
 
+const wrapperPublic = theme => ({
+  display: 'flex',
+  width: '100%',
+  mb: '10px',
+  [theme.breakpoints.down(555)]: {
+    flexDirection: 'column-reverse',
+  },
+});
+
 const searchBlock = theme => ({
   display: 'flex',
   flexGrow: 1,
   alignItems: 'center',
   [theme.breakpoints.down('xs')]: {
     mt: '20px',
+  },
+});
+
+const publicSearchBlock = theme => ({
+  display: 'flex',
+  flexGrow: 1,
+  alignItems: 'center',
+  [theme.breakpoints.down('xs')]: {
+    mr: '15px',
+  },
+  [theme.breakpoints.down(555)]: {
+    mt: '20px',
+    mr: 0,
   },
 });
 
@@ -282,5 +503,16 @@ const buttonSx = theme => ({
   },
   [theme.breakpoints.down('xs')]: {
     padding: '7px 10px',
+  },
+});
+
+const publicBtnSx = theme => ({
+  width: '213px',
+  [theme.breakpoints.down('sm')]: {
+    width: '185px',
+  },
+  [theme.breakpoints.down(690)]: {
+    width: '100%',
+    mr: 0,
   },
 });

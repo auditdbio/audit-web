@@ -26,7 +26,7 @@ const SubmitModal = ({ close }) => {
     </Box>
   );
 };
-//
+
 export default SubmitModal;
 
 const btnStyle = theme => ({

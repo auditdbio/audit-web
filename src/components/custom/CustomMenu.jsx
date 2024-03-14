@@ -122,7 +122,7 @@ const wrapper = {
   flexDirection: 'column',
 };
 
-const menuButton = {
+const menuButton = theme => ({
   background: 'transparent',
   color: '#222222',
   fontSize: '20px',
@@ -137,4 +137,9 @@ const menuButton = {
     backgroundColor: 'transparent',
     color: theme.palette.primary.main,
   },
-};
+  marginY: 'auto',
+  [theme.breakpoints.down('md')]: {
+    padding: '6px',
+    fontSize: '22px',
+  },
+});

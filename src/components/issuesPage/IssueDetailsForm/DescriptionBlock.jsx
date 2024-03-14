@@ -9,6 +9,7 @@ import { ProjectLinksList } from '../../custom/ProjectLinksList.jsx';
 import CustomLink from '../../custom/CustomLink.jsx';
 import theme from '../../../styles/themes.js';
 import TagsField from '../../forms/tags-field/tags-field.jsx';
+import { useFormik, useFormikContext } from 'formik';
 
 const DescriptionBlock = ({
   editMode,
@@ -21,14 +22,14 @@ const DescriptionBlock = ({
   audit,
   isEditFeedback,
   setIsEditFeedback,
+  isPublic,
 }) => {
   const matchXs = useMediaQuery(theme.breakpoints.down('xs'));
-
+  const { isValid } = useFormikContext();
   const [addLinkField, setAddLinkField] = useState(false);
   const [mdRef, setMdRef] = useState(null);
   const [feedbackRef, setFeedbackRef] = useState(null);
   const [isEditDescription, setIsEditDescription] = useState(!editMode);
-
   useEffect(() => {
     setTimeout(() => feedbackRef?.current?.nodeMdText?.current?.focus(), 100);
   }, [feedbackRef]);
@@ -69,7 +70,7 @@ const DescriptionBlock = ({
   };
 
   const getFeedbackView = () => {
-    if (user.current_role === CUSTOMER && isEditFeedback) {
+    if ((user.current_role === CUSTOMER || isPublic) && isEditFeedback) {
       return { menu: true, md: true, html: false };
     }
     return { menu: false, md: false, html: true };
@@ -82,18 +83,19 @@ const DescriptionBlock = ({
           name="description"
           setMdRef={setMdRef}
           setFieldTouched={setFieldTouched}
+          isPublic={isPublic}
           mdProps={{
             view: getMarkdownInitialView(),
             placeholder:
-              touched.description && errors.description
+              touched.description && (errors.description || !values.description)
                 ? 'Description is required'
-                : 'Description',
+                : 'Issue description',
             style: markdownSx(matchXs),
           }}
         />
       </Box>
 
-      {user.current_role === AUDITOR &&
+      {(user.current_role !== CUSTOMER || isPublic) &&
         audit?.status?.toLowerCase() !== RESOLVED.toLowerCase() && (
           <Box
             sx={[
@@ -133,7 +135,7 @@ const DescriptionBlock = ({
         )}
 
       <Box sx={linksList}>
-        {user.current_role === AUDITOR &&
+        {user.current_role !== CUSTOMER &&
         audit?.status?.toLowerCase() !== RESOLVED.toLowerCase() ? (
           <ProjectLinksList name="links" handleSubmit={handleSubmit} />
         ) : (
@@ -158,7 +160,7 @@ const DescriptionBlock = ({
 
       {addLinkField && (
         <Box sx={{ mt: '10px' }}>
-          {user.current_role === AUDITOR && (
+          {user.current_role !== CUSTOMER && (
             <TagsField
               size="small"
               name="links"
@@ -169,29 +171,32 @@ const DescriptionBlock = ({
           )}
         </Box>
       )}
-
-      {(values.feedback || isEditFeedback) && (
+      {(values.feedback || isEditFeedback || (isPublic && editMode)) && (
         <Box sx={feedbackWrapper}>
-          {!isEditFeedback && <Box sx={feedbackHeader}>Feedback</Box>}
+          {!isEditFeedback && (
+            <Box sx={feedbackHeader}>
+              {isPublic ? 'Customer feedback' : 'Feedback'}
+            </Box>
+          )}
           <MarkdownEditor
             name="feedback"
             setMdRef={setFeedbackRef}
             mdProps={{
               view: getFeedbackView(),
-              placeholder: 'Feedback',
+              placeholder: isPublic ? 'Customer feedback' : 'Feedback',
               style: isEditFeedback
                 ? { ...feedbackMarkdownSx, height: '238px' }
                 : feedbackMarkdownSx,
             }}
           />
-
-          {user.current_role === CUSTOMER && (
+          {(user.current_role === CUSTOMER || isPublic) && (
             <Box sx={editFeedbackButtonWrapper}>
               <IconButton
                 type="button"
                 aria-label="Edit feedback"
                 onClick={() => handleFeedbackEdit(handleSubmit)}
                 sx={editButton}
+                disabled={!isValid}
                 {...addTestsLabel('edit-feedback-button')}
               >
                 <EditIcon color="secondary" fontSize="small" />

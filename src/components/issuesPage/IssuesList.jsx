@@ -20,13 +20,18 @@ import IssueListItem from './IssueListItem.jsx';
 import { clearMessage } from '../../redux/actions/auditAction.js';
 import CustomSnackbar from '../custom/CustomSnackbar.jsx';
 
-const IssuesList = ({ auditId }) => {
+const IssuesList = ({
+  auditId,
+  isPublic,
+  setIsOpenReset,
+  handleSubmit,
+  saved,
+}) => {
   const dispatch = useDispatch();
   const [searchParams, setSearchParams] = useSearchParams();
   const { issues } = useSelector(s => s.issues);
   const { user } = useSelector(s => s.user);
   const { successMessage, error } = useSelector(s => s.audits);
-
   const [search, setSearch] = useState(searchParams.get('search') || '');
   const [page, setPage] = useState(+searchParams.get('page') || 1);
   const [sortType, setSortType] = useState(
@@ -36,7 +41,9 @@ const IssuesList = ({ auditId }) => {
   const getNumberOfPages = () => Math.ceil(getSearchResultsLength() / 10);
 
   const getSearchResultsLength = () => {
-    return issues?.filter(issue => issue.name?.includes(search)).length;
+    return issues?.filter(issue =>
+      issue.name?.toLowerCase().includes(search.toLowerCase()),
+    ).length;
   };
 
   const handlePageChange = (e, page) => {
@@ -96,6 +103,7 @@ const IssuesList = ({ auditId }) => {
       page,
       sort: sortType,
     }));
+    return () => dispatch(clearMessage());
   }, [sortType]);
 
   return (
@@ -111,13 +119,20 @@ const IssuesList = ({ auditId }) => {
       <Control
         issues={issues}
         search={search}
+        saved={saved}
         setSearch={setSearch}
         setPage={setPage}
         setSearchParams={setSearchParams}
+        isPublic={isPublic}
+        setIsOpenReset={setIsOpenReset}
+        handleSubmit={handleSubmit}
       />
 
       <Box
-        sx={{ display: 'flex', width: '100%', justifyContent: 'space-between' }}
+        sx={[
+          { display: 'flex', width: '100%', justifyContent: 'space-between' },
+          isPublic || saved ? { paddingRight: '15px' } : {},
+        ]}
       >
         <Box sx={{ ml: '30px' }}>
           <Button sx={[columnText, columnTitle]} onClick={handleNameSort}>
@@ -137,7 +152,10 @@ const IssuesList = ({ auditId }) => {
               {sortType === STATUS_ASCENDING ? <ArrowUpIcon /> : <ArrowIcon />}
             </span>
           </Button>
-          <Button sx={[columnText, columnTitle]} onClick={handleSeveritySort}>
+          <Button
+            sx={[isPublic || saved ? columnPublic : columnText, columnTitle]}
+            onClick={handleSeveritySort}
+          >
             <span>Severity</span>
             <span>
               {sortType === SEVERITY_ASCENDING ? (
@@ -152,20 +170,28 @@ const IssuesList = ({ auditId }) => {
 
       <Box sx={{ width: '100%' }}>
         {issues
-          ?.filter(issue => issue.name?.includes(search))
+          ?.filter(issue =>
+            issue.name?.toLowerCase().includes(search.toLowerCase()),
+          )
           .sort(sortFunc)
           .slice((page - 1) * 10, page * 10)
           .map(issue => (
             <IssueListItem
+              saved={saved}
               issue={issue}
               key={issue.id}
               auditId={auditId}
               user={user}
+              isPublic={isPublic}
             />
           ))}
       </Box>
 
-      {getSearchResultsLength() === 0 && <Box sx={noResults}>Empty</Box>}
+      {getSearchResultsLength() === 0 && (
+        <Box sx={[noResults, isPublic || saved ? { paddingTop: 0 } : {}]}>
+          No issue fits the search criteria
+        </Box>
+      )}
 
       <CustomPagination
         show={getSearchResultsLength() > 10}
@@ -179,6 +205,23 @@ const IssuesList = ({ auditId }) => {
 };
 
 export default IssuesList;
+
+const columnPublic = theme => ({
+  color: '#434242',
+  fontSize: '20px',
+  fontWeight: 500,
+  lineHeight: '25px',
+  padding: '0 25px 0 0',
+  [theme.breakpoints.down('lg')]: {
+    fontSize: '18px',
+  },
+  [theme.breakpoints.down('sm')]: {
+    fontSize: '16px',
+  },
+  [theme.breakpoints.down('xs')]: {
+    padding: '0 15px',
+  },
+});
 
 const columnsTitleBlock = theme => ({
   display: 'flex',

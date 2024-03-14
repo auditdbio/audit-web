@@ -20,6 +20,10 @@ import {
   GET_NEW_AUDIT,
   REQUEST_DECLINE,
   DOWNLOAD_REPORT_START,
+  CREATE_PUBLIC_REPORT,
+  GET_PUBLIC_REPORT,
+  RESET_PUBLIC_AUDIT,
+  SAVE_PUBLIC_REPORT,
 } from '../actions/types.js';
 
 const initialState = {
@@ -30,6 +34,7 @@ const initialState = {
   error: null,
   successMessage: null,
   currentAuditPartner: null,
+  publicReport: {},
 };
 export const auditReducer = (state = initialState, action) => {
   switch (action.type) {
@@ -65,7 +70,11 @@ export const auditReducer = (state = initialState, action) => {
           audit.id === action.payload.id ? action.payload : audit,
         ),
       };
-    //
+    case RESET_PUBLIC_AUDIT:
+      return {
+        ...state,
+        publicReport: {},
+      };
     case GET_NEW_AUDIT:
       return {
         ...state,
@@ -107,6 +116,16 @@ export const auditReducer = (state = initialState, action) => {
         ...state,
         audit: null,
       };
+    case CREATE_PUBLIC_REPORT:
+      return {
+        ...state,
+        publicReport: action.payload,
+      };
+    case GET_PUBLIC_REPORT:
+      return {
+        ...state,
+        publicReport: action.payload,
+      };
     case CONFIRM_AUDIT:
       return {
         ...state,
@@ -137,6 +156,14 @@ export const auditReducer = (state = initialState, action) => {
           audit.id === action.payload.id ? action.payload : audit,
         ),
       };
+    case SAVE_PUBLIC_REPORT: {
+      return {
+        ...state,
+        audits: [...state.audits, action.payload],
+        successMessage: 'Public report saved successfully in audits',
+        publicReport: {},
+      };
+    }
     case SET_CURRENT_AUDIT_PARTNER:
       return { ...state, currentAuditPartner: action.payload };
     case REQUEST_ERROR:

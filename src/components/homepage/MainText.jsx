@@ -12,6 +12,8 @@ const MainText = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const user = useSelector(state => state.user.user);
+  const report = JSON.parse(localStorage.getItem('report') || '{}');
+  const auditId = report.auditId ? report.auditId : Date.now();
 
   const handleSignUp = () => {
     navigate('/sign-up');
@@ -50,20 +52,6 @@ const MainText = () => {
             {paragraphText}
           </Typography>
           <Box sx={buttonsStyle(isMobile)}>
-            <CustomButton sx={gitCoinSx}>
-              <MuiLink
-                target="_blank"
-                sx={{
-                  color: '#fff',
-                  textDecoration: 'none',
-                }}
-                href="https://explorer.gitcoin.co/#/round/424/0x98720dd1925d34a2453ebc1f91c9d48e7e89ec29/0x98720dd1925d34a2453ebc1f91c9d48e7e89ec29-91"
-              >
-                Support us on gitcoin
-              </MuiLink>
-            </CustomButton>
-          </Box>
-          <Box sx={buttonsStyle(isMobile)}>
             <CustomButton
               sx={auditorButton}
               onClick={isAuth() ? handleBecomeAuditor : handleSignUp}
@@ -77,6 +65,14 @@ const MainText = () => {
               {...addTestsLabel('hero_show-project-button')}
             >
               Show your project
+            </CustomButton>
+          </Box>
+          <Box sx={buttonsStyle(isMobile)}>
+            <CustomButton
+              sx={[gitCoinSx, { color: '#fff' }]}
+              onClick={() => navigate(`/audit-builder/${auditId}`)}
+            >
+              Try audit builder
             </CustomButton>
           </Box>
         </Box>
@@ -167,7 +163,7 @@ const imageStyle = isMobile => ({
   display: isMobile ? 'none' : 'inline',
   minWidth: '25%',
 });
-
+//
 const buttonsStyle = isMobile => ({
   flexGrow: 0,
   display: 'flex',
@@ -211,6 +207,7 @@ const personBitcoinStyle = {
 
 const gitCoinSx = {
   backgroundColor: '#44944A',
+  paddingX: 0,
   '&:hover': {
     backgroundColor: '#326e34!important',
   },

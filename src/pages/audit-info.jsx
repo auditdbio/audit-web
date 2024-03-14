@@ -16,6 +16,7 @@ import {
   downloadReport,
 } from '../redux/actions/auditAction.js';
 import {
+  AUDITOR,
   CUSTOMER,
   DONE,
   SUBMITED,
@@ -25,13 +26,19 @@ import Markdown from '../components/markdown/Markdown.jsx';
 import { ASSET_URL } from '../services/urls.js';
 import { addTestsLabel } from '../lib/helper.js';
 import CustomSnackbar from '../components/custom/CustomSnackbar.jsx';
+import { setCurrentChat } from '../redux/actions/chatActions.js';
+import ChatIcon from '../components/icons/ChatIcon.jsx';
+import ConfirmModal from '../components/modal/ConfirmModal.jsx';
 
 const AuditInfo = ({ audit, auditRequest, issues, confirmed }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [showFull, setShowFull] = useState(false);
   const [showReadMoreButton, setShowReadMoreButton] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const { successMessage, error } = useSelector(s => s.audits);
+  const { user } = useSelector(s => s.user);
+  const { chatList } = useSelector(s => s.chat);
   const descriptionRef = useRef();
 
   useEffect(() => {
@@ -64,6 +71,32 @@ const AuditInfo = ({ audit, auditRequest, issues, confirmed }) => {
     );
   };
 
+  const handleSendMessage = () => {
+    window.scrollTo(0, 0);
+
+    const existingChat = chatList.find(chat =>
+      chat.members?.find(
+        member =>
+          member.id === audit?.auditor_id &&
+          member.role?.toLowerCase() === AUDITOR,
+      ),
+    );
+    const chatId = existingChat ? existingChat.id : audit?.auditor_id;
+    const members = [audit?.auditor_id, user.id];
+
+    dispatch(
+      setCurrentChat(chatId, {
+        name: audit?.auditor_first_name,
+        avatar: audit.avatar,
+        role: AUDITOR,
+        isNew: !existingChat,
+        members,
+      }),
+    );
+    localStorage.setItem('path', window.location.pathname);
+    navigate(`/chat/${audit?.auditor_id}`);
+  };
+
   const goToIssues = () => {
     navigate(`/issues/audit-issue/${audit?.id}`);
   };
@@ -89,7 +122,7 @@ const AuditInfo = ({ audit, auditRequest, issues, confirmed }) => {
         >
           <ArrowBackIcon />
         </Button>
-        <Box sx={{ display: 'flex', width: '100%' }}>
+        <Box sx={{ display: 'flex', width: '100%', justifyContent: 'center' }}>
           {confirmed ? (
             <Box
               sx={{
@@ -232,11 +265,65 @@ const AuditInfo = ({ audit, auditRequest, issues, confirmed }) => {
           )}
         </Box>
         <Box>
-          {audit?.report && (
-            <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              mt: '20px',
+              gap: '15px',
+            }}
+          >
+            {auditRequest && (
+              <Button
+                variant={'contained'}
+                sx={buttonSx}
+                disabled={audit?.last_changer?.toLowerCase() === CUSTOMER}
+                onClick={handleConfirm}
+                {...addTestsLabel('accept-button')}
+              >
+                Accept
+              </Button>
+            )}
+            {!audit?.status && (
               <Button
                 variant="contained"
                 color="secondary"
+                onClick={() => setIsModalOpen(true)}
+                sx={buttonSx}
+                {...addTestsLabel('decline-button')}
+              >
+                Decline
+              </Button>
+            )}
+            {audit?.report && !issues?.length && (
+              <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+                <Button
+                  variant={'contained'}
+                  color={'secondary'}
+                  onClick={() => dispatch(downloadReport(audit))}
+                  sx={[buttonSx]}
+                  {...addTestsLabel('report-button')}
+                >
+                  Download Report
+                </Button>
+              </Box>
+            )}
+            <Button
+              variant="text"
+              onClick={handleSendMessage}
+              disabled={audit?.auditor_id === user.id}
+              {...addTestsLabel('message-button')}
+            >
+              <ChatIcon />
+            </Button>
+          </Box>
+
+          {audit?.report && !!issues?.length && (
+            <Box sx={{ display: 'flex', justifyContent: 'center', mt: '15px' }}>
+              <Button
+                variant={'contained'}
+                color={'secondary'}
                 onClick={() => dispatch(downloadReport(audit))}
                 sx={[buttonSx, { marginBottom: '20px' }]}
                 {...addTestsLabel('report-button')}
@@ -244,17 +331,6 @@ const AuditInfo = ({ audit, auditRequest, issues, confirmed }) => {
                 Download Report
               </Button>
             </Box>
-          )}
-          {auditRequest && (
-            <Button
-              variant="contained"
-              sx={buttonSx}
-              disabled={audit?.last_changer?.toLowerCase() === CUSTOMER}
-              onClick={handleConfirm}
-              {...addTestsLabel('accept-button')}
-            >
-              Accept
-            </Button>
           )}
           {audit?.status !== SUBMITED && audit?.status === DONE && (
             <Button
@@ -264,17 +340,6 @@ const AuditInfo = ({ audit, auditRequest, issues, confirmed }) => {
               {...addTestsLabel('confirm-button')}
             >
               Confirm
-            </Button>
-          )}
-          {!audit?.status && (
-            <Button
-              variant="contained"
-              color="secondary"
-              onClick={handleDecline}
-              sx={buttonSx}
-              {...addTestsLabel('decline-button')}
-            >
-              Decline
             </Button>
           )}
 
@@ -290,7 +355,7 @@ const AuditInfo = ({ audit, auditRequest, issues, confirmed }) => {
                 color="primary"
                 type="button"
                 onClick={goToIssues}
-                sx={buttonSx}
+                sx={[buttonSx, { mt: '7px' }]}
                 {...addTestsLabel('issues-button')}
               >
                 Issues ({issues?.length})
@@ -298,6 +363,12 @@ const AuditInfo = ({ audit, auditRequest, issues, confirmed }) => {
             )}
           {/*)}*/}
         </Box>
+
+        <ConfirmModal
+          isOpen={isModalOpen}
+          handleAgree={handleDecline}
+          handleDisagree={() => setIsModalOpen(false)}
+        />
       </CustomCard>
     </Layout>
   );
@@ -417,7 +488,6 @@ const buttonSx = theme => ({
   fontSize: '16px',
   textTransform: 'unset',
   fontWeight: 600,
-  mr: '15px',
   width: '270px',
   borderRadius: '10px',
   ':last-child': { mr: 0 },
@@ -428,7 +498,7 @@ const buttonSx = theme => ({
     width: '170px',
   },
   [theme.breakpoints.down('xs')]: {
-    width: '120px',
+    width: '100px',
   },
 });
 

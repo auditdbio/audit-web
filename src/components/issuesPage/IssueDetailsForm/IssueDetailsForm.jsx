@@ -7,22 +7,23 @@ import * as Yup from 'yup';
 import EditIcon from '@mui/icons-material/Edit';
 import { Box, IconButton, InputAdornment, Tooltip } from '@mui/material';
 import { addTestsLabel } from '../../../lib/helper.js';
-import { AUDITOR, RESOLVED } from '../../../redux/actions/types.js';
+import { AUDITOR, CUSTOMER, RESOLVED } from '../../../redux/actions/types.js';
 import { clearMessage } from '../../../redux/actions/auditAction.js';
 import {
   addAuditIssue,
+  addPublicIssue,
   updateAuditIssue,
+  updatePublicIssue,
 } from '../../../redux/actions/issueAction.js';
 import CustomSnackbar from '../../custom/CustomSnackbar.jsx';
 import DescriptionBlock from './DescriptionBlock.jsx';
 import StatusSeverityBlock from './StatusSeverityBlock.jsx';
-import { DRAFT } from '../constants.js';
+import { DRAFT, NOT_FIXED } from '../constants.js';
 
 const IssueDetailsForm = ({ issue = null, editMode = false }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { auditId, issueId } = useParams();
-
   const user = useSelector(s => s.user.user);
   const { successMessage, error } = useSelector(s => s.issues);
   const audit = useSelector(s =>
@@ -56,6 +57,7 @@ const IssueDetailsForm = ({ issue = null, editMode = false }) => {
   const handleSubmitForm = (values, { setFieldValue }) => {
     if (editMode) {
       const prev = issuePrevValues || initialValues;
+
       const updatedValues = Object.keys(prev).reduce((acc, key) => {
         if (Array.isArray(values[key])) {
           return String(prev[key]) === String(values[key])
@@ -67,6 +69,7 @@ const IssueDetailsForm = ({ issue = null, editMode = false }) => {
 
       setIsEditName(false);
       setFieldValue('status', '');
+
       setIssuePrevValues({ ...values, status: '' });
       dispatch(updateAuditIssue(auditId, issueId, updatedValues));
     } else {
@@ -125,7 +128,7 @@ const IssueDetailsForm = ({ issue = null, editMode = false }) => {
                   inputRef={nameInputRef}
                   inputProps={{ ...addTestsLabel('issue-name-input') }}
                   InputProps={
-                    user.current_role === AUDITOR &&
+                    user.current_role !== CUSTOMER &&
                     audit?.status?.toLowerCase() !== RESOLVED.toLowerCase() &&
                     editMode
                       ? {
@@ -196,7 +199,7 @@ const issueValidationSchema = Yup.object().shape({
   description: Yup.string().required('Description required'),
   severity: Yup.string().required('Required'),
   category: Yup.string(),
-  links: Yup.array().of(Yup.string().url()),
+  links: Yup.array().of(Yup.string()),
   include: Yup.boolean(),
   feedback: Yup.string(),
 });

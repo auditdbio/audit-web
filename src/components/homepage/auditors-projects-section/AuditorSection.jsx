@@ -15,6 +15,7 @@ import theme from '../../../styles/themes';
 import { getAuditors } from '../../../redux/actions/auditorAction.js';
 import { addTestsLabel } from '../../../lib/helper.js';
 import { sliceCards } from './AuditorsProjectsSection.jsx';
+import { Link } from 'react-router-dom';
 
 const AuditorSection = () => {
   const dispatch = useDispatch();
@@ -35,8 +36,6 @@ const AuditorSection = () => {
     }
   }, [searchInput]);
 
-  useEffect(() => {}, [auditorReducer]);
-
   useEffect(() => {
     if (auditorReducer.auditors && auditorReducer.auditors.length != 0) {
       setAuditorFound(true);
@@ -48,8 +47,10 @@ const AuditorSection = () => {
   return (
     <Box sx={{ width: '100%' }}>
       <Box sx={headerWrapper}>
-        <Typography variant="h1" sx={{ fontWeight: 500 }}>
-          Auditors
+        <Typography variant="h1" sx={titleSx}>
+          <Link style={{ color: '#fff' }} to={'/auditors'}>
+            Auditors
+          </Link>
         </Typography>
         <Box sx={searchWrapper}>
           <InputBase
@@ -117,6 +118,37 @@ const AuditorSection = () => {
     </Box>
   );
 };
+
+const titleSx = theme => ({
+  fontWeight: 500,
+  position: 'relative',
+  '&:hover::after': {
+    opacity: 1,
+    transform: 'scaleX(1)',
+  },
+  '&::after': {
+    content: '" "',
+    position: 'absolute',
+    left: 0,
+    bottom: '-2px',
+    width: '100%',
+    height: '2px',
+    opacity: 0,
+    transition: 'opacity 0.3s ease, transform 0.3s ease',
+    transform: 'scaleX(0)',
+    backgroundColor: '#fff',
+  },
+  [theme.breakpoints.down('xs')]: {
+    fontSize: '28px',
+  },
+});
+
+export const gridItemStylePublic = theme => ({
+  width: '33.330%',
+  [theme.breakpoints.down('xs')]: {
+    width: '50%',
+  },
+});
 
 const headerWrapper = {
   display: 'flex',

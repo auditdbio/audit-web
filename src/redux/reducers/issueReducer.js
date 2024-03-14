@@ -1,9 +1,12 @@
 import {
   ADD_AUDIT_ISSUE,
   CLEAR_MESSAGES,
+  DELETE_ISSUE,
+  DELETE_PUBLIC_ISSUE,
   DISCLOSE_ALL_ISSUES,
   GET_AUDIT_ISSUES,
   REQUEST_ERROR,
+  RESET_PUBLIC_AUDIT,
   SET_READ_CHANGES,
   UPDATE_AUDIT_ISSUE,
 } from '../actions/types.js';
@@ -37,6 +40,8 @@ export const issueReducer = (state = initialState, action) => {
           issue.id === action.payload.issue.id ? action.payload.issue : issue,
         ),
       };
+    case RESET_PUBLIC_AUDIT:
+      return { ...state, issues: [] };
     case DISCLOSE_ALL_ISSUES:
       return {
         ...state,
@@ -54,6 +59,22 @@ export const issueReducer = (state = initialState, action) => {
         issues: state.issues?.map(issue =>
           issue.id === issueId ? { ...issue, read: readCount } : issue,
         ),
+      };
+    case DELETE_ISSUE:
+      return {
+        ...state,
+        issues: state.issues?.filter(
+          issue => issue.id !== action.payload.issue.id,
+        ),
+        successMessage: 'Audit issue deleted successfully',
+      };
+    case DELETE_PUBLIC_ISSUE:
+      return {
+        ...state,
+        issues: state.issues?.filter(
+          issue => issue.id !== action.payload.issue,
+        ),
+        successMessage: 'Audit issue deleted successfully',
       };
     default:
       return state;

@@ -16,6 +16,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import { clearUserError, signUp } from '../../../redux/actions/userAction.js';
 import CustomSnackbar from '../../custom/CustomSnackbar.jsx';
 import { addTestsLabel, isAuth } from '../../../lib/helper.js';
+import GitHubIcon from '@mui/icons-material/GitHub';
+import RoleModal from '../../modal/RoleModal.jsx';
+
+const GITHUB_ID = import.meta.env.VITE_GITHUB_CLIENT_ID;
+const BASE_URL = import.meta.env.VITE_BASE_URL;
 import { AUDITOR, CUSTOMER } from '../../../redux/actions/types.js';
 
 const SignupForm = () => {
@@ -23,12 +28,20 @@ const SignupForm = () => {
   const dispatch = useDispatch();
   const matchMd = useMediaQuery(theme.breakpoints.down('md'));
   const error = useSelector(s => s.user.error);
+  const [open, setOpen] = useState(false);
   const initialValues = {
     current_role: '',
     name: '',
     email: '',
     password: '',
     confirmPassword: '',
+  };
+
+  const handleAuthGithub = () => {
+    window.open(
+      `https://github.com/login/oauth/authorize?client_id=${GITHUB_ID}&redirect_uri=${BASE_URL}oauth/callback&scope=read:user,user:email&state=${isAuditor}_GitHub_auth`,
+      '_self',
+    );
   };
 
   return (
@@ -113,15 +126,42 @@ const SignupForm = () => {
                 />
               </Box>
             </Box>
-            <Button
-              type="submit"
-              sx={submitButton}
-              variant="contained"
-              disabled={isAuth()}
-              {...addTestsLabel('sign-up-button')}
+            <Box
+              sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '25px',
+                width: '100%',
+                alignItems: 'center',
+              }}
             >
-              Sign up
-            </Button>
+              <Button
+                type="submit"
+                sx={submitButton}
+                color={'secondary'}
+                variant={'contained'}
+                disabled={isAuth()}
+                {...addTestsLabel('sign-up-button')}
+              >
+                Sign up
+              </Button>
+              <Button
+                sx={[submitButton, { paddingX: '0' }]}
+                variant={'contained'}
+                onClick={() => setOpen(true)}
+              >
+                <GitHubIcon sx={{ marginRight: '15px' }} />
+                Sign up with Github
+              </Button>
+            </Box>
+            {open && (
+              <RoleModal
+                onClose={() => setOpen(false)}
+                onClick={handleAuthGithub}
+                isAuditor={isAuditor}
+                setIsAuditor={setIsAuditor}
+              />
+            )}
           </Box>
         </Form>
       )}

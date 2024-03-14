@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom/dist';
 import { useDispatch, useSelector } from 'react-redux';
-import { Box, Button, Tooltip, Typography } from '@mui/material';
+import { Box, Button, Tooltip, Typography, useMediaQuery } from '@mui/material';
 import Currency from './icons/Currency.jsx';
 import Star from './icons/Star.jsx';
 import {
@@ -14,15 +14,21 @@ import {
 import { addTestsLabel } from '../lib/helper.js';
 import { startAudit } from '../redux/actions/auditAction.js';
 import ShareProjectButton from './custom/ShareProjectButton.jsx';
+import theme from '../styles/themes.js';
 
 const ProjectCard = ({ type, project }) => {
   const navigate = useNavigate();
   const currentRole = useSelector(s => s.user.user.current_role);
   const dispatch = useDispatch();
+  const matchSx = useMediaQuery(theme.breakpoints.down('xs'));
 
   const handleClick = () => {
     if (type === AUDITOR) {
-      navigate(`/audit-info/${project.id}/auditor`);
+      if (!project.no_customer) {
+        navigate(`/audit-info/${project.id}/auditor`);
+      } else {
+        navigate(`/audit-builder/edit/${project.id}`);
+      }
       window.scrollTo({ top: 0, left: 0 });
     } else {
       navigate(`/edit-project/${project.id}`);
@@ -58,16 +64,29 @@ const ProjectCard = ({ type, project }) => {
             {project?.tags?.map(el => el).join(', ') ?? ''}
           </Typography>
         </Tooltip>
-        <Box sx={priceWrapper}>
-          <Box sx={infoWrapper}>
-            <Currency />
-            <Typography>{project.price}</Typography>
+        {!project.no_customer ? (
+          <Box sx={priceWrapper}>
+            <Box sx={infoWrapper}>
+              <Currency />
+              <Typography>{project.price}</Typography>
+            </Box>
+            <Box sx={infoWrapper}>
+              <Star />
+              <Typography>150</Typography>
+            </Box>
           </Box>
-          <Box sx={infoWrapper}>
-            <Star />
-            <Typography>150</Typography>
+        ) : (
+          <Box sx={priceWrapper}>
+            <Typography
+              sx={[
+                matchSx ? { mb: '0!important' } : { mb: '15px' },
+                { fontSize: '18px!important' },
+              ]}
+            >
+              Audit builder
+            </Typography>
           </Box>
-        </Box>
+        )}
       </Box>
       <Box
         sx={{
@@ -79,26 +98,28 @@ const ProjectCard = ({ type, project }) => {
         }}
       >
         {currentRole === AUDITOR ? (
-          <Box sx={statusWrapper}>
-            {project.status !== SUBMITED && (
-              <>
-                {project.status.toLowerCase() === RESOLVED.toLowerCase() ? (
-                  <Box sx={{ backgroundColor: '#52176D' }} />
-                ) : (
-                  project.status.toLowerCase() ===
-                    WAITING_FOR_AUDITS.toLowerCase() && (
-                    <Box sx={{ backgroundColor: '#FF9900' }} />
-                  )
-                )}
-                {project.status.toLowerCase() !==
-                  WAITING_FOR_AUDITS.toLowerCase() &&
-                  project.status.toLowerCase() !== RESOLVED.toLowerCase() && (
-                    <Box sx={{ backgroundColor: '#09C010' }} />
+          !project.no_customer && (
+            <Box sx={statusWrapper}>
+              {project.status !== SUBMITED && (
+                <>
+                  {project.status.toLowerCase() === RESOLVED.toLowerCase() ? (
+                    <Box sx={{ backgroundColor: '#52176D' }} />
+                  ) : (
+                    project.status.toLowerCase() ===
+                      WAITING_FOR_AUDITS.toLowerCase() && (
+                      <Box sx={{ backgroundColor: '#FF9900' }} />
+                    )
                   )}
-              </>
-            )}
-            <Typography>{project.status}</Typography>
-          </Box>
+                  {project.status.toLowerCase() !==
+                    WAITING_FOR_AUDITS.toLowerCase() &&
+                    project.status.toLowerCase() !== RESOLVED.toLowerCase() && (
+                      <Box sx={{ backgroundColor: '#09C010' }} />
+                    )}
+                </>
+              )}
+              <Typography>{project.status}</Typography>
+            </Box>
+          )
         ) : (
           <Box sx={statusWrapper}>
             {project.status === DONE ? (
