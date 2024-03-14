@@ -62,6 +62,38 @@ export const createRequest = (values, redirect, navigateTo) => {
       });
   };
 };
+//
+export const createRequestModal = values => {
+  console.log(values);
+  return dispatch => {
+    const token = Cookies.get('token');
+    const current_role = JSON.parse(localStorage.getItem('user')).current_role;
+    axios
+      .post(
+        `${API_URL}/audit_request`,
+        {
+          ...values,
+          time: {
+            from: +new Date(values.time.from),
+            to: +new Date(values.time.to),
+          },
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      )
+      .then(({ data }) => {
+        // dispatch(getAuditsRequest(current_role));
+        dispatch({ type: AUDIT_REQUEST_CREATE, payload: data });
+      })
+      .catch(({ response }) => {
+        console.log(response, 'res');
+        dispatch({ type: REQUEST_ERROR });
+      });
+  };
+};
 
 export const getAuditsRequest = role => {
   return dispatch => {
@@ -139,7 +171,7 @@ export const getAudit = id => {
   };
 };
 
-export const deleteAuditRequest = id => {
+export const deleteAuditRequest = (id, stayHere) => {
   return dispatch => {
     const token = Cookies.get('token');
     axios
@@ -150,7 +182,9 @@ export const deleteAuditRequest = id => {
       })
       .then(({ data }) => {
         dispatch({ type: DELETE_REQUEST, payload: data });
-        history.back();
+        if (!stayHere) {
+          history.back();
+        }
       });
   };
 };

@@ -9,11 +9,11 @@ import theme from '../../styles/themes.js';
 import { AUDITOR, CUSTOMER } from '../../redux/actions/types.js';
 import ImageMessage from './ImageMessage.jsx';
 import AuditRequestInfo from '../audit-request-info.jsx';
+import AuditMessage from './AuditMessage.jsx';
 
 const Message = ({ message, user, currentChat, isRead, type }) => {
   const { customer } = useSelector(state => state.customer);
   const { auditor } = useSelector(state => state.auditor);
-  const [isOpen, setIsOpen] = useState(false);
 
   const userAvatar = useMemo(() => {
     if (user.current_role === AUDITOR && !!auditor?.avatar) {
@@ -58,83 +58,15 @@ const Message = ({ message, user, currentChat, isRead, type }) => {
       <Avatar src={getMessageAvatar()} sx={messageAvatarSx} alt="User photo" />
       <Box
         sx={
-          message.kind === 'Image'
+          message.kind === 'Audit'
             ? requestTextSx({ isOwn: message.from?.id !== user.id })
             : messageTextSx({ isOwn: message.from?.id !== user.id })
         }
       >
         {message.kind === 'Image' ? (
-          // <ImageMessage message={message} />
-          <Box>
-            <Typography align={'center'}>Audit request</Typography>
-            <Typography align={'center'}>Project name</Typography>
-            <Box
-              sx={{
-                display: 'flex',
-                gap: '10px',
-                justifyContent: 'space-between',
-              }}
-            >
-              <Typography sx={{ fontSize: '14px!important' }}>
-                $10 per line
-              </Typography>
-              <Typography align={'center'}>Mar 05 2024</Typography>
-            </Box>
-            {message.from?.id !== user.id && (
-              <>
-                <Box sx={{ display: 'flex', gap: '20px', marginY: '10px' }}>
-                  <Button
-                    sx={{ textTransform: 'unset', width: '100%' }}
-                    variant={'contained'}
-                  >
-                    Accept
-                  </Button>
-                  <Button
-                    sx={{ textTransform: 'unset', width: '100%' }}
-                    variant={'contained'}
-                  >
-                    Decline
-                  </Button>
-                </Box>
-                <Box sx={{ display: 'flex', gap: '20px', marginY: '10px' }}>
-                  <Button
-                    sx={{
-                      textTransform: 'unset',
-                      width: '100%',
-                    }}
-                    color={'secondary'}
-                    variant={'contained'}
-                  >
-                    Make offer
-                  </Button>
-                  <Button
-                    sx={{
-                      textTransform: 'unset',
-                      width: '100%',
-                    }}
-                    onClick={() => setIsOpen(true)}
-                    color={'secondary'}
-                    variant={'contained'}
-                  >
-                    View more
-                  </Button>
-                  <Modal
-                    open={isOpen}
-                    onClose={() => setIsOpen(false)}
-                    aria-labelledby="modal-modal-title"
-                    aria-describedby="modal-modal-description"
-                  >
-                    <Box sx={modalSx}>
-                      <AuditRequestInfo
-                        project={data}
-                        onClose={() => setIsOpen(false)}
-                      />
-                    </Box>
-                  </Modal>
-                </Box>
-              </>
-            )}
-          </Box>
+          <ImageMessage message={message} />
+        ) : message.kind === 'Audit' ? (
+          <AuditMessage message={message} />
         ) : message.kind === 'File' ? (
           <Typography title="Download" sx={linkMessage} onClick={downloadFile}>
             <span>{decodeURIComponent(message.text).replace(/^\d*_/, '')}</span>
@@ -212,23 +144,6 @@ const messageSx = ({ isOwn }) => ({
   flexDirection: isOwn ? 'row-reverse' : 'row',
 });
 
-const modalSx = theme => ({
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  width: 700,
-  bgcolor: 'background.paper',
-  boxShadow: 24,
-  borderRadius: '10px',
-  [theme.breakpoints.down('xs')]: {
-    width: 380,
-  },
-  [theme.breakpoints.down('xxs')]: {
-    width: 310,
-  },
-});
-
 const contentSx = theme => ({
   borderRadius: '10px',
   padding: '15px 30px 25px',
@@ -296,9 +211,10 @@ const requestTextSx = ({ isOwn }) => ({
   margin: '0 20px',
   background: '#e5e5e5',
   padding: '15px',
+  paddingBottom: '30px',
   borderRadius: isOwn ? '15px 0 15px 15px' : '0 15px 15px 15px',
   '& p': {
-    padding: '15px',
+    // padding: '15px',
     fontSize: '20px',
     fontWeight: 500,
     lineHeight: '25px',
@@ -320,7 +236,7 @@ const requestTextSx = ({ isOwn }) => ({
     margin: '0 10px',
     '& p': {
       lineHeight: '20px',
-      padding: '10px 20px 18px',
+      // padding: '10px 20px 18px',
       fontSize: '16px',
     },
   },

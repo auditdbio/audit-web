@@ -37,6 +37,7 @@ const AuditRequestInfo = ({
   redirect,
   isModal,
   setError,
+  stayHere,
 }) => {
   const navigate = useNavigate();
   const matchXs = useMediaQuery(theme.breakpoints.down('xs'));
@@ -461,6 +462,7 @@ const AuditRequestInfo = ({
           redirect={redirect}
           setError={setError}
           onClose={onClose}
+          stayHere={stayHere}
           handleClose={handleClose}
         />
       </Modal>
