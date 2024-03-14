@@ -73,7 +73,7 @@ export const chatReducer = (state = initialState, action) => {
         currentChat: {
           ...state.currentChat,
           isNew: false,
-          chatId: action.payload?._id?.$oid, // todo: change id field in backend
+          chatId: action.payload,
         },
       };
     case CHAT_CLOSE_CURRENT_CHAT:
