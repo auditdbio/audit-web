@@ -2,7 +2,7 @@ import React from 'react';
 import Layout from '../styles/Layout.jsx';
 import { Box, Button, Typography } from '@mui/material';
 import { CustomCard } from '../components/custom/Card.jsx';
-import { Form, Formik, Field } from 'formik';
+import { Form, Formik } from 'formik';
 import SimpleField from '../components/forms/fields/simple-field.jsx';
 import { radiusOfComponents } from '../styles/themes.js';
 import DescriptionField from '../components/forms/create-project/DescriptionField.jsx';
@@ -26,6 +26,7 @@ const AuditDb = () => {
     company: '',
     message: '',
   };
+
   return (
     <Layout>
       <CustomSnackbar
@@ -58,10 +59,10 @@ const AuditDb = () => {
                           gap: '5px',
                         }}
                       >
-                        <Typography variant={'h3'}>
+                        <Typography variant="h3">
                           Leave us a message, or write to
                         </Typography>
-                        <Typography variant={'h3'} color={'primary'}>
+                        <Typography variant="h3" color="primary">
                           hello@auditdb.io
                         </Typography>
                       </Box>
@@ -137,34 +138,30 @@ const AuditDb = () => {
                         {/*        </Alert>*/}
                         {/*    </Stack>*/}
                         {/*</Snackbar>*/}
+                        <SimpleField name="name" label="Name" emptyPH={true} />
                         <SimpleField
-                          name={'name'}
-                          label={'Name'}
+                          name="company"
+                          label="Company"
                           emptyPH={true}
                         />
                         <SimpleField
-                          name={'company'}
-                          label={'Company'}
-                          emptyPH={true}
-                        />
-                        <SimpleField
-                          name={'email'}
-                          label={'E-mail'}
+                          name="email"
+                          label="E-mail"
                           emptyPH={true}
                         />
                         <Box sx={fieldWrapper}>
                           <DescriptionField
-                            name={'message'}
-                            label={'Your text there'}
+                            name="message"
+                            label="Your text there"
                           />
                         </Box>
                       </Box>
                     </Box>
                   </Box>
                   <Button
-                    type={'submit'}
-                    color={'primary'}
-                    variant={'contained'}
+                    type="submit"
+                    color="primary"
+                    variant="contained"
                     sx={submitButton}
                     {...addTestsLabel('send-button')}
                   >
@@ -252,19 +249,18 @@ const contactWrapper = theme => ({
 
 const submitButton = theme => ({
   display: 'block',
-  padding: '18px 140px',
+  padding: '11px 140px',
   color: '#FCFAF6',
   textTransform: 'unset',
   fontWeight: 600,
+  lineHeight: 1.2,
   maxWidth: '402px',
   margin: '45px auto 0',
   borderRadius: '15px',
-  fontSize: '16px',
-  paddingY: '11px',
+  fontSize: '14px',
   [theme.breakpoints.down('sm')]: {
     width: '225px',
     padding: '13px 80px',
-    fontSize: '14px',
   },
 });
 

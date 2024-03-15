@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Box, Button, Tooltip, Typography } from '@mui/material';
 import Currency from './icons/Currency.jsx';
 import Star from './icons/Star.jsx';
-import theme, { radiusOfComponents } from '../styles/themes.js';
+import theme from '../styles/themes.js';
 import { useNavigate } from 'react-router-dom/dist';
 import { useDispatch } from 'react-redux';
 import { deleteAuditRequest } from '../redux/actions/auditAction.js';
@@ -10,7 +10,7 @@ import dayjs from 'dayjs';
 import { addTestsLabel } from '../lib/helper.js';
 import ConfirmModal from './modal/ConfirmModal.jsx';
 
-const AuditRequestCard = ({ type, request }) => {
+const AuditRequestCard = ({ type, request, audit }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -24,8 +24,8 @@ const AuditRequestCard = ({ type, request }) => {
   return (
     <Box sx={cardWrapper}>
       <Box sx={cardInnerWrapper}>
-        <Tooltip title={request.project_name} arrow placement={'top'}>
-          <Typography variant={'h5'} sx={projectNameSx} textAlign={'center'}>
+        <Tooltip title={request.project_name} arrow placement="top">
+          <Typography variant="h5" sx={projectNameSx} textAlign="center">
             {request.project_name}
           </Typography>
         </Tooltip>
@@ -34,7 +34,7 @@ const AuditRequestCard = ({ type, request }) => {
           <Typography sx={dateStyle}>
             {dayjs((request || audit)?.time?.from).format('DD.MM.YYYY')}
           </Typography>
-          <Typography variant={'caption'}>-</Typography>
+          <Typography variant="caption">-</Typography>
           <Typography sx={dateStyle}>
             {dayjs((request || audit)?.time?.to).format('DD.MM.YYYY')}
           </Typography>
@@ -52,7 +52,7 @@ const AuditRequestCard = ({ type, request }) => {
       </Box>
       <Box sx={buttonWrapper}>
         <Button
-          variant={'contained'}
+          variant="contained"
           sx={[actionButton, type === 'auditor' ? editAuditor : {}]}
           onClick={() => navigate(`/audit-request/${request.id}`)}
           {...addTestsLabel('audit-req_view-button')}
@@ -132,8 +132,8 @@ const priceWrapper = theme => ({
     mt: '5px',
     marginLeft: '35px',
   },
-  [theme.breakpoints.down(450)]: {
-    marginLeft: '28px',
+  [theme.breakpoints.down('xxs')]: {
+    marginLeft: '15px',
   },
 });
 
@@ -142,9 +142,9 @@ const copyBtn = theme => ({
 });
 
 const actionButton = theme => ({
-  fontSize: '15px',
+  fontSize: '14px',
   fontWeight: 600,
-  lineHeight: '25px',
+  lineHeight: '20px',
   width: '100px',
   textTransform: 'none',
   borderRadius: '10px',
@@ -197,6 +197,9 @@ const dateWrapper = {
       fontSize: '8px',
     },
   },
+  [theme.breakpoints.down('xxs')]: {
+    gap: '1px',
+  },
 };
 
 const dateStyle = {
@@ -216,8 +219,9 @@ const dateStyle = {
     width: '70px',
     fontSize: '8px!important',
   },
-  [theme.breakpoints.down(450)]: {
-    padding: '5px',
+  [theme.breakpoints.down('xxs')]: {
+    padding: '5px 2px',
+    width: '50px',
   },
 };
 

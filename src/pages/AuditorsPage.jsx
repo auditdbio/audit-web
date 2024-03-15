@@ -3,13 +3,11 @@ import Layout from '../styles/Layout.jsx';
 import { Box, Button, useMediaQuery } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack.js';
 import Filter from '../components/forms/filter/index.jsx';
-import ProjectListCard from '../components/Project-list-card.jsx';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useSearchParams } from 'react-router-dom/dist';
 import AuditorListCard from '../components/AuditorListCard.jsx';
-import { getAuditors, searchAuditor } from '../redux/actions/auditorAction.js';
+import { searchAuditor } from '../redux/actions/auditorAction.js';
 import theme from '../styles/themes.js';
-import { searchProjects } from '../redux/actions/projectAction.js';
 import CustomPagination from '../components/custom/CustomPagination.jsx';
 import { addTestsLabel } from '../lib/helper.js';
 
@@ -101,15 +99,15 @@ const AuditorsPage = () => {
       <Box sx={wrapper}>
         <Box sx={headWrapper}>
           <Button
-            onClick={() => navigate(-1)}
+            onClick={() => navigate('/')}
             aria-label="Go back"
             {...addTestsLabel('go-back-button')}
           >
-            <ArrowBackIcon color={'secondary'} />
+            <ArrowBackIcon color="secondary" />
           </Button>
           <Box>
             <Filter
-              target={'auditor'}
+              target="auditor"
               submit={applyFilter}
               initial={initialFilter}
             />
@@ -122,12 +120,12 @@ const AuditorsPage = () => {
           page={currentPage}
           onChange={handleChangePage}
           showFirstLast={!matchXs}
-          size={matchXs ? 'small' : 'medium'}
+          size="small"
         />
         {auditors?.length > 0 && (
           <Box sx={contentWrapper}>
             {auditors?.map((auditor, idx) => (
-              <Box sx={auditorContainerStyle} key={auditor.user_id}>
+              <Box sx={auditorContainerStyle(idx)} key={auditor.user_id}>
                 <AuditorListCard
                   budge={auditor.kind === 'badge'}
                   auditor={auditor}
@@ -148,7 +146,7 @@ const AuditorsPage = () => {
           page={currentPage}
           onChange={handleChangePage}
           showFirstLast={!matchXs}
-          size={matchXs ? 'small' : 'medium'}
+          size="small"
         />
       </Box>
     </Layout>
@@ -159,7 +157,7 @@ export default AuditorsPage;
 
 const wrapper = theme => ({
   width: '100%',
-  padding: '43px 20px 44px 20px',
+  padding: '20px',
   backgroundColor: '#FCFAF6',
   border: '1.42857px solid #D9D9D9',
   boxShadow:
@@ -176,6 +174,7 @@ const wrapper = theme => ({
 const headWrapper = theme => ({
   display: 'flex',
   justifyContent: 'space-between',
+  mb: '20px',
   [theme.breakpoints.down('sm')]: {
     mb: '10px',
   },
@@ -185,16 +184,23 @@ const contentWrapper = {
   display: 'flex',
   flexWrap: 'wrap',
   mb: '20px',
-  border: '0.5px solid #B2B3B3',
+  borderLeft: '1px solid #B2B3B3',
 };
 
-const auditorContainerStyle = theme => ({
-  height: '200px',
+const auditorContainerStyle = idx => ({
+  maxHeight: '200px',
+  minHeight: '150px',
+  borderRight: '1px solid #B2B3B3',
+  borderBottom: '1px solid #B2B3B3',
+  borderTop: idx <= 1 ? '1px solid #B2B3B3' : 'none',
   width: {
     zero: '100%',
     sm: '50%',
     md: '50%',
     lg: '50%',
+  },
+  [theme.breakpoints.down('sm')]: {
+    borderTop: idx === 0 ? '1px solid #B2B3B3' : 'none',
   },
   [theme.breakpoints.down('xs')]: {
     height: '130px',

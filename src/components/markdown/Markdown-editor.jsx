@@ -38,6 +38,7 @@ const initialPlugins = [
 
 const MarkdownEditor = ({
   name,
+  saved,
   setMdRef,
   mdProps = {},
   plugins = [],
@@ -63,7 +64,7 @@ const MarkdownEditor = ({
     if (handleBlur && meta.touched) {
       handleBlur();
     }
-  }, [markdownField.value, meta.touched]);
+  }, [markdownField.value]);
 
   useEffect(() => {
     if (markdown && fastSave) {

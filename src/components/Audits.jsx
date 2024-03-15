@@ -28,7 +28,7 @@ const Audits = () => {
 export default Audits;
 
 const wrapper = theme => ({
-  padding: '54px 53px',
+  padding: '50px 40px 40px',
   width: '100%',
   [theme.breakpoints.down('sm')]: {
     padding: '22px',

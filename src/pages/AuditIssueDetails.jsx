@@ -14,7 +14,7 @@ import { setCurrentAuditPartner } from '../redux/actions/auditAction.js';
 import { getIssues } from '../redux/actions/issueAction.js';
 import PublicIssueDetailsForm from './PublicIssueDetailForm.jsx';
 
-const AuditIssueDetails = ({ isPublic }) => {
+const AuditIssueDetails = ({ isPublic, saved }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { auditId, issueId } = useParams();
@@ -25,7 +25,7 @@ const AuditIssueDetails = ({ isPublic }) => {
   );
 
   const issue = useMemo(() => {
-    if (!isPublic) {
+    if (!isPublic || saved) {
       return issues?.find(issue => issue.id === +issueId);
     } else {
       const publicIssues = JSON.parse(
@@ -40,7 +40,7 @@ const AuditIssueDetails = ({ isPublic }) => {
   }, [audit?.id]);
 
   useEffect(() => {
-    if (issuesAuditId !== auditId && !isPublic) {
+    if (issuesAuditId !== auditId && (!isPublic || saved)) {
       dispatch(getIssues(auditId));
     }
   }, []);
@@ -70,19 +70,21 @@ const AuditIssueDetails = ({ isPublic }) => {
         >
           <ArrowBackIcon color="secondary" />
         </Button>
-        {!isPublic ? (
-          <IssueDetailsForm issue={issue} editMode={true} />
+        {isPublic || saved ? (
+          <PublicIssueDetailsForm issue={issue} saved={saved} editMode={true} />
         ) : (
-          <PublicIssueDetailsForm issue={issue} editMode={true} />
+          <IssueDetailsForm issue={issue} editMode={true} />
         )}
-        {!!issue.events?.length && (
+        {!!issue.events?.length && !saved && !isPublic && (
           <EventsList
             issue={issue}
             auditPartner={currentAuditPartner}
             auditId={auditId}
           />
         )}
-        {!isPublic && <AddComment auditId={auditId} issueId={issueId} />}
+        {!isPublic && !saved && (
+          <AddComment auditId={auditId} issueId={issueId} />
+        )}
       </CustomCard>
     </Layout>
   );
@@ -91,7 +93,7 @@ const AuditIssueDetails = ({ isPublic }) => {
 export default AuditIssueDetails;
 
 const wrapper = theme => ({
-  padding: '48px 45px 80px',
+  padding: '40px 45px 80px',
   position: 'relative',
   display: 'flex',
   flexDirection: 'column',

@@ -20,7 +20,13 @@ import IssueListItem from './IssueListItem.jsx';
 import { clearMessage } from '../../redux/actions/auditAction.js';
 import CustomSnackbar from '../custom/CustomSnackbar.jsx';
 
-const IssuesList = ({ auditId, isPublic, setIsOpenReset, handleSubmit }) => {
+const IssuesList = ({
+  auditId,
+  isPublic,
+  setIsOpenReset,
+  handleSubmit,
+  saved,
+}) => {
   const dispatch = useDispatch();
   const [searchParams, setSearchParams] = useSearchParams();
   const { issues } = useSelector(s => s.issues);
@@ -97,6 +103,7 @@ const IssuesList = ({ auditId, isPublic, setIsOpenReset, handleSubmit }) => {
       page,
       sort: sortType,
     }));
+    return () => dispatch(clearMessage());
   }, [sortType]);
 
   return (
@@ -112,6 +119,7 @@ const IssuesList = ({ auditId, isPublic, setIsOpenReset, handleSubmit }) => {
       <Control
         issues={issues}
         search={search}
+        saved={saved}
         setSearch={setSearch}
         setPage={setPage}
         setSearchParams={setSearchParams}
@@ -121,7 +129,10 @@ const IssuesList = ({ auditId, isPublic, setIsOpenReset, handleSubmit }) => {
       />
 
       <Box
-        sx={{ display: 'flex', width: '100%', justifyContent: 'space-between' }}
+        sx={[
+          { display: 'flex', width: '100%', justifyContent: 'space-between' },
+          isPublic || saved ? { paddingRight: '15px' } : {},
+        ]}
       >
         <Box sx={{ ml: '30px' }}>
           <Button sx={[columnText, columnTitle]} onClick={handleNameSort}>
@@ -141,7 +152,10 @@ const IssuesList = ({ auditId, isPublic, setIsOpenReset, handleSubmit }) => {
               {sortType === STATUS_ASCENDING ? <ArrowUpIcon /> : <ArrowIcon />}
             </span>
           </Button>
-          <Button sx={[columnText, columnTitle]} onClick={handleSeveritySort}>
+          <Button
+            sx={[isPublic || saved ? columnPublic : columnText, columnTitle]}
+            onClick={handleSeveritySort}
+          >
             <span>Severity</span>
             <span>
               {sortType === SEVERITY_ASCENDING ? (
@@ -163,6 +177,7 @@ const IssuesList = ({ auditId, isPublic, setIsOpenReset, handleSubmit }) => {
           .slice((page - 1) * 10, page * 10)
           .map(issue => (
             <IssueListItem
+              saved={saved}
               issue={issue}
               key={issue.id}
               auditId={auditId}
@@ -173,7 +188,7 @@ const IssuesList = ({ auditId, isPublic, setIsOpenReset, handleSubmit }) => {
       </Box>
 
       {getSearchResultsLength() === 0 && (
-        <Box sx={[noResults, isPublic ? { paddingTop: 0 } : {}]}>
+        <Box sx={[noResults, isPublic || saved ? { paddingTop: 0 } : {}]}>
           No issue fits the search criteria
         </Box>
       )}
@@ -191,6 +206,23 @@ const IssuesList = ({ auditId, isPublic, setIsOpenReset, handleSubmit }) => {
 
 export default IssuesList;
 
+const columnPublic = theme => ({
+  color: '#434242',
+  fontSize: '20px',
+  fontWeight: 500,
+  lineHeight: '25px',
+  padding: '0 25px 0 0',
+  [theme.breakpoints.down('lg')]: {
+    fontSize: '18px',
+  },
+  [theme.breakpoints.down('sm')]: {
+    fontSize: '16px',
+  },
+  [theme.breakpoints.down('xs')]: {
+    padding: '0 15px',
+  },
+});
+
 const columnsTitleBlock = theme => ({
   display: 'flex',
   width: '30%',
@@ -200,17 +232,14 @@ const columnsTitleBlock = theme => ({
   },
 });
 
-const columnTitle = theme => ({
+const columnTitle = {
   width: '50%',
   whiteSpace: 'nowrap',
   textTransform: 'none',
   display: 'flex',
   justifyContent: 'center',
   columnGap: '10px',
-  [theme.breakpoints.down('xs')]: {
-    fontSize: '16px',
-  },
-});
+};
 
 const columnTitleHidden = theme => ({
   [theme.breakpoints.down('xs')]: {
@@ -220,16 +249,10 @@ const columnTitleHidden = theme => ({
 
 const columnText = theme => ({
   color: '#434242',
-  fontSize: '20px',
+  fontSize: '16px',
   fontWeight: 500,
   lineHeight: '25px',
   padding: '0 25px',
-  [theme.breakpoints.down('lg')]: {
-    fontSize: '18px',
-  },
-  [theme.breakpoints.down('sm')]: {
-    fontSize: '16px',
-  },
   [theme.breakpoints.down('xs')]: {
     padding: '0 15px',
   },

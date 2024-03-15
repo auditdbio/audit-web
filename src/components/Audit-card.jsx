@@ -22,7 +22,7 @@ const AuditCard = ({ audit, request }) => {
 
   return (
     <Card sx={cardWrapper}>
-      <Tooltip title={audit.project_name} arrow placement={'top'}>
+      <Tooltip title={audit.project_name} arrow placement="top">
         <Typography sx={auditNameStyle}>{audit.project_name}</Typography>
       </Tooltip>
       <Box sx={{ display: 'grid' }}>
@@ -33,7 +33,7 @@ const AuditCard = ({ audit, request }) => {
               : 'Hidden'
           }
           arrow
-          placement={'top'}
+          placement="top"
         >
           <Typography sx={nameTextStyle} noWrap={true}>
             {audit?.auditor_contacts.email !== null
@@ -47,7 +47,7 @@ const AuditCard = ({ audit, request }) => {
         <Typography sx={dateStyle}>
           {dayjs(audit?.time?.from).format('DD.MM.YYYY')}
         </Typography>
-        <Typography variant={'caption'}>-</Typography>
+        <Typography variant="caption">-</Typography>
         <Typography sx={dateStyle}>
           {dayjs(audit?.time?.to).format('DD.MM.YYYY')}
         </Typography>
@@ -82,7 +82,7 @@ const AuditCard = ({ audit, request }) => {
       )}
       {!audit.status && (
         <CustomButton
-          variant={'contained'}
+          variant="contained"
           sx={[
             acceptButtonStyle,
             audit?.last_changer?.toLowerCase() === CUSTOMER
@@ -98,7 +98,7 @@ const AuditCard = ({ audit, request }) => {
       )}
       <CustomButton
         sx={viewButtonStyle}
-        variant={'contained'}
+        variant="contained"
         onClick={() =>
           request
             ? navigate(`/audit-request/${audit.id}/customer`)
@@ -273,8 +273,8 @@ const dateStyle = {
     padding: '8px',
     fontSize: '7px!important',
   },
-  [theme.breakpoints.down(450)]: {
-    padding: '5px',
+  [theme.breakpoints.down('xxs')]: {
+    padding: '3px',
   },
 };
 export default AuditCard;

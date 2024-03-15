@@ -14,6 +14,7 @@ import {
   CHAT_UPDATE_TOTAL_UNREAD,
   CHAT_UPDATE_DIFFERENT_ROLE_UNREAD,
   CHAT_SET_ERROR,
+  CHAT_DELETE_MESSAGE,
 } from './types.js';
 
 export const getChatList = role => {
@@ -125,8 +126,7 @@ export const chatSendMessage = (text, to, role, isFirst, kind = 'Text') => {
       })
       .then(({ data }) => {
         if (isFirst) {
-          const payload = data.Private || data.Group;
-          dispatch({ type: CHAT_SEND_FIRST_MESSAGE, payload });
+          dispatch({ type: CHAT_SEND_FIRST_MESSAGE, payload: data.id });
         }
       });
   };
@@ -179,6 +179,10 @@ export const receiveNewChatMessage = message => {
       }
     }
   };
+};
+
+export const deleteChatMessage = id => {
+  return { type: CHAT_DELETE_MESSAGE, payload: id };
 };
 
 export const getTotalUnreadMessages = chatList => {

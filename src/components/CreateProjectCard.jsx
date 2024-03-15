@@ -243,7 +243,7 @@ const CreateProjectCard = ({ projectInfo }) => {
 
             <Box sx={buttonGroup}>
               <Button
-                variant={'contained'}
+                variant="contained"
                 sx={inviteButton}
                 onClick={() => {
                   handleInviteModal(handleSubmit);
@@ -253,9 +253,9 @@ const CreateProjectCard = ({ projectInfo }) => {
                 Invite auditor
               </Button>
               <Button
-                variant={'contained'}
+                variant="contained"
                 sx={publishButton}
-                type={'button'}
+                type="button"
                 onClick={() => {
                   if (
                     values.name &&
@@ -350,8 +350,8 @@ const CreateProjectCard = ({ projectInfo }) => {
                     )}
                   </Box>
                   <Button
-                    type={'submit'}
-                    variant={'contained'}
+                    type="submit"
+                    variant="contained"
                     sx={submitButton}
                     {...addTestsLabel(`${editMode ? 'save' : 'create'}-button`)}
                   >
@@ -372,7 +372,7 @@ const mainBox = theme => ({
   position: 'relative',
   display: 'flex',
   flexDirection: 'column',
-  paddingTop: '43px',
+  paddingTop: '40px',
   [theme.breakpoints.down('xs')]: {
     paddingTop: '30x',
   },
@@ -389,7 +389,7 @@ const backButtonSx = theme => ({
 });
 
 const wrapper = theme => ({
-  padding: '70px 90px',
+  padding: '30px 90px 70px',
   display: 'flex',
   flexDirection: 'column',
   [theme.breakpoints.down('sm')]: {
@@ -467,7 +467,7 @@ const formCard = {
   display: 'flex',
   flexDirection: 'column',
   justifyContent: 'center',
-  gap: '35px',
+  gap: '25px',
 };
 
 const formWrapper = theme => ({
@@ -486,9 +486,10 @@ const formWrapper = theme => ({
 const submitButton = theme => ({
   backgroundColor: theme.palette.primary.main,
   boxShadow: '0',
-  padding: '21px 0',
+  padding: '11px 0',
   color: '#FCFAF6',
   fontWeight: 600,
+  lineHeight: 1.2,
   textTransform: 'unset',
   borderRadius: radiusOfComponents,
   width: '402px',
