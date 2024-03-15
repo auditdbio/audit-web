@@ -93,36 +93,6 @@ const Message = ({ message, user, currentChat, isRead, type }) => {
 
 export default Message;
 
-const data = {
-  id: '65e818517e49517efe2a0edd',
-  auditor_first_name: 'aqwe53596@gmail.com',
-  auditor_last_name: '',
-  customer_id: '65e6ed81a549cf898b575daa',
-  auditor_id: '65e6f20ca549cf898b575db2',
-  project_id: '65e6f9b7f8ed9eae507e3239',
-  description: 'dqwd asd wqd2r34feqwd q',
-  time: {
-    from: 1709709390824,
-    to: 1709709390824,
-  },
-  project_name: 'MetaMask22',
-  avatar: '',
-  project_scope: ['https://hello.com'],
-  tags: ['solidity', 'zkp'],
-  price: 40,
-  auditor_contacts: {
-    email: 'aqwe53596@gmail.com',
-    telegram: '',
-    public_contacts: true,
-  },
-  customer_contacts: {
-    email: 'asdqw2430@gmail.com',
-    telegram: '',
-    public_contacts: true,
-  },
-  last_changer: 'Auditor',
-};
-
 function makeLinksClickable(text) {
   const urlRegex = /((?:https?|ftp):\/\/[^\s/$.?#].[^\s]*)/g;
   const parts = text.split(urlRegex);

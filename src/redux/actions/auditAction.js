@@ -64,7 +64,6 @@ export const createRequest = (values, redirect, navigateTo) => {
 };
 //
 export const createRequestModal = values => {
-  console.log(values);
   return dispatch => {
     const token = Cookies.get('token');
     const current_role = JSON.parse(localStorage.getItem('user')).current_role;

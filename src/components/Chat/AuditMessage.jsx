@@ -3,6 +3,7 @@ import { Box, Button, Modal, Typography } from '@mui/material';
 import AuditRequestInfo from '../audit-request-info.jsx';
 import { useDispatch, useSelector } from 'react-redux';
 import {
+  confirmAudit,
   deleteAuditRequest,
   getAuditRequest,
 } from '../../redux/actions/auditAction.js';
@@ -74,6 +75,10 @@ const AuditMessage = ({ message, handleError, navigate }) => {
     }
   };
 
+  const handleConfirm = () => {
+    dispatch(confirmAudit(data, true));
+  };
+
   // useEffect(() => {
   //   dispatch(getAuditRequest(data.id));
   //   return () => {
@@ -108,6 +113,9 @@ const AuditMessage = ({ message, handleError, navigate }) => {
             <Button
               sx={{ textTransform: 'unset', width: '100%' }}
               variant={'contained'}
+              onClick={() =>
+                user.current_role !== AUDITOR && handleConfirm(data)
+              }
             >
               Accept
             </Button>
