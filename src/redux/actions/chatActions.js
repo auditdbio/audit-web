@@ -14,6 +14,7 @@ import {
   CHAT_UPDATE_TOTAL_UNREAD,
   CHAT_UPDATE_DIFFERENT_ROLE_UNREAD,
   CHAT_SET_ERROR,
+  CHAT_DELETE_MESSAGE,
 } from './types.js';
 
 export const getChatList = role => {
@@ -178,6 +179,10 @@ export const receiveNewChatMessage = message => {
       }
     }
   };
+};
+
+export const deleteChatMessage = id => {
+  return { type: CHAT_DELETE_MESSAGE, payload: id };
 };
 
 export const getTotalUnreadMessages = chatList => {
