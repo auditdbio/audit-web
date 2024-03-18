@@ -43,6 +43,7 @@ const PublicConstructor = ({ saved, isPublic }) => {
   const { auditId } = useParams();
   const descriptionRef = useRef();
   const [showFull, setShowFull] = useState(false);
+  const { user } = useSelector(s => s.user);
 
   useEffect(() => {
     if (saved) {
@@ -70,7 +71,7 @@ const PublicConstructor = ({ saved, isPublic }) => {
         scope: report?.scope?.length ? report?.scope : [],
         tags: report?.tags?.length ? report?.tags : [],
         issues: report?.issues?.length ? report?.issues : publicIssues,
-        auditor_name: report?.auditor_name || '',
+        auditor_name: user?.name ? user.name : report?.auditor_name || '',
         status: 'Started',
         last_modified: Date.now(),
       }
@@ -186,7 +187,7 @@ const PublicConstructor = ({ saved, isPublic }) => {
                       handleBlur={handleSubmit}
                       name={saved ? 'auditor_full_name' : 'auditor_name'}
                       label={'Auditor name'}
-                      disabled={saved}
+                      disabled={saved || user?.name}
                     />
                   </Box>
 
