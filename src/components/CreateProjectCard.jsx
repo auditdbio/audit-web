@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Box, Button, Typography, useMediaQuery } from '@mui/material';
 import theme, { radiusOfComponents } from '../styles/themes.js';
 import { useNavigate } from 'react-router-dom/dist';
@@ -68,6 +68,7 @@ const CreateProjectCard = ({ projectInfo }) => {
   const [closeConfirmIsOpen, setCloseConfirmIsOpen] = useState(false);
   const [state, setState] = useState(false);
   const [isDirty, setIsDirty] = useState(false);
+  const [changeStatus, setChangeStatus] = useState(false);
   useEffect(() => {
     dispatch(getAuditsRequest('customer'));
   }, []);
@@ -130,9 +131,11 @@ const CreateProjectCard = ({ projectInfo }) => {
       status: isClosed ? DONE : '',
     };
     if (values.id && projectInfo.id) {
-      dispatch(changeStatusProject({ ...newValue, id: projectInfo.id }));
+      setChangeStatus(true);
+      setState(true);
+      handleSubmit(newValue);
     } else {
-      handleSubmit();
+      handleSubmit(values);
     }
   };
 
@@ -153,9 +156,15 @@ const CreateProjectCard = ({ projectInfo }) => {
               }),
             );
           } else {
-            dispatch(
-              editProjectNoRedirect({ ...newValue, id: projectInfo.id }),
-            );
+            if (!changeStatus) {
+              dispatch(
+                editProjectNoRedirect({ ...newValue, id: projectInfo.id }),
+              );
+            } else {
+              dispatch(
+                changeStatusProject({ ...newValue, id: projectInfo.id }),
+              );
+            }
           }
         } else {
           if (!state) {
