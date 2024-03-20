@@ -11,6 +11,7 @@ import {
   GET_MY_GITHUB_REPOSITORIES,
   GET_MY_GITHUB_ORGANIZATION,
   GET_MY_GITHUB_ORGANIZATION_REPOSITORIES,
+  GET_SHA,
 } from '../actions/types.js';
 
 const initialState = {
@@ -57,6 +58,11 @@ export const githubReducer = (state = initialState, action) => {
         ...state,
         commit: action.payload,
         sha: action.payload.sha,
+      };
+    case GET_SHA:
+      return {
+        ...state,
+        sha: action.payload,
       };
     case CLEAR_COMMIT:
       return {

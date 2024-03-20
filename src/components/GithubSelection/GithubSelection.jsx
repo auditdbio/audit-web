@@ -10,7 +10,7 @@ import {
   Typography,
 } from '@mui/material';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
-import { Field } from 'formik';
+import { Field, useField } from 'formik';
 import GithubBranchAutocomplete from '../GithubBranchAutocomplete.jsx';
 import CommitItem from './CommitItem.jsx';
 import { TextField } from 'formik-mui';
@@ -37,7 +37,8 @@ import { CONNECT_ACCOUNT } from '../../redux/actions/types.js';
 const GITHUB_ID = import.meta.env.VITE_GITHUB_CLIENT_ID;
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 
-const GithubSelection = () => {
+const GithubSelection = ({ project }) => {
+  const [field, _, fieldHelper] = useField('scope');
   const [urlRepo, setUrlRepo] = useState('');
   const [branch, setBranch] = useState('');
   const [isOpen, setIsOpen] = useState(false);
@@ -58,6 +59,20 @@ const GithubSelection = () => {
     ),
   );
   const orgs = useSelector(s => s.github.myOrganizations);
+
+  useEffect(() => {
+    if (project?.id) {
+      const getRepoUrl = field.value[0];
+      function parseGitHubUrl(gitHubUrl) {
+        const urlParts = gitHubUrl.split('/');
+        const owner = urlParts[3];
+        const repo = urlParts[4];
+
+        return `${owner}/${repo}`;
+      }
+      setRepository(parseGitHubUrl(getRepoUrl));
+    }
+  }, []);
 
   useEffect(() => {
     if (repository && (branch || defaultBranch)) {
@@ -133,6 +148,7 @@ const GithubSelection = () => {
     setUrlRepo('');
     setBranch('');
     setPage(1);
+    fieldHelper.setValue([]);
     dispatch(clearRepoOwner());
   };
   useEffect(() => {

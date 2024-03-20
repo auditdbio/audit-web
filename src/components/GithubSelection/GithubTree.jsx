@@ -15,7 +15,7 @@ const GithubTreeNode = ({
   handleSelectAll,
   handleRemoveAll,
 }) => {
-  const [field] = useField('scope');
+  const [field, _, filedHelper] = useField('scope');
   const { sha, repoOwner } = useSelector(state => state.github);
   const [isTreeOpen, setIsTreeOpen] = React.useState(true);
   const isTree = node.type === 'tree';

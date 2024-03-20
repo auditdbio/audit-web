@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Box, Button, Typography } from '@mui/material';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import { useField } from 'formik';
@@ -11,6 +11,7 @@ import { createBlopUrl } from '../../services/urls.js';
 const reg = /[a-z]/i;
 const CommitModal = ({ sha, onClose, repository, handleCloseCommit }) => {
   const [field, _, fieldHelper] = useField('scope');
+  const [fieldId] = useField('id');
   const data = useSelector(state => state.github.commit);
   const commit = useSelector(state => state.github.commitInfo);
   const [modalOpen, setModalOpen] = useState(false);
@@ -19,12 +20,24 @@ const CommitModal = ({ sha, onClose, repository, handleCloseCommit }) => {
   const dispatch = useDispatch();
   const [filterGithub, setFilterGithub] = useState([]);
   const [newObj, setNewObj] = useState(null);
+  const [checkLength, setCheckLength] = useState(false);
 
   useEffect(() => {
     if (!commit.sha) {
       dispatch(getCommitData(repository, sha));
     }
   }, [repository, sha]);
+
+  function updateCommitShaInLinks(links, newCommitSha) {
+    const regex = /\/blob\/[0-9a-f]{40}\//;
+    return links.map(link => link.replace(regex, `/blob/${newCommitSha}/`));
+  }
+
+  useEffect(() => {
+    if (sha && field.value.length) {
+      fieldHelper.setValue(updateCommitShaInLinks(field.value, sha));
+    }
+  }, [sha]);
 
   const parseTree = tree => {
     const result = [];
@@ -143,17 +156,54 @@ const CommitModal = ({ sha, onClose, repository, handleCloseCommit }) => {
     handleCloseCommit();
   };
 
+  const checkAll = useMemo(() => {
+    if (data && data.tree) {
+      return field.value.every(value => {
+        const pathIndex = value.indexOf('blob') + 46;
+        const path = value.slice(pathIndex);
+        return data.tree?.some(treeItem => treeItem.path === path);
+      });
+    }
+  }, [data?.tree, sha]);
+
+  useEffect(() => {
+    if (checkAll !== undefined && checkAll) {
+      setCheckLength(false);
+    } else {
+      setCheckLength(true);
+    }
+  }, [data?.tree, sha]);
+
+  useEffect(() => {
+    if (checkAll !== undefined && !checkAll) {
+      const filteredValue = field.value.filter(value => {
+        const pathIndex = value.indexOf('blob') + 46;
+        const path = value.slice(pathIndex);
+        return !data?.tree?.some(treeItem => treeItem.path === path);
+      });
+      filteredValue.forEach(el => {
+        const pathIndex = el.indexOf('blob') + 46;
+        const path = el.slice(pathIndex);
+        handleAddRemove({ path: path, type: 'blob' });
+      });
+    }
+  }, [data.tree, sha, checkAll]);
+
+  //
   if (data && commit && data.sha && newObj?.tree.length) {
     return (
       <Box sx={modalSx}>
         <CustomSnackbar
-          autoHideDuration={3000}
-          open={modalOpen}
+          autoHideDuration={9000}
+          open={modalOpen || checkLength}
           onClose={() => {
             setModalOpen(false);
+            setCheckLength(false);
           }}
-          severity={'success'}
-          text={'Success! Added to project links'}
+          severity={'error'}
+          text={
+            'A few files were deleted as they were not included in this commit'
+          }
         />
         <Box
           sx={{
@@ -214,13 +264,13 @@ const CommitModal = ({ sha, onClose, repository, handleCloseCommit }) => {
                 <Button variant={'contained'} onClick={handleSave}>
                   Submit
                 </Button>
-                <Button
-                  variant={'contained'}
-                  onClick={handleReset}
-                  color={'secondary'}
-                >
-                  Reset
-                </Button>
+                {/*<Button*/}
+                {/*  variant={'contained'}*/}
+                {/*  onClick={handleReset}*/}
+                {/*  color={'secondary'}*/}
+                {/*>*/}
+                {/*  Reset*/}
+                {/*</Button>*/}
               </Box>
             </Box>
           </Box>

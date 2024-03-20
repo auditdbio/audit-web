@@ -3,11 +3,14 @@ import { Avatar, Box, Modal, Typography } from '@mui/material';
 import CommitModal from './CommitModal.jsx';
 import { useDispatch, useSelector } from 'react-redux';
 import { clearCommit } from '../../redux/actions/githubAction.js';
+import { useField } from 'formik';
 
 const CommitItem = ({ commit, repository, handleCloseModal }) => {
-  const { commitInfo } = useSelector(state => state.github);
+  const { commitInfo, sha } = useSelector(state => state.github);
 
-  const [open, setOpen] = useState(commitInfo.sha === commit.sha || false);
+  const [open, setOpen] = useState(
+    sha === commit.sha || commitInfo.sha === commit.sha || false,
+  );
   const dispatch = useDispatch();
 
   const handleOpenCommit = () => {

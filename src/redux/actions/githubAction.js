@@ -10,6 +10,7 @@ import {
   GET_MY_GITHUB_ORGANIZATION_REPOSITORIES,
   GET_MY_GITHUB_REPOSITORIES,
   GET_REPO_OWNER,
+  GET_SHA,
   GET_TOTAL_COMMITS,
 } from './types.js';
 import axios from 'axios';
@@ -107,6 +108,12 @@ export const getDefaultBranch = repoOwner => {
 export const getRepoOwner = repoOwner => {
   return dispatch => {
     dispatch({ type: GET_REPO_OWNER, payload: repoOwner });
+  };
+};
+
+export const getSha = sha => {
+  return dispatch => {
+    dispatch({ type: GET_SHA, payload: sha });
   };
 };
 

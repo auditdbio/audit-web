@@ -43,6 +43,11 @@ import MenuItem from '@mui/material/MenuItem';
 import axios from 'axios';
 import GithubSelection from './GithubSelection/GithubSelection.jsx';
 import { getFilterData } from '../redux/actions/configAction.js';
+import {
+  getCommitData,
+  getRepoOwner,
+  getSha,
+} from '../redux/actions/githubAction.js';
 
 const CreateProjectCard = ({ projectInfo }) => {
   const navigate = useNavigate();
@@ -135,6 +140,30 @@ const CreateProjectCard = ({ projectInfo }) => {
       handleSubmit();
     }
   };
+
+  useEffect(() => {
+    if (initialValues?.id && initialValues.scope.length) {
+      const getRepoUrl = initialValues.scope[0];
+      function getShaFromGitHubUrl(url) {
+        const regex = /\/blob\/([0-9a-f]{40})\//;
+        const match = url.match(regex);
+        return match ? match[1] : null;
+      }
+
+      function parseGitHubUrl(gitHubUrl) {
+        const urlParts = gitHubUrl.split('/');
+        const owner = urlParts[3];
+        const repo = urlParts[4];
+
+        return `${owner}/${repo}`;
+      }
+
+      const githubRepo = parseGitHubUrl(getRepoUrl);
+      const sha = getShaFromGitHubUrl(getRepoUrl);
+      dispatch(getSha(sha));
+      dispatch(getRepoOwner(githubRepo));
+    }
+  }, []);
 
   return (
     <Formik
@@ -288,7 +317,7 @@ const CreateProjectCard = ({ projectInfo }) => {
                             label="Project links"
                             setFieldTouched={setFieldTouched}
                           />
-                          <GithubSelection />
+                          <GithubSelection project={projectInfo} />
                         </Box>
                         <ProjectLinksList name="scope" />
                         <SalarySlider name="price" />
