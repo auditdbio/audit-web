@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useField } from 'formik';
 import axios from 'axios';
 import Cookies from 'js-cookie';
-import { Avatar, Button } from '@mui/material';
+import { Avatar, Button, useMediaQuery } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit.js';
 import ClearIcon from '@mui/icons-material/Clear';
 import { AUDITOR } from '../../../redux/actions/types.js';
@@ -16,6 +16,7 @@ import { updateCustomer } from '../../../redux/actions/customerAction.js';
 
 const AvatarForm = ({ role, name }) => {
   const dispatch = useDispatch();
+  const matchXxs = useMediaQuery(theme.breakpoints.down('xxs'));
   const { user } = useSelector(state => state.user);
   const [avatarField, , fieldHelper] = useField(name);
   const formData = new FormData();
@@ -97,7 +98,7 @@ const AvatarForm = ({ role, name }) => {
   return (
     <>
       <Avatar
-        sx={{ mb: '35px' }}
+        sx={avatarSx}
         src={avatarField.value && `${ASSET_URL}/${avatarField.value}`}
       />
 
@@ -117,7 +118,7 @@ const AvatarForm = ({ role, name }) => {
           htmlFor="file-upload"
           style={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }}
         >
-          <EditIcon fontSize="small" />
+          {!matchXxs && <EditIcon fontSize="small" />}
           Edit photo
         </label>
       </Button>
@@ -127,7 +128,7 @@ const AvatarForm = ({ role, name }) => {
           onClick={deletePhoto}
           {...addTestsLabel('delete-photo-button')}
         >
-          <ClearIcon fontSize="small" />
+          {!matchXxs && <ClearIcon fontSize="small" />}
           Delete photo
         </Button>
       )}
@@ -144,6 +145,16 @@ const AvatarForm = ({ role, name }) => {
 };
 
 export default AvatarForm;
+
+const avatarSx = theme => ({
+  mb: '20px',
+  [theme.breakpoints.down('sm')]: {
+    mb: '10px',
+  },
+  [theme.breakpoints.down('xs')]: {
+    mb: '5px',
+  },
+});
 
 const deletePhotoSx = role => ({
   display: 'flex',

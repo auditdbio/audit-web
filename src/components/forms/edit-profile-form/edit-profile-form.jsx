@@ -411,10 +411,7 @@ const buttonSx = {
 const avatarWrapper = theme => ({
   '& button': {
     textTransform: 'unset',
-    marginTop: '35px',
-    '& svg': {
-      marginRight: '5px',
-    },
+    '& svg': { marginRight: '5px' },
   },
   '& .MuiAvatar-root': {
     width: '205px',
@@ -425,24 +422,16 @@ const avatarWrapper = theme => ({
       width: '158px',
       height: '158px',
     },
-    '& button': {
-      marginTop: '25px',
-      fontSize: '12px',
-    },
+    '& button': { fontSize: '12px' },
   },
   [theme.breakpoints.down('sm')]: {
     '& .MuiAvatar-root': {
       width: '128px',
       height: '128px',
     },
-    '& button': {
-      marginTop: '15px',
-    },
     display: 'flex',
     gap: '22px',
-    '& p': {
-      color: '#B2B3B3',
-    },
+    '& p': { color: '#B2B3B3' },
   },
   [theme.breakpoints.down('xs')]: {
     '& .MuiAvatar-root': {
@@ -451,8 +440,8 @@ const avatarWrapper = theme => ({
     },
     '& button': {
       paddingX: '4px',
-      marginTop: '12px',
-      fontSize: '8px',
+      fontSize: '10px',
+      '& svg': { marginRight: 0 },
     },
   },
 });
