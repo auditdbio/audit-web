@@ -48,7 +48,15 @@ const GithubTreeNode = ({
       if (currentNode.type === 'tree') {
         if (currentNode.tree.length === 0) return false;
         let newData = {};
-        if (currentNode.tree.every(el => endsWithAny(el.name, filterConfig))) {
+        if (
+          currentNode.tree.every(el => {
+            if (el.type === 'tree') {
+              checkIfAllSelected(el);
+            } else {
+              endsWithAny(el.name, filterConfig);
+            }
+          })
+        ) {
           newData = currentNode;
         } else {
           newData = {
