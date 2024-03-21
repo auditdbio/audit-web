@@ -11,6 +11,8 @@ import {
   GET_CURRENT_PROJECT,
   GET_CLOC,
   CLEAR_CLOC,
+  PROJECT_ERROR,
+  CLEAR_ERROR,
 } from '../actions/types.js';
 
 const initialState = {
@@ -92,6 +94,12 @@ export const projectReducer = (state = initialState, action) => {
       };
     case CLEAR_SUCCESS: {
       return { ...state, message: null };
+    }
+    case PROJECT_ERROR: {
+      return { ...state, error: action.payload };
+    }
+    case CLEAR_ERROR: {
+      return { ...state, error: null };
     }
     case GET_CLOC: {
       return { ...state, cloc: action.payload };

@@ -11,6 +11,8 @@ import {
   PROJECT_UPDATE,
   PROJECT_UPDATE_STATUS,
   SEARCH_PROJECTS,
+  CLEAR_ERROR,
+  PROJECT_ERROR,
 } from './types.js';
 import axios from 'axios';
 import Cookies from 'js-cookie';
@@ -221,10 +223,17 @@ export const getCloc = links => {
       .then(({ data }) => {
         delete data.header;
         dispatch({ type: GET_CLOC, payload: data });
+      })
+      .catch(() => {
+        dispatch({ type: PROJECT_ERROR, payload: 'Price calculation error' });
       });
   };
 };
 
 export const clearCloc = () => {
   return { type: CLEAR_CLOC };
+};
+
+export const clearProjectError = () => {
+  return { type: CLEAR_ERROR };
 };

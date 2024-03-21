@@ -15,21 +15,23 @@ import {
   TableHead,
   TableRow,
   Switch,
+  CircularProgress,
 } from '@mui/material';
 import theme from '../styles/themes.js';
-import { clearCloc, getCloc } from '../redux/actions/projectAction.js';
+import { clearProjectError, getCloc } from '../redux/actions/projectAction.js';
+import CustomSnackbar from './custom/CustomSnackbar.jsx';
 
 const PriceCalculation = ({ scope, price = 0, color = 'primary', sx = {} }) => {
   const dispatch = useDispatch();
 
-  const { cloc } = useSelector(s => s.project);
+  const { cloc, error } = useSelector(s => s.project);
   const [isDetailsPrice, setIsDetailsPrice] = useState(false);
   const [isDetailsMore, setIsDetailsMore] = useState(false);
+  const [isAutoCheckOn, setIsAutoCheckOn] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [githubLinks, setGithubLinks] = useState([]);
 
   useEffect(() => {
-    dispatch(clearCloc());
-
     if (scope) {
       const links = scope.reduce((acc, url) => {
         const parsedUrl = GitUrlParse(url);
@@ -49,8 +51,16 @@ const PriceCalculation = ({ scope, price = 0, color = 'primary', sx = {} }) => {
     }
   }, [scope]);
 
+  useEffect(() => {
+    if (isAutoCheckOn) {
+      dispatch(getCloc({ links: githubLinks }));
+    }
+  }, [githubLinks, isAutoCheckOn]);
+
   const handleCheckCost = () => {
     if (githubLinks.length) {
+      setIsLoading(prev => !prev);
+      setIsAutoCheckOn(true);
       dispatch(getCloc({ links: githubLinks }));
     }
   };
@@ -61,6 +71,17 @@ const PriceCalculation = ({ scope, price = 0, color = 'primary', sx = {} }) => {
 
   return (
     <Box sx={sx}>
+      <CustomSnackbar
+        autoHideDuration={5000}
+        open={!!error}
+        severity="error"
+        text={error}
+        onClose={() => {
+          setIsLoading(false);
+          dispatch(clearProjectError());
+        }}
+      />
+
       <Box sx={head} className="head">
         <Box sx={{ mr: '5px' }}>Price calculation</Box>
         <Tooltip
@@ -89,7 +110,11 @@ const PriceCalculation = ({ scope, price = 0, color = 'primary', sx = {} }) => {
                 onClick={handleCheckCost}
                 disabled={!+price}
               >
-                Check
+                {isLoading ? (
+                  <CircularProgress size={15} color="white" thickness={8} />
+                ) : (
+                  'Check'
+                )}
               </Button>
             </span>
           </Tooltip>
@@ -221,7 +246,7 @@ const checkButton = theme => ({
   fontWeight: '600',
   textTransform: 'none',
   maxHeight: '28px',
-  maxWidth: '180px',
+  width: '130px',
   padding: '8px 42px',
   ml: '15px',
   boxShadow: '0',
