@@ -43,7 +43,7 @@ const initialTheme = createTheme({
     grey: {
       800: 'rgba(15, 100, 226, 0.08)',
     },
-    white: {
+    light: {
       main: '#FFFFFF',
     },
     background: {

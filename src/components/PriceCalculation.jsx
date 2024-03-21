@@ -111,7 +111,7 @@ const PriceCalculation = ({ scope, price = 0, color = 'primary', sx = {} }) => {
                 disabled={!+price}
               >
                 {isLoading ? (
-                  <CircularProgress size={15} color="white" thickness={8} />
+                  <CircularProgress size={15} color="light" thickness={8} />
                 ) : (
                   'Check'
                 )}
