@@ -1,13 +1,11 @@
-import { Box } from '@mui/system';
-import theme from '../../styles/themes';
-import { Typography } from '@mui/material';
-import { CustomButton } from '../custom/Button';
-import { useNavigate } from 'react-router-dom';
-import { useMediaQuery } from '@mui/material';
-import { addTestsLabel, isAuth } from '../../lib/helper.js';
 import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom/dist';
+import { Box } from '@mui/system';
+import { Typography, useMediaQuery, Link as MuiLink } from '@mui/material';
+import theme from '../../styles/themes';
+import { CustomButton } from '../custom/Button';
+import { addTestsLabel, isAuth } from '../../lib/helper.js';
 import { changeRole } from '../../redux/actions/userAction.js';
-import { Link as MuiLink } from '@mui/material';
 
 const MainText = () => {
   const isMobile = useMediaQuery('(max-width: 768px)');
@@ -38,20 +36,11 @@ const MainText = () => {
   };
 
   return (
-    <Box
-      sx={{ width: '100%', paddingBottom: '5rem', maxWidth: '1512px' }}
-      component="section"
-    >
-      <Box
-        sx={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          padding: '2rem',
-        }}
-      >
+    <Box sx={wrapper} component="section">
+      <Box sx={innerWrapper}>
         {!isMobile && (
           <Box sx={imageStyle(isMobile)}>
-            <div style={personSkateStyle}></div>
+            <div style={personSkateStyle} />
           </Box>
         )}
 
@@ -89,33 +78,43 @@ const MainText = () => {
         </Box>
         {!isMobile && (
           <Box sx={imageStyle(isMobile)}>
-            <div style={personBitcoinStyle}></div>
+            <div style={personBitcoinStyle} />
           </Box>
         )}
       </Box>
       {isMobile && (
         <Box sx={imagesStyle}>
-          <div style={personSkateStyle}></div>
-          <div style={personBitcoinStyle}></div>
+          <div style={personSkateStyle} />
+          <div style={personBitcoinStyle} />
         </Box>
       )}
     </Box>
   );
 };
 
+const wrapper = {
+  width: '100%',
+  // height: '100vh',
+  // minHeight: '880px',
+  paddingBottom: '5rem',
+  maxWidth: '1512px',
+};
+
+const innerWrapper = {
+  display: 'flex',
+  justifyContent: 'space-between',
+  padding: '2rem',
+};
+
 const headingStyle = {
   textTransform: 'uppercase',
   fontWeight: 600,
   color: '#52176D',
-  lineHeight: '73px',
+  lineHeight: '50px',
   textAlign: 'center',
   maxWidth: '720px',
   marginX: 'auto',
-  paddingX: '2rem',
   width: '100%',
-  [theme.breakpoints.down('lg')]: {
-    // maxWidth: "600px",
-  },
   [theme.breakpoints.down('sm')]: {
     lineHeight: '40px',
   },
@@ -123,22 +122,15 @@ const headingStyle = {
 const paragraphStyle = {
   marginX: 'auto',
   fontWeight: 500,
-  lineHeight: '37px',
+  lineHeight: '30px',
   textAlign: 'center',
   maxWidth: '690px',
-  paddingX: '2rem',
   width: '100%',
-  [theme.breakpoints.down('lg')]: {
-    // maxWidth: "500px",
-  },
   [theme.breakpoints.down('sm')]: {
     lineHeight: '25px',
   },
 };
 
-const headingText = 'Start your project right now or audit like expert';
-const paragraphText =
-  "Welcome to AuditDB! Here, smart contract gurus team up with innovative builders. Whether you're crafting cutting-edge dApps or ensuring they're bug-free, this is your hub. Let's elevate the ledger together!";
 const auditorButton = {
   backgroundColor: '#52176D',
   color: 'white',
@@ -162,6 +154,7 @@ const textWrapper = {
   flexDirection: 'column',
   justifyContent: 'space-between',
   flexGrow: 1,
+  paddingX: '2rem',
   marginY: 'auto',
   gap: '3rem',
 };
@@ -212,12 +205,17 @@ const personBitcoinStyle = {
   margin: '0 auto',
 };
 
-const gitCoinSx = theme => ({
+const gitCoinSx = {
   backgroundColor: '#44944A',
   paddingX: 0,
   '&:hover': {
     backgroundColor: '#326e34!important',
   },
-});
+};
+
+const headingText = 'Start your project right now or audit like expert';
+
+const paragraphText =
+  "Welcome to AuditDB! Here, smart contract gurus team up with innovative builders. Whether you're crafting cutting-edge dApps or ensuring they're bug-free, this is your hub. Let's elevate the ledger together!";
 
 export default MainText;

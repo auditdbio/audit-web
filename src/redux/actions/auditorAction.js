@@ -6,14 +6,11 @@ import {
   GET_AUDITORS,
   GET_CURRENT_AUDITOR,
   MERGE_ACCOUNT,
-  SEARCH_AUDITOR,
-  SEARCH_PROJECTS,
   SIGN_IN_ERROR,
   UPDATE_AUDITOR,
-  USER_SIGNIN,
 } from './types.js';
 import { history } from '../../services/history.js';
-import dayjs from 'dayjs';
+import createSearchValues from '../../lib/createSearchValues.js';
 import { isAuth } from '../../lib/helper.js';
 
 const API_URL = import.meta.env.VITE_API_BASE_URL;
@@ -93,14 +90,12 @@ export const updateAuditor = (values, redirect = true) => {
   };
 };
 
-export const getAuditors = (values = '', amount) => {
+export const getAuditors = (values = '', amount = 0) => {
   return dispatch => {
     const token = Cookies.get('token');
     axios
       .get(
-        `${API_URL}/search?query=${values}&sort_by=price&tags=&sort_order=1&page=1&per_page=${
-          amount ? amount : 0
-        }&kind=auditor badge`,
+        `${API_URL}/search?query=${values}&sort_by=price&tags=&sort_order=1&page=1&per_page=${amount}&kind=auditor badge`,
         isAuth()
           ? {
               headers: {
@@ -118,66 +113,16 @@ export const getAuditors = (values = '', amount) => {
   };
 };
 
-export const searchAuditor = values => {
-  const searchValues = {
-    query: values?.search || '',
-    tags: values?.tags || '',
-    ready_to_wait: values?.ready_to_wait || '',
-    dateFrom:
-      +new Date() + 60000 < +new Date(values?.dateFrom)
-        ? dayjs().valueOf(values?.dateFrom)
-        : '',
-    dateTo:
-      +new Date() + 60000 < +new Date(values?.dateTo)
-        ? dayjs().valueOf(values?.dateTo)
-        : '',
-    priceFrom: parseInt(values?.price.from) || '',
-    priceTo: parseInt(values?.price.to) || '',
-    sort: values?.sort || 1,
-    page: values?.page || 0,
-  };
-
-  const queryParams = [
-    `query=${searchValues.query}`,
-    `tags=${searchValues.tags?.join(' ')}`,
-    `sort_order=${searchValues.sort}`,
-    `page=${searchValues.page}`,
-    `sort_by=price`,
-    `per_page=10`,
-    `kind=auditor badge`,
-  ];
-
-  if (searchValues.ready_to_wait) {
-    queryParams.push(`ready_to_wait=${searchValues.ready_to_wait}`);
-  }
-  if (searchValues.priceFrom) {
-    queryParams.push(`price_from=${searchValues.priceFrom}`);
-  }
-  if (searchValues.priceTo) {
-    queryParams.push(`price_to=${searchValues.priceTo}`);
-  }
-  if (searchValues.dateFrom) {
-    queryParams.push(`date_from=${searchValues.dateFrom}`);
-  }
-  if (searchValues.dateTo) {
-    queryParams.push(`date_to=${searchValues.dateTo}`);
-  }
-
-  const queryString = queryParams.join('&');
+export const searchAuditor = (values, badges = true) => {
+  const kind = badges ? 'auditor badge' : 'auditor';
+  const queryString = createSearchValues(values, kind);
 
   return dispatch => {
     const token = Cookies.get('token');
-
     axios
       .get(
         `${API_URL}/search?${queryString}`,
-        isAuth()
-          ? {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-            }
-          : {},
+        isAuth() ? { headers: { Authorization: `Bearer ${token}` } } : {},
       )
       .then(({ data }) => {
         dispatch({ type: GET_AUDITORS, payload: data });

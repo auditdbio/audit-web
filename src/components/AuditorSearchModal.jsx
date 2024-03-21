@@ -51,7 +51,7 @@ export default function AuditorSearchModal({
   const [query, setQuery] = useState('');
 
   useEffect(() => {
-    dispatch(getAuditors(query, 5));
+    dispatch(getAuditors(query, 15));
   }, [query]);
 
   const handleInputChange = event => {

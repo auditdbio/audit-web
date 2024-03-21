@@ -1,14 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Button, Checkbox, Tooltip, Typography } from '@mui/material';
+import { Box, Checkbox, Tooltip, Typography } from '@mui/material';
 import Currency from './icons/Currency.jsx';
 import Star from './icons/Star.jsx';
-import theme, { radiusOfComponents } from '../styles/themes.js';
-import { AUDITOR, DONE, SUBMITED } from '../redux/actions/types.js';
-import { useNavigate } from 'react-router-dom/dist';
 import { addTestsLabel } from '../lib/helper.js';
 
 const MyProjectListCard = ({ type, project, setState, state, isChecked }) => {
-  const navigate = useNavigate();
   const [isDone, setIsDone] = useState(false);
 
   const handleClick = e => {
@@ -36,16 +32,16 @@ const MyProjectListCard = ({ type, project, setState, state, isChecked }) => {
         <Tooltip
           title={project.name || project.project_name}
           arrow
-          placement={'top'}
+          placement="top"
         >
-          <Typography variant={'h5'} textAlign={'center'} sx={projectNameSx}>
+          <Typography variant="h5" textAlign="center" sx={projectNameSx}>
             {project.name || project.project_name}
           </Typography>
         </Tooltip>
         <Tooltip
           title={project?.tags?.map(el => el).join(', ') ?? ''}
           arrow
-          placement={'top'}
+          placement="top"
         >
           <Typography sx={categorySx}>
             {project?.tags?.map(el => el).join(', ') ?? ''}
@@ -72,7 +68,7 @@ const MyProjectListCard = ({ type, project, setState, state, isChecked }) => {
         }}
       >
         <Checkbox
-          color={'success'}
+          color="success"
           checked={!!isChecked}
           onChange={handleClick}
           sx={checkBoxSx}

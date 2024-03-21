@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Box, Button, Tooltip, Typography, useMediaQuery } from '@mui/material';
 import theme, { radiusOfComponents } from '../styles/themes.js';
 import { useNavigate } from 'react-router-dom/dist';
@@ -31,10 +31,26 @@ import { AuditRequestsArray } from './custom/AuditRequestsArray.jsx';
 import MarkdownEditor from './markdown/Markdown-editor.jsx';
 import SalarySlider from './forms/salary-slider/salary-slider.jsx';
 import CloseProjectModal from './CloseProjectModal.jsx';
-import { DONE } from '../redux/actions/types.js';
+import { AUDITOR, DONE } from '../redux/actions/types.js';
 import CustomSnackbar from './custom/CustomSnackbar.jsx';
 import { addTestsLabel } from '../lib/helper.js';
+import { history } from '../services/history.js';
 import PriceCalculation from './PriceCalculation.jsx';
+
+const GoBack = ({ role }) => {
+  const location = useLocation();
+  const navigate = useNavigate();
+  return (
+    <Button
+      sx={backButtonSx}
+      onClick={() => navigate(-1)}
+      aria-label="Ga back"
+      {...addTestsLabel('go-back-button')}
+    >
+      <ArrowBackIcon />
+    </Button>
+  );
+};
 
 const CreateProjectCard = ({ projectInfo }) => {
   const navigate = useNavigate();
@@ -55,6 +71,8 @@ const CreateProjectCard = ({ projectInfo }) => {
   );
   const [closeConfirmIsOpen, setCloseConfirmIsOpen] = useState(false);
   const [state, setState] = useState(false);
+  const [isDirty, setIsDirty] = useState(false);
+  const [changeStatus, setChangeStatus] = useState(false);
 
   useEffect(() => {
     dispatch(getAuditsRequest('customer'));
@@ -118,9 +136,11 @@ const CreateProjectCard = ({ projectInfo }) => {
       status: isClosed ? DONE : '',
     };
     if (values.id && projectInfo.id) {
-      dispatch(changeStatusProject({ ...newValue, id: projectInfo.id }));
+      setChangeStatus(true);
+      setState(true);
+      handleSubmit(newValue);
     } else {
-      handleSubmit();
+      handleSubmit(values);
     }
   };
 
@@ -130,6 +150,7 @@ const CreateProjectCard = ({ projectInfo }) => {
       validationSchema={validationSchema}
       onSubmit={values => {
         const newValue = { ...values, price: parseInt(values.price) };
+        setIsDirty(false);
         if (editMode && projectInfo.id) {
           if (!state) {
             dispatch(
@@ -140,9 +161,15 @@ const CreateProjectCard = ({ projectInfo }) => {
               }),
             );
           } else {
-            dispatch(
-              editProjectNoRedirect({ ...newValue, id: projectInfo.id }),
-            );
+            if (!changeStatus) {
+              dispatch(
+                editProjectNoRedirect({ ...newValue, id: projectInfo.id }),
+              );
+            } else {
+              dispatch(
+                changeStatusProject({ ...newValue, id: projectInfo.id }),
+              );
+            }
           }
         } else {
           if (!state) {
@@ -158,19 +185,46 @@ const CreateProjectCard = ({ projectInfo }) => {
         values,
         setFieldValue,
         setFieldTouched,
+        dirty,
         touched,
         errors,
       }) => {
+        useEffect(() => {
+          setIsDirty(dirty);
+        }, [dirty]);
+
+        useEffect(() => {
+          const unblock = history.block(({ location }) => {
+            if (!isDirty) {
+              unblock();
+              return navigate(location);
+            }
+
+            const confirmed = window.confirm(
+              'Do you want to save changes before leaving the page?',
+            );
+
+            if (confirmed) {
+              handleSubmit(values);
+              unblock();
+              return navigate(location);
+            } else {
+              unblock();
+              return navigate(location);
+            }
+          });
+
+          if (!isDirty) {
+            unblock();
+          }
+
+          return () => {
+            unblock();
+          };
+        }, [history, isDirty]);
         return (
           <Box sx={mainBox}>
-            <Button
-              sx={backButtonSx}
-              onClick={() => navigate(-1)}
-              aria-label="Ga back"
-              {...addTestsLabel('go-back-button')}
-            >
-              <ArrowBackIcon />
-            </Button>
+            <GoBack />
 
             <CustomSnackbar
               autoHideDuration={3000}
@@ -203,7 +257,7 @@ const CreateProjectCard = ({ projectInfo }) => {
 
             <Box sx={buttonGroup}>
               <Button
-                variant={'contained'}
+                variant="contained"
                 sx={inviteButton}
                 onClick={() => {
                   handleInviteModal(handleSubmit);
@@ -213,9 +267,9 @@ const CreateProjectCard = ({ projectInfo }) => {
                 Invite auditor
               </Button>
               <Button
-                variant={'contained'}
+                variant="contained"
                 sx={publishButton}
-                type={'button'}
+                type="button"
                 onClick={() => {
                   if (
                     values.name &&
@@ -309,6 +363,7 @@ const CreateProjectCard = ({ projectInfo }) => {
                     <MarkdownEditor
                       name="description"
                       setFieldTouched={setFieldTouched}
+                      fastSave
                       mdProps={{
                         view: { menu: true, md: true, html: !matchXs },
                       }}
@@ -325,8 +380,8 @@ const CreateProjectCard = ({ projectInfo }) => {
                     )}
                   </Box>
                   <Button
-                    type={'submit'}
-                    variant={'contained'}
+                    type="submit"
+                    variant="contained"
                     sx={submitButton}
                     {...addTestsLabel(`${editMode ? 'save' : 'create'}-button`)}
                   >
@@ -347,7 +402,7 @@ const mainBox = theme => ({
   position: 'relative',
   display: 'flex',
   flexDirection: 'column',
-  paddingTop: '43px',
+  paddingTop: '40px',
   [theme.breakpoints.down('xs')]: {
     paddingTop: '30x',
   },
@@ -364,7 +419,7 @@ const backButtonSx = theme => ({
 });
 
 const wrapper = theme => ({
-  padding: '70px 90px',
+  padding: '30px 90px 70px',
   display: 'flex',
   flexDirection: 'column',
   [theme.breakpoints.down('sm')]: {
@@ -442,7 +497,7 @@ const formCard = {
   display: 'flex',
   flexDirection: 'column',
   justifyContent: 'center',
-  gap: '35px',
+  gap: '25px',
 };
 
 const formWrapper = theme => ({
@@ -461,9 +516,10 @@ const formWrapper = theme => ({
 const submitButton = theme => ({
   backgroundColor: theme.palette.primary.main,
   boxShadow: '0',
-  padding: '21px 0',
+  padding: '11px 0',
   color: '#FCFAF6',
   fontWeight: 600,
+  lineHeight: 1.2,
   textTransform: 'unset',
   borderRadius: radiusOfComponents,
   width: '402px',

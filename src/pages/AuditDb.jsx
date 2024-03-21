@@ -7,7 +7,7 @@ const AuditDb = () => {
   return (
     <Layout>
       <CustomCard sx={wrapper}>
-        <Typography variant={'h3'}>AuditDB</Typography>
+        <Typography variant="h3">AuditDB</Typography>
         <Typography>
           AuditDB is a revolutionary platform that facilitates the seamless
           connection between web3 auditors and clients seeking their services.
@@ -30,15 +30,15 @@ const AuditDb = () => {
           disrupt the audit market.
         </Typography>
         <Typography>
-          Check out this{' '}
+          Check out this&nbsp;
           <a
             href="https://youtu.be/J7L4yAhS6Rw"
             target="_blank"
             rel="noopener noreferrer"
           >
             screencast
-          </a>{' '}
-          to see AuditDB in action!
+          </a>
+          &nbsp;to see AuditDB in action!
         </Typography>
       </CustomCard>
     </Layout>
@@ -50,45 +50,26 @@ export default AuditDb;
 const wrapper = theme => ({
   padding: '40px',
   '& h3': {
-    fontSize: '28px',
+    fontSize: '20px',
     fontWeight: 600,
   },
   '& ul': {
-    fontSize: '22px',
+    fontSize: '16px',
     paddingLeft: '30px',
   },
   '& p': {
-    fontSize: '22px',
+    fontSize: '16px',
     marginY: '22px',
     '&:nth-of-type(2)': {
       marginBottom: '10px',
     },
   },
-  '& a': {
-    textDecoration: 'underline',
-    fontWeight: 'bold',
-    color: 'inherit',
-  },
-  [theme.breakpoints.down('md')]: {
-    '& p': {
-      fontSize: '18px',
-    },
-    '& h3': {
-      fontSize: '22px',
-    },
-    '& ul': {
-      fontSize: '18px',
-    },
-  },
   [theme.breakpoints.down('xs')]: {
     '& p': {
-      fontSize: '16px',
+      fontSize: '14px',
     },
-    // '& h3': {
-    //     fontSize: '22px',
-    // },
     '& ul': {
-      fontSize: '16px',
+      fontSize: '14px',
       paddingLeft: '16px',
     },
   },

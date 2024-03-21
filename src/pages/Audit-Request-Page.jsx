@@ -1,10 +1,9 @@
 import React, { useEffect } from 'react';
-import Layout from '../styles/Layout.jsx';
-import AuditRequestInfo from '../components/audit-request-info.jsx';
 import { useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
+import Layout from '../styles/Layout.jsx';
+import AuditRequestInfo from '../components/audit-request-info.jsx';
 import { getAuditRequest } from '../redux/actions/auditAction.js';
-import { Box } from '@mui/material';
 import Loader from '../components/Loader.jsx';
 import NotFound from './Not-Found.jsx';
 import { CLEAR_AUDIT_REQUEST } from '../redux/actions/types.js';
@@ -27,7 +26,7 @@ const AuditRequestPage = () => {
   if (!auditInfo && !notFound) {
     return (
       <Layout>
-        <CustomCard sx={wrapper} className={'audit-request-wrapper'}>
+        <CustomCard sx={wrapper} className="audit-request-wrapper">
           <Loader />
         </CustomCard>
       </Layout>

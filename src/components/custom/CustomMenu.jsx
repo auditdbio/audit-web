@@ -45,7 +45,7 @@ const StyledMenu = styled(props => (
         marginRight: theme.spacing(1.5),
       },
       ':hover': {
-        backgroundColor: ORANGE_COLOR, // theme.palette.primary.main
+        backgroundColor: theme.palette.primary.main,
         color: 'white',
       },
     },
@@ -90,11 +90,6 @@ export default function CustomMenu({ buttonText, options }) {
         open={open}
         onClose={handleClose}
       >
-        {/* {children} */}
-        {/*<MenuItem onClick={handleClose} disableRipple>*/}
-        {/*	AuditDB*/}
-        {/*</MenuItem>*/}
-        {/*<Divider sx={{ my: 0, backgroundColor: "orange", mx: "15px" }} />*/}
         {menuOptions
           .filter(item => (isAuth() ? item.role === currentRole : item))
           .map(item => {
@@ -121,9 +116,6 @@ export default function CustomMenu({ buttonText, options }) {
   );
 }
 
-const ORANGE_COLOR = '#FF9900';
-const BLACK_COLOR = '#222222';
-
 const wrapper = {
   display: 'flex',
   justifyContent: 'center',
@@ -132,19 +124,19 @@ const wrapper = {
 
 const menuButton = theme => ({
   background: 'transparent',
-  color: BLACK_COLOR,
-  fontSize: '26px',
+  color: '#222222',
+  fontSize: '20px',
   fontWeight: '400',
   fontFamily: 'Montserrat',
+  textTransform: 'none',
   ':hover': {
-    backgroundColor: 'transparent', // theme.palette.primary.main
-    color: ORANGE_COLOR,
+    backgroundColor: 'transparent', //
+    color: theme.palette.primary.main,
   },
   ':focus-visible': {
-    backgroundColor: 'transparent', // theme.palette.primary.main
-    color: ORANGE_COLOR,
+    backgroundColor: 'transparent',
+    color: theme.palette.primary.main,
   },
-  textTransform: 'none',
   marginY: 'auto',
   [theme.breakpoints.down('md')]: {
     padding: '6px',

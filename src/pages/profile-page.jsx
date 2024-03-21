@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom/dist';
+import { useDispatch, useSelector } from 'react-redux';
 import Layout from '../styles/Layout.jsx';
 import { Box } from '@mui/material';
 import CustomTabs from '../components/custom/CustomTabs.jsx';
@@ -6,12 +8,8 @@ import InfoCard from '../components/custom/info-card.jsx';
 import UserInfo from '../components/User-info.jsx';
 import Projects from '../components/Projects.jsx';
 import Audits from '../components/Audits.jsx';
-import { useDispatch, useSelector } from 'react-redux';
-import { getCustomer } from '../redux/actions/customerAction.js';
-import { getAuditor } from '../redux/actions/auditorAction.js';
 import { AUDITOR, CUSTOMER } from '../redux/actions/types.js';
 import AuditRequest from '../components/Audit-request.jsx';
-import { useNavigate, useParams } from 'react-router-dom';
 import { clearUserSuccess } from '../redux/actions/userAction.js';
 import CustomSnackbar from '../components/custom/CustomSnackbar.jsx';
 import { isAuth } from '../lib/helper.js';
@@ -46,7 +44,7 @@ const ProfilePage = () => {
       <Box sx={wrapper}>
         <CustomTabs
           selectedTabSx={currentRole === AUDITOR ? auditorTabSx : customerTabSx}
-          name={'type'}
+          name="type"
           choosenTab={chooseTab}
           tabs={currentRole === AUDITOR ? auditorTabs : customerTabs}
           setTab={setChooseTab}
