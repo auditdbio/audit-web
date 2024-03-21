@@ -233,9 +233,9 @@ const AuditInfo = ({ audit, auditRequest, issues, confirmed }) => {
         </Box>
 
         <PriceCalculation
-          price={audit?.price}
+          price={audit?.price || auditRequest?.price}
           sx={priceCalc}
-          scope={audit?.scope}
+          scope={audit?.scope || auditRequest?.project_scope}
         />
 
         <Box>

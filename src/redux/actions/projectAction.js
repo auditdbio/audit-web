@@ -1,6 +1,8 @@
 import {
   CLEAR_SUCCESS,
   CLOSE_THE_PROJECT,
+  GET_CLOC,
+  CLEAR_CLOC,
   GET_CURRENT_PROJECT,
   GET_MY_PROJECTS,
   GET_PROJECTS,
@@ -260,4 +262,22 @@ export const searchProjects = values => {
         console.error(response, 'res');
       });
   };
+};
+
+export const getCloc = links => {
+  const token = Cookies.get('token');
+  return dispatch => {
+    axios
+      .post(`${API_URL}/cloc/count`, links, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .then(({ data }) => {
+        delete data.header;
+        dispatch({ type: GET_CLOC, payload: data });
+      });
+  };
+};
+
+export const clearCloc = () => {
+  return { type: CLEAR_CLOC };
 };

@@ -54,7 +54,7 @@ const OfferModal = ({
             to: dayjs(project?.time?.to) || new Date(),
           },
           project_id: project?.project_id || project?.id,
-          scope: project?.scope,
+          scope: project?.scope || project?.project_scope,
           time_frame: '',
         }}
         onSubmit={values => {

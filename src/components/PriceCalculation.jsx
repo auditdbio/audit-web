@@ -1,5 +1,9 @@
 import React, { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import GitUrlParse from 'git-url-parse';
+import HelpOutlineIcon from '@mui/icons-material/HelpOutline.js';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore.js';
+import ExpandLessIcon from '@mui/icons-material/ExpandLess.js';
 import {
   Box,
   Button,
@@ -12,80 +16,48 @@ import {
   TableRow,
   Switch,
 } from '@mui/material';
-import HelpOutlineIcon from '@mui/icons-material/HelpOutline.js';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore.js';
-import ExpandLessIcon from '@mui/icons-material/ExpandLess.js';
 import theme from '../styles/themes.js';
-
-// todo delete
-// files, blank, comment, code
-const data = {
-  C: [10, 4680, 6621, 30812],
-  'C/C++': [3, 99, 286, 496],
-  JavaScript: [3, 99, 286, 496],
-  SUM: [13, 4779, 6907, 31308],
-};
+import { clearCloc, getCloc } from '../redux/actions/projectAction.js';
 
 const PriceCalculation = ({ scope, price = 0, color = 'primary', sx = {} }) => {
-  const [priceCalculation, setPriceCalculation] = useState(null);
+  const dispatch = useDispatch();
+
+  const { cloc } = useSelector(s => s.project);
   const [isDetailsPrice, setIsDetailsPrice] = useState(false);
   const [isDetailsMore, setIsDetailsMore] = useState(false);
+  const [githubLinks, setGithubLinks] = useState([]);
 
   useEffect(() => {
-    const cloc = Object.keys(data).map(lang => {
-      return {
-        name: lang,
-        files: data[lang][0],
-        blank: data[lang][1],
-        comment: data[lang][2],
-        code: data[lang][3],
-      };
-    });
+    dispatch(clearCloc());
 
-    setPriceCalculation(cloc);
-  }, [data]);
-
-  const handleCheckCost = () => {
     if (scope) {
-      const clocReq = scope.reduce((acc, url) => {
+      const links = scope.reduce((acc, url) => {
         const parsedUrl = GitUrlParse(url);
-
         if (
-          parsedUrl.resource === 'github.com' ||
-          parsedUrl.source === 'github.com'
+          ((parsedUrl.resource === 'github.com' ||
+            parsedUrl.source === 'github.com') &&
+            url.includes('/blob/')) ||
+          parsedUrl.source === 'githubusercontent.com' ||
+          parsedUrl.resource === 'raw.githubusercontent.com'
         ) {
-          const author = parsedUrl.owner;
-          const repo = parsedUrl.name;
-          const commit = parsedUrl.commit;
-          const file = parsedUrl.filepath;
-
-          if (file && author && repo && commit) {
-            const commitIdx = acc.findIndex(
-              item =>
-                item.author === author &&
-                item.repo === repo &&
-                item.commit === commit,
-            );
-
-            if (commitIdx >= 0) {
-              acc[commitIdx].files.push(file);
-            } else {
-              acc.push({
-                author,
-                repo,
-                commit,
-                files: [file],
-              });
-            }
-          }
+          acc.push(url);
         }
-
         return acc;
       }, []);
 
-      console.log(clocReq);
+      setGithubLinks(links);
+    }
+  }, [scope]);
+
+  const handleCheckCost = () => {
+    if (githubLinks.length) {
+      dispatch(getCloc({ links: githubLinks }));
     }
   };
+
+  if (!githubLinks.length) {
+    return null;
+  }
 
   return (
     <Box sx={sx}>
@@ -100,32 +72,41 @@ const PriceCalculation = ({ scope, price = 0, color = 'primary', sx = {} }) => {
         >
           <HelpOutlineIcon fontSize="small" cursor="pointer" />
         </Tooltip>
-        {priceCalculation && (
-          <Button
-            sx={checkButton}
-            color={color}
-            variant="contained"
-            type="button"
-            onClick={handleCheckCost}
-            disabled={!price}
+        {!cloc && (
+          <Tooltip
+            title={!+price ? 'Add the price per line of code' : ''}
+            arrow
+            placement="bottom"
+            enterDelay={200}
+            leaveDelay={100}
           >
-            Check
-          </Button>
+            <span>
+              <Button
+                sx={checkButton}
+                color={color}
+                variant="contained"
+                type="button"
+                onClick={handleCheckCost}
+                disabled={!+price}
+              >
+                Check
+              </Button>
+            </span>
+          </Tooltip>
         )}
       </Box>
 
-      {priceCalculation && (
+      {cloc && (
         <Box sx={calcResult}>
           <Box sx={calcResultHead}>
             <Box>
               <Box sx={{ mb: '3px' }}>
                 Total price:&nbsp;
-                {(priceCalculation.find(it => it.name === 'SUM')?.code || 0) *
-                  price}
+                {(cloc.SUM?.code || 0) * price}
               </Box>
               <Box>
                 Total lines of code:&nbsp;
-                {priceCalculation.find(it => it.name === 'SUM')?.code || 0}
+                {cloc.SUM?.code || 0}
               </Box>
             </Box>
             <Button
@@ -172,29 +153,39 @@ const PriceCalculation = ({ scope, price = 0, color = 'primary', sx = {} }) => {
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {priceCalculation.map(row => (
+                    {Object.keys(cloc).map(lang => (
                       <TableRow
-                        key={row.name}
+                        key={lang}
                         sx={{
                           '&:last-child td, &:last-child th': { border: 0 },
                         }}
                       >
                         <TableCell component="th" scope="row">
-                          {row.name}
+                          {lang === 'SUM' ? 'Summary' : lang}
                         </TableCell>
                         {isDetailsPrice ? (
                           <>
-                            <TableCell align="right">{row.code}</TableCell>
+                            <TableCell align="right">
+                              {cloc[lang].code}
+                            </TableCell>
                             <TableCell align="right" sx={priceCellSx}>
-                              {row.code * price}
+                              {cloc[lang].code * price}
                             </TableCell>
                           </>
                         ) : (
                           <>
-                            <TableCell align="right">{row.files}</TableCell>
-                            <TableCell align="right">{row.code}</TableCell>
-                            <TableCell align="right">{row.comment}</TableCell>
-                            <TableCell align="right">{row.blank}</TableCell>
+                            <TableCell align="right">
+                              {cloc[lang].nFiles}
+                            </TableCell>
+                            <TableCell align="right">
+                              {cloc[lang].code}
+                            </TableCell>
+                            <TableCell align="right">
+                              {cloc[lang].comment}
+                            </TableCell>
+                            <TableCell align="right">
+                              {cloc[lang].blank}
+                            </TableCell>
                           </>
                         )}
                       </TableRow>
