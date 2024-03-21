@@ -77,7 +77,7 @@ const AuditMessage = ({ message, handleError, navigate }) => {
   };
 
   const handleConfirm = () => {
-    dispatch(acceptAudit(data));
+    dispatch(confirmAudit(data, true));
   };
 
   // useEffect(() => {
