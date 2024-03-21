@@ -292,7 +292,7 @@ const AuditRequestInfo = ({
 
         <Box sx={{ textAlign: 'center', mt: '10px' }}>
           <ShareProjectButton
-            projectId={project?.id}
+            projectId={project?.project_id}
             sx={{ fontSize: '12px' }}
             showIcon
             isModal

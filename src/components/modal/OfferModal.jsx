@@ -28,11 +28,11 @@ const OfferModal = ({
   return (
     <Box sx={modalWrapper}>
       <Button
-        className={'audit-request-back-btn'}
+        className="audit-request-back-btn"
         onClick={handleClose}
         {...addTestsLabel('go-back-button')}
       >
-        <ArrowBackIcon color={'secondary'} />
+        <ArrowBackIcon color="secondary" />
       </Button>
       <Formik
         validationSchema={MakeOfferSchema}
@@ -83,16 +83,16 @@ const OfferModal = ({
           return (
             <Form onSubmit={handleSubmit}>
               <Typography
-                variant={'h5'}
+                variant="h5"
                 sx={{ width: '100%', textAlign: 'center' }}
               >
                 Add more info
               </Typography>
               <Box sx={{ width: '100%' }}>
-                <Typography variant={'caption'}>
+                <Typography variant="caption">
                   Price per line of code
                 </Typography>
-                <SalarySlider name={'price'} />
+                <SalarySlider name="price" />
                 <PriceCalculation
                   price={values.price}
                   scope={values.scope}
@@ -101,7 +101,7 @@ const OfferModal = ({
                 />
               </Box>
               <Box>
-                <Typography variant={'caption'}>Time frame</Typography>
+                <Typography variant="caption">Time frame</Typography>
                 <Box
                   sx={{
                     display: 'flex',
@@ -113,7 +113,7 @@ const OfferModal = ({
                   <LocalizationProvider dateAdapter={AdapterDayjs}>
                     <Field
                       component={DatePicker}
-                      name={'time.from'}
+                      name="time.from"
                       value={dayjs(values.time?.from)}
                       sx={dateStyle}
                       inputFormat="DD.MM.YYYY"
@@ -124,7 +124,7 @@ const OfferModal = ({
                       disablePast
                       minDate={new Date()}
                     />
-                    <Typography variant={'caption'}>-</Typography>
+                    <Typography variant="caption">-</Typography>
                     <Field
                       component={DatePicker}
                       value={dayjs(values.time?.to)}
@@ -141,10 +141,10 @@ const OfferModal = ({
                 </Box>
               </Box>
               <Button
-                variant={'contained'}
+                variant="contained"
                 sx={submitBtn}
-                type={'submit'}
-                color={'secondary'}
+                type="submit"
+                color="secondary"
                 {...addTestsLabel('send-offer-button')}
               >
                 Send offer
@@ -207,6 +207,8 @@ const modalWrapper = theme => ({
   left: '50%',
   transform: 'translate(-50%, -50%)',
   width: 650,
+  maxHeight: '90vh',
+  overflow: 'auto',
   backgroundColor: '#fff',
   border: '1.5px solid #D9D9D9',
   boxShadow:
