@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Box, Button, Link, Modal, Typography } from '@mui/material';
+import React from 'react';
+import { Modal } from '@mui/material';
 import AuditRequestInfo from '../audit-request-info.jsx';
 
 const AuditRequestModal = ({ close, open }) => {

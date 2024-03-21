@@ -29,6 +29,7 @@ import CustomSnackbar from '../components/custom/CustomSnackbar.jsx';
 import { setCurrentChat } from '../redux/actions/chatActions.js';
 import ChatIcon from '../components/icons/ChatIcon.jsx';
 import ConfirmModal from '../components/modal/ConfirmModal.jsx';
+import PriceCalculation from '../components/PriceCalculation.jsx';
 
 const AuditInfo = ({ audit, auditRequest, issues, confirmed }) => {
   const navigate = useNavigate();
@@ -264,6 +265,13 @@ const AuditInfo = ({ audit, auditRequest, issues, confirmed }) => {
             </Button>
           )}
         </Box>
+
+        <PriceCalculation
+          price={audit?.price || auditRequest?.price}
+          sx={priceCalc}
+          scope={audit?.scope || auditRequest?.project_scope}
+        />
+
         <Box>
           <Box
             sx={{
@@ -590,5 +598,19 @@ const readAllButton = theme => ({
   [theme.breakpoints.down('xs')]: {
     fontSize: '16px',
     border: 'none',
+  },
+});
+
+const priceCalc = theme => ({
+  width: '725px',
+  '& .head': { justifyContent: 'center' },
+  [theme.breakpoints.down('md')]: {
+    width: '590px',
+  },
+  [theme.breakpoints.down('sm')]: {
+    width: '80%',
+  },
+  [theme.breakpoints.down('xs')]: {
+    width: '100%',
   },
 });
