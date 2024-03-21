@@ -3,6 +3,7 @@ import { Box, Button, Modal, Typography } from '@mui/material';
 import AuditRequestInfo from '../audit-request-info.jsx';
 import { useDispatch, useSelector } from 'react-redux';
 import {
+  acceptAudit,
   confirmAudit,
   deleteAuditRequest,
   getAuditRequest,
@@ -76,7 +77,7 @@ const AuditMessage = ({ message, handleError, navigate }) => {
   };
 
   const handleConfirm = () => {
-    dispatch(confirmAudit(data, true));
+    dispatch(acceptAudit(data));
   };
 
   // useEffect(() => {
@@ -86,6 +87,7 @@ const AuditMessage = ({ message, handleError, navigate }) => {
   //   };
   // }, [data.id]);
   //
+  console.log(JSON.parse(message.text));
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
       <Typography align={'center'}>Audit request</Typography>
