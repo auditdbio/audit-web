@@ -39,7 +39,10 @@ const IssueListItem = ({ issue, auditId, user, isPublic }) => {
 
   return (
     <Link
-      sx={issueRow}
+      sx={[
+        issueRow,
+        !!issue.links.length ? { paddingY: '15px!important' } : {},
+      ]}
       component={RouterLink}
       onClick={() => window.scrollTo({ top: 0 })}
       to={
