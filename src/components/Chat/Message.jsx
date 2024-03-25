@@ -59,8 +59,8 @@ const Message = ({ message, user, currentChat, isRead, type }) => {
       <Box
         sx={
           message.kind === 'Audit'
-            ? requestTextSx({ isOwn: message.from?.id !== user.id })
-            : messageTextSx({ isOwn: message.from?.id !== user.id })
+            ? requestTextSx({ isOwn: message.from?.id === user.id })
+            : messageTextSx({ isOwn: message.from?.id === user.id })
         }
       >
         {message.kind === 'Image' ? (
