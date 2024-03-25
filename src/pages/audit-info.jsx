@@ -115,7 +115,10 @@ const AuditInfo = ({ audit, auditRequest, issues, confirmed }) => {
         <Button
           sx={backButtonSx}
           onClick={() => {
-            navigate('/profile/audits');
+            if (localStorage.getItem('prevPath')) {
+              navigate(localStorage.getItem('prevPath'));
+              localStorage.removeItem('prevPath');
+            } else navigate('/profile/audits');
           }}
           aria-label="Go back"
           {...addTestsLabel('go-back-button')}

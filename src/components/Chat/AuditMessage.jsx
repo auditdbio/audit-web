@@ -12,6 +12,7 @@ import {
 import {
   AUDITOR,
   CLEAR_AUDIT_REQUEST,
+  CUSTOMER,
   RESOLVED,
   WAITING_FOR_AUDITS,
 } from '../../redux/actions/types.js';
@@ -54,6 +55,7 @@ const AuditMessage = ({ message, handleError }) => {
   };
 
   const handleView = () => {
+    localStorage.setItem('prevPath', window.location.pathname);
     navigate(`/audit-info/${data.id}/auditor`);
   };
 
@@ -166,6 +168,19 @@ const AuditMessage = ({ message, handleError }) => {
           </Box>
         </>
       )}
+      {data.status.toLowerCase() === WAITING_FOR_AUDITS.toLowerCase() &&
+        user.current_role === CUSTOMER && (
+          <Button
+            sx={{ textTransform: 'unset', width: '100%' }}
+            variant={'contained'}
+            onClick={() => {
+              localStorage.setItem('prevPath', window.location.pathname);
+              navigate(`/audit-info/${data.id}/customer`);
+            }}
+          >
+            View
+          </Button>
+        )}
       {data.status !== 'Declined' && message.from?.id !== user.id && (
         <>
           {data.status === 'Waiting for audit' ? (
@@ -174,7 +189,10 @@ const AuditMessage = ({ message, handleError }) => {
                 sx={{ textTransform: 'unset', width: '100%' }}
                 variant="contained"
                 color="secondary"
-                onClick={() => dispatch(startAudit(data))}
+                onClick={() => {
+                  localStorage.setItem('prevPath', window.location.pathname);
+                  dispatch(startAudit(data));
+                }}
               >
                 Start audit
               </Button>
@@ -213,13 +231,21 @@ const AuditMessage = ({ message, handleError }) => {
                 </>
               ) : (
                 <>
-                  <Button
-                    sx={{ textTransform: 'unset', width: '100%' }}
-                    variant={'contained'}
-                    onClick={() => navigate(`/audit-info/${data.id}/customer`)}
-                  >
-                    View
-                  </Button>
+                  {user.current_role !== AUDITOR && (
+                    <Button
+                      sx={{ textTransform: 'unset', width: '100%' }}
+                      variant={'contained'}
+                      onClick={() => {
+                        localStorage.setItem(
+                          'prevPath',
+                          window.location.pathname,
+                        );
+                        navigate(`/audit-info/${data.id}/customer`);
+                      }}
+                    >
+                      View
+                    </Button>
+                  )}
                 </>
               )}
             </Box>
@@ -275,7 +301,7 @@ const AuditMessage = ({ message, handleError }) => {
               sx={{ textTransform: 'unset', width: '100%' }}
               variant="contained"
               color="secondary"
-              onClick={() => navigate(`/audit-info/${data.id}/auditor`)}
+              onClick={handleView}
             >
               Proceed
             </Button>
