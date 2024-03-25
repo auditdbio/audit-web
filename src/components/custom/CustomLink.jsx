@@ -19,10 +19,10 @@ const linkShortener = (link, shortLinkLength) => {
   return shortLink;
 };
 
-const CustomLink = ({ link, showIcon = true, sx = {} }) => {
+const CustomLink = ({ link, showIcon = true, sx = {}, shortLength = null }) => {
   const linkBoxRef = useRef();
   const matchSm = useMediaQuery(theme.breakpoints.down('sm'));
-  const [shortLinkLength, setShortLinkLength] = useState(null);
+  const [shortLinkLength, setShortLinkLength] = useState(shortLength);
 
   useEffect(() => {
     const boxWidth = linkBoxRef.current?.offsetWidth;
@@ -50,6 +50,7 @@ const CustomLink = ({ link, showIcon = true, sx = {} }) => {
           target="_blank"
           sx={[linkSx, sx]}
           ref={linkBoxRef}
+          onClick={e => e.stopPropagation()}
         >
           <Tooltip sx={{ width: 'unset' }} title={link} arrow placement="top">
             <span>{linkShortener(link, shortLinkLength)}</span>
