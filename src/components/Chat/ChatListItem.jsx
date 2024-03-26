@@ -116,13 +116,20 @@ const wrapper = theme => ({
   },
 });
 
-const chatDataWrapper = {
+const chatDataWrapper = theme => ({
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'space-between',
-  justifyContent: 'center',
+  justifyContent: 'flex-start',
   flexGrow: 1,
-};
+  height: '90px',
+  [theme.breakpoints.down('md')]: {
+    height: '75px',
+  },
+  [theme.breakpoints.down('sm')]: {
+    height: '58px',
+  },
+});
 
 const chatData = {
   display: 'flex',
