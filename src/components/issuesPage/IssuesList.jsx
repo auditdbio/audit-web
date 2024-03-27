@@ -134,7 +134,7 @@ const IssuesList = ({
           isPublic || saved ? { paddingRight: '15px' } : {},
         ]}
       >
-        <Box sx={{ ml: '30px' }}>
+        <Box sx={issueTitleSx}>
           <Button sx={[columnText, columnTitle]} onClick={handleNameSort}>
             <span>Issue</span>
             <span>
@@ -223,6 +223,13 @@ const columnPublic = theme => ({
   },
 });
 
+const issueTitleSx = theme => ({
+  ml: '30px',
+  [theme.breakpoints.down('xs')]: {
+    ml: '15px',
+  },
+});
+
 const columnsTitleBlock = theme => ({
   display: 'flex',
   width: '30%',
@@ -255,6 +262,7 @@ const columnText = theme => ({
   padding: '0 25px',
   [theme.breakpoints.down('xs')]: {
     padding: '0 15px',
+    fontSize: '12px',
   },
 });
 
