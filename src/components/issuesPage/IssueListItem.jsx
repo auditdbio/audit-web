@@ -60,7 +60,7 @@ const IssueListItem = ({ issue, auditId, user, isPublic }) => {
         enterDelay={300}
         leaveDelay={0}
       >
-        <Box sx={{ width: '70%' }}>
+        <Box sx={wrapper}>
           <Typography
             sx={[columnText, issueTitleSx, checkUnread(), { mb: '5px' }]}
             ref={titleBoxRef}
@@ -106,6 +106,7 @@ const issueRow = theme => ({
   display: 'flex',
   width: '100%',
   padding: '30px 0',
+  gap: '5px',
   textDecoration: 'none',
   cursor: 'pointer',
   border: '2px solid #E5E5E5',
@@ -134,6 +135,14 @@ const columnText = theme => ({
   },
   [theme.breakpoints.down('xs')]: {
     padding: '0 15px',
+    fontSize: '12px',
+  },
+});
+
+const wrapper = theme => ({
+  width: '70%',
+  [theme.breakpoints.down(659)]: {
+    width: '100%',
   },
 });
 
@@ -169,12 +178,20 @@ const statusSx = status => {
   };
 };
 
-const severityWrapper = {
+const severityWrapper = theme => ({
   width: '15%',
   display: 'flex',
   justifyContent: 'center',
   alignItems: 'center',
-};
+  [theme.breakpoints.down(659)]: {
+    '& span': {
+      width: '32px',
+      '& span': {
+        display: 'none',
+      },
+    },
+  },
+});
 
 const unreadChanges = theme => ({
   position: 'relative',
