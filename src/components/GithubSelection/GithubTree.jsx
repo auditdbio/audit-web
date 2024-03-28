@@ -47,27 +47,25 @@ const GithubTreeNode = ({
     const checkIfAllSelected = currentNode => {
       if (currentNode.type === 'tree') {
         if (currentNode.tree.length === 0) return false;
-        let newData = {};
+        let newData = { ...currentNode };
+
         if (
           currentNode.tree.every(el => {
             if (el.type === 'tree') {
-              checkIfAllSelected(el);
+              return checkIfAllSelected(el);
             } else {
-              endsWithAny(el.name, filterConfig);
+              return endsWithAny(el.name, filterConfig);
             }
           })
         ) {
           newData = currentNode;
         } else {
-          newData = {
-            ...currentNode,
-            tree: [
-              ...currentNode.tree.filter(
-                el => !endsWithAny(el.name, filterConfig),
-              ),
-              ...currentNode.tree.filter(el => el.type === 'tree'),
-            ],
-          };
+          newData.tree = [
+            ...currentNode.tree.filter(
+              el => !endsWithAny(el.name, filterConfig),
+            ),
+            ...currentNode.tree.filter(el => el.type === 'tree'),
+          ];
         }
 
         return newData.tree.every(childNode => {

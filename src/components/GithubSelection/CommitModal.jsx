@@ -1,15 +1,23 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Box, Button, Typography } from '@mui/material';
+import { Box, Button, Modal, Typography } from '@mui/material';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import { useField } from 'formik';
 import CustomSnackbar from '../custom/CustomSnackbar.jsx';
 import Loader from '../Loader.jsx';
 import { useDispatch, useSelector } from 'react-redux';
-import { getCommitData } from '../../redux/actions/githubAction.js';
+import { getCommitData, getCommits } from '../../redux/actions/githubAction.js';
 import GithubTree from './GithubTree.jsx';
 import { createBlopUrl } from '../../services/urls.js';
+import GithubBranchAutocomplete from '../GithubBranchAutocomplete.jsx';
+import ModalOfAlert from './ModalOfAlert.jsx';
 const reg = /[a-z]/i;
-const CommitModal = ({ sha, onClose, repository, handleCloseCommit }) => {
+const CommitModal = ({
+  sha,
+  onClose,
+  repository,
+  handleCloseCommit,
+  setOpen,
+}) => {
   const [field, _, fieldHelper] = useField('scope');
   const [fieldId] = useField('id');
   const data = useSelector(state => state.github.commit);
@@ -21,6 +29,11 @@ const CommitModal = ({ sha, onClose, repository, handleCloseCommit }) => {
   const [filterGithub, setFilterGithub] = useState([]);
   const [newObj, setNewObj] = useState(null);
   const [checkLength, setCheckLength] = useState(false);
+  const { defaultBranch, branch: branchState } = useSelector(
+    state => state.github,
+  );
+  const [modalOpenAlert, setModalOpenAlert] = useState(false);
+  const [branch, setBranch] = useState(branchState || defaultBranch);
 
   useEffect(() => {
     if (!commit.sha) {
@@ -139,7 +152,8 @@ const CommitModal = ({ sha, onClose, repository, handleCloseCommit }) => {
       ...field.value.filter(el => !deletedFromField.includes(el)),
       ...selected,
     ]);
-    onClose();
+    setSelected([]);
+    // onClose();
   };
 
   const handleReset = () => {
@@ -148,8 +162,12 @@ const CommitModal = ({ sha, onClose, repository, handleCloseCommit }) => {
   };
 
   const closeModal = () => {
-    setSelected([]);
-    onClose();
+    if (selected.length || deletedFromField.length) {
+      setModalOpenAlert(true);
+    } else {
+      setSelected([]);
+      onClose();
+    }
   };
 
   const handleChangeCommit = () => {
@@ -189,7 +207,25 @@ const CommitModal = ({ sha, onClose, repository, handleCloseCommit }) => {
     }
   }, [data.tree, sha, checkAll]);
 
-  //
+  const handleAgree = () => {
+    fieldHelper.setValue([
+      ...field.value.filter(el => !deletedFromField.includes(el)),
+      ...selected,
+    ]);
+    setSelected([]);
+    onClose();
+  };
+
+  const handleDisagree = () => {
+    setSelected([]);
+    onClose();
+  };
+
+  const handleChangeBranch = () => {
+    dispatch(getCommits(repository, branch));
+    setOpen(false);
+  };
+
   if (data && commit && data.sha && newObj?.tree.length) {
     return (
       <Box sx={modalSx}>
@@ -202,7 +238,7 @@ const CommitModal = ({ sha, onClose, repository, handleCloseCommit }) => {
           }}
           severity={'error'}
           text={
-            'A few files were deleted as they were not included in this commit'
+            'A few files were removed from the selection as they were not included in this commit'
           }
         />
         <Box
@@ -233,6 +269,16 @@ const CommitModal = ({ sha, onClose, repository, handleCloseCommit }) => {
             <Button onClick={closeModal}>
               <CloseRoundedIcon />
             </Button>
+            <Modal
+              open={modalOpenAlert}
+              onClose={() => setModalOpenAlert(false)}
+              aria-labelledby="modal-modal-title"
+              aria-describedby="modal-modal-description"
+            >
+              <Box sx={alertModalSx}>
+                <ModalOfAlert onClose={handleDisagree} onSave={handleAgree} />
+              </Box>
+            </Modal>
             <Button
               sx={{ textTransform: 'unset' }}
               onClick={handleChangeCommit}
@@ -240,13 +286,16 @@ const CommitModal = ({ sha, onClose, repository, handleCloseCommit }) => {
               Back to commits
             </Button>
           </Box>
-          <Typography variant="h4">Commit</Typography>
+          {/*<Typography variant="h4">Commit</Typography>*/}
           <Box>
             <Box
               sx={{
                 display: 'flex',
                 justifyContent: 'space-between',
                 gap: '10px',
+                padding: '7px',
+                backgroundColor: '#efefefa6',
+                marginY: '15px',
               }}
             >
               <Typography
@@ -255,7 +304,7 @@ const CommitModal = ({ sha, onClose, repository, handleCloseCommit }) => {
               >
                 {commit?.commit?.message}
               </Typography>
-              <Typography sx={{ fontSize: '16px' }} variant={'caption'}>
+              <Typography variant={'body1'} sx={{ fontWeight: 500 }}>
                 {data?.sha.slice(0, 7)}
               </Typography>
             </Box>
@@ -357,6 +406,18 @@ const CommitModal = ({ sha, onClose, repository, handleCloseCommit }) => {
 };
 
 export default CommitModal;
+
+const alertModalSx = theme => ({
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: 400,
+  bgcolor: 'background.paper',
+  borderRadius: '10px',
+  boxShadow: 24,
+  p: 4,
+});
 
 const actionWrapper = theme => ({
   marginY: '15px',

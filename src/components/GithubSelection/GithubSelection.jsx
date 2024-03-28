@@ -40,7 +40,6 @@ const BASE_URL = import.meta.env.VITE_BASE_URL;
 const GithubSelection = ({ project }) => {
   const [field, _, fieldHelper] = useField('scope');
   const [urlRepo, setUrlRepo] = useState('');
-  const [branch, setBranch] = useState('');
   const [isOpen, setIsOpen] = useState(false);
   const {
     defaultBranch,
@@ -296,7 +295,6 @@ const GithubSelection = ({ project }) => {
                   branch={branch}
                 />
               </Box>
-              <Typography>Commits:</Typography>
               <Divider />
               <List sx={listWrapper}>
                 {newCommits?.map((commitObj, idx) => {
