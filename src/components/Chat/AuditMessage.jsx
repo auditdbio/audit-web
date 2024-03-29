@@ -59,6 +59,11 @@ const AuditMessage = ({ message, handleError }) => {
     navigate(`/audit-info/${data.id}/auditor`);
   };
 
+  const handleViewCustomer = () => {
+    localStorage.setItem('prevPath', window.location.pathname);
+    navigate(`/audit-info/${data.id}/customer`);
+  };
+
   const handleOpenModal = () => {
     if (user.current_role === AUDITOR && isAuth() && auditor?.first_name) {
       setOpen(true);
@@ -169,7 +174,8 @@ const AuditMessage = ({ message, handleError }) => {
         </>
       )}
       {data.status.toLowerCase() === WAITING_FOR_AUDITS.toLowerCase() &&
-        user.current_role === CUSTOMER && (
+        user.current_role === CUSTOMER &&
+        message.from?.id === user.id && (
           <Button
             sx={{ textTransform: 'unset', width: '100%' }}
             variant={'contained'}
@@ -181,119 +187,157 @@ const AuditMessage = ({ message, handleError }) => {
             View
           </Button>
         )}
-      {data.status !== 'Declined' && message.from?.id !== user.id && (
-        <>
-          {data.status === 'Waiting for audit' ? (
+      {data.status.toLowerCase() === WAITING_FOR_AUDITS.toLowerCase() &&
+        user.current_role === AUDITOR && (
+          <Box sx={{ display: 'flex', gap: '20px' }}>
+            <Button
+              sx={{ textTransform: 'unset', width: '100%' }}
+              variant="contained"
+              color="secondary"
+              onClick={() => {
+                localStorage.setItem('prevPath', window.location.pathname);
+                dispatch(startAudit(data));
+              }}
+            >
+              Start audit
+            </Button>
+            <Button
+              onClick={handleView}
+              sx={{ textTransform: 'unset', width: '100%' }}
+              variant="contained"
+              color="primary"
+            >
+              View
+            </Button>
+          </Box>
+        )}
+      {data.status === 'Request' &&
+        user.current_role === CUSTOMER &&
+        message.from?.id !== user.id && (
+          <Box sx={{ width: '100%' }}>
             <Box sx={{ display: 'flex', gap: '20px' }}>
               <Button
                 sx={{ textTransform: 'unset', width: '100%' }}
-                variant="contained"
-                color="secondary"
-                onClick={() => {
-                  localStorage.setItem('prevPath', window.location.pathname);
-                  dispatch(startAudit(data));
-                }}
+                variant={'contained'}
+                onClick={() => handleConfirm(data)}
               >
-                Start audit
+                Accept
               </Button>
               <Button
-                onClick={handleView}
                 sx={{ textTransform: 'unset', width: '100%' }}
-                variant="contained"
-                color="primary"
+                variant={'contained'}
+                color={user.current_role === AUDITOR ? 'primary' : 'secondary'}
+                onClick={() => setConfirmDeclineOpen(true)}
+              >
+                Decline
+              </Button>
+            </Box>
+            <Box sx={{ mt: '15px' }}>
+              <Button
+                sx={{ textTransform: 'unset', width: '100%' }}
+                variant={'contained'}
+                onClick={() => {
+                  localStorage.setItem('prevPath', window.location.pathname);
+                  navigate(`/audit-request/${data.id}/customer`);
+                }}
               >
                 View
               </Button>
             </Box>
-          ) : (
+          </Box>
+        )}
+      {user.current_role === AUDITOR &&
+        data.status === 'Request' &&
+        message.from?.id !== user.id && (
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
             <Box sx={{ display: 'flex', gap: '20px' }}>
-              {data.status === 'Request' ? (
-                <>
-                  <Button
-                    sx={{ textTransform: 'unset', width: '100%' }}
-                    variant={'contained'}
-                    onClick={() =>
-                      user.current_role !== AUDITOR && handleConfirm(data)
-                    }
-                  >
-                    Accept
-                  </Button>
-                  <Button
-                    sx={{ textTransform: 'unset', width: '100%' }}
-                    variant={'contained'}
-                    color={
-                      user.current_role === AUDITOR ? 'primary' : 'secondary'
-                    }
-                    onClick={() => setConfirmDeclineOpen(true)}
-                  >
-                    Decline
-                  </Button>
-                </>
-              ) : (
-                <>
-                  {user.current_role !== AUDITOR && (
-                    <Button
-                      sx={{ textTransform: 'unset', width: '100%' }}
-                      variant={'contained'}
-                      onClick={() => {
-                        localStorage.setItem(
-                          'prevPath',
-                          window.location.pathname,
-                        );
-                        navigate(`/audit-info/${data.id}/customer`);
-                      }}
-                    >
-                      View
-                    </Button>
-                  )}
-                </>
-              )}
+              <Button
+                sx={{ textTransform: 'unset', width: '100%' }}
+                variant={'contained'}
+                disabled={user.current_role === AUDITOR}
+                onClick={() => handleConfirm(data)}
+              >
+                Accept
+              </Button>
+              <Button
+                sx={{ textTransform: 'unset', width: '100%' }}
+                variant={'contained'}
+                color={user.current_role === AUDITOR ? 'primary' : 'secondary'}
+                onClick={() => setConfirmDeclineOpen(true)}
+              >
+                Decline
+              </Button>
             </Box>
-          )}
-          {user.current_role === AUDITOR &&
-            data.status !== 'Waiting for audit' && (
-              <Box sx={{ display: 'flex', gap: '20px' }}>
-                <Button
-                  sx={{
-                    textTransform: 'unset',
-                    width: '100%',
-                  }}
-                  onClick={handleOpenModal}
-                  color={'secondary'}
-                  variant={'contained'}
-                >
-                  Make offer
-                </Button>
-                <LoadingButton
-                  loading={isOpen && !auditInfo?.info}
-                  // loadingPosition="start"
-                  sx={{
-                    textTransform: 'unset',
-                    width: '100%',
-                  }}
-                  onClick={handleOpen}
-                  color={'secondary'}
-                  variant={'contained'}
-                >
-                  View more
-                </LoadingButton>
-                <Modal
-                  open={isOpen && auditInfo?.id}
-                  onClose={handleClose}
-                  aria-labelledby="modal-modal-title"
-                  aria-describedby="modal-modal-description"
-                >
-                  <Box sx={modalSx}>
-                    <AuditRequestInfo
-                      project={auditInfo}
-                      onClose={() => setIsOpen(false)}
-                    />
-                  </Box>
-                </Modal>
-              </Box>
-            )}
-        </>
-      )}
+            <Box sx={{ display: 'flex', gap: '20px' }}>
+              <Button
+                sx={{
+                  textTransform: 'unset',
+                  width: '100%',
+                }}
+                onClick={handleOpenModal}
+                color={'secondary'}
+                variant={'contained'}
+              >
+                Make offer
+              </Button>
+              <LoadingButton
+                loading={isOpen && !auditInfo?.info}
+                sx={{
+                  textTransform: 'unset',
+                  width: '100%',
+                }}
+                onClick={handleOpen}
+                color={'secondary'}
+                variant={'contained'}
+              >
+                View more
+              </LoadingButton>
+            </Box>
+          </Box>
+        )}
+      <Modal
+        open={isOpen && auditInfo?.id}
+        onClose={handleClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={modalSx}>
+          <AuditRequestInfo
+            project={auditInfo}
+            onClose={() => setIsOpen(false)}
+          />
+        </Box>
+      </Modal>
+      {user.current_role === CUSTOMER &&
+        data.status === 'Request' &&
+        message.from?.id === user.id && (
+          <Box sx={{ mt: '15px' }}>
+            <Button
+              sx={{ textTransform: 'unset', width: '100%' }}
+              variant={'contained'}
+              onClick={() => {
+                localStorage.setItem('prevPath', window.location.pathname);
+                navigate(`/audit-request/${data.id}/customer`);
+              }}
+            >
+              View
+            </Button>
+          </Box>
+        )}
+      {user.current_role === AUDITOR &&
+        data.status === 'Request' &&
+        message.from?.id === user.id && (
+          <Box sx={{ mt: '15px' }}>
+            <Button
+              sx={{ textTransform: 'unset', width: '100%' }}
+              variant={'contained'}
+              color={'secondary'}
+              onClick={handleOpen}
+            >
+              View
+            </Button>
+          </Box>
+        )}
       <>
         {user.current_role === AUDITOR && data.status === 'Started' && (
           <Box sx={{ display: 'flex', gap: '20px' }}>
@@ -304,6 +348,17 @@ const AuditMessage = ({ message, handleError }) => {
               onClick={handleView}
             >
               Proceed
+            </Button>
+          </Box>
+        )}
+        {user.current_role === CUSTOMER && data.status === 'Started' && (
+          <Box sx={{ display: 'flex', gap: '20px' }}>
+            <Button
+              sx={{ textTransform: 'unset', width: '100%' }}
+              variant="contained"
+              onClick={handleViewCustomer}
+            >
+              View
             </Button>
           </Box>
         )}
