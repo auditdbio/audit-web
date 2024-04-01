@@ -39,7 +39,9 @@ export const UserMenu = ({ open, handleClose, anchor, userAvatar, pages }) => {
   };
 
   const handleMyAccountClick = () => {
-    navigate('/profile/user-info');
+    const role = reduxUser.current_role?.[0];
+    const link_id = reduxUser.link_id || reduxUser.id;
+    navigate(`/${role}/${link_id}`);
   };
 
   return (

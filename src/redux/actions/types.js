@@ -16,6 +16,7 @@ export const GET_AUDITORS = 'GET_AUDITORS';
 export const AUDITOR = 'auditor';
 export const CUSTOMER = 'customer';
 export const UPDATE_USER = 'UPDATE_USER';
+export const UPDATE_USER_LINK_ID = 'UPDATE_USER_LINK_ID';
 export const PROJECT_CREATE = 'PROJECT_CREATE';
 export const PROJECT_UPDATE = 'PROJECT_UPDATE';
 export const PROJECT_UPDATE_STATUS = 'PROJECT_UPDATE_STATUS';

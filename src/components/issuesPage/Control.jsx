@@ -124,7 +124,9 @@ const Control = ({
               type: CHANGE_ROLE_DONT_HAVE_PROFILE_AUDITOR,
               payload: user,
             });
-            navigate('/profile/user-info');
+            const role = user.current_role?.[0];
+            const link_id = user.link_id || user.id;
+            navigate(`/${role}/${link_id}`);
           }
         }
       } else {

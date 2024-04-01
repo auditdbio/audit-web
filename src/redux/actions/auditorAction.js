@@ -15,7 +15,7 @@ import { isAuth } from '../../lib/helper.js';
 
 const API_URL = import.meta.env.VITE_API_BASE_URL;
 
-export const getAuditor = values => {
+export const getAuditor = () => {
   const token = Cookies.get('token');
   return dispatch => {
     axios
@@ -49,6 +49,22 @@ export const getCurrentAuditor = id => {
   };
 };
 
+export const getAuditorByLinkId = linkId => {
+  const token = Cookies.get('token');
+  return dispatch => {
+    axios
+      .get(`${API_URL}/auditor_by_link_id/${linkId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .then(({ data }) => {
+        dispatch({ type: GET_CURRENT_AUDITOR, payload: data });
+      })
+      .catch(error => {
+        console.error(error);
+      });
+  };
+};
+
 export const createAuditor = values => {
   const token = Cookies.get('token');
   return dispatch => {
@@ -58,12 +74,8 @@ export const createAuditor = values => {
       })
       .then(({ data }) => {
         dispatch({ type: UPDATE_AUDITOR, payload: data });
-        history.push(
-          { pathname: `/profile/user-info` },
-          {
-            some: true,
-          },
-        );
+        const link_id = data.link_id || data.user_id;
+        history.push({ pathname: `/a/${link_id}` }, { some: true });
       })
       .catch(({ response }) => {
         // dispatch({type: SIGN_IN_ERROR})
@@ -81,7 +93,8 @@ export const updateAuditor = (values, redirect = true) => {
       .then(({ data }) => {
         dispatch({ type: UPDATE_AUDITOR, payload: data });
         if (redirect) {
-          history.push({ pathname: `/profile/user-info` }, { some: true });
+          const link_id = data.link_id || data.user_id;
+          history.push({ pathname: `/a/${link_id}` }, { some: true });
         }
       })
       .catch(({ response }) => {
@@ -96,13 +109,7 @@ export const getAuditors = (values = '', amount = 0) => {
     axios
       .get(
         `${API_URL}/search?query=${values}&sort_by=price&tags=&sort_order=1&page=1&per_page=${amount}&kind=auditor badge`,
-        isAuth()
-          ? {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-            }
-          : {},
+        isAuth() ? { headers: { Authorization: `Bearer ${token}` } } : {},
       )
       .then(({ data }) => {
         dispatch({ type: GET_AUDITORS, payload: data });
@@ -139,12 +146,7 @@ export const deleteBadgeProfile = id => {
       .delete(`${API_URL}/badge/delete/${id}`)
       .then(({ data }) => {
         dispatch({ type: DELETE_BADGE, payload: data });
-        history.push(
-          { pathname: `/` },
-          {
-            some: true,
-          },
-        );
+        history.push({ pathname: `/` }, { some: true });
       })
       .catch(({ response }) => {
         console.error(response, 'res');
@@ -158,18 +160,11 @@ export const mergeCurrentAccount = (auditor, secret) => {
   return dispatch => {
     axios
       .patch(`${API_URL}/badge/merge/${secret}`, auditor, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        headers: { Authorization: `Bearer ${token}` },
       })
       .then(({ data }) => {
         dispatch({ type: MERGE_ACCOUNT, payload: data.user });
-        history.push(
-          { pathname: `/profile/user-info` },
-          {
-            some: true,
-          },
-        );
+        history.push({ pathname: `/profile/user-info` }, { some: true });
       })
       .catch(({ response }) => {
         console.error(response, 'res');
@@ -184,18 +179,11 @@ export const mergeAccount = (values, secret) => {
       .then(({ data }) => {
         axios
           .patch(`${API_URL}/badge/merge/${secret}`, data.user, {
-            headers: {
-              Authorization: `Bearer ${data.token}`,
-            },
+            headers: { Authorization: `Bearer ${data.token}` },
           })
           .then(({ data }) => {
             dispatch({ type: MERGE_ACCOUNT, payload: data });
-            history.push(
-              { pathname: `/profile/user-info` },
-              {
-                some: true,
-              },
-            );
+            history.push({ pathname: `/profile/user-info` }, { some: true });
           })
           .catch(({ response }) => {
             console.error(response, 'res');

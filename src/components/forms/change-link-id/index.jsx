@@ -1,22 +1,32 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Button, Typography, Dialog, DialogTitle } from '@mui/material';
+import { useDispatch, useSelector } from 'react-redux';
 import { Form, Formik } from 'formik';
 import * as Yup from 'yup';
 import EditIcon from '@mui/icons-material/Edit.js';
 import {
-  changePassword,
+  Box,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  Button,
+  useMediaQuery,
+} from '@mui/material';
+import {
+  changeLinkId,
   clearUserError,
   clearUserSuccess,
 } from '../../../redux/actions/userAction.js';
-import { useDispatch, useSelector } from 'react-redux';
 import CustomSnackbar from '../../custom/CustomSnackbar.jsx';
-import { addTestsLabel } from '../../../lib/helper.js';
-import PasswordField from '../fields/password-field.jsx';
 import { AUDITOR } from '../../../redux/actions/types.js';
+import { addTestsLabel } from '../../../lib/helper.js';
+import SimpleField from '../fields/simple-field.jsx';
 import theme from '../../../styles/themes.js';
 
-const ChangePasswordFormik = () => {
+const ChangeLinkId = ({ setNewLinkId }) => {
   const dispatch = useDispatch();
+
+  const matchXs = useMediaQuery(theme.breakpoints.down('xs'));
   const { user, success, error } = useSelector(s => s.user);
   const [editMode, setEditMode] = useState(false);
 
@@ -27,9 +37,9 @@ const ChangePasswordFormik = () => {
   }, [success]);
 
   return (
-    <Box sx={{ textAlign: 'center', mt: '5px' }}>
+    <Box sx={{ textAlign: 'center', mt: '30px' }}>
       <CustomSnackbar
-        autoHideDuration={10000}
+        autoHideDuration={8000}
         open={!!error || !!success}
         onClose={() => {
           dispatch(clearUserSuccess());
@@ -41,69 +51,58 @@ const ChangePasswordFormik = () => {
 
       <Dialog open={editMode} onClose={() => setEditMode(false)} sx={modalSx}>
         <DialogTitle sx={{ padding: '16px 70px' }}>
-          Set a new password
+          Set a new Link ID
         </DialogTitle>
+        <DialogContent>
+          <DialogContentText sx={dialogTextSx}>
+            Link ID is the unique name specified in the link leading to your
+            profile. <br /> After changing your Link ID, your old Link ID
+            becomes available for anyone else to claim. Old links to your
+            profile won't automatically redirect. The Link ID will be changed
+            for all user roles.
+          </DialogContentText>
+        </DialogContent>
         <Formik
-          initialValues={{
-            current_password: '',
-            password: '',
-            confirm_password: '',
-          }}
-          validationSchema={validationSchema(user?.is_passwordless)}
+          initialValues={{ link_id: '' }}
           validateOnBlur={false}
           validateOnChange={false}
+          validationSchema={validationSchema}
           onSubmit={values => {
-            dispatch(changePassword(values, user.id));
+            setNewLinkId(values.link_id);
+            dispatch(changeLinkId(values, user.id));
           }}
         >
-          {({ handleSubmit, dirty, errors }) => {
+          {({ handleSubmit, dirty }) => {
             return (
               <Form onSubmit={handleSubmit}>
                 <Box sx={wrapper}>
                   <Box sx={fieldsWrapper}>
-                    {!user?.is_passwordless && (
-                      <PasswordField
-                        name="current_password"
-                        label="Current password"
-                      />
-                    )}
-                    <PasswordField name="password" label="New password" />
-                    <PasswordField
-                      name="confirm_password"
-                      label="Confirm password"
+                    <SimpleField
+                      name="link_id"
+                      label="New Link ID"
+                      size={matchXs ? 'small' : 'medium'}
+                      emptyPH
                     />
-                    {(errors.confirm_password || errors.password) && (
-                      <Typography
-                        sx={{
-                          color: `${theme.palette.error.main}!important`,
-                          fontSize: '14px',
-                        }}
-                      >
-                        {errors.confirm_password || errors.password}
-                      </Typography>
-                    )}
                   </Box>
                   <Box
                     sx={{ display: 'flex', justifyContent: 'space-between' }}
                   >
                     <Button
-                      sx={passwordButtonSx}
+                      sx={buttonSx}
                       type="button"
                       onClick={() => setEditMode(false)}
-                      {...addTestsLabel('cancel-password-button')}
+                      {...addTestsLabel('cancel-link-id-button')}
                     >
                       Cancel
                     </Button>
                     <Button
-                      sx={passwordButtonSx}
+                      sx={buttonSx}
                       type="submit"
                       disabled={!dirty}
-                      {...addTestsLabel('change-password-button')}
+                      {...addTestsLabel('change-link-id-button')}
                     >
                       <EditIcon />
-                      {user?.is_passwordless
-                        ? 'Set password'
-                        : 'Change password'}
+                      Change Link ID
                     </Button>
                   </Box>
                 </Box>
@@ -117,31 +116,21 @@ const ChangePasswordFormik = () => {
         color={user?.current_role === AUDITOR ? 'secondary' : 'primary'}
         onClick={() => setEditMode(true)}
       >
-        {user?.is_passwordless ? 'Set password' : 'Change password'}
+        Change Link ID
       </Button>
     </Box>
   );
 };
 
-export default ChangePasswordFormik;
+export default ChangeLinkId;
 
-const validationSchema = isPassworless =>
-  Yup.object().shape({
-    current_password: isPassworless
-      ? Yup.string()
-      : Yup.string().required('Required'),
-    password: Yup.string().min(6, 'Password too Short!').required('Required'),
-    confirm_password: Yup.string()
-      .required()
-      .oneOf([Yup.ref('password'), null], 'Passwords must match'),
-  });
-
-const wrapper = theme => ({
-  width: '450px',
-  margin: '0 auto',
-  [theme.breakpoints.down('xs')]: {
-    width: '100%',
-  },
+const validationSchema = Yup.object().shape({
+  link_id: Yup.string()
+    .required('Required')
+    .matches(
+      /^[A-Za-z0-9_-]+$/,
+      'Link ID may only contain alphanumeric characters, hyphens or underscore',
+    ),
 });
 
 const modalSx = theme => ({
@@ -161,6 +150,21 @@ const modalSx = theme => ({
   },
 });
 
+const dialogTextSx = theme => ({
+  mb: '20px',
+  [theme.breakpoints.down('xs')]: {
+    fontSize: '13px',
+  },
+});
+
+const wrapper = theme => ({
+  width: '450px',
+  margin: '0 auto',
+  [theme.breakpoints.down('xs')]: {
+    width: '100%',
+  },
+});
+
 const fieldsWrapper = {
   display: 'flex',
   flexDirection: 'column',
@@ -168,7 +172,7 @@ const fieldsWrapper = {
   mb: '10px',
 };
 
-const passwordButtonSx = {
+const buttonSx = {
   display: 'flex',
   alignItems: 'center',
   textTransform: 'unset',

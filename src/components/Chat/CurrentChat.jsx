@@ -186,7 +186,7 @@ const CurrentChat = ({
           </IconButton>
 
           <RouterLink
-            to={`/user/${userLinkData.id}/${userLinkData.role}`}
+            to={`/${userLinkData.role?.toLowerCase()[0]}/${userLinkData.id}`}
             onClick={showUserProfile}
           >
             <Box sx={avatarWrapper(currentChat?.role)}>
@@ -204,7 +204,7 @@ const CurrentChat = ({
           <Box sx={userInfo}>
             <Link
               component={RouterLink}
-              to={`/user/${userLinkData.id}/${userLinkData.role}`}
+              to={`/${userLinkData.role?.toLowerCase()[0]}/${userLinkData.id}`}
               sx={userNameSx}
               onClick={showUserProfile}
               {...addTestsLabel('profile-link')}

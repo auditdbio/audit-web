@@ -36,7 +36,9 @@ const ChatPage = () => {
         !customer?.first_name)
     ) {
       dispatch(chatSetError('Fill your profile'));
-      navigate('/profile/user-info');
+      const role = user.current_role?.[0];
+      const link_id = user.link_id || user.id;
+      navigate(`/${role}/${link_id}`);
     }
   }, [user, auditor, customer]);
 

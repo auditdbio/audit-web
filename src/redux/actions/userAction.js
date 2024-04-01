@@ -27,6 +27,8 @@ import {
   DELETE_LINKED_ACCOUNT,
   GET_PROFILE,
   GET_PUBLIC_PROFILE,
+  AUDITOR,
+  UPDATE_USER_LINK_ID,
 } from './types.js';
 import { savePublicReport } from './auditAction.js';
 
@@ -44,7 +46,9 @@ export const signUpGithub = data => {
         if (data.user?.is_new) {
           history.push({ pathname: `/edit-profile` }, { some: true });
         } else {
-          history.push({ pathname: `/profile/user-info` }, { some: true });
+          const role = data.user?.current_role?.[0];
+          const link_id = data.user.link_id || data.user.id;
+          history.push({ pathname: `/${role}/${link_id}` }, { some: true });
         }
 
         axios.patch(
@@ -78,7 +82,9 @@ export const signIn = values => {
         if (data.user?.is_new) {
           history.push({ pathname: `/edit-profile` }, { some: true });
         } else {
-          history.push({ pathname: `/profile/user-info` }, { some: true });
+          const role = data.user?.current_role?.[0];
+          const link_id = data.user.link_id || data.user.id;
+          history.push({ pathname: `/${role}/${link_id}` }, { some: true });
         }
       })
       .catch(({ response }) => {
@@ -114,7 +120,14 @@ export const getMyProfile = id => {
 export const getPublicProfile = id => {
   return dispatch => {
     axios.get(`${API_URL}/user/${id}`).then(({ data }) => {
-      console.log(data);
+      dispatch({ type: GET_PUBLIC_PROFILE, payload: data });
+    });
+  };
+};
+
+export const getUserByLinkId = linkId => {
+  return dispatch => {
+    axios.get(`${API_URL}/user_by_link_id/${linkId}`).then(({ data }) => {
       dispatch({ type: GET_PUBLIC_PROFILE, payload: data });
     });
   };
@@ -130,7 +143,7 @@ export const signUp = values => {
           some: true,
         });
       })
-      .catch(({ response }) => {
+      .catch(() => {
         dispatch({ type: USER_IS_ALREADY_EXIST });
       });
   };
@@ -186,6 +199,9 @@ export const changeAccountVisibility = (user_id, values, account_id) => {
 };
 
 export const connect_account = (user_id, values) => {
+  const user = JSON.parse(localStorage.getItem('user'));
+  const role = user?.current_role?.[0];
+  const link_id = user.link_id || user.id;
   return dispatch => {
     axios
       .post(`${API_URL}/user/${user_id}/linked_account`, values, {
@@ -197,15 +213,12 @@ export const connect_account = (user_id, values) => {
       .then(({ data }) => {
         dispatch({ type: CONNECT_ACCOUNT, payload: data });
         dispatch({ type: CHANGE_ACCOUNT_VISIBILITY, payload: data });
-        const user = JSON.parse(localStorage.getItem('user'));
         const newData = {
           ...user,
           linked_accounts: [...user.linked_accounts, data],
         };
         localStorage.setItem('user', JSON.stringify(newData));
-        history.push('/profile/user-info', {
-          some: true,
-        });
+        history.push(`/${role}/${link_id}`, { some: true });
       })
       .catch(data => {
         if (data.response.status === 404) {
@@ -213,9 +226,7 @@ export const connect_account = (user_id, values) => {
         } else {
           dispatch({ type: ERROR_IDENTITY, payload: data.response });
         }
-        history.push('/profile/user-info', {
-          some: true,
-        });
+        history.push(`/${role}/${link_id}`, { some: true });
       });
   };
 };
@@ -261,12 +272,12 @@ export const logout = () => {
   return { type: LOG_OUT };
 };
 
-export const changeRole = (value, id) => {
+export const changeRole = (role, id) => {
   return dispatch => {
     axios
       .patch(
         `${API_URL}/user/${id}`,
-        { current_role: value },
+        { current_role: role },
         {
           headers: {
             Authorization: 'Bearer ' + Cookies.get('token'),
@@ -277,23 +288,19 @@ export const changeRole = (value, id) => {
       .then(({ data }) => {
         dispatch({ type: SELECT_ROLE, payload: data });
         localStorage.setItem('user', JSON.stringify(data));
-        history.push(
-          { pathname: `/profile/user-info` },
-          {
-            some: true,
-          },
-        );
+        const link_id = data.link_id || data.id;
+        history.push({ pathname: `/${role[0]}/${link_id}` }, { some: true });
       });
   };
 };
 
-export const changeRolePublicCustomer = (value, id, currentRole) => {
+export const changeRolePublicCustomer = (role, id) => {
   const token = Cookies.get('token');
   return dispatch => {
     axios
       .patch(
         `${API_URL}/user/${id}`,
-        { current_role: value },
+        { current_role: role },
         {
           headers: {
             Authorization: 'Bearer ' + token,
@@ -321,7 +328,11 @@ export const changeRolePublicCustomer = (value, id, currentRole) => {
                 type: CHANGE_ROLE_DONT_HAVE_PROFILE_CUSTOMER,
                 payload: user,
               });
-              history.push({ pathname: `/profile/user-info` }, { some: true });
+              const link_id = user.link_id || id;
+              history.push(
+                { pathname: `/${role[0]}/${link_id}` },
+                { some: true },
+              );
             }
             localStorage.setItem('user', JSON.stringify(user));
           });
@@ -329,13 +340,13 @@ export const changeRolePublicCustomer = (value, id, currentRole) => {
   };
 };
 
-export const changeRolePublicAuditor = (value, id, data, withData) => {
+export const changeRolePublicAuditor = (role, id, data, withData) => {
   const token = Cookies.get('token');
   return dispatch => {
     axios
       .patch(
         `${API_URL}/user/${id}`,
-        { current_role: value },
+        { current_role: role },
         {
           headers: {
             Authorization: 'Bearer ' + token,
@@ -374,7 +385,11 @@ export const changeRolePublicAuditor = (value, id, data, withData) => {
                 type: CHANGE_ROLE_DONT_HAVE_PROFILE_AUDITOR,
                 payload: user,
               });
-              history.push({ pathname: `/profile/user-info` }, { some: true });
+              const link_id = user.link_id || id;
+              history.push(
+                { pathname: `/${role[0]}/${link_id}` },
+                { some: true },
+              );
             }
             localStorage.setItem('user', JSON.stringify(user));
           });
@@ -382,12 +397,12 @@ export const changeRolePublicAuditor = (value, id, data, withData) => {
   };
 };
 
-export const changeRolePublicAuditorNoRedirect = (value, id, currentRole) => {
+export const changeRolePublicAuditorNoRedirect = (role, id) => {
   return dispatch => {
     axios
       .patch(
         `${API_URL}/user/${id}`,
-        { current_role: value },
+        { current_role: role },
         {
           headers: {
             Authorization: 'Bearer ' + Cookies.get('token'),
@@ -402,12 +417,12 @@ export const changeRolePublicAuditorNoRedirect = (value, id, currentRole) => {
   };
 };
 
-export const changeRolePublicCustomerNoRedirect = (value, id, currentRole) => {
+export const changeRolePublicCustomerNoRedirect = (role, id) => {
   return dispatch => {
     axios
       .patch(
         `${API_URL}/user/${id}`,
-        { current_role: value },
+        { current_role: role },
         {
           headers: {
             Authorization: 'Bearer ' + Cookies.get('token'),
@@ -433,6 +448,29 @@ export const changePassword = (values, userId) => {
       })
       .then(({ data }) => {
         dispatch({ type: UPDATE_USER, payload: data });
+      })
+      .catch(({ response }) => {
+        dispatch({ type: SIGN_IN_ERROR, payload: response.data });
+      });
+  };
+};
+
+export const changeLinkId = (values, userId) => {
+  return dispatch => {
+    axios
+      .patch(`${API_URL}/user/${userId}`, values, {
+        headers: {
+          Authorization: 'Bearer ' + Cookies.get('token'),
+          'Content-Type': 'application/json',
+        },
+      })
+      .then(({ data }) => {
+        const storageUser = JSON.parse(localStorage.getItem('user'));
+        localStorage.setItem(
+          'user',
+          JSON.stringify({ ...storageUser, ...data }),
+        );
+        dispatch({ type: UPDATE_USER_LINK_ID, payload: data });
       })
       .catch(({ response }) => {
         dispatch({ type: SIGN_IN_ERROR, payload: response.data });

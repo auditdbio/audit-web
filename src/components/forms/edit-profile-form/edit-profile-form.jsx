@@ -26,29 +26,33 @@ import {
   createAuditor,
   updateAuditor,
 } from '../../../redux/actions/auditorAction.js';
-import GitHubIcon from '@mui/icons-material/GitHub.js';
-import { Link as RouterLink } from 'react-router-dom';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom/dist';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { history } from '../../../services/history.js';
 
-const GoBack = ({ role }) => {
-  const location = useLocation();
+const GoBack = ({ role, newLinkId }) => {
   const navigate = useNavigate();
+  const handleGoBack = () => {
+    if (newLinkId) {
+      navigate(`/${role[0]}/${newLinkId}`);
+    } else {
+      navigate(-1);
+    }
+  };
   return (
-    <Button sx={backBtnSx} onClick={() => navigate(-1)}>
+    <Button sx={backBtnSx} onClick={handleGoBack}>
       <ArrowBackIcon color={role !== AUDITOR ? 'primary' : 'secondary'} />
     </Button>
   );
 };
 
-const EditProfileForm = ({ role }) => {
+const EditProfileForm = ({ role, newLinkId }) => {
   const matchSm = useMediaQuery(theme.breakpoints.down('sm'));
   const matchXs = useMediaQuery(theme.breakpoints.down('xs'));
   const dispatch = useDispatch();
   const { user } = useSelector(s => s.user);
-  const customer = useSelector(s => s.customer.customer);
-  const auditor = useSelector(s => s.auditor.auditor);
+  const { customer } = useSelector(s => s.customer);
+  const { auditor } = useSelector(s => s.auditor);
   const navigate = useNavigate();
   const [isDirty, setIsDirty] = useState(false);
 
@@ -147,7 +151,7 @@ const EditProfileForm = ({ role }) => {
           return (
             <Form onSubmit={handleSubmit}>
               <Box sx={wrapper}>
-                <GoBack role={role} />
+                <GoBack role={role} newLinkId={newLinkId} />
                 <Box sx={avatarWrapper}>
                   <Box
                     sx={{

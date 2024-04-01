@@ -22,6 +22,7 @@ import {
   ERROR_IDENTITY,
   GET_PROFILE,
   GET_PUBLIC_PROFILE,
+  UPDATE_USER_LINK_ID,
 } from '../actions/types.js';
 
 const initialState = {
@@ -95,6 +96,12 @@ export const userReducer = (state = initialState, action) => {
         ...state,
         user: action.payload,
         success: 'Success! Your password has been changed',
+      };
+    case UPDATE_USER_LINK_ID:
+      return {
+        ...state,
+        user: action.payload,
+        success: 'Success! Your Link ID has been changed',
       };
     case RESTORE_PASSWORD:
       return {

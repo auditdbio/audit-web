@@ -12,7 +12,7 @@ import { isAuth } from '../../lib/helper.js';
 
 const API_URL = import.meta.env.VITE_API_BASE_URL;
 
-export const getCustomer = values => {
+export const getCustomer = () => {
   const token = Cookies.get('token');
   return dispatch => {
     axios
@@ -46,6 +46,22 @@ export const getCurrentCustomer = id => {
   };
 };
 
+export const getCustomerByLinkId = linkId => {
+  const token = Cookies.get('token');
+  return dispatch => {
+    axios
+      .get(`${API_URL}/customer_by_link_id/${linkId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .then(({ data }) => {
+        dispatch({ type: GET_CURRENT_CUSTOMER, payload: data });
+      })
+      .catch(error => {
+        console.error(error);
+      });
+  };
+};
+
 export const createCustomer = values => {
   const token = Cookies.get('token');
   return dispatch => {
@@ -55,12 +71,8 @@ export const createCustomer = values => {
       })
       .then(({ data }) => {
         dispatch({ type: UPDATE_CUSTOMER, payload: data });
-        history.push(
-          { pathname: `/profile/user-info` },
-          {
-            some: true,
-          },
-        );
+        const link_id = data.link_id || data.user_id;
+        history.push({ pathname: `/c/${link_id}` }, { some: true });
       })
       .catch(({ response }) => {
         console.log(response, 'res');
@@ -79,7 +91,8 @@ export const updateCustomer = (values, redirect = true) => {
       .then(({ data }) => {
         dispatch({ type: 'UPDATE_CUSTOMER', payload: data });
         if (redirect) {
-          history.push({ pathname: `/profile/user-info` }, { some: true });
+          const link_id = data.link_id || data.user_id;
+          history.push({ pathname: `/c/${link_id}` }, { some: true });
         }
       })
       .catch(({ response }) => {

@@ -26,14 +26,14 @@ import { clearUserError } from '../redux/actions/userAction.js';
 import CustomSnackbar from './custom/CustomSnackbar.jsx';
 
 const UserInfo = ({ role }) => {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
-  const customer = useSelector(s => s.customer.customer);
-  const auditor = useSelector(s => s.auditor.auditor);
-  const { user } = useSelector(s => s.user);
   const matchXs = useMediaQuery(theme.breakpoints.down('xs'));
   const matchXxs = useMediaQuery(theme.breakpoints.down(590));
-  const message = useSelector(s => s.user.error);
-  const dispatch = useDispatch();
+
+  const { customer } = useSelector(s => s.customer);
+  const { auditor } = useSelector(s => s.auditor);
+  const { user, error } = useSelector(s => s.user);
 
   const handleEdit = () => {
     navigate('/edit-profile');
@@ -54,10 +54,10 @@ const UserInfo = ({ role }) => {
       <Box sx={wrapper}>
         <CustomSnackbar
           autoHideDuration={3000}
-          open={!!message}
+          open={!!error}
           onClose={() => dispatch(clearUserError())}
           severity="error"
-          text={message}
+          text={error}
         />
         <Box sx={contentWrapper}>
           <Box
@@ -195,7 +195,11 @@ const UserInfo = ({ role }) => {
             (role === CUSTOMER && customer.user_id)) && (
             <ShareProfileButton
               role={role}
-              userId={role === AUDITOR ? auditor.user_id : customer.user_id}
+              userId={
+                role === AUDITOR
+                  ? auditor.link_id || auditor.user_id
+                  : customer.link_id || customer.user_id
+              }
             />
           )}
           <Box
