@@ -112,7 +112,7 @@ const wrapper = theme => ({
     padding: '15px 10px',
   },
   [theme.breakpoints.down('sm')]: {
-    padding: '10px 8px',
+    padding: '10px 5px',
   },
 });
 
@@ -150,7 +150,7 @@ const avatarBorder = role => ({
   [theme.breakpoints.down('sm')]: {
     width: '40px',
     height: '40px',
-    mr: '10px',
+    mr: '6px',
     borderWidth: '2px',
   },
 });
@@ -175,7 +175,7 @@ const userNameSx = theme => ({
     fontSize: '20px',
   },
   [theme.breakpoints.down('sm')]: {
-    fontSize: '15px',
+    fontSize: '14px',
   },
 });
 

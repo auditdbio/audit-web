@@ -351,6 +351,7 @@ const avatarWrapper = role => ({
     width: '40px',
     height: '40px',
     mr: '15px',
+    borderWidth: '3px',
   },
   [theme.breakpoints.down('xxs')]: {
     width: '30px',
