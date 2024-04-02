@@ -44,6 +44,8 @@ import axios from 'axios';
 import GithubSelection from './GithubSelection/GithubSelection.jsx';
 import { getFilterData } from '../redux/actions/configAction.js';
 import {
+  clearCommit,
+  clearRepoOwner,
   getCommitData,
   getRepoOwner,
   getSha,
@@ -86,6 +88,10 @@ const CreateProjectCard = ({ projectInfo }) => {
 
   useEffect(() => {
     dispatch(getFilterData());
+    return () => {
+      dispatch(clearRepoOwner());
+      dispatch(clearCommit());
+    };
   }, []);
 
   let editMode = !!projectInfo;

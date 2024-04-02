@@ -12,6 +12,10 @@ import {
   GET_MY_GITHUB_ORGANIZATION,
   GET_MY_GITHUB_ORGANIZATION_REPOSITORIES,
   GET_SHA,
+  BRANCH_NAME,
+  PREV_PAGE,
+  NEXT_PAGE,
+  CLEAR_COMMITINFO,
 } from '../actions/types.js';
 
 const initialState = {
@@ -27,6 +31,7 @@ const initialState = {
   myRepositories: [],
   myOrganizations: [],
   organizationRepositories: [],
+  commitPage: 1,
 };
 
 export const githubReducer = (state = initialState, action) => {
@@ -42,6 +47,16 @@ export const githubReducer = (state = initialState, action) => {
       return {
         ...state,
         commitInfo: action.payload,
+      };
+    case PREV_PAGE:
+      return {
+        ...state,
+        commitPage: action.payload,
+      };
+    case NEXT_PAGE:
+      return {
+        ...state,
+        commitPage: action.payload,
       };
     case GET_DEFAULT_BRANCH:
       return {
@@ -64,12 +79,25 @@ export const githubReducer = (state = initialState, action) => {
         ...state,
         sha: action.payload,
       };
+    case BRANCH_NAME:
+      return {
+        ...state,
+        branch: action.payload,
+        commitPage: 1,
+      };
+    case CLEAR_COMMITINFO:
+      return {
+        ...state,
+        commitInfo: {},
+      };
     case CLEAR_COMMIT:
       return {
         ...state,
         commit: {},
         commitInfo: {},
         sha: '',
+        commitPage: 1,
+        commits: [],
       };
     case GET_REPO_OWNER:
       return {
@@ -80,6 +108,9 @@ export const githubReducer = (state = initialState, action) => {
       return {
         ...state,
         repoOwner: '',
+        branch: '',
+        branches: [],
+        defaultBranch: '',
       };
     case GET_MY_GITHUB_REPOSITORIES:
       return {

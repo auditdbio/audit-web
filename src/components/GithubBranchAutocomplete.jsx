@@ -13,20 +13,17 @@ import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
 import GithubBranchIcon from './icons/GithubBranchIcon.jsx';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import { useDispatch, useSelector } from 'react-redux';
-import { getBranches } from '../redux/actions/githubAction.js';
+import { getBranches, getCommits } from '../redux/actions/githubAction.js';
+import { BRANCH_NAME, CLEAR_COMMITINFO } from '../redux/actions/types.js';
 
-const GithubBranchAutocomplete = ({
-  onClick,
-  repository,
-  defaultBranch,
-  branch,
-}) => {
+const GithubBranchAutocomplete = ({ repository, needSave }) => {
   const branches = useSelector(state => state.github.branches);
   const [loading, setLoading] = useState(false);
   const [inputValue, setInputValue] = useState('');
   const [open, setOpen] = React.useState(false);
   const dispatch = useDispatch();
   const { repoOwner } = useSelector(state => state.github);
+  const { branch, defaultBranch, sha } = useSelector(state => state.github);
 
   useEffect(() => {
     if (repository !== repoOwner || !branches.length) {
@@ -44,15 +41,32 @@ const GithubBranchAutocomplete = ({
   };
 
   const handleChoose = branch => {
-    onClick(branch);
+    dispatch(getCommits(repository, branch, 1));
+    dispatch({ type: BRANCH_NAME, payload: branch });
+    // if (needSave) {
+    //   localStorage.setItem('sha', sha);
+    //   dispatch({ type: CLEAR_COMMITINFO });
+    // }
     handleClickAway();
   };
+
+  useEffect(() => {
+    if (repository && !branch && defaultBranch) {
+      dispatch(getCommits(repository, defaultBranch));
+    }
+  }, [defaultBranch]);
 
   return (
     <ClickAwayListener onClickAway={handleClickAway}>
       <Box sx={{ position: 'relative' }}>
         <Button
-          sx={{ textTransform: 'unset', display: 'flex', gap: '5px' }}
+          sx={{
+            textTransform: 'unset',
+            display: 'flex',
+            gap: '5px',
+            fontSize: '14px!important',
+            lineHeight: '22px',
+          }}
           variant={'contained'}
           onClick={handleClick}
         >
@@ -87,10 +101,10 @@ const GithubBranchAutocomplete = ({
             <Box sx={{ height: '100%', maxHeight: '350px', overflowY: 'auto' }}>
               {branches
                 ?.filter(branch => branch.includes(inputValue))
-                ?.map((branch, idx) => (
+                ?.map((branchItem, idx) => (
                   <Box
                     key={idx + branch}
-                    onClick={() => handleChoose(branch)}
+                    onClick={() => handleChoose(branchItem)}
                     sx={[
                       {
                         display: 'flex',
@@ -106,7 +120,7 @@ const GithubBranchAutocomplete = ({
                       },
                     ]}
                   >
-                    <Box>{branch}</Box>
+                    <Box>{branchItem}</Box>
                   </Box>
                 ))}
             </Box>

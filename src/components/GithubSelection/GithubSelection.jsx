@@ -18,7 +18,9 @@ import { addTestsLabel } from '../../lib/helper.js';
 import CustomSnackbar from '../custom/CustomSnackbar.jsx';
 import { useDispatch, useSelector } from 'react-redux';
 import {
+  clearCommit,
   clearRepoOwner,
+  getCommitData,
   getCommits,
   getDefaultBranch,
   getMyGithub,
@@ -32,7 +34,12 @@ import { getMyProfile, logout } from '../../redux/actions/userAction.js';
 import GithubOwnRepositories from './GithubOwnRepositories.jsx';
 import GithubOwnOrgs from './GithubOwnOrgs.jsx';
 import GitHubAuthComponent from './GitHubAuthComponent.jsx';
-import { CONNECT_ACCOUNT } from '../../redux/actions/types.js';
+import {
+  CONNECT_ACCOUNT,
+  NEXT_PAGE,
+  PREV_PAGE,
+} from '../../redux/actions/types.js';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 const GITHUB_ID = import.meta.env.VITE_GITHUB_CLIENT_ID;
 const BASE_URL = import.meta.env.VITE_BASE_URL;
@@ -40,6 +47,7 @@ const BASE_URL = import.meta.env.VITE_BASE_URL;
 const GithubSelection = ({ project }) => {
   const [field, _, fieldHelper] = useField('scope');
   const [urlRepo, setUrlRepo] = useState('');
+  const { branch } = useSelector(state => state.github);
   const [isOpen, setIsOpen] = useState(false);
   const {
     defaultBranch,
@@ -47,8 +55,9 @@ const GithubSelection = ({ project }) => {
     commits,
     myOrganizations,
     myRepositories,
+    commitInfo,
+    commitPage: page,
   } = useSelector(state => state.github);
-  const [page, setPage] = useState(1);
   const [repository, setRepository] = useState(null);
   const [error, setError] = useState('');
   const dispatch = useDispatch();
@@ -74,17 +83,16 @@ const GithubSelection = ({ project }) => {
   }, []);
 
   useEffect(() => {
-    if (repository && (branch || defaultBranch)) {
+    if (repository && defaultBranch) {
       dispatch(getCommits(repository, branch, page));
     }
-  }, [repository, branch, page, defaultBranch]);
+  }, [page, repository, defaultBranch, branch]);
 
   useEffect(() => {
     if (repository) {
       dispatch(getDefaultBranch(repository));
     }
   }, [repository]);
-
   useEffect(() => {
     if (repository && (branch || defaultBranch)) {
       dispatch(getTotalCommits(repository, branch, page));
@@ -119,7 +127,9 @@ const GithubSelection = ({ project }) => {
     dispatch(getRepoOwner(urlRepo));
   };
 
-  const handleClose = () => setIsOpen(false);
+  const handleClose = () => {
+    setIsOpen(false);
+  };
 
   const newCommits = useMemo(() => {
     const commitsByDate = {};
@@ -145,10 +155,9 @@ const GithubSelection = ({ project }) => {
   const handleReset = () => {
     setRepository(null);
     setUrlRepo('');
-    setBranch('');
-    setPage(1);
     fieldHelper.setValue([]);
     dispatch(clearRepoOwner());
+    dispatch(clearCommit());
   };
   useEffect(() => {
     const handleStorageChange = event => {
@@ -231,18 +240,6 @@ const GithubSelection = ({ project }) => {
                   Submit
                 </Button>
               </Box>
-              {/*<Box sx={[githubTitleSx, { marginTop: '10px!important' }]}>*/}
-              {/*  <Typography variant={'h5'} align={'center'}>*/}
-              {/*    To view your repositories, authenticate through GitHub.*/}
-              {/*  </Typography>*/}
-              {/*  <Button*/}
-              {/*    onClick={handleConnectGithub}*/}
-              {/*    sx={{ textTransform: 'unset' }}*/}
-              {/*    variant={'contained'}*/}
-              {/*  >*/}
-              {/*    Authenticate with GitHub{' '}*/}
-              {/*  </Button>*/}
-              {/*</Box>*/}
               {githubData?.id && !orgs.message ? (
                 <GithubOwnRepositories
                   setRepository={handleOpenOwnRepo}
@@ -282,18 +279,14 @@ const GithubSelection = ({ project }) => {
                     fontWeight: 600,
                   }}
                   color={'secondary'}
+                  varinat={'outlined'}
                   onClick={handleReset}
                 >
-                  Reset
+                  Switch repository
                 </Button>
               </Box>
               <Box sx={fieldWrapper}>
-                <GithubBranchAutocomplete
-                  onClick={setBranch}
-                  repository={repository}
-                  defaultBranch={defaultBranch}
-                  branch={branch}
-                />
+                <GithubBranchAutocomplete repository={repository} />
               </Box>
               <Divider />
               <List sx={listWrapper}>
@@ -357,7 +350,9 @@ const GithubSelection = ({ project }) => {
                 {totalCommitsPage > 1 && (
                   <Button
                     disabled={page === 1}
-                    onClick={() => setPage(page - 1)}
+                    onClick={() =>
+                      dispatch({ type: PREV_PAGE, payload: page - 1 })
+                    }
                   >
                     Prev
                   </Button>
@@ -365,7 +360,9 @@ const GithubSelection = ({ project }) => {
                 {totalCommitsPage > 1 && (
                   <Button
                     disabled={page === totalCommitsPage}
-                    onClick={() => setPage(page + 1)}
+                    onClick={() =>
+                      dispatch({ type: NEXT_PAGE, payload: page + 1 })
+                    }
                   >
                     Next
                   </Button>
@@ -529,8 +526,9 @@ const modalSx = theme => ({
 
 const fieldWrapper = theme => ({
   display: 'flex',
-  justifyContent: 'space-between',
+  justifyContent: 'flex-start',
   alignItems: 'center',
+  gap: '20px',
 });
 
 const listWrapper = theme => ({

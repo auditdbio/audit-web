@@ -36,9 +36,9 @@ const CommitModal = ({
   const [branch, setBranch] = useState(branchState || defaultBranch);
 
   useEffect(() => {
-    if (!commit.sha) {
-      dispatch(getCommitData(repository, sha));
-    }
+    // if (!commit.sha) {
+    dispatch(getCommitData(repository, sha));
+    // }
   }, [repository, sha]);
 
   function updateCommitShaInLinks(links, newCommitSha) {
@@ -279,12 +279,12 @@ const CommitModal = ({
                 <ModalOfAlert onClose={handleDisagree} onSave={handleAgree} />
               </Box>
             </Modal>
-            <Button
-              sx={{ textTransform: 'unset' }}
-              onClick={handleChangeCommit}
-            >
-              Back to commits
-            </Button>
+            {/*<Button*/}
+            {/*  sx={{ textTransform: 'unset' }}*/}
+            {/*  onClick={handleChangeCommit}*/}
+            {/*>*/}
+            {/*  Back to commits*/}
+            {/*</Button>*/}
           </Box>
           {/*<Typography variant="h4">Commit</Typography>*/}
           <Box>
@@ -308,8 +308,9 @@ const CommitModal = ({
                 {data?.sha.slice(0, 7)}
               </Typography>
             </Box>
+            <GithubBranchAutocomplete repository={repository} needSave={true} />
             <Box sx={actionWrapper}>
-              <Box sx={{ display: 'flex', gap: '15px' }}>
+              <Box sx={{ display: 'flex', fontSize: '14px', gap: '15px' }}>
                 <Button variant={'contained'} onClick={handleSave}>
                   Submit
                 </Button>

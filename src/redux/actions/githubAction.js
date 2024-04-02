@@ -1,4 +1,5 @@
 import {
+  BRANCH_NAME,
   CLEAR_COMMIT,
   CLEAR_REPO_OWNER,
   GET_BRANCHES,
@@ -146,56 +147,6 @@ export const getTotalCommits = (repoOwner, branch) => {
   };
 };
 
-//
-// export const getTotalCommits = (repoOwner, branch) => {
-//   const token = Cookies.get('token');
-//   return async dispatch => {
-//     try {
-//       let pageCount = 1;
-//       let totalCount = 0;
-//
-//       while (true) {
-//         const response = await axios.get(
-//           `${API_URL}/github/repos/${repoOwner}/commits`,
-//           {
-//             params: {
-//               sha: branch,
-//               per_page: 100,
-//               page: pageCount,
-//             },
-//             headers: {
-//               Authorization: `Bearer ${token}`,
-//             },
-//           },
-//         );
-//         const linkHeader = response.headers.link;
-//         if (!linkHeader || !linkHeader.includes('rel="last"')) {
-//           totalCount += response.data.length;
-//           break;
-//         }
-//
-//         const matches = linkHeader.match(/&page=(\d+)>; rel="last"/);
-//         const lastPage = matches ? parseInt(matches[1]) : 1;
-//
-//         if (pageCount >= lastPage) {
-//           totalCount += response.data.length;
-//           break;
-//         }
-//
-//         totalCount += response.data.length;
-//         pageCount++;
-//         console.log(totalCount);
-//       }
-//       dispatch({
-//         type: GET_TOTAL_COMMITS,
-//         payload: Math.floor(totalCount / 100) + 1,
-//       });
-//     } catch (error) {
-//       console.error('Error fetching commits:', error);
-//     }
-//   };
-// };
-//
 export const clearCommit = () => {
   return dispatch => {
     dispatch({ type: CLEAR_COMMIT });
