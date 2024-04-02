@@ -28,6 +28,7 @@ import Loader from '../components/Loader.jsx';
 import CustomSnackbar from '../components/custom/CustomSnackbar.jsx';
 import Markdown from '../components/markdown/Markdown.jsx';
 import TagsList from '../components/tagsList.jsx';
+import Headings from '../router/Headings.jsx';
 
 const PublicConstructor = ({ saved, isPublic }) => {
   const matchXs = useMediaQuery(theme.breakpoints.down('xs'));
@@ -110,6 +111,7 @@ const PublicConstructor = ({ saved, isPublic }) => {
   if (!audit?.id && saved) {
     return (
       <Layout>
+        <Headings title="Audit Builder" />
         <CustomCard
           sx={[wrapper, { height: '100%', justifyContent: 'center' }]}
         >
@@ -118,10 +120,12 @@ const PublicConstructor = ({ saved, isPublic }) => {
       </Layout>
     );
   }
-  //
+
   if ((saved && audit) || (!audit && !saved)) {
     return (
       <Layout sx={layoutSx}>
+        <Headings title="Audit Builder" />
+
         <CustomCard sx={wrapper}>
           <Button
             onClick={() =>

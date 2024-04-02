@@ -13,6 +13,7 @@ import Loader from '../components/Loader.jsx';
 import { setCurrentAuditPartner } from '../redux/actions/auditAction.js';
 import { getIssues } from '../redux/actions/issueAction.js';
 import PublicIssueDetailsForm from './PublicIssueDetailForm.jsx';
+import Headings from '../router/Headings.jsx';
 
 const AuditIssueDetails = ({ isPublic, saved }) => {
   const navigate = useNavigate();
@@ -55,6 +56,7 @@ const AuditIssueDetails = ({ isPublic, saved }) => {
           transform: 'translate(-50%, -50%)',
         }}
       >
+        <Headings title="Issues" noIndex={true} />
         <Loader />
       </Box>
     );
@@ -62,6 +64,11 @@ const AuditIssueDetails = ({ isPublic, saved }) => {
 
   return (
     <Layout>
+      <Headings
+        title={`${issue?.name} | ${audit?.project_name || 'Issues'}`}
+        noIndex={true}
+      />
+
       <CustomCard sx={wrapper}>
         <Button
           sx={backButtonSx}

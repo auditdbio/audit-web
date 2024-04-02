@@ -13,7 +13,7 @@ import { AUDITOR, CUSTOMER } from '../redux/actions/types.js';
 import Loader from '../components/Loader.jsx';
 import { Box } from '@mui/system';
 import { ASSET_URL } from '../services/urls.js';
-import { addTestsLabel, isAuth } from '../lib/helper.js';
+import { addTestsLabel, capitalize, isAuth } from '../lib/helper.js';
 import MobileTagsList from '../components/MobileTagsList/index.jsx';
 import TagsList from '../components/tagsList.jsx';
 import theme from '../styles/themes.js';
@@ -39,6 +39,7 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack.js';
 import LinkedinIcon from '../components/icons/LinkedinIcon.jsx';
 import XTwitterLogo from '../components/icons/XTwitter-logo.jsx';
 import GitHubIcon from '@mui/icons-material/GitHub';
+import Headings from '../router/Headings.jsx';
 
 const PublicProfile = () => {
   const navigate = useNavigate();
@@ -171,6 +172,8 @@ const PublicProfile = () => {
   if (!data) {
     return (
       <Layout>
+        <Headings title="Profile" />
+
         <Box
           sx={[
             wrapper(
@@ -193,6 +196,12 @@ const PublicProfile = () => {
   } else {
     return (
       <Layout>
+        <Headings
+          title={`${capitalize(data.first_name)} ${capitalize(data.last_name)}`}
+          description={data.about}
+          image={data.avatar}
+        />
+
         <Box
           sx={wrapper(
             theme,

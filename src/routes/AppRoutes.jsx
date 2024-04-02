@@ -50,6 +50,7 @@ import DeleteBadge from '../pages/Delete-badge.jsx';
 import Github from '../pages/Github.jsx';
 import ConnectAccount from '../pages/Connect-account.jsx';
 import DisclaimerPage from '../pages/DisclaimerPage.jsx';
+import Headings from '../router/Headings.jsx';
 
 const AppRoutes = () => {
   const token = useSelector(s => s.user.token);
@@ -136,6 +137,8 @@ const AppRoutes = () => {
         onClose={() => setIsOpen(false)}
         text="New version is available. Please reload the page"
       />
+      <Headings />
+
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/sign-up" element={<SignupPage />} />

@@ -2,10 +2,13 @@ import React from 'react';
 import Layout from '../styles/Layout.jsx';
 import { Typography } from '@mui/material';
 import { CustomCard } from '../components/custom/Card.jsx';
+import Headings from '../router/Headings.jsx';
 
 const ForAuditor = () => {
   return (
     <Layout>
+      <Headings title="For Auditors" />
+
       <CustomCard sx={wrapper}>
         <Typography variant="h3">For auditors</Typography>
         <Typography>

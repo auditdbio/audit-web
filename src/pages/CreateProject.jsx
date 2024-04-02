@@ -5,10 +5,13 @@ import Projects from '../components/Projects.jsx';
 import Audits from '../components/Audits.jsx';
 import CreateProjectCard from '../components/CreateProjectCard.jsx';
 import { CustomCard } from '../components/custom/Card.jsx';
+import Headings from '../router/Headings.jsx';
 
 const CreateProject = () => {
   return (
     <Layout>
+      <Headings title="New Project" noIndex={true} />
+
       <Box sx={wrapper}>
         <CustomCard>
           <CreateProjectCard />

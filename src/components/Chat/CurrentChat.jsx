@@ -18,6 +18,7 @@ import {
   getChatMessages,
 } from '../../redux/actions/chatActions.js';
 import AttachFileModal from './AttachFileModal.jsx';
+import Headings from '../../router/Headings.jsx';
 
 const CurrentChat = ({
   chatMessages,
@@ -171,6 +172,7 @@ const CurrentChat = ({
         currentChat={currentChat}
         user={user}
       />
+      <Headings title={`${currentChat?.name} | Chat`} />
 
       <Box sx={wrapper}>
         <Box sx={currentChatHeader}>

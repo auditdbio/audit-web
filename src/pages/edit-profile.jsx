@@ -7,6 +7,7 @@ import ChangePasswordFormik from '../components/forms/change-password-formik/ind
 import ChangeLinkId from '../components/forms/change-link-id/index.jsx';
 import { getCustomer } from '../redux/actions/customerAction.js';
 import { getAuditor } from '../redux/actions/auditorAction.js';
+import Headings from '../router/Headings.jsx';
 
 const EditProfile = () => {
   const role = useSelector(s => s.user.user.current_role);
@@ -24,6 +25,8 @@ const EditProfile = () => {
 
   return (
     <Layout>
+      <Headings title="Edit Profile" noIndex={true} />
+
       <CustomCard sx={editWrapper}>
         <EditProfileForm role={role} newLinkId={newLinkId} />
         <ChangeLinkId setNewLinkId={setNewLinkId} />

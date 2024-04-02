@@ -17,13 +17,14 @@ import { AUDITOR, CUSTOMER } from '../redux/actions/types.js';
 import TagsList from './tagsList';
 import { ASSET_URL } from '../services/urls.js';
 import MobileTagsList from './MobileTagsList/index.jsx';
-import { addTestsLabel } from '../lib/helper.js';
+import { addTestsLabel, capitalize } from '../lib/helper.js';
 import ShareProfileButton from './custom/ShareProfileButton.jsx';
 import IdentitySetting from './IdentitySetting/IdentitySetting.jsx';
 import LinkedinIcon from './icons/LinkedinIcon.jsx';
 import XTwitterLogo from './icons/XTwitter-logo.jsx';
 import { clearUserError } from '../redux/actions/userAction.js';
 import CustomSnackbar from './custom/CustomSnackbar.jsx';
+import Headings from '../router/Headings.jsx';
 
 const UserInfo = ({ role }) => {
   const dispatch = useDispatch();
@@ -52,6 +53,14 @@ const UserInfo = ({ role }) => {
   } else {
     return (
       <Box sx={wrapper}>
+        <Headings
+          title={capitalize(user?.name) || 'Profile'}
+          image={data.avatar}
+          description={`${capitalize(data.first_name)} ${capitalize(
+            data.last_name,
+          )} | ${data.about}`}
+        />
+
         <CustomSnackbar
           autoHideDuration={3000}
           open={!!error}

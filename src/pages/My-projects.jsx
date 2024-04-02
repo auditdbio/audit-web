@@ -12,6 +12,7 @@ import { createRequest } from '../redux/actions/auditAction.js';
 import { getCurrentAuditor } from '../redux/actions/auditorAction.js';
 import { addTestsLabel } from '../lib/helper.js';
 import CustomSnackbar from '../components/custom/CustomSnackbar.jsx';
+import Headings from '../router/Headings.jsx';
 
 const MyProjects = () => {
   const navigate = useNavigate();
@@ -74,6 +75,8 @@ const MyProjects = () => {
 
   return (
     <Layout>
+      <Headings title="Choose Project" />
+
       <CustomCard sx={wrapper}>
         <CustomSnackbar
           autoHideDuration={3000}

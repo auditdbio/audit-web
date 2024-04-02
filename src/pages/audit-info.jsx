@@ -29,6 +29,7 @@ import CustomSnackbar from '../components/custom/CustomSnackbar.jsx';
 import { setCurrentChat } from '../redux/actions/chatActions.js';
 import ChatIcon from '../components/icons/ChatIcon.jsx';
 import ConfirmModal from '../components/modal/ConfirmModal.jsx';
+import Headings from '../router/Headings.jsx';
 
 const AuditInfo = ({ audit, auditRequest, issues, confirmed }) => {
   const navigate = useNavigate();
@@ -103,6 +104,8 @@ const AuditInfo = ({ audit, auditRequest, issues, confirmed }) => {
 
   return (
     <Layout>
+      <Headings title={audit?.project_name || 'Audit Info'} />
+
       <CustomSnackbar
         autoHideDuration={5000}
         open={!!error || !!successMessage}
