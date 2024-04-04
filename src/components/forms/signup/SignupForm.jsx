@@ -29,6 +29,7 @@ const SignupForm = () => {
   const matchMd = useMediaQuery(theme.breakpoints.down('md'));
   const error = useSelector(s => s.user.error);
   const [open, setOpen] = useState(false);
+  const [isAuditor, setIsAuditor] = useState(AUDITOR);
   const initialValues = {
     current_role: '',
     name: '',
@@ -38,8 +39,15 @@ const SignupForm = () => {
   };
 
   const handleAuthGithub = () => {
+    const state = encodeURIComponent(
+      JSON.stringify({
+        service: 'GitHub',
+        auth: true,
+        role: isAuditor,
+      }),
+    );
     window.open(
-      `https://github.com/login/oauth/authorize?client_id=${GITHUB_ID}&redirect_uri=${BASE_URL}oauth/callback&scope=read:user,user:email&state=${isAuditor}_GitHub_auth`,
+      `https://github.com/login/oauth/authorize?client_id=${GITHUB_ID}&redirect_uri=${BASE_URL}oauth/callback&scope=read:user,user:email&state=${state}`,
       '_self',
     );
   };
@@ -76,7 +84,7 @@ const SignupForm = () => {
               indicatorColor="none"
             >
               <Tab
-                value="auditor"
+                value={AUDITOR}
                 sx={[
                   currentRole === AUDITOR
                     ? auditorTabSx
@@ -87,7 +95,7 @@ const SignupForm = () => {
                 {...addTestsLabel('auditor-button')}
               />
               <Tab
-                value="customer"
+                value={CUSTOMER}
                 sx={[
                   currentRole === CUSTOMER
                     ? customerTabSx
@@ -138,8 +146,8 @@ const SignupForm = () => {
               <Button
                 type="submit"
                 sx={submitButton}
-                color={'secondary'}
-                variant={'contained'}
+                color="secondary"
+                variant="contained"
                 disabled={isAuth()}
                 {...addTestsLabel('sign-up-button')}
               >
@@ -147,7 +155,8 @@ const SignupForm = () => {
               </Button>
               <Button
                 sx={[submitButton, { paddingX: '0' }]}
-                variant={'contained'}
+                variant="contained"
+                color="primary"
                 onClick={() => setOpen(true)}
               >
                 <GitHubIcon sx={{ marginRight: '15px' }} />
@@ -157,9 +166,9 @@ const SignupForm = () => {
             {open && (
               <RoleModal
                 onClose={() => setOpen(false)}
-                onClick={handleAuthGithub}
-                isAuditor={isAuditor}
-                setIsAuditor={setIsAuditor}
+                onConfirm={handleAuthGithub}
+                role={isAuditor}
+                setRole={setIsAuditor}
               />
             )}
           </Box>
@@ -195,20 +204,18 @@ const titleStyle = theme => ({
 });
 
 const submitButton = theme => ({
-  backgroundColor: theme.palette.secondary.main,
-  padding: '11px 140px',
+  padding: '11px 0',
   color: '#FCFAF6',
-  fontSize: '14px',
   fontWeight: 600,
-  lineHeight: 1.2,
   borderRadius: radiusOfComponents,
-  maxWidth: '402px',
-  margin: '0 auto',
+  maxWidth: '262px',
+  fontSize: '16px',
   paddingY: '11px',
+  width: '100%',
   [theme.breakpoints.down('sm')]: {
     width: '225px',
-    padding: '13px 80px',
-    fontSize: '12px',
+    padding: '8px 0',
+    fontSize: '14px',
   },
 });
 

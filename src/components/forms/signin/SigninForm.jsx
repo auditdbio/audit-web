@@ -1,46 +1,52 @@
 import React, { useState } from 'react';
-import { Box, Button, Modal, useMediaQuery } from '@mui/material';
-import theme, { radiusOfComponents } from '../../../styles/themes.js';
-import PasswordField from '../fields/password-field.jsx';
+import { useDispatch, useSelector } from 'react-redux';
 import { Form, Formik } from 'formik';
 import * as Yup from 'yup';
+import { Box, Button, Modal, useMediaQuery } from '@mui/material';
+import GitHubIcon from '@mui/icons-material/GitHub.js';
+import theme, { radiusOfComponents } from '../../../styles/themes.js';
+import PasswordField from '../fields/password-field.jsx';
 import SimpleField from '../fields/simple-field.jsx';
-import { useDispatch, useSelector } from 'react-redux';
-import { Link } from 'react-router-dom';
+import CustomSnackbar from '../../custom/CustomSnackbar.jsx';
+import RestorePassword from '../../RestorePassword.jsx';
+import { addTestsLabel, isAuth } from '../../../lib/helper.js';
 import {
   clearUserError,
   clearUserSuccess,
   signIn,
 } from '../../../redux/actions/userAction.js';
-import CustomSnackbar from '../../custom/CustomSnackbar.jsx';
-import RestorePassword from '../../RestorePassword.jsx';
-import { addTestsLabel, isAuth } from '../../../lib/helper.js';
-import GitHubIcon from '@mui/icons-material/GitHub.js';
-import RoleModal from '../../modal/RoleModal.jsx';
+
 const GITHUB_ID = import.meta.env.VITE_GITHUB_CLIENT_ID;
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 
 const SigninForm = () => {
   const dispatch = useDispatch();
-  const error = useSelector(s => s.user.error);
-  const [open, setOpen] = useState(false);
-  const [openModal, setOpenModal] = useState(false);
   const matchMd = useMediaQuery(theme.breakpoints.down('md'));
-  const successMessage = useSelector(s => s.user.success);
-  const [isAuditor, setIsAuditor] = useState('auditor');
+  const { error, success } = useSelector(s => s.user);
+  const [open, setOpen] = useState(false);
+
   const initialValues = {
     email: '',
     password: '',
   };
+
   const handleClose = () => {
     setOpen(false);
   };
+
   const handleAuthGithub = () => {
+    const state = encodeURIComponent(
+      JSON.stringify({
+        service: 'GitHub',
+        auth: true,
+      }),
+    );
     window.open(
-      `https://github.com/login/oauth/authorize?client_id=${GITHUB_ID}&redirect_uri=${BASE_URL}oauth/callback&scope=read:user,user:email&state=${isAuditor}_GitHub_auth`,
+      `https://github.com/login/oauth/authorize?client_id=${GITHUB_ID}&redirect_uri=${BASE_URL}oauth/callback&scope=read:user,user:email&state=${state}`,
       '_self',
     );
   };
+
   return (
     <Formik
       initialValues={initialValues}
@@ -57,13 +63,13 @@ const SigninForm = () => {
             <Box sx={formWrapper}>
               <CustomSnackbar
                 autoHideDuration={7000}
-                open={!!error || !!successMessage}
+                open={!!error || !!success}
                 onClose={() => {
                   dispatch(clearUserError());
                   dispatch(clearUserSuccess());
                 }}
-                severity={successMessage ? 'success' : 'error'}
-                text={error || successMessage}
+                severity={success ? 'success' : 'error'}
+                text={error || success}
               />
               <Modal
                 open={open}
@@ -96,9 +102,9 @@ const SigninForm = () => {
                 }}
               >
                 <Button
-                  type={'submit'}
-                  variant={'contained'}
-                  color={'secondary'}
+                  type="submit"
+                  variant="contained"
+                  color="secondary"
                   sx={submitButton}
                   {...addTestsLabel('sign-in-button')}
                   disabled={isAuth()}
@@ -106,10 +112,11 @@ const SigninForm = () => {
                   Sign in
                 </Button>
                 <Button
-                  color={'primary'}
+                  color="primary"
+                  type="button"
                   sx={[submitButton, { mt: '25px' }]}
-                  variant={'contained'}
-                  onClick={() => setOpenModal(true)}
+                  variant="contained"
+                  onClick={handleAuthGithub}
                 >
                   <GitHubIcon sx={{ marginRight: '15px' }} />
                   Sign in with Github
@@ -125,14 +132,6 @@ const SigninForm = () => {
                   Forgot password
                 </Button>
               </Box>
-              {openModal && (
-                <RoleModal
-                  onClose={() => setOpenModal(false)}
-                  onClick={handleAuthGithub}
-                  isAuditor={isAuditor}
-                  setIsAuditor={setIsAuditor}
-                />
-              )}
             </Box>
           </Form>
         );

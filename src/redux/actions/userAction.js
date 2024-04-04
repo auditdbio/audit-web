@@ -27,6 +27,7 @@ import {
   DELETE_LINKED_ACCOUNT,
   GET_PROFILE,
   GET_PUBLIC_PROFILE,
+  NEED_TO_SELECT_ROLE,
 } from './types.js';
 import { savePublicReport } from './auditAction.js';
 
@@ -41,20 +42,23 @@ export const signUpGithub = data => {
         localStorage.setItem('token', JSON.stringify(data.token));
         localStorage.setItem('user', JSON.stringify(data.user));
         dispatch({ type: USER_SIGNIN, payload: data });
-        if (data.user?.is_new) {
+
+        if (data.choose_role) {
+          dispatch({ type: NEED_TO_SELECT_ROLE });
+        } else if (data.user?.is_new) {
+          axios.patch(
+            `${API_URL}/user/${data.user?.id}`,
+            { is_new: false },
+            { headers: { Authorization: `Bearer ${data.token}` } },
+          );
           history.push({ pathname: `/edit-profile` }, { some: true });
         } else {
           history.push({ pathname: `/profile/user-info` }, { some: true });
         }
-
-        axios.patch(
-          `${API_URL}/user/${data.user?.id}`,
-          { is_new: false },
-          { headers: { Authorization: `Bearer ${data.token}` } },
-        );
       })
       .catch(({ response }) => {
-        dispatch({ type: SIGN_IN_ERROR, payload: response.data });
+        console.error(response);
+        dispatch({ type: SIGN_IN_ERROR, payload: 'Sign In Failed' });
       });
   };
 };
@@ -69,13 +73,12 @@ export const signIn = values => {
         localStorage.setItem('user', JSON.stringify(data.user));
         dispatch({ type: USER_SIGNIN, payload: data });
 
-        axios.patch(
-          `${API_URL}/user/${data.user?.id}`,
-          { is_new: false },
-          { headers: { Authorization: `Bearer ${data.token}` } },
-        );
-
         if (data.user?.is_new) {
+          axios.patch(
+            `${API_URL}/user/${data.user?.id}`,
+            { is_new: false },
+            { headers: { Authorization: `Bearer ${data.token}` } },
+          );
           history.push({ pathname: `/edit-profile` }, { some: true });
         } else {
           history.push({ pathname: `/profile/user-info` }, { some: true });

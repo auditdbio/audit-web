@@ -1,67 +1,73 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { CustomCard } from '../components/custom/Card.jsx';
 import Layout from '../styles/Layout.jsx';
-import { useSearchParams } from 'react-router-dom/dist';
-import { connect_account, signUpGithub } from '../redux/actions/userAction.js';
+import { useSearchParams, useNavigate } from 'react-router-dom/dist';
+import {
+  changeRole,
+  clearUserError,
+  connect_account,
+  signUpGithub,
+} from '../redux/actions/userAction.js';
 import { useDispatch, useSelector } from 'react-redux';
 import Loader from '../components/Loader.jsx';
 import { Box } from '@mui/system';
 import { Typography } from '@mui/material';
 import GitHubIcon from '@mui/icons-material/GitHub.js';
+import CustomSnackbar from '../components/custom/CustomSnackbar.jsx';
+import RoleModal from '../components/modal/RoleModal.jsx';
+import { AUDITOR } from '../redux/actions/types.js';
 
 const ConnectAccount = () => {
-  const [searchParam] = useSearchParams();
   const dispatch = useDispatch();
-  const user_id = useSelector(state => state.user.user.id);
+  const navigate = useNavigate();
+
+  const [searchParam] = useSearchParams();
+  const { error, user, needToSelectRole } = useSelector(s => s.user);
+  const [modalSelectedRole, setModalSelectedRole] = useState(AUDITOR);
 
   useEffect(() => {
-    if (
-      searchParam
-        .get('state')
-        .slice(searchParam.get('state').lastIndexOf('_') + 1) === 'auth'
-    ) {
-      const value = {
-        code: searchParam.get('code'),
-        current_role: searchParam
-          .get('state')
-          .slice(0, searchParam.get('state').indexOf('_')),
-        service: searchParam
-          .get('state')
-          .slice(
-            searchParam.get('state').indexOf('_') + 1,
-            searchParam.get('state').lastIndexOf('_'),
-          ),
-      };
-      dispatch(signUpGithub(value));
+    const state = JSON.parse(decodeURIComponent(searchParam.get('state')));
+    const values = {
+      code: searchParam.get('code'),
+      service: state?.service,
+    };
+    if (state?.role) {
+      values.current_role = state.role;
+    }
+
+    if (state?.auth) {
+      dispatch(signUpGithub(values));
     } else {
-      const data = {
-        code: searchParam.get('code'),
-        current_role: searchParam
-          .get('state')
-          .slice(0, searchParam.get('state').indexOf('_')),
-        service: searchParam
-          .get('state')
-          .slice(searchParam.get('state').indexOf('_') + 1),
-      };
-      dispatch(connect_account(user_id, data));
+      dispatch(connect_account(user?.id, values));
     }
   }, []);
 
   return (
     <Layout>
+      <CustomSnackbar
+        autoHideDuration={6000}
+        open={!!error}
+        severity="error"
+        text={error}
+        onClose={() => {
+          dispatch(clearUserError());
+          navigate('/sign-in');
+        }}
+      />
+
+      {needToSelectRole && (
+        <RoleModal
+          onConfirm={() => dispatch(changeRole(modalSelectedRole, user?.id))}
+          role={modalSelectedRole}
+          setRole={setModalSelectedRole}
+        />
+      )}
+
       <CustomCard sx={cardWrapper}>
-        <Box
-          sx={{
-            mt: '-35px',
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '45px',
-            alignItems: 'center',
-          }}
-        >
+        <Box sx={innerWrapper}>
           <Loader />
           <Typography
-            variant={'h5'}
+            variant="h5"
             sx={{ display: 'flex', alignItems: 'center' }}
           >
             <GitHubIcon fontSize="large" sx={{ marginRight: '15px' }} />
@@ -84,3 +90,11 @@ const cardWrapper = theme => ({
     paddingY: '78px',
   },
 });
+
+const innerWrapper = {
+  mt: '-35px',
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '45px',
+  alignItems: 'center',
+};

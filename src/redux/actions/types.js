@@ -7,6 +7,7 @@ export const CLEAR_SUCCESS = 'CLEAR_SUCCESS';
 export const LOG_OUT = 'LOG_OUT';
 export const SIGN_IN_ERROR = 'SIGN_IN_ERROR';
 export const SELECT_ROLE = 'SELECT_ROLE';
+export const NEED_TO_SELECT_ROLE = 'NEED_TO_SELECT_ROLE';
 export const UPDATE_CUSTOMER = 'UPDATE_CUSTOMER';
 export const UPDATE_AUDITOR = 'UPDATE_AUDITOR';
 export const GET_CUSTOMER = 'GET_CUSTOMER';

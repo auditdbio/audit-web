@@ -3,63 +3,42 @@ import { Box, Button, Tab, Tabs, Typography } from '@mui/material';
 import { addTestsLabel } from '../../lib/helper.js';
 import { radiusOfComponents } from '../../styles/themes.js';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
+import { AUDITOR, CUSTOMER } from '../../redux/actions/types.js';
 
-const RoleModal = ({ onClose, isAuditor, setIsAuditor, onClick }) => {
+const RoleModal = ({ onClose, role, setRole, onConfirm }) => {
   return (
-    <Box
-      sx={{
-        position: 'fixed',
-        top: '0',
-        right: '0',
-        left: '0',
-        bottom: '0',
-        backgroundColor: 'rgba(0, 0, 0, 0.5)',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        zIndex: '22',
-      }}
-    >
+    <Box sx={wrapper}>
       <Box sx={innerModal}>
-        <Button
-          sx={{
-            position: 'absolute',
-            minWidth: 'unset',
-            top: '0',
-            left: '0',
-            width: '36px',
-          }}
-          onClick={onClose}
-        >
-          <CloseRoundedIcon />
-        </Button>
-        <Typography variant={'h4'} sx={titleSx}>
+        {onClose && (
+          <Button sx={closeButtonSx} onClick={onClose}>
+            <CloseRoundedIcon />
+          </Button>
+        )}
+        <Typography variant="h4" sx={titleSx}>
           Select your role
         </Typography>
         <Tabs
-          value={isAuditor}
+          value={role}
           onChange={(e, newValue) => {
-            setIsAuditor(newValue);
+            setRole(newValue);
           }}
           name="role"
           sx={[tabsSx, { marginTop: '0!important' }]}
           indicatorColor="none"
         >
           <Tab
-            value="auditor"
+            value={AUDITOR}
             sx={[
-              isAuditor === 'auditor'
-                ? auditorTabSx
-                : { backgroundColor: '#D9D9D9' },
+              role === AUDITOR ? auditorTabSx : { backgroundColor: '#D9D9D9' },
               tabSx,
             ]}
             label="Auditor"
             {...addTestsLabel('auditor-button')}
           />
           <Tab
-            value="customer"
+            value={CUSTOMER}
             sx={[
-              isAuditor === 'customer'
+              role === CUSTOMER
                 ? customerTabSx
                 : { backgroundColor: '#D9D9D9' },
               tabSx,
@@ -68,7 +47,7 @@ const RoleModal = ({ onClose, isAuditor, setIsAuditor, onClick }) => {
             {...addTestsLabel('customer-button')}
           />
         </Tabs>
-        <Button sx={submitButton} variant={'contained'} onClick={onClick}>
+        <Button sx={submitButton} variant="contained" onClick={onConfirm}>
           Confirm
         </Button>
       </Box>
@@ -77,6 +56,19 @@ const RoleModal = ({ onClose, isAuditor, setIsAuditor, onClick }) => {
 };
 
 export default RoleModal;
+
+const wrapper = {
+  position: 'fixed',
+  top: '0',
+  right: '0',
+  left: '0',
+  bottom: '0',
+  backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  zIndex: '22',
+};
 
 const submitButton = theme => ({
   padding: '11px 0',
@@ -94,6 +86,14 @@ const submitButton = theme => ({
     fontSize: '14px',
   },
 });
+
+const closeButtonSx = {
+  position: 'absolute',
+  minWidth: 'unset',
+  top: '0',
+  left: '0',
+  width: '36px',
+};
 
 const innerModal = theme => ({
   width: '550px',

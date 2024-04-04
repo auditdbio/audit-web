@@ -22,6 +22,7 @@ import {
   ERROR_IDENTITY,
   GET_PROFILE,
   GET_PUBLIC_PROFILE,
+  NEED_TO_SELECT_ROLE,
 } from '../actions/types.js';
 
 const initialState = {
@@ -31,7 +32,9 @@ const initialState = {
   error: null,
   success: null,
   publicUser: null,
+  needToSelectRole: false,
 };
+
 export const userReducer = (state = initialState, action) => {
   switch (action.type) {
     case USER_SIGNIN:
@@ -89,7 +92,12 @@ export const userReducer = (state = initialState, action) => {
     case LOG_OUT:
       return { ...initialState, token: '', user: {} };
     case SELECT_ROLE:
-      return { ...state, user: action.payload };
+      return { ...state, user: action.payload, needToSelectRole: false };
+    case NEED_TO_SELECT_ROLE:
+      return {
+        ...state,
+        needToSelectRole: true,
+      };
     case UPDATE_USER:
       return {
         ...state,
