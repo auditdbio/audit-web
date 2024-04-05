@@ -96,18 +96,35 @@ export const clearUserSuccess = () => {
   return { type: CLEAR_SUCCESS };
 };
 
-export const getMyProfile = id => {
+// export const getMyProfile = id => {
+//   return dispatch => {
+//     axios
+//       .get(`${API_URL}/user/${id}`, {
+//         headers: {
+//           Authorization: 'Bearer ' + Cookies.get('token'),
+//           'Content-Type': 'application/json',
+//         },
+//       })
+//       .then(({ data }) => {
+//         dispatch({ type: GET_PROFILE, payload: data });
+//         localStorage.setItem('user', JSON.stringify(data));
+//       });
+//   };
+// };
+
+export const getMyProfile = () => {
   return dispatch => {
-    axios
-      .get(`${API_URL}/user/${id}`, {
-        headers: {
-          Authorization: 'Bearer ' + Cookies.get('token'),
-          'Content-Type': 'application/json',
-        },
-      })
+    axios(`${API_URL}/my_user`, {
+      headers: {
+        Authorization: 'Bearer ' + Cookies.get('token'),
+      },
+    })
       .then(({ data }) => {
-        dispatch({ type: GET_PROFILE, payload: data });
+        dispatch({ type: GET_MY_PROFILE, payload: data });
         localStorage.setItem('user', JSON.stringify(data));
+      })
+      .catch(data => {
+        console.log(data);
       });
   };
 };
@@ -217,23 +234,6 @@ export const connect_account = (user_id, values) => {
         history.push('/profile/user-info', {
           some: true,
         });
-      });
-  };
-};
-
-export const getMyProfile = () => {
-  return dispatch => {
-    axios(`${API_URL}/my_user`, {
-      headers: {
-        Authorization: 'Bearer ' + Cookies.get('token'),
-      },
-    })
-      .then(({ data }) => {
-        dispatch({ type: GET_MY_PROFILE, payload: data });
-        localStorage.setItem('user', JSON.stringify(data));
-      })
-      .catch(data => {
-        console.log(data);
       });
   };
 };
