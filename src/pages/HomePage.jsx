@@ -7,20 +7,7 @@ import theme from '../styles/themes.js';
 
 const HomePage = () => {
   return (
-    <Layout
-      sx={{
-        flexDirection: 'column',
-        padding: '0',
-        paddingTop: '100px',
-        [theme.breakpoints.down('md')]: {
-          padding: 0,
-        },
-        [theme.breakpoints.down('sm')]: {
-          paddingTop: '60px',
-          padding: '0',
-        },
-      }}
-    >
+    <Layout sx={layout}>
       <MainText />
       <AuditorsProjectsSection />
       <Carousel />
@@ -29,3 +16,12 @@ const HomePage = () => {
 };
 
 export default HomePage;
+
+const layout = {
+  flexDirection: 'column',
+  padding: '0',
+  paddingTop: '30px',
+  [theme.breakpoints.down('md')]: {
+    padding: 0,
+  },
+};

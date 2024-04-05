@@ -1,6 +1,4 @@
 import { Box, Typography } from '@mui/material';
-import TwitterIcon from '@mui/icons-material/Twitter';
-import YouTubeIcon from '@mui/icons-material/YouTube';
 import MenuItem from '@mui/material/MenuItem';
 import { useMediaQuery } from '@mui/material';
 import { Link } from 'react-router-dom/dist';
@@ -10,15 +8,16 @@ import Telegram from '../icons/Telegram.jsx';
 import MediumLogo from '../icons/Medium-logo.jsx';
 import { addTestsLabel } from '../../lib/helper.js';
 import XTwitterLogo from '../icons/XTwitter-logo.jsx';
+import theme from '../../styles/themes.js';
 
 const Footer = () => {
-  const isMobile = useMediaQuery('(max-width: 768px)');
+  const isMobile = useMediaQuery(theme.breakpoints.down('xs'));
 
   return (
     <Box sx={footerContainerStyles} component="footer">
       <Box sx={mainFooterStyles(isMobile)}>
         <Box sx={footerStyle(isMobile)}>
-          <Box sx={logoIconsStyle(isMobile)}>
+          <Box sx={logoIconsStyle}>
             <Box sx={{ display: 'flex' }}>
               <Typography style={auditStyles(isMobile)}>Audit</Typography>
               <Typography style={dbStyles(isMobile)}>DB</Typography>
@@ -89,9 +88,9 @@ const footerContainerStyles = {
   flexDirection: 'row',
   justifyContent: 'center',
   backgroundColor: '#FF9900',
-  paddingBottom: '35px',
-  marginBottom: 0,
-  marginTop: 'auto',
+  paddingY: '15px',
+  mb: 0,
+  mt: 'auto',
 };
 
 const mainFooterStyles = isMobile => ({
@@ -100,7 +99,7 @@ const mainFooterStyles = isMobile => ({
   justifyContent: 'space-between',
   maxWidth: '1512px',
   width: '100%',
-  padding: isMobile ? '35px 30px 28px 30px' : '24px 45px 8px 45px',
+  padding: isMobile ? '35px 30px 28px 30px' : '0 45px',
   gap: '30px',
 });
 
@@ -112,12 +111,12 @@ const footerStyle = isMobile => ({
   justifyContent: 'space-between',
 });
 
-const logoIconsStyle = isMobile => ({
+const logoIconsStyle = {
   display: 'flex',
   flexDirection: 'column',
-  gap: isMobile ? '30px' : '22px',
+  gap: '14px',
   alignSelf: 'flex-start',
-});
+};
 
 const auditStyles = isMobile => ({
   fontSize: isMobile ? '30px' : '40px',

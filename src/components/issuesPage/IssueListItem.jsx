@@ -11,6 +11,7 @@ import {
   NOT_FIXED,
   VERIFICATION,
 } from './constants.js';
+import CustomLink from '../custom/CustomLink.jsx';
 
 const IssueListItem = ({ issue, auditId, user, isPublic }) => {
   const [showTitleTooltip, setShowTitleTooltip] = useState(false);
@@ -35,10 +36,13 @@ const IssueListItem = ({ issue, auditId, user, isPublic }) => {
         : {};
     }
   };
-
+  //
   return (
     <Link
-      sx={issueRow}
+      sx={[
+        issueRow,
+        !!issue.links.length ? { paddingY: '15px!important' } : {},
+      ]}
       component={RouterLink}
       onClick={() => window.scrollTo({ top: 0 })}
       to={
@@ -56,12 +60,35 @@ const IssueListItem = ({ issue, auditId, user, isPublic }) => {
         enterDelay={300}
         leaveDelay={0}
       >
-        <Typography
-          sx={[columnText, issueTitleSx, checkUnread()]}
-          ref={titleBoxRef}
-        >
-          <span ref={titleTextRef}>{issue.name}</span>
-        </Typography>
+        <Box sx={{ width: '70%' }}>
+          <Typography
+            sx={[columnText, issueTitleSx, checkUnread(), { mb: '5px' }]}
+            ref={titleBoxRef}
+          >
+            <span ref={titleTextRef}>{issue.name}</span>
+          </Typography>
+          {!!issue.links.length && (
+            <Box
+              sx={{
+                marginTop: '7px',
+                '& p': {
+                  display: 'flex',
+                  alignItems: 'center',
+                  paddingX: '25px',
+                },
+                '& svg': {
+                  width: '20px',
+                },
+              }}
+            >
+              <CustomLink
+                sx={{ fontSize: '12px' }}
+                link={issue.links[0]}
+                shortLength={12}
+              />
+            </Box>
+          )}
+        </Box>
       </Tooltip>
       <Typography sx={[columnText, statusSx(issue.status)]}>
         {addSpacesToCamelCase(issue.status)}
@@ -115,7 +142,6 @@ const issueTitleSx = {
   maxHeight: '50px',
   overflow: 'hidden',
   wordBreak: 'break-word',
-  width: '70%',
   alignSelf: 'center',
   '-webkit-line-clamp': '2',
   '-webkit-box-orient': 'vertical',

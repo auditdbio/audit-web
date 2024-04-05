@@ -21,9 +21,10 @@ import RoleModal from '../../modal/RoleModal.jsx';
 
 const GITHUB_ID = import.meta.env.VITE_GITHUB_CLIENT_ID;
 const BASE_URL = import.meta.env.VITE_BASE_URL;
+import { AUDITOR, CUSTOMER } from '../../../redux/actions/types.js';
 
 const SignupForm = () => {
-  const [isAuditor, setIsAuditor] = useState('auditor');
+  const [currentRole, setCurrentRole] = useState('auditor');
   const dispatch = useDispatch();
   const matchMd = useMediaQuery(theme.breakpoints.down('md'));
   const error = useSelector(s => s.user.error);
@@ -50,7 +51,7 @@ const SignupForm = () => {
       validateOnBlur={false}
       validateOnChange={false}
       onSubmit={values => {
-        const newValue = { ...values, current_role: isAuditor };
+        const newValue = { ...values, current_role: currentRole };
         dispatch(signUp(newValue));
       }}
     >
@@ -66,9 +67,9 @@ const SignupForm = () => {
               text={error}
             />
             <Tabs
-              value={isAuditor}
+              value={currentRole}
               onChange={(e, newValue) => {
-                setIsAuditor(newValue);
+                setCurrentRole(newValue);
               }}
               name="role"
               sx={tabsSx}
@@ -77,7 +78,7 @@ const SignupForm = () => {
               <Tab
                 value="auditor"
                 sx={[
-                  isAuditor === 'auditor'
+                  currentRole === AUDITOR
                     ? auditorTabSx
                     : { backgroundColor: '#D9D9D9' },
                   tabSx,
@@ -88,7 +89,7 @@ const SignupForm = () => {
               <Tab
                 value="customer"
                 sx={[
-                  isAuditor === 'customer'
+                  currentRole === CUSTOMER
                     ? customerTabSx
                     : { backgroundColor: '#D9D9D9' },
                   tabSx,
@@ -182,7 +183,7 @@ const SignupSchema = Yup.object().shape({
 
 const titleStyle = theme => ({
   fontWeight: 500,
-  fontSize: '20px',
+  fontSize: '16px !important',
   lineHeight: '24px',
   textAlign: 'center',
   [theme.breakpoints.down('md')]: {
@@ -194,18 +195,20 @@ const titleStyle = theme => ({
 });
 
 const submitButton = theme => ({
-  padding: '11px 0',
+  backgroundColor: theme.palette.secondary.main,
+  padding: '11px 140px',
   color: '#FCFAF6',
+  fontSize: '14px',
   fontWeight: 600,
+  lineHeight: 1.2,
   borderRadius: radiusOfComponents,
-  maxWidth: '262px',
-  fontSize: '16px',
+  maxWidth: '402px',
+  margin: '0 auto',
   paddingY: '11px',
-  width: '100%',
   [theme.breakpoints.down('sm')]: {
     width: '225px',
-    padding: '8px 0',
-    fontSize: '14px',
+    padding: '13px 80px',
+    fontSize: '12px',
   },
 });
 
@@ -215,10 +218,7 @@ const formStyle = theme => ({
   height: '100%',
   alignItems: 'center',
   width: '100%',
-  gap: '80px',
-  [theme.breakpoints.down('md')]: {
-    gap: '60px',
-  },
+  gap: '50px',
   [theme.breakpoints.down('sm')]: {
     gap: '32px',
   },
@@ -281,11 +281,10 @@ const fieldWrapper = theme => ({
 
 const tabsSx = theme => ({
   marginBottom: 0,
-  width: '420px',
-  marginTop: '-50px',
+  width: '340px',
+  marginTop: '-20px',
   [theme.breakpoints.down('md')]: {
     width: '320px',
-    marginTop: '-20px',
   },
   [theme.breakpoints.down('sm')]: {
     width: '250px',
@@ -294,14 +293,12 @@ const tabsSx = theme => ({
 });
 
 const tabSx = theme => ({
+  height: '40px',
+  minHeight: '40px',
   width: '50%',
   color: '#222222',
   fontSize: '16px',
   textTransform: 'capitalize',
-  [theme.breakpoints.down('md')]: {
-    minHeight: '41px',
-    height: '41px',
-  },
   [theme.breakpoints.down('sm')]: {
     fontSize: '14px',
   },

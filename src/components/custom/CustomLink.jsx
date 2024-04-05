@@ -19,10 +19,10 @@ export const linkShortener = (link, shortLinkLength) => {
   return shortLink;
 };
 
-const CustomLink = ({ link, showIcon = true, sx = {} }) => {
+const CustomLink = ({ link, showIcon = true, sx = {}, shortLength = null }) => {
   const linkBoxRef = useRef();
   const matchSm = useMediaQuery(theme.breakpoints.down('sm'));
-  const [shortLinkLength, setShortLinkLength] = useState(null);
+  const [shortLinkLength, setShortLinkLength] = useState(shortLength);
 
   useEffect(() => {
     const boxWidth = linkBoxRef.current?.offsetWidth;
@@ -36,9 +36,23 @@ const CustomLink = ({ link, showIcon = true, sx = {} }) => {
     }
   }, [matchSm]);
 
+  const shortenLink = fullLink => {
+    const parts = fullLink.split('/');
+    const repo = parts.slice(parts.indexOf('blob') - 1)[0];
+    const sha = parts.slice(parts.indexOf('blob') + 1)[0];
+    const path = parts.slice(parts.length - 3, parts.length).join('/');
+    return `${repo}/${sha?.slice(0, 7)}.../${path}`;
+  };
+
   return (
     <Box sx={{ display: 'flex', width: '100%' }}>
-      <Typography noWrap={true} sx={linkBoxSx}>
+      <Typography
+        noWrap={!link.includes('blob')}
+        sx={[
+          linkBoxSx,
+          link.includes('blob') ? { wordBreak: 'break-all' } : {},
+        ]}
+      >
         {showIcon &&
           (/^https?:\/\/(www\.)?github\.com/.test(link) ? (
             <GitHubIcon sx={{ mr: '8px' }} />
@@ -48,11 +62,20 @@ const CustomLink = ({ link, showIcon = true, sx = {} }) => {
         <Link
           href={/^https?:\/\//.test(link) ? link : `https://${link}`}
           target="_blank"
-          sx={[linkSx, sx]}
+          sx={[
+            linkSx,
+            sx,
+            link.includes('blob') ? { overflow: 'unset!important' } : {},
+          ]}
           ref={linkBoxRef}
+          onClick={e => e.stopPropagation()}
         >
           <Tooltip sx={{ width: 'unset' }} title={link} arrow placement="top">
-            <span>{linkShortener(link, shortLinkLength)}</span>
+            <span>
+              {link.includes('blob')
+                ? shortenLink(link)
+                : linkShortener(link, shortLinkLength)}
+            </span>
           </Tooltip>
         </Link>
       </Typography>

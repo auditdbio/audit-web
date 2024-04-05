@@ -24,7 +24,9 @@ export const UserMenu = ({ open, handleClose, anchor, userAvatar, pages }) => {
   const reduxUser = useSelector(state => state.user.user);
   const navigate = useNavigate();
   const matchSm = useMediaQuery(theme.breakpoints.down(1080));
+
   const currentRole = useSelector(s => s.user.user.current_role);
+  const { differentRoleUnreadMessages } = useSelector(s => s.chat);
 
   const user = {
     fullName: reduxUser.name || '',
@@ -58,16 +60,7 @@ export const UserMenu = ({ open, handleClose, anchor, userAvatar, pages }) => {
             sx={avatarSx}
             alt="User photo"
           />
-          {/*<Button*/}
-          {/*  size="small"*/}
-          {/*  startIcon={<EditIcon />}*/}
-          {/*  sx={editTextStyle}*/}
-          {/*  disableRipple*/}
-          {/*>*/}
-          {/*  Edit photo*/}
-          {/*</Button>*/}
           <Typography sx={mainTextStyle}>{user.fullName}</Typography>
-          {/*<Typography sx={secondaryTextStyle}>{user.interests}</Typography>*/}
           <Typography sx={secondaryTextStyle}>{user.email}</Typography>
         </Box>
       </MenuItem>
@@ -76,24 +69,44 @@ export const UserMenu = ({ open, handleClose, anchor, userAvatar, pages }) => {
         onChange={(e, newValue) => {
           dispatch(changeRole(newValue, reduxUser.id));
         }}
-        name={'role'}
+        name="role"
         sx={tabsSx}
         indicatorColor="none"
       >
         <Tab
+          title={
+            differentRoleUnreadMessages > 0 &&
+            reduxUser.current_role !== AUDITOR
+              ? 'You have unread notifications for a different role profile'
+              : ''
+          }
           value={AUDITOR}
           sx={[
             reduxUser.current_role === AUDITOR ? auditorTabSx : inactiveTabSx,
-            tabSx,
+            tabSx(
+              reduxUser.current_role,
+              AUDITOR,
+              differentRoleUnreadMessages > 0,
+            ),
           ]}
           label="Auditor"
           {...addTestsLabel('header_auditor-button')}
         />
         <Tab
+          title={
+            differentRoleUnreadMessages > 0 &&
+            reduxUser.current_role !== CUSTOMER
+              ? 'You have unread notifications for a different role profile'
+              : ''
+          }
           value={CUSTOMER}
           sx={[
             reduxUser.current_role === CUSTOMER ? customerTabSx : inactiveTabSx,
-            tabSx,
+            tabSx(
+              reduxUser.current_role,
+              CUSTOMER,
+              differentRoleUnreadMessages > 0,
+            ),
           ]}
           label="Customer"
           {...addTestsLabel('header_customer-button')}
@@ -106,7 +119,7 @@ export const UserMenu = ({ open, handleClose, anchor, userAvatar, pages }) => {
           onClick={handleMyAccountClick}
           {...addTestsLabel('header_my-account')}
         >
-          My account
+          My Account
         </Button>
       </MenuItem>
       {matchSm &&
@@ -188,14 +201,8 @@ const menuPaperProps = {
   },
 };
 
-const editTextStyle = {
-  fontSize: '14px',
-  fontWeight: '500',
-  textTransform: 'none',
-};
-
 const popupLinkSx = role => ({
-  fontSize: '26px',
+  fontSize: '20px',
   fontWeight: '500',
   color: '#222222',
   textTransform: 'none',
@@ -224,49 +231,74 @@ const userInfoSx = {
 };
 
 const avatarSx = theme => ({
-  width: '100px',
-  height: '100px',
+  width: '80px',
+  height: '80px',
   [theme.breakpoints.down('sm')]: {
-    width: '80px',
-    height: '80px',
+    width: '70px',
+    height: '70px',
   },
 });
 
-const mainTextStyle = theme => ({
-  fontSize: '26px',
+const mainTextStyle = {
+  fontSize: '18px',
   fontWeight: '500',
   color: '#222222',
-  [theme.breakpoints.down('sm')]: {
-    fontSize: '18px',
-  },
-});
+};
 
 const secondaryTextStyle = theme => ({
-  fontSize: '18px',
+  fontSize: '16px !important',
   color: '#222222',
   [theme.breakpoints.down('sm')]: {
-    fontSize: '14px',
+    fontSize: '14px !important',
   },
 });
 
 const tabsSx = {
   display: 'flex',
+  '& .MuiTabs-flexContainer': {
+    padding: '6px 5px 0',
+  },
 };
 
-const tabSx = theme => ({
-  width: '50%',
-  color: '#222222',
-  fontSize: '16px',
-  fontWeight: 600,
-  textTransform: 'capitalize',
-  [theme.breakpoints.down('md')]: {
-    minHeight: '41px',
-    height: '41px',
-  },
-  [theme.breakpoints.down('sm')]: {
-    fontSize: '14px',
-  },
-});
+const tabSx = (currentRole, tabTarget, isBadgeVisible) => {
+  const style = {
+    position: 'relative',
+    width: '50%',
+    color: '#222222',
+    fontSize: '16px',
+    fontWeight: 600,
+    textTransform: 'capitalize',
+    overflow: 'visible',
+    [theme.breakpoints.down('md')]: {
+      minHeight: '41px',
+      height: '41px',
+    },
+    [theme.breakpoints.down('sm')]: {
+      fontSize: '14px',
+    },
+    '&::before': {
+      display: currentRole !== tabTarget && isBadgeVisible ? 'block' : 'none',
+      content: '""',
+      position: 'absolute',
+      top: '-5px',
+      width: '13px',
+      height: '13px',
+      backgroundColor:
+        tabTarget === AUDITOR
+          ? theme.palette.secondary.main
+          : theme.palette.primary.main,
+      borderRadius: '50%',
+    },
+  };
+
+  if (tabTarget === AUDITOR) {
+    style['&::before'].left = '-5px';
+  } else {
+    style['&::before'].right = '-5px';
+  }
+
+  return style;
+};
 
 const auditorTabSx = theme => ({
   backgroundColor: theme.palette.secondary.main,

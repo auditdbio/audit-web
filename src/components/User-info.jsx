@@ -9,22 +9,18 @@ import {
   Tooltip,
 } from '@mui/material';
 import GitHubIcon from '@mui/icons-material/GitHub.js';
-import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import theme from '../styles/themes.js';
 import { useNavigate } from 'react-router-dom/dist';
 import { useDispatch, useSelector } from 'react-redux';
 import Loader from './Loader.jsx';
-import { AUDITOR } from '../redux/actions/types.js';
+import { AUDITOR, CUSTOMER } from '../redux/actions/types.js';
 import TagsList from './tagsList';
 import { ASSET_URL } from '../services/urls.js';
 import MobileTagsList from './MobileTagsList/index.jsx';
 import { addTestsLabel } from '../lib/helper.js';
 import ShareProfileButton from './custom/ShareProfileButton.jsx';
-import LinkedInIcon from '@mui/icons-material/LinkedIn';
-import { Link as RouterLink } from 'react-router-dom';
 import IdentitySetting from './IdentitySetting/IdentitySetting.jsx';
 import LinkedinIcon from './icons/LinkedinIcon.jsx';
-import GitcoinIcon from './icons/GitcoinIcon.jsx';
 import XTwitterLogo from './icons/XTwitter-logo.jsx';
 import { clearUserError } from '../redux/actions/userAction.js';
 import CustomSnackbar from './custom/CustomSnackbar.jsx';
@@ -140,7 +136,11 @@ const UserInfo = ({ role }) => {
                   key={account.id}
                   sx={{ display: 'flex', alignItems: 'center', gap: '7px' }}
                 >
-                  <LinkedinIcon />
+                  <Tooltip title={account.url} placement="top">
+                    <Link href={account.url} target={'_blank'}>
+                      <LinkedinIcon />
+                    </Link>
+                  </Tooltip>
                 </Box>
               );
             } else if (account.name.toLowerCase() === 'github') {
@@ -149,18 +149,17 @@ const UserInfo = ({ role }) => {
                   key={account.id}
                   sx={{ display: 'flex', alignItems: 'center', gap: '7px' }}
                 >
-                  <GitHubIcon
-                    sx={{ width: '50px', height: '50px', padding: '4px' }}
-                  />
-                </Box>
-              );
-            } else if (account.name.toLowerCase() === 'gitcoin') {
-              return (
-                <Box
-                  key={account.id}
-                  sx={{ display: 'flex', alignItems: 'center', gap: '7px' }}
-                >
-                  <GitcoinIcon />
+                  <Tooltip title={account.url} placement="top">
+                    <Link
+                      href={account.url}
+                      sx={{ color: 'initial' }}
+                      target={'_blank'}
+                    >
+                      <GitHubIcon
+                        sx={{ width: '50px', height: '50px', padding: '4px' }}
+                      />
+                    </Link>
+                  </Tooltip>
                 </Box>
               );
             } else {
@@ -169,7 +168,15 @@ const UserInfo = ({ role }) => {
                   key={account.id}
                   sx={{ display: 'flex', alignItems: 'center', gap: '7px' }}
                 >
-                  <XTwitterLogo width={'38px'} height={'38px'} />
+                  <Tooltip title={account.url} placement="top">
+                    <Link
+                      href={account.url}
+                      sx={{ color: 'initial' }}
+                      target={'_blank'}
+                    >
+                      <XTwitterLogo width={'38px'} height={'38px'} />
+                    </Link>
+                  </Tooltip>
                 </Box>
               );
             }
@@ -184,10 +191,13 @@ const UserInfo = ({ role }) => {
             gap: '20px',
           }}
         >
-          <ShareProfileButton
-            role={role}
-            userId={role === AUDITOR ? auditor.user_id : customer.user_id}
-          />
+          {((role === AUDITOR && auditor.user_id) ||
+            (role === CUSTOMER && customer.user_id)) && (
+            <ShareProfileButton
+              role={role}
+              userId={role === AUDITOR ? auditor.user_id : customer.user_id}
+            />
+          )}
           <Box
             sx={[
               { display: 'flex', gap: '15px' },
@@ -209,7 +219,7 @@ const UserInfo = ({ role }) => {
     );
   }
 };
-//
+
 export default UserInfo;
 
 const aboutWrapper = theme => ({
@@ -237,15 +247,9 @@ const wrapper = theme => ({
   minHeight: '520px',
   display: 'flex',
   flexDirection: 'column',
-  padding: '100px 100px 60px',
+  padding: '60px 40px 40px',
   gap: '30px',
   justifyContent: 'space-between',
-  [theme.breakpoints.down('lg')]: {
-    padding: '60px 40px 40px',
-  },
-  [theme.breakpoints.down('md')]: {
-    gap: '50px',
-  },
   [theme.breakpoints.down('sm')]: {
     gap: '20px',
     padding: '20px',
@@ -336,6 +340,7 @@ const submitAuditor = theme => ({
 
 const infoWrapper = theme => ({
   display: 'flex',
+  alignItems: 'center',
   fontWeight: 500,
   color: '#434242',
   '& p': {

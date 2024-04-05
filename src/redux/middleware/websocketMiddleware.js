@@ -4,23 +4,23 @@ import {
   DISCONNECTED_WS,
   GET_NEW_AUDIT,
   GET_NEW_REQUEST,
-  GET_REQUEST,
   IN_PROGRESS,
   NEED_UPDATE,
   REQUEST_DECLINE,
   WEBSOCKET_CONNECT,
   WEBSOCKET_CONNECTED,
   WEBSOCKET_DISCONNECT,
-  // WEBSOCKET_SEND_MESSAGE,
-  // receiveMessage
 } from '../actions/types.js';
 import { w3cwebsocket as WebSocket } from 'websocket';
 import Cookies from 'js-cookie';
 import {
   receiveAuditorMessage,
   receiveCustomerMessage,
-  websocketConnect,
 } from '../actions/websocketAction.js';
+import {
+  deleteChatMessage,
+  receiveNewChatMessage,
+} from '../actions/chatActions.js';
 
 const API_URL = import.meta.env.VITE_API_WS_BASE_URL;
 
@@ -70,6 +70,14 @@ const websocketMiddleware = () => {
                 type: IN_PROGRESS,
                 payload: message.payload.AuditUpdate,
               });
+            } else if (message.kind.toLowerCase() === 'chatmessage') {
+              store.dispatch(
+                receiveNewChatMessage(message.payload.ChatMessage),
+              );
+            } else if (message.kind.toLowerCase() === 'chatdeletemessage') {
+              store.dispatch(
+                deleteChatMessage(message.payload.ChatDeleteMessage),
+              );
             } else if (message.kind.toLowerCase() === 'requestdecline') {
               store.dispatch({
                 type: REQUEST_DECLINE,

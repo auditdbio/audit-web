@@ -3,7 +3,6 @@ import { Box, Button, Grid } from '@mui/material';
 import AuditRequestCard from './Audit-request-card';
 import { useSelector } from 'react-redux';
 import { addTestsLabel } from '../lib/helper.js';
-import { CUSTOMER } from '../redux/actions/types.js';
 import { useNavigate } from 'react-router-dom/dist';
 
 const AuditRequest = () => {
@@ -19,8 +18,8 @@ const AuditRequest = () => {
       <Box sx={buttonWrapper}>
         <Button
           sx={buttonSx}
-          variant={'contained'}
-          color={'secondary'}
+          variant="contained"
+          color="secondary"
           onClick={handleNavigate}
           {...addTestsLabel('add-new-button')}
         >
@@ -41,11 +40,14 @@ const AuditRequest = () => {
 export default AuditRequest;
 
 const wrapper = theme => ({
-  padding: '58px 52px 42px',
+  padding: '20px 40px 40px',
   minHeight: '560px',
   width: '100%',
   [theme.breakpoints.down('md')]: {
-    padding: '36px 25px 45px',
+    padding: '20px 25px 40px',
+  },
+  [theme.breakpoints.down('xxs')]: {
+    padding: '20px 10px 40px',
   },
 });
 
@@ -62,16 +64,16 @@ const gridItemStyle = theme => ({
 const buttonWrapper = theme => ({
   display: 'flex',
   justifyContent: 'center',
-  mb: '46px',
+  mb: '30px',
   [theme.breakpoints.down('sm')]: {
-    mb: '28px',
+    mb: '20px',
   },
 });
 
 const buttonSx = theme => ({
   padding: '9px 35px',
   borderRadius: '10px',
-  fontSize: '18px',
+  fontSize: '16px',
   fontWeight: 600,
   lineHeight: '30px',
   textTransform: 'none',
@@ -82,6 +84,7 @@ const buttonSx = theme => ({
     height: '40px',
   },
   [theme.breakpoints.down('xs')]: {
+    width: '130px',
     fontSize: '12px',
   },
 });

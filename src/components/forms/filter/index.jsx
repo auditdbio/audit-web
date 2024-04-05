@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
-import { Formik, Form } from 'formik';
+import React, { useState, useEffect } from 'react';
+import { Formik, Form, Field } from 'formik';
+import { TextField } from 'formik-mui';
 import {
   Box,
   Button,
@@ -9,29 +10,22 @@ import {
   FormGroup,
   IconButton,
   InputAdornment,
-  Modal,
   Radio,
   Typography,
-  useMediaQuery,
 } from '@mui/material';
-import { Field } from 'formik';
-import { TextField } from 'formik-mui';
-import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
-import TagsField from '../tags-field/tags-field.jsx';
-import TagsArray from '../../tagsArray/index.jsx';
-import { ArrowBack } from '@mui/icons-material';
+import { ArrowBack, SearchOutlined } from '@mui/icons-material';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import dayjs from 'dayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers';
+import dayjs from 'dayjs';
+import TagsField from '../tags-field/tags-field.jsx';
+import TagsArray from '../../tagsArray/index.jsx';
 import theme from '../../../styles/themes.js';
 import { SliderRange } from '../salary-slider/slider-range.jsx';
 import { PROJECTS } from '../../../redux/actions/types.js';
-import { useEffect } from 'react';
 import { addTestsLabel } from '../../../lib/helper.js';
 
 const Filter = ({ target, submit, initial }) => {
-  const matchXs = useMediaQuery(theme.breakpoints.down('xs'));
   const [isOpen, setIsOpen] = useState(false);
 
   const mainColor = target === PROJECTS ? 'secondary' : 'primary';
@@ -60,9 +54,9 @@ const Filter = ({ target, submit, initial }) => {
               <Box sx={headerWrapper}>
                 <Field
                   component={TextField}
-                  name={'search'}
+                  name="search"
                   disabled={false}
-                  size={'small'}
+                  size="small"
                   label="Search"
                   inputProps={{ ...addTestsLabel('search-input') }}
                   InputProps={{
@@ -70,21 +64,21 @@ const Filter = ({ target, submit, initial }) => {
                       <InputAdornment position="end">
                         <IconButton
                           edge="end"
-                          type={'submit'}
+                          type="submit"
                           color="disabled"
                           aria-label="Search"
                           {...addTestsLabel('search-button')}
                         >
-                          <SearchOutlinedIcon />
+                          <SearchOutlined />
                         </IconButton>
                       </InputAdornment>
                     ),
                   }}
                 />
                 <Button
-                  variant={'contained'}
-                  color={'secondary'}
-                  type={'button'}
+                  variant="contained"
+                  color="secondary"
+                  type="button"
                   sx={filterButton}
                   onClick={() => setIsOpen(!isOpen)}
                   {...addTestsLabel('filters-button')}
@@ -92,6 +86,7 @@ const Filter = ({ target, submit, initial }) => {
                   All filters
                 </Button>
               </Box>
+
               {isOpen && (
                 <Box sx={modalBg}>
                   <ClickAwayListener onClickAway={() => setIsOpen(false)}>
@@ -103,20 +98,16 @@ const Filter = ({ target, submit, initial }) => {
                       >
                         <ArrowBack color={mainColor} />
                       </Button>
-                      <TagsField
-                        name="tags"
-                        label="Tags"
-                        size={matchXs ? 'small' : 'medium'}
-                      />
-                      <TagsArray name={'tags'} />
+                      <Box>
+                        <TagsField name="tags" label="Tags" size="small" />
+                        <TagsArray name="tags" />
+                      </Box>
                       <Field
                         name="price"
                         value={values.price}
-                        label={'Price per line of code'}
+                        label="Price per line of code"
                         component={SliderRange}
-                        sx={{
-                          color: target === PROJECTS ? '#52176D' : '#FF9900',
-                        }}
+                        sx={priceSlider(target)}
                         min={0}
                         max={200}
                         onChange={(e, newValue) => {
@@ -140,7 +131,7 @@ const Filter = ({ target, submit, initial }) => {
                           <LocalizationProvider dateAdapter={AdapterDayjs}>
                             <Field
                               component={DatePicker}
-                              name={'dateFrom'}
+                              name="dateFrom"
                               defaultValue={new Date()}
                               value={dayjs(values.dateFrom)}
                               sx={dateStyle}
@@ -152,14 +143,14 @@ const Filter = ({ target, submit, initial }) => {
                               disablePast
                             />
                             <Typography
-                              variant={'caption'}
+                              variant="caption"
                               sx={{ fontSize: '16px' }}
                             >
                               -
                             </Typography>
                             <Field
                               component={DatePicker}
-                              name={'dateTo'}
+                              name="dateTo"
                               value={dayjs(values.dateTo)}
                               sx={dateStyle}
                               onChange={e => {
@@ -194,7 +185,7 @@ const Filter = ({ target, submit, initial }) => {
                         <Typography>Sort by</Typography>
                         <FormGroup>
                           <FormControlLabel
-                            name={'sort'}
+                            name="sort"
                             control={
                               // <Checkbox
                               //   onChange={(e) =>
@@ -208,7 +199,7 @@ const Filter = ({ target, submit, initial }) => {
                                 onChange={e =>
                                   setFieldValue('sort', e.target.value)
                                 }
-                                value={'-1'}
+                                value="-1"
                                 color={mainColor}
                                 checked={values.sort === '-1'}
                                 inputProps={{
@@ -219,13 +210,13 @@ const Filter = ({ target, submit, initial }) => {
                             label="Price: High to Low"
                           />
                           <FormControlLabel
-                            name={'sort'}
+                            name="sort"
                             control={
                               <Radio
                                 onChange={e =>
                                   setFieldValue('sort', e.target.value)
                                 }
-                                value={'1'}
+                                value="1"
                                 sx={{
                                   color: 'orange',
                                   '&.Mui-checked': {
@@ -245,8 +236,8 @@ const Filter = ({ target, submit, initial }) => {
                       </Box>
                       <Button
                         color={mainColor}
-                        type={'submit'}
-                        variant={'contained'}
+                        type="submit"
+                        variant="contained"
                         sx={submitButton}
                         {...addTestsLabel('find-button')}
                       >
@@ -267,7 +258,7 @@ const Filter = ({ target, submit, initial }) => {
 
 export default Filter;
 
-const modalBg = theme => ({
+const modalBg = {
   position: 'fixed',
   top: '0',
   left: '0',
@@ -275,7 +266,7 @@ const modalBg = theme => ({
   height: '100%',
   backgroundColor: 'rgba(0, 0, 0, 0.5)',
   zIndex: '1000',
-});
+};
 
 const modalWrapper = theme => ({
   top: '50%',
@@ -286,8 +277,9 @@ const modalWrapper = theme => ({
   width: '700px',
   overflow: 'auto',
   height: '90%',
+  maxHeight: '620px',
   transform: 'translate(-50%, -50%)',
-  padding: '70px 110px',
+  padding: '40px 70px 20px',
   border: '1.42857px solid #D9D9D9',
   boxShadow:
     '0px 71.4286px 57.1429px rgba(0, 0, 0, 0.07), ' +
@@ -299,27 +291,24 @@ const modalWrapper = theme => ({
   borderRadius: '10.7143px',
   display: 'flex',
   flexDirection: 'column',
-  gap: '30px',
+  gap: '20px',
   '& p': {
     fontWeight: '500',
     fontSize: '14px',
     color: '#B2B3B3',
-    marginBottom: '34px',
+    marginBottom: 0,
   },
   '& .field-wrapper': {
     gap: 0,
   },
   [theme.breakpoints.down('md')]: {
     width: '500px',
-    padding: '60px 80px 20px',
-    gap: '20px',
+    padding: '40px 70px 20px',
   },
   [theme.breakpoints.down('xs')]: {
     width: '350px',
     padding: '40px 30px 20px',
-    gap: '10px',
     '& p': {
-      marginBottom: '15px',
       fontSize: '12px',
     },
     '& .salary-slider': {
@@ -346,21 +335,25 @@ const modalWrapper = theme => ({
 });
 
 const backButtonSx = theme => ({
+  position: 'absolute',
+  top: '10px',
+  left: '10px',
   width: '40px',
   minWidth: 'unset',
-  marginLeft: '-100px',
-  marginTop: '-60px',
-  [theme.breakpoints.down('md')]: {
-    marginLeft: '-70px',
-    marginTop: '-50px',
-  },
   [theme.breakpoints.down('xs')]: {
-    marginLeft: '-30px',
-    marginTop: '-40px',
+    top: '5px',
+    left: '5px',
     '& svg': {
       width: '16px',
     },
   },
+});
+
+const priceSlider = target => ({
+  color:
+    target === PROJECTS
+      ? theme.palette.secondary.main
+      : theme.palette.primary.main,
 });
 
 const sortWrapper = theme => ({
@@ -377,19 +370,17 @@ const sortWrapper = theme => ({
 
 const submitButton = theme => ({
   textTransform: 'unset',
-  fontSize: '18px',
+  fontSize: '14px',
   width: '438px',
-  padding: '24px 0',
-  margin: '25px auto 0',
+  padding: '11px 0',
+  margin: '5px auto 0',
   fontWeight: 600,
   [theme.breakpoints.down('md')]: {
     width: '310px',
-    padding: '15px 0',
   },
   [theme.breakpoints.down('xs')]: {
     width: '250px',
-    padding: '12px 0',
-    fontSize: '14px',
+    fontSize: '12px',
   },
 });
 
@@ -397,16 +388,8 @@ const headerWrapper = theme => ({
   display: 'flex',
   alignItems: 'center',
   gap: '22px',
-  [theme.breakpoints.down('sm')]: {
-    '& .MuiInputBase-root': {
-      height: '50px',
-    },
-  },
   [theme.breakpoints.down('xs')]: {
     gap: '14px',
-    '& .MuiInputBase-root': {
-      height: 'unset',
-    },
   },
 });
 
@@ -446,12 +429,15 @@ const dateStyle = {
 
 const filterButton = theme => ({
   fontSize: '12px',
+  lineHeight: 1.2,
   padding: '14px 0',
   width: '160px',
   fontWeight: 600,
   textTransform: 'unset',
+  [theme.breakpoints.down('md')]: {
+    lineHeight: 1,
+  },
   [theme.breakpoints.down('xs')]: {
-    padding: '8px',
     width: '110px',
   },
 });

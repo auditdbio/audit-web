@@ -5,11 +5,9 @@ import { Box, Button, Grid, Typography } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack.js';
 import { useNavigate } from 'react-router-dom/dist';
 import { useDispatch, useSelector } from 'react-redux';
-import ProjectCard from '../components/Project-card.jsx';
 import MyProjectListCard from '../components/My-project-list-card.jsx';
 import AuditorModal from '../components/AuditorModal.jsx';
 import { useParams, useSearchParams } from 'react-router-dom';
-import Loader from '../components/Loader.jsx';
 import { createRequest } from '../redux/actions/auditAction.js';
 import { getAuditors } from '../redux/actions/auditorAction.js';
 import { addTestsLabel } from '../lib/helper.js';
@@ -79,7 +77,7 @@ const MyProjects = () => {
           onClose={() => {
             setErrorMessage(null);
           }}
-          severity={'error'}
+          severity="error"
           text={errorMessage}
         />
         <Box
@@ -97,9 +95,7 @@ const MyProjects = () => {
           >
             <ArrowBackIcon />
           </Button>
-          <Typography variant={'h6'}>
-            Choose project you want to audit
-          </Typography>
+          <Typography variant="h6">Choose project you want to audit</Typography>
         </Box>
         <Grid container spacing={2}>
           {myProjects?.map(project => (
@@ -114,7 +110,7 @@ const MyProjects = () => {
           ))}
         </Grid>
         <Button
-          variant={'contained'}
+          variant="contained"
           sx={submitBtn}
           onClick={handleOpenView}
           disabled={chosen.length === 0 || !auditor}
@@ -136,7 +132,6 @@ const MyProjects = () => {
     </Layout>
   );
 };
-// };
 
 export default MyProjects;
 
@@ -151,11 +146,11 @@ const gridItemStyle = theme => ({
 });
 
 const wrapper = theme => ({
-  padding: '48px 74px 80px',
+  padding: '40px 74px 80px',
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'center',
-  gap: '80px',
+  gap: '40px',
   [theme.breakpoints.down('md')]: {
     padding: '38px 44px 60px',
   },
@@ -171,14 +166,13 @@ const wrapper = theme => ({
 const submitBtn = theme => ({
   textTransform: 'none',
   margin: 'auto 0 0',
-  width: '406px',
-  padding: '22px 0',
+  width: '350px',
+  padding: '10px 0',
   fontWeight: 600,
-  fontSize: '18px',
+  fontSize: '16px',
   borderRadius: '10px',
   [theme.breakpoints.down('md')]: {
-    width: '266px',
-    padding: '11px 0',
+    width: '250px',
     fontSize: '14px',
   },
   [theme.breakpoints.down('xs')]: {

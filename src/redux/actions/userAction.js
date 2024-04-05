@@ -24,8 +24,12 @@ import {
   CHANGE_ACCOUNT_VISIBILITY,
   ERROR_ADD_ACCOUNT,
   ERROR_IDENTITY,
+  DELETE_LINKED_ACCOUNT,
+  GET_PROFILE,
+  GET_PUBLIC_PROFILE,
   GET_MY_PROFILE,
 } from './types.js';
+import { savePublicReport } from './auditAction.js';
 
 const API_URL = import.meta.env.VITE_API_BASE_URL;
 
@@ -71,7 +75,7 @@ export const signIn = values => {
           { is_new: false },
           { headers: { Authorization: `Bearer ${data.token}` } },
         );
-        //
+
         if (data.user?.is_new) {
           history.push({ pathname: `/edit-profile` }, { some: true });
         } else {
@@ -92,6 +96,31 @@ export const clearUserSuccess = () => {
   return { type: CLEAR_SUCCESS };
 };
 
+export const getMyProfile = id => {
+  return dispatch => {
+    axios
+      .get(`${API_URL}/user/${id}`, {
+        headers: {
+          Authorization: 'Bearer ' + Cookies.get('token'),
+          'Content-Type': 'application/json',
+        },
+      })
+      .then(({ data }) => {
+        dispatch({ type: GET_PROFILE, payload: data });
+        localStorage.setItem('user', JSON.stringify(data));
+      });
+  };
+};
+
+export const getPublicProfile = id => {
+  return dispatch => {
+    axios.get(`${API_URL}/user/${id}`).then(({ data }) => {
+      console.log(data);
+      dispatch({ type: GET_PUBLIC_PROFILE, payload: data });
+    });
+  };
+};
+
 export const signUp = values => {
   return dispatch => {
     axios
@@ -104,6 +133,22 @@ export const signUp = values => {
       })
       .catch(({ response }) => {
         dispatch({ type: USER_IS_ALREADY_EXIST });
+      });
+  };
+};
+
+export const handleDeleteLinkedAccount = (user_id, account_id) => {
+  return dispatch => {
+    axios
+      .delete(`${API_URL}/user/${user_id}/linked_account/${account_id}`, {
+        headers: {
+          Authorization: 'Bearer ' + Cookies.get('token'),
+          'Content-Type': 'application/json',
+        },
+      })
+      .then(({ data }) => {
+        dispatch(getMyProfile(user_id));
+        dispatch({ type: DELETE_LINKED_ACCOUNT, payload: data });
       });
   };
 };
@@ -357,7 +402,7 @@ export const changeRolePublicCustomer = (value, id, currentRole) => {
   };
 };
 
-export const changeRolePublicAuditor = (value, id, currentRole) => {
+export const changeRolePublicAuditor = (value, id, data, withData) => {
   const token = Cookies.get('token');
   return dispatch => {
     axios
@@ -386,6 +431,17 @@ export const changeRolePublicAuditor = (value, id, currentRole) => {
                 type: CHANGE_ROLE_HAVE_PROFILE_AUDITOR,
                 payload: user,
               });
+              if (withData) {
+                const newData = {
+                  auditor_id: auditor.user_id,
+                  auditor_first_name: auditor.first_name,
+                  auditor_last_name: auditor.last_name,
+                  auditor_contacts: auditor.contacts,
+                  avatar: auditor.avatar,
+                  ...data,
+                };
+                dispatch(savePublicReport(newData));
+              }
             } else {
               dispatch({
                 type: CHANGE_ROLE_DONT_HAVE_PROFILE_AUDITOR,

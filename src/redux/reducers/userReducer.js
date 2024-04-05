@@ -20,6 +20,8 @@ import {
   CHANGE_ACCOUNT_VISIBILITY,
   ERROR_ADD_ACCOUNT,
   ERROR_IDENTITY,
+  GET_PROFILE,
+  GET_PUBLIC_PROFILE,
   GET_MY_PROFILE,
 } from '../actions/types.js';
 
@@ -29,6 +31,7 @@ const initialState = {
   user: JSON.parse(localStorage.getItem('user')) || {},
   error: null,
   success: null,
+  publicUser: null,
 };
 export const userReducer = (state = initialState, action) => {
   switch (action.type) {
@@ -52,6 +55,16 @@ export const userReducer = (state = initialState, action) => {
           ...state.user,
           linked_accounts: [...state.user.linked_accounts, action.payload],
         },
+      };
+    case GET_PROFILE:
+      return {
+        ...state,
+        user: action.payload,
+      };
+    case GET_PUBLIC_PROFILE:
+      return {
+        ...state,
+        publicUser: action.payload,
       };
     case CHANGE_ACCOUNT_VISIBILITY:
       return {
