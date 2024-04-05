@@ -84,6 +84,7 @@ export const githubReducer = (state = initialState, action) => {
         ...state,
         branch: action.payload,
         commitPage: 1,
+        sha: '',
       };
     case CLEAR_COMMITINFO:
       return {

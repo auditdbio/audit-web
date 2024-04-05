@@ -1,30 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { Avatar, Box, Modal, Typography } from '@mui/material';
-import CommitModal from './CommitModal.jsx';
 import { useDispatch, useSelector } from 'react-redux';
-import { clearCommit } from '../../redux/actions/githubAction.js';
-import { useField } from 'formik';
+import { GET_SHA } from '../../redux/actions/types.js';
 
 const CommitItem = ({ commit, repository, handleCloseModal }) => {
-  const { commitInfo, sha } = useSelector(state => state.github);
-
-  const [open, setOpen] = useState(
-    sha === commit.sha || commitInfo.sha === commit.sha || false,
-  );
   const dispatch = useDispatch();
-
   const handleOpenCommit = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    handleCloseModal();
-    setOpen(false);
-  };
-
-  const handleCloseCommit = () => {
-    dispatch(clearCommit());
-    setOpen(false);
+    dispatch({ type: GET_SHA, payload: commit.sha });
   };
 
   return (
@@ -40,14 +22,7 @@ const CommitItem = ({ commit, repository, handleCloseModal }) => {
       >
         <Box>
           <Box>
-            <Typography
-              sx={{
-                fontSize: '16px',
-                fontWeight: 600,
-              }}
-            >
-              {commit.commit.message}
-            </Typography>
+            <Typography sx={titleSx}>{commit.commit.message}</Typography>
           </Box>
           <Box
             sx={{
@@ -69,24 +44,20 @@ const CommitItem = ({ commit, repository, handleCloseModal }) => {
         </Box>
         <Typography variant={'caption'}>{commit.sha.slice(0, 7)}</Typography>
       </Box>
-      <Modal
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="modal-modal"
-        aria-describedby="modal-modal"
-      >
-        <CommitModal
-          sha={commit.sha}
-          handleCloseCommit={handleCloseCommit}
-          repository={repository}
-          onClose={handleClose}
-        />
-      </Modal>
     </>
   );
 };
 
 export default CommitItem;
+
+const titleSx = theme => ({
+  fontSize: '14px!important',
+  fontWeight: 600,
+  [theme.breakpoints.down('xs')]: {
+    fontSize: '12px!important',
+    overflowWrap: 'anywhere',
+  },
+});
 
 const authorTitle = theme => ({
   fontSize: '13px',

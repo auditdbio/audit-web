@@ -1,15 +1,26 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Box, Button, Modal, Typography } from '@mui/material';
+import {
+  Box,
+  Button,
+  Checkbox,
+  Divider,
+  Modal,
+  Typography,
+  useMediaQuery,
+} from '@mui/material';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import { useField } from 'formik';
 import CustomSnackbar from '../custom/CustomSnackbar.jsx';
 import Loader from '../Loader.jsx';
 import { useDispatch, useSelector } from 'react-redux';
-import { getCommitData, getCommits } from '../../redux/actions/githubAction.js';
+import { getCommitData } from '../../redux/actions/githubAction.js';
 import GithubTree from './GithubTree.jsx';
 import { createBlopUrl } from '../../services/urls.js';
 import GithubBranchAutocomplete from '../GithubBranchAutocomplete.jsx';
 import ModalOfAlert from './ModalOfAlert.jsx';
+import dayjs from 'dayjs';
+import GitHubIcon from '@mui/icons-material/GitHub.js';
+
 const reg = /[a-z]/i;
 const CommitModal = ({
   sha,
@@ -17,23 +28,24 @@ const CommitModal = ({
   repository,
   handleCloseCommit,
   setOpen,
+  handleSwitchRep,
 }) => {
   const [field, _, fieldHelper] = useField('scope');
-  const [fieldId] = useField('id');
   const data = useSelector(state => state.github.commit);
   const commit = useSelector(state => state.github.commitInfo);
   const [modalOpen, setModalOpen] = useState(false);
   const [selected, setSelected] = useState([]);
   const [deletedFromField, setDeletedFromField] = useState([]);
   const dispatch = useDispatch();
-  const [filterGithub, setFilterGithub] = useState([]);
   const [newObj, setNewObj] = useState(null);
   const [checkLength, setCheckLength] = useState(false);
+  const { filterConfig } = useSelector(s => s.filter);
   const { defaultBranch, branch: branchState } = useSelector(
     state => state.github,
   );
   const [modalOpenAlert, setModalOpenAlert] = useState(false);
-  const [branch, setBranch] = useState(branchState || defaultBranch);
+  const sxMedia = useMediaQuery(theme => theme.breakpoints.down('xs'));
+  const smMedia = useMediaQuery(theme => theme.breakpoints.down('sm'));
 
   useEffect(() => {
     // if (!commit.sha) {
@@ -45,6 +57,22 @@ const CommitModal = ({
     const regex = /\/blob\/[0-9a-f]{40}\//;
     return links.map(link => link.replace(regex, `/blob/${newCommitSha}/`));
   }
+
+  const endsWithAny = (str, suffixes) => {
+    return suffixes.some(suffix => {
+      if (suffix.startsWith('*') && suffix.endsWith('*')) {
+        return str.includes(suffix.slice(1, -1));
+      } else if (suffix.startsWith('*')) {
+        return str.endsWith(suffix.slice(1));
+      } else if (suffix.endsWith('*')) {
+        return str.endsWith(suffix.slice(0, -1));
+      } else if (!str.includes('.')) {
+        return true;
+      } else {
+        return str.endsWith(suffix);
+      }
+    });
+  };
 
   useEffect(() => {
     if (sha && field.value.length) {
@@ -97,6 +125,7 @@ const CommitModal = ({
       setNewObj({
         ...data,
         tree: transformedData,
+        type: 'tree',
       });
     }
   }, [data]);
@@ -153,7 +182,7 @@ const CommitModal = ({
       ...selected,
     ]);
     setSelected([]);
-    // onClose();
+    onClose();
   };
 
   const handleReset = () => {
@@ -168,10 +197,6 @@ const CommitModal = ({
       setSelected([]);
       onClose();
     }
-  };
-
-  const handleChangeCommit = () => {
-    handleCloseCommit();
   };
 
   const checkAll = useMemo(() => {
@@ -221,9 +246,52 @@ const CommitModal = ({
     onClose();
   };
 
-  const handleChangeBranch = () => {
-    dispatch(getCommits(repository, branch));
-    setOpen(false);
+  const isAllChecked = useMemo(() => {
+    return data?.tree
+      ?.filter(
+        el => !el.path.startsWith('.') && !endsWithAny(el.path, filterConfig),
+      )
+      .every(childNode => {
+        const blobUrl = createBlopUrl(repository, sha, `${childNode.path}`);
+        return (
+          selected.includes(blobUrl) ||
+          (field.value.includes(blobUrl) && !deletedFromField.includes(blobUrl))
+        );
+      });
+  }, [selected, field.value, deletedFromField, data]);
+
+  const isIndeterminate = useMemo(() => {
+    return data?.tree
+      ?.filter(
+        el => !el.path.startsWith('.') && !endsWithAny(el.path, filterConfig),
+      )
+      .some(childNode => {
+        const blobUrl = createBlopUrl(repository, sha, `${childNode.path}`);
+        return (
+          selected.includes(blobUrl) ||
+          (field.value.includes(blobUrl) && !deletedFromField.includes(blobUrl))
+        );
+      });
+  }, [selected, field.value, deletedFromField, data]);
+
+  const selectAll = node => {
+    if (!isAllChecked) {
+      node.tree
+        .filter(el => !el.path.startsWith('.'))
+        .map(el =>
+          !endsWithAny(el.path, filterConfig)
+            ? handleAddRemove({ ...el, type: 'blob' }, true)
+            : null,
+        );
+    } else {
+      node.tree
+        .filter(el => !el.path.startsWith('.'))
+        .map(el =>
+          !endsWithAny(el.path, filterConfig)
+            ? handleRemoveAll({ ...el, type: 'blob' })
+            : null,
+        );
+    }
   };
 
   if (data && commit && data.sha && newObj?.tree.length) {
@@ -245,27 +313,13 @@ const CommitModal = ({
           sx={{
             backgroundColor: 'white',
             height: '100%',
-            padding: '45px 24px 24px',
-            borderRadius: '8px',
+            paddingTop: '30px',
             position: 'relative',
             display: 'flex',
             flexDirection: 'column',
           }}
         >
-          <Box
-            sx={{
-              position: 'absolute',
-              top: '10px',
-              left: '10px',
-              textTransform: 'unset',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '5px',
-              '& button': {
-                minWidth: '40px',
-              },
-            }}
-          >
+          <Box sx={closeSx}>
             <Button onClick={closeModal}>
               <CloseRoundedIcon />
             </Button>
@@ -298,56 +352,101 @@ const CommitModal = ({
                 marginY: '15px',
               }}
             >
+              <Box
+                sx={{ displayL: 'flex', flexDirection: 'column', gap: '15px' }}
+              >
+                {!sxMedia && (
+                  <Typography variant={'body1'} sx={titleSx}>
+                    {commit?.commit?.message}
+                  </Typography>
+                )}
+                <Typography variant={'body1'} color={'secondary'} sx={titleSx}>
+                  {commit?.commit?.author.name}
+                </Typography>
+                <Typography
+                  variant={'body1'}
+                  color={'primary'}
+                  sx={{ fontWeight: 500, fontSize: '12px!important' }}
+                >
+                  {dayjs(commit?.committer?.date).format('MMM DD, YYYY')}
+                </Typography>
+              </Box>
               <Typography
                 variant={'body1'}
-                sx={{ fontWeight: 500, overflowWrap: 'anywhere' }}
+                sx={{ fontWeight: 500, fontSize: '18px!important' }}
               >
-                {commit?.commit?.message}
-              </Typography>
-              <Typography variant={'body1'} sx={{ fontWeight: 500 }}>
-                {data?.sha.slice(0, 7)}
+                {!smMedia ? data?.sha : data?.sha.slice(0, 7)}
               </Typography>
             </Box>
-            <GithubBranchAutocomplete repository={repository} needSave={true} />
             <Box sx={actionWrapper}>
+              <GithubBranchAutocomplete
+                handleReset={handleSwitchRep}
+                repository={repository}
+                needSave={true}
+              />
               <Box sx={{ display: 'flex', fontSize: '14px', gap: '15px' }}>
-                <Button variant={'contained'} onClick={handleSave}>
+                <Button
+                  disabled={!selected.length && !deletedFromField.length}
+                  variant={'contained'}
+                  onClick={handleSave}
+                >
                   Submit
                 </Button>
-                {/*<Button*/}
-                {/*  variant={'contained'}*/}
-                {/*  onClick={handleReset}*/}
-                {/*  color={'secondary'}*/}
-                {/*>*/}
-                {/*  Reset*/}
-                {/*</Button>*/}
               </Box>
             </Box>
           </Box>
           {newObj?.tree.length ? (
-            <Box
-              sx={{
-                display: 'flex',
-                height: '100%',
-                overflowY: 'auto',
-                flexDirection: 'column',
-                gap: '10px',
-                marginRight: '-15px',
-                paddingRight: '10px',
-                overflowX: 'hidden',
-              }}
-            >
-              <GithubTree
-                data={newObj}
-                selected={selected}
-                filterGithub={filterGithub}
-                deletedFromField={deletedFromField}
-                setSelected={setSelected}
-                handleAddRemove={handleAddRemove}
-                handleSelectAll={handleSelectAll}
-                handleRemoveAll={handleRemoveAll}
-              />
-            </Box>
+            <>
+              <Box
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '5px',
+                  mb: '5px',
+                  paddingBottom: '5px',
+                  borderBottom: '1px solid #dddada',
+                }}
+              >
+                <Checkbox
+                  checked={isAllChecked}
+                  indeterminate={isIndeterminate && !isAllChecked}
+                  color={'primary'}
+                  sx={{ padding: 0 }}
+                  onChange={() => selectAll(data)}
+                />
+                <GitHubIcon />
+                <Typography
+                  sx={{
+                    cursor: 'pointer',
+                    fontWeight: 500,
+                    fontSize: '14px!important',
+                  }}
+                >
+                  {repository}
+                </Typography>
+              </Box>
+              <Box
+                sx={{
+                  display: 'flex',
+                  height: '100%',
+                  overflow: 'auto',
+                  flexDirection: 'column',
+                  gap: '10px',
+                  marginRight: '-15px',
+                  paddingRight: '10px',
+                }}
+              >
+                <GithubTree
+                  data={newObj}
+                  selected={selected}
+                  deletedFromField={deletedFromField}
+                  setSelected={setSelected}
+                  handleAddRemove={handleAddRemove}
+                  handleSelectAll={handleSelectAll}
+                  handleRemoveAll={handleRemoveAll}
+                />
+              </Box>
+            </>
           ) : (
             <Box
               sx={{
@@ -408,6 +507,28 @@ const CommitModal = ({
 
 export default CommitModal;
 
+const closeSx = theme => ({
+  position: 'absolute',
+  top: '5px',
+  left: '-25px',
+  textTransform: 'unset',
+  display: 'flex',
+  alignItems: 'center',
+  gap: '5px',
+  '& button': {
+    minWidth: '40px',
+  },
+  [theme.breakpoints.down('sm')]: {
+    left: '-15px',
+  },
+});
+
+const titleSx = theme => ({
+  ontWeight: 500,
+  overflowWrap: 'anywhere',
+  fontSize: '14px!important',
+});
+
 const alertModalSx = theme => ({
   position: 'absolute',
   top: '50%',
@@ -423,7 +544,11 @@ const alertModalSx = theme => ({
 const actionWrapper = theme => ({
   marginY: '15px',
   display: 'flex',
-  justifyContent: 'space-between',
+  gap: '15px',
+  '& button': {
+    fontSize: '14px!important',
+    textTransform: 'unset',
+  },
   [theme.breakpoints.down('xs')]: {
     flexDirection: 'column',
     gap: '10px',
@@ -431,17 +556,17 @@ const actionWrapper = theme => ({
 });
 
 const modalSx = theme => ({
-  position: 'absolute',
-  zIndex: 999,
-  top: '50%',
-  left: '50%',
-  right: '50%',
-  bottom: '50%',
-  transform: 'translate(-50%, -50%)',
+  // position: 'absolute',
+  // zIndex: 999,
+  // top: '50%',
+  // left: '50%',
+  // right: '50%',
+  // bottom: '50%',
+  // transform: 'translate(-50%, -50%)',
   width: '100%',
   height: '100%',
-  padding: 4,
-  [theme.breakpoints.down('xs')]: {
-    padding: 1.5,
-  },
+  // padding: 4,
+  // [theme.breakpoints.down('xs')]: {
+  //   padding: 1.5,
+  // },
 });

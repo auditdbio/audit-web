@@ -40,6 +40,9 @@ import {
   PREV_PAGE,
 } from '../../redux/actions/types.js';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import CommitModal from './CommitModal.jsx';
+import CommitsList from './CommitsList.jsx';
+import Loader from '../Loader.jsx';
 
 const GITHUB_ID = import.meta.env.VITE_GITHUB_CLIENT_ID;
 const BASE_URL = import.meta.env.VITE_BASE_URL;
@@ -55,6 +58,8 @@ const GithubSelection = ({ project }) => {
     commits,
     myOrganizations,
     myRepositories,
+    sha,
+    repoOwner,
     commitInfo,
     commitPage: page,
   } = useSelector(state => state.github);
@@ -78,7 +83,10 @@ const GithubSelection = ({ project }) => {
 
         return `${owner}/${repo}`;
       }
-      setRepository(parseGitHubUrl(getRepoUrl));
+      const validUrl = parseGitHubUrl(getRepoUrl);
+      if (getRepoUrl.includes('github.com/')) {
+        setRepository(validUrl);
+      }
     }
   }, []);
 
@@ -131,27 +139,6 @@ const GithubSelection = ({ project }) => {
     setIsOpen(false);
   };
 
-  const newCommits = useMemo(() => {
-    const commitsByDate = {};
-
-    commits.forEach(commit => {
-      const commitDate = commit.commit.author.date.split('T')[0];
-
-      if (!commitsByDate[commitDate]) {
-        commitsByDate[commitDate] = [];
-      }
-
-      commitsByDate[commitDate].push({
-        ...commit,
-      });
-    });
-
-    return Object.keys(commitsByDate).map(date => ({
-      date,
-      commits: commitsByDate[date],
-    }));
-  }, [commits]);
-
   const handleReset = () => {
     setRepository(null);
     setUrlRepo('');
@@ -176,6 +163,10 @@ const GithubSelection = ({ project }) => {
     };
   }, []);
 
+  const handleCloseCommit = () => {
+    dispatch(clearCommit());
+  };
+
   return (
     <Box sx={wrapper}>
       <Modal
@@ -185,190 +176,90 @@ const GithubSelection = ({ project }) => {
         aria-describedby="modal-modal-description"
       >
         <Box sx={modalSx}>
-          {!repository ? (
-            <Box
-              sx={{
-                display: 'flex',
-                flexDirection: 'column',
-                height: '100%',
-              }}
-            >
-              <Button
-                sx={{
-                  marginLeft: '-15px',
-                  minWidth: '34px',
-                  marginBottom: '5px',
-                  alignSelf: 'flex-start',
-                }}
-                onClick={handleClose}
-              >
-                <CloseRoundedIcon />
-              </Button>
-              <Box sx={projectUrlWrapper}>
-                <CustomSnackbar
-                  autoHideDuration={3000}
-                  open={!!error}
-                  onClose={() => {
-                    setError('');
+          {!sha && (
+            <Box sx={{ height: '100%' }}>
+              {!repository ? (
+                <Box
+                  sx={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    height: '100%',
                   }}
-                  severity={'error'}
-                  text={error}
-                />
-                <Field
-                  component={TextField}
-                  placeholder={'Github repository url'}
-                  fullWidth={true}
-                  name={'tag-field'}
-                  disabled={false}
-                  label={'Github repository url'}
-                  size={'small'}
-                  value={urlRepo}
-                  onKeyDown={e => {
-                    if (e.key === 'Enter') {
-                      handleAddProject();
-                    }
-                  }}
-                  onChange={e => setUrlRepo(e.target.value)}
-                  sx={fieldSx}
-                  inputProps={{ ...addTestsLabel('project-input') }}
-                />
-                <Button
-                  onClick={handleAddProject}
-                  variant={'contained'}
-                  sx={btnSx}
                 >
-                  Submit
-                </Button>
-              </Box>
-              {githubData?.id && !orgs.message ? (
-                <GithubOwnRepositories
-                  setRepository={handleOpenOwnRepo}
-                  myRepositories={myRepositories}
-                  myOrganizations={myOrganizations}
-                />
+                  <Button
+                    sx={{
+                      marginLeft: '-15px',
+                      minWidth: '34px',
+                      marginBottom: '5px',
+                      alignSelf: 'flex-start',
+                    }}
+                    onClick={handleClose}
+                  >
+                    <CloseRoundedIcon />
+                  </Button>
+                  <Box sx={projectUrlWrapper}>
+                    <CustomSnackbar
+                      autoHideDuration={3000}
+                      open={!!error}
+                      onClose={() => {
+                        setError('');
+                      }}
+                      severity={'error'}
+                      text={error}
+                    />
+                    <Field
+                      component={TextField}
+                      placeholder={'Github repository url'}
+                      fullWidth={true}
+                      name={'tag-field'}
+                      disabled={false}
+                      label={'Github repository url'}
+                      size={'small'}
+                      value={urlRepo}
+                      onKeyDown={e => {
+                        if (e.key === 'Enter') {
+                          handleAddProject();
+                        }
+                      }}
+                      onChange={e => setUrlRepo(e.target.value)}
+                      sx={fieldSx}
+                      inputProps={{ ...addTestsLabel('project-input') }}
+                    />
+                    <Button
+                      onClick={handleAddProject}
+                      variant={'contained'}
+                      sx={btnSx}
+                    >
+                      Submit
+                    </Button>
+                  </Box>
+                  {githubData?.id && !orgs.message ? (
+                    <GithubOwnRepositories
+                      setRepository={handleOpenOwnRepo}
+                      myRepositories={myRepositories}
+                      myOrganizations={myOrganizations}
+                    />
+                  ) : (
+                    <GitHubAuthComponent />
+                  )}
+                </Box>
               ) : (
-                <GitHubAuthComponent />
+                <CommitsList
+                  handleReset={handleReset}
+                  handleClose={handleClose}
+                  repository={repository}
+                />
               )}
             </Box>
-          ) : (
-            <Box
-              sx={{
-                display: 'flex',
-                flexDirection: 'column',
-                gap: '15px',
-                height: '100%',
-              }}
-            >
-              <Box>
-                <Button
-                  sx={{
-                    marginLeft: '-15px',
-                    minWidth: '34px',
-                    marginBottom: '5px',
-                  }}
-                  onClick={handleClose}
-                >
-                  <CloseRoundedIcon />
-                </Button>
-                <Button
-                  sx={{
-                    marginLeft: '25px',
-                    minWidth: '34px',
-                    marginBottom: '5px',
-                    alignSelf: 'flex-end',
-                    fontWeight: 600,
-                  }}
-                  color={'secondary'}
-                  varinat={'outlined'}
-                  onClick={handleReset}
-                >
-                  Switch repository
-                </Button>
-              </Box>
-              <Box sx={fieldWrapper}>
-                <GithubBranchAutocomplete repository={repository} />
-              </Box>
-              <Divider />
-              <List sx={listWrapper}>
-                {newCommits?.map((commitObj, idx) => {
-                  return (
-                    <React.Fragment key={idx}>
-                      <Box
-                        sx={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: '5px',
-                          paddingLeft: '5px',
-                        }}
-                      >
-                        <CommitIcon color={'primary'} />
-                        <Typography
-                          variant={'subtitle2'}
-                          color={'primary'}
-                          sx={{ fontWeight: 600 }}
-                        >
-                          Commits on{' '}
-                          {dayjs(commitObj.date).format('MMM DD, YYYY')}
-                        </Typography>
-                      </Box>
-                      <List>
-                        {commitObj.commits.map(commit => {
-                          return (
-                            <Box
-                              key={commit.sha}
-                              sx={[
-                                wrapperSx,
-                                commitObj.commits.length === 1
-                                  ? singleSx
-                                  : idx === 0
-                                  ? firstSx
-                                  : idx === commitObj.commits.length - 1
-                                  ? lastSx
-                                  : middleSx,
-                              ]}
-                            >
-                              <CommitItem
-                                commit={commit}
-                                repository={repository}
-                                handleCloseModal={handleClose}
-                              />
-                            </Box>
-                          );
-                        })}
-                      </List>
-                    </React.Fragment>
-                  );
-                })}
-              </List>
-              <Box
-                sx={{
-                  display: 'flex',
-                  gap: '15px',
-                  justifyContent: 'center',
-                }}
-              >
-                {totalCommitsPage > 1 && (
-                  <Button
-                    disabled={page === 1}
-                    onClick={() =>
-                      dispatch({ type: PREV_PAGE, payload: page - 1 })
-                    }
-                  >
-                    Prev
-                  </Button>
-                )}
-                {totalCommitsPage > 1 && (
-                  <Button
-                    disabled={page === totalCommitsPage}
-                    onClick={() =>
-                      dispatch({ type: NEXT_PAGE, payload: page + 1 })
-                    }
-                  >
-                    Next
-                  </Button>
-                )}
-              </Box>
-            </Box>
+          )}
+          {sha && (
+            <CommitModal
+              sha={sha}
+              handleCloseCommit={handleCloseCommit}
+              repository={repository}
+              onClose={handleClose}
+              handleSwitchRep={handleReset}
+            />
           )}
         </Box>
       </Modal>
@@ -385,77 +276,10 @@ const GithubSelection = ({ project }) => {
 
 export default GithubSelection;
 
-const middleSx = {
-  border: '1px solid',
-  borderBottom: 'none',
-};
-
-const lastSx = {
-  border: '1px solid',
-  borderRadius: '0 0 5px 5px',
-};
-
-const firstSx = {
-  border: '1px solid',
-  borderRadius: '5px 5px 0 0',
-  borderBottom: 'none',
-};
-
-const singleSx = {
-  border: '1px solid',
-  borderRadius: '5px',
-};
-
-const wrapperSx = theme => ({
-  cursor: 'pointer',
-  padding: '5px',
-  paddingX: '15px',
-  borderColor: `#c9c9c9!important`,
-  '&:hover': { backgroundColor: '#fbfbfb' },
-  [theme.breakpoints.down('xs')]: {
-    paddingX: '10px',
-  },
-});
-
 const wrapper = theme => ({
   height: '100%',
   [theme.breakpoints.down(500)]: {
     width: '100%',
-  },
-});
-
-const githubTitleSx = theme => ({
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'center',
-  marginTop: '45px',
-  gap: '25px',
-  '& h5': {
-    fontSize: '24px',
-    fontWeight: 500,
-  },
-  '& button': {
-    fontSize: '18px',
-  },
-  [theme.breakpoints.down('md')]: {
-    marginTop: '35px',
-    gap: '15px',
-    '& h5': {
-      fontSize: '20px',
-    },
-    '& button': {
-      fontSize: '16px',
-    },
-  },
-  [theme.breakpoints.down('xs')]: {
-    '& h5': {
-      fontSize: '16px',
-    },
-  },
-  [theme.breakpoints.down(550)]: {
-    '& button': {
-      width: '100%',
-    },
   },
 });
 
@@ -515,34 +339,10 @@ const modalSx = theme => ({
   p: 4,
   paddingTop: '5px!important',
   width: '80%',
-  height: '80%',
+  height: '90%',
   zIndex: 44,
   [theme.breakpoints.down('sm')]: {
     width: '90%',
-    height: '90%',
     padding: 2,
-  },
-});
-
-const fieldWrapper = theme => ({
-  display: 'flex',
-  justifyContent: 'flex-start',
-  alignItems: 'center',
-  gap: '20px',
-});
-
-const listWrapper = theme => ({
-  display: 'flex',
-  flexDirection: 'column',
-  overflowY: 'auto',
-  gap: '5px',
-  marginRight: '-30px',
-  paddingRight: '14px',
-  marginLeft: '-20px',
-  overflowX: 'hidden',
-  [theme.breakpoints.down('sm')]: {
-    marginRight: '-10px',
-    paddingRight: '5px',
-    marginLeft: '-10px',
   },
 });

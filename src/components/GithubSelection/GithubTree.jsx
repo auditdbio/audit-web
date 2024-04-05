@@ -43,31 +43,57 @@ const GithubTreeNode = ({
     });
   };
 
+  const checkFiles = node => {
+    if (node.type === 'tree') {
+      if (node.tree.length === 0) return false;
+      return node.tree.some(el => {
+        if (el.type === 'blob') {
+          return !endsWithAny(el.name, filterConfig);
+        } else if (el.type === 'tree') {
+          return checkFiles(el);
+        }
+        return false;
+      });
+    } else {
+      return false;
+    }
+  };
+
+  const filterTreeNodes = (obj, filterConfig) => {
+    const filterNode = obj => {
+      if (obj.type === 'tree') {
+        const filteredChildren = obj.tree.map(el => {
+          if (el.type === 'blob') {
+            return !endsWithAny(el.name, filterConfig) ? el : null;
+          } else if (el.type === 'tree') {
+            const filteredSubtree = filterNode(el);
+            return filteredSubtree.length > 0
+              ? { ...el, tree: filteredSubtree }
+              : null;
+          }
+          return null;
+        });
+
+        return filteredChildren.filter(el => el !== null);
+      } else {
+        return [];
+      }
+    };
+
+    return filterNode(obj);
+  };
+
   const isAllChecked = useMemo(() => {
     const checkIfAllSelected = currentNode => {
-      if (currentNode.type === 'tree') {
+      if (currentNode?.type === 'tree') {
         if (currentNode.tree.length === 0) return false;
         let newData = { ...currentNode };
 
-        if (
-          currentNode.tree.every(el => {
-            if (el.type === 'tree') {
-              return checkIfAllSelected(el);
-            } else {
-              return endsWithAny(el.name, filterConfig);
-            }
-          })
-        ) {
+        if (!checkFiles(currentNode)) {
           newData = currentNode;
         } else {
-          newData.tree = [
-            ...currentNode.tree.filter(
-              el => !endsWithAny(el.name, filterConfig),
-            ),
-            ...currentNode.tree.filter(el => el.type === 'tree'),
-          ];
+          newData.tree = [...filterTreeNodes(currentNode, filterConfig)];
         }
-
         return newData.tree.every(childNode => {
           if (childNode.type === 'blob') {
             const blobUrl = createBlopUrl(repoOwner, sha, `${childNode.path}`);
@@ -86,7 +112,7 @@ const GithubTreeNode = ({
     };
     return checkIfAllSelected(node);
   }, [selected, field.value, deletedFromField]);
-  //
+
   useEffect(() => {
     const checkIfIndeterminate = currentNode => {
       if (currentNode.type === 'tree') {
@@ -178,10 +204,10 @@ const GithubTreeNode = ({
       <Box
         sx={[
           { display: 'flex', alignItems: 'center', gap: '5px' },
-          node.type !== 'tree' && checkSelected() ? selectedSx : itemsSx,
+          node.type !== 'tree' && checkSelected() ? selectedSx : {},
           node.type === 'blob' && endsWithAny(node.name, filterConfig)
             ? filterItemSx
-            : itemsSx,
+            : {},
           // node.type === 'tree' &&
           // node.tree.some(el => !endsWithAny(el.name, filterConfig))
           //   ? filterItemSx
@@ -223,7 +249,11 @@ const GithubTreeNode = ({
         )}
         <Typography
           className={isTree ? 'folder' : 'file'}
-          sx={{ cursor: 'pointer', fontWeight: 500 }}
+          sx={{
+            cursor: 'pointer',
+            fontWeight: 500,
+            fontSize: '14px!important',
+          }}
           onClick={() => (!isTree ? handleAddRemove(node) : handleToggle(node))}
         >
           {isTree ? node.name : node.name.split('/').pop()}{' '}
@@ -258,7 +288,6 @@ const GithubTree = ({
   deletedFromField,
   handleSelectAll,
   handleRemoveAll,
-  filterGithub,
 }) => {
   return (
     <ul style={ulStyle({ inner: false })}>
@@ -268,7 +297,6 @@ const GithubTree = ({
             node={node}
             handleAddRemove={handleAddRemove}
             selected={selected}
-            filterGithub={filterGithub}
             deletedFromField={deletedFromField}
             handleSelectAll={handleSelectAll}
             handleRemoveAll={handleRemoveAll}
@@ -301,7 +329,3 @@ const filterItemSx = theme => ({
     color: 'grey',
   },
 });
-
-const itemsSx = {
-  border: '1px solid transparent',
-};
