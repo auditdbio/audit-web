@@ -1,12 +1,19 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate, Link } from 'react-router-dom/dist';
 import dayjs from 'dayjs';
-import { Avatar, Box, Button, Typography, Tooltip } from '@mui/material';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { CustomCard } from '../components/custom/Card.jsx';
 import Layout from '../styles/Layout.jsx';
+import {
+  Avatar,
+  Box,
+  Button,
+  Typography,
+  Tooltip,
+  useMediaQuery,
+} from '@mui/material';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import { useNavigate, Link } from 'react-router-dom/dist';
 import TagsList from '../components/tagsList.jsx';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   acceptAudit,
   clearMessage,
@@ -14,11 +21,13 @@ import {
   deleteAudit,
   deleteAuditRequest,
   downloadReport,
+  editAuditCustomer,
 } from '../redux/actions/auditAction.js';
 import {
   AUDITOR,
   CUSTOMER,
   DONE,
+  RESOLVED,
   SUBMITED,
   WAITING_FOR_AUDITS,
 } from '../redux/actions/types.js';
@@ -26,6 +35,12 @@ import Markdown from '../components/markdown/Markdown.jsx';
 import { ASSET_URL } from '../services/urls.js';
 import { addTestsLabel } from '../lib/helper.js';
 import CustomSnackbar from '../components/custom/CustomSnackbar.jsx';
+import MarkdownEditor from '../components/markdown/Markdown-editor.jsx';
+import theme from '../styles/themes.js';
+import { Form, Formik } from 'formik';
+import EditIcon from '@mui/icons-material/Edit';
+import SaveIcon from '@mui/icons-material/Save.js';
+import CloseIcon from '@mui/icons-material/Close';
 import { setCurrentChat } from '../redux/actions/chatActions.js';
 import ChatIcon from '../components/icons/ChatIcon.jsx';
 import ConfirmModal from '../components/modal/ConfirmModal.jsx';
@@ -40,6 +55,8 @@ const AuditInfo = ({ audit, auditRequest, issues, confirmed }) => {
   const { user } = useSelector(s => s.user);
   const { chatList } = useSelector(s => s.chat);
   const descriptionRef = useRef();
+  const matchXs = useMediaQuery(theme.breakpoints.down('xs'));
+  const [editMode, setEditMode] = useState(false);
 
   useEffect(() => {
     setTimeout(() => {
@@ -99,6 +116,10 @@ const AuditInfo = ({ audit, auditRequest, issues, confirmed }) => {
 
   const goToIssues = () => {
     navigate(`/issues/audit-issue/${audit?.id}`);
+  };
+
+  const handleEdit = () => {
+    setEditMode(true);
   };
 
   return (
@@ -167,7 +188,7 @@ const AuditInfo = ({ audit, auditRequest, issues, confirmed }) => {
             </Typography>
           )}
         </Box>
-        <Box sx={{ maxWidth: '100%' }}>
+        <Box sx={{ maxWidth: '100%', width: '100%' }}>
           <Box sx={contentWrapper}>
             <Box sx={userWrapper}>
               <Avatar
@@ -253,16 +274,88 @@ const AuditInfo = ({ audit, auditRequest, issues, confirmed }) => {
             )}
           </Box>
 
-          <Box sx={descriptionSx(showFull)}>
+          <Box sx={descriptionSx(showFull || editMode)}>
             <Box ref={descriptionRef}>
-              <Markdown value={audit?.description} />
+              {!editMode ? (
+                <Markdown value={audit?.description} />
+              ) : (
+                <Formik
+                  initialValues={{
+                    description: audit?.description,
+                    ...audit,
+                  }}
+                  onSubmit={values => {
+                    dispatch(editAuditCustomer(values));
+                    setEditMode(false);
+                  }}
+                >
+                  {({ handleSubmit, setFieldTouched, dirty }) => {
+                    return (
+                      <Form onSubmit={handleSubmit}>
+                        <Box sx={{ position: 'relative' }}>
+                          <MarkdownEditor
+                            name="description"
+                            setFieldTouched={setFieldTouched}
+                            mdProps={{
+                              view: { menu: true, md: true, html: !matchXs },
+                            }}
+                          />
+                          <Box sx={editBtnSx}>
+                            <Button
+                              variant={'text'}
+                              type={'submit'}
+                              disabled={!dirty}
+                            >
+                              <SaveIcon />
+                            </Button>
+                            <Button>
+                              <CloseIcon
+                                color={'secondary'}
+                                onClick={() => setEditMode(false)}
+                              />
+                            </Button>
+                          </Box>
+                        </Box>
+                      </Form>
+                    );
+                  }}
+                </Formik>
+              )}
             </Box>
           </Box>
-          {showReadMoreButton && (
-            <Button onClick={() => setShowFull(!showFull)} sx={readAllButton}>
-              {showFull ? 'Hide ▲' : `Read all ▼`}
-            </Button>
-          )}
+          <Box
+            sx={[
+              {
+                display: 'flex',
+                background: '#E5E5E5',
+                borderRadius: 0,
+                boxShadow: '0px -24px 14px -8px rgba(252, 250, 246, 1)',
+                ':hover': { background: '#D5D5D5' },
+                padding: '8px',
+                position: 'relative',
+              },
+            ]}
+          >
+            {showReadMoreButton && !editMode && (
+              <Button onClick={() => setShowFull(!showFull)} sx={readAllButton}>
+                {showFull ? 'Hide ▲' : `Read all ▼`}
+              </Button>
+            )}
+            {!editMode &&
+              audit.status.toLowerCase() !== RESOLVED.toLowerCase() && (
+                <Box
+                  sx={{
+                    position: 'absolute',
+                    top: '-96px',
+                    right: '10px',
+                  }}
+                >
+                  <Button variant={'text'} onClick={handleEdit}>
+                    <EditIcon fontSize={'large'} />
+                  </Button>
+                </Box>
+              )}
+          </Box>
         </Box>
         <Box>
           <Box
@@ -583,12 +676,17 @@ const readAllButton = theme => ({
   color: 'black',
   textTransform: 'none',
   lineHeight: '25px',
-  background: '#E5E5E5',
-  borderRadius: 0,
-  boxShadow: '0px -24px 14px -8px rgba(252, 250, 246, 1)',
-  ':hover': { background: '#D5D5D5' },
   [theme.breakpoints.down('xs')]: {
     fontSize: '16px',
     border: 'none',
   },
+});
+
+const editBtnSx = theme => ({
+  position: 'absolute',
+  bottom: '15px',
+  display: 'flex',
+  gap: '7px',
+  flexDirection: 'column',
+  right: '10px',
 });
