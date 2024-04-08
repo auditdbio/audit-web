@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import {
   Box,
   Button,
   FormControl,
   InputLabel,
   Typography,
+  Tooltip,
   Select,
   useMediaQuery,
 } from '@mui/material';
@@ -40,6 +41,9 @@ import { AUDITOR, DONE } from '../redux/actions/types.js';
 import CustomSnackbar from './custom/CustomSnackbar.jsx';
 import { addTestsLabel } from '../lib/helper.js';
 import { history } from '../services/history.js';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
+import QuestionMarkIcon from '@mui/icons-material/QuestionMark';
 import MenuItem from '@mui/material/MenuItem';
 import axios from 'axios';
 import GithubSelection from './GithubSelection/GithubSelection.jsx';
@@ -301,53 +305,6 @@ const CreateProjectCard = ({ projectInfo }) => {
             {/*  projectInfo={projectInfo}*/}
             {/*/>*/}
 
-            <Box sx={buttonGroup}>
-              <Button
-                variant="contained"
-                sx={inviteButton}
-                onClick={() => {
-                  handleInviteModal(handleSubmit);
-                }}
-                {...addTestsLabel('invite-button')}
-              >
-                Invite auditor
-              </Button>
-              <Button
-                variant="contained"
-                sx={publishButton}
-                type="button"
-                onClick={() => {
-                  if (
-                    values.name &&
-                    values.tags.length > 0 &&
-                    values.scope.length > 0 &&
-                    values.description
-                  ) {
-                    handlePublish(values, handleSubmit);
-                    setFieldValue('publish_options.publish', !isPublished);
-                  } else {
-                    setError('Please fill all required fields');
-                  }
-                }}
-                {...addTestsLabel('hide-publish-button')}
-              >
-                {isPublished ? 'Hide project' : 'Publish project'}
-              </Button>
-              {/*<Button*/}
-              {/*  variant={'contained'}*/}
-              {/*  sx={publishButton}*/}
-              {/*  disabled={*/}
-              {/*    isClosed || !projectInfo || !!getSearchParam.get('copy')*/}
-              {/*  }*/}
-              {/*  onClick={() => setCloseConfirmIsOpen(true)}*/}
-              {/*  {...addTestsLabel('close-project-button')}*/}
-              {/*>*/}
-              {/*  {isClosed ? 'Project closed' : 'Close the project'}*/}
-              {/*</Button>*/}
-              {/*<Button sx={menuButtonSx}>*/}
-              {/*  <MenuRoundedIcon sx={menuButtonIconSx} />*/}
-              {/*</Button>*/}
-            </Box>
             <Box sx={wrapper}>
               <Form onSubmit={handleSubmit}>
                 <Box sx={formCard}>
@@ -412,10 +369,86 @@ const CreateProjectCard = ({ projectInfo }) => {
                       </Typography>
                     )}
                   </Box>
+                  <Box sx={buttonGroup}>
+                    <Button
+                      variant="contained"
+                      sx={inviteButton}
+                      onClick={() => {
+                        handleInviteModal(handleSubmit);
+                      }}
+                      {...addTestsLabel('invite-button')}
+                    >
+                      Invite auditor
+                    </Button>
+                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                      <Button
+                        variant="outlined"
+                        sx={[publishButton, { width: '100%' }]}
+                        type="button"
+                        color={'secondary'}
+                        onClick={() => {
+                          if (
+                            values.name &&
+                            values.tags.length > 0 &&
+                            values.scope.length > 0 &&
+                            values.description
+                          ) {
+                            handlePublish(values, handleSubmit);
+                            setFieldValue(
+                              'publish_options.publish',
+                              !isPublished,
+                            );
+                          } else {
+                            setError('Please fill all required fields');
+                          }
+                        }}
+                        {...addTestsLabel('hide-publish-button')}
+                      >
+                        {isPublished ? (
+                          <VisibilityIcon fontSize={'small'} />
+                        ) : (
+                          <VisibilityOffIcon fontSize={'small'} />
+                        )}
+                        project
+                      </Button>
+                      <Button
+                        color={'secondary'}
+                        sx={{
+                          minWidth: '15px',
+                          marginLeft: '7px',
+                          paddingY: '3px',
+                          marginRight: '-45px',
+                        }}
+                      >
+                        <Tooltip
+                          title="Projects are hidden by default, you can change the visibility."
+                          arrow={true}
+                          placement="top"
+                        >
+                          <QuestionMarkIcon fontSize={'small'} />
+                        </Tooltip>
+                      </Button>
+                    </Box>
+                    {/*<Button*/}
+                    {/*  variant={'contained'}*/}
+                    {/*  sx={publishButton}*/}
+                    {/*  disabled={*/}
+                    {/*    isClosed || !projectInfo || !!getSearchParam.get('copy')*/}
+                    {/*  }*/}
+                    {/*  onClick={() => setCloseConfirmIsOpen(true)}*/}
+                    {/*  {...addTestsLabel('close-project-button')}*/}
+                    {/*>*/}
+                    {/*  {isClosed ? 'Project closed' : 'Close the project'}*/}
+                    {/*</Button>*/}
+                    {/*<Button sx={menuButtonSx}>*/}
+                    {/*  <MenuRoundedIcon sx={menuButtonIconSx} />*/}
+                    {/*</Button>*/}
+                  </Box>
                   <Button
                     type="submit"
                     variant="contained"
-                    sx={submitButton}
+                    // sx={submitButton}
+                    sx={[inviteButton]}
                     {...addTestsLabel(`${editMode ? 'save' : 'create'}-button`)}
                   >
                     {editMode ? 'Save changes' : 'Create'}
@@ -485,15 +518,11 @@ const wrapper = theme => ({
 
 const buttonGroup = {
   // width: "100%",
+  width: '220px',
   display: 'flex',
   alignSelf: 'center',
-  gap: '15px',
-  [theme.breakpoints.down('sm')]: {
-    gap: '10px',
-  },
-  [theme.breakpoints.down('xs')]: {
-    flexWrap: 'wrap',
-  },
+  gap: '20px',
+  flexDirection: 'column',
 };
 
 const inviteButton = {
@@ -506,8 +535,9 @@ const inviteButton = {
   color: '#FCFAF6',
   fontWeight: '600',
   borderRadius: '4px',
-  maxWidth: '180px',
+  width: '220px',
   margin: '0 auto',
+  // width: '100%',
   fontSize: '14px',
   // paddingY: "11px",
   ':hover': {
@@ -520,22 +550,25 @@ const inviteButton = {
 };
 
 const publishButton = {
-  backgroundColor: theme.palette.secondary.main,
+  // backgroundColor: theme.palette.secondary.main,
   textTransform: 'none',
   boxShadow: '0',
   maxHeight: '30px',
   padding: '8px 42px',
-  whiteSpace: 'nowrap',
-  color: '#FCFAF6',
+  // whiteSpace: 'nowrap',
+  // color: '#FCFAF6',
   fontWeight: '600',
   borderRadius: '4px',
-  maxWidth: '180px',
-  margin: '0 auto',
+  // maxWidth: '180px',
+  // margin: '0 auto',
   fontSize: '14px',
-  // paddingY: "11px",
-  ':hover': {
-    boxShadow: '0',
+  '& svg': {
+    marginRight: '7px',
   },
+  // paddingY: "11px",
+  // ':hover': {
+  //   boxShadow: '0',
+  // },
   [theme.breakpoints.down('sm')]: {
     padding: '3px 15px',
     fontSize: '10px',
@@ -546,7 +579,7 @@ const formCard = {
   display: 'flex',
   flexDirection: 'column',
   justifyContent: 'center',
-  gap: '25px',
+  gap: '20px',
 };
 
 const formWrapper = theme => ({
