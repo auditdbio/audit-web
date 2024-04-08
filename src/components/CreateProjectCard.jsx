@@ -325,7 +325,7 @@ const CreateProjectCard = ({ projectInfo }) => {
                     >
                       Invite auditor
                     </Button>
-                    <Box sx={{ display: 'flex' }}>
+                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
                       <Button
                         variant="outlined"
                         sx={[publishButton, { width: '100%' }]}
@@ -362,6 +362,7 @@ const CreateProjectCard = ({ projectInfo }) => {
                           minWidth: '15px',
                           marginLeft: '7px',
                           paddingY: '3px',
+                          marginRight: '-45px',
                         }}
                       >
                         <Tooltip
@@ -449,11 +450,8 @@ const buttonGroup = {
   width: '220px',
   display: 'flex',
   alignSelf: 'center',
-  gap: '25px',
+  gap: '20px',
   flexDirection: 'column',
-  [theme.breakpoints.down('sm')]: {
-    gap: '20px',
-  },
 };
 
 const inviteButton = {
@@ -490,8 +488,8 @@ const publishButton = {
   // color: '#FCFAF6',
   fontWeight: '600',
   borderRadius: '4px',
-  maxWidth: '180px',
-  margin: '0 auto',
+  // maxWidth: '180px',
+  // margin: '0 auto',
   fontSize: '14px',
   '& svg': {
     marginRight: '7px',
