@@ -2,7 +2,12 @@ import React, { useEffect } from 'react';
 import { CustomCard } from '../components/custom/Card.jsx';
 import Layout from '../styles/Layout.jsx';
 import { useSearchParams } from 'react-router-dom/dist';
-import { connect_account, signUpGithub } from '../redux/actions/userAction.js';
+import {
+  authGithub,
+  connect_account,
+  connect_auth_account,
+  signUpGithub,
+} from '../redux/actions/userAction.js';
 import { useDispatch, useSelector } from 'react-redux';
 import Loader from '../components/Loader.jsx';
 import { Box } from '@mui/system';
@@ -13,6 +18,11 @@ const ConnectAccount = () => {
   const [searchParam] = useSearchParams();
   const dispatch = useDispatch();
   const user_id = useSelector(state => state.user.user.id);
+  const github = useSelector(s =>
+    s.user?.user?.linked_accounts?.find(
+      el => el?.name?.toLowerCase() === 'github',
+    ),
+  );
 
   useEffect(() => {
     if (
@@ -33,6 +43,28 @@ const ConnectAccount = () => {
           ),
       };
       dispatch(signUpGithub(value));
+    } else if (
+      searchParam
+        .get('state')
+        .slice(searchParam.get('state').lastIndexOf('_') + 1) === 'auth1'
+    ) {
+      const data = {
+        code: searchParam.get('code'),
+        current_role: searchParam
+          .get('state')
+          .slice(0, searchParam.get('state').indexOf('_')),
+        service: searchParam
+          .get('state')
+          .slice(
+            searchParam.get('state').indexOf('_') + 1,
+            searchParam.get('state').lastIndexOf('_'),
+          ),
+      };
+      if (github) {
+        dispatch(authGithub(user_id, data));
+      } else {
+        dispatch(connect_auth_account(user_id, data));
+      }
     } else {
       const data = {
         code: searchParam.get('code'),

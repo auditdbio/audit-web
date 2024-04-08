@@ -1,5 +1,14 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import { Box, Button, Tooltip, Typography, useMediaQuery } from '@mui/material';
+import React, { useEffect, useState, useMemo } from 'react';
+import {
+  Box,
+  Button,
+  FormControl,
+  InputLabel,
+  Typography,
+  Tooltip,
+  Select,
+  useMediaQuery,
+} from '@mui/material';
 import theme, { radiusOfComponents } from '../styles/themes.js';
 import { useNavigate } from 'react-router-dom/dist';
 import TagsArray from './tagsArray/index.jsx';
@@ -35,6 +44,17 @@ import { history } from '../services/history.js';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import QuestionMarkIcon from '@mui/icons-material/QuestionMark';
+import MenuItem from '@mui/material/MenuItem';
+import axios from 'axios';
+import GithubSelection from './GithubSelection/GithubSelection.jsx';
+import { getFilterData } from '../redux/actions/configAction.js';
+import {
+  clearCommit,
+  clearRepoOwner,
+  getCommitData,
+  getRepoOwner,
+  getSha,
+} from '../redux/actions/githubAction.js';
 
 const GoBack = ({ role }) => {
   const location = useLocation();
@@ -85,7 +105,15 @@ const CreateProjectCard = ({ projectInfo }) => {
           ),
       );
     }
-  }, [auditReducer]);
+  }, [auditReducer.auditRequests]);
+
+  useEffect(() => {
+    dispatch(getFilterData());
+    return () => {
+      dispatch(clearRepoOwner());
+      dispatch(clearCommit());
+    };
+  }, []);
 
   let editMode = !!projectInfo;
 
@@ -141,6 +169,30 @@ const CreateProjectCard = ({ projectInfo }) => {
       handleSubmit(values);
     }
   };
+
+  useEffect(() => {
+    if (initialValues?.id && initialValues.scope.length) {
+      const getRepoUrl = initialValues.scope[0];
+      function getShaFromGitHubUrl(url) {
+        const regex = /\/blob\/([0-9a-f]{40})\//;
+        const match = url.match(regex);
+        return match ? match[1] : null;
+      }
+
+      function parseGitHubUrl(gitHubUrl) {
+        const urlParts = gitHubUrl.split('/');
+        const owner = urlParts[3];
+        const repo = urlParts[4];
+
+        return `${owner}/${repo}`;
+      }
+
+      const githubRepo = parseGitHubUrl(getRepoUrl);
+      const sha = getShaFromGitHubUrl(getRepoUrl);
+      dispatch(getSha(sha));
+      dispatch(getRepoOwner(githubRepo));
+    }
+  }, []);
 
   return (
     <Formik
@@ -274,12 +326,15 @@ const CreateProjectCard = ({ projectInfo }) => {
                         <TagsArray name="tags" />
                       </Box>
                       <Box sx={fieldWrapper}>
-                        <TagsField
-                          size={matchMd ? 'small' : 'medium'}
-                          name="scope"
-                          label="Project links"
-                          setFieldTouched={setFieldTouched}
-                        />
+                        <Box sx={linkFieldWrapper}>
+                          <TagsField
+                            size={matchMd ? 'small' : 'medium'}
+                            name="scope"
+                            label="Project links"
+                            setFieldTouched={setFieldTouched}
+                          />
+                          <GithubSelection project={projectInfo} />
+                        </Box>
                         <ProjectLinksList name="scope" />
                         <SalarySlider name="price" />
                       </Box>
@@ -408,6 +463,22 @@ const CreateProjectCard = ({ projectInfo }) => {
   );
 };
 export default CreateProjectCard;
+
+const linkFieldWrapper = theme => ({
+  display: 'flex',
+  gap: '7px',
+  alignItems: 'center',
+  '& .field-wrapper': {
+    width: '100%',
+  },
+  [theme.breakpoints.down(500)]: {
+    flexDirection: 'column',
+    gap: '10px',
+    '& .field-wrapper': {
+      width: '100%',
+    },
+  },
+});
 
 const mainBox = theme => ({
   position: 'relative',
