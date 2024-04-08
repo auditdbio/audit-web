@@ -17,7 +17,13 @@ const CreateIssuePage = ({ isPublic, saved }) => {
   );
 
   return (
-    <Layout>
+    <Layout
+      sx={{ padding: '40px' }}
+      containerSx={{
+        maxWidth: 'unset!important',
+        padding: '0 35px!important',
+      }}
+    >
       <CustomCard sx={wrapper}>
         <Button
           sx={backButtonSx}
@@ -44,6 +50,7 @@ const wrapper = theme => ({
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'center',
+  maxWidth: 'unset',
   gap: '20px',
   [theme.breakpoints.down('md')]: {
     padding: '38px 44px 60px',

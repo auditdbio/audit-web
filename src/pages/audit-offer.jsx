@@ -125,7 +125,13 @@ const AuditOffer = () => {
 
   if (audit && !notFound) {
     return (
-      <Layout>
+      <Layout
+        sx={{ padding: '40px' }}
+        containerSx={{
+          maxWidth: 'unset!important',
+          padding: '0 35px!important',
+        }}
+      >
         <CustomCard sx={wrapper}>
           <Formik
             initialValues={{
@@ -141,10 +147,7 @@ const AuditOffer = () => {
           >
             {({ handleSubmit, setFieldValue }) => {
               return (
-                <Form
-                  onSubmit={handleSubmit}
-                  style={{ width: '100%', maxWidth: '1300px' }}
-                >
+                <Form onSubmit={handleSubmit} style={{ width: '100%' }}>
                   <CustomSnackbar
                     autoHideDuration={5000}
                     open={!!error || !!successMessage}
@@ -460,6 +463,7 @@ const wrapper = theme => ({
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'center',
+  maxWidth: 'unset',
   gap: '20px',
   '& h3': {
     fontSize: '24px',

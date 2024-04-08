@@ -10,12 +10,12 @@ import { addTestsLabel } from '../../lib/helper.js';
 import XTwitterLogo from '../icons/XTwitter-logo.jsx';
 import theme from '../../styles/themes.js';
 
-const Footer = () => {
+const Footer = ({ containerSx }) => {
   const isMobile = useMediaQuery(theme.breakpoints.down('xs'));
 
   return (
     <Box sx={footerContainerStyles} component="footer">
-      <Box sx={mainFooterStyles(isMobile)}>
+      <Box sx={[mainFooterStyles(isMobile), containerSx]}>
         <Box sx={footerStyle(isMobile)}>
           <Box sx={logoIconsStyle}>
             <Box sx={{ display: 'flex' }}>

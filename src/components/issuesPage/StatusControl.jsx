@@ -83,7 +83,7 @@ const StatusControl = ({ status, setFieldValue }) => {
             sx={[
               status !== 'Draft'
                 ? { textTransform: 'none', mb: '10px' }
-                : { textTransform: 'none', mb: '10px', width: '100%' },
+                : { textTransform: 'none', mb: '10px' },
             ]}
             onClick={() => handleChangeStatus(action.action)}
             {...addTestsLabel('change-status-button')}
