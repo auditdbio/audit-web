@@ -22,7 +22,7 @@ import {
   ERROR_IDENTITY,
   GET_PROFILE,
   GET_PUBLIC_PROFILE,
-  UPDATE_USER_LINK_ID,
+  CLEAR_MESSAGES,
 } from '../actions/types.js';
 
 const initialState = {
@@ -97,12 +97,12 @@ export const userReducer = (state = initialState, action) => {
         user: action.payload,
         success: 'Success! Your password has been changed',
       };
-    case UPDATE_USER_LINK_ID:
-      return {
-        ...state,
-        user: action.payload,
-        success: 'Success! Your Link ID has been changed',
-      };
+    // case UPDATE_USER_LINK_ID:
+    //   return {
+    //     ...state,
+    //     user: action.payload,
+    //     success: 'Success! Your Link ID has been changed',
+    //   };
     case RESTORE_PASSWORD:
       return {
         ...state,
@@ -126,6 +126,8 @@ export const userReducer = (state = initialState, action) => {
       };
     case CLEAR_SUCCESS:
       return { ...state, success: null };
+    case CLEAR_MESSAGES:
+      return { ...state, success: null, error: null };
     case CHANGE_ROLE_HAVE_PROFILE_CUSTOMER:
       return {
         ...state,

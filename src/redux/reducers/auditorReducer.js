@@ -7,7 +7,7 @@ import {
   GET_CURRENT_AUDITOR,
   DELETE_BADGE,
   CLEAR_MESSAGES,
-  UPDATE_USER_LINK_ID,
+  AUDITOR_SET_ERROR,
 } from '../actions/types.js';
 
 const initialState = {
@@ -16,6 +16,7 @@ const initialState = {
   searchAuditors: null,
   searchTotalAuditors: 0,
   error: null,
+  success: null,
   currentAuditor: null,
 };
 
@@ -24,13 +25,10 @@ export const auditorReducer = (state = initialState, action) => {
     case GET_AUDITOR:
       return { ...state, auditor: action.payload };
     case UPDATE_AUDITOR:
-      return { ...state, auditor: action.payload };
-    case UPDATE_USER_LINK_ID:
       return {
         ...state,
-        auditor: state.auditor
-          ? { ...state.auditor, link_id: action.payload.link_id }
-          : null,
+        auditor: action.payload.auditor,
+        success: action.payload.message,
       };
     case SEARCH_AUDITOR:
       return { ...state, searchAuditors: action.payload };
@@ -46,7 +44,13 @@ export const auditorReducer = (state = initialState, action) => {
         currentAuditor: action.payload,
       };
     case LOG_OUT:
-      return { ...state, auditor: null, currentAuditor: null };
+      return {
+        ...state,
+        auditor: null,
+        currentAuditor: null,
+        error: null,
+        success: null,
+      };
     case DELETE_BADGE:
       return {
         ...state,
@@ -54,9 +58,16 @@ export const auditorReducer = (state = initialState, action) => {
           auditor => auditor.id !== action.payload,
         ),
       };
+    case AUDITOR_SET_ERROR:
+      return {
+        ...state,
+        success: null,
+        error: action.payload,
+      };
     case CLEAR_MESSAGES:
       return {
         ...state,
+        success: null,
         error: null,
       };
     default:

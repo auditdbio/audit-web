@@ -38,8 +38,7 @@ const ChatPage = () => {
     ) {
       dispatch(chatSetError('Fill your profile'));
       const role = user.current_role?.[0];
-      const link_id = user.link_id || user.id;
-      navigate(`/${role}/${link_id}`);
+      navigate(`/${role}/${user.id}`);
     }
   }, [user, auditor, customer]);
 

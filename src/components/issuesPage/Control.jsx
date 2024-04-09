@@ -54,11 +54,12 @@ const Control = ({
   const [resolveConfirmation, setResolveConfirmation] = useState(false);
   const [allIssuesClosed, setAllIssuesClosed] = useState(false);
   const [menuAnchorEl, setMenuAnchorEl] = useState(null);
-  const user = useSelector(s => s.user.user);
+  const { user } = useSelector(s => s.user);
   const audit = useSelector(s =>
     s.audits.audits?.find(audit => audit.id === auditId),
   );
-  const auditor = useSelector(s => s.auditor.auditor);
+  const { auditor } = useSelector(s => s.auditor);
+  const { customer } = useSelector(s => s.customer);
   const issuesArray = useSelector(s => s.issues.issues);
   const report = JSON.parse(localStorage.getItem('report'));
   const [openMessage, setOpenMessage] = useState(false);
@@ -125,7 +126,9 @@ const Control = ({
               payload: user,
             });
             const role = user.current_role?.[0];
-            const link_id = user.link_id || user.id;
+            const link_id =
+              (role === AUDITOR ? auditor?.link_id : customer?.link_id) ||
+              user.id;
             navigate(`/${role}/${link_id}`);
           }
         }

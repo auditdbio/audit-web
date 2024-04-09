@@ -51,6 +51,7 @@ import Github from '../pages/Github.jsx';
 import ConnectAccount from '../pages/Connect-account.jsx';
 import DisclaimerPage from '../pages/DisclaimerPage.jsx';
 import Headings from '../router/Headings.jsx';
+import { AUDITOR, CUSTOMER } from '../redux/actions/types.js';
 
 const AppRoutes = () => {
   const token = useSelector(s => s.user.token);
@@ -79,9 +80,9 @@ const AppRoutes = () => {
 
   useEffect(() => {
     if (isAuth()) {
-      if (currentRole === 'auditor' && !auditor) {
+      if (currentRole === AUDITOR && !auditor) {
         dispatch(getAuditor());
-      } else if (currentRole === 'customer' && !customer) {
+      } else if (currentRole === CUSTOMER && !customer) {
         dispatch(getCustomer());
       }
     }

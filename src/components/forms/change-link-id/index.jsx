@@ -12,22 +12,26 @@ import {
   Button,
   useMediaQuery,
 } from '@mui/material';
-import {
-  changeLinkId,
-  clearUserError,
-  clearUserSuccess,
-} from '../../../redux/actions/userAction.js';
+import { clearUserMessages } from '../../../redux/actions/userAction.js';
 import CustomSnackbar from '../../custom/CustomSnackbar.jsx';
-import { AUDITOR } from '../../../redux/actions/types.js';
+import { AUDITOR, CUSTOMER } from '../../../redux/actions/types.js';
 import { addTestsLabel } from '../../../lib/helper.js';
 import SimpleField from '../fields/simple-field.jsx';
 import theme from '../../../styles/themes.js';
+import { updateAuditor } from '../../../redux/actions/auditorAction.js';
+import { updateCustomer } from '../../../redux/actions/customerAction.js';
 
 const ChangeLinkId = ({ setNewLinkId }) => {
   const dispatch = useDispatch();
 
   const matchXs = useMediaQuery(theme.breakpoints.down('xs'));
   const { user, success, error } = useSelector(s => s.user);
+  const { error: customerError, success: customerSuccess } = useSelector(
+    s => s.customer,
+  );
+  const { error: auditorError, success: auditorSuccess } = useSelector(
+    s => s.auditor,
+  );
   const [editMode, setEditMode] = useState(false);
 
   useEffect(() => {
@@ -39,14 +43,25 @@ const ChangeLinkId = ({ setNewLinkId }) => {
   return (
     <Box sx={{ textAlign: 'center', mt: '30px' }}>
       <CustomSnackbar
-        autoHideDuration={8000}
-        open={!!error || !!success}
-        onClose={() => {
-          dispatch(clearUserSuccess());
-          dispatch(clearUserError());
-        }}
-        severity={error ? 'error' : 'success'}
-        text={error || success}
+        autoHideDuration={6000}
+        open={
+          !!error ||
+          !!success ||
+          !!customerError ||
+          !!auditorError ||
+          !!customerSuccess ||
+          !!auditorSuccess
+        }
+        text={
+          error ||
+          success ||
+          customerError ||
+          auditorError ||
+          customerSuccess ||
+          auditorSuccess
+        }
+        severity={error || customerError || auditorError ? 'error' : 'success'}
+        onClose={() => dispatch(clearUserMessages())}
       />
 
       <Dialog open={editMode} onClose={() => setEditMode(false)} sx={modalSx}>
@@ -58,8 +73,8 @@ const ChangeLinkId = ({ setNewLinkId }) => {
             Link ID is the unique name specified in the link leading to your
             profile. <br /> After changing your Link ID, your old Link ID
             becomes available for anyone else to claim. Old links to your
-            profile won't automatically redirect. The Link ID will be changed
-            for all user roles.
+            profile won't automatically redirect. Link ID may only contain
+            alphanumeric characters, hyphens or underscore.
           </DialogContentText>
         </DialogContent>
         <Formik
@@ -69,7 +84,11 @@ const ChangeLinkId = ({ setNewLinkId }) => {
           validationSchema={validationSchema}
           onSubmit={values => {
             setNewLinkId(values.link_id);
-            dispatch(changeLinkId(values, user.id));
+            if (user.current_role === AUDITOR) {
+              dispatch(updateAuditor(values));
+            } else if (user.current_role === CUSTOMER) {
+              dispatch(updateCustomer(values));
+            }
           }}
         >
           {({ handleSubmit, dirty }) => {
@@ -125,12 +144,7 @@ const ChangeLinkId = ({ setNewLinkId }) => {
 export default ChangeLinkId;
 
 const validationSchema = Yup.object().shape({
-  link_id: Yup.string()
-    .required('Required')
-    .matches(
-      /^[A-Za-z0-9_-]+$/,
-      'Link ID may only contain alphanumeric characters, hyphens or underscore',
-    ),
+  link_id: Yup.string().required('Required'),
 });
 
 const modalSx = theme => ({

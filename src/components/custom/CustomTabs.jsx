@@ -12,6 +12,8 @@ const CustomTabs = ({
   setTab,
   choosenTab,
   user,
+  auditor,
+  customer,
 }) => {
   const navigate = useNavigate();
   const { tab } = useParams();
@@ -21,9 +23,12 @@ const CustomTabs = ({
     setTabState(value);
     setTab(value);
     if (value === 'user-info') {
-      const role = user.current_role?.[0];
-      const link_id = user.link_id || user.id;
-      navigate(`/${role}/${link_id}`);
+      const rolePrefix = user.current_role?.[0];
+      const link_id =
+        (user.current_role === AUDITOR
+          ? auditor?.link_id
+          : customer?.link_id) || user.id;
+      navigate(`/${rolePrefix}/${link_id}`);
     } else {
       navigate(`/profile/${value}`);
     }

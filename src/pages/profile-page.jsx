@@ -23,6 +23,8 @@ const ProfilePage = () => {
   const [chooseTab, setChooseTab] = useState(tab || 'user-info');
   const currentRole = useSelector(s => s.user.user.current_role);
   const { user, success } = useSelector(s => s.user);
+  const { auditor } = useSelector(s => s.auditor);
+  const { customer } = useSelector(s => s.customer);
 
   useEffect(() => {
     if (tab) setChooseTab(tab);
@@ -30,9 +32,13 @@ const ProfilePage = () => {
 
   if (linkId && role) {
     if (/^c|a$/i.test(role)) {
+      const userLinkId =
+        user?.current_role === AUDITOR ? auditor?.link_id : customer?.link_id;
       if (
         !isAuth() ||
-        (user?.id && linkId !== user.link_id && linkId !== user?.id)
+        (user?.id &&
+          linkId.toLowerCase() !== userLinkId?.toLowerCase() &&
+          linkId.toLowerCase() !== user?.id)
       ) {
         return <PublicProfile />;
       }
@@ -63,6 +69,8 @@ const ProfilePage = () => {
           tabs={currentRole === AUDITOR ? auditorTabs : customerTabs}
           setTab={setChooseTab}
           user={user}
+          auditor={auditor}
+          customer={customer}
         />
         <InfoCard role={currentRole}>
           {chooseTab === 'audits' && currentRole === CUSTOMER && <Audits />}
@@ -75,7 +83,9 @@ const ProfilePage = () => {
           {chooseTab === 'audit-requests' && currentRole === AUDITOR && (
             <AuditRequest />
           )}
-          {chooseTab === 'user-info' && <UserInfo role={currentRole} />}
+          {chooseTab === 'user-info' && (
+            <UserInfo role={currentRole} linkId={linkId} />
+          )}
         </InfoCard>
       </Box>
     </Layout>

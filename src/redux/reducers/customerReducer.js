@@ -1,10 +1,11 @@
 import {
+  CLEAR_MESSAGES,
+  CUSTOMER_SET_ERROR,
   GET_CURRENT_CUSTOMER,
   GET_CUSTOMER,
   GET_CUSTOMERS,
   LOG_OUT,
   UPDATE_CUSTOMER,
-  UPDATE_USER_LINK_ID,
 } from '../actions/types.js';
 
 const initialState = {
@@ -12,6 +13,7 @@ const initialState = {
   customers: [],
   searchTotalCustomers: 0,
   error: null,
+  success: null,
   currentCustomer: null,
 };
 
@@ -20,13 +22,10 @@ export const customerReducer = (state = initialState, action) => {
     case GET_CUSTOMER:
       return { ...state, customer: action.payload };
     case UPDATE_CUSTOMER:
-      return { ...state, customer: action.payload };
-    case UPDATE_USER_LINK_ID:
       return {
         ...state,
-        customer: state.customer
-          ? { ...state.customer, link_id: action.payload.link_id }
-          : null,
+        customer: action.payload.customer,
+        success: action.payload.message,
       };
     case 'NEW_VALUES':
       return { ...state, customer: action.payload };
@@ -40,6 +39,17 @@ export const customerReducer = (state = initialState, action) => {
         ...state,
         customers: action.payload.result,
         searchTotalCustomers: action.payload.totalDocuments,
+      };
+    case CUSTOMER_SET_ERROR:
+      return {
+        ...state,
+        error: action.payload,
+      };
+    case CLEAR_MESSAGES:
+      return {
+        ...state,
+        error: null,
+        success: null,
       };
     case LOG_OUT:
       return initialState;

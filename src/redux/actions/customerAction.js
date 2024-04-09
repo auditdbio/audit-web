@@ -5,6 +5,8 @@ import {
   GET_CURRENT_CUSTOMER,
   GET_CUSTOMER,
   UPDATE_CUSTOMER,
+  CUSTOMER_SET_ERROR,
+  GET_PUBLIC_PROFILE,
 } from './types.js';
 import { history } from '../../services/history.js';
 import createSearchValues from '../../lib/createSearchValues.js';
@@ -12,15 +14,22 @@ import { isAuth } from '../../lib/helper.js';
 
 const API_URL = import.meta.env.VITE_API_BASE_URL;
 
-export const getCustomer = () => {
+export const getCustomer = (redirect = false) => {
   const token = Cookies.get('token');
-  return dispatch => {
+  return (dispatch, getState) => {
     axios
       .get(`${API_URL}/my_customer`, {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then(({ data }) => {
         dispatch({ type: GET_CUSTOMER, payload: data });
+        if (redirect) {
+          const { user } = getState();
+          history.push(
+            { pathname: `/c/${data.link_id || user.user?.id}` },
+            { some: true },
+          );
+        }
       })
       .catch(({ response }) => {
         console.log(response, 'res');
@@ -55,9 +64,13 @@ export const getCustomerByLinkId = linkId => {
       })
       .then(({ data }) => {
         dispatch({ type: GET_CURRENT_CUSTOMER, payload: data });
+        axios.get(`${API_URL}/user/${data.user_id}`).then(({ data: user }) => {
+          dispatch({ type: GET_PUBLIC_PROFILE, payload: user });
+        });
       })
-      .catch(error => {
-        console.error(error);
+      .catch(({ response }) => {
+        console.error(response?.data);
+        history.push('/not-found');
       });
   };
 };
@@ -70,13 +83,22 @@ export const createCustomer = values => {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then(({ data }) => {
-        dispatch({ type: UPDATE_CUSTOMER, payload: data });
+        dispatch({
+          type: UPDATE_CUSTOMER,
+          payload: {
+            customer: data,
+            message: 'Success! Your customer profile has been created',
+          },
+        });
         const link_id = data.link_id || data.user_id;
         history.push({ pathname: `/c/${link_id}` }, { some: true });
       })
       .catch(({ response }) => {
-        console.log(response, 'res');
-        // dispatch({type: SIGN_IN_ERROR})
+        console.error(response);
+        dispatch({
+          type: CUSTOMER_SET_ERROR,
+          payload: response?.data || 'Error creating customer profile',
+        });
       });
   };
 };
@@ -89,15 +111,24 @@ export const updateCustomer = (values, redirect = true) => {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then(({ data }) => {
-        dispatch({ type: 'UPDATE_CUSTOMER', payload: data });
+        dispatch({
+          type: 'UPDATE_CUSTOMER',
+          payload: {
+            customer: data,
+            message: 'Success! Your customer profile has been updated',
+          },
+        });
         if (redirect) {
           const link_id = data.link_id || data.user_id;
           history.push({ pathname: `/c/${link_id}` }, { some: true });
         }
       })
       .catch(({ response }) => {
-        console.log(response, 'res');
-        // dispatch({type: SIGN_IN_ERROR})
+        console.error(response);
+        dispatch({
+          type: CUSTOMER_SET_ERROR,
+          payload: response?.data || 'Customer update error',
+        });
       });
   };
 };

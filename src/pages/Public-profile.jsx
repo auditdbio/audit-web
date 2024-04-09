@@ -31,7 +31,6 @@ import {
   changeRolePublicCustomer,
   changeRolePublicCustomerNoRedirect,
   getPublicProfile,
-  getUserByLinkId,
 } from '../redux/actions/userAction.js';
 import { setCurrentChat } from '../redux/actions/chatActions.js';
 import ChatIcon from '../components/icons/ChatIcon.jsx';
@@ -50,7 +49,7 @@ const PublicProfile = () => {
   const { role: roleParams, id, linkId } = useParams();
 
   const { currentCustomer, customer } = useSelector(s => s.customer);
-  const { currentAuditor } = useSelector(s => s.auditor);
+  const { currentAuditor, auditor } = useSelector(s => s.auditor);
   const { myProjects } = useSelector(s => s.project);
   const { user, publicUser } = useSelector(s => s.user);
   const { chatList } = useSelector(s => s.chat);
@@ -129,6 +128,12 @@ const PublicProfile = () => {
     navigate(`/chat/${chatId}`);
   };
 
+  const isChatButtonDisabled = () => {
+    const userLinkId =
+      user.current_role === AUDITOR ? auditor?.link_id : customer?.link_id;
+    return id === user.id || linkId === userLinkId || linkId === user.id;
+  };
+
   useEffect(() => {
     if (role.toLowerCase() === AUDITOR) {
       if (id) {
@@ -145,10 +150,8 @@ const PublicProfile = () => {
     }
     if (id) {
       dispatch(getPublicProfile(id));
-    } else if (linkId) {
-      dispatch(getUserByLinkId(linkId));
     }
-  }, [id, role]);
+  }, [id, role, linkId]);
 
   useEffect(() => {
     const handleBeforeUnload = () => {
@@ -168,6 +171,12 @@ const PublicProfile = () => {
       return currentCustomer;
     }
   }, [role, currentCustomer, currentAuditor]);
+
+  useEffect(() => {
+    if (linkId && data?.link_id && data?.link_id !== linkId) {
+      navigate(`/${roleParams}/${data.link_id}`);
+    }
+  }, [linkId, data]);
 
   if (!data) {
     return (
@@ -436,11 +445,7 @@ const PublicProfile = () => {
                 variant="text"
                 color={role === AUDITOR ? 'secondary' : 'primary'}
                 sx={buttonSx}
-                disabled={
-                  id === user.id ||
-                  linkId === user.link_id ||
-                  linkId === user.id
-                }
+                disabled={isChatButtonDisabled()}
                 onClick={() => handleSendMessage(data)}
                 {...addTestsLabel('message-button')}
               >

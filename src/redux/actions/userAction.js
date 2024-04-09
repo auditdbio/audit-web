@@ -27,8 +27,9 @@ import {
   DELETE_LINKED_ACCOUNT,
   GET_PROFILE,
   GET_PUBLIC_PROFILE,
+  CLEAR_MESSAGES,
   AUDITOR,
-  UPDATE_USER_LINK_ID,
+  CUSTOMER,
 } from './types.js';
 import { savePublicReport } from './auditAction.js';
 
@@ -46,9 +47,11 @@ export const signUpGithub = data => {
         if (data.user?.is_new) {
           history.push({ pathname: `/edit-profile` }, { some: true });
         } else {
-          const role = data.user?.current_role?.[0];
-          const link_id = data.user.link_id || data.user.id;
-          history.push({ pathname: `/${role}/${link_id}` }, { some: true });
+          const rolePrefix = data.user?.current_role?.[0];
+          history.push(
+            { pathname: `/${rolePrefix}/${data.user.id}` },
+            { some: true },
+          );
         }
 
         axios.patch(
@@ -83,8 +86,10 @@ export const signIn = values => {
           history.push({ pathname: `/edit-profile` }, { some: true });
         } else {
           const role = data.user?.current_role?.[0];
-          const link_id = data.user.link_id || data.user.id;
-          history.push({ pathname: `/${role}/${link_id}` }, { some: true });
+          history.push(
+            { pathname: `/${role}/${data.user.id}` },
+            { some: true },
+          );
         }
       })
       .catch(({ response }) => {
@@ -99,6 +104,10 @@ export const clearUserError = () => {
 
 export const clearUserSuccess = () => {
   return { type: CLEAR_SUCCESS };
+};
+
+export const clearUserMessages = () => {
+  return { type: CLEAR_MESSAGES };
 };
 
 export const getMyProfile = id => {
@@ -120,14 +129,6 @@ export const getMyProfile = id => {
 export const getPublicProfile = id => {
   return dispatch => {
     axios.get(`${API_URL}/user/${id}`).then(({ data }) => {
-      dispatch({ type: GET_PUBLIC_PROFILE, payload: data });
-    });
-  };
-};
-
-export const getUserByLinkId = linkId => {
-  return dispatch => {
-    axios.get(`${API_URL}/user_by_link_id/${linkId}`).then(({ data }) => {
       dispatch({ type: GET_PUBLIC_PROFILE, payload: data });
     });
   };
@@ -200,9 +201,7 @@ export const changeAccountVisibility = (user_id, values, account_id) => {
 
 export const connect_account = (user_id, values) => {
   const user = JSON.parse(localStorage.getItem('user'));
-  const role = user?.current_role?.[0];
-  const link_id = user.link_id || user.id;
-  return dispatch => {
+  return (dispatch, getState) => {
     axios
       .post(`${API_URL}/user/${user_id}/linked_account`, values, {
         headers: {
@@ -218,7 +217,6 @@ export const connect_account = (user_id, values) => {
           linked_accounts: [...user.linked_accounts, data],
         };
         localStorage.setItem('user', JSON.stringify(newData));
-        history.push(`/${role}/${link_id}`, { some: true });
       })
       .catch(data => {
         if (data.response.status === 404) {
@@ -226,7 +224,17 @@ export const connect_account = (user_id, values) => {
         } else {
           dispatch({ type: ERROR_IDENTITY, payload: data.response });
         }
-        history.push(`/${role}/${link_id}`, { some: true });
+      })
+      .finally(() => {
+        const rolePrefix = user?.current_role?.[0];
+        const { auditor, customer } = getState();
+        let linkId = user.id;
+        if (user.current_role === AUDITOR) {
+          linkId = auditor.auditor?.link_id || user.id;
+        } else if (user.current_role === CUSTOMER) {
+          linkId = customer.customer?.link_id || user.id;
+        }
+        history.push(`/${rolePrefix}/${linkId}`, { some: true });
       });
   };
 };
@@ -285,11 +293,10 @@ export const changeRole = (role, id) => {
           },
         },
       )
-      .then(({ data }) => {
-        dispatch({ type: SELECT_ROLE, payload: data });
-        localStorage.setItem('user', JSON.stringify(data));
-        const link_id = data.link_id || data.id;
-        history.push({ pathname: `/${role[0]}/${link_id}` }, { some: true });
+      .then(({ data: user }) => {
+        dispatch({ type: SELECT_ROLE, payload: user });
+        localStorage.setItem('user', JSON.stringify(user));
+        history.push({ pathname: `/${role[0]}/${user.id}` }, { some: true });
       });
   };
 };
@@ -328,9 +335,9 @@ export const changeRolePublicCustomer = (role, id) => {
                 type: CHANGE_ROLE_DONT_HAVE_PROFILE_CUSTOMER,
                 payload: user,
               });
-              const link_id = user.link_id || id;
+              const linkId = customer?.link_id || id;
               history.push(
-                { pathname: `/${role[0]}/${link_id}` },
+                { pathname: `/${role[0]}/${linkId}` },
                 { some: true },
               );
             }
@@ -385,9 +392,9 @@ export const changeRolePublicAuditor = (role, id, data, withData) => {
                 type: CHANGE_ROLE_DONT_HAVE_PROFILE_AUDITOR,
                 payload: user,
               });
-              const link_id = user.link_id || id;
+              const linkId = auditor?.link_id || id;
               history.push(
-                { pathname: `/${role[0]}/${link_id}` },
+                { pathname: `/${role[0]}/${linkId}` },
                 { some: true },
               );
             }
@@ -448,29 +455,6 @@ export const changePassword = (values, userId) => {
       })
       .then(({ data }) => {
         dispatch({ type: UPDATE_USER, payload: data });
-      })
-      .catch(({ response }) => {
-        dispatch({ type: SIGN_IN_ERROR, payload: response.data });
-      });
-  };
-};
-
-export const changeLinkId = (values, userId) => {
-  return dispatch => {
-    axios
-      .patch(`${API_URL}/user/${userId}`, values, {
-        headers: {
-          Authorization: 'Bearer ' + Cookies.get('token'),
-          'Content-Type': 'application/json',
-        },
-      })
-      .then(({ data }) => {
-        const storageUser = JSON.parse(localStorage.getItem('user'));
-        localStorage.setItem(
-          'user',
-          JSON.stringify({ ...storageUser, ...data }),
-        );
-        dispatch({ type: UPDATE_USER_LINK_ID, payload: data });
       })
       .catch(({ response }) => {
         dispatch({ type: SIGN_IN_ERROR, payload: response.data });

@@ -172,7 +172,7 @@ const CurrentChat = ({
         currentChat={currentChat}
         user={user}
       />
-      <Headings title={`${currentChat?.name} | Chat`} />
+      <Headings title={`${currentChat?.name || 'Chat'} | Chat`} />
 
       <Box sx={wrapper}>
         <Box sx={currentChatHeader}>

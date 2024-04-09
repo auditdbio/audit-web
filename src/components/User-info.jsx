@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useEffect } from 'react';
 import {
   Avatar,
   Box,
@@ -22,18 +22,26 @@ import ShareProfileButton from './custom/ShareProfileButton.jsx';
 import IdentitySetting from './IdentitySetting/IdentitySetting.jsx';
 import LinkedinIcon from './icons/LinkedinIcon.jsx';
 import XTwitterLogo from './icons/XTwitter-logo.jsx';
-import { clearUserError } from '../redux/actions/userAction.js';
+import { clearUserMessages } from '../redux/actions/userAction.js';
 import CustomSnackbar from './custom/CustomSnackbar.jsx';
 import Headings from '../router/Headings.jsx';
 
-const UserInfo = ({ role }) => {
+const UserInfo = ({ role, linkId }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const matchXs = useMediaQuery(theme.breakpoints.down('xs'));
   const matchXxs = useMediaQuery(theme.breakpoints.down(590));
 
-  const { customer } = useSelector(s => s.customer);
-  const { auditor } = useSelector(s => s.auditor);
+  const {
+    customer,
+    error: customerError,
+    success: customerSuccess,
+  } = useSelector(s => s.customer);
+  const {
+    auditor,
+    error: auditorError,
+    success: auditorSuccess,
+  } = useSelector(s => s.auditor);
   const { user, error } = useSelector(s => s.user);
 
   const handleEdit = () => {
@@ -48,26 +56,45 @@ const UserInfo = ({ role }) => {
     }
   }, [role, customer, auditor]);
 
+  useEffect(() => {
+    if (linkId && data?.link_id && data?.link_id !== linkId) {
+      navigate(`/${role[0]}/${data.link_id}`);
+    }
+  }, [linkId, data]);
+
   if (!data) {
     return <Loader role={role} />;
   } else {
     return (
       <Box sx={wrapper}>
         <Headings
-          title={capitalize(user?.name) || 'Profile'}
+          title={user?.name || 'Profile'}
           image={data.avatar}
-          description={`${capitalize(data.first_name)} ${capitalize(
-            data.last_name,
-          )} | ${data.about}`}
+          description={`${data.first_name} ${data.last_name} | ${data.about}`}
         />
 
         <CustomSnackbar
-          autoHideDuration={3000}
-          open={!!error}
-          onClose={() => dispatch(clearUserError())}
-          severity="error"
-          text={error}
+          autoHideDuration={5000}
+          open={
+            !!error ||
+            !!customerError ||
+            !!auditorError ||
+            !!customerSuccess ||
+            !!auditorSuccess
+          }
+          text={
+            error ||
+            customerError ||
+            auditorError ||
+            customerSuccess ||
+            auditorSuccess
+          }
+          severity={
+            error || customerError || auditorError ? 'error' : 'success'
+          }
+          onClose={() => dispatch(clearUserMessages())}
         />
+
         <Box sx={contentWrapper}>
           <Box
             sx={{

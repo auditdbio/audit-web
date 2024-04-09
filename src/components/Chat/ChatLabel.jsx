@@ -37,8 +37,7 @@ const ChatLabel = () => {
       navigate('/chat');
     } else {
       const role = user.current_role?.[0];
-      const link_id = user.link_id || user.id;
-      navigate(`/${role}/${link_id}`);
+      navigate(`/${role}/${user.id}`);
       dispatch(chatSetError('Fill your profile'));
     }
   };
