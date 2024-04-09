@@ -50,7 +50,6 @@ export const getCurrentAuditor = id => {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then(({ data }) => {
-        console.log('test');
         dispatch({ type: GET_CURRENT_AUDITOR, payload: data });
       })
       .catch(({ response }) => {
