@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
-import { Box, Button, IconButton } from '@mui/material';
+import { Box, Button, IconButton, useMediaQuery } from '@mui/material';
 import Layout from '../styles/Layout.jsx';
 import { CustomCard } from '../components/custom/Card';
 import ChatList from '../components/Chat/ChatList.jsx';
@@ -19,7 +19,8 @@ const ChatPage = () => {
   const navigate = useNavigate();
 
   const { id } = useParams();
-  const [chatListIsOpen, setChatListIsOpen] = useState(false);
+  const matchXs = useMediaQuery(theme.breakpoints.down('xs'));
+  const [chatListIsOpen, setChatListIsOpen] = useState(matchXs && !id);
   const { chatList, chatMessages, currentChat } = useSelector(s => s.chat);
   const { user } = useSelector(s => s.user);
   const { auditor } = useSelector(s => s.auditor);

@@ -62,7 +62,7 @@ const AddComment = ({ auditId, issueId }) => {
                 sx={{ fontWeight: 600, textTransform: 'unset' }}
                 {...addTestsLabel('add-comment-button')}
               >
-                Add comment
+                Submit
               </Button>
             </Box>
           </Form>

@@ -27,6 +27,7 @@ import {
   DELETE_LINKED_ACCOUNT,
   GET_PROFILE,
   GET_PUBLIC_PROFILE,
+  GET_MY_PROFILE,
   CLEAR_MESSAGES,
   AUDITOR,
   CUSTOMER,
@@ -112,16 +113,17 @@ export const clearUserMessages = () => {
 
 export const getMyProfile = id => {
   return dispatch => {
-    axios
-      .get(`${API_URL}/user/${id}`, {
-        headers: {
-          Authorization: 'Bearer ' + Cookies.get('token'),
-          'Content-Type': 'application/json',
-        },
-      })
+    axios(`${API_URL}/my_user`, {
+      headers: {
+        Authorization: 'Bearer ' + Cookies.get('token'),
+      },
+    })
       .then(({ data }) => {
-        dispatch({ type: GET_PROFILE, payload: data });
+        dispatch({ type: GET_MY_PROFILE, payload: data });
         localStorage.setItem('user', JSON.stringify(data));
+      })
+      .catch(data => {
+        console.log(data);
       });
   };
 };
@@ -235,6 +237,60 @@ export const connect_account = (user_id, values) => {
           linkId = customer.customer?.link_id || user.id;
         }
         history.push(`/${rolePrefix}/${linkId}`, { some: true });
+      });
+  };
+};
+
+export const connect_auth_account = (user_id, values) => {
+  return dispatch => {
+    axios
+      .post(`${API_URL}/user/${user_id}/linked_account`, values, {
+        headers: {
+          Authorization: 'Bearer ' + Cookies.get('token'),
+          'Content-Type': 'application/json',
+        },
+      })
+      .then(({ data }) => {
+        dispatch({ type: CONNECT_ACCOUNT, payload: data });
+        const user = JSON.parse(localStorage.getItem('user'));
+        const newData = {
+          ...user,
+          linked_accounts: [...user.linked_accounts, data],
+        };
+        localStorage.setItem('user', JSON.stringify(newData));
+        localStorage.setItem('authenticated', 'true');
+        window.close();
+      })
+      .catch(data => {
+        if (data.response.status === 404) {
+          dispatch({ type: ERROR_ADD_ACCOUNT, payload: data.response });
+        } else {
+          dispatch({ type: ERROR_IDENTITY, payload: data.response });
+        }
+        window.close();
+      });
+  };
+};
+
+export const authGithub = (user_id, values) => {
+  return dispatch => {
+    const user = JSON.parse(localStorage.getItem('user'));
+    axios
+      .post(`${API_URL}/auth/github`, values)
+      .then(({ data }) => {
+        if (user.linked_accounts.find(el => el.name === 'GitHub')) {
+          localStorage.setItem('authenticated', 'true');
+          window.close();
+        }
+      })
+      .catch(data => {
+        if (data.response.status === 404) {
+          dispatch({ type: ERROR_ADD_ACCOUNT, payload: data.response });
+        } else {
+          dispatch({ type: ERROR_IDENTITY, payload: data.response });
+        }
+        const rolePrefix = user?.current_role?.[0];
+        history.push(`/${rolePrefix}/${user.id}`, { some: true });
       });
   };
 };

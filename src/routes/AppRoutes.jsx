@@ -146,7 +146,7 @@ const AppRoutes = () => {
         <Route path="/sign-in" element={<SigninPage />} />
         <Route path="/invite-user/:id/:secret" element={<InvitePage />} />
         <Route path="/oauth/callback" element={<ConnectAccount />} />
-        <Route path="/oauth/callback" element={<Github />} />
+        {/*<Route path="/oauth/callback" element={<Github />} />*/}
         <Route path="/projects" element={<ProjectPage />} />
         <Route path="/projects/:id" element={<PublicProject />} />
         <Route path="/for-customers" element={<ForCustomer />} />
