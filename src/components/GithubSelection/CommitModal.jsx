@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import {
+  Avatar,
   Box,
   Button,
   Checkbox,
@@ -284,13 +285,7 @@ const CommitModal = ({
             : null,
         );
     } else {
-      node.tree
-        .filter(el => !el.path.startsWith('.'))
-        .map(el =>
-          !endsWithAny(el.path, filterConfig)
-            ? handleRemoveAll({ ...el, type: 'blob' })
-            : null,
-        );
+      node.tree.map(el => handleRemoveAll({ ...el, type: 'blob' }));
     }
   };
 
@@ -342,42 +337,65 @@ const CommitModal = ({
           </Box>
           {/*<Typography variant="h4">Commit</Typography>*/}
           <Box>
-            <Box
-              sx={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                gap: '10px',
-                padding: '7px',
-                backgroundColor: '#efefefa6',
-                marginY: '15px',
-              }}
-            >
+            {commit.sha && (
               <Box
-                sx={{ displayL: 'flex', flexDirection: 'column', gap: '15px' }}
+                sx={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  gap: '10px',
+                  padding: '7px',
+                  backgroundColor: '#efefefa6',
+                  marginY: '15px',
+                }}
               >
-                {!sxMedia && (
-                  <Typography variant={'body1'} sx={titleSx}>
-                    {commit?.commit?.message}
+                <Box
+                  sx={{
+                    displayL: 'flex',
+                    flexDirection: 'column',
+                    gap: '15px',
+                  }}
+                >
+                  {!sxMedia && (
+                    <Typography variant={'body1'} sx={titleSx}>
+                      {commit?.commit?.message}
+                    </Typography>
+                  )}
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      gap: '7px',
+                      alignItems: 'center',
+                      marginY: '10px',
+                    }}
+                  >
+                    <Avatar
+                      sx={{ width: '30px', height: '30px' }}
+                      src={commit?.author?.avatar_url}
+                    />
+                    <Typography
+                      variant={'body1'}
+                      color={'secondary'}
+                      sx={titleSx}
+                    >
+                      {commit?.commit?.author.name}
+                    </Typography>
+                  </Box>
+                  <Typography
+                    variant={'body1'}
+                    color={'primary'}
+                    sx={{ fontWeight: 500, fontSize: '12px!important' }}
+                  >
+                    {dayjs(commit?.committer?.date).format('MMM DD, YYYY')}
                   </Typography>
-                )}
-                <Typography variant={'body1'} color={'secondary'} sx={titleSx}>
-                  {commit?.commit?.author.name}
-                </Typography>
+                </Box>
                 <Typography
                   variant={'body1'}
-                  color={'primary'}
-                  sx={{ fontWeight: 500, fontSize: '12px!important' }}
+                  sx={{ fontWeight: 500, fontSize: '18px!important' }}
                 >
-                  {dayjs(commit?.committer?.date).format('MMM DD, YYYY')}
+                  {!smMedia ? data?.sha : data?.sha.slice(0, 7)}
                 </Typography>
               </Box>
-              <Typography
-                variant={'body1'}
-                sx={{ fontWeight: 500, fontSize: '18px!important' }}
-              >
-                {!smMedia ? data?.sha : data?.sha.slice(0, 7)}
-              </Typography>
-            </Box>
+            )}
             <Box sx={actionWrapper}>
               <GithubBranchAutocomplete
                 handleReset={handleSwitchRep}
@@ -443,7 +461,6 @@ const CommitModal = ({
                   setSelected={setSelected}
                   handleAddRemove={handleAddRemove}
                   handleSelectAll={handleSelectAll}
-                  handleRemoveAll={handleRemoveAll}
                 />
               </Box>
             </>

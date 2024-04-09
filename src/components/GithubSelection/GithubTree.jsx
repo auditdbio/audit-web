@@ -13,7 +13,6 @@ const GithubTreeNode = ({
   selected,
   deletedFromField,
   handleSelectAll,
-  handleRemoveAll,
 }) => {
   const [field, _, filedHelper] = useField('scope');
   const { sha, repoOwner } = useSelector(state => state.github);
@@ -271,7 +270,6 @@ const GithubTreeNode = ({
                   selected={selected}
                   deletedFromField={deletedFromField}
                   handleSelectAll={handleSelectAll}
-                  handleRemoveAll={handleRemoveAll}
                 />
               </li>
             ))}
@@ -287,7 +285,6 @@ const GithubTree = ({
   selected,
   deletedFromField,
   handleSelectAll,
-  handleRemoveAll,
 }) => {
   return (
     <ul style={ulStyle({ inner: false })}>
@@ -299,7 +296,6 @@ const GithubTree = ({
             selected={selected}
             deletedFromField={deletedFromField}
             handleSelectAll={handleSelectAll}
-            handleRemoveAll={handleRemoveAll}
           />
         </li>
       ))}
