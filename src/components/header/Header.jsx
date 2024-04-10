@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom/dist';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
@@ -8,6 +8,9 @@ import Logo from '../icons/Logo.jsx';
 import AuthorizedOptions from './AuthorizedOptions.jsx';
 import UnauthorizedOptions from './UnauthorizedOptions.jsx';
 import { addTestsLabel, isAuth } from '../../lib/helper.js';
+import { AUDITOR, CUSTOMER } from '../../redux/actions/types.js';
+import CustomSnackbar from '../custom/CustomSnackbar.jsx';
+import { useSelector } from 'react-redux';
 
 const Header = () => {
   return (
