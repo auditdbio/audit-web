@@ -36,6 +36,7 @@ import {
   clearUserSuccess,
 } from '../../redux/actions/userAction.js';
 import theme from '../../styles/themes.js';
+import { BASE_URL } from '../../services/urls.js';
 
 const Control = ({
   issues,
@@ -143,6 +144,15 @@ const Control = ({
   const handleGenerateReport = () => {
     if (isPublic) {
       if (report?.auditor_name && report?.project_name && report?.description) {
+        if (isAuth()) {
+          if (user.current_role === AUDITOR) {
+            const linkId = auditor.link_id || auditor.user_id;
+            report.profile_link = `${BASE_URL}a/${linkId}`;
+          } else if (user.current_role === CUSTOMER) {
+            const linkId = customer.link_id || customer.user_id;
+            report.profile_link = `${BASE_URL}c/${linkId}`;
+          }
+        }
         const newData = reportBuilder(report, issuesArray);
         dispatch(getPublicReport(newData, { generate: true }));
       } else {

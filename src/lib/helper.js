@@ -28,6 +28,7 @@ export const reportBuilder = (report, issuesArray) => {
   return {
     auditor_name: report.auditor_name,
     project_name: report.project_name,
+    profile_link: report.profile_link || null,
     report_data: [
       {
         type: 'markdown',

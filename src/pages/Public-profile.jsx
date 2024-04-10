@@ -128,12 +128,6 @@ const PublicProfile = () => {
     navigate(`/chat/${chatId}`);
   };
 
-  const isChatButtonDisabled = () => {
-    const userLinkId =
-      user.current_role === AUDITOR ? auditor?.link_id : customer?.link_id;
-    return id === user.id || linkId === userLinkId || linkId === user.id;
-  };
-
   useEffect(() => {
     if (role.toLowerCase() === AUDITOR) {
       if (id) {
@@ -435,23 +429,26 @@ const PublicProfile = () => {
                 sx={buttonSx}
                 color={'secondary'}
                 onClick={handleInvite}
+                disabled={data?.user_id === user?.id}
                 {...addTestsLabel('invite-button')}
               >
                 Invite to project
               </Button>
             )}
-            {data.kind !== 'badge' && isAuth() && (
-              <Button
-                variant="text"
-                color={role === AUDITOR ? 'secondary' : 'primary'}
-                sx={buttonSx}
-                disabled={isChatButtonDisabled()}
-                onClick={() => handleSendMessage(data)}
-                {...addTestsLabel('message-button')}
-              >
-                <ChatIcon />
-              </Button>
-            )}
+            {data.kind !== 'badge' &&
+              isAuth() &&
+              data?.user_id !== user?.id && (
+                <Button
+                  variant="text"
+                  color={role === AUDITOR ? 'secondary' : 'primary'}
+                  sx={buttonSx}
+                  disabled={data?.user_id === user?.id}
+                  onClick={() => handleSendMessage(data)}
+                  {...addTestsLabel('message-button')}
+                >
+                  <ChatIcon />
+                </Button>
+              )}
           </Box>
         </Box>
       </Layout>
