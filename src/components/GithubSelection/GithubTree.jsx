@@ -233,9 +233,21 @@ const GithubTreeNode = ({
         )}
         {isTree ? (
           isTreeOpen ? (
-            <FolderOpenIcon color={includes ? 'primary' : 'disabled'} />
+            <FolderOpenIcon
+              onClick={() =>
+                !isTree ? handleAddRemove(node) : handleToggle(node)
+              }
+              sx={{ cursor: 'pointer' }}
+              color={includes ? 'primary' : 'disabled'}
+            />
           ) : (
-            <FolderIcon color={includes ? 'primary' : 'disabled'} />
+            <FolderIcon
+              onClick={() =>
+                !isTree ? handleAddRemove(node) : handleToggle(node)
+              }
+              sx={{ cursor: 'pointer' }}
+              color={includes ? 'primary' : 'disabled'}
+            />
           )
         ) : (
           <InsertDriveFileIcon
