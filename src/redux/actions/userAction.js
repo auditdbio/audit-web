@@ -265,6 +265,7 @@ export const logout = () => {
 };
 
 export const changeRole = (value, id) => {
+  const token = Cookies.get('token');
   return dispatch => {
     axios
       .patch(
@@ -272,7 +273,7 @@ export const changeRole = (value, id) => {
         { current_role: value },
         {
           headers: {
-            Authorization: 'Bearer ' + Cookies.get('token'),
+            Authorization: 'Bearer ' + token,
             'Content-Type': 'application/json',
           },
         },
@@ -280,12 +281,21 @@ export const changeRole = (value, id) => {
       .then(({ data }) => {
         dispatch({ type: SELECT_ROLE, payload: data });
         localStorage.setItem('user', JSON.stringify(data));
-        history.push(
-          { pathname: `/profile/user-info` },
-          {
-            some: true,
-          },
-        );
+        if (data.is_new) {
+          axios.patch(
+            `${API_URL}/user/${data.id}`,
+            { is_new: false },
+            { headers: { Authorization: `Bearer ${token}` } },
+          );
+          history.push({ pathname: `/edit-profile` }, { some: true });
+        } else {
+          history.push(
+            { pathname: `/profile/user-info` },
+            {
+              some: true,
+            },
+          );
+        }
       });
   };
 };
