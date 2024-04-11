@@ -16,6 +16,7 @@ import GitHubIcon from '@mui/icons-material/GitHub.js';
 import CustomSnackbar from '../components/custom/CustomSnackbar.jsx';
 import RoleModal from '../components/modal/RoleModal.jsx';
 import { AUDITOR } from '../redux/actions/types.js';
+import { isAuth } from '../lib/helper.js';
 
 const ConnectAccount = () => {
   const dispatch = useDispatch();
@@ -41,6 +42,12 @@ const ConnectAccount = () => {
       dispatch(connect_account(user?.id, values));
     }
   }, []);
+
+  useEffect(() => {
+    if (isAuth() && !needToSelectRole) {
+      navigate('/');
+    }
+  }, [isAuth()]);
 
   return (
     <Layout>

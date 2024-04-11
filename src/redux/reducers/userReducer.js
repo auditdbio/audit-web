@@ -132,24 +132,28 @@ export const userReducer = (state = initialState, action) => {
         ...state,
         user: action.payload,
         success: 'Switched to customer role',
+        needToSelectRole: false,
       };
     case CHANGE_ROLE_DONT_HAVE_PROFILE_CUSTOMER:
       return {
         ...state,
         user: action.payload,
         success: 'Fill your customer profile and create some projects',
+        needToSelectRole: false,
       };
     case CHANGE_ROLE_HAVE_PROFILE_AUDITOR:
       return {
         ...state,
         user: action.payload,
         success: 'Switched to auditor role',
+        needToSelectRole: false,
       };
     case CHANGE_ROLE_DONT_HAVE_PROFILE_AUDITOR:
       return {
         ...state,
         user: action.payload,
         success: 'Fill your auditor profile',
+        needToSelectRole: false,
       };
     default:
       return state;

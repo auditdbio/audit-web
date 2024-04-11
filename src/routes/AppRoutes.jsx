@@ -52,7 +52,7 @@ import ConnectAccount from '../pages/Connect-account.jsx';
 import DisclaimerPage from '../pages/DisclaimerPage.jsx';
 
 const AppRoutes = () => {
-  const token = useSelector(s => s.user.token);
+  const { token, needToSelectRole } = useSelector(s => s.user);
   const currentRole = useSelector(s => s.user.user.current_role);
   const customer = useSelector(s => s.customer.customer);
   const auditor = useSelector(s => s.auditor.auditor);
@@ -67,24 +67,24 @@ const AppRoutes = () => {
   }, [isAuth()]);
 
   useEffect(() => {
-    if (isAuth()) {
+    if (isAuth() && !needToSelectRole) {
       dispatch(getProjects());
       if (currentRole) {
         dispatch(getAuditsRequest(currentRole));
         dispatch(getAudits(currentRole));
       }
     }
-  }, [token, currentRole, isAuth()]);
+  }, [token, currentRole, isAuth(), needToSelectRole]);
 
   useEffect(() => {
-    if (isAuth()) {
+    if (isAuth() && !needToSelectRole) {
       if (currentRole === 'auditor' && !auditor) {
         dispatch(getAuditor());
       } else if (currentRole === 'customer' && !customer) {
         dispatch(getCustomer());
       }
     }
-  }, [currentRole, isAuth(), customer, auditor]);
+  }, [currentRole, isAuth(), customer, auditor, needToSelectRole]);
 
   useEffect(() => {
     if (isAuth() && !connected) {
@@ -104,11 +104,11 @@ const AppRoutes = () => {
   }, [reconnect, connected]);
 
   useEffect(() => {
-    if (isAuth()) {
+    if (isAuth() && !needToSelectRole) {
       dispatch(getChatList(currentRole));
       dispatch(getUnreadForDifferentRole());
     }
-  }, [currentRole]);
+  }, [currentRole, needToSelectRole]);
 
   useEffect(() => {
     return () => {
