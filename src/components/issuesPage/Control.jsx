@@ -147,10 +147,14 @@ const Control = ({
         if (isAuth()) {
           if (user.current_role === AUDITOR) {
             const linkId = auditor.link_id || auditor.user_id;
-            report.profile_link = `${BASE_URL}a/${linkId}`;
+            report.profile_link = linkId
+              ? `${BASE_URL}a/${linkId}`
+              : `${BASE_URL}disclaimer/`;
           } else if (user.current_role === CUSTOMER) {
             const linkId = customer.link_id || customer.user_id;
-            report.profile_link = `${BASE_URL}c/${linkId}`;
+            report.profile_link = linkId
+              ? `${BASE_URL}c/${linkId}`
+              : `${BASE_URL}disclaimer/`;
           }
         }
         const newData = reportBuilder(report, issuesArray);

@@ -55,7 +55,7 @@ export const getCurrentCustomer = id => {
   };
 };
 
-export const getCustomerByLinkId = linkId => {
+export const getCustomerByLinkId = (linkId, notFoundRedirect = true) => {
   const token = Cookies.get('token');
   return dispatch => {
     axios
@@ -69,8 +69,10 @@ export const getCustomerByLinkId = linkId => {
         });
       })
       .catch(({ response }) => {
-        console.error(response?.data);
-        history.push('/not-found');
+        if (notFoundRedirect) {
+          console.error(response?.data);
+          history.push('/not-found');
+        }
       });
   };
 };

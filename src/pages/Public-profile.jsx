@@ -40,7 +40,7 @@ import XTwitterLogo from '../components/icons/XTwitter-logo.jsx';
 import GitHubIcon from '@mui/icons-material/GitHub';
 import Headings from '../router/Headings.jsx';
 
-const PublicProfile = () => {
+const PublicProfile = ({ notFoundRedirect = true }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const matchXs = useMediaQuery(theme.breakpoints.down('xs'));
@@ -133,13 +133,13 @@ const PublicProfile = () => {
       if (id) {
         dispatch(getCurrentAuditor(id));
       } else if (linkId) {
-        dispatch(getAuditorByLinkId(linkId));
+        dispatch(getAuditorByLinkId(linkId, notFoundRedirect));
       }
     } else if (role.toLowerCase() === CUSTOMER) {
       if (id) {
         dispatch(getCurrentCustomer(id));
       } else if (linkId) {
-        dispatch(getCustomerByLinkId(linkId));
+        dispatch(getCustomerByLinkId(linkId, notFoundRedirect));
       }
     }
     if (id) {
@@ -200,7 +200,7 @@ const PublicProfile = () => {
     return (
       <Layout>
         <Headings
-          title={`${capitalize(data.first_name)} ${capitalize(data.last_name)}`}
+          title={`${data.first_name} ${data.last_name}`}
           description={data.about}
           image={data.avatar}
         />

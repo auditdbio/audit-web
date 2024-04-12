@@ -8,6 +8,7 @@ import {
   DELETE_BADGE,
   CLEAR_MESSAGES,
   AUDITOR_SET_ERROR,
+  SELECT_ROLE,
 } from '../actions/types.js';
 
 const initialState = {
@@ -43,6 +44,8 @@ export const auditorReducer = (state = initialState, action) => {
         ...state,
         currentAuditor: action.payload,
       };
+    case SELECT_ROLE:
+      return { ...state, currentAuditor: null };
     case LOG_OUT:
       return {
         ...state,

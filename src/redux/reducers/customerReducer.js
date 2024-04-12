@@ -5,6 +5,7 @@ import {
   GET_CUSTOMER,
   GET_CUSTOMERS,
   LOG_OUT,
+  SELECT_ROLE,
   UPDATE_CUSTOMER,
 } from '../actions/types.js';
 
@@ -34,6 +35,8 @@ export const customerReducer = (state = initialState, action) => {
         ...state,
         currentCustomer: action.payload,
       };
+    case SELECT_ROLE:
+      return { ...state, currentCustomer: null };
     case GET_CUSTOMERS:
       return {
         ...state,

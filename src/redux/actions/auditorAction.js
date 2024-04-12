@@ -59,7 +59,7 @@ export const getCurrentAuditor = id => {
   };
 };
 
-export const getAuditorByLinkId = linkId => {
+export const getAuditorByLinkId = (linkId, notFoundRedirect = true) => {
   const token = Cookies.get('token');
   return dispatch => {
     axios
@@ -73,8 +73,10 @@ export const getAuditorByLinkId = linkId => {
         });
       })
       .catch(({ response }) => {
-        console.error(response?.data);
-        history.push('/not-found');
+        if (notFoundRedirect) {
+          console.error(response?.data);
+          history.push('/not-found');
+        }
       });
   };
 };

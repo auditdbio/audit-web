@@ -41,6 +41,11 @@ const ProfilePage = () => {
           linkId.toLowerCase() !== user?.id)
       ) {
         return <PublicProfile />;
+      } else if (
+        (user?.current_role === AUDITOR && !/^a$/i.test(role)) ||
+        (user?.current_role === CUSTOMER && !/^c$/i.test(role))
+      ) {
+        return <PublicProfile notFoundRedirect={false} />;
       }
     } else {
       return <NotFound />;

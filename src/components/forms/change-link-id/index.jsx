@@ -41,7 +41,7 @@ const ChangeLinkId = ({ setNewLinkId }) => {
   }, [success]);
 
   return (
-    <Box sx={{ textAlign: 'center', mt: '30px' }}>
+    <Box sx={{ textAlign: 'center' }}>
       <CustomSnackbar
         autoHideDuration={6000}
         open={

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { Box } from '@mui/material';
 import Layout from '../styles/Layout.jsx';
 import { CustomCard } from '../components/custom/Card.jsx';
 import EditProfileForm from '../components/forms/edit-profile-form/edit-profile-form.jsx';
@@ -8,12 +9,26 @@ import ChangeLinkId from '../components/forms/change-link-id/index.jsx';
 import { getCustomer } from '../redux/actions/customerAction.js';
 import { getAuditor } from '../redux/actions/auditorAction.js';
 import Headings from '../router/Headings.jsx';
+import { AUDITOR, CUSTOMER } from '../redux/actions/types.js';
 
 const EditProfile = () => {
-  const role = useSelector(s => s.user.user.current_role);
-  const [newLinkId, setNewLinkId] = useState(null);
-
   const dispatch = useDispatch();
+
+  const role = useSelector(s => s.user.user.current_role);
+  const { auditor } = useSelector(s => s.auditor);
+  const { customer } = useSelector(s => s.customer);
+
+  const [newLinkId, setNewLinkId] = useState(null);
+  const [showChangeLinkId, setShowChangeLinkId] = useState(false);
+
+  useEffect(() => {
+    if (
+      (role === AUDITOR && auditor?.user_id) ||
+      (role === CUSTOMER && customer?.user_id)
+    ) {
+      setShowChangeLinkId(true);
+    }
+  }, [auditor, customer]);
 
   useEffect(() => {
     if (role === 'auditor') {
@@ -29,8 +44,10 @@ const EditProfile = () => {
 
       <CustomCard sx={editWrapper}>
         <EditProfileForm role={role} newLinkId={newLinkId} />
-        <ChangeLinkId setNewLinkId={setNewLinkId} />
-        <ChangePasswordFormik />
+        <Box sx={{ mt: '30px' }}>
+          {showChangeLinkId && <ChangeLinkId setNewLinkId={setNewLinkId} />}
+          <ChangePasswordFormik />
+        </Box>
       </CustomCard>
     </Layout>
   );
