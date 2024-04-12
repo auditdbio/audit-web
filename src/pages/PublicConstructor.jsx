@@ -118,10 +118,16 @@ const PublicConstructor = ({ saved, isPublic }) => {
       </Layout>
     );
   }
-  //
+
   if ((saved && audit) || (!audit && !saved)) {
     return (
-      <Layout sx={layoutSx}>
+      <Layout
+        sx={{ padding: '40px' }}
+        containerSx={{
+          maxWidth: 'unset!important',
+          padding: '0 35px!important',
+        }}
+      >
         <CustomCard sx={wrapper}>
           <Button
             onClick={() =>
@@ -163,7 +169,6 @@ const PublicConstructor = ({ saved, isPublic }) => {
                   onSubmit={handleSubmit}
                   style={{
                     width: '100%',
-                    maxWidth: '1300px',
                   }}
                 >
                   <CustomSnackbar
@@ -444,6 +449,7 @@ const wrapper = theme => ({
   flexDirection: 'column',
   alignItems: 'center',
   position: 'relative',
+  maxWidth: 'unset',
   gap: '20px',
   '& h3': {
     fontSize: '37px',

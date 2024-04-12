@@ -229,13 +229,14 @@ const eventLine = height => ({
 });
 
 const descriptionBlock = theme => ({
-  width: '80%',
-  [theme.breakpoints.down('sm')]: {
-    width: '70%',
-  },
-  [theme.breakpoints.down('xs')]: {
-    width: '100%',
-  },
+  borderTop: '1px solid #e0e0e0',
+  // width: '80%',
+  // [theme.breakpoints.down('sm')]: {
+  //   width: '70%',
+  // },
+  // [theme.breakpoints.down('xs')]: {
+  //   width: '100%',
+  // },
 });
 
 const editButtonText = theme => ({
@@ -319,7 +320,7 @@ const markdownSx = matchXs => ({
   fontSize: '20px !important',
   lineHeight: '24px',
   borderLeft: '1px solid #b9b9b9',
-  borderTop: matchXs ? '1px solid #b9b9b9' : 'none',
+  // borderTop: matchXs ? '1px solid #b9b9b9' : 'none',
   borderRight: 'none',
 });
 
