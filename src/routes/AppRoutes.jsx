@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Route, Routes } from 'react-router-dom/dist';
 import { useDispatch, useSelector } from 'react-redux';
 import HomePage from '../pages/HomePage.jsx';
@@ -50,6 +50,7 @@ import DeleteBadge from '../pages/Delete-badge.jsx';
 import Github from '../pages/Github.jsx';
 import ConnectAccount from '../pages/Connect-account.jsx';
 import DisclaimerPage from '../pages/DisclaimerPage.jsx';
+import { AUDITOR, CUSTOMER } from '../redux/actions/types.js';
 
 const AppRoutes = () => {
   const token = useSelector(s => s.user.token);
@@ -59,6 +60,25 @@ const AppRoutes = () => {
   const dispatch = useDispatch();
   const { reconnect, connected, needUpdate } = useSelector(s => s.websocket);
   const [isOpen, setIsOpen] = React.useState(false);
+  const { differentRoleUnreadMessages } = useSelector(s => s.chat);
+  const reduxUser = useSelector(state => state.user.user);
+  const [isOpenAlert, setIsOpenAlert] = useState(false);
+
+  useEffect(() => {
+    if (
+      isAuth() &&
+      differentRoleUnreadMessages > 0 &&
+      reduxUser.current_role !== AUDITOR
+    ) {
+      setIsOpenAlert(true);
+    } else if (
+      isAuth() &&
+      differentRoleUnreadMessages > 0 &&
+      reduxUser.current_role !== CUSTOMER
+    ) {
+      setIsOpenAlert(true);
+    }
+  }, [differentRoleUnreadMessages, isAuth()]);
 
   useEffect(() => {
     if (isAuth()) {
@@ -135,6 +155,13 @@ const AppRoutes = () => {
         autoHideDuration={50000}
         onClose={() => setIsOpen(false)}
         text="New version is available. Please reload the page"
+      />
+      <CustomSnackbar
+        open={isOpenAlert}
+        autoHideDuration={5000}
+        severity={'info'}
+        onClose={() => setIsOpenAlert(false)}
+        text="You have unread notifications for a different role profile"
       />
       <Routes>
         <Route path="/" element={<HomePage />} />
