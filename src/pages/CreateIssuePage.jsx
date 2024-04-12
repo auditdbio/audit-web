@@ -18,7 +18,13 @@ const CreateIssuePage = ({ isPublic, saved }) => {
   );
 
   return (
-    <Layout>
+    <Layout
+      sx={{ padding: '40px' }}
+      containerSx={{
+        maxWidth: 'unset!important',
+        padding: '0 35px!important',
+      }}
+    >
       <Headings title={`New Issue | ${audit?.project_name}`} noIndex={true} />
 
       <CustomCard sx={wrapper}>
@@ -47,6 +53,7 @@ const wrapper = theme => ({
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'center',
+  maxWidth: 'unset',
   gap: '20px',
   [theme.breakpoints.down('md')]: {
     padding: '38px 44px 60px',
