@@ -26,6 +26,7 @@ import OfferModal from '../modal/OfferModal.jsx';
 import dayjs from 'dayjs';
 import ConfirmModal from '../modal/ConfirmModal.jsx';
 import { useNavigate } from 'react-router-dom/dist';
+import AuditInfo from '../../pages/audit-info.jsx';
 
 const AuditMessage = ({ message, handleError }) => {
   const user = useSelector(state => state.user.user);
@@ -237,8 +238,7 @@ const AuditMessage = ({ message, handleError }) => {
                 sx={{ textTransform: 'unset', width: '100%' }}
                 variant={'contained'}
                 onClick={() => {
-                  localStorage.setItem('prevPath', window.location.pathname);
-                  navigate(`/audit-request/${data.id}/customer`);
+                  handleOpen();
                 }}
               >
                 View
@@ -281,7 +281,7 @@ const AuditMessage = ({ message, handleError }) => {
                 Make offer
               </Button>
               <LoadingButton
-                loading={isOpen && !auditInfo?.info}
+                loading={isOpen && !auditRequest?.info}
                 sx={{
                   textTransform: 'unset',
                   width: '100%',
@@ -296,18 +296,35 @@ const AuditMessage = ({ message, handleError }) => {
           </Box>
         )}
       <Modal
-        open={isOpen && auditInfo?.id}
+        open={isOpen && auditRequest?.id && user.current_role === AUDITOR}
         onClose={handleClose}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
         <Box sx={modalSx}>
           <AuditRequestInfo
-            project={auditInfo}
+            project={auditRequest}
             onClose={() => setIsOpen(false)}
           />
         </Box>
       </Modal>
+      <Modal
+        open={isOpen && auditRequest?.id && user.current_role === CUSTOMER}
+        onClose={handleClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={modalSx}>
+          <Box sx={infoWrapperSx}>
+            <AuditInfo
+              audit={auditRequest}
+              handleClose={handleClose}
+              auditRequest={auditRequest}
+            />
+          </Box>
+        </Box>
+      </Modal>
+      {/*<AuditInfo audit={auditRequest} auditRequest={auditRequest} />*/}
       {user.current_role === CUSTOMER &&
         data.status === 'Request' &&
         message.from?.id === user.id && (
@@ -316,8 +333,7 @@ const AuditMessage = ({ message, handleError }) => {
               sx={{ textTransform: 'unset', width: '100%' }}
               variant={'contained'}
               onClick={() => {
-                localStorage.setItem('prevPath', window.location.pathname);
-                navigate(`/audit-request/${data.id}/customer`);
+                handleOpen();
               }}
             >
               View
@@ -389,6 +405,27 @@ const AuditMessage = ({ message, handleError }) => {
 
 export default AuditMessage;
 
+const infoWrapperSx = theme => ({
+  padding: '30px 60px 60px',
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  gap: '40px',
+  position: 'relative',
+  '& h3': {
+    fontSize: '24px',
+    fontWeight: 500,
+  },
+  [theme.breakpoints.down('sm')]: {
+    gap: '20px',
+    padding: '10px',
+    paddingTop: '35px',
+    '& h3': {
+      fontSize: '20px',
+    },
+  },
+});
+
 const statusWrapper = theme => ({
   display: 'flex',
   alignItems: 'center',
@@ -416,14 +453,19 @@ const modalSx = theme => ({
   top: '50%',
   left: '50%',
   transform: 'translate(-50%, -50%)',
-  width: 700,
+  width: 1000,
+  maxHeight: '90%',
+  // height: '100%',
+  overflowY: 'auto',
   bgcolor: 'background.paper',
   boxShadow: 24,
   borderRadius: '10px',
-  [theme.breakpoints.down('xs')]: {
-    width: 380,
+  [theme.breakpoints.down('md')]: {
+    maxWidth: 700,
+    width: 'unset',
   },
-  [theme.breakpoints.down('xxs')]: {
-    width: 310,
+  [theme.breakpoints.down('xs')]: {
+    maxWidth: '95%',
+    width: '100%',
   },
 });

@@ -31,7 +31,7 @@ const AuditInfoPage = () => {
   if (!auditConfirm && !notFound) {
     return (
       <Layout>
-        <CustomCard sx={[wrapper, { justifyContent: 'center' }]}>
+        <CustomCard sx={[wrapperCustom, { justifyContent: 'center' }]}>
           <Loader />
         </CustomCard>
       </Layout>
@@ -42,13 +42,39 @@ const AuditInfoPage = () => {
     return <NotFound />;
   }
   if (auditConfirm?.id && !notFound) {
-    return <AuditInfo audit={auditConfirm} confirmed={true} issues={issues} />;
+    return (
+      <Layout>
+        <CustomCard sx={wrapper}>
+          <AuditInfo audit={auditConfirm} confirmed={true} issues={issues} />
+        </CustomCard>
+      </Layout>
+    );
   }
 };
 
 export default AuditInfoPage;
 
 const wrapper = theme => ({
+  padding: '30px 60px 60px',
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  gap: '40px',
+  position: 'relative',
+  '& h3': {
+    fontSize: '24px',
+    fontWeight: 500,
+  },
+  [theme.breakpoints.down('sm')]: {
+    gap: '40px',
+    padding: '25px 20px 30px',
+    '& h3': {
+      fontSize: '20px',
+    },
+  },
+});
+
+const wrapperCustom = theme => ({
   padding: '48px 74px 80px',
   display: 'flex',
   flexDirection: 'column',
