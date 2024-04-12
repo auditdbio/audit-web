@@ -13,7 +13,6 @@ const GithubTreeNode = ({
   selected,
   deletedFromField,
   handleSelectAll,
-  handleRemoveAll,
 }) => {
   const [field, _, filedHelper] = useField('scope');
   const { sha, repoOwner } = useSelector(state => state.github);
@@ -234,9 +233,21 @@ const GithubTreeNode = ({
         )}
         {isTree ? (
           isTreeOpen ? (
-            <FolderOpenIcon color={includes ? 'primary' : 'disabled'} />
+            <FolderOpenIcon
+              onClick={() =>
+                !isTree ? handleAddRemove(node) : handleToggle(node)
+              }
+              sx={{ cursor: 'pointer' }}
+              color={includes ? 'primary' : 'disabled'}
+            />
           ) : (
-            <FolderIcon color={includes ? 'primary' : 'disabled'} />
+            <FolderIcon
+              onClick={() =>
+                !isTree ? handleAddRemove(node) : handleToggle(node)
+              }
+              sx={{ cursor: 'pointer' }}
+              color={includes ? 'primary' : 'disabled'}
+            />
           )
         ) : (
           <InsertDriveFileIcon
@@ -271,7 +282,6 @@ const GithubTreeNode = ({
                   selected={selected}
                   deletedFromField={deletedFromField}
                   handleSelectAll={handleSelectAll}
-                  handleRemoveAll={handleRemoveAll}
                 />
               </li>
             ))}
@@ -287,7 +297,6 @@ const GithubTree = ({
   selected,
   deletedFromField,
   handleSelectAll,
-  handleRemoveAll,
 }) => {
   return (
     <ul style={ulStyle({ inner: false })}>
@@ -299,7 +308,6 @@ const GithubTree = ({
             selected={selected}
             deletedFromField={deletedFromField}
             handleSelectAll={handleSelectAll}
-            handleRemoveAll={handleRemoveAll}
           />
         </li>
       ))}
