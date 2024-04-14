@@ -22,7 +22,6 @@ import {
   ERROR_IDENTITY,
   GET_PROFILE,
   GET_PUBLIC_PROFILE,
-  NEED_TO_SELECT_ROLE,
 } from '../actions/types.js';
 
 const initialState = {
@@ -32,7 +31,6 @@ const initialState = {
   error: null,
   success: null,
   publicUser: null,
-  needToSelectRole: false,
 };
 
 export const userReducer = (state = initialState, action) => {
@@ -92,12 +90,7 @@ export const userReducer = (state = initialState, action) => {
     case LOG_OUT:
       return { ...initialState, token: '', user: {} };
     case SELECT_ROLE:
-      return { ...state, user: action.payload, needToSelectRole: false };
-    case NEED_TO_SELECT_ROLE:
-      return {
-        ...state,
-        needToSelectRole: true,
-      };
+      return { ...state, user: action.payload };
     case UPDATE_USER:
       return {
         ...state,
@@ -132,28 +125,24 @@ export const userReducer = (state = initialState, action) => {
         ...state,
         user: action.payload,
         success: 'Switched to customer role',
-        needToSelectRole: false,
       };
     case CHANGE_ROLE_DONT_HAVE_PROFILE_CUSTOMER:
       return {
         ...state,
         user: action.payload,
         success: 'Fill your customer profile and create some projects',
-        needToSelectRole: false,
       };
     case CHANGE_ROLE_HAVE_PROFILE_AUDITOR:
       return {
         ...state,
         user: action.payload,
         success: 'Switched to auditor role',
-        needToSelectRole: false,
       };
     case CHANGE_ROLE_DONT_HAVE_PROFILE_AUDITOR:
       return {
         ...state,
         user: action.payload,
         success: 'Fill your auditor profile',
-        needToSelectRole: false,
       };
     default:
       return state;

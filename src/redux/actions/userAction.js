@@ -27,7 +27,6 @@ import {
   DELETE_LINKED_ACCOUNT,
   GET_PROFILE,
   GET_PUBLIC_PROFILE,
-  NEED_TO_SELECT_ROLE,
 } from './types.js';
 import { savePublicReport } from './auditAction.js';
 
@@ -43,9 +42,7 @@ export const signUpGithub = data => {
         localStorage.setItem('user', JSON.stringify(data.user));
         dispatch({ type: USER_SIGNIN, payload: data });
 
-        if (data.choose_role) {
-          dispatch({ type: NEED_TO_SELECT_ROLE });
-        } else if (data.user?.is_new) {
+        if (data.user?.is_new) {
           axios.patch(
             `${API_URL}/user/${data.user?.id}`,
             { is_new: false },
@@ -58,7 +55,14 @@ export const signUpGithub = data => {
       })
       .catch(({ response }) => {
         console.error(response);
-        dispatch({ type: SIGN_IN_ERROR, payload: 'Sign In Failed' });
+        if (
+          response?.status === 400 &&
+          response?.data === 'ServiceError: Role required'
+        ) {
+          history.push('/sign-up?select_role=true');
+        } else {
+          dispatch({ type: SIGN_IN_ERROR, payload: 'Sign In Failed' });
+        }
       });
   };
 };

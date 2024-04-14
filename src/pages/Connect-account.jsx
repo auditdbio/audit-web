@@ -1,9 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { CustomCard } from '../components/custom/Card.jsx';
 import Layout from '../styles/Layout.jsx';
 import { useSearchParams, useNavigate } from 'react-router-dom/dist';
 import {
-  changeRole,
   clearUserError,
   connect_account,
   signUpGithub,
@@ -14,8 +13,6 @@ import { Box } from '@mui/system';
 import { Typography } from '@mui/material';
 import GitHubIcon from '@mui/icons-material/GitHub.js';
 import CustomSnackbar from '../components/custom/CustomSnackbar.jsx';
-import RoleModal from '../components/modal/RoleModal.jsx';
-import { AUDITOR } from '../redux/actions/types.js';
 import { isAuth } from '../lib/helper.js';
 
 const ConnectAccount = () => {
@@ -23,8 +20,7 @@ const ConnectAccount = () => {
   const navigate = useNavigate();
 
   const [searchParam] = useSearchParams();
-  const { error, user, needToSelectRole } = useSelector(s => s.user);
-  const [modalSelectedRole, setModalSelectedRole] = useState(AUDITOR);
+  const { error, user } = useSelector(s => s.user);
 
   useEffect(() => {
     const state = JSON.parse(decodeURIComponent(searchParam.get('state')));
@@ -44,7 +40,7 @@ const ConnectAccount = () => {
   }, []);
 
   useEffect(() => {
-    if (isAuth() && !needToSelectRole) {
+    if (isAuth()) {
       navigate('/');
     }
   }, [isAuth()]);
@@ -61,14 +57,6 @@ const ConnectAccount = () => {
           navigate('/sign-in');
         }}
       />
-
-      {needToSelectRole && (
-        <RoleModal
-          onConfirm={() => dispatch(changeRole(modalSelectedRole, user?.id))}
-          role={modalSelectedRole}
-          setRole={setModalSelectedRole}
-        />
-      )}
 
       <CustomCard sx={cardWrapper}>
         <Box sx={innerWrapper}>

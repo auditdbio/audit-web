@@ -1,4 +1,8 @@
 import React, { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useSearchParams } from 'react-router-dom/dist';
+import { Form, Formik } from 'formik';
+import * as Yup from 'yup';
 import {
   Box,
   Tabs,
@@ -7,29 +11,28 @@ import {
   Button,
   useMediaQuery,
 } from '@mui/material';
+import GitHubIcon from '@mui/icons-material/GitHub';
 import theme, { radiusOfComponents } from '../../../styles/themes.js';
 import PasswordField from '../fields/password-field.jsx';
-import { Form, Formik } from 'formik';
-import * as Yup from 'yup';
 import SimpleField from '../fields/simple-field.jsx';
-import { useDispatch, useSelector } from 'react-redux';
 import { clearUserError, signUp } from '../../../redux/actions/userAction.js';
 import CustomSnackbar from '../../custom/CustomSnackbar.jsx';
 import { addTestsLabel, isAuth } from '../../../lib/helper.js';
-import GitHubIcon from '@mui/icons-material/GitHub';
 import RoleModal from '../../modal/RoleModal.jsx';
-
-const GITHUB_ID = import.meta.env.VITE_GITHUB_CLIENT_ID;
-const BASE_URL = import.meta.env.VITE_BASE_URL;
 import { AUDITOR, CUSTOMER } from '../../../redux/actions/types.js';
+import { BASE_URL, GITHUB_CLIENT_ID } from '../../../services/urls.js';
 
 const SignupForm = () => {
-  const [currentRole, setCurrentRole] = useState('auditor');
   const dispatch = useDispatch();
   const matchMd = useMediaQuery(theme.breakpoints.down('md'));
+
+  const [searchParams] = useSearchParams();
   const error = useSelector(s => s.user.error);
-  const [open, setOpen] = useState(false);
+
+  const [open, setOpen] = useState(() => searchParams.get('select_role'));
+  const [currentRole, setCurrentRole] = useState('auditor');
   const [isAuditor, setIsAuditor] = useState(AUDITOR);
+
   const initialValues = {
     current_role: '',
     name: '',
@@ -47,7 +50,7 @@ const SignupForm = () => {
       }),
     );
     window.open(
-      `https://github.com/login/oauth/authorize?client_id=${GITHUB_ID}&redirect_uri=${BASE_URL}oauth/callback&scope=read:user,user:email&state=${state}`,
+      `https://github.com/login/oauth/authorize?client_id=${GITHUB_CLIENT_ID}&redirect_uri=${BASE_URL}oauth/callback&scope=read:user,user:email&state=${state}`,
       '_self',
     );
   };

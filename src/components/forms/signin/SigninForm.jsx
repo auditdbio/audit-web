@@ -15,9 +15,7 @@ import {
   clearUserSuccess,
   signIn,
 } from '../../../redux/actions/userAction.js';
-
-const GITHUB_ID = import.meta.env.VITE_GITHUB_CLIENT_ID;
-const BASE_URL = import.meta.env.VITE_BASE_URL;
+import { BASE_URL, GITHUB_CLIENT_ID } from '../../../services/urls.js';
 
 const SigninForm = () => {
   const dispatch = useDispatch();
@@ -42,7 +40,7 @@ const SigninForm = () => {
       }),
     );
     window.open(
-      `https://github.com/login/oauth/authorize?client_id=${GITHUB_ID}&redirect_uri=${BASE_URL}oauth/callback&scope=read:user,user:email&state=${state}`,
+      `https://github.com/login/oauth/authorize?client_id=${GITHUB_CLIENT_ID}&redirect_uri=${BASE_URL}oauth/callback&scope=read:user,user:email&state=${state}`,
       '_self',
     );
   };
