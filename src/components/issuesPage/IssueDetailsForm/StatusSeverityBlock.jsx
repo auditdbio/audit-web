@@ -47,8 +47,8 @@ const StatusSeverityBlock = ({
 
   return (
     <Box sx={issueStatusBlock}>
-      <Box>
-        <Box sx={{ mb: '20px' }}>
+      <Box sx={[issueWrapperSx, !editMode ? { gap: '30px!important' } : {}]}>
+        <Box sx={issueInnerWrapperSx}>
           <Box sx={statusBlockAlign}>
             <Typography
               onClick={() => isPublic && setStatusListOpen(true)}
@@ -252,7 +252,7 @@ const StatusSeverityBlock = ({
         )}
 
         {editMode && user.current_role === AUDITOR && !isPublic && (
-          <Box sx={[statusBlockAlign, { mt: '20px' }]}>
+          <Box sx={[statusBlockAlign]}>
             <FormControlLabel
               label={
                 <Typography sx={{ fontSize: '20px', fontWeight: 500 }}>
@@ -316,19 +316,42 @@ const StatusSeverityBlock = ({
 
 export default StatusSeverityBlock;
 
+const issueWrapperSx = theme => ({
+  display: 'flex',
+  gap: '35px',
+  [theme.breakpoints.down('sm')]: {
+    gap: '15px',
+  },
+  [theme.breakpoints.down(700)]: {
+    flexDirection: 'column',
+    gap: '25px',
+  },
+});
+
+const issueInnerWrapperSx = theme => ({
+  flexDirection: 'column',
+  gap: '10px',
+  display: 'flex',
+  alignItems: 'flex-start',
+  [theme.breakpoints.down(700)]: {
+    alignItems: 'center',
+  },
+});
+
 const issueStatusBlock = theme => ({
   display: 'flex',
-  flexDirection: 'column',
+  // flexDirection: 'column',
   justifyContent: 'space-between',
-  width: '20%',
-  padding: '40px 10px 0px 25px',
-  [theme.breakpoints.down('sm')]: {
-    width: '30%',
-  },
+  margin: '20px 0',
+  alignItems: 'flex-start',
+  // width: '20%',
+  // padding: '40px 10px 0px 25px',
   [theme.breakpoints.down('xs')]: {
-    padding: '40px 10px',
+    flexDirection: 'column',
+    padding: '20px 10px',
     alignItems: 'center',
-    width: '80%',
+    margin: '0',
+    // width: '80%',
   },
 });
 
@@ -352,7 +375,7 @@ const statusBlockTitle = theme => ({
 });
 
 const severityWrapper = {
-  mb: '30px',
+  // mb: '30px',
   '& div.MuiFormControl-root': {
     width: '100%',
   },
@@ -383,7 +406,7 @@ const statusValueSx = status => {
   if (status === VERIFICATION || status === IN_PROGRESS) color = '#5b97bb';
   if (status === FIXED || status === NOT_FIXED) color = '#09C010';
 
-  return { fontSize: '20px', fontWeight: 500, mb: '10px', color };
+  return { fontSize: '20px', fontWeight: 500, color };
 };
 
 const categoryInput = theme => ({
@@ -396,12 +419,13 @@ const categoryInput = theme => ({
 const buttonsBox = {
   display: 'flex',
   justifyContent: 'flex-end',
-  pt: '20px',
+  // pt: '20px',
   position: 'relative',
   [theme.breakpoints.down('xs')]: {
     justifyContent: 'center',
     pt: 0,
-    mb: '20px',
+    mt: '20px',
+    // mb: '20px',
   },
 };
 
@@ -419,7 +443,7 @@ const issueButton = theme => ({
   [theme.breakpoints.down('xs')]: {
     fontSize: '14px',
     padding: '10px 30px',
-    mt: '20px',
+    // mt: '20px',
   },
 });
 

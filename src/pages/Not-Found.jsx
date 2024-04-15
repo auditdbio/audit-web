@@ -8,11 +8,14 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { useNavigate } from 'react-router-dom/dist';
 import { AUDITOR } from '../redux/actions/types.js';
 import NotFound404 from '../components/images/404.png';
+import Headings from '../router/Headings.jsx';
 
 const NotFound = ({ role }) => {
   const navigate = useNavigate();
   return (
     <Layout>
+      <Headings title="Page Not Found" />
+
       <CustomCard sx={wrapper}>
         <Button
           sx={backButtonSx}

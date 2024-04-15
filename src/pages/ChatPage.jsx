@@ -12,6 +12,7 @@ import MenuIcon from '@mui/icons-material/Menu.js';
 import { useNavigate } from 'react-router-dom/dist';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack.js';
 import { AUDITOR, CUSTOMER } from '../redux/actions/types.js';
+import Headings from '../router/Headings.jsx';
 
 const ChatPage = () => {
   const dispatch = useDispatch();
@@ -37,7 +38,8 @@ const ChatPage = () => {
         !customer?.first_name)
     ) {
       dispatch(chatSetError('Fill your profile'));
-      navigate('/profile/user-info');
+      const role = user.current_role?.[0];
+      navigate(`/${role}/${user.id}`);
     }
   }, [user, auditor, customer]);
 
@@ -76,9 +78,11 @@ const ChatPage = () => {
 
   return (
     <Layout sx={layoutSx}>
+      <Headings title="Chat" noIndex={true} />
+
       <CustomCard sx={wrapper}>
         <Button
-          variant={'text'}
+          variant="text"
           sx={{ textTransform: 'unset', ml: '-15px', paddingLeft: '0' }}
           onClick={handleGoBack}
         >

@@ -8,6 +8,7 @@ import { CustomCard } from '../components/custom/Card';
 import IssueDetailsForm from '../components/issuesPage/IssueDetailsForm/IssueDetailsForm.jsx';
 import PublicIssueDetailsForm from './PublicIssueDetailForm.jsx';
 import { useSelector } from 'react-redux';
+import Headings from '../router/Headings.jsx';
 
 const CreateIssuePage = ({ isPublic, saved }) => {
   const navigate = useNavigate();
@@ -17,7 +18,15 @@ const CreateIssuePage = ({ isPublic, saved }) => {
   );
 
   return (
-    <Layout>
+    <Layout
+      sx={{ padding: '40px' }}
+      containerSx={{
+        maxWidth: 'unset!important',
+        padding: '0 35px!important',
+      }}
+    >
+      <Headings title={`New Issue | ${audit?.project_name}`} noIndex={true} />
+
       <CustomCard sx={wrapper}>
         <Button
           sx={backButtonSx}
@@ -44,6 +53,7 @@ const wrapper = theme => ({
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'center',
+  maxWidth: 'unset',
   gap: '20px',
   [theme.breakpoints.down('md')]: {
     padding: '38px 44px 60px',

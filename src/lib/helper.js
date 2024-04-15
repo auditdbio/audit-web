@@ -18,10 +18,17 @@ export const addSpacesToCamelCase = str => {
   return typeof str === 'string' ? str.replace(/([a-z])([A-Z])/g, '$1 $2') : '';
 };
 
+export const capitalize = str => {
+  return typeof str === 'string' && str.length
+    ? str[0].toUpperCase() + str.slice(1).toLowerCase()
+    : '';
+};
+
 export const reportBuilder = (report, issuesArray) => {
   return {
     auditor_name: report.auditor_name,
     project_name: report.project_name,
+    profile_link: report.profile_link || null,
     report_data: [
       {
         type: 'markdown',

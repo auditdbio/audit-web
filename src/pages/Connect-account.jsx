@@ -3,9 +3,11 @@ import { CustomCard } from '../components/custom/Card.jsx';
 import Layout from '../styles/Layout.jsx';
 import { useSearchParams, useNavigate } from 'react-router-dom/dist';
 import {
-  clearUserError,
+  authGithub,
   connect_account,
+  connect_auth_account,
   signUpGithub,
+  clearUserError,
 } from '../redux/actions/userAction.js';
 import { useDispatch, useSelector } from 'react-redux';
 import Loader from '../components/Loader.jsx';
@@ -21,6 +23,11 @@ const ConnectAccount = () => {
 
   const [searchParam] = useSearchParams();
   const { error, user } = useSelector(s => s.user);
+  const github = useSelector(s =>
+    s.user?.user?.linked_accounts?.find(
+      el => el?.name?.toLowerCase() === 'github',
+    ),
+  );
 
   useEffect(() => {
     const state = JSON.parse(decodeURIComponent(searchParam.get('state')));
@@ -34,6 +41,12 @@ const ConnectAccount = () => {
 
     if (state?.auth) {
       dispatch(signUpGithub(values));
+    } else if (state?.authExtended) {
+      if (github) {
+        dispatch(authGithub(user.id, values));
+      } else {
+        dispatch(connect_auth_account(user.id, values));
+      }
     } else {
       dispatch(connect_account(user?.id, values));
     }

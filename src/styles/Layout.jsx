@@ -4,14 +4,14 @@ import Header from '../components/header/Header.jsx';
 import Box from '@mui/material/Box';
 import Footer from '../components/footer/Footer.jsx';
 
-const Layout = ({ children, sx }) => {
+const Layout = ({ children, sx, containerSx }) => {
   return (
     <ContentWrapper>
-      <Header />
+      <Header containerSx={containerSx} />
       <Box sx={[layoutStyle, sx]} component="main">
         {children}
       </Box>
-      <Footer />
+      <Footer containerSx={containerSx} />
     </ContentWrapper>
   );
 };

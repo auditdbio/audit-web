@@ -22,6 +22,8 @@ import { addTestsLabel } from '../../lib/helper.js';
 export const UserMenu = ({ open, handleClose, anchor, userAvatar, pages }) => {
   const dispatch = useDispatch();
   const reduxUser = useSelector(state => state.user.user);
+  const { auditor } = useSelector(s => s.auditor);
+  const { customer } = useSelector(s => s.customer);
   const navigate = useNavigate();
   const matchSm = useMediaQuery(theme.breakpoints.down(1080));
 
@@ -39,7 +41,12 @@ export const UserMenu = ({ open, handleClose, anchor, userAvatar, pages }) => {
   };
 
   const handleMyAccountClick = () => {
-    navigate('/profile/user-info');
+    const rolePrefix = reduxUser.current_role?.[0];
+    const link_id =
+      (reduxUser.current_role === AUDITOR
+        ? auditor?.link_id
+        : customer?.link_id) || reduxUser.id;
+    navigate(`/${rolePrefix}/${link_id}`);
   };
 
   return (

@@ -26,8 +26,7 @@ import { CLEAR_AUDIT } from '../redux/actions/types.js';
 import { useParams } from 'react-router-dom';
 import Loader from '../components/Loader.jsx';
 import CustomSnackbar from '../components/custom/CustomSnackbar.jsx';
-import Markdown from '../components/markdown/Markdown.jsx';
-import TagsList from '../components/tagsList.jsx';
+import Headings from '../router/Headings.jsx';
 
 const PublicConstructor = ({ saved, isPublic }) => {
   const matchXs = useMediaQuery(theme.breakpoints.down('xs'));
@@ -110,6 +109,7 @@ const PublicConstructor = ({ saved, isPublic }) => {
   if (!audit?.id && saved) {
     return (
       <Layout>
+        <Headings title="Audit Builder" />
         <CustomCard
           sx={[wrapper, { height: '100%', justifyContent: 'center' }]}
         >
@@ -118,10 +118,18 @@ const PublicConstructor = ({ saved, isPublic }) => {
       </Layout>
     );
   }
-  //
+
   if ((saved && audit) || (!audit && !saved)) {
     return (
-      <Layout sx={layoutSx}>
+      <Layout
+        sx={{ padding: '40px' }}
+        containerSx={{
+          maxWidth: 'unset!important',
+          padding: '0 35px!important',
+        }}
+      >
+        <Headings title="Audit Builder" />
+
         <CustomCard sx={wrapper}>
           <Button
             onClick={() =>
@@ -159,13 +167,7 @@ const PublicConstructor = ({ saved, isPublic }) => {
               resetForm,
             }) => {
               return (
-                <Form
-                  onSubmit={handleSubmit}
-                  style={{
-                    width: '100%',
-                    maxWidth: '1300px',
-                  }}
-                >
+                <Form onSubmit={handleSubmit} style={{ width: '100%' }}>
                   <CustomSnackbar
                     autoHideDuration={5000}
                     open={!!successMessage}
@@ -444,6 +446,7 @@ const wrapper = theme => ({
   flexDirection: 'column',
   alignItems: 'center',
   position: 'relative',
+  maxWidth: 'unset',
   gap: '20px',
   '& h3': {
     fontSize: '37px',

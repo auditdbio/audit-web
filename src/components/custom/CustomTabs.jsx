@@ -3,19 +3,41 @@ import { Tab, Tabs } from '@mui/material';
 import { useNavigate } from 'react-router-dom/dist';
 import { useParams } from 'react-router-dom';
 import { addTestsLabel } from '../../lib/helper.js';
+import { AUDITOR } from '../../redux/actions/types.js';
 
-const CustomTabs = ({ selectedTabSx, name, tabs, setTab, choosenTab }) => {
+const CustomTabs = ({
+  selectedTabSx,
+  name,
+  tabs,
+  setTab,
+  choosenTab,
+  user,
+  auditor,
+  customer,
+}) => {
+  const navigate = useNavigate();
   const { tab } = useParams();
   const [tabState, setTabState] = useState(choosenTab);
-  const navigate = useNavigate();
+
   const handleChoose = value => {
-    navigate(`/profile/${value}`);
     setTabState(value);
     setTab(value);
+    if (value === 'user-info') {
+      const rolePrefix = user.current_role?.[0];
+      const link_id =
+        (user.current_role === AUDITOR
+          ? auditor?.link_id
+          : customer?.link_id) || user.id;
+      navigate(`/${rolePrefix}/${link_id}`);
+    } else {
+      navigate(`/profile/${value}`);
+    }
   };
+
   useEffect(() => {
-    setTabState(tab);
-  }, [tab, tabState]);
+    if (tab) setTabState(tab);
+  }, [tab]);
+
   return (
     <Tabs
       value={tabState}

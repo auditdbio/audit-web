@@ -37,6 +37,7 @@ import NotFound from './Not-Found.jsx';
 import { FIXED, NOT_FIXED } from '../components/issuesPage/constants.js';
 import { setCurrentChat } from '../redux/actions/chatActions.js';
 import ChatIcon from '../components/icons/ChatIcon.jsx';
+import Headings from '../router/Headings.jsx';
 
 const AuditOffer = () => {
   const { auditId } = useParams();
@@ -114,6 +115,7 @@ const AuditOffer = () => {
   if (!audit?.id && !notFound) {
     return (
       <Layout>
+        <Headings title="Audit" />
         <CustomCard
           sx={[wrapper, { height: '100%', justifyContent: 'center' }]}
         >
@@ -125,7 +127,15 @@ const AuditOffer = () => {
 
   if (audit && !notFound) {
     return (
-      <Layout>
+      <Layout
+        sx={{ padding: '40px' }}
+        containerSx={{
+          maxWidth: 'unset!important',
+          padding: '0 35px!important',
+        }}
+      >
+        <Headings title={`${audit?.project_name} | Audit`} />
+
         <CustomCard sx={wrapper}>
           <Formik
             initialValues={{
@@ -141,10 +151,7 @@ const AuditOffer = () => {
           >
             {({ handleSubmit, setFieldValue }) => {
               return (
-                <Form
-                  onSubmit={handleSubmit}
-                  style={{ width: '100%', maxWidth: '1300px' }}
-                >
+                <Form onSubmit={handleSubmit} style={{ width: '100%' }}>
                   <CustomSnackbar
                     autoHideDuration={5000}
                     open={!!error || !!successMessage}
@@ -460,6 +467,7 @@ const wrapper = theme => ({
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'center',
+  maxWidth: 'unset',
   gap: '20px',
   '& h3': {
     fontSize: '24px',

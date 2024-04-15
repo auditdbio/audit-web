@@ -22,6 +22,8 @@ import {
   ERROR_IDENTITY,
   GET_PROFILE,
   GET_PUBLIC_PROFILE,
+  CLEAR_MESSAGES,
+  GET_MY_PROFILE,
 } from '../actions/types.js';
 
 const initialState = {
@@ -120,6 +122,8 @@ export const userReducer = (state = initialState, action) => {
       };
     case CLEAR_SUCCESS:
       return { ...state, success: null };
+    case CLEAR_MESSAGES:
+      return { ...state, success: null, error: null };
     case CHANGE_ROLE_HAVE_PROFILE_CUSTOMER:
       return {
         ...state,
@@ -143,6 +147,11 @@ export const userReducer = (state = initialState, action) => {
         ...state,
         user: action.payload,
         success: 'Fill your auditor profile',
+      };
+    case GET_MY_PROFILE:
+      return {
+        ...state,
+        user: action.payload,
       };
     default:
       return state;

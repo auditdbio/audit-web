@@ -9,10 +9,10 @@ import AuthorizedOptions from './AuthorizedOptions.jsx';
 import UnauthorizedOptions from './UnauthorizedOptions.jsx';
 import { addTestsLabel, isAuth } from '../../lib/helper.js';
 
-const Header = () => {
+const Header = ({ containerSx }) => {
   return (
     <AppBar position="static" color="transparent" elevation={0}>
-      <Container sx={container}>
+      <Container sx={[container, containerSx]}>
         <Toolbar disableGutters>
           <Box sx={wrapper}>
             <Box sx={leftSide}>

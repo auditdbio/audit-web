@@ -8,6 +8,7 @@ import Loader from './Loader.jsx';
 import CustomSnackbar from './custom/CustomSnackbar.jsx';
 import { addTestsLabel } from '../lib/helper.js';
 import ProjectCardList from './Project-card-list.jsx';
+import Headings from '../router/Headings.jsx';
 
 const Projects = ({ role }) => {
   const navigate = useNavigate();
@@ -48,6 +49,8 @@ const Projects = ({ role }) => {
   } else {
     return (
       <Box sx={wrapper}>
+        <Headings title={role === CUSTOMER ? 'My Projects' : 'My Audits'} />
+
         <Box sx={buttonWrapper}>
           <Button
             sx={[buttonSx, role === 'auditor' ? buttonAuditorSx : {}]}

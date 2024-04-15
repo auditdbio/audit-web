@@ -18,6 +18,7 @@ import {
   getChatMessages,
 } from '../../redux/actions/chatActions.js';
 import AttachFileModal from './AttachFileModal.jsx';
+import Headings from '../../router/Headings.jsx';
 
 const CurrentChat = ({
   chatMessages,
@@ -171,6 +172,7 @@ const CurrentChat = ({
         currentChat={currentChat}
         user={user}
       />
+      <Headings title={`${currentChat?.name || 'Chat'} | Chat`} />
 
       <Box sx={wrapper}>
         <Box sx={currentChatHeader}>
@@ -186,7 +188,7 @@ const CurrentChat = ({
           </IconButton>
 
           <RouterLink
-            to={`/user/${userLinkData.id}/${userLinkData.role}`}
+            to={`/${userLinkData.role?.toLowerCase()[0]}/${userLinkData.id}`}
             onClick={showUserProfile}
           >
             <Box sx={avatarWrapper(currentChat?.role)}>
@@ -204,7 +206,7 @@ const CurrentChat = ({
           <Box sx={userInfo}>
             <Link
               component={RouterLink}
-              to={`/user/${userLinkData.id}/${userLinkData.role}`}
+              to={`/${userLinkData.role?.toLowerCase()[0]}/${userLinkData.id}`}
               sx={userNameSx}
               onClick={showUserProfile}
               {...addTestsLabel('profile-link')}
