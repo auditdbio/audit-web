@@ -37,6 +37,7 @@ import NotFound from './Not-Found.jsx';
 import { FIXED, NOT_FIXED } from '../components/issuesPage/constants.js';
 import { setCurrentChat } from '../redux/actions/chatActions.js';
 import ChatIcon from '../components/icons/ChatIcon.jsx';
+import Headings from '../router/Headings.jsx';
 
 const AuditOffer = () => {
   const { auditId } = useParams();
@@ -114,6 +115,7 @@ const AuditOffer = () => {
   if (!audit?.id && !notFound) {
     return (
       <Layout>
+        <Headings title="Audit" />
         <CustomCard
           sx={[wrapper, { height: '100%', justifyContent: 'center' }]}
         >
@@ -132,6 +134,8 @@ const AuditOffer = () => {
           padding: '0 35px!important',
         }}
       >
+        <Headings title={`${audit?.project_name} | Audit`} />
+
         <CustomCard sx={wrapper}>
           <Formik
             initialValues={{

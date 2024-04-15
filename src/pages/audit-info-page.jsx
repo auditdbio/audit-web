@@ -9,6 +9,7 @@ import NotFound from './Not-Found.jsx';
 import { getIssues } from '../redux/actions/issueAction.js';
 import { CLEAR_AUDIT } from '../redux/actions/types.js';
 import { CustomCard } from '../components/custom/Card.jsx';
+import Headings from '../router/Headings.jsx';
 
 const AuditInfoPage = () => {
   const { id } = useParams();
@@ -31,6 +32,7 @@ const AuditInfoPage = () => {
   if (!auditConfirm && !notFound) {
     return (
       <Layout>
+        <Headings title="Audit Info" />
         <CustomCard sx={[wrapper, { justifyContent: 'center' }]}>
           <Loader />
         </CustomCard>

@@ -2,10 +2,13 @@ import React from 'react';
 import Layout from '../styles/Layout.jsx';
 import { CustomCard } from '../components/custom/Card';
 import SigninForm from '../components/forms/signin/SigninForm.jsx';
+import Headings from '../router/Headings.jsx';
 
 const SigninPage = () => {
   return (
     <Layout>
+      <Headings title="Sign In" />
+
       <CustomCard sx={cardWrapper}>
         <SigninForm />
       </CustomCard>

@@ -10,6 +10,7 @@ import { searchAuditor } from '../redux/actions/auditorAction.js';
 import theme from '../styles/themes.js';
 import CustomPagination from '../components/custom/CustomPagination.jsx';
 import { addTestsLabel } from '../lib/helper.js';
+import Headings from '../router/Headings.jsx';
 
 const AuditorsPage = () => {
   const dispatch = useDispatch();
@@ -96,6 +97,8 @@ const AuditorsPage = () => {
 
   return (
     <Layout>
+      <Headings title="Auditors" />
+
       <Box sx={wrapper}>
         <Box sx={headWrapper}>
           <Button

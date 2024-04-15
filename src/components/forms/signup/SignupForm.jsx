@@ -55,16 +55,16 @@ const SignupForm = () => {
         dispatch(signUp(newValue));
       }}
     >
-      {({ handleSubmit }) => (
+      {({ handleSubmit, errors }) => (
         <Form onSubmit={handleSubmit}>
           <Box sx={formStyle}>
             <Typography sx={titleStyle}>Choose who you want to be</Typography>
             <CustomSnackbar
               autoHideDuration={10000}
-              open={!!error}
+              open={!!error || !!Object.keys(errors).length}
               onClose={() => dispatch(clearUserError())}
               severity="error"
-              text={error}
+              text={error || Object.values(errors)[0]}
             />
             <Tabs
               value={currentRole}
@@ -172,13 +172,20 @@ const SignupForm = () => {
 export default SignupForm;
 
 const SignupSchema = Yup.object().shape({
-  password: Yup.string().min(2, 'Too Short!').required('Required'),
-  email: Yup.string().email('Invalid email').required('required'),
-  name: Yup.string().required('Required'),
+  password: Yup.string()
+    .min(6, 'Password is too short')
+    .required('Password is required'),
+  email: Yup.string().email('Invalid email').required('Email is required'),
+  name: Yup.string()
+    .required('Username is required')
+    .matches(
+      /^[A-Za-z0-9_-]+$/,
+      'Username may only contain alphanumeric characters, hyphens or underscore',
+    ),
   current_role: Yup.string(),
   confirmPassword: Yup.string()
     .oneOf([Yup.ref('password'), null], 'Passwords must match')
-    .required('Required'),
+    .required('Confirm password is required'),
 });
 
 const titleStyle = theme => ({

@@ -12,6 +12,7 @@ import { clearMessage } from '../redux/actions/auditAction.js';
 import CustomPagination from '../components/custom/CustomPagination.jsx';
 import { addTestsLabel } from '../lib/helper.js';
 import theme from '../styles/themes.js';
+import Headings from '../router/Headings.jsx';
 
 const ProjectPage = () => {
   const matchXs = useMediaQuery(theme.breakpoints.down('xs'));
@@ -102,6 +103,8 @@ const ProjectPage = () => {
 
   return (
     <Layout>
+      <Headings title="Projects" />
+
       <Box sx={wrapper}>
         <Box sx={projectTopWrapper}>
           <Button

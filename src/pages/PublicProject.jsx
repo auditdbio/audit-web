@@ -23,6 +23,7 @@ import OfferModal from '../components/modal/OfferModal.jsx';
 import { clearMessage } from '../redux/actions/auditAction.js';
 import { setCurrentChat } from '../redux/actions/chatActions.js';
 import ChatIcon from '../components/icons/ChatIcon.jsx';
+import Headings from '../router/Headings.jsx';
 
 const PublicProject = () => {
   const dispatch = useDispatch();
@@ -126,6 +127,7 @@ const PublicProject = () => {
   if (!project || !customer) {
     return (
       <Layout>
+        <Headings title="Projects" />
         <Box
           sx={[
             wrapper(user?.current_role),
@@ -140,6 +142,8 @@ const PublicProject = () => {
 
   return (
     <Layout>
+      <Headings title={`${project?.name} | Projects`} />
+
       <Box sx={wrapper(user?.current_role)}>
         <CustomSnackbar
           autoHideDuration={4000}

@@ -2,6 +2,7 @@ import React from 'react';
 import { Box, Grid } from '@mui/material';
 import AuditCard from './Audit-card.jsx';
 import { useSelector } from 'react-redux';
+import Headings from '../router/Headings.jsx';
 
 const Audits = () => {
   const auditRequests = useSelector(s => s.audits.auditRequests);
@@ -9,6 +10,8 @@ const Audits = () => {
 
   return (
     <Box sx={wrapper}>
+      <Headings title="My Audits" />
+
       <Grid container spacing={2}>
         {audits?.map(audit => (
           <Grid key={audit.id} item xs={6} md={3} sm={4} sx={gridItemStyle}>

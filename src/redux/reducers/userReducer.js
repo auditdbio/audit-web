@@ -22,6 +22,7 @@ import {
   ERROR_IDENTITY,
   GET_PROFILE,
   GET_PUBLIC_PROFILE,
+  CLEAR_MESSAGES,
   GET_MY_PROFILE,
 } from '../actions/types.js';
 
@@ -120,6 +121,8 @@ export const userReducer = (state = initialState, action) => {
       };
     case CLEAR_SUCCESS:
       return { ...state, success: null };
+    case CLEAR_MESSAGES:
+      return { ...state, success: null, error: null };
     case CHANGE_ROLE_HAVE_PROFILE_CUSTOMER:
       return {
         ...state,
