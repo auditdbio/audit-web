@@ -103,15 +103,7 @@ const AuditInfo = ({ audit, auditRequest, issues, confirmed, handleClose }) => {
   };
 
   return (
-    <>
-      <CustomSnackbar
-        autoHideDuration={5000}
-        open={!!error || !!successMessage}
-        severity={error ? 'error' : 'success'}
-        text={error || successMessage}
-        onClose={() => dispatch(clearMessage())}
-      />
-
+    <CustomCard sx={wrapper} className={'audit-info-wrapper'}>
       <Button
         sx={backButtonSx}
         onClick={() => {
@@ -369,11 +361,31 @@ const AuditInfo = ({ audit, auditRequest, issues, confirmed, handleClose }) => {
         handleAgree={handleDecline}
         handleDisagree={() => setIsModalOpen(false)}
       />
-    </>
+    </CustomCard>
   );
 };
 
 export default AuditInfo;
+
+const wrapper = theme => ({
+  padding: '30px 60px 60px',
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  gap: '40px',
+  position: 'relative',
+  '& h3': {
+    fontSize: '24px',
+    fontWeight: 500,
+  },
+  [theme.breakpoints.down('sm')]: {
+    gap: '40px',
+    padding: '25px 20px 30px',
+    '& h3': {
+      fontSize: '20px',
+    },
+  },
+});
 
 const titleSx = theme => ({
   fontWeight: 500,

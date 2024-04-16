@@ -315,13 +315,11 @@ const AuditMessage = ({ message, handleError }) => {
         aria-describedby="modal-modal-description"
       >
         <Box sx={modalSx}>
-          <Box sx={infoWrapperSx}>
-            <AuditInfo
-              audit={auditRequest}
-              handleClose={handleClose}
-              auditRequest={auditRequest}
-            />
-          </Box>
+          <AuditInfo
+            audit={auditRequest}
+            handleClose={handleClose}
+            auditRequest={auditRequest}
+          />
         </Box>
       </Modal>
       {/*<AuditInfo audit={auditRequest} auditRequest={auditRequest} />*/}
@@ -405,27 +403,6 @@ const AuditMessage = ({ message, handleError }) => {
 
 export default AuditMessage;
 
-const infoWrapperSx = theme => ({
-  padding: '30px 60px 60px',
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'center',
-  gap: '40px',
-  position: 'relative',
-  '& h3': {
-    fontSize: '24px',
-    fontWeight: 500,
-  },
-  [theme.breakpoints.down('sm')]: {
-    gap: '20px',
-    padding: '10px',
-    paddingTop: '35px',
-    '& h3': {
-      fontSize: '20px',
-    },
-  },
-});
-
 const statusWrapper = theme => ({
   display: 'flex',
   alignItems: 'center',
@@ -454,18 +431,39 @@ const modalSx = theme => ({
   left: '50%',
   transform: 'translate(-50%, -50%)',
   width: 1000,
-  maxHeight: '90%',
+  maxHeight: '700px',
   // height: '100%',
-  overflowY: 'auto',
+  // overflowY: 'auto',
   bgcolor: 'background.paper',
   boxShadow: 24,
   borderRadius: '10px',
+  height: '100%',
+  '& .audit-info-wrapper': {
+    overflowY: 'auto',
+    height: '100%',
+    borderRight: 'unset',
+    borderRadius: '10px',
+  },
+  '& .audit-request-wrapper': {
+    overflowY: 'auto',
+    height: '100%',
+    borderRight: 'unset',
+    borderRadius: '10px',
+  },
+  [theme.breakpoints.down('lg')]: {
+    maxHeight: '600px',
+  },
   [theme.breakpoints.down('md')]: {
     maxWidth: 700,
+    maxHeight: '450px',
     width: 'unset',
+  },
+  [theme.breakpoints.down('sm')]: {
+    maxHeight: '300px',
   },
   [theme.breakpoints.down('xs')]: {
     maxWidth: '95%',
     width: '100%',
+    maxHeight: '80%',
   },
 });

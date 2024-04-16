@@ -44,9 +44,7 @@ const AuditInfoPage = () => {
   if (auditConfirm?.id && !notFound) {
     return (
       <Layout>
-        <CustomCard sx={wrapper}>
-          <AuditInfo audit={auditConfirm} confirmed={true} issues={issues} />
-        </CustomCard>
+        <AuditInfo audit={auditConfirm} confirmed={true} issues={issues} />
       </Layout>
     );
   }

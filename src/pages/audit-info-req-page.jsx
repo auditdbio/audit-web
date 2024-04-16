@@ -37,9 +37,7 @@ const AuditInfoReqPage = () => {
   if (auditRequest?.id && !notFound) {
     return (
       <Layout>
-        <CustomCard sx={wrapper}>
-          <AuditInfo audit={auditRequest} auditRequest={auditRequest} />
-        </CustomCard>
+        <AuditInfo audit={auditRequest} auditRequest={auditRequest} />
       </Layout>
     );
   }
