@@ -163,6 +163,15 @@ const CurrentChat = ({
     localStorage.setItem('go-back', 'true');
   };
 
+  const handleCreateAuditRequest = () => {
+    localStorage.setItem('chat-path', `/chat/${currentChat?.chatId}`);
+    if (user.current_role === AUDITOR) {
+      navigate(`/customer-projects/${userLinkData.id}`);
+    } else {
+      navigate(`/my-projects/${userLinkData.id}`);
+    }
+  };
+
   return (
     <>
       <AttachFileModal
@@ -266,24 +275,34 @@ const CurrentChat = ({
             </Box>
           )}
         </Box>
-
-        <Box sx={sendBox}>
-          <CustomTextarea
-            maxRows={1}
-            onChange={handleMessageInput}
-            onKeyDown={messageHandleKeyDown}
-            value={newMessage}
-            placeholder="Type here..."
-            {...addTestsLabel('message-input')}
-          />
+        <Box sx={btnWrapper}>
+          <Box sx={sendBox}>
+            <CustomTextarea
+              maxRows={1}
+              onChange={handleMessageInput}
+              onKeyDown={messageHandleKeyDown}
+              value={newMessage}
+              placeholder="Type here..."
+              {...addTestsLabel('message-input')}
+            />
+            <Button
+              color={user.current_role === AUDITOR ? 'secondary' : 'primary'}
+              variant="contained"
+              sx={sendButton}
+              onClick={handleSend}
+              {...addTestsLabel('send-button')}
+            >
+              <SendMessageIcon />
+            </Button>
+          </Box>
           <Button
             color={user.current_role === AUDITOR ? 'secondary' : 'primary'}
-            variant="contained"
-            sx={sendButton}
-            onClick={handleSend}
-            {...addTestsLabel('send-button')}
+            variant={'contained'}
+            sx={requestBtn}
+            {...addTestsLabel('request-button')}
+            onClick={handleCreateAuditRequest}
           >
-            <SendMessageIcon />
+            Audit request
           </Button>
         </Box>
       </Box>
@@ -295,12 +314,30 @@ export default CurrentChat;
 
 const yearNow = new Date().getFullYear();
 
+const requestBtn = theme => ({
+  height: '55px',
+  padding: '10px!important',
+  textTransform: 'unset',
+  borderRadius: 0,
+  [theme.breakpoints.down(500)]: {
+    height: '48px',
+  },
+});
+
 const wrapper = theme => ({
   width: '70%',
   display: 'flex',
   flexDirection: 'column',
   [theme.breakpoints.down('sm')]: {
     width: '100%',
+  },
+});
+
+const btnWrapper = theme => ({
+  display: 'flex',
+  gap: '5px',
+  [theme.breakpoints.down(500)]: {
+    flexDirection: 'column',
   },
 });
 
@@ -484,18 +521,22 @@ const newMessagesSx = {
 const sendBox = {
   display: 'flex',
   height: '55px',
+  width: '100%',
   '& ::-webkit-scrollbar': {
     width: '8px !important',
   },
 };
 
 const sendButton = theme => ({
-  padding: '10px 50px',
+  padding: '10px 20px',
   borderRadius: 0,
   [theme.breakpoints.down('sm')]: {
-    padding: '10px 30px',
+    padding: '10px 10px',
+  },
+  [theme.breakpoints.down(500)]: {
+    height: '53px',
   },
   [theme.breakpoints.down('xs')]: {
-    padding: '10px 20px',
+    padding: '10px 10px',
   },
 });

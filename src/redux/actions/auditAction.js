@@ -28,7 +28,7 @@ import { ASSET_URL } from '../../services/urls.js';
 
 const API_URL = import.meta.env.VITE_API_BASE_URL;
 
-export const createRequest = (values, redirect, navigateTo) => {
+export const createRequest = (values, redirect, navigateTo, stay) => {
   return dispatch => {
     const token = Cookies.get('token');
     const current_role = JSON.parse(localStorage.getItem('user')).current_role;
@@ -50,11 +50,13 @@ export const createRequest = (values, redirect, navigateTo) => {
       )
       .then(({ data }) => {
         dispatch(getAuditsRequest(current_role));
-        if (!redirect) {
-          history.back();
-        } else if (navigateTo) {
-          history.push(navigateTo);
-        }
+        // if (!redirect && !stay) {
+        //   history.back();
+        // } else if (navigateTo && !stay) {
+        //   history.push(navigateTo);
+        // } else if (stay) {
+        //   null;
+        // }
         dispatch({ type: AUDIT_REQUEST_CREATE, payload: data });
       })
       .catch(({ response }) => {

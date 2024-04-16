@@ -50,6 +50,7 @@ import DeleteBadge from '../pages/Delete-badge.jsx';
 import Github from '../pages/Github.jsx';
 import ConnectAccount from '../pages/Connect-account.jsx';
 import DisclaimerPage from '../pages/DisclaimerPage.jsx';
+import UserProjects from '../pages/UserProjects.jsx';
 
 const AppRoutes = () => {
   const token = useSelector(s => s.user.token);
@@ -162,7 +163,6 @@ const AppRoutes = () => {
           element={<PublicConstructor isPublic={true} />}
         />
         <Route path="/projects" element={<ProjectPage />} />
-        <Route path="/projects/:id" element={<PublicProject />} />
         <Route path="/for-customers" element={<ForCustomer />} />
         <Route path="/for-auditors" element={<ForAuditor />} />
         <Route path="/auditors" element={<AuditorsPage />} />
@@ -193,6 +193,14 @@ const AppRoutes = () => {
           element={
             <PrivateRoute auth={{ isAuthenticated: isAuth() }}>
               <MyProjects />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/customer-projects/:id"
+          element={
+            <PrivateRoute auth={{ isAuthenticated: isAuth() }}>
+              <UserProjects />
             </PrivateRoute>
           }
         />

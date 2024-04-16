@@ -62,16 +62,11 @@ const ChatPage = () => {
   const handleGoBack = () => {
     if (localStorage.getItem('path')) {
       navigate(localStorage.getItem('path'));
+      localStorage.removeItem('path');
     } else {
       navigate(-1);
     }
   };
-
-  useEffect(() => {
-    return () => {
-      localStorage.removeItem('path');
-    };
-  }, []);
 
   return (
     <Layout sx={layoutSx}>
