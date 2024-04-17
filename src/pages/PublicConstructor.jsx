@@ -168,14 +168,13 @@ const PublicConstructor = ({ saved, isPublic }) => {
     }
   };
 
-  //
-  const handleGenerateReport = handleSubmit => {
+  const handleGenerateReport = (handleSubmit, values) => {
     if (isPublic) {
-      if (report?.auditor_name && report?.project_name && report?.description) {
-        const newData = reportBuilder(report, issues);
+      if (values?.auditor_name && values?.project_name && values?.description) {
+        handleSubmit();
+        const newData = reportBuilder(values, issues);
         dispatch(getPublicReport(newData, { generate: true }));
       } else {
-        handleSubmit();
         setOpenMessage(true);
       }
     } else {
@@ -221,7 +220,6 @@ const PublicConstructor = ({ saved, isPublic }) => {
                   const newValues = { ...values, id: Date.now() };
                   localStorage.setItem('report', JSON.stringify(newValues));
                 }
-                setOpenMessage(true);
               }
             }}
           >
@@ -286,6 +284,7 @@ const PublicConstructor = ({ saved, isPublic }) => {
                               saved={saved}
                               name="description"
                               handleBlur={handleSubmit}
+                              fastSave={true}
                               setFieldTouched={setFieldTouched}
                               mdProps={{
                                 view: { menu: true, md: true, html: !matchXs },
@@ -383,21 +382,21 @@ const PublicConstructor = ({ saved, isPublic }) => {
                   </Modal>
                   {!issues.length && (
                     <Box sx={actionWrapper}>
-                      {/*<CustomSnackbar*/}
-                      {/*  autoHideDuration={5000}*/}
-                      {/*  open={openMessage || auditMessage}*/}
-                      {/*  severity={*/}
-                      {/*    (auditMessage && 'success') ||*/}
-                      {/*    (openMessage && 'error')*/}
-                      {/*  }*/}
-                      {/*  text={*/}
-                      {/*    auditMessage*/}
-                      {/*      ? auditMessage*/}
-                      {/*      : openMessage &&*/}
-                      {/*        'Please fill in all mandatory fields'*/}
-                      {/*  }*/}
-                      {/*  onClose={handleCloseSnack}*/}
-                      {/*/>*/}
+                      <CustomSnackbar
+                        autoHideDuration={5000}
+                        open={openMessage || auditMessage}
+                        severity={
+                          (auditMessage && 'success') ||
+                          (openMessage && 'error')
+                        }
+                        text={
+                          auditMessage
+                            ? auditMessage
+                            : openMessage &&
+                              'Please fill in all mandatory fields'
+                        }
+                        onClose={handleCloseSnack}
+                      />
                       <Button
                         variant="contained"
                         color="secondary"
@@ -406,7 +405,9 @@ const PublicConstructor = ({ saved, isPublic }) => {
                           { marginRight: '0!important' },
                           publicBtnSx,
                         ]}
-                        onClick={() => handleGenerateReport(handleSubmit)}
+                        onClick={() =>
+                          handleGenerateReport(handleSubmit, values)
+                        }
                       >
                         Generate report
                       </Button>
@@ -622,7 +623,7 @@ const btnSx = theme => ({
   padding: '15px 24px',
   flexShrink: 0,
   fontWeight: '600!important',
-  fontSize: '20px',
+  fontSize: '16px',
   lineHeight: '25px',
   textTransform: 'none',
   borderRadius: '10px',
@@ -633,7 +634,7 @@ const btnSx = theme => ({
   },
   [theme.breakpoints.down('md')]: {
     padding: '10px 24px',
-    fontWeight: 500,
+    fontWeight: '500!important',
   },
   [theme.breakpoints.down('sm')]: {
     padding: '7px 24px',
