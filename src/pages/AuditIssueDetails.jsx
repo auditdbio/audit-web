@@ -64,7 +64,7 @@ const AuditIssueDetails = ({ isPublic, saved }) => {
 
   return (
     <Layout
-      sx={{ padding: '40px' }}
+      sx={layoutSx}
       containerSx={{
         maxWidth: 'unset!important',
         padding: '0 35px!important',
@@ -105,23 +105,31 @@ const AuditIssueDetails = ({ isPublic, saved }) => {
 
 export default AuditIssueDetails;
 
+const layoutSx = theme => ({
+  padding: '40px!important',
+  [theme.breakpoints.down('sm')]: {
+    padding: '10px!important',
+  },
+});
+
 const wrapper = theme => ({
-  padding: '40px 45px 80px',
+  padding: '50px 30px 80px',
   position: 'relative',
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'center',
   maxWidth: 'unset',
   [theme.breakpoints.down('md')]: {
-    padding: '38px 44px 60px',
+    padding: '50px 20px 60px',
   },
   [theme.breakpoints.down('sm')]: {
-    padding: '38px 20px 30px',
+    padding: '50px 10px 30px',
   },
 });
 
 const backButtonSx = {
   position: 'absolute',
+  justifyContent: 'flex-start',
   left: '0',
   top: '5px',
 };

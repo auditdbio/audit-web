@@ -48,7 +48,7 @@ const StatusSeverityBlock = ({
   return (
     <Box sx={issueStatusBlock}>
       <Box sx={[issueWrapperSx, !editMode ? { gap: '30px!important' } : {}]}>
-        <Box sx={issueInnerWrapperSx}>
+        <Box sx={[issueInnerWrapperSx, blockSx]}>
           <Box sx={statusBlockAlign}>
             <Typography
               onClick={() => isPublic && setStatusListOpen(true)}
@@ -112,7 +112,7 @@ const StatusSeverityBlock = ({
 
         {(user.current_role !== CUSTOMER || isPublic) &&
         audit?.status?.toLowerCase() !== RESOLVED.toLowerCase() ? (
-          <Box sx={severityWrapper}>
+          <Box sx={[severityWrapper, blockSx]}>
             <Typography
               sx={[statusBlockTitle, { cursor: 'pointer' }]}
               onClick={() => setSeverityListOpen(true)}
@@ -181,7 +181,7 @@ const StatusSeverityBlock = ({
 
         {(user.current_role === AUDITOR || isPublic) &&
         audit?.status?.toLowerCase() !== RESOLVED.toLowerCase() ? (
-          <Box>
+          <Box sx={blockSx}>
             <Typography sx={[statusBlockTitle]}>
               <span>Category</span>
             </Typography>
@@ -252,11 +252,11 @@ const StatusSeverityBlock = ({
         )}
 
         {editMode && user.current_role === AUDITOR && !isPublic && (
-          <Box sx={[statusBlockAlign]}>
+          <Box sx={[statusBlockAlign, includeSx, blockSx]}>
             <FormControlLabel
               label={
                 <Typography sx={{ fontSize: '20px', fontWeight: 500 }}>
-                  Include
+                  Include in the report
                 </Typography>
               }
               control={
@@ -316,15 +316,43 @@ const StatusSeverityBlock = ({
 
 export default StatusSeverityBlock;
 
+const includeSx = theme => ({
+  marginTop: '-5px',
+  '& p': {
+    width: '210px',
+  },
+  [theme.breakpoints.down('sm')]: {
+    '& label': {
+      flexDirection: 'column-reverse',
+      marginRight: 'unset',
+    },
+    marginTop: '0',
+    // '& p': {
+    //   width: '170px',
+    // },
+  },
+});
+//
 const issueWrapperSx = theme => ({
   display: 'flex',
   gap: '35px',
+  alignItems: 'flex-start',
   [theme.breakpoints.down('sm')]: {
-    gap: '15px',
+    gap: '25px!important',
+    width: '100%',
+    // justifyContent: 'space-evenly',
   },
-  [theme.breakpoints.down(700)]: {
+  [theme.breakpoints.down(751)]: {
+    flexWrap: 'wrap',
+    gap: 'unset!important',
+    // flexDirection: 'column',
+    // alignItems: 'unset',
+    // gap: '25px',
+  },
+  [theme.breakpoints.down(451)]: {
     flexDirection: 'column',
-    gap: '25px',
+    alignItems: 'center',
+    gap: '25px!important',
   },
 });
 
@@ -333,9 +361,6 @@ const issueInnerWrapperSx = theme => ({
   gap: '10px',
   display: 'flex',
   alignItems: 'flex-start',
-  [theme.breakpoints.down(700)]: {
-    alignItems: 'center',
-  },
 });
 
 const issueStatusBlock = theme => ({
@@ -348,7 +373,7 @@ const issueStatusBlock = theme => ({
   // padding: '40px 10px 0px 25px',
   [theme.breakpoints.down('xs')]: {
     flexDirection: 'column',
-    padding: '20px 10px',
+    padding: '10px 0px',
     alignItems: 'center',
     margin: '0',
     // width: '80%',
@@ -380,6 +405,21 @@ const severityWrapper = {
     width: '100%',
   },
 };
+
+const blockSx = theme => ({
+  [theme.breakpoints.down(751)]: {
+    width: '50%',
+    boxSizing: 'border-box',
+    padding: '10px',
+    alignItems: 'center!important',
+  },
+  [theme.breakpoints.down(451)]: {
+    width: '100%',
+    boxSizing: 'unset',
+    padding: 'unset',
+    alignItems: 'center!important',
+  },
+});
 
 const severityMenuItem = theme => ({
   ':hover': {

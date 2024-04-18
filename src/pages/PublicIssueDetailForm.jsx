@@ -55,6 +55,7 @@ const PublicIssueDetailsForm = ({ issue = null, editMode = false, saved }) => {
     include: issue?.include ?? true,
     links: issue?.links || [],
     feedback: issue?.feedback || '',
+    id: issue?.id,
   };
 
   const handleSubmitForm = (values, { setFieldValue }) => {
