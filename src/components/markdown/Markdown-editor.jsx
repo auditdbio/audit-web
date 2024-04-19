@@ -107,7 +107,7 @@ const MarkdownEditor = ({
         renderHTML={renderHTML}
         value={markdown}
         onChange={handleEditorChange}
-        onBlur={handleEditorBlur}
+        onBlur={handleEditorBlur ? handleEditorBlur : null}
         style={{ height: '400px' }}
         ref={mdRef}
         plugins={[...plugins.map(p => p.pluginName), ...initialPlugins]}

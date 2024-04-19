@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Button, Typography } from '@mui/material';
+import { Box, Button, Typography, Dialog, DialogTitle } from '@mui/material';
 import { Form, Formik } from 'formik';
 import * as Yup from 'yup';
 import EditIcon from '@mui/icons-material/Edit.js';
@@ -27,7 +27,7 @@ const ChangePasswordFormik = () => {
   }, [success]);
 
   return (
-    <Box sx={{ textAlign: 'center', mt: '30px' }}>
+    <Box sx={{ textAlign: 'center', mt: '5px' }}>
       <CustomSnackbar
         autoHideDuration={10000}
         open={!!error || !!success}
@@ -39,7 +39,10 @@ const ChangePasswordFormik = () => {
         text={error || success}
       />
 
-      {editMode ? (
+      <Dialog open={editMode} onClose={() => setEditMode(false)} sx={modalSx}>
+        <DialogTitle sx={{ padding: '16px 70px' }}>
+          Set a new password
+        </DialogTitle>
         <Formik
           initialValues={{
             current_password: '',
@@ -80,28 +83,42 @@ const ChangePasswordFormik = () => {
                       </Typography>
                     )}
                   </Box>
-                  <Button
-                    sx={passwordButtonSx}
-                    type="submit"
-                    disabled={!dirty}
-                    {...addTestsLabel('change-password-button')}
+                  <Box
+                    sx={{ display: 'flex', justifyContent: 'space-between' }}
                   >
-                    <EditIcon />
-                    {user?.is_passwordless ? 'Set password' : 'Change password'}
-                  </Button>
+                    <Button
+                      sx={passwordButtonSx}
+                      type="button"
+                      onClick={() => setEditMode(false)}
+                      {...addTestsLabel('cancel-password-button')}
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      sx={passwordButtonSx}
+                      type="submit"
+                      disabled={!dirty}
+                      {...addTestsLabel('change-password-button')}
+                    >
+                      <EditIcon />
+                      {user?.is_passwordless
+                        ? 'Set password'
+                        : 'Change password'}
+                    </Button>
+                  </Box>
                 </Box>
               </Form>
             );
           }}
         </Formik>
-      ) : (
-        <Button
-          color={user?.current_role === AUDITOR ? 'secondary' : 'primary'}
-          onClick={() => setEditMode(true)}
-        >
-          {user?.is_passwordless ? 'Set password' : 'Change password'}
-        </Button>
-      )}
+      </Dialog>
+
+      <Button
+        color={user?.current_role === AUDITOR ? 'secondary' : 'primary'}
+        onClick={() => setEditMode(true)}
+      >
+        {user?.is_passwordless ? 'Set password' : 'Change password'}
+      </Button>
     </Box>
   );
 };
@@ -127,17 +144,33 @@ const wrapper = theme => ({
   },
 });
 
+const modalSx = theme => ({
+  '& .MuiPaper-root': {
+    padding: '20px 30px',
+    [theme.breakpoints.down('xs')]: {
+      padding: '20px 15px',
+    },
+    '& h2': {
+      textAlign: 'center',
+      color: '#434242',
+      [theme.breakpoints.down('xs')]: {
+        padding: '10px',
+        fontSize: '15px',
+      },
+    },
+  },
+});
+
 const fieldsWrapper = {
   display: 'flex',
   flexDirection: 'column',
   gap: '15px',
+  mb: '10px',
 };
 
 const passwordButtonSx = {
   display: 'flex',
   alignItems: 'center',
-  marginRight: 0,
-  marginLeft: 'auto',
   textTransform: 'unset',
   fontSize: '10px',
   gap: '5px',

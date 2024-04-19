@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useEffect } from 'react';
 import {
   Avatar,
   Box,
@@ -17,23 +17,32 @@ import { AUDITOR, CUSTOMER } from '../redux/actions/types.js';
 import TagsList from './tagsList';
 import { ASSET_URL } from '../services/urls.js';
 import MobileTagsList from './MobileTagsList/index.jsx';
-import { addTestsLabel } from '../lib/helper.js';
+import { addTestsLabel, capitalize } from '../lib/helper.js';
 import ShareProfileButton from './custom/ShareProfileButton.jsx';
 import IdentitySetting from './IdentitySetting/IdentitySetting.jsx';
 import LinkedinIcon from './icons/LinkedinIcon.jsx';
 import XTwitterLogo from './icons/XTwitter-logo.jsx';
-import { clearUserError } from '../redux/actions/userAction.js';
+import { clearUserMessages } from '../redux/actions/userAction.js';
 import CustomSnackbar from './custom/CustomSnackbar.jsx';
+import Headings from '../router/Headings.jsx';
 
-const UserInfo = ({ role }) => {
+const UserInfo = ({ role, linkId }) => {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
-  const customer = useSelector(s => s.customer.customer);
-  const auditor = useSelector(s => s.auditor.auditor);
-  const { user } = useSelector(s => s.user);
   const matchXs = useMediaQuery(theme.breakpoints.down('xs'));
   const matchXxs = useMediaQuery(theme.breakpoints.down(590));
-  const message = useSelector(s => s.user.error);
-  const dispatch = useDispatch();
+
+  const {
+    customer,
+    error: customerError,
+    success: customerSuccess,
+  } = useSelector(s => s.customer);
+  const {
+    auditor,
+    error: auditorError,
+    success: auditorSuccess,
+  } = useSelector(s => s.auditor);
+  const { user, error } = useSelector(s => s.user);
 
   const handleEdit = () => {
     navigate('/edit-profile');
@@ -47,18 +56,45 @@ const UserInfo = ({ role }) => {
     }
   }, [role, customer, auditor]);
 
+  useEffect(() => {
+    if (linkId && data?.link_id && data?.link_id !== linkId) {
+      navigate(`/${role[0]}/${data.link_id}`);
+    }
+  }, [linkId, data]);
+
   if (!data) {
     return <Loader role={role} />;
   } else {
     return (
       <Box sx={wrapper}>
-        <CustomSnackbar
-          autoHideDuration={3000}
-          open={!!message}
-          onClose={() => dispatch(clearUserError())}
-          severity="error"
-          text={message}
+        <Headings
+          title={user?.name || 'Profile'}
+          image={data.avatar}
+          description={`${data.first_name} ${data.last_name} | ${data.about}`}
         />
+
+        <CustomSnackbar
+          autoHideDuration={5000}
+          open={
+            !!error ||
+            !!customerError ||
+            !!auditorError ||
+            !!customerSuccess ||
+            !!auditorSuccess
+          }
+          text={
+            error ||
+            customerError ||
+            auditorError ||
+            customerSuccess ||
+            auditorSuccess
+          }
+          severity={
+            error || customerError || auditorError ? 'error' : 'success'
+          }
+          onClose={() => dispatch(clearUserMessages())}
+        />
+
         <Box sx={contentWrapper}>
           <Box
             sx={{
@@ -195,7 +231,11 @@ const UserInfo = ({ role }) => {
             (role === CUSTOMER && customer.user_id)) && (
             <ShareProfileButton
               role={role}
-              userId={role === AUDITOR ? auditor.user_id : customer.user_id}
+              userId={
+                role === AUDITOR
+                  ? auditor.link_id || auditor.user_id
+                  : customer.link_id || customer.user_id
+              }
             />
           )}
           <Box

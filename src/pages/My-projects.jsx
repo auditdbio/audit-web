@@ -9,28 +9,33 @@ import MyProjectListCard from '../components/My-project-list-card.jsx';
 import AuditorModal from '../components/AuditorModal.jsx';
 import { useParams, useSearchParams } from 'react-router-dom';
 import { createRequest } from '../redux/actions/auditAction.js';
-import { getAuditors } from '../redux/actions/auditorAction.js';
+import { getCurrentAuditor } from '../redux/actions/auditorAction.js';
 import { addTestsLabel } from '../lib/helper.js';
 import CustomSnackbar from '../components/custom/CustomSnackbar.jsx';
+import Headings from '../router/Headings.jsx';
 
 const MyProjects = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const myProjects = useSelector(state => state.project.myProjects);
+
   const params = useParams();
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
+
   const [isOpenView, setIsOpenView] = useState(false);
   const [chosen, setChosen] = useState([]);
-  const auditor = useSelector(state =>
-    state?.auditor?.auditors?.find(auditor => auditor.user_id === params.id),
-  );
   const [errorMessage, setErrorMessage] = useState(null);
+
+  const { myProjects } = useSelector(s => s.project);
+  const { currentAuditor } = useSelector(s => s.auditor);
+  const auditor = useSelector(s =>
+    s.auditor.auditors?.find(auditor => auditor.user_id === params.id),
+  );
 
   useEffect(() => {
     if (!auditor) {
-      dispatch(getAuditors());
+      dispatch(getCurrentAuditor(params.id));
     }
-  }, []);
+  }, [auditor]);
 
   const handleCloseView = () => {
     setIsOpenView(false);
@@ -70,6 +75,8 @@ const MyProjects = () => {
 
   return (
     <Layout>
+      <Headings title="Choose Project" />
+
       <CustomCard sx={wrapper}>
         <CustomSnackbar
           autoHideDuration={3000}
@@ -113,16 +120,16 @@ const MyProjects = () => {
           variant="contained"
           sx={submitBtn}
           onClick={handleOpenView}
-          disabled={chosen.length === 0 || !auditor}
+          disabled={chosen.length === 0 || (!auditor && !currentAuditor)}
           {...addTestsLabel('invite-button')}
         >
           Invite to project
         </Button>
-        {auditor && (
+        {(auditor || currentAuditor) && (
           <AuditorModal
             open={isOpenView}
             handleClose={handleCloseView}
-            auditor={auditor}
+            auditor={auditor || currentAuditor}
             isForm={true}
             onSubmit={handleInviteAuditor}
             setError={setErrorMessage}

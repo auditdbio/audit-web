@@ -14,6 +14,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import * as Yup from 'yup';
 import CustomSnackbar from '../components/custom/CustomSnackbar.jsx';
 import { addTestsLabel } from '../lib/helper.js';
+import Headings from '../router/Headings.jsx';
 
 const AuditDb = () => {
   const dispatch = useDispatch();
@@ -29,6 +30,8 @@ const AuditDb = () => {
 
   return (
     <Layout>
+      <Headings title="Contact Us" />
+
       <CustomSnackbar
         autoHideDuration={3000}
         open={errorMessage || successMessage}

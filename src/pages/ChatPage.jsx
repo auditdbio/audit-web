@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
-import { Box, Button, IconButton } from '@mui/material';
+import { Box, Button, IconButton, useMediaQuery } from '@mui/material';
 import Layout from '../styles/Layout.jsx';
 import { CustomCard } from '../components/custom/Card';
 import ChatList from '../components/Chat/ChatList.jsx';
@@ -12,13 +12,15 @@ import MenuIcon from '@mui/icons-material/Menu.js';
 import { useNavigate } from 'react-router-dom/dist';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack.js';
 import { AUDITOR, CUSTOMER } from '../redux/actions/types.js';
+import Headings from '../router/Headings.jsx';
 
 const ChatPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const { id } = useParams();
-  const [chatListIsOpen, setChatListIsOpen] = useState(false);
+  const matchXs = useMediaQuery(theme.breakpoints.down('xs'));
+  const [chatListIsOpen, setChatListIsOpen] = useState(matchXs && !id);
   const { chatList, chatMessages, currentChat } = useSelector(s => s.chat);
   const { user } = useSelector(s => s.user);
   const { auditor } = useSelector(s => s.auditor);
@@ -36,7 +38,8 @@ const ChatPage = () => {
         !customer?.first_name)
     ) {
       dispatch(chatSetError('Fill your profile'));
-      navigate('/profile/user-info');
+      const role = user.current_role?.[0];
+      navigate(`/${role}/${user.id}`);
     }
   }, [user, auditor, customer]);
 
@@ -75,9 +78,11 @@ const ChatPage = () => {
 
   return (
     <Layout sx={layoutSx}>
+      <Headings title="Chat" noIndex={true} />
+
       <CustomCard sx={wrapper}>
         <Button
-          variant={'text'}
+          variant="text"
           sx={{ textTransform: 'unset', ml: '-15px', paddingLeft: '0' }}
           onClick={handleGoBack}
         >

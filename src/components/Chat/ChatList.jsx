@@ -124,7 +124,7 @@ const ChatList = ({ chatList, chatListIsOpen, setChatListIsOpen }) => {
                     id: auditor.user_id,
                     name: `${auditor.first_name} ${auditor.last_name}`,
                     avatar: auditor.avatar,
-                    members: [auditor.user_id, user.id],
+                    members: [{ id: auditor.user_id }, { id: user.id }],
                   }}
                 />
               ))}
@@ -153,7 +153,7 @@ const ChatList = ({ chatList, chatListIsOpen, setChatListIsOpen }) => {
                     id: customer.user_id,
                     name: `${customer.first_name} ${customer.last_name}`,
                     avatar: customer.avatar,
-                    members: [customer.user_id, user.id],
+                    members: [{ id: customer.user_id }, { id: user.id }],
                   }}
                 />
               ))}

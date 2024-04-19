@@ -112,17 +112,24 @@ const wrapper = theme => ({
     padding: '15px 10px',
   },
   [theme.breakpoints.down('sm')]: {
-    padding: '10px 8px',
+    padding: '10px 5px',
   },
 });
 
-const chatDataWrapper = {
+const chatDataWrapper = theme => ({
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'space-between',
-  justifyContent: 'center',
+  justifyContent: 'flex-start',
   flexGrow: 1,
-};
+  height: '90px',
+  [theme.breakpoints.down('md')]: {
+    height: '75px',
+  },
+  [theme.breakpoints.down('sm')]: {
+    height: '58px',
+  },
+});
 
 const chatData = {
   display: 'flex',
@@ -150,7 +157,7 @@ const avatarBorder = role => ({
   [theme.breakpoints.down('sm')]: {
     width: '40px',
     height: '40px',
-    mr: '10px',
+    mr: '6px',
     borderWidth: '2px',
   },
 });
@@ -175,7 +182,7 @@ const userNameSx = theme => ({
     fontSize: '20px',
   },
   [theme.breakpoints.down('sm')]: {
-    fontSize: '15px',
+    fontSize: '14px',
   },
 });
 

@@ -3,7 +3,7 @@ import ClipboardJS from 'clipboard';
 import { Button } from '@mui/material';
 import LaunchRoundedIcon from '@mui/icons-material/LaunchRounded.js';
 import { addTestsLabel } from '../../lib/helper.js';
-import { API_URL } from '../../services/urls.js';
+import { BASE_URL } from '../../services/urls.js';
 
 const ShareProjectButton = ({
   projectId,
@@ -16,7 +16,7 @@ const ShareProjectButton = ({
   const buttonRef = useRef(null);
 
   const handleShare = () => {
-    const buffer = `${API_URL.slice(0, -3)}projects/${projectId}`;
+    const buffer = `${BASE_URL}projects/${projectId}`;
     const options = {
       text: () => buffer,
     };

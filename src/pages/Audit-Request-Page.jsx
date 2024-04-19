@@ -8,6 +8,7 @@ import Loader from '../components/Loader.jsx';
 import NotFound from './Not-Found.jsx';
 import { CLEAR_AUDIT_REQUEST } from '../redux/actions/types.js';
 import { CustomCard } from '../components/custom/Card.jsx';
+import Headings from '../router/Headings.jsx';
 
 const AuditRequestPage = () => {
   const { id } = useParams();
@@ -26,6 +27,7 @@ const AuditRequestPage = () => {
   if (!auditInfo && !notFound) {
     return (
       <Layout>
+        <Headings title="Request" />
         <CustomCard sx={wrapper} className="audit-request-wrapper">
           <Loader />
         </CustomCard>
@@ -40,6 +42,7 @@ const AuditRequestPage = () => {
   if (auditInfo?.id && !notFound) {
     return (
       <Layout>
+        <Headings title={`${auditInfo.project_name} | Request`} />
         <AuditRequestInfo project={auditInfo} />
       </Layout>
     );

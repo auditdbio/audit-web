@@ -50,9 +50,11 @@ import DeleteBadge from '../pages/Delete-badge.jsx';
 import Github from '../pages/Github.jsx';
 import ConnectAccount from '../pages/Connect-account.jsx';
 import DisclaimerPage from '../pages/DisclaimerPage.jsx';
+import Headings from '../router/Headings.jsx';
+import { AUDITOR, CUSTOMER } from '../redux/actions/types.js';
 
 const AppRoutes = () => {
-  const token = useSelector(s => s.user.token);
+  const { token } = useSelector(s => s.user);
   const currentRole = useSelector(s => s.user.user.current_role);
   const customer = useSelector(s => s.customer.customer);
   const auditor = useSelector(s => s.auditor.auditor);
@@ -78,9 +80,9 @@ const AppRoutes = () => {
 
   useEffect(() => {
     if (isAuth()) {
-      if (currentRole === 'auditor' && !auditor) {
+      if (currentRole === AUDITOR && !auditor) {
         dispatch(getAuditor());
-      } else if (currentRole === 'customer' && !customer) {
+      } else if (currentRole === CUSTOMER && !customer) {
         dispatch(getCustomer());
       }
     }
@@ -136,31 +138,15 @@ const AppRoutes = () => {
         onClose={() => setIsOpen(false)}
         text="New version is available. Please reload the page"
       />
+      <Headings />
+
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/sign-up" element={<SignupPage />} />
-        <Route path="/invite-user/:id/:secret" element={<InvitePage />} />
         <Route path="/sign-in" element={<SigninPage />} />
+        <Route path="/invite-user/:id/:secret" element={<InvitePage />} />
         <Route path="/oauth/callback" element={<ConnectAccount />} />
-        <Route path="/oauth/callback" element={<Github />} />
-        <Route
-          path="/restore-password/:token"
-          element={<RestorePasswordPage />}
-        />
-        <Route path="/projects" element={<ProjectPage />} />
-        <Route path="/projects/:id" element={<PublicProject />} />
-        <Route path="/for-customers" element={<ForCustomer />} />
-        <Route path="/for-auditors" element={<ForAuditor />} />
-        <Route path="/auditors" element={<AuditorsPage />} />
-        <Route path="/audit-db" element={<AuditDb />} />
-        <Route path="/FAQ" element={<Faq />} />
-        <Route path="/contact-us" element={<ContactUs />} />
-        <Route path="/user/:id/:role" element={<PublicProfile />} />
-        <Route path="/delete/:id/:secret" element={<DeleteBadge />} />
-        <Route
-          path="/audit-builder/:auditId"
-          element={<PublicConstructor isPublic={true} />}
-        />
+        {/*<Route path="/oauth/callback" element={<Github />} />*/}
         <Route path="/projects" element={<ProjectPage />} />
         <Route path="/projects/:id" element={<PublicProject />} />
         <Route path="/for-customers" element={<ForCustomer />} />
@@ -172,6 +158,14 @@ const AppRoutes = () => {
         <Route path="/user/:id/:role" element={<PublicProfile />} />
         <Route path="/delete/:id/:secret" element={<DeleteBadge />} />
         <Route path="/disclaimer" element={<DisclaimerPage />} />
+        <Route
+          path="/restore-password/:token"
+          element={<RestorePasswordPage />}
+        />
+        <Route
+          path="/audit-builder/:auditId"
+          element={<PublicConstructor isPublic={true} />}
+        />
         <Route
           path="/profile/:tab"
           element={
@@ -312,6 +306,10 @@ const AppRoutes = () => {
             </PrivateRoute>
           }
         />
+
+        {/*Add new routes here*/}
+
+        <Route path="/:role/:linkId" element={<ProfilePage />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </>

@@ -36,6 +36,7 @@ import {
   clearUserSuccess,
 } from '../../redux/actions/userAction.js';
 import theme from '../../styles/themes.js';
+import { BASE_URL } from '../../services/urls.js';
 
 const Control = ({
   issues,
@@ -54,11 +55,12 @@ const Control = ({
   const [resolveConfirmation, setResolveConfirmation] = useState(false);
   const [allIssuesClosed, setAllIssuesClosed] = useState(false);
   const [menuAnchorEl, setMenuAnchorEl] = useState(null);
-  const user = useSelector(s => s.user.user);
+  const { user } = useSelector(s => s.user);
   const audit = useSelector(s =>
     s.audits.audits?.find(audit => audit.id === auditId),
   );
-  const auditor = useSelector(s => s.auditor.auditor);
+  const { auditor } = useSelector(s => s.auditor);
+  const { customer } = useSelector(s => s.customer);
   const issuesArray = useSelector(s => s.issues.issues);
   const report = JSON.parse(localStorage.getItem('report'));
   const [openMessage, setOpenMessage] = useState(false);
@@ -124,7 +126,11 @@ const Control = ({
               type: CHANGE_ROLE_DONT_HAVE_PROFILE_AUDITOR,
               payload: user,
             });
-            navigate('/profile/user-info');
+            const role = user.current_role?.[0];
+            const link_id =
+              (role === AUDITOR ? auditor?.link_id : customer?.link_id) ||
+              user.id;
+            navigate(`/${role}/${link_id}`);
           }
         }
       } else {
@@ -138,6 +144,19 @@ const Control = ({
   const handleGenerateReport = () => {
     if (isPublic) {
       if (report?.auditor_name && report?.project_name && report?.description) {
+        if (isAuth()) {
+          if (user.current_role === AUDITOR) {
+            const linkId = auditor.link_id || auditor.user_id;
+            report.profile_link = linkId
+              ? `${BASE_URL}a/${linkId}`
+              : `${BASE_URL}disclaimer/`;
+          } else if (user.current_role === CUSTOMER) {
+            const linkId = customer.link_id || customer.user_id;
+            report.profile_link = linkId
+              ? `${BASE_URL}c/${linkId}`
+              : `${BASE_URL}disclaimer/`;
+          }
+        }
         const newData = reportBuilder(report, issuesArray);
         dispatch(getPublicReport(newData, { generate: true }));
       } else {
