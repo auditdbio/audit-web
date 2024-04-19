@@ -4,14 +4,14 @@ import Header from '../components/header/Header.jsx';
 import Box from '@mui/material/Box';
 import Footer from '../components/footer/Footer.jsx';
 
-const Layout = ({ children, sx }) => {
+const Layout = ({ children, sx, containerSx }) => {
   return (
     <ContentWrapper>
-      <Header />
+      <Header containerSx={containerSx} />
       <Box sx={[layoutStyle, sx]} component="main">
         {children}
       </Box>
-      <Footer />
+      <Footer containerSx={containerSx} />
     </ContentWrapper>
   );
 };
@@ -23,12 +23,12 @@ const layoutStyle = theme => ({
   alignItems: 'center',
   justifyContent: 'center',
   width: '100%',
-  padding: '120px 100px',
+  padding: '50px 100px',
   [theme.breakpoints.down('md')]: {
-    padding: '80px 40px',
+    padding: '50px 40px',
   },
   [theme.breakpoints.down('sm')]: {
-    padding: '60px 30px',
+    padding: '50px 30px',
   },
   [theme.breakpoints.down('xs')]: {
     padding: '40px 30px',

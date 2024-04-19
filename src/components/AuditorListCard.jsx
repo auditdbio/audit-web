@@ -63,7 +63,7 @@ const AuditorListCard = ({ auditor, projectIdToInvite, budge }) => {
       isAuth() &&
       !customerReducer?.first_name
     ) {
-      dispatch(changeRolePublicCustomer(CUSTOMER, user.id, customerReducer));
+      dispatch(changeRolePublicCustomer(CUSTOMER, user.id));
       handleError();
     } else if (
       user.current_role !== CUSTOMER &&
@@ -124,7 +124,7 @@ const AuditorListCard = ({ auditor, projectIdToInvite, budge }) => {
                 <Tooltip
                   title={`${auditor.first_name} ${auditor.last_name}`}
                   arrow
-                  placement={'top'}
+                  placement="top"
                 >
                   <Typography sx={nameStyle} noWrap={true}>
                     {auditor.first_name} {auditor.last_name}
@@ -144,12 +144,14 @@ const AuditorListCard = ({ auditor, projectIdToInvite, budge }) => {
         </Box>
       </Box>
       <Box sx={cardRightSide}>
-        <Typography sx={priceStyle}>
-          ${auditor.price_range.from} - {auditor.price_range.to}
-        </Typography>
+        {(auditor.price_range.from > 0 || auditor.price_range.to > 0) && (
+          <Typography sx={priceStyle}>
+            ${auditor.price_range.from} - {auditor.price_range.to}
+          </Typography>
+        )}
         <Button
-          color={'secondary'}
-          size={'small'}
+          color="secondary"
+          size="small"
           sx={viewButtonStyle}
           variant={budge ? 'outlined' : 'contained'}
           onClick={handleView}
@@ -158,8 +160,8 @@ const AuditorListCard = ({ auditor, projectIdToInvite, budge }) => {
           View more
         </Button>
         <Button
-          color={'primary'}
-          size={'small'}
+          color="primary"
+          size="small"
           sx={inviteButtonStyle(theme)}
           variant={budge ? 'outlined' : 'contained'}
           onClick={handleInvite}
@@ -177,17 +179,16 @@ export default AuditorListCard;
 
 const budgeTitle = theme => ({
   color: '#B2B3B3',
-  fontSize: '14px!important',
+  fontSize: '12px!important',
   marginTop: '-10px',
   [theme.breakpoints.down('sm')]: {
-    fontSize: '12px!important',
+    fontSize: '10px!important',
     marginTop: '-5px',
   },
 });
 
 const wrapper = theme => ({
-  padding: '32px 38px 32px 38px',
-  border: '0.5px solid #B2B3B3',
+  padding: '12px 20px 12px 45px',
   display: 'flex',
   gap: '10px',
   height: '100%',
@@ -214,7 +215,7 @@ const cardRightSide = {
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'center',
-  gap: '20px',
+  gap: '15px',
   [theme.breakpoints.down('xs')]: {
     gap: '12px',
   },
@@ -255,8 +256,8 @@ const nameStyle = {
   fontSize: {
     zero: '11px',
     sm: '14px',
-    md: '20px',
-    lg: '20px',
+    md: '16px',
+    lg: '18px',
   },
   color: '#152BEA',
 };
@@ -282,8 +283,11 @@ const statusGroup = theme => ({
 });
 
 const statusCircle = theme => ({
-  fontSize: '14px',
+  fontSize: '12px',
   color: '#09C010',
+  [theme.breakpoints.down('md')]: {
+    fontSize: '10px',
+  },
   [theme.breakpoints.down('xs')]: {
     fontSize: '9px',
   },
@@ -292,18 +296,18 @@ const statusTextStyle = {
   fontWeight: 400,
   fontSize: {
     zero: '9px',
-    sm: '11px',
-    md: '13px',
-    lg: '14px',
+    sm: '10px',
+    md: '10px',
+    lg: '12px',
   },
   color: '#434242',
 };
 
 const priceStyle = {
-  fontSize: '20px',
+  fontSize: '16px !important',
   color: '#434242',
   [theme.breakpoints.down('xs')]: {
-    fontSize: '9px',
+    fontSize: '12px !important',
   },
 };
 

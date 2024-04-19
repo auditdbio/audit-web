@@ -14,13 +14,13 @@ import {
 } from '../redux/actions/issueAction.js';
 import CustomSnackbar from '../components/custom/CustomSnackbar.jsx';
 import { clearMessage } from '../redux/actions/auditAction.js';
-import { CUSTOMER, RESOLVED } from '../redux/actions/types.js';
+import { RESOLVED } from '../redux/actions/types.js';
 import { addTestsLabel } from '../lib/helper.js';
 import DescriptionBlock from '../components/issuesPage/IssueDetailsForm/DescriptionBlock.jsx';
 import StatusSeverityBlock from '../components/issuesPage/IssueDetailsForm/StatusSeverityBlock.jsx';
-import { DRAFT, NOT_FIXED } from '../components/issuesPage/constants.js';
+import { NOT_FIXED } from '../components/issuesPage/constants.js';
 
-const PublicIssueDetailsForm = ({ issue = null, editMode = false }) => {
+const PublicIssueDetailsForm = ({ issue = null, editMode = false, saved }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { auditId, issueId } = useParams();
@@ -70,6 +70,12 @@ const PublicIssueDetailsForm = ({ issue = null, editMode = false }) => {
         return prev[key] === values[key] ? acc : { ...acc, [key]: values[key] };
       }, {});
 
+      // const updatedValuesWithEvent = createIssueEvent(
+      //   updatedValues,
+      //   prev.links?.length,
+      //   issue?.status || DRAFT,
+      //   issue?.feedback,
+      // );
       setIsEditName(false);
       setIssuePrevValues({ ...values, status: '' });
       const newValues = {
@@ -82,17 +88,28 @@ const PublicIssueDetailsForm = ({ issue = null, editMode = false }) => {
       const newArray = publicIssues.map(el => {
         return el.id === +issueId ? newValues : el;
       });
-      dispatch(updatePublicIssue(newValues));
-      localStorage.setItem('publicIssues', JSON.stringify(newArray));
+      if (saved) {
+        dispatch(updateAuditIssue(auditId, issueId, updatedValues));
+      } else {
+        dispatch(updatePublicIssue(newValues));
+        localStorage.setItem('publicIssues', JSON.stringify(newArray));
+      }
     } else {
-      const newValue = { ...values, auditId: Date.now(), id: Date.now() };
-      localStorage.setItem(
-        'publicIssues',
-        JSON.stringify([...publicIssues, newValue]),
-      );
-      dispatch(addPublicIssue(newValue));
-      if (issues.length) {
-        navigate(-1);
+      if (saved) {
+        dispatch(addAuditIssue(auditId, values));
+        if (editMode) {
+          navigate(-1);
+        }
+      } else {
+        const newValue = { ...values, auditId: Date.now(), id: Date.now() };
+        localStorage.setItem(
+          'publicIssues',
+          JSON.stringify([...publicIssues, newValue]),
+        );
+        dispatch(addPublicIssue(newValue));
+        if (issues.length) {
+          navigate(-1);
+        }
       }
     }
   };
@@ -258,8 +275,5 @@ const editButtonText = theme => ({
 
 const infoWrapperSx = theme => ({
   display: 'flex',
-  [theme.breakpoints.down('xs')]: {
-    flexDirection: 'column',
-    alignItems: 'center',
-  },
+  flexDirection: 'column-reverse',
 });

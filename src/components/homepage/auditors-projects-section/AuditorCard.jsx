@@ -1,22 +1,22 @@
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom/dist';
+import { useSelector } from 'react-redux';
 import { Card, Avatar, Box, Typography, Tooltip } from '@mui/material';
 import theme from '../../../styles/themes';
 import { CustomButton } from '../../custom/Button';
 import Currency from '../../icons/Currency';
 import Star from '../../icons/Star';
-import React, { useState } from 'react';
 import AuditorModal from '../../AuditorModal.jsx';
 import { ASSET_URL } from '../../../services/urls.js';
-import { useNavigate } from 'react-router-dom/dist';
-import { useSelector } from 'react-redux';
 import CustomSnackbar from '../../custom/CustomSnackbar.jsx';
 import { addTestsLabel } from '../../../lib/helper.js';
 
 const AuditorCard = ({ auditor }) => {
   const [openModal, setOpenModal] = useState(false);
   const [message, setMessage] = useState(null);
+  const [errorMessage, setErrorMessage] = useState(null);
   const navigate = useNavigate();
   const userProjects = useSelector(s => s.project.myProjects);
-  const [errorMessage, setErrorMessage] = useState(null);
 
   const handleView = () => {
     setOpenModal(true);
@@ -70,7 +70,7 @@ const AuditorCard = ({ auditor }) => {
         <Tooltip
           title={`${auditor.first_name} ${auditor.last_name}`}
           arrow
-          placement={'top'}
+          placement="top"
         >
           <Typography sx={mainTextStyle} noWrap={true}>
             {auditor.first_name} {auditor.last_name}
@@ -90,12 +90,14 @@ const AuditorCard = ({ auditor }) => {
         }}
       >
         <Box sx={badgesStyle}>
-          <Box sx={infoStyle}>
-            <Currency />
-            <Typography sx={priceSx}>
-              {auditor.price_range.from} - {auditor.price_range.to}
-            </Typography>
-          </Box>
+          {(auditor.price_range.from > 0 || auditor.price_range.to > 0) && (
+            <Box sx={infoStyle}>
+              <Currency />
+              <Typography sx={priceSx}>
+                {auditor.price_range.from} - {auditor.price_range.to}
+              </Typography>
+            </Box>
+          )}
           <Box sx={infoStyle}>
             <Star />
             <Typography sx={priceSx}>150</Typography>
@@ -115,19 +117,17 @@ const AuditorCard = ({ auditor }) => {
 };
 
 const buttonStyle = {
-  // backgroundColor: 'orange',
-  // color: 'white',
-  // ':hover': { backgroundColor: 'orange', color: 'white' },
+  [theme.breakpoints.down('md')]: {
+    fontSize: '14px',
+  },
   [theme.breakpoints.down('sm')]: {
-    fontSize: '13px',
+    fontSize: '12px',
   },
 };
 
 const cardStyle = theme => ({
   width: '100%',
   height: '100%',
-  // maxWidth: "340px",
-  // marginY: "1.5rem",
   borderRadius: '1.5rem',
   display: 'flex',
   flexDirection: 'column',
@@ -141,15 +141,18 @@ const cardStyle = theme => ({
 });
 
 const priceSx = theme => ({
-  fontSize: '16px',
+  fontSize: '14px !important',
+  [theme.breakpoints.down('md')]: {
+    fontSize: '12px !important',
+  },
   [theme.breakpoints.down('sm')]: {
-    fontSize: '10px',
+    fontSize: '10px !important',
   },
 });
 
 const avatarStyle = {
-  width: '150px',
-  height: '150px',
+  width: '130px',
+  height: '130px',
   marginX: 'auto',
   [theme.breakpoints.down('sm')]: {
     width: '90px',
@@ -191,7 +194,16 @@ const badgeFontStyle = theme => ({
   'text-overflow': 'ellipsis',
   height: '86px',
   overflow: 'hidden',
+  [theme.breakpoints.down('lg')]: {
+    fontSize: '14px!important',
+  },
+  [theme.breakpoints.down('md')]: {
+    fontSize: '12px!important',
+  },
   [theme.breakpoints.down('sm')]: {
+    height: '45px',
+  },
+  [theme.breakpoints.down('xs')]: {
     fontSize: '10px!important',
     height: '45px',
   },

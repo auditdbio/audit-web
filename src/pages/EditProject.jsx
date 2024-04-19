@@ -9,6 +9,7 @@ import { useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import Loader from '../components/Loader.jsx';
 import { useSearchParams } from 'react-router-dom/dist';
+import Headings from '../router/Headings.jsx';
 
 const EditProject = () => {
   const projectId = useParams();
@@ -37,10 +38,15 @@ const EditProject = () => {
               alignItems: 'center',
             }}
           >
+            <Headings title="Edit Project" noIndex={true} />
             <Loader />
           </Box>
         ) : (
           <CustomCard>
+            <Headings
+              title={`${myProject?.name || ''} | Edit Project`}
+              noIndex={true}
+            />
             <CreateProjectCard projectInfo={myProject} />
           </CustomCard>
         )}

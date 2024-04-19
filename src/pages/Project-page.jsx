@@ -1,17 +1,18 @@
 import React, { useEffect, useState } from 'react';
-import Layout from '../styles/Layout.jsx';
-import { Box, Button, useMediaQuery } from '@mui/material';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack.js';
-import Filter from '../components/forms/filter/index.jsx';
-import ProjectListCard from '../components/Project-list-card.jsx';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useSearchParams } from 'react-router-dom/dist';
+import { Box, Button, useMediaQuery } from '@mui/material';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack.js';
+import Layout from '../styles/Layout.jsx';
+import Filter from '../components/forms/filter/index.jsx';
+import ProjectListCard from '../components/Project-list-card.jsx';
 import { PROJECTS } from '../redux/actions/types.js';
 import { searchProjects } from '../redux/actions/projectAction.js';
 import { clearMessage } from '../redux/actions/auditAction.js';
 import CustomPagination from '../components/custom/CustomPagination.jsx';
 import { addTestsLabel } from '../lib/helper.js';
 import theme from '../styles/themes.js';
+import Headings from '../router/Headings.jsx';
 
 const ProjectPage = () => {
   const matchXs = useMediaQuery(theme.breakpoints.down('xs'));
@@ -102,6 +103,8 @@ const ProjectPage = () => {
 
   return (
     <Layout>
+      <Headings title="Projects" />
+
       <Box sx={wrapper}>
         <Box sx={projectTopWrapper}>
           <Button
@@ -109,7 +112,7 @@ const ProjectPage = () => {
             aria-label="Go back"
             {...addTestsLabel('projects_back-button')}
           >
-            <ArrowBackIcon color={'secondary'} />
+            <ArrowBackIcon color="secondary" />
           </Button>
           <Box>
             <Filter
@@ -126,8 +129,9 @@ const ProjectPage = () => {
           page={currentPage}
           onChange={handleChangePage}
           showFirstLast={!matchXs}
-          size={matchXs ? 'small' : 'medium'}
+          size="small"
         />
+
         <Box sx={contentWrapper}>
           <Box sx={{ display: 'flex', flexWrap: 'wrap' }}>
             {projects?.map((project, idx) => (
@@ -145,7 +149,9 @@ const ProjectPage = () => {
             ))}
           </Box>
         </Box>
+
         {projects?.length === 0 && <Box sx={noResults}>No results</Box>}
+
         <CustomPagination
           show={projects?.length > 0}
           count={getNumberOfPages()}
@@ -153,7 +159,7 @@ const ProjectPage = () => {
           page={currentPage}
           onChange={handleChangePage}
           showFirstLast={!matchXs}
-          size={matchXs ? 'small' : 'medium'}
+          size="small"
         />
       </Box>
     </Layout>
@@ -183,9 +189,9 @@ const borderTop = theme => ({
   },
 });
 
-const borderLeft = theme => ({
+const borderLeft = {
   borderLeft: '1px solid #B2B3B3',
-});
+};
 
 const projectTopWrapper = theme => ({
   display: 'flex',
@@ -203,7 +209,8 @@ const projectTopWrapper = theme => ({
 const projectListWrapper = theme => ({
   borderRight: '1px solid #B2B3B3',
   borderBottom: '1px solid #B2B3B3',
-  height: '200px',
+  maxHeight: '200px',
+  minHeight: '150px',
   overflow: 'hidden',
   width: '50%',
   [theme.breakpoints.down('sm')]: {
@@ -215,7 +222,7 @@ const projectListWrapper = theme => ({
 
 const wrapper = theme => ({
   width: '100%',
-  padding: '43px 20px 44px 20px',
+  padding: '20px',
   backgroundColor: '#FCFAF6',
   border: '1.42857px solid #D9D9D9',
   boxShadow:

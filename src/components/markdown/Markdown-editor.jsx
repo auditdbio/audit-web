@@ -38,12 +38,14 @@ const initialPlugins = [
 
 const MarkdownEditor = ({
   name,
+  saved,
   setMdRef,
   mdProps = {},
   plugins = [],
   setFieldTouched,
   handleBlur,
   isPublic,
+  fastSave,
 }) => {
   const [markdownField, meta, markdownHelper] = useField(name);
   const [markdown, setMarkdown] = useState('');
@@ -62,7 +64,13 @@ const MarkdownEditor = ({
     if (handleBlur && meta.touched) {
       handleBlur();
     }
-  }, [markdownField.value, meta.touched]);
+  }, [markdownField.value]);
+
+  useEffect(() => {
+    if (markdown && fastSave) {
+      markdownHelper.setValue(markdown);
+    }
+  }, [markdown]);
 
   useEffect(() => {
     if (setMdRef) {
@@ -99,7 +107,7 @@ const MarkdownEditor = ({
         renderHTML={renderHTML}
         value={markdown}
         onChange={handleEditorChange}
-        onBlur={handleEditorBlur}
+        onBlur={handleEditorBlur ? handleEditorBlur : null}
         style={{ height: '400px' }}
         ref={mdRef}
         plugins={[...plugins.map(p => p.pluginName), ...initialPlugins]}

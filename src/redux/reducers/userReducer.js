@@ -20,6 +20,10 @@ import {
   CHANGE_ACCOUNT_VISIBILITY,
   ERROR_ADD_ACCOUNT,
   ERROR_IDENTITY,
+  GET_PROFILE,
+  GET_PUBLIC_PROFILE,
+  CLEAR_MESSAGES,
+  GET_MY_PROFILE,
 } from '../actions/types.js';
 
 const initialState = {
@@ -28,7 +32,9 @@ const initialState = {
   user: JSON.parse(localStorage.getItem('user')) || {},
   error: null,
   success: null,
+  publicUser: null,
 };
+
 export const userReducer = (state = initialState, action) => {
   switch (action.type) {
     case USER_SIGNIN:
@@ -51,6 +57,16 @@ export const userReducer = (state = initialState, action) => {
           ...state.user,
           linked_accounts: [...state.user.linked_accounts, action.payload],
         },
+      };
+    case GET_PROFILE:
+      return {
+        ...state,
+        user: action.payload,
+      };
+    case GET_PUBLIC_PROFILE:
+      return {
+        ...state,
+        publicUser: action.payload,
       };
     case CHANGE_ACCOUNT_VISIBILITY:
       return {
@@ -106,6 +122,8 @@ export const userReducer = (state = initialState, action) => {
       };
     case CLEAR_SUCCESS:
       return { ...state, success: null };
+    case CLEAR_MESSAGES:
+      return { ...state, success: null, error: null };
     case CHANGE_ROLE_HAVE_PROFILE_CUSTOMER:
       return {
         ...state,
@@ -129,6 +147,11 @@ export const userReducer = (state = initialState, action) => {
         ...state,
         user: action.payload,
         success: 'Fill your auditor profile',
+      };
+    case GET_MY_PROFILE:
+      return {
+        ...state,
+        user: action.payload,
       };
     default:
       return state;

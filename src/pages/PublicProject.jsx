@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom/dist';
 import { Avatar, Box, Button, Modal, Tooltip, Typography } from '@mui/material';
 import Layout from '../styles/Layout.jsx';
 import { getProjectById } from '../redux/actions/projectAction.js';
@@ -21,6 +21,9 @@ import {
 import CustomSnackbar from '../components/custom/CustomSnackbar.jsx';
 import OfferModal from '../components/modal/OfferModal.jsx';
 import { clearMessage } from '../redux/actions/auditAction.js';
+import { setCurrentChat } from '../redux/actions/chatActions.js';
+import ChatIcon from '../components/icons/ChatIcon.jsx';
+import Headings from '../router/Headings.jsx';
 
 const PublicProject = () => {
   const dispatch = useDispatch();
@@ -33,6 +36,7 @@ const PublicProject = () => {
   const { currentProject: project } = useSelector(s => s.project);
   const { currentCustomer: customer } = useSelector(s => s.customer);
   const { error: notFound } = useSelector(s => s.notFound);
+  const { chatList } = useSelector(s => s.chat);
 
   const [message, setMessage] = useState(null);
   const [error, setError] = useState(null);
@@ -88,6 +92,30 @@ const PublicProject = () => {
     }
   };
 
+  const handleSendMessage = () => {
+    window.scrollTo(0, 0);
+    const existingChat = chatList.find(chat =>
+      chat.members?.find(
+        member =>
+          member.id === project?.customer_id &&
+          member.role?.toLowerCase() === CUSTOMER,
+      ),
+    );
+    const chatId = existingChat ? existingChat.id : project?.customer_id;
+    const members = [project?.customer_id, user.id];
+
+    dispatch(
+      setCurrentChat(chatId, {
+        role: CUSTOMER,
+        isNew: !existingChat,
+        userDataId: project?.customer_id,
+        members,
+      }),
+    );
+
+    navigate(`/chat/${project?.customer_id}`);
+  };
+
   const handleCloseModal = () => {
     setModalIsOpen(false);
   };
@@ -99,6 +127,7 @@ const PublicProject = () => {
   if (!project || !customer) {
     return (
       <Layout>
+        <Headings title="Projects" />
         <Box
           sx={[
             wrapper(user?.current_role),
@@ -113,6 +142,8 @@ const PublicProject = () => {
 
   return (
     <Layout>
+      <Headings title={`${project?.name} | Projects`} />
+
       <Box sx={wrapper(user?.current_role)}>
         <CustomSnackbar
           autoHideDuration={4000}
@@ -242,17 +273,35 @@ const PublicProject = () => {
           })}
         </Box>
 
-        {user.id !== project.customer_id && (
+        <Box
+          sx={{
+            display: 'flex',
+            gap: '15px',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          {user.id !== project.customer_id && (
+            <Button
+              variant="contained"
+              color={user?.current_role === AUDITOR ? 'secondary' : 'primary'}
+              sx={buttonSx}
+              onClick={handleMakeOffer}
+              {...addTestsLabel('offer-button')}
+            >
+              Make Offer
+            </Button>
+          )}
           <Button
-            variant="contained"
-            color={user?.current_role === AUDITOR ? 'secondary' : 'primary'}
-            sx={buttonSx}
-            onClick={handleMakeOffer}
-            {...addTestsLabel('offer-button')}
+            variant="text"
+            // sx={[buttonSx, messageButton]}
+            onClick={handleSendMessage}
+            disabled={project?.customer_id === user.id}
+            {...addTestsLabel('message-button')}
           >
-            Make Offer
+            <ChatIcon />
           </Button>
-        )}
+        </Box>
       </Box>
     </Layout>
   );
@@ -270,17 +319,14 @@ const wrapper = role => {
     minHeight: '520px',
     display: 'flex',
     flexDirection: 'column',
-    padding: '100px 100px 60px',
-    gap: '50px',
+    padding: '30px 60px 60px',
+    gap: '40px',
     backgroundColor: '#fff',
     borderRadius: '10px',
     border: `2px solid ${borderColor}`,
     justifyContent: 'space-between',
     [theme.breakpoints.down('lg')]: {
-      padding: '60px 40px 40px',
-    },
-    [theme.breakpoints.down('md')]: {
-      gap: '50px',
+      padding: '30px 40px',
     },
     [theme.breakpoints.down('sm')]: {
       gap: '20px',
@@ -290,7 +336,6 @@ const wrapper = role => {
     [theme.breakpoints.down('xs')]: {
       width: '100%',
       alignItems: 'center',
-      gap: '25px',
       '& .mobile-tag-wrapper': {
         maxWidth: '380px',
       },
@@ -314,7 +359,7 @@ const fieldLabel = theme => ({
 
 const projectNameSx = {
   width: '100%',
-  fontSize: '22px !important',
+  fontSize: '20px !important',
   textAlign: 'center',
   fontWeight: 500,
   wordBreak: 'break-word',
@@ -392,7 +437,7 @@ const readAllButton = theme => ({
   width: '100%',
   padding: '8px',
   fontWeight: 600,
-  fontSize: '21px',
+  fontSize: '16px',
   color: 'black',
   textTransform: 'none',
   lineHeight: '25px',
@@ -421,23 +466,19 @@ const linksList = {
   '& p': {
     display: 'flex',
     alignItems: 'center',
-    fontSize: '18px',
   },
 };
 
-const linkSx = theme => ({
-  fontSize: '18px',
-  [theme.breakpoints.down('sm')]: {
-    fontSize: '15px',
-  },
-});
+const linkSx = {
+  fontSize: '14px',
+};
 
 const buttonSx = theme => ({
-  margin: '0 auto',
   display: 'block',
   textTransform: 'capitalize',
   fontWeight: 600,
-  fontSize: '18px',
+  fontSize: '16px',
+  lineHeight: 1.2,
   padding: '9px 50px',
   borderRadius: '10px',
   [theme.breakpoints.down('xs')]: {

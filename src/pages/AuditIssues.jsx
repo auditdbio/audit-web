@@ -10,6 +10,7 @@ import { addTestsLabel } from '../lib/helper.js';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack.js';
 import { getIssues } from '../redux/actions/issueAction.js';
 import { CUSTOMER } from '../redux/actions/types.js';
+import Headings from '../router/Headings.jsx';
 
 const AuditIssues = () => {
   const dispatch = useDispatch();
@@ -46,6 +47,7 @@ const AuditIssues = () => {
           transform: 'translate(-50%, -50%)',
         }}
       >
+        <Headings title="Issues" noIndex={true} />
         <Loader />
       </Box>
     );
@@ -53,6 +55,8 @@ const AuditIssues = () => {
 
   return (
     <Layout>
+      <Headings title="Issues" noIndex={true} />
+
       <CustomCard sx={wrapper}>
         <Button
           sx={backButtonSx}

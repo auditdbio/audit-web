@@ -44,11 +44,11 @@ const PublicProjectCard = ({ project }) => {
           />
         </Box>
       </Modal>
-      <Tooltip title={project.name} arrow placement={'top'}>
+      <Tooltip title={project.name} arrow placement="top">
         <Typography sx={auditNameStyle}>{project.name}</Typography>
       </Tooltip>
       <Box sx={{ display: 'grid' }}>
-        <Tooltip title={project.creator_contacts.email} arrow placement={'top'}>
+        <Tooltip title={project.creator_contacts.email} arrow placement="top">
           <Typography noWrap={true} sx={nameTextStyle}>
             {project.creator_contacts.email}
           </Typography>
@@ -57,7 +57,7 @@ const PublicProjectCard = ({ project }) => {
       <Tooltip
         title={project?.tags?.map(el => el).join(', ') ?? ''}
         arrow
-        placement={'top'}
+        placement="top"
       >
         <Typography sx={modalSubheader}>
           {project.tags
@@ -90,8 +90,7 @@ const PublicProjectCard = ({ project }) => {
         onClick={handleView}
         {...addTestsLabel('project_view-button')}
       >
-        {' '}
-        View{' '}
+        View
       </CustomButton>
     </Card>
   );
@@ -210,18 +209,21 @@ const statusWrapper = theme => ({
   margin: '0',
 });
 
-const nameTextStyle = {
+const nameTextStyle = theme => ({
   color: '#152BEA',
   fontWeight: '500',
-  fontSize: '23px',
+  fontSize: '18px',
   textAlign: 'center',
-  [theme.breakpoints.down('sm')]: {
+  [theme.breakpoints.down('lg')]: {
     fontSize: '14px',
+  },
+  [theme.breakpoints.down('md')]: {
+    fontSize: '12px',
   },
   [theme.breakpoints.down('xs')]: {
     fontSize: '10px',
   },
-};
+});
 
 const priceTextStyle = {
   fontWeight: '500',
@@ -235,26 +237,20 @@ const priceTextStyle = {
 const auditNameStyle = theme => ({
   display: '-webkit-box',
   '-webkit-line-clamp': '2',
-  height: '84px',
+  mb: '40px',
   '-webkit-box-orient': 'vertical',
   textOverflow: 'ellipsis',
   overflow: 'hidden',
   wordBreak: 'break-word',
   fontWeight: '500',
-  fontSize: '28px',
+  fontSize: '24px',
   textAlign: 'center',
-  [theme.breakpoints.down('lg')]: {
-    height: '65px',
-  },
   [theme.breakpoints.down('md')]: {
-    height: '60px',
-  },
-  [theme.breakpoints.down('sm')]: {
-    height: '45px',
+    mb: '30px',
   },
   [theme.breakpoints.down('xs')]: {
     fontSize: '14px',
-    height: '40px',
+    mb: '15px',
   },
 });
 
@@ -277,6 +273,7 @@ const dateStyle = {
     padding: '0.3rem',
   },
 };
+
 const modalSubheader = {
   height: '110px',
   overflow: 'hidden',
@@ -287,9 +284,9 @@ const modalSubheader = {
   textAlign: 'center',
   fontSize: {
     zero: '10px',
-    sm: '16px',
-    md: '22px',
-    lg: '25px',
+    sm: '12px',
+    md: '14px',
+    lg: '16px',
   },
   fontWeight: '400',
   [theme.breakpoints.down('lg')]: {

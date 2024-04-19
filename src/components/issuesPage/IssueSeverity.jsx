@@ -1,7 +1,7 @@
 import React from 'react';
 import { Chip } from '@mui/material';
 
-const IssueSeverity = ({ text }) => {
+const IssueSeverity = ({ text, sx = {} }) => {
   const defineColor = () => {
     switch (text) {
       case 'Critical':
@@ -21,11 +21,14 @@ const IssueSeverity = ({ text }) => {
     <Chip
       component="span"
       label={text}
-      sx={{
-        color: 'white',
-        backgroundColor: defineColor(),
-        cursor: 'pointer',
-      }}
+      sx={[
+        {
+          color: 'white',
+          backgroundColor: defineColor(),
+          cursor: 'pointer',
+        },
+        sx,
+      ]}
     />
   );
 };
