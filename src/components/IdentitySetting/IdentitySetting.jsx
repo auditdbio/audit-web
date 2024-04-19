@@ -23,6 +23,7 @@ import {
   changeAccountVisibility,
   handleDeleteLinkedAccount,
 } from '../../redux/actions/userAction.js';
+import { encodeBase64url } from '../../lib/helper.js';
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 
@@ -36,7 +37,7 @@ const IdentitySetting = () => {
 
   const handleConnectGithub = () => {
     if (!linkedAccounts?.find(el => el.name.toLowerCase() === 'github')) {
-      const state = encodeURIComponent(
+      const state = encodeBase64url(
         JSON.stringify({
           service: 'GitHub',
           role,
@@ -51,7 +52,7 @@ const IdentitySetting = () => {
 
   const handleConnectLinkedin = () => {
     if (!linkedAccounts?.find(el => el.name.toLowerCase() === 'linkedin')) {
-      const state = encodeURIComponent(
+      const state = encodeBase64url(
         JSON.stringify({
           service: 'LinkedIn',
           role,
@@ -66,7 +67,7 @@ const IdentitySetting = () => {
 
   const handleConnectTwitter = () => {
     if (!linkedAccounts?.find(el => el.name.toLowerCase() === 'x')) {
-      const state = encodeURIComponent(
+      const state = encodeBase64url(
         JSON.stringify({
           service: 'X',
           role,

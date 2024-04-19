@@ -2,10 +2,11 @@ import React from 'react';
 import { Box, Button, Typography } from '@mui/material';
 import { CUSTOMER } from '../../redux/actions/types.js';
 import { GITHUB_CLIENT_ID, BASE_URL } from '../../services/urls.js';
+import { encodeBase64url } from '../../lib/helper.js';
 
 const GitHubAuthComponent = () => {
   const handleConnectGithub = () => {
-    const state = encodeURIComponent(
+    const state = encodeBase64url(
       JSON.stringify({
         service: 'GitHub',
         authExtended: true,

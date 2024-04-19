@@ -17,7 +17,7 @@ import PasswordField from '../fields/password-field.jsx';
 import SimpleField from '../fields/simple-field.jsx';
 import { clearUserError, signUp } from '../../../redux/actions/userAction.js';
 import CustomSnackbar from '../../custom/CustomSnackbar.jsx';
-import { addTestsLabel, isAuth } from '../../../lib/helper.js';
+import { addTestsLabel, encodeBase64url, isAuth } from '../../../lib/helper.js';
 import RoleModal from '../../modal/RoleModal.jsx';
 import { AUDITOR, CUSTOMER } from '../../../redux/actions/types.js';
 import { BASE_URL, GITHUB_CLIENT_ID } from '../../../services/urls.js';
@@ -42,7 +42,7 @@ const SignupForm = () => {
   };
 
   const handleAuthGithub = () => {
-    const state = encodeURIComponent(
+    const state = encodeBase64url(
       JSON.stringify({
         service: 'GitHub',
         auth: true,

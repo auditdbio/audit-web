@@ -15,7 +15,7 @@ import { Box } from '@mui/system';
 import { Typography } from '@mui/material';
 import GitHubIcon from '@mui/icons-material/GitHub.js';
 import CustomSnackbar from '../components/custom/CustomSnackbar.jsx';
-import { isAuth } from '../lib/helper.js';
+import { decodeBase64url, isAuth } from '../lib/helper.js';
 
 const ConnectAccount = () => {
   const dispatch = useDispatch();
@@ -30,7 +30,7 @@ const ConnectAccount = () => {
   );
 
   useEffect(() => {
-    const state = JSON.parse(decodeURIComponent(searchParam.get('state')));
+    const state = JSON.parse(decodeBase64url(searchParam.get('state')));
     const values = {
       code: searchParam.get('code'),
       service: state?.service,
