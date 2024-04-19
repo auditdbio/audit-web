@@ -54,7 +54,7 @@ import Headings from '../router/Headings.jsx';
 import { AUDITOR, CUSTOMER } from '../redux/actions/types.js';
 
 const AppRoutes = () => {
-  const token = useSelector(s => s.user.token);
+  const { token } = useSelector(s => s.user);
   const currentRole = useSelector(s => s.user.user.current_role);
   const customer = useSelector(s => s.customer.customer);
   const auditor = useSelector(s => s.auditor.auditor);
