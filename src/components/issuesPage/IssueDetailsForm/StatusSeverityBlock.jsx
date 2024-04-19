@@ -171,7 +171,7 @@ const StatusSeverityBlock = ({
             </Field>
           </Box>
         ) : (
-          <Box sx={[statusBlockAlign, { pointerEvents: 'none' }]}>
+          <Box sx={[statusBlockAlign, { pointerEvents: 'none' }, blockSx]}>
             <Typography sx={statusBlockTitle}>
               <span>Severity</span>
             </Typography>
@@ -241,7 +241,7 @@ const StatusSeverityBlock = ({
             />
           </Box>
         ) : (
-          <Box sx={[statusBlockAlign, { mt: '20px' }]}>
+          <Box sx={[statusBlockAlign, blockSx]}>
             {!isPublic && (
               <Typography sx={statusBlockTitle}>
                 <span>Category</span>
