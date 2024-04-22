@@ -16,6 +16,9 @@ import {
   PREV_PAGE,
   NEXT_PAGE,
   CLEAR_COMMITINFO,
+  GET_TAGS,
+  GET_TAG,
+  SWITCH_GITHUB_TAB,
 } from '../actions/types.js';
 
 const initialState = {
@@ -32,6 +35,9 @@ const initialState = {
   myOrganizations: [],
   organizationRepositories: [],
   commitPage: 1,
+  tag: '',
+  tags: [],
+  tab: 'branches',
 };
 
 export const githubReducer = (state = initialState, action) => {
@@ -42,6 +48,22 @@ export const githubReducer = (state = initialState, action) => {
       return {
         ...state,
         commits: action.payload,
+      };
+    case SWITCH_GITHUB_TAB:
+      return {
+        ...state,
+        tab: action.payload,
+      };
+    case GET_TAG:
+      return {
+        ...state,
+        tag: action.payload.name,
+        sha: action.payload.commit.sha,
+      };
+    case GET_TAGS:
+      return {
+        ...state,
+        tags: action.payload,
       };
     case GET_COMMIT:
       return {
