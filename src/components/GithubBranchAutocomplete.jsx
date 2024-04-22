@@ -111,7 +111,7 @@ const GithubBranchAutocomplete = ({ repository, needSave, handleReset }) => {
             <Box sx={modalWrapper}>
               <TextField
                 sx={fieldSx}
-                label="Select a branch"
+                label={tab === 'branches' ? 'Select a branch' : 'Select a tag'}
                 variant="outlined"
                 size={'small'}
                 onChange={e => setInputValue(e.target.value)}
@@ -207,28 +207,30 @@ const GithubBranchAutocomplete = ({ repository, needSave, handleReset }) => {
                       overflowY: 'auto',
                     }}
                   >
-                    {tags?.map((tag, idx) => (
-                      <Box
-                        key={tag.commit.sha + tag.name}
-                        onClick={() => handleOpenCommit(tag)}
-                        sx={[
-                          {
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'space-between',
-                            py: 1,
-                            px: 2,
-                            overflowX: 'auto',
-                            border: '0.5px solid #d9d9d9',
-                            '&:hover': {
-                              bgcolor: '#f1f8ff',
+                    {tags
+                      ?.filter(tag => tag.name.includes(inputValue))
+                      ?.map((tag, idx) => (
+                        <Box
+                          key={tag.commit.sha + tag.name}
+                          onClick={() => handleOpenCommit(tag)}
+                          sx={[
+                            {
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'space-between',
+                              py: 1,
+                              px: 2,
+                              overflowX: 'auto',
+                              border: '0.5px solid #d9d9d9',
+                              '&:hover': {
+                                bgcolor: '#f1f8ff',
+                              },
                             },
-                          },
-                        ]}
-                      >
-                        <Box>{tag.name}</Box>
-                      </Box>
-                    ))}
+                          ]}
+                        >
+                          <Box>{tag.name}</Box>
+                        </Box>
+                      ))}
                   </Box>
                 )}
               </Box>
