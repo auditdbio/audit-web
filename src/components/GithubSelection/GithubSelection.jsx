@@ -20,7 +20,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
   clearCommit,
   clearRepoOwner,
-  getCommitData,
   getCommits,
   getDefaultBranch,
   getMyGithub,
@@ -34,15 +33,8 @@ import { getMyProfile, logout } from '../../redux/actions/userAction.js';
 import GithubOwnRepositories from './GithubOwnRepositories.jsx';
 import GithubOwnOrgs from './GithubOwnOrgs.jsx';
 import GitHubAuthComponent from './GitHubAuthComponent.jsx';
-import {
-  CONNECT_ACCOUNT,
-  NEXT_PAGE,
-  PREV_PAGE,
-} from '../../redux/actions/types.js';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import CommitModal from './CommitModal.jsx';
 import CommitsList from './CommitsList.jsx';
-import Loader from '../Loader.jsx';
 
 const GITHUB_ID = import.meta.env.VITE_GITHUB_CLIENT_ID;
 const BASE_URL = import.meta.env.VITE_BASE_URL;
@@ -60,6 +52,7 @@ const GithubSelection = ({ project }) => {
     myRepositories,
     sha,
     repoOwner,
+    tag,
     commitInfo,
     commitPage: page,
   } = useSelector(state => state.github);
