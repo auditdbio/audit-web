@@ -23,7 +23,7 @@ import {
   CREATE_PUBLIC_REPORT,
   GET_PUBLIC_REPORT,
   RESET_PUBLIC_AUDIT,
-  EDIT_AUDIT_CUSTOMER,
+  EDIT_AUDIT,
   SAVE_PUBLIC_REPORT,
 } from '../actions/types.js';
 
@@ -61,13 +61,14 @@ export const auditReducer = (state = initialState, action) => {
           request => request.id !== action.payload.id,
         ),
       };
-    case EDIT_AUDIT_CUSTOMER:
+    case EDIT_AUDIT:
       return {
         ...state,
         audits: state.audits.map(audit =>
           audit.id === action.payload.id ? action.payload : audit,
         ),
         audit: action.payload,
+        successMessage: 'Saved successfully',
       };
     case GET_AUDITS:
       return { ...state, audits: action.payload };

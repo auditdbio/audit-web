@@ -21,7 +21,7 @@ import {
   deleteAudit,
   deleteAuditRequest,
   downloadReport,
-  editAuditCustomer,
+  editAudit,
 } from '../redux/actions/auditAction.js';
 import {
   AUDITOR,
@@ -288,7 +288,7 @@ const AuditInfo = ({ audit, auditRequest, issues, confirmed }) => {
                     ...audit,
                   }}
                   onSubmit={values => {
-                    dispatch(editAuditCustomer(values));
+                    dispatch(editAudit(values));
                     setEditMode(false);
                   }}
                 >
@@ -360,6 +360,14 @@ const AuditInfo = ({ audit, auditRequest, issues, confirmed }) => {
               )}
           </Box>
         </Box>
+
+        {audit?.conclusion && (
+          <Box sx={{ border: '2px solid #E5E5E5', width: '100%' }}>
+            <Box sx={conclusionTitle}>Conclusion</Box>
+            <Markdown value={audit.conclusion} />
+          </Box>
+        )}
+
         <Box>
           <Box
             sx={{
@@ -692,4 +700,11 @@ const editBtnSx = theme => ({
   gap: '7px',
   flexDirection: 'column',
   right: '10px',
+});
+
+const conclusionTitle = theme => ({
+  padding: '10px 0',
+  fontSize: '20px',
+  fontWeight: 500,
+  textAlign: 'center',
 });
