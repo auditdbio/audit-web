@@ -29,13 +29,14 @@ const CommitModal = ({
   repository,
   handleCloseCommit,
   setOpen,
+  selected,
+  setSelected,
   handleSwitchRep,
 }) => {
   const [field, _, fieldHelper] = useField('scope');
   const data = useSelector(state => state.github.commit);
   const commit = useSelector(state => state.github.commitInfo);
   const [modalOpen, setModalOpen] = useState(false);
-  const [selected, setSelected] = useState([]);
   const [deletedFromField, setDeletedFromField] = useState([]);
   const dispatch = useDispatch();
   const [newObj, setNewObj] = useState(null);
@@ -78,6 +79,12 @@ const CommitModal = ({
   useEffect(() => {
     if (sha && field.value.length) {
       fieldHelper.setValue(updateCommitShaInLinks(field.value, sha));
+    }
+  }, [sha]);
+
+  useEffect(() => {
+    if (sha && selected.length) {
+      setSelected(updateCommitShaInLinks(selected, sha));
     }
   }, [sha]);
 
@@ -210,11 +217,24 @@ const CommitModal = ({
     }
   }, [data?.tree, sha]);
 
+  const checkAllSelected = useMemo(() => {
+    if (data && data.tree) {
+      return selected.every(value => {
+        const pathIndex = value.indexOf('blob') + 46;
+        const path = value.slice(pathIndex);
+        return data.tree?.some(treeItem => treeItem.path === path);
+      });
+    }
+  }, [data?.tree, sha]);
+
   useEffect(() => {
-    if (checkAll !== undefined && checkAll) {
-      setCheckLength(false);
-    } else {
+    if (
+      (checkAll !== undefined && checkAll === false) ||
+      (checkAllSelected !== undefined && checkAllSelected === false)
+    ) {
       setCheckLength(true);
+    } else {
+      setCheckLength(false);
     }
   }, [data?.tree, sha]);
 

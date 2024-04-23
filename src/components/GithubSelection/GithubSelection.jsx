@@ -52,6 +52,7 @@ const GithubSelection = ({ project }) => {
   const [urlRepo, setUrlRepo] = useState('');
   const { branch } = useSelector(state => state.github);
   const [isOpen, setIsOpen] = useState(false);
+  const [selected, setSelected] = useState([]);
   const {
     defaultBranch,
     totalCommitsPage,
@@ -255,6 +256,8 @@ const GithubSelection = ({ project }) => {
           {sha && (
             <CommitModal
               sha={sha}
+              selected={selected}
+              setSelected={setSelected}
               handleCloseCommit={handleCloseCommit}
               repository={repository}
               onClose={handleClose}
