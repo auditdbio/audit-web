@@ -237,7 +237,11 @@ const GithubSelection = ({ project }) => {
                   {githubData?.id && githubData?.scope ? (
                     <>
                       {typeof myOrganizations?.message === 'string' && (
-                        <GitHubAuthComponent />
+                        <GitHubAuthComponent
+                          desc={
+                            'Authenticate via GitHub to select from your private repositories'
+                          }
+                        />
                       )}
                       <GithubOwnRepositories
                         setRepository={handleOpenOwnRepo}

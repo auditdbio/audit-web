@@ -4,7 +4,7 @@ import { CUSTOMER } from '../../redux/actions/types.js';
 import { GITHUB_CLIENT_ID, BASE_URL } from '../../services/urls.js';
 import { encodeBase64url } from '../../lib/helper.js';
 
-const GitHubAuthComponent = () => {
+const GitHubAuthComponent = ({ desc }) => {
   const handleConnectGithub = () => {
     const state = encodeBase64url(
       JSON.stringify({
@@ -25,7 +25,9 @@ const GitHubAuthComponent = () => {
   return (
     <Box sx={githubTitleSx}>
       <Typography variant={'h5'} align={'center'}>
-        Authenticate via GitHub to select from your repositories
+        {desc
+          ? desc
+          : 'Authenticate via GitHub to select from your repositories'}
       </Typography>
       <Button
         onClick={handleConnectGithub}
