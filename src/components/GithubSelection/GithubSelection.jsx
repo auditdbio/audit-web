@@ -234,12 +234,17 @@ const GithubSelection = ({ project }) => {
                       Submit
                     </Button>
                   </Box>
-                  {githubData?.id && !orgs.message ? (
-                    <GithubOwnRepositories
-                      setRepository={handleOpenOwnRepo}
-                      myRepositories={myRepositories}
-                      myOrganizations={myOrganizations}
-                    />
+                  {githubData?.id && githubData?.scope ? (
+                    <>
+                      {typeof myOrganizations?.message === 'string' && (
+                        <GitHubAuthComponent />
+                      )}
+                      <GithubOwnRepositories
+                        setRepository={handleOpenOwnRepo}
+                        myRepositories={myRepositories}
+                        myOrganizations={myOrganizations}
+                      />
+                    </>
                   ) : (
                     <GitHubAuthComponent />
                   )}
