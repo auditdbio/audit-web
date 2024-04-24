@@ -99,22 +99,30 @@ export const setCurrentChat = (
   };
 };
 
-export const chatSendMessage = (text, to, role, isFirst, kind = 'Text') => {
+export const chatSendMessage = (text, to, fromRole, isFirst, kind = 'Text') => {
   const token = Cookies.get('token');
+  const user = JSON.parse(localStorage.getItem('user'));
+
+  if (user.id === to.id) {
+    return {
+      type: CHAT_SET_ERROR,
+      payload: "You can't send a message to yourself",
+    };
+  }
   return dispatch => {
     let values;
 
     if (isFirst) {
       values = {
         to: { id: to.id, role: to.role },
-        role,
+        role: fromRole,
         text,
         kind,
       };
     } else {
       values = {
         chat: to.id,
-        role,
+        role: fromRole,
         text,
         kind,
       };
@@ -128,6 +136,9 @@ export const chatSendMessage = (text, to, role, isFirst, kind = 'Text') => {
         if (isFirst) {
           dispatch({ type: CHAT_SEND_FIRST_MESSAGE, payload: data.id });
         }
+      })
+      .catch(() => {
+        dispatch({ type: CHAT_SET_ERROR, payload: 'Error sending message' });
       });
   };
 };

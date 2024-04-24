@@ -12,6 +12,7 @@ import {
   GET_MY_GITHUB_REPOSITORIES,
   GET_REPO_OWNER,
   GET_SHA,
+  GET_TAGS,
   GET_TOTAL_COMMITS,
 } from './types.js';
 import axios from 'axios';
@@ -48,6 +49,18 @@ export const getBranches = repoOwner => {
     } catch (error) {
       console.error('Error fetching branches:', error);
     }
+  };
+};
+
+export const getTags = repoOwner => {
+  return dispatch => {
+    axios(`${API_URL}/github/repos/${repoOwner}/tags`, {
+      headers: {
+        Authorization: `Bearer ${Cookies.get('token')}`,
+      },
+    }).then(({ data }) => {
+      dispatch({ type: GET_TAGS, payload: data });
+    });
   };
 };
 

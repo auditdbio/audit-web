@@ -24,6 +24,19 @@ export const capitalize = str => {
     : '';
 };
 
+export const encodeBase64url = str => {
+  return window
+    .btoa(str)
+    .replace(/\+/g, '-')
+    .replace(/\//g, '~')
+    .replace(/=/g, '_');
+};
+
+export const decodeBase64url = str => {
+  const s = str.replace(/-/g, '+').replace(/~/g, '/').replace(/_/g, '=');
+  return window.atob(s);
+};
+
 export const reportBuilder = (report, issuesArray) => {
   return {
     auditor_name: report.auditor_name,

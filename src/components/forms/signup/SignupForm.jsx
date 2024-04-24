@@ -1,4 +1,8 @@
 import React, { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useSearchParams } from 'react-router-dom/dist';
+import { Form, Formik } from 'formik';
+import * as Yup from 'yup';
 import {
   Box,
   Tabs,
@@ -7,28 +11,28 @@ import {
   Button,
   useMediaQuery,
 } from '@mui/material';
+import GitHubIcon from '@mui/icons-material/GitHub';
 import theme, { radiusOfComponents } from '../../../styles/themes.js';
 import PasswordField from '../fields/password-field.jsx';
-import { Form, Formik } from 'formik';
-import * as Yup from 'yup';
 import SimpleField from '../fields/simple-field.jsx';
-import { useDispatch, useSelector } from 'react-redux';
 import { clearUserError, signUp } from '../../../redux/actions/userAction.js';
 import CustomSnackbar from '../../custom/CustomSnackbar.jsx';
-import { addTestsLabel, isAuth } from '../../../lib/helper.js';
-import GitHubIcon from '@mui/icons-material/GitHub';
+import { addTestsLabel, encodeBase64url, isAuth } from '../../../lib/helper.js';
 import RoleModal from '../../modal/RoleModal.jsx';
-
-const GITHUB_ID = import.meta.env.VITE_GITHUB_CLIENT_ID;
-const BASE_URL = import.meta.env.VITE_BASE_URL;
 import { AUDITOR, CUSTOMER } from '../../../redux/actions/types.js';
+import { BASE_URL, GITHUB_CLIENT_ID } from '../../../services/urls.js';
 
 const SignupForm = () => {
-  const [currentRole, setCurrentRole] = useState('auditor');
   const dispatch = useDispatch();
   const matchMd = useMediaQuery(theme.breakpoints.down('md'));
+
+  const [searchParams] = useSearchParams();
   const error = useSelector(s => s.user.error);
-  const [open, setOpen] = useState(false);
+
+  const [open, setOpen] = useState(() => searchParams.get('select_role'));
+  const [currentRole, setCurrentRole] = useState('auditor');
+  const [isAuditor, setIsAuditor] = useState(AUDITOR);
+
   const initialValues = {
     current_role: '',
     name: '',
@@ -38,8 +42,15 @@ const SignupForm = () => {
   };
 
   const handleAuthGithub = () => {
+    const state = encodeBase64url(
+      JSON.stringify({
+        service: 'GitHub',
+        auth: true,
+        role: isAuditor,
+      }),
+    );
     window.open(
-      `https://github.com/login/oauth/authorize?client_id=${GITHUB_ID}&redirect_uri=${BASE_URL}oauth/callback&scope=read:user,user:email&state=${isAuditor}_GitHub_auth`,
+      `https://github.com/login/oauth/authorize?client_id=${GITHUB_CLIENT_ID}&redirect_uri=${BASE_URL}oauth/callback&scope=read:user,user:email&state=${state}`,
       '_self',
     );
   };
@@ -76,7 +87,7 @@ const SignupForm = () => {
               indicatorColor="none"
             >
               <Tab
-                value="auditor"
+                value={AUDITOR}
                 sx={[
                   currentRole === AUDITOR
                     ? auditorTabSx
@@ -87,7 +98,7 @@ const SignupForm = () => {
                 {...addTestsLabel('auditor-button')}
               />
               <Tab
-                value="customer"
+                value={CUSTOMER}
                 sx={[
                   currentRole === CUSTOMER
                     ? customerTabSx
@@ -138,8 +149,8 @@ const SignupForm = () => {
               <Button
                 type="submit"
                 sx={submitButton}
-                color={'secondary'}
-                variant={'contained'}
+                color="secondary"
+                variant="contained"
                 disabled={isAuth()}
                 {...addTestsLabel('sign-up-button')}
               >
@@ -147,7 +158,8 @@ const SignupForm = () => {
               </Button>
               <Button
                 sx={[submitButton, { paddingX: '0' }]}
-                variant={'contained'}
+                variant="contained"
+                color="primary"
                 onClick={() => setOpen(true)}
               >
                 <GitHubIcon sx={{ marginRight: '15px' }} />
@@ -157,9 +169,9 @@ const SignupForm = () => {
             {open && (
               <RoleModal
                 onClose={() => setOpen(false)}
-                onClick={handleAuthGithub}
-                isAuditor={isAuditor}
-                setIsAuditor={setIsAuditor}
+                onConfirm={handleAuthGithub}
+                role={isAuditor}
+                setRole={setIsAuditor}
               />
             )}
           </Box>
@@ -202,20 +214,18 @@ const titleStyle = theme => ({
 });
 
 const submitButton = theme => ({
-  backgroundColor: theme.palette.secondary.main,
-  padding: '11px 140px',
+  padding: '11px 0',
   color: '#FCFAF6',
-  fontSize: '14px',
   fontWeight: 600,
-  lineHeight: 1.2,
   borderRadius: radiusOfComponents,
-  maxWidth: '402px',
-  margin: '0 auto',
+  maxWidth: '262px',
+  fontSize: '16px',
   paddingY: '11px',
+  width: '100%',
   [theme.breakpoints.down('sm')]: {
     width: '225px',
-    padding: '13px 80px',
-    fontSize: '12px',
+    padding: '8px 0',
+    fontSize: '14px',
   },
 });
 

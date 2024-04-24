@@ -45,7 +45,13 @@ export const signUpGithub = data => {
         localStorage.setItem('token', JSON.stringify(data.token));
         localStorage.setItem('user', JSON.stringify(data.user));
         dispatch({ type: USER_SIGNIN, payload: data });
+
         if (data.user?.is_new) {
+          axios.patch(
+            `${API_URL}/user/${data.user?.id}`,
+            { is_new: false },
+            { headers: { Authorization: `Bearer ${data.token}` } },
+          );
           history.push({ pathname: `/edit-profile` }, { some: true });
         } else {
           const rolePrefix = data.user?.current_role?.[0];
@@ -55,14 +61,18 @@ export const signUpGithub = data => {
           );
         }
 
-        axios.patch(
-          `${API_URL}/user/${data.user?.id}`,
-          { is_new: false },
-          { headers: { Authorization: `Bearer ${data.token}` } },
-        );
+
       })
       .catch(({ response }) => {
-        dispatch({ type: SIGN_IN_ERROR, payload: response.data });
+        console.error(response);
+        if (
+          response?.status === 400 &&
+          response?.data === 'ServiceError: Role required'
+        ) {
+          history.push('/sign-up?select_role=true');
+        } else {
+          dispatch({ type: SIGN_IN_ERROR, payload: 'Sign In Failed' });
+        }
       });
   };
 };
@@ -77,13 +87,12 @@ export const signIn = values => {
         localStorage.setItem('user', JSON.stringify(data.user));
         dispatch({ type: USER_SIGNIN, payload: data });
 
-        axios.patch(
-          `${API_URL}/user/${data.user?.id}`,
-          { is_new: false },
-          { headers: { Authorization: `Bearer ${data.token}` } },
-        );
-
         if (data.user?.is_new) {
+          axios.patch(
+            `${API_URL}/user/${data.user?.id}`,
+            { is_new: false },
+            { headers: { Authorization: `Bearer ${data.token}` } },
+          );
           history.push({ pathname: `/edit-profile` }, { some: true });
         } else {
           const role = data.user?.current_role?.[0];
@@ -337,6 +346,7 @@ export const logout = () => {
 };
 
 export const changeRole = (role, id) => {
+  const token = Cookies.get('token');
   return dispatch => {
     axios
       .patch(
@@ -344,7 +354,7 @@ export const changeRole = (role, id) => {
         { current_role: role },
         {
           headers: {
-            Authorization: 'Bearer ' + Cookies.get('token'),
+            Authorization: 'Bearer ' + token,
             'Content-Type': 'application/json',
           },
         },
@@ -352,7 +362,17 @@ export const changeRole = (role, id) => {
       .then(({ data: user }) => {
         dispatch({ type: SELECT_ROLE, payload: user });
         localStorage.setItem('user', JSON.stringify(user));
-        history.push({ pathname: `/${role[0]}/${user.id}` }, { some: true });
+
+        if (user.is_new) {
+          axios.patch(
+            `${API_URL}/user/${user.id}`,
+            { is_new: false },
+            { headers: { Authorization: `Bearer ${token}` } },
+          );
+          history.push({ pathname: `/edit-profile` }, { some: true });
+        } else {
+          history.push({ pathname: `/${role[0]}/${user.id}` }, { some: true });
+        }
       });
   };
 };

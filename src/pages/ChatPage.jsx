@@ -13,6 +13,7 @@ import { useNavigate } from 'react-router-dom/dist';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack.js';
 import { AUDITOR, CUSTOMER } from '../redux/actions/types.js';
 import Headings from '../router/Headings.jsx';
+import CustomSnackbar from '../components/custom/CustomSnackbar.jsx';
 
 const ChatPage = () => {
   const dispatch = useDispatch();
@@ -21,7 +22,9 @@ const ChatPage = () => {
   const { id } = useParams();
   const matchXs = useMediaQuery(theme.breakpoints.down('xs'));
   const [chatListIsOpen, setChatListIsOpen] = useState(matchXs && !id);
-  const { chatList, chatMessages, currentChat } = useSelector(s => s.chat);
+  const { chatList, chatMessages, currentChat, error } = useSelector(
+    s => s.chat,
+  );
   const { user } = useSelector(s => s.user);
   const { auditor } = useSelector(s => s.auditor);
   const { customer } = useSelector(s => s.customer);
@@ -79,6 +82,14 @@ const ChatPage = () => {
   return (
     <Layout sx={layoutSx}>
       <Headings title="Chat" noIndex={true} />
+
+      <CustomSnackbar
+        autoHideDuration={5000}
+        open={!!error}
+        severity="error"
+        text={error}
+        onClose={() => dispatch(chatSetError(null))}
+      />
 
       <CustomCard sx={wrapper}>
         <Button
