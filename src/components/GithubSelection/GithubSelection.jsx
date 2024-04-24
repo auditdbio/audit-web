@@ -25,6 +25,7 @@ import {
   getDefaultBranch,
   getMyGithub,
   getMyGithubOrgs,
+  getMyPublicGithubOrgs,
   getRepoOwner,
   getTotalCommits,
 } from '../../redux/actions/githubAction.js';
@@ -111,9 +112,14 @@ const GithubSelection = ({ project }) => {
   useEffect(() => {
     if (githubData?.id && !myRepositories?.length) {
       dispatch(getMyGithub());
-      dispatch(getMyGithubOrgs());
+      if (githubData?.scope.includes('repo')) {
+        dispatch(getMyGithubOrgs());
+        console.log(333);
+      } else {
+        dispatch(getMyPublicGithubOrgs(githubData.username));
+      }
     }
-  }, []);
+  }, [githubData?.scope.includes('repo')]);
 
   const handleAddProject = () => {
     if (urlRepo.includes('github.com/')) {
@@ -234,9 +240,9 @@ const GithubSelection = ({ project }) => {
                       Submit
                     </Button>
                   </Box>
-                  {githubData?.id && githubData?.scope ? (
+                  {githubData?.id ? (
                     <>
-                      {typeof myOrganizations?.message === 'string' && (
+                      {!githubData?.scope.includes('repo') && (
                         <GitHubAuthComponent
                           desc={
                             'Authenticate via GitHub to select from your private repositories'

@@ -206,3 +206,37 @@ export const getMyGithubOrgs = () => {
       });
   };
 };
+//
+export const getMyPublicGithubOrgs = user => {
+  return dispatch => {
+    axios(`${API_URL}/github/users/${user}/orgs?per_page=100`, {
+      headers: {
+        Authorization: `Bearer ${Cookies.get('token')}`,
+        'Cache-Control': 'no-cache',
+      },
+    })
+      .then(({ data }) => {
+        dispatch({
+          type: GET_MY_GITHUB_ORGANIZATION,
+          payload: data,
+        });
+        if (!data.message) {
+          data?.map(org => {
+            axios(`${API_URL}/github/orgs/${org.login}/repos`, {
+              headers: {
+                Authorization: `Bearer ${Cookies.get('token')}`,
+              },
+            }).then(({ data }) => {
+              dispatch({
+                type: GET_MY_GITHUB_ORGANIZATION_REPOSITORIES,
+                payload: data,
+              });
+            });
+          });
+        }
+      })
+      .catch(error => {
+        console.error(error);
+      });
+  };
+};
