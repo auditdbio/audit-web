@@ -114,7 +114,6 @@ const GithubSelection = ({ project }) => {
       dispatch(getMyGithub());
       if (githubData?.scope.includes('repo')) {
         dispatch(getMyGithubOrgs());
-        console.log(333);
       } else {
         dispatch(getMyPublicGithubOrgs(githubData.username));
       }
