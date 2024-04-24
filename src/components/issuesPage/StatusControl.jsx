@@ -82,8 +82,8 @@ const StatusControl = ({ status, setFieldValue }) => {
             color={user.current_role !== CUSTOMER ? 'secondary' : 'primary'}
             sx={[
               status !== 'Draft'
-                ? { textTransform: 'none', mb: '10px' }
-                : { textTransform: 'none', mb: '10px' },
+                ? { textTransform: 'none' }
+                : { textTransform: 'none' },
             ]}
             onClick={() => handleChangeStatus(action.action)}
             {...addTestsLabel('change-status-button')}
@@ -114,4 +114,5 @@ export default StatusControl;
 const wrapper = {
   display: 'flex',
   flexDirection: 'column',
+  gap: '10px',
 };
