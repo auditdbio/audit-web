@@ -63,7 +63,7 @@ const AuditorListCard = ({ auditor, projectIdToInvite, budge }) => {
       isAuth() &&
       !customerReducer?.first_name
     ) {
-      dispatch(changeRolePublicCustomer(CUSTOMER, user.id, customerReducer));
+      dispatch(changeRolePublicCustomer(CUSTOMER, user.id));
       handleError();
     } else if (
       user.current_role !== CUSTOMER &&

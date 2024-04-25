@@ -16,24 +16,36 @@ import * as Yup from 'yup';
 import {
   addReportAudit,
   clearMessage,
+  downloadReport,
   getAudit,
+  getPublicReport,
   handleResetPublicAudit,
+  savePublicReport,
 } from '../redux/actions/auditAction.js';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import PublicIssueDetailsForm from './PublicIssueDetailForm.jsx';
 import { useNavigate } from 'react-router-dom/dist';
-import { CLEAR_AUDIT } from '../redux/actions/types.js';
+import {
+  AUDITOR,
+  CHANGE_ROLE_DONT_HAVE_PROFILE_AUDITOR,
+  CLEAR_AUDIT,
+  CUSTOMER,
+} from '../redux/actions/types.js';
 import { useParams } from 'react-router-dom';
 import Loader from '../components/Loader.jsx';
 import CustomSnackbar from '../components/custom/CustomSnackbar.jsx';
 import Markdown from '../components/markdown/Markdown.jsx';
 import TagsList from '../components/tagsList.jsx';
+import { isAuth, reportBuilder } from '../lib/helper.js';
+import { changeRolePublicAuditor } from '../redux/actions/userAction.js';
+import Headings from '../router/Headings.jsx';
 
 const PublicConstructor = ({ saved, isPublic }) => {
   const matchXs = useMediaQuery(theme.breakpoints.down('xs'));
   const matchMd = useMediaQuery(theme.breakpoints.down('md'));
   const report = JSON.parse(localStorage.getItem('report') || '{}');
   const publicIssues = JSON.parse(localStorage.getItem('publicIssues') || '[]');
+  const auditor = useSelector(s => s.auditor.auditor);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { issues, successMessage } = useSelector(state => state.issues);
@@ -43,6 +55,9 @@ const PublicConstructor = ({ saved, isPublic }) => {
   const { auditId } = useParams();
   const descriptionRef = useRef();
   const [showFull, setShowFull] = useState(false);
+  const { user } = useSelector(s => s.user);
+  const [menuAnchorEl, setMenuAnchorEl] = useState(null);
+  const auditMessage = useSelector(s => s.audits.successMessage);
 
   useEffect(() => {
     if (saved) {
@@ -70,7 +85,7 @@ const PublicConstructor = ({ saved, isPublic }) => {
         scope: report?.scope?.length ? report?.scope : [],
         tags: report?.tags?.length ? report?.tags : [],
         issues: report?.issues?.length ? report?.issues : publicIssues,
-        auditor_name: report?.auditor_name || '',
+        auditor_name: user?.name ? user.name : report?.auditor_name || '',
         status: 'Started',
         last_modified: Date.now(),
       }
@@ -106,9 +121,72 @@ const PublicConstructor = ({ saved, isPublic }) => {
     localStorage.removeItem('publicIssues');
   };
 
+  const handleSavePublicAudit = async (handleSubmit, report) => {
+    handleSubmit();
+    if (report?.auditor_name && report?.project_name && report?.description) {
+      if (isAuth()) {
+        if (user.current_role === CUSTOMER) {
+          const data = {
+            ...report,
+            isPublic: true,
+            issues: [...issues],
+          };
+          await dispatch(changeRolePublicAuditor(AUDITOR, user.id, data, true));
+        } else {
+          const data = {
+            auditor_id: auditor.user_id,
+            auditor_first_name: auditor.first_name,
+            auditor_last_name: auditor.last_name,
+            auditor_contacts: auditor.contacts,
+            avatar: auditor.avatar,
+            ...report,
+            isPublic: true,
+            issues: [...issues],
+            status: 'Started',
+          };
+          if (auditor?.user_id) {
+            await dispatch(savePublicReport(data));
+          } else {
+            dispatch({
+              type: CHANGE_ROLE_DONT_HAVE_PROFILE_AUDITOR,
+              payload: user,
+            });
+            navigate('/profile/user-info');
+          }
+        }
+      } else {
+        navigate('/sign-in');
+      }
+    } else {
+      setOpenMessage(true);
+    }
+  };
+
+  const handleCloseSnack = () => {
+    setOpenMessage(false);
+    if (auditMessage) {
+      dispatch(clearMessage());
+    }
+  };
+
+  const handleGenerateReport = (handleSubmit, values) => {
+    if (isPublic) {
+      if (values?.auditor_name && values?.project_name && values?.description) {
+        handleSubmit();
+        const newData = reportBuilder(values, issues);
+        dispatch(getPublicReport(newData, { generate: true }));
+      } else {
+        setOpenMessage(true);
+      }
+    } else {
+      dispatch(downloadReport(audit, { generate: true }));
+    }
+  };
+
   if (!audit?.id && saved) {
     return (
       <Layout>
+        <Headings title="Audit Builder" />
         <CustomCard
           sx={[wrapper, { height: '100%', justifyContent: 'center' }]}
         >
@@ -117,10 +195,18 @@ const PublicConstructor = ({ saved, isPublic }) => {
       </Layout>
     );
   }
-  //
+
   if ((saved && audit) || (!audit && !saved)) {
     return (
-      <Layout sx={layoutSx}>
+      <Layout
+        sx={{ padding: '40px' }}
+        containerSx={{
+          maxWidth: 'unset!important',
+          padding: '0 35px!important',
+        }}
+      >
+        <Headings title="Audit Builder" />
+
         <CustomCard sx={wrapper}>
           <Button
             onClick={() =>
@@ -144,7 +230,6 @@ const PublicConstructor = ({ saved, isPublic }) => {
                   const newValues = { ...values, id: Date.now() };
                   localStorage.setItem('report', JSON.stringify(newValues));
                 }
-                setOpenMessage(true);
               }
             }}
           >
@@ -158,13 +243,7 @@ const PublicConstructor = ({ saved, isPublic }) => {
               resetForm,
             }) => {
               return (
-                <Form
-                  onSubmit={handleSubmit}
-                  style={{
-                    width: '100%',
-                    maxWidth: '1300px',
-                  }}
-                >
+                <Form onSubmit={handleSubmit} style={{ width: '100%' }}>
                   <CustomSnackbar
                     autoHideDuration={5000}
                     open={!!successMessage}
@@ -186,7 +265,7 @@ const PublicConstructor = ({ saved, isPublic }) => {
                       handleBlur={handleSubmit}
                       name={saved ? 'auditor_full_name' : 'auditor_name'}
                       label={'Auditor name'}
-                      disabled={saved}
+                      disabled={saved || user?.name}
                     />
                   </Box>
 
@@ -209,6 +288,7 @@ const PublicConstructor = ({ saved, isPublic }) => {
                               saved={saved}
                               name="description"
                               handleBlur={handleSubmit}
+                              fastSave={true}
                               setFieldTouched={setFieldTouched}
                               mdProps={{
                                 view: { menu: true, md: true, html: !matchXs },
@@ -305,14 +385,51 @@ const PublicConstructor = ({ saved, isPublic }) => {
                     </Box>
                   </Modal>
                   {!issues.length && (
-                    <Box
-                      sx={{
-                        display: 'flex',
-                        gap: '25px',
-                        mt: '25px',
-                        justifyContent: 'flex-end',
-                      }}
-                    >
+                    <Box sx={actionWrapper}>
+                      <CustomSnackbar
+                        autoHideDuration={5000}
+                        open={openMessage || auditMessage}
+                        severity={
+                          (auditMessage && 'success') ||
+                          (openMessage && 'error')
+                        }
+                        text={
+                          auditMessage
+                            ? auditMessage
+                            : openMessage &&
+                              'Please fill in all mandatory fields'
+                        }
+                        onClose={handleCloseSnack}
+                      />
+                      <Button
+                        variant="contained"
+                        color="secondary"
+                        sx={[
+                          buttonSx,
+                          { marginRight: '0!important' },
+                          publicBtnSx,
+                        ]}
+                        onClick={() =>
+                          handleGenerateReport(handleSubmit, values)
+                        }
+                      >
+                        Generate report
+                      </Button>
+                      {!saved && (
+                        <Button
+                          sx={[
+                            buttonSx,
+                            { marginRight: '0!important' },
+                            publicBtnSx,
+                          ]}
+                          onClick={() => {
+                            handleSavePublicAudit(handleSubmit, values);
+                          }}
+                          variant={'contained'}
+                        >
+                          Save to AuditDB
+                        </Button>
+                      )}
                       <Button
                         variant={'contained'}
                         type={'button'}
@@ -360,6 +477,17 @@ const PublicConstructor = ({ saved, isPublic }) => {
 
 export default PublicConstructor;
 
+const actionWrapper = theme => ({
+  display: 'flex',
+  gap: '25px',
+  mt: '25px',
+  justifyContent: 'center',
+  [theme.breakpoints.down(690)]: {
+    flexDirection: 'column',
+    gap: '15px',
+  },
+});
+
 const layoutSx = theme => ({
   paddingY: '10px',
   [theme.breakpoints.down('md')]: {
@@ -376,6 +504,38 @@ const layoutSx = theme => ({
 const descriptionTitleSx = theme => ({
   mb: '10px',
   fontSize: '16px',
+});
+
+const buttonSx = theme => ({
+  padding: '10px 24px',
+  flexShrink: 0,
+  fontWeight: '600!important',
+  fontSize: '16px',
+  lineHeight: '25px',
+  textTransform: 'none',
+  borderRadius: '10px',
+  mr: '20px',
+  '&:last-child': { mr: 0 },
+  [theme.breakpoints.down('md')]: {
+    fontWeight: '500!important',
+  },
+  [theme.breakpoints.down('sm')]: {
+    padding: '7px 24px',
+  },
+  [theme.breakpoints.down('xs')]: {
+    padding: '7px 10px',
+  },
+});
+
+const publicBtnSx = theme => ({
+  width: '213px',
+  [theme.breakpoints.down('sm')]: {
+    width: '185px',
+  },
+  [theme.breakpoints.down(690)]: {
+    width: '100%',
+    mr: 0,
+  },
 });
 
 const readAllButton = theme => ({
@@ -443,6 +603,7 @@ const wrapper = theme => ({
   flexDirection: 'column',
   alignItems: 'center',
   position: 'relative',
+  maxWidth: 'unset',
   gap: '20px',
   '& h3': {
     fontSize: '37px',
@@ -467,7 +628,7 @@ const btnSx = theme => ({
   padding: '15px 24px',
   flexShrink: 0,
   fontWeight: '600!important',
-  fontSize: '20px',
+  fontSize: '16px',
   lineHeight: '25px',
   textTransform: 'none',
   borderRadius: '10px',
@@ -478,7 +639,7 @@ const btnSx = theme => ({
   },
   [theme.breakpoints.down('md')]: {
     padding: '10px 24px',
-    fontWeight: 500,
+    fontWeight: '500!important',
   },
   [theme.breakpoints.down('sm')]: {
     padding: '7px 24px',

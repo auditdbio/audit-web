@@ -58,7 +58,7 @@ export default function AuditorModal({
       !customerReducer?.first_name &&
       handleError
     ) {
-      dispatch(changeRolePublicCustomer(CUSTOMER, user.id, customerReducer));
+      dispatch(changeRolePublicCustomer(CUSTOMER, user.id));
       handleError();
     } else if (
       user.current_role !== CUSTOMER &&
@@ -138,7 +138,7 @@ export default function AuditorModal({
                 />
               </Box>
               <ShareProfileButton
-                userId={auditor.user_id}
+                userId={auditor.link_id || auditor.user_id}
                 sx={{ fontSize: '12px' }}
                 isModal
                 role={AUDITOR}

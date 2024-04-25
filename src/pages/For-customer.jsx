@@ -2,10 +2,13 @@ import React from 'react';
 import Layout from '../styles/Layout.jsx';
 import { Box, Typography } from '@mui/material';
 import { CustomCard } from '../components/custom/Card.jsx';
+import Headings from '../router/Headings.jsx';
 
 const ForCustomer = () => {
   return (
     <Layout>
+      <Headings title="For Customers" />
+
       <CustomCard sx={wrapper}>
         <Typography variant="h3">For customers</Typography>
         <Typography>

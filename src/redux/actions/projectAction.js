@@ -125,9 +125,6 @@ export const changeStatusProject = values => {
       })
       .then(({ data }) => {
         dispatch({ type: PROJECT_UPDATE_STATUS, payload: data });
-        // history.push("/profile/projects", {
-        //     some: true,
-        // });
       })
       .catch(({ response }) => {
         console.log(response, 'res');

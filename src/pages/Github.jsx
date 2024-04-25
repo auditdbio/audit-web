@@ -26,7 +26,7 @@ const Github = () => {
         ),
     };
     dispatch(signUpGithub(value));
-  }, [searchParam.get('code')]);
+  }, []);
   return (
     <Layout>
       <CustomCard sx={cardWrapper}>

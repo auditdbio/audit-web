@@ -4,6 +4,7 @@ import AuditRequestCard from './Audit-request-card';
 import { useSelector } from 'react-redux';
 import { addTestsLabel } from '../lib/helper.js';
 import { useNavigate } from 'react-router-dom/dist';
+import Headings from '../router/Headings.jsx';
 
 const AuditRequest = () => {
   const auditRequests = useSelector(s => s.audits.auditRequests);
@@ -15,6 +16,8 @@ const AuditRequest = () => {
 
   return (
     <Box sx={wrapper}>
+      <Headings title="My Audit Requests" />
+
       <Box sx={buttonWrapper}>
         <Button
           sx={buttonSx}

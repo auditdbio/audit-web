@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { Box, Button } from '@mui/material';
+import { Box, Button, Tooltip } from '@mui/material';
 import { addTestsLabel } from '../../lib/helper.js';
 import { AUDITOR, CUSTOMER } from '../../redux/actions/types.js';
 import {
@@ -16,6 +16,7 @@ import {
   VERIFICATION,
   VERIFIED_ACTION,
 } from './constants.js';
+import QuestionMarkIcon from '@mui/icons-material/QuestionMark';
 
 const StatusControl = ({ status, setFieldValue }) => {
   const { user } = useSelector(s => s.user);
@@ -65,7 +66,13 @@ const StatusControl = ({ status, setFieldValue }) => {
   };
 
   return (
-    <Box sx={wrapper}>
+    <Box
+      sx={
+        status !== 'Draft'
+          ? wrapper
+          : { display: 'flex', alignItems: 'center', gap: '7px' }
+      }
+    >
       {statusActions.map(action => {
         return (
           <Button
@@ -73,7 +80,11 @@ const StatusControl = ({ status, setFieldValue }) => {
             variant="contained"
             type="submit"
             color={user.current_role !== CUSTOMER ? 'secondary' : 'primary'}
-            sx={{ textTransform: 'none', mb: '10px' }}
+            sx={[
+              status !== 'Draft'
+                ? { textTransform: 'none', mb: '10px' }
+                : { textTransform: 'none', mb: '10px' },
+            ]}
             onClick={() => handleChangeStatus(action.action)}
             {...addTestsLabel('change-status-button')}
           >
@@ -81,6 +92,19 @@ const StatusControl = ({ status, setFieldValue }) => {
           </Button>
         );
       })}
+      {status === 'Draft' && (
+        <Tooltip
+          title="The project creator will be able to see the issue"
+          placement="top"
+        >
+          <Button
+            color={'secondary'}
+            sx={{ minWidth: '20px', textTransform: 'none', mb: '10px' }}
+          >
+            <QuestionMarkIcon />
+          </Button>
+        </Tooltip>
+      )}
     </Box>
   );
 };

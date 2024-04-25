@@ -15,7 +15,7 @@ const renderHTML = text => {
         code({ node, inline, className = '', children, ...props }) {
           const language = /language-(\w+)/.exec(className);
           const showLineNumbers = /=\d*$/.test(className);
-          const numbersFrom = +/\d+/.exec(className)?.[0] || 1;
+          const numbersFrom = +/\d+$/.exec(className)?.[0] || 1;
           return !inline ? (
             <SyntaxHighlighter
               {...props}

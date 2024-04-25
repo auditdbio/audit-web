@@ -12,6 +12,7 @@ import { clearMessage } from '../redux/actions/auditAction.js';
 import CustomPagination from '../components/custom/CustomPagination.jsx';
 import { addTestsLabel } from '../lib/helper.js';
 import theme from '../styles/themes.js';
+import Headings from '../router/Headings.jsx';
 import CustomSnackbar from '../components/custom/CustomSnackbar.jsx';
 
 const ProjectPage = () => {
@@ -104,6 +105,8 @@ const ProjectPage = () => {
 
   return (
     <Layout>
+      <Headings title="Projects" />
+
       <CustomSnackbar
         autoHideDuration={5000}
         open={!!successMessage}

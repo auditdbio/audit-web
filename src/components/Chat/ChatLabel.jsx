@@ -36,7 +36,8 @@ const ChatLabel = () => {
       localStorage.setItem('path', window.location.pathname);
       navigate('/chat');
     } else {
-      navigate('/profile/user-info');
+      const role = user.current_role?.[0];
+      navigate(`/${role}/${user.id}`);
       dispatch(chatSetError('Fill your profile'));
     }
   };

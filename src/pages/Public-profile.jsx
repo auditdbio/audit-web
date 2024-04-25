@@ -13,13 +13,19 @@ import { AUDITOR, CUSTOMER } from '../redux/actions/types.js';
 import Loader from '../components/Loader.jsx';
 import { Box } from '@mui/system';
 import { ASSET_URL } from '../services/urls.js';
-import { addTestsLabel, isAuth } from '../lib/helper.js';
+import { addTestsLabel, capitalize, isAuth } from '../lib/helper.js';
 import MobileTagsList from '../components/MobileTagsList/index.jsx';
 import TagsList from '../components/tagsList.jsx';
 import theme from '../styles/themes.js';
 import Layout from '../styles/Layout.jsx';
-import { getCurrentAuditor } from '../redux/actions/auditorAction.js';
-import { getCurrentCustomer } from '../redux/actions/customerAction.js';
+import {
+  getAuditorByLinkId,
+  getCurrentAuditor,
+} from '../redux/actions/auditorAction.js';
+import {
+  getCurrentCustomer,
+  getCustomerByLinkId,
+} from '../redux/actions/customerAction.js';
 import CustomSnackbar from '../components/custom/CustomSnackbar.jsx';
 import {
   changeRolePublicCustomer,
@@ -32,30 +38,36 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack.js';
 import LinkedinIcon from '../components/icons/LinkedinIcon.jsx';
 import XTwitterLogo from '../components/icons/XTwitter-logo.jsx';
 import GitHubIcon from '@mui/icons-material/GitHub';
+import Headings from '../router/Headings.jsx';
 
-const PublicProfile = () => {
-  const { role, id } = useParams();
+const PublicProfile = ({ notFoundRedirect = true }) => {
   const navigate = useNavigate();
-  const customer = useSelector(s => s.customer.currentCustomer);
-  const auditor = useSelector(s => s.auditor.currentAuditor);
+  const dispatch = useDispatch();
   const matchXs = useMediaQuery(theme.breakpoints.down('xs'));
   const matchSm = useMediaQuery(theme.breakpoints.down('sm'));
-  const userProjects = useSelector(s => s.project.myProjects);
-  const dispatch = useDispatch();
+
+  const { role: roleParams, id, linkId } = useParams();
+
+  const { currentCustomer, customer } = useSelector(s => s.customer);
+  const { currentAuditor, auditor } = useSelector(s => s.auditor);
+  const { myProjects } = useSelector(s => s.project);
+  const { user, publicUser } = useSelector(s => s.user);
+  const { chatList } = useSelector(s => s.chat);
+
   const [errorMessage, setErrorMessage] = useState(null);
   const [message, setMessage] = useState(null);
-  const customerReducer = useSelector(state => state.customer.customer);
-  const myProjects = useSelector(state => state.project.myProjects);
-  const { user } = useSelector(state => state.user);
-  const { chatList } = useSelector(s => s.chat);
-  const publicUser = useSelector(state => state.user.publicUser);
+  const [role, setRole] = useState(() => {
+    if (roleParams.toLowerCase() === 'c') return CUSTOMER;
+    if (roleParams.toLowerCase() === 'a') return AUDITOR;
+    return roleParams;
+  });
 
   const handleError = () => {
     setErrorMessage(null);
     setMessage('Switched to customer role');
     const delayedFunc = setTimeout(() => {
-      if (userProjects.length) {
-        navigate(`/my-projects/${auditor.user_id}`);
+      if (myProjects.length) {
+        navigate(`/my-projects/${currentAuditor.user_id}`);
       } else {
         setMessage(null);
         setErrorMessage('No active projects');
@@ -66,22 +78,20 @@ const PublicProfile = () => {
 
   const handleInvite = () => {
     if (user.current_role === CUSTOMER && isAuth() && myProjects.length) {
-      navigate(`/my-projects/${auditor.user_id}`);
+      navigate(`/my-projects/${currentAuditor.user_id}`);
     } else if (
       user.current_role !== CUSTOMER &&
       isAuth() &&
-      !customerReducer?.first_name
+      !customer?.first_name
     ) {
-      dispatch(changeRolePublicCustomer(CUSTOMER, user.id, customerReducer));
+      dispatch(changeRolePublicCustomer(CUSTOMER, user.id));
       handleError();
     } else if (
       user.current_role !== CUSTOMER &&
       isAuth() &&
-      customerReducer?.first_name
+      customer?.first_name
     ) {
-      dispatch(
-        changeRolePublicCustomerNoRedirect(CUSTOMER, user.id, customerReducer),
-      );
+      dispatch(changeRolePublicCustomerNoRedirect(CUSTOMER, user.id, customer));
       handleError();
     } else if (
       user.current_role === CUSTOMER &&
@@ -120,12 +130,22 @@ const PublicProfile = () => {
 
   useEffect(() => {
     if (role.toLowerCase() === AUDITOR) {
-      dispatch(getCurrentAuditor(id));
-    } else {
-      dispatch(getCurrentCustomer(id));
+      if (id) {
+        dispatch(getCurrentAuditor(id));
+      } else if (linkId) {
+        dispatch(getAuditorByLinkId(linkId, notFoundRedirect));
+      }
+    } else if (role.toLowerCase() === CUSTOMER) {
+      if (id) {
+        dispatch(getCurrentCustomer(id));
+      } else if (linkId) {
+        dispatch(getCustomerByLinkId(linkId, notFoundRedirect));
+      }
     }
-    dispatch(getPublicProfile(id, role));
-  }, [id, role]);
+    if (id) {
+      dispatch(getPublicProfile(id));
+    }
+  }, [id, role, linkId]);
 
   useEffect(() => {
     const handleBeforeUnload = () => {
@@ -140,15 +160,23 @@ const PublicProfile = () => {
 
   const data = useMemo(() => {
     if (role.toLowerCase() === AUDITOR) {
-      return auditor;
+      return currentAuditor;
     } else {
-      return customer;
+      return currentCustomer;
     }
-  }, [role, customer, auditor]);
+  }, [role, currentCustomer, currentAuditor]);
+
+  useEffect(() => {
+    if (linkId && data?.link_id && data?.link_id !== linkId) {
+      navigate(`/${roleParams}/${data.link_id}`);
+    }
+  }, [linkId, data]);
 
   if (!data) {
     return (
       <Layout>
+        <Headings title="Profile" />
+
         <Box
           sx={[
             wrapper(
@@ -171,6 +199,12 @@ const PublicProfile = () => {
   } else {
     return (
       <Layout>
+        <Headings
+          title={`${data.first_name} ${data.last_name}`}
+          description={data.about}
+          image={data.avatar}
+        />
+
         <Box
           sx={wrapper(
             theme,
@@ -395,23 +429,26 @@ const PublicProfile = () => {
                 sx={buttonSx}
                 color={'secondary'}
                 onClick={handleInvite}
+                disabled={data?.user_id === user?.id}
                 {...addTestsLabel('invite-button')}
               >
                 Invite to project
               </Button>
             )}
-            {data.kind !== 'badge' && (
-              <Button
-                variant="text"
-                color={role === AUDITOR ? 'secondary' : 'primary'}
-                sx={buttonSx}
-                disabled={id === user.id}
-                onClick={() => handleSendMessage(data)}
-                {...addTestsLabel('message-button')}
-              >
-                <ChatIcon />
-              </Button>
-            )}
+            {data.kind !== 'badge' &&
+              isAuth() &&
+              data?.user_id !== user?.id && (
+                <Button
+                  variant="text"
+                  color={role === AUDITOR ? 'secondary' : 'primary'}
+                  sx={buttonSx}
+                  disabled={data?.user_id === user?.id}
+                  onClick={() => handleSendMessage(data)}
+                  {...addTestsLabel('message-button')}
+                >
+                  <ChatIcon />
+                </Button>
+              )}
           </Box>
         </Box>
       </Layout>
@@ -454,11 +491,11 @@ const goBackSx = {
   left: '30px',
 };
 
-const badgeTitle = theme => ({
+const badgeTitle = {
   textAlign: 'center',
   color: '#B9B9B9',
   fontWeight: 500,
-});
+};
 
 const aboutWrapper = theme => ({
   display: 'flex',
@@ -472,11 +509,11 @@ const aboutWrapper = theme => ({
   },
 });
 
-const infoInnerStyle = theme => ({
+const infoInnerStyle = {
   display: 'flex',
   flexDirection: 'column',
   gap: '16px',
-});
+};
 
 const infoStyle = theme => ({
   display: 'flex',
