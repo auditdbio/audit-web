@@ -16,6 +16,8 @@ import {
   PREV_PAGE,
   NEXT_PAGE,
   CLEAR_COMMITINFO,
+  GET_MY_PRIVATE_GITHUB_ORGANIZATION,
+  NEED_TO_AUTH_GITHUB,
 } from '../actions/types.js';
 
 const initialState = {
@@ -32,6 +34,7 @@ const initialState = {
   myOrganizations: [],
   organizationRepositories: [],
   commitPage: 1,
+  githubAuth: false,
 };
 
 export const githubReducer = (state = initialState, action) => {
@@ -105,6 +108,11 @@ export const githubReducer = (state = initialState, action) => {
         ...state,
         repoOwner: action.payload,
       };
+    case NEED_TO_AUTH_GITHUB:
+      return {
+        ...state,
+        githubAuth: false,
+      };
     case CLEAR_REPO_OWNER:
       return {
         ...state,
@@ -122,6 +130,12 @@ export const githubReducer = (state = initialState, action) => {
       return {
         ...state,
         myOrganizations: action.payload,
+      };
+    case GET_MY_PRIVATE_GITHUB_ORGANIZATION:
+      return {
+        ...state,
+        myOrganizations: action.payload,
+        githubAuth: true,
       };
     case GET_MY_GITHUB_ORGANIZATION_REPOSITORIES:
       return {
