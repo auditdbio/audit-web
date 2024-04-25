@@ -46,7 +46,6 @@ import { setCurrentChat } from '../redux/actions/chatActions.js';
 import ChatIcon from '../components/icons/ChatIcon.jsx';
 import ConfirmModal from '../components/modal/ConfirmModal.jsx';
 import Headings from '../router/Headings.jsx';
-import CloseIcon from '@mui/icons-material/Close';
 
 const AuditInfo = ({ audit, auditRequest, issues, confirmed, handleClose }) => {
   const navigate = useNavigate();
@@ -278,148 +277,148 @@ const AuditInfo = ({ audit, auditRequest, issues, confirmed, handleClose }) => {
           )}
         </Box>
 
-          <Box sx={descriptionSx(showFull || editMode)}>
-            <Box ref={descriptionRef}>
-              {!editMode ? (
-                <Markdown value={audit?.description} />
-              ) : (
-                <Formik
-                  initialValues={{
-                    description: audit?.description,
-                    ...audit,
-                  }}
-                  onSubmit={values => {
-                    if (auditRequest) {
-                      dispatch(editAuditRequestCustomer(values));
-                    } else {
-                      dispatch(editAuditCustomer(values));
-                    }
-                    setEditMode(false);
-                  }}
-                >
-                  {({ handleSubmit, setFieldTouched, dirty }) => {
-                    return (
-                      <Form onSubmit={handleSubmit}>
-                        <Box sx={{ position: 'relative' }}>
-                          <MarkdownEditor
-                            name="description"
-                            setFieldTouched={setFieldTouched}
-                            fastSave={true}
-                            mdProps={{
-                              view: { menu: true, md: true, html: !matchXs },
-                            }}
-                          />
-                          <Box sx={editBtnSx}>
-                            <Button
-                              variant={'text'}
-                              type={'submit'}
-                              disabled={!dirty}
-                            >
-                              <SaveIcon />
-                            </Button>
-                            <Button>
-                              <CloseIcon
-                                color={'secondary'}
-                                onClick={() => setEditMode(false)}
-                              />
-                            </Button>
-                          </Box>
+        <Box sx={descriptionSx(showFull || editMode)}>
+          <Box ref={descriptionRef}>
+            {!editMode ? (
+              <Markdown value={audit?.description} />
+            ) : (
+              <Formik
+                initialValues={{
+                  description: audit?.description,
+                  ...audit,
+                }}
+                onSubmit={values => {
+                  if (auditRequest) {
+                    dispatch(editAuditRequestCustomer(values));
+                  } else {
+                    dispatch(editAuditCustomer(values));
+                  }
+                  setEditMode(false);
+                }}
+              >
+                {({ handleSubmit, setFieldTouched, dirty }) => {
+                  return (
+                    <Form onSubmit={handleSubmit}>
+                      <Box sx={{ position: 'relative' }}>
+                        <MarkdownEditor
+                          name="description"
+                          setFieldTouched={setFieldTouched}
+                          fastSave={true}
+                          mdProps={{
+                            view: { menu: true, md: true, html: !matchXs },
+                          }}
+                        />
+                        <Box sx={editBtnSx}>
+                          <Button
+                            variant={'text'}
+                            type={'submit'}
+                            disabled={!dirty}
+                          >
+                            <SaveIcon />
+                          </Button>
+                          <Button>
+                            <CloseIcon
+                              color={'secondary'}
+                              onClick={() => setEditMode(false)}
+                            />
+                          </Button>
                         </Box>
-                      </Form>
-                    );
-                  }}
-                </Formik>
-              )}
-            </Box>
-          </Box>
-          <Box
-            sx={[
-              {
-                display: 'flex',
-                background: '#E5E5E5',
-                borderRadius: 0,
-                boxShadow: '0px -24px 14px -8px rgba(252, 250, 246, 1)',
-                ':hover': { background: '#D5D5D5' },
-                padding: '8px',
-                position: 'relative',
-              },
-            ]}
-          >
-            {showReadMoreButton && !editMode && (
-              <Button onClick={() => setShowFull(!showFull)} sx={readAllButton}>
-                {showFull ? 'Hide ▲' : `Read all ▼`}
-              </Button>
+                      </Box>
+                    </Form>
+                  );
+                }}
+              </Formik>
             )}
-            {!editMode &&
-              audit?.status?.toLowerCase() !== RESOLVED.toLowerCase() && (
-                <Box
-                  sx={{
-                    position: 'absolute',
-                    bottom: '20px',
-                    right: '10px',
-                  }}
-                >
-                  <Button variant={'text'} onClick={handleEdit}>
-                    <EditIcon fontSize={'large'} />
-                  </Button>
-                </Box>
-              )}
           </Box>
         </Box>
-        <Box>
-          <Box
-            sx={{
+        <Box
+          sx={[
+            {
               display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-              mt: '20px',
-              gap: '15px',
-            }}
-          >
-            {auditRequest && (
-              <Button
-                variant={'contained'}
-                sx={buttonSx}
-                disabled={audit?.last_changer?.toLowerCase() === CUSTOMER}
-                onClick={handleConfirm}
-                {...addTestsLabel('accept-button')}
+              background: '#E5E5E5',
+              borderRadius: 0,
+              boxShadow: '0px -24px 14px -8px rgba(252, 250, 246, 1)',
+              ':hover': { background: '#D5D5D5' },
+              padding: '8px',
+              position: 'relative',
+            },
+          ]}
+        >
+          {showReadMoreButton && !editMode && (
+            <Button onClick={() => setShowFull(!showFull)} sx={readAllButton}>
+              {showFull ? 'Hide ▲' : `Read all ▼`}
+            </Button>
+          )}
+          {!editMode &&
+            audit?.status?.toLowerCase() !== RESOLVED.toLowerCase() && (
+              <Box
+                sx={{
+                  position: 'absolute',
+                  bottom: '20px',
+                  right: '10px',
+                }}
               >
-                Accept
-              </Button>
-            )}
-            {!audit?.status && (
-              <Button
-                variant="contained"
-                color="secondary"
-                onClick={() => setIsModalOpen(true)}
-                sx={buttonSx}
-                {...addTestsLabel('decline-button')}
-              >
-                Decline
-              </Button>
-            )}
-            {audit?.report && !issues?.length && (
-              <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-                <Button
-                  variant={'contained'}
-                  color={'secondary'}
-                  onClick={() => dispatch(downloadReport(audit))}
-                  sx={[buttonSx]}
-                  {...addTestsLabel('report-button')}
-                >
-                  Download Report
+                <Button variant={'text'} onClick={handleEdit}>
+                  <EditIcon fontSize={'large'} />
                 </Button>
               </Box>
             )}
+        </Box>
+      </Box>
+      <Box>
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            mt: '20px',
+            gap: '15px',
+          }}
+        >
+          {auditRequest && (
             <Button
-              variant="text"
-              onClick={handleSendMessage}
-              disabled={audit?.auditor_id === user.id}
-              {...addTestsLabel('message-button')}
+              variant={'contained'}
+              sx={buttonSx}
+              disabled={audit?.last_changer?.toLowerCase() === CUSTOMER}
+              onClick={handleConfirm}
+              {...addTestsLabel('accept-button')}
             >
-              <ChatIcon />
+              Accept
             </Button>
-          </Box>
+          )}
+          {!audit?.status && (
+            <Button
+              variant="contained"
+              color="secondary"
+              onClick={() => setIsModalOpen(true)}
+              sx={buttonSx}
+              {...addTestsLabel('decline-button')}
+            >
+              Decline
+            </Button>
+          )}
+          {audit?.report && !issues?.length && (
+            <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+              <Button
+                variant={'contained'}
+                color={'secondary'}
+                onClick={() => dispatch(downloadReport(audit))}
+                sx={[buttonSx]}
+                {...addTestsLabel('report-button')}
+              >
+                Download Report
+              </Button>
+            </Box>
+          )}
+          <Button
+            variant="text"
+            onClick={handleSendMessage}
+            disabled={audit?.auditor_id === user.id}
+            {...addTestsLabel('message-button')}
+          >
+            <ChatIcon />
+          </Button>
+        </Box>
 
         {audit?.report && !!issues?.length && (
           <Box sx={{ display: 'flex', justifyContent: 'center', mt: '15px' }}>
