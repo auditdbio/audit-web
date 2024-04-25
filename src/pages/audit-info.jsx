@@ -22,6 +22,7 @@ import {
   deleteAuditRequest,
   downloadReport,
   editAuditCustomer,
+  editAuditRequestCustomer,
 } from '../redux/actions/auditAction.js';
 import {
   AUDITOR,
@@ -288,7 +289,11 @@ const AuditInfo = ({ audit, auditRequest, issues, confirmed }) => {
                     ...audit,
                   }}
                   onSubmit={values => {
-                    dispatch(editAuditCustomer(values));
+                    if (auditRequest) {
+                      dispatch(editAuditRequestCustomer(values));
+                    } else {
+                      dispatch(editAuditCustomer(values));
+                    }
                     setEditMode(false);
                   }}
                 >
@@ -299,6 +304,7 @@ const AuditInfo = ({ audit, auditRequest, issues, confirmed }) => {
                           <MarkdownEditor
                             name="description"
                             setFieldTouched={setFieldTouched}
+                            fastSave={true}
                             mdProps={{
                               view: { menu: true, md: true, html: !matchXs },
                             }}
@@ -345,11 +351,11 @@ const AuditInfo = ({ audit, auditRequest, issues, confirmed }) => {
               </Button>
             )}
             {!editMode &&
-              audit.status.toLowerCase() !== RESOLVED.toLowerCase() && (
+              audit?.status?.toLowerCase() !== RESOLVED.toLowerCase() && (
                 <Box
                   sx={{
                     position: 'absolute',
-                    top: '-96px',
+                    bottom: '20px',
                     right: '10px',
                   }}
                 >
