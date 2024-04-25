@@ -236,7 +236,7 @@ const Control = ({
               }}
               variant={'contained'}
             >
-              Save
+              Save to AuditDB
             </Button>
           )}
           {!saved && (

@@ -7,19 +7,28 @@ import {
   CircularProgress,
   ClickAwayListener,
   InputAdornment,
+  Tab,
+  Tabs,
   Typography,
 } from '@mui/material';
 import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
 import GithubBranchIcon from './icons/GithubBranchIcon.jsx';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import { useDispatch, useSelector } from 'react-redux';
-import { getBranches, getCommits } from '../redux/actions/githubAction.js';
+import {
+  getBranches,
+  getCommits,
+  getTags,
+} from '../redux/actions/githubAction.js';
 import {
   BRANCH_NAME,
   CLEAR_COMMIT,
   CLEAR_COMMITINFO,
+  GET_SHA,
+  GET_TAG,
+  SWITCH_GITHUB_TAB,
 } from '../redux/actions/types.js';
-
+import LocalOfferOutlinedIcon from '@mui/icons-material/LocalOfferOutlined';
 const GithubBranchAutocomplete = ({ repository, needSave, handleReset }) => {
   const branches = useSelector(state => state.github.branches);
   const [loading, setLoading] = useState(false);
@@ -27,7 +36,9 @@ const GithubBranchAutocomplete = ({ repository, needSave, handleReset }) => {
   const [open, setOpen] = React.useState(false);
   const dispatch = useDispatch();
   const { repoOwner } = useSelector(state => state.github);
-  const { branch, defaultBranch, sha } = useSelector(state => state.github);
+  const { branch, defaultBranch, sha, tags, tag, tab } = useSelector(
+    state => state.github,
+  );
 
   useEffect(() => {
     if (!branches.length) {
@@ -37,6 +48,12 @@ const GithubBranchAutocomplete = ({ repository, needSave, handleReset }) => {
         dispatch(getBranches(repoOwner));
       }
     }
+  }, [repository, repoOwner]);
+
+  useEffect(() => {
+    // if (branches.length) {
+    dispatch(getTags(repository));
+    // }
   }, [repository]);
 
   const handleClick = () => {
@@ -66,14 +83,27 @@ const GithubBranchAutocomplete = ({ repository, needSave, handleReset }) => {
     }
   }, [defaultBranch]);
 
+  const handleChangeTab = (e, newValue) => {
+    dispatch({ type: SWITCH_GITHUB_TAB, payload: newValue });
+  };
+
+  const handleOpenCommit = tag => {
+    dispatch({ type: GET_TAG, payload: tag });
+    setOpen(false);
+  };
+
   return (
     <ClickAwayListener onClickAway={handleClickAway}>
       <Box sx={wrapperSx}>
         <Box sx={{ position: 'relative', maxWidth: '100%' }}>
           <Button sx={buttonSx} variant={'contained'} onClick={handleClick}>
-            <GithubBranchIcon />
+            {tab === 'branches' ? (
+              <GithubBranchIcon />
+            ) : (
+              <LocalOfferOutlinedIcon sx={{ width: '18px' }} />
+            )}
             <Typography sx={branchTitleSx} noWrap={true} variant={'body2'}>
-              {branch ? branch : defaultBranch}
+              {tab === 'branches' ? (branch ? branch : defaultBranch) : tag}
             </Typography>
             <ArrowDropDownIcon />
           </Button>
@@ -81,7 +111,7 @@ const GithubBranchAutocomplete = ({ repository, needSave, handleReset }) => {
             <Box sx={modalWrapper}>
               <TextField
                 sx={fieldSx}
-                label="Select a branch"
+                label={tab === 'branches' ? 'Select a branch' : 'Select a tag'}
                 variant="outlined"
                 size={'small'}
                 onChange={e => setInputValue(e.target.value)}
@@ -99,33 +129,110 @@ const GithubBranchAutocomplete = ({ repository, needSave, handleReset }) => {
                   ),
                 }}
               />
-              <Box
-                sx={{ height: '100%', maxHeight: '350px', overflowY: 'auto' }}
-              >
-                {branches
-                  ?.filter(branch => branch.includes(inputValue))
-                  ?.map((branchItem, idx) => (
-                    <Box
-                      key={idx + branch}
-                      onClick={() => handleChoose(branchItem)}
+              <Box>
+                {!!tags.length && (
+                  <Tabs
+                    onChange={handleChangeTab}
+                    value={tab}
+                    aria-label="Tabs where each tab needs to be selected manually"
+                    sx={{
+                      minHeight: 'unset',
+                      '& .MuiTabs-indicator': { display: 'none' },
+                    }}
+                  >
+                    <Tab
                       sx={[
+                        tab === 'branches' ? selectedTabSx : {},
                         {
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'space-between',
-                          py: 1,
-                          px: 2,
-                          overflowX: 'auto',
-                          border: '0.5px solid #d9d9d9',
-                          '&:hover': {
-                            bgcolor: '#f1f8ff',
-                          },
+                          minHeight: 'unset',
+                          padding: '10px',
+                          textTransform: 'unset',
                         },
                       ]}
-                    >
-                      <Box>{branchItem}</Box>
-                    </Box>
-                  ))}
+                      label="Branches"
+                      value={'branches'}
+                    />
+                    <Tab
+                      sx={[
+                        tab === 'tags' ? selectedTabSx : {},
+                        {
+                          minHeight: 'unset',
+                          padding: '10px',
+                          textTransform: 'unset',
+                        },
+                      ]}
+                      label="Tags"
+                      value={'tags'}
+                    />
+                  </Tabs>
+                )}
+                {tab === 'branches' ? (
+                  <Box
+                    sx={{
+                      height: '100%',
+                      maxHeight: '350px',
+                      overflowY: 'auto',
+                    }}
+                  >
+                    {branches
+                      ?.filter(branch => branch.includes(inputValue))
+                      ?.map((branchItem, idx) => (
+                        <Box
+                          key={idx + branch}
+                          onClick={() => handleChoose(branchItem)}
+                          sx={[
+                            {
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'space-between',
+                              py: 1,
+                              px: 2,
+                              overflowX: 'auto',
+                              border: '0.5px solid #d9d9d9',
+                              '&:hover': {
+                                bgcolor: '#f1f8ff',
+                              },
+                            },
+                          ]}
+                        >
+                          <Box>{branchItem}</Box>
+                        </Box>
+                      ))}
+                  </Box>
+                ) : (
+                  <Box
+                    sx={{
+                      height: '100%',
+                      maxHeight: '350px',
+                      overflowY: 'auto',
+                    }}
+                  >
+                    {tags
+                      ?.filter(tag => tag.name.includes(inputValue))
+                      ?.map((tag, idx) => (
+                        <Box
+                          key={tag.commit.sha + tag.name}
+                          onClick={() => handleOpenCommit(tag)}
+                          sx={[
+                            {
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'space-between',
+                              py: 1,
+                              px: 2,
+                              overflowX: 'auto',
+                              border: '0.5px solid #d9d9d9',
+                              '&:hover': {
+                                bgcolor: '#f1f8ff',
+                              },
+                            },
+                          ]}
+                        >
+                          <Box>{tag.name}</Box>
+                        </Box>
+                      ))}
+                  </Box>
+                )}
               </Box>
             </Box>
           ) : null}
@@ -144,6 +251,15 @@ const GithubBranchAutocomplete = ({ repository, needSave, handleReset }) => {
 };
 
 export default GithubBranchAutocomplete;
+
+const selectedTabSx = theme => ({
+  border: '1px solid',
+  borderRadius: '10px 10px 0px 0px',
+  borderBottom: 'unset',
+  '& span': {
+    display: 'none',
+  },
+});
 
 const buttonSx = theme => ({
   textTransform: 'unset',

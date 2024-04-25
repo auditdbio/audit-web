@@ -42,6 +42,7 @@ const ConnectAccount = () => {
     if (state?.auth) {
       dispatch(signUpGithub(values));
     } else if (state?.authExtended) {
+      values.update_token = true;
       if (github) {
         dispatch(authGithub(user.id, values));
       } else {

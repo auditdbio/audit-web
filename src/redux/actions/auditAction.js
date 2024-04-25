@@ -11,6 +11,7 @@ import {
   DELETE_REQUEST,
   DOWNLOAD_REPORT_START,
   EDIT_AUDIT,
+  EDIT_AUDIT_REQUEST_CUSTOMER,
   GET_AUDIT,
   GET_AUDIT_REQUEST,
   GET_AUDITS,
@@ -261,6 +262,21 @@ export const editAudit = (values, goBack) => {
       })
       .catch(() => {
         dispatch({ type: REQUEST_ERROR });
+      });
+  };
+};
+
+export const editAuditRequestCustomer = (values, goBack) => {
+  return dispatch => {
+    const token = Cookies.get('token');
+    axios
+      .patch(`${API_URL}/audit_request/${values.id}`, values, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then(({ data }) => {
+        dispatch({ type: EDIT_AUDIT_REQUEST_CUSTOMER, payload: data });
       });
   };
 };
