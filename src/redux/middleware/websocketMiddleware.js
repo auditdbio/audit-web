@@ -21,6 +21,7 @@ import {
   deleteChatMessage,
   receiveNewChatMessage,
 } from '../actions/chatActions.js';
+import { store } from '../store.js';
 
 const API_URL = import.meta.env.VITE_API_WS_BASE_URL;
 
@@ -31,8 +32,9 @@ const websocketMiddleware = () => {
       case WEBSOCKET_CONNECT:
         if (!socket) {
           const token = Cookies.get('token');
-          const userId = localStorage.getItem('user');
-          const socketUrl = `${API_URL}/notifications/${JSON.parse(userId).id}`;
+          const userId = store.getState().user.user;
+          const socketUrl = `${API_URL}/notifications/${userId.id}`;
+          console.log(userId);
           socket = new WebSocket(socketUrl);
           socket.onopen = () => {
             socket.send(token);

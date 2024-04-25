@@ -43,7 +43,7 @@ export const signUpGithub = data => {
       .then(({ data }) => {
         Cookies.set('token', data.token, { expires: 1 });
         localStorage.setItem('token', JSON.stringify(data.token));
-        localStorage.setItem('user', JSON.stringify(data.user));
+        // localStorage.setItem('user', JSON.stringify(data.user));
         dispatch({ type: USER_SIGNIN, payload: data });
 
         if (data.user?.is_new) {
@@ -60,8 +60,6 @@ export const signUpGithub = data => {
             { some: true },
           );
         }
-
-
       })
       .catch(({ response }) => {
         console.error(response);
@@ -84,7 +82,7 @@ export const signIn = values => {
       .then(({ data }) => {
         Cookies.set('token', data.token, { expires: 1 });
         localStorage.setItem('token', JSON.stringify(data.token));
-        localStorage.setItem('user', JSON.stringify(data.user));
+        // localStorage.setItem('user', JSON.stringify(data.user));
         dispatch({ type: USER_SIGNIN, payload: data });
 
         if (data.user?.is_new) {
@@ -129,7 +127,7 @@ export const getMyProfile = id => {
     })
       .then(({ data }) => {
         dispatch({ type: GET_MY_PROFILE, payload: data });
-        localStorage.setItem('user', JSON.stringify(data));
+        // localStorage.setItem('user', JSON.stringify(data));
       })
       .catch(data => {
         console.log(data);
@@ -192,17 +190,17 @@ export const changeAccountVisibility = (user_id, values, account_id) => {
       )
       .then(({ data }) => {
         dispatch({ type: CHANGE_ACCOUNT_VISIBILITY, payload: data });
-        const user = JSON.parse(localStorage.getItem('user'));
-        const newData = {
-          ...user,
-          linked_accounts: user.linked_accounts.map(item => {
-            if (item.id === account_id) {
-              return data;
-            }
-            return item;
-          }),
-        };
-        localStorage.setItem('user', JSON.stringify(newData));
+        // const user = JSON.parse(localStorage.getItem('user'));
+        // const newData = {
+        //   ...user,
+        //   linked_accounts: user.linked_accounts.map(item => {
+        //     if (item.id === account_id) {
+        //       return data;
+        //     }
+        //     return item;
+        //   }),
+        // };
+        // localStorage.setItem('user', JSON.stringify(newData));
       })
       .catch(({ response }) => {
         console.log(response);
@@ -211,7 +209,7 @@ export const changeAccountVisibility = (user_id, values, account_id) => {
 };
 
 export const connect_account = (user_id, values) => {
-  const user = JSON.parse(localStorage.getItem('user'));
+  // const user = JSON.parse(localStorage.getItem('user'));
   return (dispatch, getState) => {
     axios
       .post(`${API_URL}/user/${user_id}/linked_account`, values, {
@@ -223,11 +221,11 @@ export const connect_account = (user_id, values) => {
       .then(({ data }) => {
         dispatch({ type: CONNECT_ACCOUNT, payload: data });
         dispatch({ type: CHANGE_ACCOUNT_VISIBILITY, payload: data });
-        const newData = {
-          ...user,
-          linked_accounts: [...user.linked_accounts, data],
-        };
-        localStorage.setItem('user', JSON.stringify(newData));
+        // const newData = {
+        //   ...user,
+        //   linked_accounts: [...user.linked_accounts, data],
+        // };
+        // localStorage.setItem('user', JSON.stringify(newData));
       })
       .catch(data => {
         if (data.response.status === 404) {
@@ -261,12 +259,12 @@ export const connect_auth_account = (user_id, values) => {
       })
       .then(({ data }) => {
         dispatch({ type: CONNECT_ACCOUNT, payload: data });
-        const user = JSON.parse(localStorage.getItem('user'));
-        const newData = {
-          ...user,
-          linked_accounts: [...user.linked_accounts, data],
-        };
-        localStorage.setItem('user', JSON.stringify(newData));
+        // const user = JSON.parse(localStorage.getItem('user'));
+        // const newData = {
+        //   ...user,
+        //   linked_accounts: [...user.linked_accounts, data],
+        // };
+        // localStorage.setItem('user', JSON.stringify(newData));
         localStorage.setItem('authenticated', 'true');
         window.close();
       })
@@ -283,14 +281,14 @@ export const connect_auth_account = (user_id, values) => {
 
 export const authGithub = (user_id, values) => {
   return dispatch => {
-    const user = JSON.parse(localStorage.getItem('user'));
+    // const user = JSON.parse(localStorage.getItem('user'));
     axios
       .post(`${API_URL}/auth/github`, values)
       .then(({ data }) => {
-        if (user.linked_accounts.find(el => el.name === 'GitHub')) {
-          localStorage.setItem('authenticated', 'true');
-          window.close();
-        }
+        // if (user.linked_accounts.find(el => el.name === 'GitHub')) {
+        //   localStorage.setItem('authenticated', 'true');
+        window.close();
+        // }
       })
       .catch(data => {
         if (data.response.status === 404) {
@@ -341,7 +339,7 @@ export const logout = () => {
   history.push('/');
   Cookies.remove('token');
   localStorage.removeItem('token');
-  localStorage.removeItem('user');
+  // localStorage.removeItem('user');
   return { type: LOG_OUT };
 };
 
@@ -361,7 +359,7 @@ export const changeRole = (role, id) => {
       )
       .then(({ data: user }) => {
         dispatch({ type: SELECT_ROLE, payload: user });
-        localStorage.setItem('user', JSON.stringify(user));
+        // localStorage.setItem('user', JSON.stringify(user));
 
         if (user.is_new) {
           axios.patch(
@@ -417,7 +415,7 @@ export const changeRolePublicCustomer = (role, id) => {
                 { some: true },
               );
             }
-            localStorage.setItem('user', JSON.stringify(user));
+            // localStorage.setItem('user', JSON.stringify(user));
           });
       });
   };
@@ -474,7 +472,7 @@ export const changeRolePublicAuditor = (role, id, data, withData) => {
                 { some: true },
               );
             }
-            localStorage.setItem('user', JSON.stringify(user));
+            // localStorage.setItem('user', JSON.stringify(user));
           });
       });
   };
@@ -495,7 +493,7 @@ export const changeRolePublicAuditorNoRedirect = (role, id) => {
       )
       .then(({ data }) => {
         dispatch({ type: SELECT_ROLE, payload: data });
-        localStorage.setItem('user', JSON.stringify(data));
+        // localStorage.setItem('user', JSON.stringify(data));
       });
   };
 };
@@ -515,7 +513,7 @@ export const changeRolePublicCustomerNoRedirect = (role, id) => {
       )
       .then(({ data }) => {
         dispatch({ type: SELECT_ROLE, payload: data });
-        localStorage.setItem('user', JSON.stringify(data));
+        // localStorage.setItem('user', JSON.stringify(data));
       });
   };
 };

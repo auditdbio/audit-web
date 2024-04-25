@@ -52,15 +52,20 @@ import ConnectAccount from '../pages/Connect-account.jsx';
 import DisclaimerPage from '../pages/DisclaimerPage.jsx';
 import Headings from '../router/Headings.jsx';
 import { AUDITOR, CUSTOMER } from '../redux/actions/types.js';
+import { getMyProfile } from '../redux/actions/userAction.js';
 
 const AppRoutes = () => {
-  const { token } = useSelector(s => s.user);
+  const { token, user } = useSelector(s => s.user);
   const currentRole = useSelector(s => s.user.user.current_role);
   const customer = useSelector(s => s.customer.customer);
   const auditor = useSelector(s => s.auditor.auditor);
   const dispatch = useDispatch();
   const { reconnect, connected, needUpdate } = useSelector(s => s.websocket);
   const [isOpen, setIsOpen] = React.useState(false);
+
+  useEffect(() => {
+    dispatch(getMyProfile());
+  }, []);
 
   useEffect(() => {
     if (isAuth()) {

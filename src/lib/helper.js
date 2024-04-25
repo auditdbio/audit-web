@@ -1,12 +1,12 @@
 import Cookies from 'js-cookie';
 
 const IS_DEV = import.meta.env?.DEV;
-
+import { store } from '../redux/store.js';
 export const isAuth = () => {
   const token = Cookies.get('token');
   const localToken = JSON.parse(localStorage.getItem('token'));
-  const localUser = JSON.parse(localStorage.getItem('user'));
-  return !!(token && localToken && localUser);
+  const localUser = store.getState().user.user;
+  return !!(token === localToken && localUser);
 };
 
 export const addTestsLabel = value => {
