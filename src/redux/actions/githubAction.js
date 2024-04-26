@@ -170,7 +170,18 @@ export const getMyGithub = () => {
         });
       })
       .catch(error => {
-        console.error(error);
+        dispatch({ type: NEED_TO_AUTH_GITHUB });
+        const user = JSON.parse(localStorage.getItem('user'));
+        const newData = {
+          ...user,
+          linked_accounts: user.linked_accounts.map(account => {
+            if (account.name === 'GitHub') {
+              return { ...account, scope: null };
+            }
+            return account;
+          }),
+        };
+        localStorage.setItem('user', JSON.stringify(newData));
       });
   };
 };

@@ -23,6 +23,7 @@ import {
   getCommitData,
   getCommits,
   getDefaultBranch,
+  getGithubPublicRepos,
   getMyGithub,
   getMyGithubOrgs,
   getMyPublicGithubOrgs,
@@ -110,15 +111,20 @@ const GithubSelection = ({ project }) => {
   }, [repository, branch, page]);
 
   useEffect(() => {
-    if (githubData?.id && !myRepositories?.length) {
-      dispatch(getMyGithub());
-      if (githubData?.scope.includes('repo')) {
+    if (githubData?.id) {
+      if (githubData?.scope?.includes('repo')) {
         dispatch(getMyGithubOrgs());
+        dispatch(getMyGithub());
       } else {
+        dispatch(getGithubPublicRepos(githubData.username));
         dispatch(getMyPublicGithubOrgs(githubData.username));
       }
     }
-  }, [githubData?.scope.includes('repo')]);
+  }, [githubData?.scope?.includes('repo')]);
+
+  // useEffect(() => {
+  //   dispatch(getMyProfile());
+  // }, []);
 
   const handleAddProject = () => {
     if (urlRepo.includes('github.com/')) {
@@ -241,7 +247,7 @@ const GithubSelection = ({ project }) => {
                   </Box>
                   {githubData?.id ? (
                     <>
-                      {!githubData?.scope.includes('repo') && (
+                      {!githubData?.scope?.includes('repo') && (
                         <GitHubAuthComponent
                           desc={
                             'Authenticate via GitHub to select from your private repositories'
