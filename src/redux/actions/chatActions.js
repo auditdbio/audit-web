@@ -16,6 +16,7 @@ import {
   CHAT_SET_ERROR,
   CHAT_DELETE_MESSAGE,
 } from './types.js';
+import { store } from '../store.js';
 
 export const getChatList = role => {
   const token = Cookies.get('token');
@@ -101,7 +102,7 @@ export const setCurrentChat = (
 
 export const chatSendMessage = (text, to, fromRole, isFirst, kind = 'Text') => {
   const token = Cookies.get('token');
-  const user = JSON.parse(localStorage.getItem('user'));
+  const user = store.getState().user.user;
 
   if (user.id === to.id) {
     return {

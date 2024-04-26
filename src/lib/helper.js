@@ -6,7 +6,7 @@ export const isAuth = () => {
   const token = Cookies.get('token');
   const localToken = JSON.parse(localStorage.getItem('token'));
   const localUser = store.getState().user.user;
-  return !!(token === localToken && localUser);
+  return !!(token === localToken && localUser?.id);
 };
 
 export const addTestsLabel = value => {

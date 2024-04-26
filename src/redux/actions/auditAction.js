@@ -27,13 +27,14 @@ import {
 } from './types.js';
 import { history } from '../../services/history.js';
 import { ASSET_URL } from '../../services/urls.js';
+import { store } from '../store.js';
 
 const API_URL = import.meta.env.VITE_API_BASE_URL;
 
 export const createRequest = (values, redirect, navigateTo) => {
   return dispatch => {
     const token = Cookies.get('token');
-    const current_role = JSON.parse(localStorage.getItem('user')).current_role;
+    const current_role = store.getState().user.user.current_role;
     axios
       .post(
         `${API_URL}/audit_request`,

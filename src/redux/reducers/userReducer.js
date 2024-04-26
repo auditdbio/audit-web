@@ -29,7 +29,8 @@ import {
 const initialState = {
   token: Cookies.get('token') || '',
   isAuth: false,
-  user: JSON.parse(localStorage.getItem('user')) || {},
+  user: {},
+  loader: true,
   error: null,
   success: null,
   publicUser: null,
