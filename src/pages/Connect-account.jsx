@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { CustomCard } from '../components/custom/Card.jsx';
 import Layout from '../styles/Layout.jsx';
 import { useSearchParams, useNavigate } from 'react-router-dom/dist';
@@ -22,6 +22,7 @@ const ConnectAccount = () => {
   const navigate = useNavigate();
 
   const [searchParam] = useSearchParams();
+  const [isRequestSent, setIsRequestSent] = useState(false);
   const { error, user } = useSelector(s => s.user);
   const github = useSelector(s =>
     s.user?.user?.linked_accounts?.find(
@@ -30,30 +31,34 @@ const ConnectAccount = () => {
   );
 
   useEffect(() => {
-    if (user?.id) {
-      const state = JSON.parse(decodeBase64url(searchParam.get('state')));
-      const values = {
-        code: searchParam.get('code'),
-        service: state?.service,
-      };
-      if (state?.role) {
-        values.current_role = state.role;
-      }
+    const state = JSON.parse(decodeBase64url(searchParam.get('state')));
+    const values = {
+      code: searchParam.get('code'),
+      service: state?.service,
+    };
+    if (state?.role) {
+      values.current_role = state.role;
+    }
 
+    if (!isRequestSent) {
       if (state?.auth) {
+        setIsRequestSent(true);
         dispatch(signUpGithub(values));
-      } else if (state?.authExtended) {
-        values.update_token = true;
-        if (github) {
-          dispatch(authGithub(user.id, values));
+      } else if (user?.id) {
+        if (state?.authExtended) {
+          values.update_token = true;
+          if (github) {
+            dispatch(authGithub(user.id, values));
+          } else {
+            dispatch(connect_auth_account(user.id, values));
+          }
         } else {
-          dispatch(connect_auth_account(user.id, values));
+          dispatch(connect_account(user.id, values));
         }
-      } else {
-        dispatch(connect_account(user.id, values));
+        setIsRequestSent(true);
       }
     }
-  }, [user]);
+  }, [user, isRequestSent]);
 
   useEffect(() => {
     if (isAuth()) {
