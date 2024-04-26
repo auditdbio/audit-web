@@ -31,6 +31,7 @@ import {
   CLEAR_MESSAGES,
   AUDITOR,
   CUSTOMER,
+  NOT_AUTHENTICATED,
 } from './types.js';
 import { savePublicReport } from './auditAction.js';
 
@@ -130,7 +131,7 @@ export const getMyProfile = id => {
         // localStorage.setItem('user', JSON.stringify(data));
       })
       .catch(data => {
-        console.log(data);
+        dispatch({ type: NOT_AUTHENTICATED });
       });
   };
 };

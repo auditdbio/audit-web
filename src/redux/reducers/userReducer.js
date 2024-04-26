@@ -24,13 +24,14 @@ import {
   GET_PUBLIC_PROFILE,
   CLEAR_MESSAGES,
   GET_MY_PROFILE,
+  NOT_AUTHENTICATED,
 } from '../actions/types.js';
 
 const initialState = {
   token: Cookies.get('token') || '',
   isAuth: false,
   user: {},
-  loader: true,
+  loading: true,
   error: null,
   success: null,
   publicUser: null,
@@ -81,6 +82,11 @@ export const userReducer = (state = initialState, action) => {
             return account;
           }),
         },
+      };
+    case NOT_AUTHENTICATED:
+      return {
+        ...state,
+        loading: false,
       };
     case AUTH_TRUE:
       return { ...state, isAuth: true };
@@ -153,6 +159,7 @@ export const userReducer = (state = initialState, action) => {
       return {
         ...state,
         user: action.payload,
+        loading: false,
       };
     default:
       return state;
