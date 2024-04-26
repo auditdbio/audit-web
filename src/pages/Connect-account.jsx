@@ -30,28 +30,30 @@ const ConnectAccount = () => {
   );
 
   useEffect(() => {
-    const state = JSON.parse(decodeBase64url(searchParam.get('state')));
-    const values = {
-      code: searchParam.get('code'),
-      service: state?.service,
-    };
-    if (state?.role) {
-      values.current_role = state.role;
-    }
-
-    if (state?.auth) {
-      dispatch(signUpGithub(values));
-    } else if (state?.authExtended) {
-      values.update_token = true;
-      if (github) {
-        dispatch(authGithub(user.id, values));
-      } else {
-        dispatch(connect_auth_account(user.id, values));
+    if (user?.id) {
+      const state = JSON.parse(decodeBase64url(searchParam.get('state')));
+      const values = {
+        code: searchParam.get('code'),
+        service: state?.service,
+      };
+      if (state?.role) {
+        values.current_role = state.role;
       }
-    } else {
-      dispatch(connect_account(user?.id, values));
+
+      if (state?.auth) {
+        dispatch(signUpGithub(values));
+      } else if (state?.authExtended) {
+        values.update_token = true;
+        if (github) {
+          dispatch(authGithub(user.id, values));
+        } else {
+          dispatch(connect_auth_account(user.id, values));
+        }
+      } else {
+        dispatch(connect_account(user.id, values));
+      }
     }
-  }, []);
+  }, [user]);
 
   useEffect(() => {
     if (isAuth()) {
