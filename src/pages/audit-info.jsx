@@ -115,7 +115,7 @@ const AuditInfo = ({ audit, auditRequest, issues, confirmed, handleClose }) => {
     localStorage.setItem('path', window.location.pathname);
     navigate(`/chat/${audit?.auditor_id}`);
   };
-
+  //
   const goToIssues = () => {
     navigate(`/issues/audit-issue/${audit?.id}`);
   };

@@ -154,16 +154,16 @@ const AuditMessage = ({ message, handleError }) => {
           </Box>
           <Box sx={statusWrapper}>
             <>
-              {data.status.toLowerCase() === RESOLVED.toLowerCase() ? (
+              {data.status?.toLowerCase() === RESOLVED.toLowerCase() ? (
                 <Box sx={{ backgroundColor: '#52176D' }} />
               ) : (
-                data.status.toLowerCase() ===
+                data.status?.toLowerCase() ===
                   WAITING_FOR_AUDITS.toLowerCase() && (
                   <Box sx={{ backgroundColor: '#FF9900' }} />
                 )
               )}
-              {data.status.toLowerCase() !== RESOLVED.toLowerCase() &&
-                data.status.toLowerCase() !==
+              {data.status?.toLowerCase() !== RESOLVED.toLowerCase() &&
+                data.status?.toLowerCase() !==
                   WAITING_FOR_AUDITS.toLowerCase() && (
                   <Box sx={{ backgroundColor: '#09C010' }} />
                 )}
@@ -174,7 +174,7 @@ const AuditMessage = ({ message, handleError }) => {
           </Box>
         </>
       )}
-      {data.status.toLowerCase() === WAITING_FOR_AUDITS.toLowerCase() &&
+      {data.status?.toLowerCase() === WAITING_FOR_AUDITS.toLowerCase() &&
         user.current_role === CUSTOMER &&
         message.from?.id === user.id && (
           <Button
@@ -188,7 +188,7 @@ const AuditMessage = ({ message, handleError }) => {
             View
           </Button>
         )}
-      {data.status.toLowerCase() === WAITING_FOR_AUDITS.toLowerCase() &&
+      {data.status?.toLowerCase() === WAITING_FOR_AUDITS.toLowerCase() &&
         user.current_role === AUDITOR && (
           <Box sx={{ display: 'flex', gap: '20px' }}>
             <Button
