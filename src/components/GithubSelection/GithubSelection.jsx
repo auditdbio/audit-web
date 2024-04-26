@@ -111,7 +111,7 @@ const GithubSelection = ({ project }) => {
   }, [repository, branch, page]);
 
   useEffect(() => {
-    if (githubData?.id) {
+    if (githubData?.id && githubData?.username) {
       if (githubData?.scope?.includes('repo')) {
         dispatch(getMyGithubOrgs());
         dispatch(getMyGithub());
@@ -120,7 +120,7 @@ const GithubSelection = ({ project }) => {
         dispatch(getMyPublicGithubOrgs(githubData.username));
       }
     }
-  }, [githubData?.scope?.includes('repo')]);
+  }, [githubData?.scope?.includes('repo'), githubData?.username]);
 
   // useEffect(() => {
   //   dispatch(getMyProfile());
