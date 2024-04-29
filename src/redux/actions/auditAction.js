@@ -30,7 +30,7 @@ import { ASSET_URL } from '../../services/urls.js';
 
 const API_URL = import.meta.env.VITE_API_BASE_URL;
 
-export const createRequest = (values, redirect, navigateTo) => {
+export const createRequest = (values, redirect, navigateTo, stay) => {
   return dispatch => {
     const token = Cookies.get('token');
     const current_role = JSON.parse(localStorage.getItem('user')).current_role;
@@ -52,11 +52,44 @@ export const createRequest = (values, redirect, navigateTo) => {
       )
       .then(({ data }) => {
         dispatch(getAuditsRequest(current_role));
-        if (!redirect) {
-          history.back();
-        } else if (navigateTo) {
-          history.push(navigateTo);
-        }
+        // if (!redirect && !stay) {
+        //   history.back();
+        // } else if (navigateTo && !stay) {
+        //   history.push(navigateTo);
+        // } else if (stay) {
+        //   null;
+        // }
+        dispatch({ type: AUDIT_REQUEST_CREATE, payload: data });
+      })
+      .catch(({ response }) => {
+        console.log(response, 'res');
+        dispatch({ type: REQUEST_ERROR });
+      });
+  };
+};
+//
+export const createRequestModal = values => {
+  return dispatch => {
+    const token = Cookies.get('token');
+    const current_role = JSON.parse(localStorage.getItem('user')).current_role;
+    axios
+      .post(
+        `${API_URL}/audit_request`,
+        {
+          ...values,
+          time: {
+            from: +new Date(values.time.from),
+            to: +new Date(values.time.to),
+          },
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      )
+      .then(({ data }) => {
+        // dispatch(getAuditsRequest(current_role));
         dispatch({ type: AUDIT_REQUEST_CREATE, payload: data });
       })
       .catch(({ response }) => {
@@ -142,7 +175,7 @@ export const getAudit = id => {
   };
 };
 
-export const deleteAuditRequest = id => {
+export const deleteAuditRequest = (id, stayHere) => {
   return dispatch => {
     const token = Cookies.get('token');
     axios
@@ -153,7 +186,9 @@ export const deleteAuditRequest = id => {
       })
       .then(({ data }) => {
         dispatch({ type: DELETE_REQUEST, payload: data });
-        history.back();
+        if (!stayHere) {
+          history.back();
+        }
       });
   };
 };

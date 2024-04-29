@@ -3,7 +3,11 @@ import { Box, Modal } from '@mui/material';
 
 const ImageModal = ({ isOpen, setIsOpen, image }) => {
   return (
-    <Modal open={isOpen} onClose={() => setIsOpen(false)}>
+    <Modal
+      sx={{ backgroundColor: 'rgba(39,39,39,0.6)' }}
+      open={isOpen}
+      onClose={() => setIsOpen(false)}
+    >
       <Box
         component="img"
         sx={style}
