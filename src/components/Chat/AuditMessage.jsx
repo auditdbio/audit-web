@@ -305,6 +305,7 @@ const AuditMessage = ({ message, handleError }) => {
           <AuditRequestInfo
             project={auditRequest}
             onClose={() => setIsOpen(false)}
+            stayHere={true}
           />
         </Box>
       </Modal>
