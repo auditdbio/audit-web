@@ -78,6 +78,7 @@ const AuditInfo = ({ audit, auditRequest, issues, confirmed, handleClose }) => {
     } else {
       dispatch(deleteAuditRequest(audit.id));
     }
+    handleClose();
   };
 
   const handleAcceptAudit = () => {

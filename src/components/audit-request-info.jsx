@@ -118,6 +118,7 @@ const AuditRequestInfo = ({
   const handleDecline = () => {
     setConfirmDeclineOpen(false);
     dispatch(deleteAuditRequest(project.id));
+    onClose();
   };
 
   return (
