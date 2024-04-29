@@ -77,7 +77,11 @@ const StatusSeverityBlock = ({
                 renderValue={selected => {
                   return (
                     <Box sx={{ textAlign: 'center' }}>
-                      <IssueSeverity text={selected} />
+                      <IssueSeverity
+                        text={
+                          selected === NOT_FIXED ? 'Will not fix' : selected
+                        }
+                      />
                     </Box>
                   );
                 }}
@@ -94,7 +98,7 @@ const StatusSeverityBlock = ({
                   sx={severityMenuItem}
                   classes={{ selected: 'selected-severity' }}
                 >
-                  NotFixed
+                  Will not fix
                 </MenuItem>
               </Field>
             )}
@@ -241,14 +245,16 @@ const StatusSeverityBlock = ({
             />
           </Box>
         ) : (
-          <Box sx={[statusBlockAlign, blockSx]}>
-            {!isPublic && (
-              <Typography sx={statusBlockTitle}>
-                <span>Category</span>
-              </Typography>
-            )}
-            <Typography sx={statusBlockTitle}>{values.category}</Typography>
-          </Box>
+          values.category && (
+            <Box sx={[statusBlockAlign, blockSx]}>
+              {!isPublic && (
+                <Typography sx={statusBlockTitle}>
+                  <span>Category</span>
+                </Typography>
+              )}
+              <Typography sx={statusBlockTitle}>{values.category}</Typography>
+            </Box>
+          )
         )}
 
         {editMode && user.current_role === AUDITOR && !isPublic && (
@@ -407,6 +413,10 @@ const severityWrapper = {
 };
 
 const blockSx = theme => ({
+  width: '200px',
+  [theme.breakpoints.down('sm')]: {
+    width: '190px',
+  },
   [theme.breakpoints.down(751)]: {
     width: '50%',
     boxSizing: 'border-box',
@@ -473,25 +483,23 @@ const issueButton = theme => ({
   padding: '11px 10px',
   width: '100%',
   textTransform: 'none',
-  fontWeight: 600,
-  fontSize: '18px',
+  fontWeight: 500,
+  fontSize: '16px!important',
   lineHeight: '25px',
   [theme.breakpoints.down('md')]: {
+    fontSize: '14px!important',
     padding: '12px 6px',
     letterSpacing: '-0.5px',
   },
   [theme.breakpoints.down('xs')]: {
-    fontSize: '14px',
     padding: '10px 30px',
-    // mt: '20px',
   },
 });
 
 const feedbackButton = theme => ({
-  fontSize: '18px',
-  padding: '6px 6px',
+  fontWeight: '400!important',
+  padding: '6px 15px',
   [theme.breakpoints.down('md')]: {
-    padding: '4px 6px',
-    fontSize: '16px',
+    padding: '4px 15px',
   },
 });
