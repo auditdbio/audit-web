@@ -198,7 +198,7 @@ const AuditInfo = ({ audit, auditRequest, issues, confirmed, handleClose }) => {
           </Typography>
         )}
       </Box>
-      <Box sx={{ maxWidth: '100%' }}>
+      <Box sx={{ maxWidth: '100%', width: '100%' }}>
         <Box sx={contentWrapper}>
           <Box sx={userWrapper}>
             <Avatar

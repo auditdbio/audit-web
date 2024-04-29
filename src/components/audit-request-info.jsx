@@ -569,11 +569,11 @@ const linkWrapper = theme => ({
 
 const backButtonSx = theme => ({
   position: 'absolute',
-  left: '-58px',
+  left: '-28px',
   top: '-20px',
   [theme.breakpoints.down('sm')]: {
     left: '-25px',
-    top: '-30px',
+    // top: '-30px',
   },
 });
 
