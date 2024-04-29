@@ -63,7 +63,9 @@ const UserProjects = () => {
               ))}
             </Box>
           ) : (
-            <Typography>Customer has no projects</Typography>
+            <Typography sx={{ textAlign: 'center' }}>
+              No published projects
+            </Typography>
           )}
         </Box>
       </CustomCard>
@@ -81,6 +83,7 @@ const wrapper = theme => ({
   gap: '20px',
   [theme.breakpoints.down('md')]: {
     padding: '20px',
+    minHeight: '500px',
   },
   [theme.breakpoints.down('sm')]: {
     gap: '25px',
