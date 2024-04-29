@@ -6,7 +6,7 @@ import MenuIcon from '@mui/icons-material/Menu.js';
 import { ASSET_URL } from '../../services/urls.js';
 import AttachIcon from '../icons/AttachIcon.jsx';
 import SendMessageIcon from '../icons/SendMessageIcon.jsx';
-import { AUDITOR } from '../../redux/actions/types.js';
+import { AUDITOR, CUSTOMER } from '../../redux/actions/types.js';
 import { addTestsLabel } from '../../lib/helper.js';
 import theme from '../../styles/themes.js';
 import Message from './Message.jsx';
@@ -298,7 +298,7 @@ const CurrentChat = ({
             </Button>
           </Box>
           <Button
-            color={user.current_role === AUDITOR ? 'secondary' : 'primary'}
+            color={user.current_role === CUSTOMER ? 'secondary' : 'primary'}
             variant={'contained'}
             sx={requestBtn}
             {...addTestsLabel('request-button')}

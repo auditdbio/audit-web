@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useSearchParams, useParams } from 'react-router-dom/dist';
-import { Box, Button, useMediaQuery } from '@mui/material';
+import { Box, Button, Typography, useMediaQuery } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack.js';
 import Layout from '../styles/Layout.jsx';
 import Filter from '../components/forms/filter/index.jsx';
@@ -46,21 +46,25 @@ const UserProjects = () => {
           <ArrowBackRoundedIcon />
         </Button>
         <Box sx={contentWrapper}>
-          <Box sx={{ display: 'flex', flexWrap: 'wrap' }}>
-            {projects?.map((project, idx) => (
-              <Box
-                sx={[
-                  projectListWrapper,
-                  idx % 2 === 0 ? borderLeft : {},
-                  idx === 0 || idx === 1 ? borderTop : {},
-                  idx === 0 ? mobileStyle : {},
-                ]}
-                key={project.id}
-              >
-                <ProjectListCard project={project} />
-              </Box>
-            ))}
-          </Box>
+          {projects?.length ? (
+            <Box sx={{ display: 'flex', flexWrap: 'wrap' }}>
+              {projects?.map((project, idx) => (
+                <Box
+                  sx={[
+                    projectListWrapper,
+                    idx % 2 === 0 ? borderLeft : {},
+                    idx === 0 || idx === 1 ? borderTop : {},
+                    idx === 0 ? mobileStyle : {},
+                  ]}
+                  key={project.id}
+                >
+                  <ProjectListCard project={project} />
+                </Box>
+              ))}
+            </Box>
+          ) : (
+            <Typography>Customer has no projects</Typography>
+          )}
         </Box>
       </CustomCard>
     </Layout>
@@ -89,6 +93,7 @@ const wrapper = theme => ({
 
 const contentWrapper = theme => ({
   mb: '20px',
+  width: '100%',
   [theme.breakpoints.down('sm')]: {
     flexDirection: 'column',
     flexWrap: 'unset',
