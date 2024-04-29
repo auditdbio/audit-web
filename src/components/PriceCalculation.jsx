@@ -27,7 +27,7 @@ const PriceCalculation = ({ scope, price = 0, color = 'primary', sx = {} }) => {
   const { cloc, error } = useSelector(s => s.project);
   const [isDetailsPrice, setIsDetailsPrice] = useState(false);
   const [isDetailsMore, setIsDetailsMore] = useState(false);
-  const [isAutoCheckOn, setIsAutoCheckOn] = useState(false);
+  // const [isAutoCheckOn, setIsAutoCheckOn] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [githubLinks, setGithubLinks] = useState([]);
 
@@ -52,18 +52,18 @@ const PriceCalculation = ({ scope, price = 0, color = 'primary', sx = {} }) => {
   }, [scope]);
 
   useEffect(() => {
-    if (isAutoCheckOn) {
-      dispatch(getCloc({ links: githubLinks }));
-    }
-  }, [githubLinks, isAutoCheckOn]);
-
-  const handleCheckCost = () => {
     if (githubLinks.length) {
-      setIsLoading(prev => !prev);
-      setIsAutoCheckOn(true);
       dispatch(getCloc({ links: githubLinks }));
     }
-  };
+  }, [githubLinks]);
+
+  // const handleCheckCost = () => {
+  //   if (githubLinks.length) {
+  //     setIsLoading(prev => !prev);
+  //     setIsAutoCheckOn(true);
+  //     dispatch(getCloc({ links: githubLinks }));
+  //   }
+  // };
 
   if (!githubLinks.length) {
     return null;
@@ -93,32 +93,32 @@ const PriceCalculation = ({ scope, price = 0, color = 'primary', sx = {} }) => {
         >
           <HelpOutlineIcon fontSize="small" cursor="pointer" />
         </Tooltip>
-        {!cloc && (
-          <Tooltip
-            title={!+price ? 'Add the price per line of code' : ''}
-            arrow
-            placement="bottom"
-            enterDelay={200}
-            leaveDelay={100}
-          >
-            <span>
-              <Button
-                sx={checkButton}
-                color={color}
-                variant="contained"
-                type="button"
-                onClick={handleCheckCost}
-                disabled={!+price}
-              >
-                {isLoading ? (
-                  <CircularProgress size={15} color="light" thickness={8} />
-                ) : (
-                  'Check'
-                )}
-              </Button>
-            </span>
-          </Tooltip>
-        )}
+        {/*{!cloc && (*/}
+        {/*  <Tooltip*/}
+        {/*    title={!+price ? 'Add the price per line of code' : ''}*/}
+        {/*    arrow*/}
+        {/*    placement="bottom"*/}
+        {/*    enterDelay={200}*/}
+        {/*    leaveDelay={100}*/}
+        {/*  >*/}
+        {/*    <span>*/}
+        {/*      <Button*/}
+        {/*        sx={checkButton}*/}
+        {/*        color={color}*/}
+        {/*        variant="contained"*/}
+        {/*        type="button"*/}
+        {/*        onClick={handleCheckCost}*/}
+        {/*        disabled={!+price}*/}
+        {/*      >*/}
+        {/*        {isLoading ? (*/}
+        {/*          <CircularProgress size={15} color="light" thickness={8} />*/}
+        {/*        ) : (*/}
+        {/*          'Check'*/}
+        {/*        )}*/}
+        {/*      </Button>*/}
+        {/*    </span>*/}
+        {/*  </Tooltip>*/}
+        {/*)}*/}
       </Box>
 
       {cloc && (
