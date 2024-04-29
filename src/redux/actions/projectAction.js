@@ -221,7 +221,7 @@ export const getCloc = links => {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then(({ data }) => {
-        delete data.header;
+        delete data.result?.header;
         dispatch({ type: GET_CLOC, payload: data });
       })
       .catch(() => {

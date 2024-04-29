@@ -127,11 +127,11 @@ const PriceCalculation = ({ scope, price = 0, color = 'primary', sx = {} }) => {
             <Box>
               <Box sx={{ mb: '3px' }}>
                 Total price:&nbsp;
-                {(cloc.SUM?.code || 0) * price}
+                {(cloc.result?.SUM?.code || 0) * price}
               </Box>
               <Box>
                 Total lines of code:&nbsp;
-                {cloc.SUM?.code || 0}
+                {cloc.result?.SUM?.code || 0}
               </Box>
             </Box>
             <Button
@@ -178,7 +178,7 @@ const PriceCalculation = ({ scope, price = 0, color = 'primary', sx = {} }) => {
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {Object.keys(cloc).map(lang => (
+                    {Object.keys(cloc.result).map(lang => (
                       <TableRow
                         key={lang}
                         sx={{
@@ -191,25 +191,25 @@ const PriceCalculation = ({ scope, price = 0, color = 'primary', sx = {} }) => {
                         {isDetailsPrice ? (
                           <>
                             <TableCell align="right">
-                              {cloc[lang].code}
+                              {cloc.result[lang].code}
                             </TableCell>
                             <TableCell align="right" sx={priceCellSx}>
-                              {cloc[lang].code * price}
+                              {cloc.result[lang].code * price}
                             </TableCell>
                           </>
                         ) : (
                           <>
                             <TableCell align="right">
-                              {cloc[lang].nFiles}
+                              {cloc.result[lang].nFiles}
                             </TableCell>
                             <TableCell align="right">
-                              {cloc[lang].code}
+                              {cloc.result[lang].code}
                             </TableCell>
                             <TableCell align="right">
-                              {cloc[lang].comment}
+                              {cloc.result[lang].comment}
                             </TableCell>
                             <TableCell align="right">
-                              {cloc[lang].blank}
+                              {cloc.result[lang].blank}
                             </TableCell>
                           </>
                         )}
