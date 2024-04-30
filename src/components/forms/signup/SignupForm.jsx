@@ -1,4 +1,8 @@
 import React, { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useSearchParams } from 'react-router-dom/dist';
+import { Form, Formik } from 'formik';
+import * as Yup from 'yup';
 import {
   Box,
   Tabs,
@@ -7,27 +11,48 @@ import {
   Button,
   useMediaQuery,
 } from '@mui/material';
+import GitHubIcon from '@mui/icons-material/GitHub';
 import theme, { radiusOfComponents } from '../../../styles/themes.js';
 import PasswordField from '../fields/password-field.jsx';
-import { Form, Formik } from 'formik';
-import * as Yup from 'yup';
 import SimpleField from '../fields/simple-field.jsx';
-import { useDispatch, useSelector } from 'react-redux';
 import { clearUserError, signUp } from '../../../redux/actions/userAction.js';
 import CustomSnackbar from '../../custom/CustomSnackbar.jsx';
-import { addTestsLabel, isAuth } from '../../../lib/helper.js';
+import { addTestsLabel, encodeBase64url, isAuth } from '../../../lib/helper.js';
+import RoleModal from '../../modal/RoleModal.jsx';
+import { AUDITOR, CUSTOMER } from '../../../redux/actions/types.js';
+import { BASE_URL, GITHUB_CLIENT_ID } from '../../../services/urls.js';
 
 const SignupForm = () => {
-  const [isAuditor, setIsAuditor] = useState('auditor');
   const dispatch = useDispatch();
   const matchMd = useMediaQuery(theme.breakpoints.down('md'));
+
+  const [searchParams] = useSearchParams();
   const error = useSelector(s => s.user.error);
+
+  const [open, setOpen] = useState(() => searchParams.get('select_role'));
+  const [currentRole, setCurrentRole] = useState('auditor');
+  const [isAuditor, setIsAuditor] = useState(AUDITOR);
+
   const initialValues = {
     current_role: '',
     name: '',
     email: '',
     password: '',
     confirmPassword: '',
+  };
+
+  const handleAuthGithub = () => {
+    const state = encodeBase64url(
+      JSON.stringify({
+        service: 'GitHub',
+        auth: true,
+        role: isAuditor,
+      }),
+    );
+    window.open(
+      `https://github.com/login/oauth/authorize?client_id=${GITHUB_CLIENT_ID}&redirect_uri=${BASE_URL}oauth/callback&scope=read:user,user:email&state=${state}`,
+      '_self',
+    );
   };
 
   return (
@@ -37,34 +62,34 @@ const SignupForm = () => {
       validateOnBlur={false}
       validateOnChange={false}
       onSubmit={values => {
-        const newValue = { ...values, current_role: isAuditor };
+        const newValue = { ...values, current_role: currentRole };
         dispatch(signUp(newValue));
       }}
     >
-      {({ handleSubmit }) => (
+      {({ handleSubmit, errors }) => (
         <Form onSubmit={handleSubmit}>
           <Box sx={formStyle}>
             <Typography sx={titleStyle}>Choose who you want to be</Typography>
             <CustomSnackbar
               autoHideDuration={10000}
-              open={!!error}
+              open={!!error || !!Object.keys(errors).length}
               onClose={() => dispatch(clearUserError())}
               severity="error"
-              text={error}
+              text={error || Object.values(errors)[0]}
             />
             <Tabs
-              value={isAuditor}
+              value={currentRole}
               onChange={(e, newValue) => {
-                setIsAuditor(newValue);
+                setCurrentRole(newValue);
               }}
               name="role"
               sx={tabsSx}
               indicatorColor="none"
             >
               <Tab
-                value="auditor"
+                value={AUDITOR}
                 sx={[
-                  isAuditor === 'auditor'
+                  currentRole === AUDITOR
                     ? auditorTabSx
                     : { backgroundColor: '#D9D9D9' },
                   tabSx,
@@ -73,9 +98,9 @@ const SignupForm = () => {
                 {...addTestsLabel('auditor-button')}
               />
               <Tab
-                value="customer"
+                value={CUSTOMER}
                 sx={[
-                  isAuditor === 'customer'
+                  currentRole === CUSTOMER
                     ? customerTabSx
                     : { backgroundColor: '#D9D9D9' },
                   tabSx,
@@ -112,15 +137,43 @@ const SignupForm = () => {
                 />
               </Box>
             </Box>
-            <Button
-              type="submit"
-              sx={submitButton}
-              variant={'contained'}
-              disabled={isAuth()}
-              {...addTestsLabel('sign-up-button')}
+            <Box
+              sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '25px',
+                width: '100%',
+                alignItems: 'center',
+              }}
             >
-              Sign up
-            </Button>
+              <Button
+                type="submit"
+                sx={submitButton}
+                color="secondary"
+                variant="contained"
+                disabled={isAuth()}
+                {...addTestsLabel('sign-up-button')}
+              >
+                Sign up
+              </Button>
+              <Button
+                sx={[submitButton, { paddingX: '0' }]}
+                variant="contained"
+                color="primary"
+                onClick={() => setOpen(true)}
+              >
+                <GitHubIcon sx={{ marginRight: '15px' }} />
+                Sign up with Github
+              </Button>
+            </Box>
+            {open && (
+              <RoleModal
+                onClose={() => setOpen(false)}
+                onConfirm={handleAuthGithub}
+                role={isAuditor}
+                setRole={setIsAuditor}
+              />
+            )}
           </Box>
         </Form>
       )}
@@ -131,18 +184,25 @@ const SignupForm = () => {
 export default SignupForm;
 
 const SignupSchema = Yup.object().shape({
-  password: Yup.string().min(2, 'Too Short!').required('Required'),
-  email: Yup.string().email('Invalid email').required('required'),
-  name: Yup.string().required('Required'),
+  password: Yup.string()
+    .min(6, 'Password is too short')
+    .required('Password is required'),
+  email: Yup.string().email('Invalid email').required('Email is required'),
+  name: Yup.string()
+    .required('Username is required')
+    .matches(
+      /^[A-Za-z0-9_-]+$/,
+      'Username may only contain alphanumeric characters, hyphens or underscore',
+    ),
   current_role: Yup.string(),
   confirmPassword: Yup.string()
     .oneOf([Yup.ref('password'), null], 'Passwords must match')
-    .required('Required'),
+    .required('Confirm password is required'),
 });
 
 const titleStyle = theme => ({
   fontWeight: 500,
-  fontSize: '20px',
+  fontSize: '16px !important',
   lineHeight: '24px',
   textAlign: 'center',
   [theme.breakpoints.down('md')]: {
@@ -154,22 +214,18 @@ const titleStyle = theme => ({
 });
 
 const submitButton = theme => ({
-  backgroundColor: theme.palette.secondary.main,
-  padding: '15px 140px',
+  padding: '11px 0',
   color: '#FCFAF6',
-  fontSize: '25px',
   fontWeight: 600,
   borderRadius: radiusOfComponents,
-  maxWidth: '402px',
-  margin: '0 auto',
-  [theme.breakpoints.down('md')]: {
-    fontSize: '20px',
-    lineHeight: '23px',
-  },
+  maxWidth: '262px',
+  fontSize: '16px',
+  paddingY: '11px',
+  width: '100%',
   [theme.breakpoints.down('sm')]: {
-    fontSize: '15px',
-    width: '230px',
-    padding: '12px 60px',
+    width: '225px',
+    padding: '8px 0',
+    fontSize: '14px',
   },
 });
 
@@ -179,10 +235,7 @@ const formStyle = theme => ({
   height: '100%',
   alignItems: 'center',
   width: '100%',
-  gap: '80px',
-  [theme.breakpoints.down('md')]: {
-    gap: '60px',
-  },
+  gap: '50px',
   [theme.breakpoints.down('sm')]: {
     gap: '32px',
   },
@@ -245,11 +298,10 @@ const fieldWrapper = theme => ({
 
 const tabsSx = theme => ({
   marginBottom: 0,
-  width: '420px',
-  marginTop: '-50px',
+  width: '340px',
+  marginTop: '-20px',
   [theme.breakpoints.down('md')]: {
     width: '320px',
-    marginTop: '-20px',
   },
   [theme.breakpoints.down('sm')]: {
     width: '250px',
@@ -258,14 +310,12 @@ const tabsSx = theme => ({
 });
 
 const tabSx = theme => ({
+  height: '40px',
+  minHeight: '40px',
   width: '50%',
   color: '#222222',
   fontSize: '16px',
   textTransform: 'capitalize',
-  [theme.breakpoints.down('md')]: {
-    minHeight: '41px',
-    height: '41px',
-  },
   [theme.breakpoints.down('sm')]: {
     fontSize: '14px',
   },

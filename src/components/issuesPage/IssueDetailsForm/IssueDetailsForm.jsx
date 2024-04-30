@@ -104,7 +104,6 @@ const IssueDetailsForm = ({ issue = null, editMode = false }) => {
               text={error || successMessage}
               onClose={() => dispatch(clearMessage())}
             />
-
             <Tooltip
               title={isEditName ? '' : values.name}
               arrow
@@ -155,7 +154,6 @@ const IssueDetailsForm = ({ issue = null, editMode = false }) => {
                 />
               </Box>
             </Tooltip>
-
             <Box sx={infoWrapperSx}>
               <DescriptionBlock
                 editMode={editMode}
@@ -238,8 +236,9 @@ const editButtonText = theme => ({
 
 const infoWrapperSx = theme => ({
   display: 'flex',
-  [theme.breakpoints.down('xs')]: {
-    flexDirection: 'column',
-    alignItems: 'center',
-  },
+  flexDirection: 'column-reverse',
+  // [theme.breakpoints.down('xs')]: {
+  //   flexDirection: 'column',
+  //   alignItems: 'center',
+  // },
 });

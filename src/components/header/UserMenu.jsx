@@ -6,7 +6,6 @@ import {
   Button,
   Tab,
   Tabs,
-  Tooltip,
   Typography,
   useMediaQuery,
 } from '@mui/material';
@@ -23,6 +22,8 @@ import { addTestsLabel } from '../../lib/helper.js';
 export const UserMenu = ({ open, handleClose, anchor, userAvatar, pages }) => {
   const dispatch = useDispatch();
   const reduxUser = useSelector(state => state.user.user);
+  const { auditor } = useSelector(s => s.auditor);
+  const { customer } = useSelector(s => s.customer);
   const navigate = useNavigate();
   const matchSm = useMediaQuery(theme.breakpoints.down(1080));
 
@@ -40,7 +41,12 @@ export const UserMenu = ({ open, handleClose, anchor, userAvatar, pages }) => {
   };
 
   const handleMyAccountClick = () => {
-    navigate('/profile/user-info');
+    const rolePrefix = reduxUser.current_role?.[0];
+    const link_id =
+      (reduxUser.current_role === AUDITOR
+        ? auditor?.link_id
+        : customer?.link_id) || reduxUser.id;
+    navigate(`/${rolePrefix}/${link_id}`);
   };
 
   return (
@@ -61,16 +67,7 @@ export const UserMenu = ({ open, handleClose, anchor, userAvatar, pages }) => {
             sx={avatarSx}
             alt="User photo"
           />
-          {/*<Button*/}
-          {/*  size="small"*/}
-          {/*  startIcon={<EditIcon />}*/}
-          {/*  sx={editTextStyle}*/}
-          {/*  disableRipple*/}
-          {/*>*/}
-          {/*  Edit photo*/}
-          {/*</Button>*/}
           <Typography sx={mainTextStyle}>{user.fullName}</Typography>
-          {/*<Typography sx={secondaryTextStyle}>{user.interests}</Typography>*/}
           <Typography sx={secondaryTextStyle}>{user.email}</Typography>
         </Box>
       </MenuItem>
@@ -79,7 +76,7 @@ export const UserMenu = ({ open, handleClose, anchor, userAvatar, pages }) => {
         onChange={(e, newValue) => {
           dispatch(changeRole(newValue, reduxUser.id));
         }}
-        name={'role'}
+        name="role"
         sx={tabsSx}
         indicatorColor="none"
       >
@@ -211,14 +208,8 @@ const menuPaperProps = {
   },
 };
 
-const editTextStyle = {
-  fontSize: '14px',
-  fontWeight: '500',
-  textTransform: 'none',
-};
-
 const popupLinkSx = role => ({
-  fontSize: '26px',
+  fontSize: '20px',
   fontWeight: '500',
   color: '#222222',
   textTransform: 'none',
@@ -247,28 +238,25 @@ const userInfoSx = {
 };
 
 const avatarSx = theme => ({
-  width: '100px',
-  height: '100px',
+  width: '80px',
+  height: '80px',
   [theme.breakpoints.down('sm')]: {
-    width: '80px',
-    height: '80px',
+    width: '70px',
+    height: '70px',
   },
 });
 
-const mainTextStyle = theme => ({
-  fontSize: '26px',
+const mainTextStyle = {
+  fontSize: '18px',
   fontWeight: '500',
   color: '#222222',
-  [theme.breakpoints.down('sm')]: {
-    fontSize: '18px',
-  },
-});
+};
 
 const secondaryTextStyle = theme => ({
-  fontSize: '18px',
+  fontSize: '16px !important',
   color: '#222222',
   [theme.breakpoints.down('sm')]: {
-    fontSize: '14px',
+    fontSize: '14px !important',
   },
 });
 

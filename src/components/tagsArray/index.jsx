@@ -4,17 +4,17 @@ import ClearIcon from '@mui/icons-material/Clear.js';
 import { FieldArray, useField } from 'formik';
 import theme from '../../styles/themes.js';
 
-const TagsArray = ({ name }) => {
+const TagsArray = ({ name, handleSubmit }) => {
   const [field, meta] = useField(name);
 
   return (
     <Box
       sx={{ display: 'flex', gap: '15px', flexWrap: 'wrap' }}
-      className={'tags-array-wrapper'}
+      className="tags-array-wrapper"
     >
       {meta.touched && meta.error && (
         <Typography
-          variant={'body1'}
+          variant="body1"
           sx={{
             color: `${theme.palette.error.main}!important`,
             fontSize: '16px',
@@ -33,7 +33,12 @@ const TagsArray = ({ name }) => {
                   sx={chipSx}
                   label={tag}
                   variant="outlined"
-                  onDelete={() => arrayHelper.remove(idx)}
+                  onDelete={() => {
+                    arrayHelper.remove(idx);
+                    if (handleSubmit) {
+                      handleSubmit();
+                    }
+                  }}
                   deleteIcon={<ClearIcon sx={iconSx} />}
                 />
               </Tooltip>

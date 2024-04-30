@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack.js';
 import TelegramIcon from '@mui/icons-material/Telegram';
 import EmailIcon from '@mui/icons-material/Email';
+import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import {
   Box,
   Button,
@@ -27,6 +28,7 @@ import OfferModal from './modal/OfferModal.jsx';
 import ShareProjectButton from './custom/ShareProjectButton.jsx';
 import { setCurrentChat } from '../redux/actions/chatActions.js';
 import ChatIcon from './icons/ChatIcon.jsx';
+import ConfirmModal from './modal/ConfirmModal.jsx';
 
 const AuditRequestInfo = ({
   project,
@@ -35,10 +37,12 @@ const AuditRequestInfo = ({
   redirect,
   isModal,
   setError,
+  stayHere,
 }) => {
   const navigate = useNavigate();
   const matchXs = useMediaQuery(theme.breakpoints.down('xs'));
   const [open, setOpen] = useState(false);
+  const [confirmDeclineOpen, setConfirmDeclineOpen] = useState(false);
   const { auditor } = useSelector(s => s.auditor);
   const { user } = useSelector(s => s.user);
   const { chatList } = useSelector(s => s.chat);
@@ -111,8 +115,14 @@ const AuditRequestInfo = ({
     navigate(`/chat/${project?.customer_id}`);
   };
 
+  const handleDecline = () => {
+    setConfirmDeclineOpen(false);
+    dispatch(deleteAuditRequest(project.id, stayHere));
+    onClose();
+  };
+
   return (
-    <CustomCard sx={wrapper} className={'audit-request-wrapper'}>
+    <CustomCard sx={wrapper} className="audit-request-wrapper">
       <Box sx={{ display: 'flex', width: '100%', position: 'relative' }}>
         <Button
           sx={backButtonSx}
@@ -120,10 +130,14 @@ const AuditRequestInfo = ({
           onClick={handleBack}
           {...addTestsLabel('go-back-button')}
         >
-          <ArrowBackIcon color={'secondary'} />
+          {onClose ? (
+            <CloseRoundedIcon color={'secondary'} />
+          ) : (
+            <ArrowBackIcon color={'secondary'} />
+          )}
         </Button>
         <Typography
-          variant={'h3'}
+          variant="h3"
           sx={{
             width: '100%',
             textAlign: 'center',
@@ -134,9 +148,9 @@ const AuditRequestInfo = ({
           {project?.name || project?.project_name}
         </Typography>
       </Box>
-      <Box sx={{ width: '100%' }} className={'audit-content'}>
-        <Box sx={contentWrapper} className={'audit-request-content-wrapper'}>
-          <Typography sx={titleSx} className={'audit-request-title'}>
+      <Box sx={{ width: '100%' }} className="audit-content">
+        <Box sx={contentWrapper} className="audit-request-content-wrapper">
+          <Typography sx={titleSx} className="audit-request-title">
             {project?.tags?.map((el, idx) => (
               <span key={idx}>
                 {idx + 1 !== project?.tags?.length ? el + ',' : el}
@@ -181,6 +195,7 @@ const AuditRequestInfo = ({
               150
             </Box>
           </Box>
+
           {!matchXs && (
             <Box sx={{ display: 'flex', gap: '25px', flexWrap: 'wrap' }}>
               {(project?.creator_contacts?.email ||
@@ -195,10 +210,10 @@ const AuditRequestInfo = ({
                       <Tooltip
                         title={project?.creator_contacts?.email}
                         arrow
-                        placement={'top'}
+                        placement="top"
                       >
                         <Typography
-                          variant={'caption'}
+                          variant="caption"
                           sx={contactStyle}
                           noWrap={true}
                         >
@@ -213,10 +228,10 @@ const AuditRequestInfo = ({
                             : 'Hidden'
                         }
                         arrow
-                        placement={'top'}
+                        placement="top"
                       >
                         <Typography
-                          variant={'caption'}
+                          variant="caption"
                           sx={contactStyle}
                           noWrap={true}
                         >
@@ -241,10 +256,10 @@ const AuditRequestInfo = ({
                       <Tooltip
                         title={project?.creator_contacts?.telegram}
                         arrow
-                        placement={'top'}
+                        placement="top"
                       >
                         <Typography
-                          variant={'caption'}
+                          variant="caption"
                           sx={contactStyle}
                           noWrap={true}
                         >
@@ -259,10 +274,10 @@ const AuditRequestInfo = ({
                             : 'Hidden'
                         }
                         arrow
-                        placement={'top'}
+                        placement="top"
                       >
                         <Typography
-                          variant={'caption'}
+                          variant="caption"
                           sx={contactStyle}
                           noWrap={true}
                         >
@@ -282,13 +297,13 @@ const AuditRequestInfo = ({
         <Box sx={{ textAlign: 'center', mt: '10px' }}>
           <ShareProjectButton
             projectId={project?.id}
-            sx={{ fontSize: '14px' }}
+            sx={{ fontSize: '12px' }}
             showIcon
             isModal
           />
         </Box>
 
-        <Box sx={infoWrapper} className={'audit-request-info'}>
+        <Box sx={infoWrapper} className="audit-request-info">
           <Markdown value={project?.description} />
           {matchXs && (
             <Box
@@ -311,10 +326,10 @@ const AuditRequestInfo = ({
                       <Tooltip
                         title={project?.creator_contacts?.email}
                         arrow
-                        placement={'top'}
+                        placement="top"
                       >
                         <Typography
-                          variant={'caption'}
+                          variant="caption"
                           sx={contactStyle}
                           noWrap={true}
                         >
@@ -329,10 +344,10 @@ const AuditRequestInfo = ({
                             : 'Hidden'
                         }
                         arrow
-                        placement={'top'}
+                        placement="top"
                       >
                         <Typography
-                          variant={'caption'}
+                          variant="caption"
                           sx={contactStyle}
                           noWrap={true}
                         >
@@ -357,10 +372,10 @@ const AuditRequestInfo = ({
                       <Tooltip
                         title={project?.creator_contacts?.telegram}
                         arrow
-                        placement={'top'}
+                        placement="top"
                       >
                         <Typography
-                          variant={'caption'}
+                          variant="caption"
                           sx={contactStyle}
                           noWrap={true}
                         >
@@ -375,10 +390,10 @@ const AuditRequestInfo = ({
                             : 'Hidden'
                         }
                         arrow
-                        placement={'top'}
+                        placement="top"
                       >
                         <Typography
-                          variant={'caption'}
+                          variant="caption"
                           sx={contactStyle}
                           noWrap={true}
                         >
@@ -400,7 +415,7 @@ const AuditRequestInfo = ({
           </Box>
         </Box>
       </Box>
-      <Box sx={buttonWrapper} className={'audit-request-button-wrapper'}>
+      <Box sx={buttonWrapper} className="audit-request-button-wrapper">
         <Button
           variant="contained"
           color="secondary"
@@ -409,7 +424,7 @@ const AuditRequestInfo = ({
             if (isModal) {
               handleBack();
             } else {
-              dispatch(deleteAuditRequest(project.id));
+              setConfirmDeclineOpen(true);
             }
           }}
           {...addTestsLabel('project-modal_cancel-button')}
@@ -418,6 +433,7 @@ const AuditRequestInfo = ({
         </Button>
         <Button
           variant="contained"
+          color="primary"
           sx={buttonSx}
           onClick={handleOpen}
           {...addTestsLabel('project-modal_make-offer-button')}
@@ -449,9 +465,16 @@ const AuditRequestInfo = ({
           redirect={redirect}
           setError={setError}
           onClose={onClose}
+          stayHere={stayHere}
           handleClose={handleClose}
         />
       </Modal>
+
+      <ConfirmModal
+        isOpen={confirmDeclineOpen}
+        handleAgree={handleDecline}
+        handleDisagree={() => setConfirmDeclineOpen(false)}
+      />
     </CustomCard>
   );
 };
@@ -467,19 +490,19 @@ const contactStyle = theme => ({
 const wrapper = theme => ({
   overflowY: 'auto',
   height: '100%',
-  padding: '48px 74px 80px',
+  padding: '30px 60px 60px',
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'center',
   gap: '20px',
   '& h3': {
-    fontSize: '37px',
+    fontSize: '24px',
     fontWeight: 500,
   },
   [theme.breakpoints.down('md')]: {
-    padding: '38px 44px 60px',
+    padding: '20px 44px 60px',
     '& h3': {
-      fontSize: '30px',
+      fontSize: '25px',
     },
   },
   [theme.breakpoints.down('sm')]: {
@@ -502,31 +525,22 @@ const contentWrapper = {
   flexDirection: 'column',
   alignItems: 'center',
   gap: '20px',
-  '& span': {
-    fontSize: '18px',
-    fontWeight: 500,
-  },
 };
 
-const titleSx = theme => ({
+const titleSx = {
+  fontSize: '16px',
   fontWeight: 500,
   display: 'flex',
   flexWrap: 'wrap',
   gap: '5px',
-  [theme.breakpoints.down('md')]: {
-    fontSize: '20px',
-  },
-});
+};
 
-const salaryWrapper = theme => ({
+const salaryWrapper = {
   display: 'flex',
   gap: '50px',
-  fontSize: '26px',
+  fontSize: '14px',
   fontWeight: 500,
-  [theme.breakpoints.down('sm')]: {
-    fontSize: '20px',
-  },
-});
+};
 
 const infoWrapper = theme => ({
   marginTop: '20px',
@@ -541,12 +555,12 @@ const infoWrapper = theme => ({
 const linkWrapper = theme => ({
   display: 'flex',
   flexDirection: 'column',
-  marginTop: '50px',
+  marginTop: '30px',
   padding: '0 15px',
   '& p': {
     display: 'flex',
     alignItems: 'center',
-    fontSize: '18px',
+    fontSize: '14px',
   },
   [theme.breakpoints.down('sm')]: {
     marginTop: '25px',
@@ -555,16 +569,17 @@ const linkWrapper = theme => ({
 
 const backButtonSx = theme => ({
   position: 'absolute',
-  left: '-30px',
-  top: 0,
+  left: '-28px',
+  top: '-20px',
   [theme.breakpoints.down('sm')]: {
-    top: '-30px',
+    left: '-25px',
+    // top: '-30px',
   },
 });
 
 const buttonSx = theme => ({
-  padding: '19px 0',
-  fontSize: '18px',
+  padding: '10px 0',
+  fontSize: '16px',
   textTransform: 'unset',
   fontWeight: 600,
   mr: '20px',

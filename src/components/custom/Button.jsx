@@ -5,10 +5,10 @@ import theme, { radiusOfComponents } from '../../styles/themes';
 export const CustomButton = styled(Button)({
   width: '100%',
   borderRadius: radiusOfComponents,
-  fontSize: '26px',
+  fontSize: '20px',
   fontWeight: 600,
   textTransform: 'none',
   [theme.breakpoints.down('xl')]: {
-    fontSize: '22px',
+    fontSize: '16px',
   },
 });

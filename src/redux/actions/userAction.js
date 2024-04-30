@@ -20,9 +20,62 @@ import {
   GET_AUDITOR,
   RESTORE_PASSWORD,
   SEND_EMAIL,
+  CONNECT_ACCOUNT,
+  CHANGE_ACCOUNT_VISIBILITY,
+  ERROR_ADD_ACCOUNT,
+  ERROR_IDENTITY,
+  DELETE_LINKED_ACCOUNT,
+  GET_PROFILE,
+  GET_PUBLIC_PROFILE,
+  GET_MY_PROFILE,
+  CLEAR_MESSAGES,
+  AUDITOR,
+  CUSTOMER,
 } from './types.js';
+import { savePublicReport } from './auditAction.js';
 
 const API_URL = import.meta.env.VITE_API_BASE_URL;
+
+export const signUpGithub = data => {
+  return dispatch => {
+    axios
+      .post(`${API_URL}/auth/github`, data)
+      .then(({ data }) => {
+        Cookies.set('token', data.token, { expires: 1 });
+        localStorage.setItem('token', JSON.stringify(data.token));
+        localStorage.setItem('user', JSON.stringify(data.user));
+        dispatch({ type: USER_SIGNIN, payload: data });
+
+        if (data.user?.is_new) {
+          axios.patch(
+            `${API_URL}/user/${data.user?.id}`,
+            { is_new: false },
+            { headers: { Authorization: `Bearer ${data.token}` } },
+          );
+          history.push({ pathname: `/edit-profile` }, { some: true });
+        } else {
+          const rolePrefix = data.user?.current_role?.[0];
+          history.push(
+            { pathname: `/${rolePrefix}/${data.user.id}` },
+            { some: true },
+          );
+        }
+
+
+      })
+      .catch(({ response }) => {
+        console.error(response);
+        if (
+          response?.status === 400 &&
+          response?.data === 'ServiceError: Role required'
+        ) {
+          history.push('/sign-up?select_role=true');
+        } else {
+          dispatch({ type: SIGN_IN_ERROR, payload: 'Sign In Failed' });
+        }
+      });
+  };
+};
 
 export const signIn = values => {
   return dispatch => {
@@ -34,16 +87,19 @@ export const signIn = values => {
         localStorage.setItem('user', JSON.stringify(data.user));
         dispatch({ type: USER_SIGNIN, payload: data });
 
-        axios.patch(
-          `${API_URL}/user/${data.user?.id}`,
-          { is_new: false },
-          { headers: { Authorization: `Bearer ${data.token}` } },
-        );
-
         if (data.user?.is_new) {
+          axios.patch(
+            `${API_URL}/user/${data.user?.id}`,
+            { is_new: false },
+            { headers: { Authorization: `Bearer ${data.token}` } },
+          );
           history.push({ pathname: `/edit-profile` }, { some: true });
         } else {
-          history.push({ pathname: `/profile/user-info` }, { some: true });
+          const role = data.user?.current_role?.[0];
+          history.push(
+            { pathname: `/${role}/${data.user.id}` },
+            { some: true },
+          );
         }
       })
       .catch(({ response }) => {
@@ -60,6 +116,35 @@ export const clearUserSuccess = () => {
   return { type: CLEAR_SUCCESS };
 };
 
+export const clearUserMessages = () => {
+  return { type: CLEAR_MESSAGES };
+};
+
+export const getMyProfile = id => {
+  return dispatch => {
+    axios(`${API_URL}/my_user`, {
+      headers: {
+        Authorization: 'Bearer ' + Cookies.get('token'),
+      },
+    })
+      .then(({ data }) => {
+        dispatch({ type: GET_MY_PROFILE, payload: data });
+        localStorage.setItem('user', JSON.stringify(data));
+      })
+      .catch(data => {
+        console.log(data);
+      });
+  };
+};
+
+export const getPublicProfile = id => {
+  return dispatch => {
+    axios.get(`${API_URL}/user/${id}`).then(({ data }) => {
+      dispatch({ type: GET_PUBLIC_PROFILE, payload: data });
+    });
+  };
+};
+
 export const signUp = values => {
   return dispatch => {
     axios
@@ -70,8 +155,151 @@ export const signUp = values => {
           some: true,
         });
       })
-      .catch(({ response }) => {
+      .catch(() => {
         dispatch({ type: USER_IS_ALREADY_EXIST });
+      });
+  };
+};
+
+export const handleDeleteLinkedAccount = (user_id, account_id) => {
+  return dispatch => {
+    axios
+      .delete(`${API_URL}/user/${user_id}/linked_account/${account_id}`, {
+        headers: {
+          Authorization: 'Bearer ' + Cookies.get('token'),
+          'Content-Type': 'application/json',
+        },
+      })
+      .then(({ data }) => {
+        dispatch(getMyProfile(user_id));
+        dispatch({ type: DELETE_LINKED_ACCOUNT, payload: data });
+      });
+  };
+};
+
+export const changeAccountVisibility = (user_id, values, account_id) => {
+  return dispatch => {
+    axios
+      .patch(
+        `${API_URL}/user/${user_id}/linked_account/${account_id}`,
+        values,
+        {
+          headers: {
+            Authorization: 'Bearer ' + Cookies.get('token'),
+            'Content-Type': 'application/json',
+          },
+        },
+      )
+      .then(({ data }) => {
+        dispatch({ type: CHANGE_ACCOUNT_VISIBILITY, payload: data });
+        const user = JSON.parse(localStorage.getItem('user'));
+        const newData = {
+          ...user,
+          linked_accounts: user.linked_accounts.map(item => {
+            if (item.id === account_id) {
+              return data;
+            }
+            return item;
+          }),
+        };
+        localStorage.setItem('user', JSON.stringify(newData));
+      })
+      .catch(({ response }) => {
+        console.log(response);
+      });
+  };
+};
+
+export const connect_account = (user_id, values) => {
+  const user = JSON.parse(localStorage.getItem('user'));
+  return (dispatch, getState) => {
+    axios
+      .post(`${API_URL}/user/${user_id}/linked_account`, values, {
+        headers: {
+          Authorization: 'Bearer ' + Cookies.get('token'),
+          'Content-Type': 'application/json',
+        },
+      })
+      .then(({ data }) => {
+        dispatch({ type: CONNECT_ACCOUNT, payload: data });
+        dispatch({ type: CHANGE_ACCOUNT_VISIBILITY, payload: data });
+        const newData = {
+          ...user,
+          linked_accounts: [...user.linked_accounts, data],
+        };
+        localStorage.setItem('user', JSON.stringify(newData));
+      })
+      .catch(data => {
+        if (data.response.status === 404) {
+          dispatch({ type: ERROR_ADD_ACCOUNT, payload: data.response });
+        } else {
+          dispatch({ type: ERROR_IDENTITY, payload: data.response });
+        }
+      })
+      .finally(() => {
+        const rolePrefix = user?.current_role?.[0];
+        const { auditor, customer } = getState();
+        let linkId = user.id;
+        if (user.current_role === AUDITOR) {
+          linkId = auditor.auditor?.link_id || user.id;
+        } else if (user.current_role === CUSTOMER) {
+          linkId = customer.customer?.link_id || user.id;
+        }
+        history.push(`/${rolePrefix}/${linkId}`, { some: true });
+      });
+  };
+};
+
+export const connect_auth_account = (user_id, values) => {
+  return dispatch => {
+    axios
+      .post(`${API_URL}/user/${user_id}/linked_account`, values, {
+        headers: {
+          Authorization: 'Bearer ' + Cookies.get('token'),
+          'Content-Type': 'application/json',
+        },
+      })
+      .then(({ data }) => {
+        dispatch({ type: CONNECT_ACCOUNT, payload: data });
+        const user = JSON.parse(localStorage.getItem('user'));
+        const newData = {
+          ...user,
+          linked_accounts: [...user.linked_accounts, data],
+        };
+        localStorage.setItem('user', JSON.stringify(newData));
+        localStorage.setItem('authenticated', 'true');
+        window.close();
+      })
+      .catch(data => {
+        if (data.response.status === 404) {
+          dispatch({ type: ERROR_ADD_ACCOUNT, payload: data.response });
+        } else {
+          dispatch({ type: ERROR_IDENTITY, payload: data.response });
+        }
+        window.close();
+      });
+  };
+};
+
+export const authGithub = (user_id, values) => {
+  return dispatch => {
+    const user = JSON.parse(localStorage.getItem('user'));
+    axios
+      .post(`${API_URL}/auth/github`, values)
+      .then(({ data }) => {
+        if (user.linked_accounts.find(el => el.name === 'GitHub')) {
+          localStorage.setItem('authenticated', 'true');
+          window.close();
+        }
+      })
+      .catch(data => {
+        if (data.response.status === 404) {
+          dispatch({ type: ERROR_ADD_ACCOUNT, payload: data.response });
+        } else {
+          dispatch({ type: ERROR_IDENTITY, payload: data.response });
+        }
+        const rolePrefix = user?.current_role?.[0];
+        history.push(`/${rolePrefix}/${user.id}`, { some: true });
       });
   };
 };
@@ -117,39 +345,45 @@ export const logout = () => {
   return { type: LOG_OUT };
 };
 
-export const changeRole = (value, id) => {
-  return dispatch => {
-    axios
-      .patch(
-        `${API_URL}/user/${id}`,
-        { current_role: value },
-        {
-          headers: {
-            Authorization: 'Bearer ' + Cookies.get('token'),
-            'Content-Type': 'application/json',
-          },
-        },
-      )
-      .then(({ data }) => {
-        dispatch({ type: SELECT_ROLE, payload: data });
-        localStorage.setItem('user', JSON.stringify(data));
-        history.push(
-          { pathname: `/profile/user-info` },
-          {
-            some: true,
-          },
-        );
-      });
-  };
-};
-
-export const changeRolePublicCustomer = (value, id, currentRole) => {
+export const changeRole = (role, id) => {
   const token = Cookies.get('token');
   return dispatch => {
     axios
       .patch(
         `${API_URL}/user/${id}`,
-        { current_role: value },
+        { current_role: role },
+        {
+          headers: {
+            Authorization: 'Bearer ' + token,
+            'Content-Type': 'application/json',
+          },
+        },
+      )
+      .then(({ data: user }) => {
+        dispatch({ type: SELECT_ROLE, payload: user });
+        localStorage.setItem('user', JSON.stringify(user));
+
+        if (user.is_new) {
+          axios.patch(
+            `${API_URL}/user/${user.id}`,
+            { is_new: false },
+            { headers: { Authorization: `Bearer ${token}` } },
+          );
+          history.push({ pathname: `/edit-profile` }, { some: true });
+        } else {
+          history.push({ pathname: `/${role[0]}/${user.id}` }, { some: true });
+        }
+      });
+  };
+};
+
+export const changeRolePublicCustomer = (role, id) => {
+  const token = Cookies.get('token');
+  return dispatch => {
+    axios
+      .patch(
+        `${API_URL}/user/${id}`,
+        { current_role: role },
         {
           headers: {
             Authorization: 'Bearer ' + token,
@@ -177,7 +411,11 @@ export const changeRolePublicCustomer = (value, id, currentRole) => {
                 type: CHANGE_ROLE_DONT_HAVE_PROFILE_CUSTOMER,
                 payload: user,
               });
-              history.push({ pathname: `/profile/user-info` }, { some: true });
+              const linkId = customer?.link_id || id;
+              history.push(
+                { pathname: `/${role[0]}/${linkId}` },
+                { some: true },
+              );
             }
             localStorage.setItem('user', JSON.stringify(user));
           });
@@ -185,13 +423,13 @@ export const changeRolePublicCustomer = (value, id, currentRole) => {
   };
 };
 
-export const changeRolePublicAuditor = (value, id, currentRole) => {
+export const changeRolePublicAuditor = (role, id, data, withData) => {
   const token = Cookies.get('token');
   return dispatch => {
     axios
       .patch(
         `${API_URL}/user/${id}`,
-        { current_role: value },
+        { current_role: role },
         {
           headers: {
             Authorization: 'Bearer ' + token,
@@ -214,12 +452,27 @@ export const changeRolePublicAuditor = (value, id, currentRole) => {
                 type: CHANGE_ROLE_HAVE_PROFILE_AUDITOR,
                 payload: user,
               });
+              if (withData) {
+                const newData = {
+                  auditor_id: auditor.user_id,
+                  auditor_first_name: auditor.first_name,
+                  auditor_last_name: auditor.last_name,
+                  auditor_contacts: auditor.contacts,
+                  avatar: auditor.avatar,
+                  ...data,
+                };
+                dispatch(savePublicReport(newData));
+              }
             } else {
               dispatch({
                 type: CHANGE_ROLE_DONT_HAVE_PROFILE_AUDITOR,
                 payload: user,
               });
-              history.push({ pathname: `/profile/user-info` }, { some: true });
+              const linkId = auditor?.link_id || id;
+              history.push(
+                { pathname: `/${role[0]}/${linkId}` },
+                { some: true },
+              );
             }
             localStorage.setItem('user', JSON.stringify(user));
           });
@@ -227,12 +480,12 @@ export const changeRolePublicAuditor = (value, id, currentRole) => {
   };
 };
 
-export const changeRolePublicAuditorNoRedirect = (value, id, currentRole) => {
+export const changeRolePublicAuditorNoRedirect = (role, id) => {
   return dispatch => {
     axios
       .patch(
         `${API_URL}/user/${id}`,
-        { current_role: value },
+        { current_role: role },
         {
           headers: {
             Authorization: 'Bearer ' + Cookies.get('token'),
@@ -247,12 +500,12 @@ export const changeRolePublicAuditorNoRedirect = (value, id, currentRole) => {
   };
 };
 
-export const changeRolePublicCustomerNoRedirect = (value, id, currentRole) => {
+export const changeRolePublicCustomerNoRedirect = (role, id) => {
   return dispatch => {
     axios
       .patch(
         `${API_URL}/user/${id}`,
-        { current_role: value },
+        { current_role: role },
         {
           headers: {
             Authorization: 'Bearer ' + Cookies.get('token'),

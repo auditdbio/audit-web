@@ -37,6 +37,7 @@ import NotFound from './Not-Found.jsx';
 import { FIXED, NOT_FIXED } from '../components/issuesPage/constants.js';
 import { setCurrentChat } from '../redux/actions/chatActions.js';
 import ChatIcon from '../components/icons/ChatIcon.jsx';
+import Headings from '../router/Headings.jsx';
 
 const AuditOffer = () => {
   const { auditId } = useParams();
@@ -114,6 +115,7 @@ const AuditOffer = () => {
   if (!audit?.id && !notFound) {
     return (
       <Layout>
+        <Headings title="Audit" />
         <CustomCard
           sx={[wrapper, { height: '100%', justifyContent: 'center' }]}
         >
@@ -125,7 +127,15 @@ const AuditOffer = () => {
 
   if (audit && !notFound) {
     return (
-      <Layout>
+      <Layout
+        sx={{ padding: '40px' }}
+        containerSx={{
+          maxWidth: 'unset!important',
+          padding: '0 35px!important',
+        }}
+      >
+        <Headings title={`${audit?.project_name} | Audit`} />
+
         <CustomCard sx={wrapper}>
           <Formik
             initialValues={{
@@ -141,10 +151,7 @@ const AuditOffer = () => {
           >
             {({ handleSubmit, setFieldValue }) => {
               return (
-                <Form
-                  onSubmit={handleSubmit}
-                  style={{ width: '100%', maxWidth: '1300px' }}
-                >
+                <Form onSubmit={handleSubmit} style={{ width: '100%' }}>
                   <CustomSnackbar
                     autoHideDuration={5000}
                     open={!!error || !!successMessage}
@@ -162,13 +169,20 @@ const AuditOffer = () => {
                   >
                     <Button
                       sx={backButtonSx}
-                      onClick={() => navigate('/profile/audits')}
+                      onClick={() => {
+                        if (localStorage.getItem('prevPath')) {
+                          navigate(localStorage.getItem('prevPath'));
+                          localStorage.removeItem('prevPath');
+                        } else {
+                          navigate('/profile/audits');
+                        }
+                      }}
                       {...addTestsLabel('go-back-button')}
                     >
-                      <ArrowBackIcon color={'secondary'} />
+                      <ArrowBackIcon color="secondary" />
                     </Button>
                     <Typography
-                      variant={'h3'}
+                      variant="h3"
                       sx={{
                         width: '100%',
                         textAlign: 'center',
@@ -193,8 +207,8 @@ const AuditOffer = () => {
                           }}
                         >
                           <svg
-                            width="27"
-                            height="26"
+                            width="20"
+                            height="20"
                             viewBox="0 0 27 26"
                             fill="none"
                             xmlns="http://www.w3.org/2000/svg"
@@ -214,8 +228,8 @@ const AuditOffer = () => {
                           }}
                         >
                           <svg
-                            width="26"
-                            height="26"
+                            width="20"
+                            height="20"
                             viewBox="0 0 26 26"
                             fill="none"
                             xmlns="http://www.w3.org/2000/svg"
@@ -250,9 +264,9 @@ const AuditOffer = () => {
                             <Tooltip
                               title={audit?.customer_contacts?.email}
                               arrow
-                              placement={'top'}
+                              placement="top"
                             >
-                              <Typography variant={'caption'} noWrap={true}>
+                              <Typography variant="caption" noWrap={true}>
                                 {audit?.customer_contacts?.email}
                               </Typography>
                             </Tooltip>
@@ -272,9 +286,9 @@ const AuditOffer = () => {
                             <Tooltip
                               title={audit?.customer_contacts?.telegram}
                               arrow
-                              placement={'top'}
+                              placement="top"
                             >
-                              <Typography variant={'caption'} noWrap={true}>
+                              <Typography variant="caption" noWrap={true}>
                                 {audit?.customer_contacts?.telegram}
                               </Typography>
                             </Tooltip>
@@ -382,7 +396,7 @@ const AuditOffer = () => {
                                 auditorId={audit?.auditor_id}
                                 auditReportName={audit?.report_name}
                                 customerId={audit?.customer_id}
-                                name={'report'}
+                                name="report"
                                 setFieldValue={setFieldValue}
                               />
                             </Box>
@@ -456,26 +470,24 @@ const SubmitValidation = Yup.object().shape({
 });
 
 const wrapper = theme => ({
-  padding: '48px 74px 0',
+  padding: '30px 60px 60px',
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'center',
+  maxWidth: 'unset',
   gap: '20px',
   '& h3': {
-    fontSize: '37px',
+    fontSize: '24px',
     fontWeight: 500,
   },
   [theme.breakpoints.down('md')]: {
-    padding: '38px 44px 0',
-    '& h3': {
-      fontSize: '30px',
-    },
+    padding: '30px 44px 0',
   },
   [theme.breakpoints.down('sm')]: {
     gap: '20px',
-    padding: '38px 20px 0',
+    padding: '30px 20px 0',
     '& h3': {
-      fontSize: '24px',
+      fontSize: '20px',
     },
   },
 });
@@ -532,22 +544,16 @@ const fileWrapper = theme => ({
 const titleSx = theme => ({
   fontWeight: 500,
   [theme.breakpoints.down('md')]: {
-    fontSize: '20px',
-  },
-  [theme.breakpoints.down('sm')]: {
     fontSize: '16px',
   },
 });
 
-const salaryWrapper = theme => ({
+const salaryWrapper = {
   display: 'flex',
   gap: '50px',
-  fontSize: '26px',
+  fontSize: '16px',
   fontWeight: 500,
-  [theme.breakpoints.down('sm')]: {
-    fontSize: '20px',
-  },
-});
+};
 
 const infoWrapper = theme => ({
   marginTop: '30px',
@@ -574,7 +580,7 @@ const readAllButton = theme => ({
   width: '100%',
   padding: '8px',
   fontWeight: 600,
-  fontSize: '21px',
+  fontSize: '16px',
   color: 'black',
   textTransform: 'none',
   lineHeight: '25px',
@@ -601,39 +607,34 @@ const linkWrapper = theme => ({
   '& p': {
     display: 'flex',
     alignItems: 'center',
-    gap: '15px',
-    fontSize: '18px',
+    gap: '5px',
+    fontSize: '14px',
   },
   [theme.breakpoints.down('sm')]: {
     columnGap: '40px',
     marginTop: '25px',
     gap: '10px',
-    '& p': {
-      fontSize: '15px',
-    },
   },
 });
 
 const backButtonSx = theme => ({
   position: 'absolute',
-  left: '-30px',
-  top: 0,
+  left: '-58px',
+  top: '-20px',
   [theme.breakpoints.down('sm')]: {
     top: '-30px',
+    left: '-20px',
   },
 });
 
 const buttonSx = theme => ({
-  padding: '19px 0',
-  fontSize: '18px',
+  padding: '11px 0',
+  fontSize: '16px',
   textTransform: 'unset',
   fontWeight: 600,
   margin: '0 12px',
   width: '270px',
   borderRadius: '10px',
-  [theme.breakpoints.down('md')]: {
-    padding: '11px 0',
-  },
   [theme.breakpoints.down('sm')]: {
     width: '240px',
   },
@@ -652,13 +653,13 @@ const sendMessageButton = theme => ({
 });
 
 const workflowToggleBox = theme => ({
-  maxWidth: '510px',
+  maxWidth: '410px',
   margin: '0 auto 50px',
   padding: '3px 1px',
   display: 'flex',
   justifyContent: 'center',
   border: '1px solid #B2B3B3',
-  borderRadius: '38px',
+  borderRadius: '30px',
   [theme.breakpoints.down('xs')]: {
     width: '248px',
     margin: '0 auto 20px',
@@ -667,12 +668,12 @@ const workflowToggleBox = theme => ({
 
 const workflowButton = useWorkflow => ({
   fontWeight: 600,
-  fontSize: '20px',
+  fontSize: '16px',
   color: useWorkflow ? 'white' : 'black',
   textTransform: 'none',
-  padding: '15px 0',
-  width: '250px',
-  borderRadius: '38px',
+  padding: '10px 0',
+  width: '200px',
+  borderRadius: '30px',
   background: useWorkflow ? theme.palette.secondary.main : 'none',
   ':hover': { background: useWorkflow ? theme.palette.secondary.main : 'none' },
   '& span': {

@@ -88,11 +88,11 @@ const AuditUpload = ({
 
       <Button disabled={disabled} {...addTestsLabel('upload-audit-button')}>
         <label htmlFor="audit-upload">
-          <CreateNewFolderOutlinedIcon fontSize={'large'} color={'disabled'} />
+          <CreateNewFolderOutlinedIcon fontSize="large" color="disabled" />
         </label>
       </Button>
       <input
-        id={'audit-upload'}
+        id="audit-upload"
         style={{ display: 'none' }}
         accept="application/pdf"
         onChange={handleUpdateAudit}

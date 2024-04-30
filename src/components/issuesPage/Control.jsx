@@ -10,19 +10,33 @@ import {
   MenuItem,
   TextField,
   Tooltip,
+  useMediaQuery,
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import IconButton from '@mui/material/IconButton';
-import { addTestsLabel } from '../../lib/helper.js';
-import { AUDITOR, CUSTOMER, RESOLVED } from '../../redux/actions/types.js';
+import { addTestsLabel, isAuth, reportBuilder } from '../../lib/helper.js';
+import {
+  AUDITOR,
+  CHANGE_ROLE_DONT_HAVE_PROFILE_AUDITOR,
+  CUSTOMER,
+  RESOLVED,
+} from '../../redux/actions/types.js';
 import ResolveAuditConfirmation from './ResolveAuditConfirmation.jsx';
 import { discloseAllIssues } from '../../redux/actions/issueAction.js';
 import { DRAFT, FIXED, NOT_FIXED } from './constants.js';
 import {
+  clearMessage,
   downloadReport,
   getPublicReport,
+  savePublicReport,
 } from '../../redux/actions/auditAction.js';
 import CustomSnackbar from '../custom/CustomSnackbar.jsx';
+import {
+  changeRolePublicAuditor,
+  clearUserSuccess,
+} from '../../redux/actions/userAction.js';
+import theme from '../../styles/themes.js';
+import { BASE_URL } from '../../services/urls.js';
 
 const Control = ({
   issues,
@@ -33,6 +47,7 @@ const Control = ({
   isPublic,
   setIsOpenReset,
   handleSubmit,
+  saved,
 }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -40,13 +55,17 @@ const Control = ({
   const [resolveConfirmation, setResolveConfirmation] = useState(false);
   const [allIssuesClosed, setAllIssuesClosed] = useState(false);
   const [menuAnchorEl, setMenuAnchorEl] = useState(null);
-  const user = useSelector(s => s.user.user);
+  const { user } = useSelector(s => s.user);
   const audit = useSelector(s =>
     s.audits.audits?.find(audit => audit.id === auditId),
   );
+  const { auditor } = useSelector(s => s.auditor);
+  const { customer } = useSelector(s => s.customer);
   const issuesArray = useSelector(s => s.issues.issues);
   const report = JSON.parse(localStorage.getItem('report'));
   const [openMessage, setOpenMessage] = useState(false);
+  const auditMessage = useSelector(s => s.audits.successMessage);
+  const xss = useMediaQuery(theme.breakpoints.down(666));
 
   const handleSearch = e => {
     setSearch(e.target.value);
@@ -55,10 +74,12 @@ const Control = ({
   };
 
   const handleNewIssue = () => {
-    if (!isPublic) {
-      navigate(`/issues/new-issue/${auditId}`);
-    } else {
+    if (isPublic) {
       navigate(`/public-issues/new-issue/${auditId}`);
+    } else if (saved) {
+      navigate(`/private-issues/new-issue/${auditId}`);
+    } else {
+      navigate(`/issues/new-issue/${auditId}`);
     }
     window.scrollTo(0, 0);
   };
@@ -76,232 +97,67 @@ const Control = ({
     setMenuAnchorEl(null);
   };
 
+  const handleSavePublicAudit = async () => {
+    if (report?.auditor_name && report?.project_name && report?.description) {
+      if (isAuth()) {
+        if (user.current_role === CUSTOMER) {
+          const data = {
+            ...report,
+            isPublic: true,
+            issues: [...issuesArray],
+          };
+          await dispatch(changeRolePublicAuditor(AUDITOR, user.id, data, true));
+        } else {
+          const data = {
+            auditor_id: auditor.user_id,
+            auditor_first_name: auditor.first_name,
+            auditor_last_name: auditor.last_name,
+            auditor_contacts: auditor.contacts,
+            avatar: auditor.avatar,
+            ...report,
+            isPublic: true,
+            issues: [...issuesArray],
+            status: 'Started',
+          };
+          if (auditor?.user_id) {
+            await dispatch(savePublicReport(data));
+          } else {
+            dispatch({
+              type: CHANGE_ROLE_DONT_HAVE_PROFILE_AUDITOR,
+              payload: user,
+            });
+            const role = user.current_role?.[0];
+            const link_id =
+              (role === AUDITOR ? auditor?.link_id : customer?.link_id) ||
+              user.id;
+            navigate(`/${role}/${link_id}`);
+          }
+        }
+      } else {
+        navigate('/sign-in');
+      }
+    } else {
+      setOpenMessage(true);
+    }
+  };
+
   const handleGenerateReport = () => {
     if (isPublic) {
       if (report?.auditor_name && report?.project_name && report?.description) {
-        const newData = {
-          auditor_name: report.auditor_name,
-          project_name: report.project_name,
-          report_data: [
-            {
-              type: 'markdown',
-              title: 'Disclaimer',
-              text:
-                '\n' +
-                '## Important to remember:\n' +
-                '\n' +
-                "1. This audit was performed based on the current state of the code at the time of evaluation. Any subsequent changes or modifications to the codebase could render auditors' findings obsolete. Re-audit is recommended post any alterations.\n" +
-                '\n' +
-                '2. While we strive for accuracy, auditors cannot guarantee that all potential vulnerabilities or bugs have been identified. The auditor is not responsible for any overlooked issues.\n' +
-                '\n' +
-                "3. It's always recommended to have multiple layers of checks and balances, including but not limited to, regular code reviews and updated audits.",
-              include_in_toc: true,
-            },
-            {
-              type: 'plain_text',
-              title: 'Summary',
-              include_in_toc: true,
-              subsections: [
-                {
-                  type: 'project_description',
-                  title: 'Project description',
-                  text: report.description,
-                  include_in_toc: true,
-                },
-                {
-                  type: 'scope',
-                  title: 'Scope',
-                  text: '',
-                  include_in_toc: true,
-                  links: report.scope,
-                },
-              ],
-            },
-            {
-              type: 'statistics',
-              title: 'Issue statistics',
-              include_in_toc: true,
-              statistics: {
-                total: issuesArray.length,
-                fixed: {
-                  critical: issuesArray.filter(
-                    issue =>
-                      issue.severity === 'Critical' && issue.status === 'Fixed',
-                  ).length,
-                  major: issuesArray.filter(
-                    issue =>
-                      issue.severity === 'Major' && issue.status === 'Fixed',
-                  ).length,
-                  medium: issuesArray.filter(
-                    issue =>
-                      issue.severity === 'Medium' && issue.status === 'Fixed',
-                  ).length,
-                  minor: issuesArray.filter(
-                    issue =>
-                      issue.severity === 'Minor' && issue.status === 'Fixed',
-                  ).length,
-                },
-                not_fixed: {
-                  critical: issuesArray.filter(
-                    issue =>
-                      issue.severity === 'Critical' && issue.status !== 'Fixed',
-                  ).length,
-                  major: issuesArray.filter(
-                    issue =>
-                      issue.severity === 'Major' && issue.status !== 'Fixed',
-                  ).length,
-                  medium: issuesArray.filter(
-                    issue =>
-                      issue.severity === 'Medium' && issue.status !== 'Fixed',
-                  ).length,
-                  minor: issuesArray.filter(
-                    issue =>
-                      issue.severity === 'Minor' && issue.status !== 'Fixed',
-                  ).length,
-                },
-              },
-            },
-            {
-              type: 'plain_text',
-              title: 'Issues',
-              text: '',
-              include_in_toc: true,
-              subsections: [
-                {
-                  type: 'plain_text',
-                  title: 'Critical',
-                  text: issuesArray.filter(
-                    issue => issue.severity === 'Critical',
-                  ).length
-                    ? ''
-                    : 'No critical issues found',
-                  include_in_toc: true,
-                  [issuesArray.filter(issue => issue.severity === 'Critical')
-                    .length
-                    ? 'subsections'
-                    : '']: [
-                    ...issuesArray
-                      .filter(issue => issue.severity === 'Critical')
-                      .map(issue => {
-                        return {
-                          type: 'issue_data',
-                          title: issue.name,
-                          text: issue.description,
-                          include_in_toc: true,
-                          feedback: issue.feedback,
-                          issue_data: {
-                            links: issue.links,
-                            category: issue.category,
-                            severity: issue.severity,
-                            status: issue.status,
-                          },
-                        };
-                      }),
-                  ],
-                },
-                {
-                  type: 'plain_text',
-                  title: 'Major',
-                  text: issuesArray.filter(issue => issue.severity === 'Major')
-                    .length
-                    ? ''
-                    : 'No major issues found',
-                  include_in_toc: true,
-                  [issuesArray.filter(issue => issue.severity === 'Major')
-                    .length
-                    ? 'subsections'
-                    : '']: [
-                    ...issuesArray
-                      .filter(issue => issue.severity === 'Major')
-                      .map(issue => {
-                        return {
-                          type: 'issue_data',
-                          title: issue.name,
-                          text: issue.description,
-                          include_in_toc: true,
-                          feedback: issue.feedback,
-                          issue_data: {
-                            links: issue.links,
-                            category: issue.category,
-                            severity: issue.severity,
-                            status: issue.status,
-                          },
-                        };
-                      }),
-                  ],
-                },
-                {
-                  type: 'plain_text',
-                  title: 'Medium',
-                  text: issuesArray.filter(issue => issue.severity === 'Medium')
-                    .length
-                    ? ''
-                    : 'No medium issues found',
-                  include_in_toc: true,
-                  [issuesArray.filter(issue => issue.severity === 'Medium')
-                    .length
-                    ? 'subsections'
-                    : '']: [
-                    ...issuesArray
-                      .filter(issue => issue.severity === 'Medium')
-                      .map(issue => {
-                        return {
-                          type: 'issue_data',
-                          title: issue.name,
-                          text: issue.description,
-                          include_in_toc: true,
-                          feedback: issue.feedback,
-                          issue_data: {
-                            links: issue.links,
-                            category: issue.category,
-                            severity: issue.severity,
-                            status: issue.status,
-                          },
-                        };
-                      }),
-                  ],
-                },
-                {
-                  type: 'plain_text',
-                  title: 'Minor',
-                  text: issuesArray.filter(issue => issue.severity === 'Minor')
-                    .length
-                    ? ''
-                    : 'No minor issues found',
-                  include_in_toc: true,
-                  [issuesArray.filter(issue => issue.severity === 'Minor')
-                    .length
-                    ? 'subsections'
-                    : '']: [
-                    ...issuesArray
-                      .filter(issue => issue.severity === 'Minor')
-                      .map(issue => {
-                        return {
-                          type: 'issue_data',
-                          title: issue.name,
-                          text: issue.description,
-                          include_in_toc: true,
-                          feedback: issue.feedback,
-                          issue_data: {
-                            links: issue.links,
-                            category: issue.category,
-                            severity: issue.severity,
-                            status: issue.status,
-                          },
-                        };
-                      }),
-                  ],
-                },
-              ],
-            },
-            // {
-            //   type: 'plain_text',
-            //   title: '',
-            //   text: '',
-            //   include_in_toc: true,
-            // },
-          ],
-        };
+        if (isAuth()) {
+          if (user.current_role === AUDITOR) {
+            const linkId = auditor.link_id || auditor.user_id;
+            report.profile_link = linkId
+              ? `${BASE_URL}a/${linkId}`
+              : `${BASE_URL}disclaimer/`;
+          } else if (user.current_role === CUSTOMER) {
+            const linkId = customer.link_id || customer.user_id;
+            report.profile_link = linkId
+              ? `${BASE_URL}c/${linkId}`
+              : `${BASE_URL}disclaimer/`;
+          }
+        }
+        const newData = reportBuilder(report, issuesArray);
         dispatch(getPublicReport(newData, { generate: true }));
       } else {
         handleSubmit();
@@ -335,6 +191,13 @@ const Control = ({
     setAllIssuesClosed(allClosed);
   }, [issues]);
 
+  const handleCloseSnack = () => {
+    setOpenMessage(false);
+    if (auditMessage) {
+      dispatch(clearMessage());
+    }
+  };
+
   return (
     <>
       <ResolveAuditConfirmation
@@ -342,37 +205,69 @@ const Control = ({
         setIsOpen={setResolveConfirmation}
         audit={audit}
       />
-      {isPublic && (
+      {isPublic ? (
         <Box sx={publicBtnWrapper}>
           <CustomSnackbar
             autoHideDuration={5000}
-            open={openMessage}
-            severity={'error'}
-            text={'Please fill in all mandatory fields'}
-            onClose={() => setOpenMessage(false)}
+            open={openMessage || auditMessage}
+            severity={(auditMessage && 'success') || (openMessage && 'error')}
+            text={
+              auditMessage
+                ? auditMessage
+                : openMessage && 'Please fill in all mandatory fields'
+            }
+            onClose={handleCloseSnack}
           />
-          <Button
-            variant="contained"
-            color="secondary"
-            sx={[buttonSx, { marginRight: '0!important' }, publicBtnSx]}
-            onClick={handleGenerateReport}
-          >
-            Generate report
-          </Button>
-          <Button
-            variant={'contained'}
-            type={'button'}
-            color={'secondary'}
-            onClick={() => setIsOpenReset(true)}
-            sx={[buttonSx, publicBtnSx]}
-          >
-            Reset form
-          </Button>
+          {!saved && (
+            <Button
+              variant="contained"
+              color="secondary"
+              sx={[buttonSx, { marginRight: '0!important' }, publicBtnSx]}
+              onClick={handleGenerateReport}
+            >
+              Generate report
+            </Button>
+          )}
+          {!saved && (
+            <Button
+              sx={[buttonSx, { marginRight: '0!important' }, publicBtnSx]}
+              onClick={() => {
+                handleSavePublicAudit();
+              }}
+              variant={'contained'}
+            >
+              Save to AuditDB
+            </Button>
+          )}
+          {!saved && (
+            <Button
+              variant={'contained'}
+              type={'button'}
+              color={'secondary'}
+              onClick={() => setIsOpenReset(true)}
+              sx={[buttonSx, { marginRight: '0!important' }, publicBtnSx]}
+            >
+              Reset form
+            </Button>
+          )}
+        </Box>
+      ) : (
+        <Box sx={publicBtnWrapper}>
+          {xss && saved && (
+            <Button
+              variant="contained"
+              color="secondary"
+              sx={[buttonSx, (isPublic || saved) && xss ? publicBtnSx : {}]}
+              onClick={handleGenerateReport}
+            >
+              Generate report
+            </Button>
+          )}
         </Box>
       )}
-      <Box sx={!isPublic ? wrapper : wrapperPublic}>
-        <Box sx={!isPublic ? searchBlock : publicSearchBlock}>
-          {!isPublic && (
+      <Box sx={isPublic || saved ? wrapperPublic : wrapper}>
+        <Box sx={[isPublic || saved ? publicSearchBlock : searchBlock]}>
+          {!isPublic && !saved && (
             <IconButton
               aria-label="Menu"
               color="secondary"
@@ -383,7 +278,7 @@ const Control = ({
             </IconButton>
           )}
 
-          {!isPublic && (
+          {!isPublic && !saved && (
             <Menu
               open={!!menuAnchorEl}
               anchorEl={menuAnchorEl}
@@ -415,6 +310,17 @@ const Control = ({
             </Menu>
           )}
 
+          {saved && !xss && (
+            <Button
+              variant="contained"
+              color="secondary"
+              sx={[buttonSx, (isPublic || saved) && xss ? publicBtnSx : {}]}
+              onClick={handleGenerateReport}
+            >
+              Generate report
+            </Button>
+          )}
+
           <TextField
             variant="outlined"
             size="small"
@@ -439,7 +345,7 @@ const Control = ({
                 <Button
                   variant="contained"
                   color="secondary"
-                  sx={[buttonSx]}
+                  sx={[buttonSx, (isPublic || saved) && xss ? publicBtnSx : {}]}
                   disabled={
                     audit?.status?.toLowerCase() === RESOLVED.toLowerCase()
                   }
@@ -448,7 +354,7 @@ const Control = ({
                 >
                   New issue
                 </Button>
-                {!isPublic && (
+                {!isPublic && !saved && (
                   <Tooltip
                     arrow
                     placement="top"
@@ -500,7 +406,7 @@ const Control = ({
           <Button
             variant="contained"
             color="secondary"
-            sx={buttonSx}
+            sx={[buttonSx]}
             disabled={audit?.status?.toLowerCase() === RESOLVED.toLowerCase()}
             onClick={handleNewIssue}
             {...addTestsLabel('new-issue-button')}
@@ -521,7 +427,7 @@ const publicBtnWrapper = theme => ({
   mb: '10px',
   justifyContent: 'center',
   gap: '15px',
-  [theme.breakpoints.down(555)]: {
+  [theme.breakpoints.down(690)]: {
     flexDirection: 'column-reverse',
   },
 });
@@ -575,8 +481,8 @@ const textFieldSx = theme => ({
 });
 
 const menuButton = theme => ({
-  width: '55px',
-  height: '55px',
+  width: '42px',
+  height: '42px',
   borderRadius: '8px',
   background: theme.palette.secondary.main,
   padding: 0,
@@ -584,14 +490,6 @@ const menuButton = theme => ({
   '&:hover': {
     filter: 'brightness(0.8)',
     background: theme.palette.secondary.main,
-  },
-  [theme.breakpoints.down('lg')]: {
-    width: '49px',
-    height: '49px',
-  },
-  [theme.breakpoints.down('md')]: {
-    width: '46px',
-    height: '46px',
   },
   [theme.breakpoints.down('sm')]: {
     width: '39px',
@@ -607,29 +505,23 @@ const buttonBoxSx = theme => ({
 });
 
 const buttonSx = theme => ({
-  padding: '15px 24px',
+  padding: '10px 24px',
   flexShrink: 0,
   fontWeight: '600!important',
-  fontSize: '20px',
+  fontSize: '16px',
   lineHeight: '25px',
   textTransform: 'none',
   borderRadius: '10px',
   mr: '20px',
   '&:last-child': { mr: 0 },
-  [theme.breakpoints.down('lg')]: {
-    padding: '12px 24px',
-  },
   [theme.breakpoints.down('md')]: {
-    padding: '10px 24px',
-    fontWeight: 500,
+    fontWeight: '500!important',
   },
   [theme.breakpoints.down('sm')]: {
     padding: '7px 24px',
-    fontSize: '16px',
   },
   [theme.breakpoints.down('xs')]: {
     padding: '7px 10px',
-    fontWeight: 400,
   },
 });
 
@@ -638,7 +530,7 @@ const publicBtnSx = theme => ({
   [theme.breakpoints.down('sm')]: {
     width: '185px',
   },
-  [theme.breakpoints.down(555)]: {
+  [theme.breakpoints.down(690)]: {
     width: '100%',
     mr: 0,
   },

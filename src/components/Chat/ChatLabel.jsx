@@ -33,10 +33,11 @@ const ChatLabel = () => {
         customer?.user_id &&
         customer?.first_name)
     ) {
-      navigate('/chat');
       localStorage.setItem('path', window.location.pathname);
+      navigate('/chat');
     } else {
-      navigate('/profile/user-info');
+      const role = user.current_role?.[0];
+      navigate(`/${role}/${user.id}`);
       dispatch(chatSetError('Fill your profile'));
     }
   };

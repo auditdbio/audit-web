@@ -9,6 +9,7 @@ import {
   CLOSE_THE_PROJECT,
   LOG_OUT,
   GET_CURRENT_PROJECT,
+  GET_PROJECTS_BY_USER_ID,
 } from '../actions/types.js';
 
 const initialState = {
@@ -20,6 +21,7 @@ const initialState = {
   message: null,
   searchTotalProjects: 0,
   currentProject: null,
+  userProjects: [],
 };
 export const projectReducer = (state = initialState, action) => {
   switch (action.type) {
@@ -29,6 +31,11 @@ export const projectReducer = (state = initialState, action) => {
         recentProject: action.payload,
         myProjects: [...state.myProjects, action.payload],
         projects: [...state.projects, action.payload],
+      };
+    case GET_PROJECTS_BY_USER_ID:
+      return {
+        ...state,
+        userProjects: action.payload,
       };
     case GET_PROJECTS:
       return {

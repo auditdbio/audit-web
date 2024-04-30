@@ -14,6 +14,7 @@ import {
   CHAT_UPDATE_TOTAL_UNREAD,
   CHAT_UPDATE_DIFFERENT_ROLE_UNREAD,
   CHAT_SET_ERROR,
+  CHAT_DELETE_MESSAGE,
 } from './types.js';
 
 export const getChatList = role => {
@@ -98,22 +99,30 @@ export const setCurrentChat = (
   };
 };
 
-export const chatSendMessage = (text, to, role, isFirst, kind = 'Text') => {
+export const chatSendMessage = (text, to, fromRole, isFirst, kind = 'Text') => {
   const token = Cookies.get('token');
+  const user = JSON.parse(localStorage.getItem('user'));
+
+  if (user.id === to.id) {
+    return {
+      type: CHAT_SET_ERROR,
+      payload: "You can't send a message to yourself",
+    };
+  }
   return dispatch => {
     let values;
 
     if (isFirst) {
       values = {
         to: { id: to.id, role: to.role },
-        role,
+        role: fromRole,
         text,
         kind,
       };
     } else {
       values = {
         chat: to.id,
-        role,
+        role: fromRole,
         text,
         kind,
       };
@@ -125,9 +134,11 @@ export const chatSendMessage = (text, to, role, isFirst, kind = 'Text') => {
       })
       .then(({ data }) => {
         if (isFirst) {
-          const payload = data.Private || data.Group;
-          dispatch({ type: CHAT_SEND_FIRST_MESSAGE, payload });
+          dispatch({ type: CHAT_SEND_FIRST_MESSAGE, payload: data.id });
         }
+      })
+      .catch(() => {
+        dispatch({ type: CHAT_SET_ERROR, payload: 'Error sending message' });
       });
   };
 };
@@ -179,6 +190,10 @@ export const receiveNewChatMessage = message => {
       }
     }
   };
+};
+
+export const deleteChatMessage = id => {
+  return { type: CHAT_DELETE_MESSAGE, payload: id };
 };
 
 export const getTotalUnreadMessages = chatList => {

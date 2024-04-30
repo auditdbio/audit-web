@@ -22,7 +22,6 @@ import ChatLabel from '../Chat/ChatLabel.jsx';
 
 const AuthorizedOptions = () => {
   const matchSm = useMediaQuery(theme.breakpoints.down('sm'));
-  const matchXs = useMediaQuery(theme.breakpoints.down('xs'));
 
   const reduxUser = useSelector(state => state.user.user);
   const auditor = useSelector(state => state.auditor.auditor);
@@ -154,7 +153,7 @@ const AuthorizedOptions = () => {
   );
 };
 
-const mobileWrapper = {
+const mobileWrapper = theme => ({
   flexGrow: 0,
   display: 'flex',
   alignItems: 'center',
@@ -166,7 +165,10 @@ const mobileWrapper = {
     height: '11px',
     width: '11px',
   },
-};
+  [theme.breakpoints.down('xxs')]: {
+    gap: '0.5rem',
+  },
+});
 
 const desktopWrapper = {
   display: 'flex',

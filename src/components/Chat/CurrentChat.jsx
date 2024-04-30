@@ -6,7 +6,7 @@ import MenuIcon from '@mui/icons-material/Menu.js';
 import { ASSET_URL } from '../../services/urls.js';
 import AttachIcon from '../icons/AttachIcon.jsx';
 import SendMessageIcon from '../icons/SendMessageIcon.jsx';
-import { AUDITOR } from '../../redux/actions/types.js';
+import { AUDITOR, CUSTOMER } from '../../redux/actions/types.js';
 import { addTestsLabel } from '../../lib/helper.js';
 import theme from '../../styles/themes.js';
 import Message from './Message.jsx';
@@ -18,6 +18,7 @@ import {
   getChatMessages,
 } from '../../redux/actions/chatActions.js';
 import AttachFileModal from './AttachFileModal.jsx';
+import Headings from '../../router/Headings.jsx';
 
 const CurrentChat = ({
   chatMessages,
@@ -163,6 +164,15 @@ const CurrentChat = ({
     localStorage.setItem('go-back', 'true');
   };
 
+  const handleCreateAuditRequest = () => {
+    localStorage.setItem('chat-path', `/chat/${currentChat?.chatId}`);
+    if (user.current_role === AUDITOR) {
+      navigate(`/customer-projects/${userLinkData.id}`);
+    } else {
+      navigate(`/my-projects/${userLinkData.id}`);
+    }
+  };
+
   return (
     <>
       <AttachFileModal
@@ -171,6 +181,7 @@ const CurrentChat = ({
         currentChat={currentChat}
         user={user}
       />
+      <Headings title={`${currentChat?.name || 'Chat'} | Chat`} />
 
       <Box sx={wrapper}>
         <Box sx={currentChatHeader}>
@@ -186,7 +197,7 @@ const CurrentChat = ({
           </IconButton>
 
           <RouterLink
-            to={`/user/${userLinkData.id}/${userLinkData.role}`}
+            to={`/${userLinkData.role?.toLowerCase()[0]}/${userLinkData.id}`}
             onClick={showUserProfile}
           >
             <Box sx={avatarWrapper(currentChat?.role)}>
@@ -204,7 +215,7 @@ const CurrentChat = ({
           <Box sx={userInfo}>
             <Link
               component={RouterLink}
-              to={`/user/${userLinkData.id}/${userLinkData.role}`}
+              to={`/${userLinkData.role?.toLowerCase()[0]}/${userLinkData.id}`}
               sx={userNameSx}
               onClick={showUserProfile}
               {...addTestsLabel('profile-link')}
@@ -266,24 +277,34 @@ const CurrentChat = ({
             </Box>
           )}
         </Box>
-
-        <Box sx={sendBox}>
-          <CustomTextarea
-            maxRows={1}
-            onChange={handleMessageInput}
-            onKeyDown={messageHandleKeyDown}
-            value={newMessage}
-            placeholder="Type here..."
-            {...addTestsLabel('message-input')}
-          />
+        <Box sx={btnWrapper}>
+          <Box sx={sendBox}>
+            <CustomTextarea
+              maxRows={1}
+              onChange={handleMessageInput}
+              onKeyDown={messageHandleKeyDown}
+              value={newMessage}
+              placeholder="Type here..."
+              {...addTestsLabel('message-input')}
+            />
+            <Button
+              color={user.current_role === AUDITOR ? 'secondary' : 'primary'}
+              variant="contained"
+              sx={sendButton}
+              onClick={handleSend}
+              {...addTestsLabel('send-button')}
+            >
+              <SendMessageIcon />
+            </Button>
+          </Box>
           <Button
-            color={user.current_role === AUDITOR ? 'secondary' : 'primary'}
-            variant="contained"
-            sx={sendButton}
-            onClick={handleSend}
-            {...addTestsLabel('send-button')}
+            color={user.current_role === CUSTOMER ? 'secondary' : 'primary'}
+            variant={'contained'}
+            sx={requestBtn}
+            {...addTestsLabel('request-button')}
+            onClick={handleCreateAuditRequest}
           >
-            <SendMessageIcon />
+            Audit request
           </Button>
         </Box>
       </Box>
@@ -295,12 +316,30 @@ export default CurrentChat;
 
 const yearNow = new Date().getFullYear();
 
+const requestBtn = theme => ({
+  height: '55px',
+  padding: '10px!important',
+  textTransform: 'unset',
+  borderRadius: 0,
+  [theme.breakpoints.down(500)]: {
+    height: '48px',
+  },
+});
+
 const wrapper = theme => ({
   width: '70%',
   display: 'flex',
   flexDirection: 'column',
   [theme.breakpoints.down('sm')]: {
     width: '100%',
+  },
+});
+
+const btnWrapper = theme => ({
+  display: 'flex',
+  gap: '5px',
+  [theme.breakpoints.down(500)]: {
+    flexDirection: 'column',
   },
 });
 
@@ -351,6 +390,7 @@ const avatarWrapper = role => ({
     width: '40px',
     height: '40px',
     mr: '15px',
+    borderWidth: '3px',
   },
   [theme.breakpoints.down('xxs')]: {
     width: '30px',
@@ -484,18 +524,22 @@ const newMessagesSx = {
 const sendBox = {
   display: 'flex',
   height: '55px',
+  width: '100%',
   '& ::-webkit-scrollbar': {
     width: '8px !important',
   },
 };
 
 const sendButton = theme => ({
-  padding: '10px 50px',
+  padding: '10px 20px',
   borderRadius: 0,
   [theme.breakpoints.down('sm')]: {
-    padding: '10px 30px',
+    padding: '10px 10px',
+  },
+  [theme.breakpoints.down(500)]: {
+    height: '53px',
   },
   [theme.breakpoints.down('xs')]: {
-    padding: '10px 20px',
+    padding: '10px 10px',
   },
 });

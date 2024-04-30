@@ -1,10 +1,12 @@
 import Cookies from 'js-cookie';
 import axios from 'axios';
 import {
+  AUDITOR_SET_ERROR,
   DELETE_BADGE,
   GET_AUDITOR,
   GET_AUDITORS,
   GET_CURRENT_AUDITOR,
+  GET_PUBLIC_PROFILE,
   MERGE_ACCOUNT,
   SIGN_IN_ERROR,
   UPDATE_AUDITOR,
@@ -15,15 +17,23 @@ import { isAuth } from '../../lib/helper.js';
 
 const API_URL = import.meta.env.VITE_API_BASE_URL;
 
-export const getAuditor = values => {
+export const getAuditor = (redirect = false) => {
   const token = Cookies.get('token');
-  return dispatch => {
+  return (dispatch, getState) => {
     axios
       .get(`${API_URL}/my_auditor`, {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then(({ data }) => {
         dispatch({ type: GET_AUDITOR, payload: data });
+
+        if (redirect) {
+          const { user } = getState();
+          history.push(
+            { pathname: `/a/${data.link_id || user.user?.id}` },
+            { some: true },
+          );
+        }
       })
       .catch(({ response }) => {
         console.log(response, 'res');
@@ -49,6 +59,28 @@ export const getCurrentAuditor = id => {
   };
 };
 
+export const getAuditorByLinkId = (linkId, notFoundRedirect = true) => {
+  const token = Cookies.get('token');
+  return dispatch => {
+    axios
+      .get(`${API_URL}/auditor_by_link_id/${linkId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .then(({ data }) => {
+        dispatch({ type: GET_CURRENT_AUDITOR, payload: data });
+        axios.get(`${API_URL}/user/${data.user_id}`).then(({ data: user }) => {
+          dispatch({ type: GET_PUBLIC_PROFILE, payload: user });
+        });
+      })
+      .catch(({ response }) => {
+        if (notFoundRedirect) {
+          console.error(response?.data);
+          history.push('/not-found');
+        }
+      });
+  };
+};
+
 export const createAuditor = values => {
   const token = Cookies.get('token');
   return dispatch => {
@@ -57,16 +89,22 @@ export const createAuditor = values => {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then(({ data }) => {
-        dispatch({ type: UPDATE_AUDITOR, payload: data });
-        history.push(
-          { pathname: `/profile/user-info` },
-          {
-            some: true,
+        dispatch({
+          type: UPDATE_AUDITOR,
+          payload: {
+            auditor: data,
+            message: 'Success! Your auditor profile has been created',
           },
-        );
+        });
+        const link_id = data.link_id || data.user_id;
+        history.push({ pathname: `/a/${link_id}` }, { some: true });
       })
       .catch(({ response }) => {
-        // dispatch({type: SIGN_IN_ERROR})
+        console.error(response);
+        dispatch({
+          type: AUDITOR_SET_ERROR,
+          payload: response?.data || 'Error creating auditor profile',
+        });
       });
   };
 };
@@ -79,35 +117,51 @@ export const updateAuditor = (values, redirect = true) => {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then(({ data }) => {
-        dispatch({ type: UPDATE_AUDITOR, payload: data });
+        dispatch({
+          type: UPDATE_AUDITOR,
+          payload: {
+            auditor: data,
+            message: 'Success! Your auditor profile has been changed',
+          },
+        });
         if (redirect) {
-          history.push({ pathname: `/profile/user-info` }, { some: true });
+          const link_id = data.link_id || data.user_id;
+          history.push({ pathname: `/a/${link_id}` }, { some: true });
         }
       })
       .catch(({ response }) => {
-        // dispatch({type: SIGN_IN_ERROR})
+        console.error(response);
+        dispatch({
+          type: AUDITOR_SET_ERROR,
+          payload: response?.data || 'Auditor profile update error',
+        });
       });
   };
 };
 
-export const getAuditors = (values = '', amount) => {
+export const getAuditors = (values = '', amount = 0) => {
   return dispatch => {
     const token = Cookies.get('token');
     axios
       .get(
-        `${API_URL}/search?query=${values}&sort_by=price&tags=&sort_order=1&page=1&per_page=${
-          amount ? amount : 0
-        }&kind=auditor badge`,
-        isAuth()
-          ? {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-            }
-          : {},
+        `${API_URL}/search?query=${values}&sort_by=price&tags=&sort_order=1&page=1&per_page=${amount}&kind=auditor badge`,
+        isAuth() ? { headers: { Authorization: `Bearer ${token}` } } : {},
       )
       .then(({ data }) => {
         dispatch({ type: GET_AUDITORS, payload: data });
+      })
+      .catch(({ response }) => {
+        console.log(response, 'res');
+      });
+  };
+};
+
+export const getAuditorById = id => {
+  return dispatch => {
+    axios
+      .get(`${API_URL}/auditor/${id}`)
+      .then(({ data }) => {
+        dispatch({ type: GET_CURRENT_AUDITOR, payload: data });
       })
       .catch(({ response }) => {
         console.log(response, 'res');
@@ -141,12 +195,7 @@ export const deleteBadgeProfile = id => {
       .delete(`${API_URL}/badge/delete/${id}`)
       .then(({ data }) => {
         dispatch({ type: DELETE_BADGE, payload: data });
-        history.push(
-          { pathname: `/` },
-          {
-            some: true,
-          },
-        );
+        history.push({ pathname: `/` }, { some: true });
       })
       .catch(({ response }) => {
         console.error(response, 'res');
@@ -160,18 +209,11 @@ export const mergeCurrentAccount = (auditor, secret) => {
   return dispatch => {
     axios
       .patch(`${API_URL}/badge/merge/${secret}`, auditor, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        headers: { Authorization: `Bearer ${token}` },
       })
       .then(({ data }) => {
         dispatch({ type: MERGE_ACCOUNT, payload: data.user });
-        history.push(
-          { pathname: `/profile/user-info` },
-          {
-            some: true,
-          },
-        );
+        history.push({ pathname: `/profile/user-info` }, { some: true });
       })
       .catch(({ response }) => {
         console.error(response, 'res');
@@ -186,18 +228,11 @@ export const mergeAccount = (values, secret) => {
       .then(({ data }) => {
         axios
           .patch(`${API_URL}/badge/merge/${secret}`, data.user, {
-            headers: {
-              Authorization: `Bearer ${data.token}`,
-            },
+            headers: { Authorization: `Bearer ${data.token}` },
           })
           .then(({ data }) => {
             dispatch({ type: MERGE_ACCOUNT, payload: data });
-            history.push(
-              { pathname: `/profile/user-info` },
-              {
-                some: true,
-              },
-            );
+            history.push({ pathname: `/profile/user-info` }, { some: true });
           })
           .catch(({ response }) => {
             console.error(response, 'res');
