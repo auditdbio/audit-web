@@ -36,7 +36,7 @@ const IssueListItem = ({ issue, auditId, user, isPublic, saved }) => {
         : {};
     }
   };
-  //
+
   return (
     <Link
       sx={[
