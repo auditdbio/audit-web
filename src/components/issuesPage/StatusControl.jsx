@@ -82,13 +82,14 @@ const StatusControl = ({ status, setFieldValue }) => {
             color={user.current_role !== CUSTOMER ? 'secondary' : 'primary'}
             sx={[
               status !== 'Draft'
-                ? { textTransform: 'none', mb: '10px' }
-                : { textTransform: 'none', mb: '10px' },
+                ? { textTransform: 'none' }
+                : { textTransform: 'none' },
+              statusBtn,
             ]}
             onClick={() => handleChangeStatus(action.action)}
             {...addTestsLabel('change-status-button')}
           >
-            {action.text}
+            {action.text === 'Not Fixed' ? 'Will not fix' : action.text}
           </Button>
         );
       })}
@@ -111,7 +112,17 @@ const StatusControl = ({ status, setFieldValue }) => {
 
 export default StatusControl;
 
+const statusBtn = theme => ({
+  width: '100px',
+  padding: '6px 0!important',
+  fontSize: '16px',
+  [theme.breakpoints.down('md')]: {
+    fontSize: '14px!important',
+  },
+});
+
 const wrapper = {
   display: 'flex',
-  flexDirection: 'column',
+  // flexDirection: 'column',
+  gap: '10px',
 };

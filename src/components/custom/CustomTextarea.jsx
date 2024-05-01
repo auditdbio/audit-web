@@ -1,6 +1,7 @@
 import React from 'react';
 import { TextareaAutosize } from '@mui/base/TextareaAutosize';
 import { styled } from '@mui/system';
+import theme from '../../styles/themes.js';
 
 const CustomTextarea = styled(TextareaAutosize)({
   width: '100%',
@@ -16,6 +17,9 @@ const CustomTextarea = styled(TextareaAutosize)({
   '&:focus': {
     boxShadow: 'none',
     outline: 'none',
+  },
+  [theme.breakpoints.down(500)]: {
+    borderBottom: '2px solid #e5e5e5',
   },
 });
 

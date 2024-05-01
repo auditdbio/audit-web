@@ -13,6 +13,7 @@ import {
   GET_MY_PRIVATE_GITHUB_ORGANIZATION,
   GET_REPO_OWNER,
   GET_SHA,
+  GET_TAGS,
   GET_TOTAL_COMMITS,
   NEED_TO_AUTH_GITHUB,
 } from './types.js';
@@ -50,6 +51,18 @@ export const getBranches = repoOwner => {
     } catch (error) {
       console.error('Error fetching branches:', error);
     }
+  };
+};
+
+export const getTags = repoOwner => {
+  return dispatch => {
+    axios(`${API_URL}/github/repos/${repoOwner}/tags`, {
+      headers: {
+        Authorization: `Bearer ${Cookies.get('token')}`,
+      },
+    }).then(({ data }) => {
+      dispatch({ type: GET_TAGS, payload: data });
+    });
   };
 };
 

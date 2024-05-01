@@ -32,7 +32,10 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 import * as Yup from 'yup';
 import { useLocation, useSearchParams } from 'react-router-dom';
-import { getAuditsRequest } from '../redux/actions/auditAction.js';
+import {
+  clearMessage,
+  getAuditsRequest,
+} from '../redux/actions/auditAction.js';
 import { AuditRequestsArray } from './custom/AuditRequestsArray.jsx';
 import MarkdownEditor from './markdown/Markdown-editor.jsx';
 import SalarySlider from './forms/salary-slider/salary-slider.jsx';
@@ -89,6 +92,7 @@ const CreateProjectCard = ({ projectInfo }) => {
   const [isClosed, setIsClosed] = useState(
     projectInfo?.status === DONE || false,
   );
+  const { successMessage, errorMessage } = useSelector(s => s.audits);
   const [closeConfirmIsOpen, setCloseConfirmIsOpen] = useState(false);
   const [state, setState] = useState(false);
   const [isDirty, setIsDirty] = useState(false);
@@ -306,6 +310,13 @@ const CreateProjectCard = ({ projectInfo }) => {
               handleSubmit={handleSubmit}
               setState={setState}
               setError={setError}
+            />
+            <CustomSnackbar
+              autoHideDuration={5000}
+              open={!!errorMessage || !!successMessage}
+              severity={errorMessage ? 'error' : 'success'}
+              text={errorMessage || successMessage}
+              onClose={() => dispatch(clearMessage())}
             />
 
             {/*<CloseProjectModal*/}

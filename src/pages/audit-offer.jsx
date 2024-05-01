@@ -169,7 +169,14 @@ const AuditOffer = () => {
                   >
                     <Button
                       sx={backButtonSx}
-                      onClick={() => navigate('/profile/audits')}
+                      onClick={() => {
+                        if (localStorage.getItem('prevPath')) {
+                          navigate(localStorage.getItem('prevPath'));
+                          localStorage.removeItem('prevPath');
+                        } else {
+                          navigate('/profile/audits');
+                        }
+                      }}
                       {...addTestsLabel('go-back-button')}
                     >
                       <ArrowBackIcon color="secondary" />

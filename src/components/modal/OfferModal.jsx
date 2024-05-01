@@ -9,7 +9,10 @@ import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { addTestsLabel } from '../../lib/helper.js';
-import { createRequest } from '../../redux/actions/auditAction.js';
+import {
+  createRequest,
+  createRequestModal,
+} from '../../redux/actions/auditAction.js';
 import SalarySlider from '../forms/salary-slider/salary-slider.jsx';
 import theme from '../../styles/themes.js';
 
@@ -21,6 +24,7 @@ const OfferModal = ({
   setError,
   onClose,
   handleClose,
+  stayHere,
 }) => {
   const dispatch = useDispatch();
 
@@ -68,7 +72,12 @@ const OfferModal = ({
             },
           };
           if (newValue.auditor_id !== newValue.customer_id) {
-            dispatch(createRequest(newValue, redirect));
+            if (stayHere) {
+              dispatch(createRequestModal(newValue));
+              handleClose();
+            } else {
+              dispatch(createRequest(newValue, redirect, stayHere));
+            }
           } else {
             setError('You cannot create an audit request for your own project');
           }

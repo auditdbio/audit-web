@@ -52,6 +52,7 @@ import ConnectAccount from '../pages/Connect-account.jsx';
 import DisclaimerPage from '../pages/DisclaimerPage.jsx';
 import Headings from '../router/Headings.jsx';
 import { AUDITOR, CUSTOMER } from '../redux/actions/types.js';
+import UserProjects from '../pages/UserProjects.jsx';
 
 const AppRoutes = () => {
   const { token } = useSelector(s => s.user);
@@ -187,6 +188,14 @@ const AppRoutes = () => {
           element={
             <PrivateRoute auth={{ isAuthenticated: isAuth() }}>
               <MyProjects />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/customer-projects/:id"
+          element={
+            <PrivateRoute auth={{ isAuthenticated: isAuth() }}>
+              <UserProjects />
             </PrivateRoute>
           }
         />

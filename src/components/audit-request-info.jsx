@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack.js';
 import TelegramIcon from '@mui/icons-material/Telegram';
 import EmailIcon from '@mui/icons-material/Email';
+import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import {
   Box,
   Button,
@@ -36,6 +37,7 @@ const AuditRequestInfo = ({
   redirect,
   isModal,
   setError,
+  stayHere,
 }) => {
   const navigate = useNavigate();
   const matchXs = useMediaQuery(theme.breakpoints.down('xs'));
@@ -115,22 +117,25 @@ const AuditRequestInfo = ({
 
   const handleDecline = () => {
     setConfirmDeclineOpen(false);
-    dispatch(deleteAuditRequest(project.id));
+    dispatch(deleteAuditRequest(project.id, stayHere));
+    onClose();
   };
 
   return (
     <CustomCard sx={wrapper} className="audit-request-wrapper">
       <Box sx={{ display: 'flex', width: '100%', position: 'relative' }}>
-        {!isModal && (
-          <Button
-            sx={backButtonSx}
-            className="audit-request-back-btn"
-            onClick={handleBack}
-            {...addTestsLabel('go-back-button')}
-          >
-            <ArrowBackIcon color="secondary" />
-          </Button>
-        )}
+        <Button
+          sx={backButtonSx}
+          className={'audit-request-back-btn'}
+          onClick={handleBack}
+          {...addTestsLabel('go-back-button')}
+        >
+          {onClose ? (
+            <CloseRoundedIcon color={'secondary'} />
+          ) : (
+            <ArrowBackIcon color={'secondary'} />
+          )}
+        </Button>
         <Typography
           variant="h3"
           sx={{
@@ -460,6 +465,7 @@ const AuditRequestInfo = ({
           redirect={redirect}
           setError={setError}
           onClose={onClose}
+          stayHere={stayHere}
           handleClose={handleClose}
         />
       </Modal>
@@ -563,11 +569,11 @@ const linkWrapper = theme => ({
 
 const backButtonSx = theme => ({
   position: 'absolute',
-  left: '-58px',
+  left: '-28px',
   top: '-20px',
   [theme.breakpoints.down('sm')]: {
     left: '-25px',
-    top: '-30px',
+    // top: '-30px',
   },
 });
 
