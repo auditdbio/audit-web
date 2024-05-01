@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useEffect } from 'react';
 import {
   Avatar,
   Box,
@@ -6,26 +6,43 @@ import {
   Typography,
   Link,
   useMediaQuery,
+  Tooltip,
 } from '@mui/material';
 import GitHubIcon from '@mui/icons-material/GitHub.js';
-import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import theme from '../styles/themes.js';
 import { useNavigate } from 'react-router-dom/dist';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import Loader from './Loader.jsx';
-import { AUDITOR } from '../redux/actions/types.js';
+import { AUDITOR, CUSTOMER } from '../redux/actions/types.js';
 import TagsList from './tagsList';
 import { ASSET_URL } from '../services/urls.js';
 import MobileTagsList from './MobileTagsList/index.jsx';
-import { addTestsLabel } from '../lib/helper.js';
+import { addTestsLabel, capitalize } from '../lib/helper.js';
 import ShareProfileButton from './custom/ShareProfileButton.jsx';
+import IdentitySetting from './IdentitySetting/IdentitySetting.jsx';
+import LinkedinIcon from './icons/LinkedinIcon.jsx';
+import XTwitterLogo from './icons/XTwitter-logo.jsx';
+import { clearUserMessages } from '../redux/actions/userAction.js';
+import CustomSnackbar from './custom/CustomSnackbar.jsx';
+import Headings from '../router/Headings.jsx';
 
-const UserInfo = ({ role }) => {
+const UserInfo = ({ role, linkId }) => {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
-  const customer = useSelector(s => s.customer.customer);
-  const auditor = useSelector(s => s.auditor.auditor);
-  const { user } = useSelector(s => s.user);
   const matchXs = useMediaQuery(theme.breakpoints.down('xs'));
+  const matchXxs = useMediaQuery(theme.breakpoints.down(590));
+
+  const {
+    customer,
+    error: customerError,
+    success: customerSuccess,
+  } = useSelector(s => s.customer);
+  const {
+    auditor,
+    error: auditorError,
+    success: auditorSuccess,
+  } = useSelector(s => s.auditor);
+  const { user, error } = useSelector(s => s.user);
 
   const handleEdit = () => {
     navigate('/edit-profile');
@@ -39,11 +56,45 @@ const UserInfo = ({ role }) => {
     }
   }, [role, customer, auditor]);
 
+  useEffect(() => {
+    if (linkId && data?.link_id && data?.link_id !== linkId) {
+      navigate(`/${role[0]}/${data.link_id}`);
+    }
+  }, [linkId, data]);
+
   if (!data) {
     return <Loader role={role} />;
   } else {
     return (
       <Box sx={wrapper}>
+        <Headings
+          title={user?.name || 'Profile'}
+          image={data.avatar}
+          description={`${data.first_name} ${data.last_name} | ${data.about}`}
+        />
+
+        <CustomSnackbar
+          autoHideDuration={5000}
+          open={
+            !!error ||
+            !!customerError ||
+            !!auditorError ||
+            !!customerSuccess ||
+            !!auditorSuccess
+          }
+          text={
+            error ||
+            customerError ||
+            auditorError ||
+            customerSuccess ||
+            auditorSuccess
+          }
+          severity={
+            error || customerError || auditorError ? 'error' : 'success'
+          }
+          onClose={() => dispatch(clearUserMessages())}
+        />
+
         <Box sx={contentWrapper}>
           <Box
             sx={{
@@ -113,6 +164,60 @@ const UserInfo = ({ role }) => {
           </Box>
         </Box>
         {matchXs && <MobileTagsList data={data.tags} />}
+        <Box sx={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
+          {user.linked_accounts?.map(account => {
+            if (account.name.toLowerCase() === 'linkedin') {
+              return (
+                <Box
+                  key={account.id}
+                  sx={{ display: 'flex', alignItems: 'center', gap: '7px' }}
+                >
+                  <Tooltip title={account.url} placement="top">
+                    <Link href={account.url} target={'_blank'}>
+                      <LinkedinIcon />
+                    </Link>
+                  </Tooltip>
+                </Box>
+              );
+            } else if (account.name.toLowerCase() === 'github') {
+              return (
+                <Box
+                  key={account.id}
+                  sx={{ display: 'flex', alignItems: 'center', gap: '7px' }}
+                >
+                  <Tooltip title={account.url} placement="top">
+                    <Link
+                      href={account.url}
+                      sx={{ color: 'initial' }}
+                      target={'_blank'}
+                    >
+                      <GitHubIcon
+                        sx={{ width: '50px', height: '50px', padding: '4px' }}
+                      />
+                    </Link>
+                  </Tooltip>
+                </Box>
+              );
+            } else {
+              return (
+                <Box
+                  key={account.id}
+                  sx={{ display: 'flex', alignItems: 'center', gap: '7px' }}
+                >
+                  <Tooltip title={account.url} placement="top">
+                    <Link
+                      href={account.url}
+                      sx={{ color: 'initial' }}
+                      target={'_blank'}
+                    >
+                      <XTwitterLogo width={'38px'} height={'38px'} />
+                    </Link>
+                  </Tooltip>
+                </Box>
+              );
+            }
+          })}
+        </Box>
         <Box
           sx={{
             display: 'flex',
@@ -122,18 +227,33 @@ const UserInfo = ({ role }) => {
             gap: '20px',
           }}
         >
-          <ShareProfileButton
-            role={role}
-            userId={role === AUDITOR ? auditor.user_id : customer.user_id}
-          />
-          <Button
-            sx={[buttonSx, role === 'auditor' ? submitAuditor : {}]}
-            variant={'contained'}
-            onClick={handleEdit}
-            {...addTestsLabel('user_edit-button')}
+          {((role === AUDITOR && auditor.user_id) ||
+            (role === CUSTOMER && customer.user_id)) && (
+            <ShareProfileButton
+              role={role}
+              userId={
+                role === AUDITOR
+                  ? auditor.link_id || auditor.user_id
+                  : customer.link_id || customer.user_id
+              }
+            />
+          )}
+          <Box
+            sx={[
+              { display: 'flex', gap: '15px' },
+              matchXxs ? { flexDirection: 'column' } : {},
+            ]}
           >
-            Edit
-          </Button>
+            <Button
+              sx={[buttonSx, role === 'auditor' ? submitAuditor : {}]}
+              variant={'contained'}
+              onClick={handleEdit}
+              {...addTestsLabel('user_edit-button')}
+            >
+              Edit
+            </Button>
+            <IdentitySetting />
+          </Box>
         </Box>
       </Box>
     );
@@ -167,15 +287,9 @@ const wrapper = theme => ({
   minHeight: '520px',
   display: 'flex',
   flexDirection: 'column',
-  padding: '100px 100px 60px',
+  padding: '60px 40px 40px',
   gap: '30px',
   justifyContent: 'space-between',
-  [theme.breakpoints.down('lg')]: {
-    padding: '60px 40px 40px',
-  },
-  [theme.breakpoints.down('md')]: {
-    gap: '50px',
-  },
   [theme.breakpoints.down('sm')]: {
     gap: '20px',
     padding: '20px',
@@ -249,11 +363,10 @@ const buttonSx = theme => ({
   textTransform: 'capitalize',
   fontWeight: 600,
   fontSize: '18px',
-  padding: '9px 50px',
+  // padding: '9px 50px',
   width: '214px',
   borderRadius: '10px',
   [theme.breakpoints.down('xs')]: {
-    width: '88px',
     padding: '9px 10px',
   },
 });
@@ -267,6 +380,7 @@ const submitAuditor = theme => ({
 
 const infoWrapper = theme => ({
   display: 'flex',
+  alignItems: 'center',
   fontWeight: 500,
   color: '#434242',
   '& p': {

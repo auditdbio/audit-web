@@ -27,6 +27,8 @@ import {
 import * as Yup from 'yup';
 import CustomSnackbar from './custom/CustomSnackbar.jsx';
 import ShareProfileButton from './custom/ShareProfileButton.jsx';
+import { setCurrentChat } from '../redux/actions/chatActions.js';
+import ChatIcon from './icons/ChatIcon.jsx';
 
 export default function AuditorModal({
   open,
@@ -40,7 +42,8 @@ export default function AuditorModal({
 }) {
   const navigate = useNavigate();
   const customerReducer = useSelector(state => state.customer.customer);
-  const user = useSelector(s => s.user.user);
+  const { user } = useSelector(s => s.user);
+  const { chatList } = useSelector(s => s.chat);
   const [mode, setMode] = useState('info');
   const [message, setMessage] = useState('');
   const myProjects = useSelector(state => state.project.myProjects);
@@ -55,7 +58,7 @@ export default function AuditorModal({
       !customerReducer?.first_name &&
       handleError
     ) {
-      dispatch(changeRolePublicCustomer(CUSTOMER, user.id, customerReducer));
+      dispatch(changeRolePublicCustomer(CUSTOMER, user.id));
       handleError();
     } else if (
       user.current_role !== CUSTOMER &&
@@ -78,6 +81,32 @@ export default function AuditorModal({
     }
   };
 
+  const handleSendMessage = () => {
+    window.scrollTo(0, 0);
+
+    const existingChat = chatList.find(chat =>
+      chat.members?.find(
+        member =>
+          member.id === auditor?.user_id &&
+          member.role?.toLowerCase() === AUDITOR,
+      ),
+    );
+    const chatId = existingChat ? existingChat.id : auditor?.user_id;
+    const members = [auditor?.user_id, user.id];
+
+    dispatch(
+      setCurrentChat(chatId, {
+        name: auditor.first_name,
+        avatar: auditor.avatar,
+        role: AUDITOR,
+        isNew: !existingChat,
+        members,
+      }),
+    );
+    localStorage.setItem('path', window.location.pathname);
+    navigate(`/chat/${existingChat ? existingChat.id : auditor?.user_id}`);
+  };
+
   useEffect(() => {
     if (open && !isForm) {
       setMode('info');
@@ -90,7 +119,7 @@ export default function AuditorModal({
 
   return (
     <Dialog open={open} onClose={handleClose}>
-      <Box className={'auditor-modal'}>
+      <Box className="auditor-modal">
         {mode === 'info' && (
           <DialogContent sx={modalWindow}>
             <CustomSnackbar
@@ -109,7 +138,8 @@ export default function AuditorModal({
                 />
               </Box>
               <ShareProfileButton
-                userId={auditor.user_id}
+                userId={auditor.link_id || auditor.user_id}
+                sx={{ fontSize: '12px' }}
                 isModal
                 role={AUDITOR}
                 isPublic
@@ -166,7 +196,7 @@ export default function AuditorModal({
                             : 'Hidden'
                         }
                         arrow
-                        placement={'top'}
+                        placement="top"
                       >
                         <Typography noWrap={true}>
                           {auditor?.contacts?.public_contacts
@@ -176,6 +206,7 @@ export default function AuditorModal({
                       </Tooltip>
                     </Box>
                   </Box>
+
                   {auditor?.about && (
                     <Box sx={[infoWrapper, aboutSx]}>
                       <Typography>
@@ -185,31 +216,45 @@ export default function AuditorModal({
                   )}
                   <TagsList data={auditor.tags} fullView={true} />
                 </Box>
-                <Box sx={infoInnerStyle} />
               </Box>
             </Box>
+
             <Box sx={fieldButtonContainer}>
-              <Button
-                variant={budge ? 'outlined' : 'contained'}
-                color={'secondary'}
-                sx={findButton}
-                onClick={handleClose}
-                {...addTestsLabel('auditor-modal_back-button')}
-              >
-                Back
-              </Button>
-              <Button
-                variant={budge ? 'outlined' : 'contained'}
-                color={'primary'}
-                sx={findButton}
-                onClick={handleInvite}
-                {...addTestsLabel('auditor-modal_invite-button')}
-              >
-                Invite to project
-              </Button>
+              <Box sx={{ mb: '10px', display: 'flex' }}>
+                <Button
+                  variant={budge ? 'outlined' : 'contained'}
+                  color="secondary"
+                  sx={findButton}
+                  onClick={handleClose}
+                  {...addTestsLabel('auditor-modal_back-button')}
+                >
+                  Back
+                </Button>
+                <Button
+                  variant={budge ? 'outlined' : 'contained'}
+                  color="primary"
+                  sx={findButton}
+                  onClick={handleInvite}
+                  {...addTestsLabel('auditor-modal_invite-button')}
+                >
+                  Invite to project
+                </Button>
+                {!budge && (
+                  <Button
+                    variant="text"
+                    // sx={[findButton, messageButton]}
+                    onClick={handleSendMessage}
+                    disabled={auditor?.user_id === user.id}
+                    {...addTestsLabel('message-button')}
+                  >
+                    <ChatIcon />
+                  </Button>
+                )}
+              </Box>
             </Box>
           </DialogContent>
         )}
+
         {mode === 'invite' && (
           <Formik
             validator={() => ({})}
@@ -372,11 +417,11 @@ const modalWindow = theme => ({
   overflow: 'unset',
   width: '600px',
   display: 'flex',
-  gap: '50px',
+  gap: '30px',
   flexDirection: 'column',
   justifyContent: 'center',
   alignItems: 'center',
-  padding: '45px',
+  padding: '30px',
   [theme.breakpoints.down('sm')]: {
     padding: '25px',
     height: '100%',
@@ -389,33 +434,33 @@ const modalWindow = theme => ({
 });
 
 const findButton = theme => ({
-  padding: '19px 0',
-  fontSize: '18px',
+  padding: '10px 0',
+  fontSize: '16px',
   textTransform: 'unset',
   fontWeight: 600,
-  margin: '0 12px',
-  width: '180px',
+  mr: '20px',
+  width: '210px',
   borderRadius: '10px',
+  ':last-child': { mr: 0 },
   [theme.breakpoints.down('md')]: {
-    width: '210px',
     padding: '11px 0',
   },
   [theme.breakpoints.down('sm')]: {
     width: '170px',
   },
   [theme.breakpoints.down('xs')]: {
-    width: '134px',
+    width: '110px',
     height: '50px',
     fontSize: '12px',
-    margin: '0 6px',
+    mr: '6px',
   },
 });
 
-const infoInnerStyle = theme => ({
+const infoInnerStyle = {
   display: 'flex',
   flexDirection: 'column',
   gap: '16px',
-});
+};
 
 const infoStyle = theme => ({
   display: 'flex',
@@ -432,8 +477,8 @@ const infoStyle = theme => ({
 });
 
 const avatarStyle = theme => ({
-  width: '150px',
-  height: '150px',
+  width: '120px',
+  height: '120px',
   [theme.breakpoints.down('xs')]: {
     width: '100px',
     height: '100px',
@@ -443,18 +488,16 @@ const avatarStyle = theme => ({
 const contentWrapper = theme => ({
   display: 'flex',
   flexDirection: 'column',
-  gap: '50px',
-  [theme.breakpoints.down('md')]: {
-    gap: '50px',
-  },
+  gap: '30px',
   [theme.breakpoints.down('sm')]: {
     flexDirection: 'column',
-    gap: '40px',
+    gap: '20px',
   },
 });
 
 const infoWrapper = theme => ({
   display: 'flex',
+  alignItems: 'center',
   fontWeight: 500,
   color: '#434242',
   '& p': {
@@ -465,7 +508,7 @@ const infoWrapper = theme => ({
     marginRight: '20px',
     color: '#B2B3B3',
   },
-  fontSize: '15px',
+  fontSize: '14px',
   [theme.breakpoints.down('md')]: {
     '& span': {
       width: '90px',
@@ -506,7 +549,6 @@ const backButton = {
     md: '150px',
     lg: '230px',
   },
-  // padding: "12px 63px",
   height: '45px',
   textTransform: 'none',
   ':hover': {
@@ -515,15 +557,17 @@ const backButton = {
   [theme.breakpoints.down('sm')]: {
     height: '30px',
     fontSize: '10px',
-    // padding: "6px 31px",
   },
 };
 
 const fieldButtonContainer = theme => ({
   display: 'flex',
-  gap: '10px',
+  flexDirection: 'column',
+  mb: '10px',
   [theme.breakpoints.down('xs')]: {
-    gap: '5px',
+    '& svg': {
+      width: '50px',
+    },
   },
 });
 
@@ -558,7 +602,6 @@ const searchField = {
     padding: '0px',
     height: '45px',
     borderRadius: '4px',
-    // border: "1px solid #434242",
     paddingLeft: '8px',
     fontSize: '14px !important',
     width: '465px',

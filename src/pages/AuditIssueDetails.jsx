@@ -13,8 +13,9 @@ import Loader from '../components/Loader.jsx';
 import { setCurrentAuditPartner } from '../redux/actions/auditAction.js';
 import { getIssues } from '../redux/actions/issueAction.js';
 import PublicIssueDetailsForm from './PublicIssueDetailForm.jsx';
+import Headings from '../router/Headings.jsx';
 
-const AuditIssueDetails = ({ isPublic }) => {
+const AuditIssueDetails = ({ isPublic, saved }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { auditId, issueId } = useParams();
@@ -25,7 +26,7 @@ const AuditIssueDetails = ({ isPublic }) => {
   );
 
   const issue = useMemo(() => {
-    if (!isPublic) {
+    if (!isPublic || saved) {
       return issues?.find(issue => issue.id === +issueId);
     } else {
       const publicIssues = JSON.parse(
@@ -40,7 +41,7 @@ const AuditIssueDetails = ({ isPublic }) => {
   }, [audit?.id]);
 
   useEffect(() => {
-    if (issuesAuditId !== auditId && !isPublic) {
+    if (issuesAuditId !== auditId && (!isPublic || saved)) {
       dispatch(getIssues(auditId));
     }
   }, []);
@@ -55,13 +56,25 @@ const AuditIssueDetails = ({ isPublic }) => {
           transform: 'translate(-50%, -50%)',
         }}
       >
+        <Headings title="Issues" noIndex={true} />
         <Loader />
       </Box>
     );
   }
 
   return (
-    <Layout>
+    <Layout
+      sx={layoutSx}
+      containerSx={{
+        maxWidth: 'unset!important',
+        padding: '0 35px!important',
+      }}
+    >
+      <Headings
+        title={`${issue?.name} | ${audit?.project_name || 'Issues'}`}
+        noIndex={true}
+      />
+
       <CustomCard sx={wrapper}>
         <Button
           sx={backButtonSx}
@@ -70,19 +83,21 @@ const AuditIssueDetails = ({ isPublic }) => {
         >
           <ArrowBackIcon color="secondary" />
         </Button>
-        {!isPublic ? (
-          <IssueDetailsForm issue={issue} editMode={true} />
+        {isPublic || saved ? (
+          <PublicIssueDetailsForm issue={issue} saved={saved} editMode={true} />
         ) : (
-          <PublicIssueDetailsForm issue={issue} editMode={true} />
+          <IssueDetailsForm issue={issue} editMode={true} />
         )}
-        {!!issue.events?.length && (
+        {!!issue.events?.length && !saved && !isPublic && (
           <EventsList
             issue={issue}
             auditPartner={currentAuditPartner}
             auditId={auditId}
           />
         )}
-        {!isPublic && <AddComment auditId={auditId} issueId={issueId} />}
+        {!isPublic && !saved && (
+          <AddComment auditId={auditId} issueId={issueId} />
+        )}
       </CustomCard>
     </Layout>
   );
@@ -90,22 +105,31 @@ const AuditIssueDetails = ({ isPublic }) => {
 
 export default AuditIssueDetails;
 
+const layoutSx = theme => ({
+  padding: '40px!important',
+  [theme.breakpoints.down('sm')]: {
+    padding: '10px!important',
+  },
+});
+
 const wrapper = theme => ({
-  padding: '48px 45px 80px',
+  padding: '50px 30px 80px',
   position: 'relative',
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'center',
+  maxWidth: 'unset',
   [theme.breakpoints.down('md')]: {
-    padding: '38px 44px 60px',
+    padding: '50px 20px 60px',
   },
   [theme.breakpoints.down('sm')]: {
-    padding: '38px 20px 30px',
+    padding: '50px 10px 30px',
   },
 });
 
 const backButtonSx = {
   position: 'absolute',
+  justifyContent: 'flex-start',
   left: '0',
   top: '5px',
 };

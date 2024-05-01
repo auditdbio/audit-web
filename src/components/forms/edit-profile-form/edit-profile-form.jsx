@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Field, Form, Formik } from 'formik';
 import * as Yup from 'yup';
@@ -26,14 +26,35 @@ import {
   createAuditor,
   updateAuditor,
 } from '../../../redux/actions/auditorAction.js';
+import { useNavigate } from 'react-router-dom/dist';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import { history } from '../../../services/history.js';
 
-const EditProfileForm = ({ role }) => {
+const GoBack = ({ role, newLinkId }) => {
+  const navigate = useNavigate();
+  const handleGoBack = () => {
+    if (newLinkId) {
+      navigate(`/${role[0]}/${newLinkId}`);
+    } else {
+      navigate(-1);
+    }
+  };
+  return (
+    <Button sx={backBtnSx} onClick={handleGoBack}>
+      <ArrowBackIcon color={role !== AUDITOR ? 'primary' : 'secondary'} />
+    </Button>
+  );
+};
+
+const EditProfileForm = ({ role, newLinkId }) => {
   const matchSm = useMediaQuery(theme.breakpoints.down('sm'));
   const matchXs = useMediaQuery(theme.breakpoints.down('xs'));
   const dispatch = useDispatch();
   const { user } = useSelector(s => s.user);
   const { customer } = useSelector(s => s.customer);
   const { auditor } = useSelector(s => s.auditor);
+  const navigate = useNavigate();
+  const [isDirty, setIsDirty] = useState(false);
 
   const data = useMemo(() => {
     if (role === AUDITOR) {
@@ -78,6 +99,7 @@ const EditProfileForm = ({ role }) => {
         validateOnBlur={false}
         validateOnChange={false}
         onSubmit={values => {
+          setIsDirty(false);
           if (role !== AUDITOR) {
             if (!data.first_name && !data.last_name) {
               dispatch(createCustomer(values));
@@ -93,10 +115,43 @@ const EditProfileForm = ({ role }) => {
           }
         }}
       >
-        {({ handleSubmit, values, setFieldValue }) => {
+        {({ handleSubmit, values, setFieldValue, dirty }) => {
+          useEffect(() => {
+            setIsDirty(dirty);
+          }, [dirty]);
+          useEffect(() => {
+            const unblock = history.block(({ location }) => {
+              if (!isDirty) {
+                unblock();
+                return navigate(location);
+              }
+
+              const confirmed = window.confirm(
+                'Do you want to save changes before leaving the page?',
+              );
+
+              if (confirmed) {
+                handleSubmit(values);
+                unblock();
+                return navigate(location);
+              } else {
+                unblock();
+                return navigate(location);
+              }
+            });
+
+            if (!isDirty) {
+              unblock();
+            }
+
+            return () => {
+              unblock();
+            };
+          }, [history, isDirty]);
           return (
             <Form onSubmit={handleSubmit}>
               <Box sx={wrapper}>
+                <GoBack role={role} newLinkId={newLinkId} />
                 <Box sx={avatarWrapper}>
                   <Box
                     sx={{
@@ -105,7 +160,7 @@ const EditProfileForm = ({ role }) => {
                       flexDirection: 'column',
                     }}
                   >
-                    <AvatarForm name={'avatar'} role={role} />
+                    <AvatarForm name="avatar" role={role} />
                   </Box>
                   {matchSm && (
                     <Box sx={[fieldWrapper, { width: '100%' }]}>
@@ -158,8 +213,8 @@ const EditProfileForm = ({ role }) => {
                         }}
                       >
                         <Checkbox
-                          color={'success'}
-                          id={'hide-contacts'}
+                          color="success"
+                          id="hide-contacts"
                           checked={values.contacts?.public_contacts}
                           onChange={e => {
                             setFieldValue(
@@ -186,7 +241,7 @@ const EditProfileForm = ({ role }) => {
                         </label>
                       </Box>
                     </Box>
-                    {!matchSm && <TagsField name={'tags'} label={'Tags'} />}
+                    {!matchSm && <TagsField name="tags" label="Tags" />}
                   </Box>
                   <Box sx={fieldWrapper}>
                     {!matchSm && (
@@ -217,9 +272,7 @@ const EditProfileForm = ({ role }) => {
                           name="price_range"
                           value={values.price_range}
                           component={SliderRange}
-                          sx={{
-                            color: '#52176D',
-                          }}
+                          sx={{ color: theme.palette.secondary.main }}
                           min={0}
                           max={200}
                           onChange={(e, newValue) => {
@@ -246,12 +299,8 @@ const EditProfileForm = ({ role }) => {
               <Button
                 type="submit"
                 variant="contained"
-                sx={[
-                  buttonSx,
-                  role === AUDITOR
-                    ? { backgroundColor: theme.palette.secondary.main }
-                    : {},
-                ]}
+                color={role === AUDITOR ? 'secondary' : 'primary'}
+                sx={buttonSx}
                 {...addTestsLabel('save-button')}
               >
                 Save changes
@@ -277,8 +326,21 @@ const EditProfileSchema = Yup.object().shape({
   tags: Yup.array(),
 });
 
+const backBtnSx = theme => ({
+  position: 'absolute',
+  left: '-70px',
+  top: '-30px',
+  [theme.breakpoints.down('sm')]: {
+    left: '-50px',
+  },
+  [theme.breakpoints.down('xs')]: {
+    left: '-40px',
+  },
+});
+
 const wrapper = theme => ({
   display: 'flex',
+  position: 'relative',
   gap: '52px',
   [theme.breakpoints.down('sm')]: {
     flexDirection: 'column',
@@ -338,27 +400,22 @@ const fieldWrapper = theme => ({
   },
 });
 
-const buttonSx = theme => ({
+const buttonSx = {
   display: 'block',
   margin: '70px auto 0',
   textTransform: 'unset',
   padding: '13px 0',
   fontWeight: 600,
-  fontSize: '18px',
+  fontSize: '14px',
+  lineHeight: 1.2,
   width: '200px',
   borderRadius: '10px',
-  [theme.breakpoints.down('md')]: {
-    fontSize: '14px',
-  },
-  [theme.breakpoints.down('sm')]: {},
-});
+};
 
 const avatarWrapper = theme => ({
   '& button': {
     textTransform: 'unset',
-    '& svg': {
-      marginRight: '5px',
-    },
+    '& svg': { marginRight: '5px' },
   },
   '& .MuiAvatar-root': {
     width: '205px',
@@ -369,24 +426,16 @@ const avatarWrapper = theme => ({
       width: '158px',
       height: '158px',
     },
-    '& button': {
-      marginTop: '25px',
-      fontSize: '12px',
-    },
+    '& button': { fontSize: '12px' },
   },
   [theme.breakpoints.down('sm')]: {
     '& .MuiAvatar-root': {
       width: '128px',
       height: '128px',
     },
-    '& button': {
-      marginTop: '15px',
-    },
     display: 'flex',
     gap: '22px',
-    '& p': {
-      color: '#B2B3B3',
-    },
+    '& p': { color: '#B2B3B3' },
   },
   [theme.breakpoints.down('xs')]: {
     '& .MuiAvatar-root': {
@@ -395,8 +444,8 @@ const avatarWrapper = theme => ({
     },
     '& button': {
       paddingX: '4px',
-      marginTop: '12px',
-      fontSize: '8px',
+      fontSize: '10px',
+      '& svg': { marginRight: 0 },
     },
   },
 });

@@ -1,31 +1,23 @@
 import React, { useState } from 'react';
-import Layout from '../styles/Layout.jsx';
-import { CustomCard } from '../components/custom/Card.jsx';
+import { useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  Box,
-  Button,
-  useMediaQuery,
-  ClickAwayListener,
-  Typography,
-} from '@mui/material';
-import theme, { radiusOfComponents } from '../styles/themes.js';
-import { signUp } from '../redux/actions/userAction.js';
 import { Form, Formik } from 'formik';
+import * as Yup from 'yup';
+import { CustomCard } from '../components/custom/Card.jsx';
+import { Box, Button, ClickAwayListener, Typography } from '@mui/material';
+import Layout from '../styles/Layout.jsx';
+import { radiusOfComponents } from '../styles/themes.js';
+import { signUp } from '../redux/actions/userAction.js';
 import SimpleField from '../components/forms/fields/simple-field.jsx';
 import PasswordField from '../components/forms/fields/password-field.jsx';
 import { addTestsLabel, isAuth } from '../lib/helper.js';
-import * as Yup from 'yup';
 import SubmitModal from '../components/modal/Submit-modal.jsx';
 import MergeModal from '../components/modal/Merge-modal.jsx';
-import { useParams } from 'react-router-dom';
 import { mergeCurrentAccount } from '../redux/actions/auditorAction.js';
-//
+
 const InvitePage = () => {
   const dispatch = useDispatch();
-  const matchMd = useMediaQuery(theme.breakpoints.down('md'));
   const user = useSelector(s => s.auditor.auditor);
-  const error = useSelector(s => s.user.error);
   const { id, secret } = useParams();
   const [isOpenSubmit, setIsOpenSubmit] = useState(false);
   const [isOpenMerge, setIsOpenMerge] = useState(false);
@@ -62,13 +54,13 @@ const InvitePage = () => {
                 <Box sx={fieldsWrapper}>
                   <Box sx={fieldWrapper}>
                     <SimpleField
-                      size={!matchMd ? 'medium' : 'small'}
+                      size="small"
                       name="name"
                       label="User name"
                       emptyPH
                     />
                     <SimpleField
-                      size={!matchMd ? 'medium' : 'small'}
+                      size="small"
                       name="email"
                       label="E-mail"
                       emptyPH
@@ -76,29 +68,22 @@ const InvitePage = () => {
                   </Box>
                   <Box sx={fieldWrapper}>
                     <PasswordField
-                      size={!matchMd ? 'medium' : 'small'}
+                      size="small"
                       name="password"
                       label="Password"
                     />
                     <PasswordField
-                      size={!matchMd ? 'medium' : 'small'}
+                      size="small"
                       name="confirmPassword"
                       label="Confirm password"
                     />
                   </Box>
                 </Box>
-                <Box
-                  sx={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    gap: '15px',
-                  }}
-                >
+                <Box sx={buttonWrapper}>
                   <Button
                     type="button"
                     sx={[submitButton, { bgColor: `#FF9900!important` }]}
-                    variant={'contained'}
+                    variant="contained"
                     onClick={() => setIsOpenSubmit(true)}
                     {...addTestsLabel('sign-up-button')}
                   >
@@ -108,7 +93,7 @@ const InvitePage = () => {
                   <Button
                     type="button"
                     sx={submitButton}
-                    variant={'contained'}
+                    variant="contained"
                     onClick={handleMerge}
                     {...addTestsLabel('sign-up-button')}
                   >
@@ -186,22 +171,29 @@ const cardWrapper = theme => ({
   },
 });
 
+const buttonWrapper = theme => ({
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  gap: '15px',
+  [theme.breakpoints.down('sm')]: {
+    gap: '5px',
+  },
+});
+
 const submitButton = theme => ({
   backgroundColor: theme.palette.secondary.main,
   padding: '15px',
   color: '#FCFAF6',
-  fontSize: '25px',
+  fontSize: '14px',
   width: '100%',
   fontWeight: 600,
+  lineHeight: 1.2,
   borderRadius: radiusOfComponents,
   maxWidth: '402px',
   margin: '0 auto',
-  [theme.breakpoints.down('md')]: {
-    fontSize: '20px',
-    lineHeight: '23px',
-  },
   [theme.breakpoints.down('sm')]: {
-    fontSize: '15px!important',
+    fontSize: '12px!important',
     width: '240px',
     padding: '12px',
   },

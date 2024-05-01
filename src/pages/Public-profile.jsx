@@ -1,45 +1,73 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom/dist';
 import { useDispatch, useSelector } from 'react-redux';
-import { Avatar, Button, Typography, useMediaQuery } from '@mui/material';
+import {
+  Avatar,
+  Button,
+  Link,
+  Tooltip,
+  Typography,
+  useMediaQuery,
+} from '@mui/material';
 import { AUDITOR, CUSTOMER } from '../redux/actions/types.js';
 import Loader from '../components/Loader.jsx';
 import { Box } from '@mui/system';
 import { ASSET_URL } from '../services/urls.js';
-import { addTestsLabel, isAuth } from '../lib/helper.js';
+import { addTestsLabel, capitalize, isAuth } from '../lib/helper.js';
 import MobileTagsList from '../components/MobileTagsList/index.jsx';
 import TagsList from '../components/tagsList.jsx';
 import theme from '../styles/themes.js';
 import Layout from '../styles/Layout.jsx';
-import { getCurrentAuditor } from '../redux/actions/auditorAction.js';
-import { getCurrentCustomer } from '../redux/actions/customerAction.js';
+import {
+  getAuditorByLinkId,
+  getCurrentAuditor,
+} from '../redux/actions/auditorAction.js';
+import {
+  getCurrentCustomer,
+  getCustomerByLinkId,
+} from '../redux/actions/customerAction.js';
 import CustomSnackbar from '../components/custom/CustomSnackbar.jsx';
 import {
   changeRolePublicCustomer,
   changeRolePublicCustomerNoRedirect,
+  getPublicProfile,
 } from '../redux/actions/userAction.js';
+import { setCurrentChat } from '../redux/actions/chatActions.js';
+import ChatIcon from '../components/icons/ChatIcon.jsx';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack.js';
+import LinkedinIcon from '../components/icons/LinkedinIcon.jsx';
+import XTwitterLogo from '../components/icons/XTwitter-logo.jsx';
+import GitHubIcon from '@mui/icons-material/GitHub';
+import Headings from '../router/Headings.jsx';
 
-const PublicProfile = () => {
-  const { role, id } = useParams();
+const PublicProfile = ({ notFoundRedirect = true }) => {
   const navigate = useNavigate();
-  const customer = useSelector(s => s.customer.currentCustomer);
-  const auditor = useSelector(s => s.auditor.currentAuditor);
+  const dispatch = useDispatch();
   const matchXs = useMediaQuery(theme.breakpoints.down('xs'));
   const matchSm = useMediaQuery(theme.breakpoints.down('sm'));
-  const userProjects = useSelector(s => s.project.myProjects);
-  const dispatch = useDispatch();
+
+  const { role: roleParams, id, linkId } = useParams();
+
+  const { currentCustomer, customer } = useSelector(s => s.customer);
+  const { currentAuditor, auditor } = useSelector(s => s.auditor);
+  const { myProjects } = useSelector(s => s.project);
+  const { user, publicUser } = useSelector(s => s.user);
+  const { chatList } = useSelector(s => s.chat);
+
   const [errorMessage, setErrorMessage] = useState(null);
   const [message, setMessage] = useState(null);
-  const customerReducer = useSelector(state => state.customer.customer);
-  const myProjects = useSelector(state => state.project.myProjects);
-  const user = useSelector(state => state.user.user);
+  const [role, setRole] = useState(() => {
+    if (roleParams.toLowerCase() === 'c') return CUSTOMER;
+    if (roleParams.toLowerCase() === 'a') return AUDITOR;
+    return roleParams;
+  });
 
   const handleError = () => {
     setErrorMessage(null);
     setMessage('Switched to customer role');
     const delayedFunc = setTimeout(() => {
-      if (userProjects.length) {
-        navigate(`/my-projects/${auditor.user_id}`);
+      if (myProjects.length) {
+        navigate(`/my-projects/${currentAuditor.user_id}`);
       } else {
         setMessage(null);
         setErrorMessage('No active projects');
@@ -50,22 +78,20 @@ const PublicProfile = () => {
 
   const handleInvite = () => {
     if (user.current_role === CUSTOMER && isAuth() && myProjects.length) {
-      navigate(`/my-projects/${auditor.user_id}`);
+      navigate(`/my-projects/${currentAuditor.user_id}`);
     } else if (
       user.current_role !== CUSTOMER &&
       isAuth() &&
-      !customerReducer?.first_name
+      !customer?.first_name
     ) {
-      dispatch(changeRolePublicCustomer(CUSTOMER, user.id, customerReducer));
+      dispatch(changeRolePublicCustomer(CUSTOMER, user.id));
       handleError();
     } else if (
       user.current_role !== CUSTOMER &&
       isAuth() &&
-      customerReducer?.first_name
+      customer?.first_name
     ) {
-      dispatch(
-        changeRolePublicCustomerNoRedirect(CUSTOMER, user.id, customerReducer),
-      );
+      dispatch(changeRolePublicCustomerNoRedirect(CUSTOMER, user.id, customer));
       handleError();
     } else if (
       user.current_role === CUSTOMER &&
@@ -78,25 +104,79 @@ const PublicProfile = () => {
     }
   };
 
+  const handleSendMessage = data => {
+    const existingChat = chatList.find(chat =>
+      chat.members?.find(
+        member =>
+          member.id === data?.user_id &&
+          member.role?.toLowerCase() === role.toLowerCase(),
+      ),
+    );
+    const chatId = existingChat ? existingChat.id : data?.user_id;
+    const members = [data?.user_id, user.id];
+
+    dispatch(
+      setCurrentChat(chatId, {
+        name: data.first_name,
+        avatar: data.avatar,
+        role,
+        isNew: !existingChat,
+        members,
+      }),
+    );
+    localStorage.setItem('path', window.location.pathname);
+    navigate(`/chat/${chatId}`);
+  };
+
   useEffect(() => {
     if (role.toLowerCase() === AUDITOR) {
-      dispatch(getCurrentAuditor(id));
-    } else {
-      dispatch(getCurrentCustomer(id));
+      if (id) {
+        dispatch(getCurrentAuditor(id));
+      } else if (linkId) {
+        dispatch(getAuditorByLinkId(linkId, notFoundRedirect));
+      }
+    } else if (role.toLowerCase() === CUSTOMER) {
+      if (id) {
+        dispatch(getCurrentCustomer(id));
+      } else if (linkId) {
+        dispatch(getCustomerByLinkId(linkId, notFoundRedirect));
+      }
     }
-  }, [id, role]);
+    if (id) {
+      dispatch(getPublicProfile(id));
+    }
+  }, [id, role, linkId]);
+
+  useEffect(() => {
+    const handleBeforeUnload = () => {
+      localStorage.removeItem('go-back');
+    };
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => {
+      localStorage.removeItem('go-back');
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
+  }, [navigate]);
 
   const data = useMemo(() => {
     if (role.toLowerCase() === AUDITOR) {
-      return auditor;
+      return currentAuditor;
     } else {
-      return customer;
+      return currentCustomer;
     }
-  }, [role, customer, auditor]);
+  }, [role, currentCustomer, currentAuditor]);
+
+  useEffect(() => {
+    if (linkId && data?.link_id && data?.link_id !== linkId) {
+      navigate(`/${roleParams}/${data.link_id}`);
+    }
+  }, [linkId, data]);
 
   if (!data) {
     return (
       <Layout>
+        <Headings title="Profile" />
+
         <Box
           sx={[
             wrapper(
@@ -119,6 +199,12 @@ const PublicProfile = () => {
   } else {
     return (
       <Layout>
+        <Headings
+          title={`${data.first_name} ${data.last_name}`}
+          description={data.about}
+          image={data.avatar}
+        />
+
         <Box
           sx={wrapper(
             theme,
@@ -127,6 +213,17 @@ const PublicProfile = () => {
               : theme.palette.primary.main,
           )}
         >
+          {localStorage.getItem('go-back') && (
+            <Button
+              variant="text"
+              color={role.toLowerCase() === AUDITOR ? 'secondary' : 'primary'}
+              sx={goBackSx}
+              onClick={() => navigate(-1)}
+            >
+              <ArrowBackIcon />
+            </Button>
+          )}
+
           {data.kind === 'badge' && (
             <Typography sx={badgeTitle}>Not in base AuditDB</Typography>
           )}
@@ -148,29 +245,36 @@ const PublicProfile = () => {
                 alt="User photo"
               />
             </Box>
+
             <Box sx={{ [theme.breakpoints.down(560)]: { width: '100%' } }}>
               <Box sx={infoStyle}>
                 <Box sx={infoInnerStyle}>
                   <Box sx={infoWrapper}>
-                    <span>First Name</span>
+                    <span>{data.last_name ? 'First Name' : 'Name'}</span>
                     <Typography noWrap={true}>{data.first_name}</Typography>
                   </Box>
-                  <Box sx={infoWrapper}>
-                    <span>Last name</span>
-                    <Typography noWrap={true}>{data.last_name}</Typography>
-                  </Box>
-                  {role === AUDITOR && (
+                  {data.last_name && (
+                    <Box sx={infoWrapper}>
+                      <span>Last name</span>
+                      <Typography noWrap={true}>{data.last_name}</Typography>
+                    </Box>
+                  )}
+
+                  {role.toLowerCase() === AUDITOR && (
                     <Box sx={infoWrapper}>
                       <span>Price range:</span>
-                      {data?.price_range?.from && data?.price_range?.to && (
+                      {data.price_range?.from && data.price_range?.to ? (
                         <Typography>
-                          ${data?.price_range?.from} - {data?.price_range?.to}{' '}
-                          per line
+                          ${data.price_range.from} - {data.price_range.to} per
+                          line
                         </Typography>
+                      ) : (
+                        <Typography>not specified</Typography>
                       )}
                     </Box>
                   )}
-                  {role !== AUDITOR && (
+
+                  {role.toLowerCase() !== AUDITOR && data.company && (
                     <Box sx={infoWrapper}>
                       <span>Company</span>
                       <Typography noWrap={true}>{data.company}</Typography>
@@ -196,7 +300,8 @@ const PublicProfile = () => {
                   </Box>
                 </Box>
               </Box>
-              {!matchSm && (
+
+              {!matchSm && (data.about || !!data.tags?.length) && (
                 <Box sx={aboutWrapper}>
                   <Box sx={infoWrapper}>
                     <Typography
@@ -205,7 +310,7 @@ const PublicProfile = () => {
                         maxWidth: 'unset!important',
                       }}
                     >
-                      <span className={'about-title'}>About</span>
+                      <span className="about-title">About</span>
                       {data.about}
                     </Typography>
                   </Box>
@@ -214,15 +319,17 @@ const PublicProfile = () => {
               )}
             </Box>
           </Box>
-          {matchSm && (
+
+          {matchSm && (data.about || !!data.tags?.length) && (
             <Box sx={aboutWrapper}>
               <Box sx={[infoWrapper, { flexDirection: 'column' }]}>
                 <span
-                  className={'about-title'}
+                  className="about-title"
                   style={{
                     display: 'block',
                     width: '100%',
                     textAlign: 'center',
+                    marginBottom: '10px',
                   }}
                 >
                   About
@@ -239,18 +346,110 @@ const PublicProfile = () => {
               <MobileTagsList data={data.tags} />
             </Box>
           )}
+          <Box sx={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
+            {publicUser?.linked_accounts
+              ?.filter(account => account.is_public)
+              .map(account => {
+                if (account.name.toLowerCase() === 'linkedin') {
+                  return (
+                    <Box
+                      key={account.id}
+                      sx={{ display: 'flex', alignItems: 'center', gap: '7px' }}
+                    >
+                      {account.url ? (
+                        <Tooltip title={account.url} placement="top">
+                          <Link
+                            href={account.url}
+                            sx={{ color: 'initial' }}
+                            target={'_blank'}
+                          >
+                            <LinkedinIcon />
+                          </Link>
+                        </Tooltip>
+                      ) : (
+                        <LinkedinIcon />
+                      )}
+                    </Box>
+                  );
+                } else if (account.name.toLowerCase() === 'github') {
+                  return (
+                    <Box
+                      key={account.id}
+                      sx={{ display: 'flex', alignItems: 'center', gap: '7px' }}
+                    >
+                      <Tooltip title={account.url} placement="top">
+                        <Link
+                          href={account.url}
+                          sx={{ color: 'initial' }}
+                          target={'_blank'}
+                        >
+                          <GitHubIcon
+                            sx={{
+                              width: '50px',
+                              height: '50px',
+                              padding: '4px',
+                            }}
+                          />
+                        </Link>
+                      </Tooltip>
+                    </Box>
+                  );
+                } else {
+                  return (
+                    <Box
+                      key={account.id}
+                      sx={{ display: 'flex', alignItems: 'center', gap: '7px' }}
+                    >
+                      <Tooltip title={account.url} placement="top">
+                        <Link
+                          href={account.url}
+                          sx={{ color: 'initial' }}
+                          target={'_blank'}
+                        >
+                          <XTwitterLogo width={'50px'} height={'50px'} space />
+                        </Link>
+                      </Tooltip>
+                    </Box>
+                  );
+                }
+              })}
+          </Box>
           {/*{matchXs && <MobileTagsList data={data.tags} />}*/}
-          {role.toLowerCase() === AUDITOR && (
-            <Button
-              variant={data.kind === 'badge' ? 'outlined' : 'contained'}
-              sx={buttonSx}
-              color={'secondary'}
-              onClick={handleInvite}
-              {...addTestsLabel('invite-button')}
-            >
-              Invite to project
-            </Button>
-          )}
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'center',
+              gap: '15px',
+              alignItems: 'center',
+            }}
+          >
+            {role.toLowerCase() === AUDITOR && (
+              <Button
+                variant={data.kind === 'badge' ? 'outlined' : 'contained'}
+                sx={buttonSx}
+                color={'secondary'}
+                onClick={handleInvite}
+                disabled={data?.user_id === user?.id}
+                {...addTestsLabel('invite-button')}
+              >
+                Invite to project
+              </Button>
+            )}
+            {data.kind !== 'badge' &&
+              isAuth() &&
+              data?.user_id !== user?.id && (
+                <Button
+                  variant="text"
+                  color={role === AUDITOR ? 'secondary' : 'primary'}
+                  sx={buttonSx}
+                  disabled={data?.user_id === user?.id}
+                  onClick={() => handleSendMessage(data)}
+                  {...addTestsLabel('message-button')}
+                >
+                  <ChatIcon />
+                </Button>
+              )}
+          </Box>
         </Box>
       </Layout>
     );
@@ -260,22 +459,17 @@ const PublicProfile = () => {
 export default PublicProfile;
 
 const wrapper = (theme, color) => ({
+  position: 'relative',
   width: '100%',
   minHeight: '520px',
   display: 'flex',
   flexDirection: 'column',
-  padding: '100px 100px 60px',
+  padding: '60px 40px 40px',
   gap: '50px',
   backgroundColor: '#fff',
   borderRadius: '10px',
   border: `2px solid ${color}`,
   justifyContent: 'space-between',
-  [theme.breakpoints.down('lg')]: {
-    padding: '60px 40px 40px',
-  },
-  [theme.breakpoints.down('md')]: {
-    gap: '50px',
-  },
   [theme.breakpoints.down('sm')]: {
     gap: '20px',
     justifyContent: 'flex-start',
@@ -291,11 +485,17 @@ const wrapper = (theme, color) => ({
   },
 });
 
-const badgeTitle = theme => ({
+const goBackSx = {
+  position: 'absolute',
+  top: '20px',
+  left: '30px',
+};
+
+const badgeTitle = {
   textAlign: 'center',
   color: '#B9B9B9',
   fontWeight: 500,
-});
+};
 
 const aboutWrapper = theme => ({
   display: 'flex',
@@ -309,11 +509,11 @@ const aboutWrapper = theme => ({
   },
 });
 
-const infoInnerStyle = theme => ({
+const infoInnerStyle = {
   display: 'flex',
   flexDirection: 'column',
   gap: '16px',
-});
+};
 
 const infoStyle = theme => ({
   display: 'flex',
@@ -379,28 +579,21 @@ const contentWrapper = theme => ({
 });
 
 const buttonSx = theme => ({
-  margin: '0 auto',
   display: 'block',
   textTransform: 'capitalize',
   fontWeight: 600,
-  fontSize: '18px',
   padding: '9px 50px',
   borderRadius: '10px',
+  ':last-child': { mb: 0 },
   [theme.breakpoints.down('xs')]: {
     padding: '9px 20px',
     fontSize: '12px',
   },
 });
 
-const submitAuditor = theme => ({
-  backgroundColor: theme.palette.secondary.main,
-  '&:hover': {
-    backgroundColor: '#450e5d',
-  },
-});
-
 const infoWrapper = theme => ({
   display: 'flex',
+  alignItems: 'center',
   fontWeight: 500,
   color: '#434242',
   '& .about-title': {

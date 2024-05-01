@@ -3,19 +3,41 @@ import { Tab, Tabs } from '@mui/material';
 import { useNavigate } from 'react-router-dom/dist';
 import { useParams } from 'react-router-dom';
 import { addTestsLabel } from '../../lib/helper.js';
+import { AUDITOR } from '../../redux/actions/types.js';
 
-const CustomTabs = ({ selectedTabSx, name, tabs, setTab, choosenTab }) => {
+const CustomTabs = ({
+  selectedTabSx,
+  name,
+  tabs,
+  setTab,
+  choosenTab,
+  user,
+  auditor,
+  customer,
+}) => {
+  const navigate = useNavigate();
   const { tab } = useParams();
   const [tabState, setTabState] = useState(choosenTab);
-  const navigate = useNavigate();
+
   const handleChoose = value => {
-    navigate(`/profile/${value}`);
     setTabState(value);
     setTab(value);
+    if (value === 'user-info') {
+      const rolePrefix = user.current_role?.[0];
+      const link_id =
+        (user.current_role === AUDITOR
+          ? auditor?.link_id
+          : customer?.link_id) || user.id;
+      navigate(`/${rolePrefix}/${link_id}`);
+    } else {
+      navigate(`/profile/${value}`);
+    }
   };
+
   useEffect(() => {
-    setTabState(tab);
-  }, [tab, tabState]);
+    if (tab) setTabState(tab);
+  }, [tab]);
+
   return (
     <Tabs
       value={tabState}
@@ -49,11 +71,10 @@ const simpleTab = theme => ({
 
 const tabSx = theme => ({
   color: '#222222',
-  fontSize: '19px',
+  fontSize: '16px',
   fontWeight: 600,
   textTransform: 'capitalize',
   borderRadius: '14.8672px 14.8672px 0px 0px',
-  // padding: '15px 40px',
   whiteSpace: 'inherit',
   width: '100%',
   [theme.breakpoints.down('sm')]: {
@@ -77,7 +98,6 @@ const tabsSx = theme => ({
     height: '35px',
     '& .MuiTabs-flexContainer': {
       gap: 0,
-      // display: 'block'
     },
   },
 });

@@ -1,21 +1,17 @@
 import React, { useEffect } from 'react';
 import { Route, Routes } from 'react-router-dom/dist';
+import { useDispatch, useSelector } from 'react-redux';
 import HomePage from '../pages/HomePage.jsx';
 import SignupPage from '../pages/SignupPage.jsx';
 import SigninPage from '../pages/SigninPage.jsx';
 import { PrivateRoute } from '../router/PrivateRoute.jsx';
-import { useDispatch, useSelector } from 'react-redux';
-import { authenticate } from '../redux/actions/userAction.js';
 import { isAuth } from '../lib/helper.js';
 import EditProfile from '../pages/edit-profile.jsx';
-import AuditInfo from '../pages/audit-info.jsx';
 import AuditOffer from '../pages/audit-offer.jsx';
 import CreateProject from '../pages/CreateProject.jsx';
 import ProfilePage from '../pages/profile-page.jsx';
-import { AUDITOR } from '../redux/actions/types.js';
-import { getAuditor, getAuditors } from '../redux/actions/auditorAction.js';
+import { getAuditor } from '../redux/actions/auditorAction.js';
 import { getCustomer } from '../redux/actions/customerAction.js';
-import Projects from '../components/Projects.jsx';
 import ProjectPage from '../pages/Project-page.jsx';
 import AuditRequestPage from '../pages/Audit-Request-Page.jsx';
 import { getProjects } from '../redux/actions/projectAction.js';
@@ -42,13 +38,24 @@ import {
   websocketDisconnect,
 } from '../redux/actions/websocketAction.js';
 import PublicProject from '../pages/PublicProject.jsx';
+import ChatPage from '../pages/ChatPage.jsx';
+import {
+  getChatList,
+  getUnreadForDifferentRole,
+} from '../redux/actions/chatActions.js';
 import PublicConstructor from '../pages/PublicConstructor.jsx';
 import CustomSnackbar from '../components/custom/CustomSnackbar.jsx';
 import InvitePage from '../pages/Invite-page.jsx';
 import DeleteBadge from '../pages/Delete-badge.jsx';
+import Github from '../pages/Github.jsx';
+import ConnectAccount from '../pages/Connect-account.jsx';
+import DisclaimerPage from '../pages/DisclaimerPage.jsx';
+import Headings from '../router/Headings.jsx';
+import { AUDITOR, CUSTOMER } from '../redux/actions/types.js';
+import UserProjects from '../pages/UserProjects.jsx';
 
 const AppRoutes = () => {
-  const token = useSelector(s => s.user.token);
+  const { token } = useSelector(s => s.user);
   const currentRole = useSelector(s => s.user.user.current_role);
   const customer = useSelector(s => s.customer.customer);
   const auditor = useSelector(s => s.auditor.auditor);
@@ -74,9 +81,9 @@ const AppRoutes = () => {
 
   useEffect(() => {
     if (isAuth()) {
-      if (currentRole === 'auditor' && !auditor) {
+      if (currentRole === AUDITOR && !auditor) {
         dispatch(getAuditor());
-      } else if (currentRole === 'customer' && !customer) {
+      } else if (currentRole === CUSTOMER && !customer) {
         dispatch(getCustomer());
       }
     }
@@ -98,7 +105,14 @@ const AppRoutes = () => {
       };
     }
   }, [reconnect, connected]);
-  //
+
+  useEffect(() => {
+    if (isAuth()) {
+      dispatch(getChatList(currentRole));
+      dispatch(getUnreadForDifferentRole());
+    }
+  }, [currentRole]);
+
   useEffect(() => {
     return () => {
       dispatch(websocketDisconnect());
@@ -123,31 +137,36 @@ const AppRoutes = () => {
         action={handleReload}
         autoHideDuration={50000}
         onClose={() => setIsOpen(false)}
-        text={'New version is available. Please reload the page'}
+        text="New version is available. Please reload the page"
       />
+      <Headings />
+
       <Routes>
-        <Route path={'/'} element={<HomePage />} />
-        <Route path={'/sign-up'} element={<SignupPage />} />
-        <Route path={'/invite-user/:id/:secret'} element={<InvitePage />} />
-        <Route path={'/sign-in'} element={<SigninPage />} />
+        <Route path="/" element={<HomePage />} />
+        <Route path="/sign-up" element={<SignupPage />} />
+        <Route path="/sign-in" element={<SigninPage />} />
+        <Route path="/invite-user/:id/:secret" element={<InvitePage />} />
+        <Route path="/oauth/callback" element={<ConnectAccount />} />
+        {/*<Route path="/oauth/callback" element={<Github />} />*/}
+        <Route path="/projects" element={<ProjectPage />} />
+        <Route path="/projects/:id" element={<PublicProject />} />
+        <Route path="/for-customers" element={<ForCustomer />} />
+        <Route path="/for-auditors" element={<ForAuditor />} />
+        <Route path="/auditors" element={<AuditorsPage />} />
+        <Route path="/audit-db" element={<AuditDb />} />
+        <Route path="/FAQ" element={<Faq />} />
+        <Route path="/contact-us" element={<ContactUs />} />
+        <Route path="/user/:id/:role" element={<PublicProfile />} />
+        <Route path="/delete/:id/:secret" element={<DeleteBadge />} />
+        <Route path="/disclaimer" element={<DisclaimerPage />} />
         <Route
-          path={'/restore-password/:token'}
+          path="/restore-password/:token"
           element={<RestorePasswordPage />}
         />
         <Route
-          path={'/audit-builder/:auditId'}
-          element={<PublicConstructor />}
+          path="/audit-builder/:auditId"
+          element={<PublicConstructor isPublic={true} />}
         />
-        <Route path={'/projects'} element={<ProjectPage />} />
-        <Route path={'/projects/:id'} element={<PublicProject />} />
-        <Route path={'/for-customers'} element={<ForCustomer />} />
-        <Route path={'/for-auditors'} element={<ForAuditor />} />
-        <Route path={'/auditors'} element={<AuditorsPage />} />
-        <Route path={'/audit-db'} element={<AuditDb />} />
-        <Route path={'/FAQ'} element={<Faq />} />
-        <Route path={'/contact-us'} element={<ContactUs />} />
-        <Route path={'/user/:id/:role'} element={<PublicProfile />} />
-        <Route path={'/delete/:id/:secret'} element={<DeleteBadge />} />
         <Route
           path="/profile/:tab"
           element={
@@ -173,10 +192,26 @@ const AppRoutes = () => {
           }
         />
         <Route
+          path="/customer-projects/:id"
+          element={
+            <PrivateRoute auth={{ isAuthenticated: isAuth() }}>
+              <UserProjects />
+            </PrivateRoute>
+          }
+        />
+        <Route
           path="/audit-info/:id/customer"
           element={
             <PrivateRoute auth={{ isAuthenticated: isAuth() }}>
               <AuditInfoPage />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/audit-builder/edit/:auditId"
+          element={
+            <PrivateRoute auth={{ isAuthenticated: isAuth() }}>
+              <PublicConstructor saved={true} />
             </PrivateRoute>
           }
         />
@@ -225,6 +260,14 @@ const AppRoutes = () => {
           element={<AuditIssueDetails isPublic={true} />}
         />
         <Route
+          path="/private-issues/audit-issue/:auditId/:issueId"
+          element={
+            <PrivateRoute auth={{ isAuthenticated: isAuth() }}>
+              <AuditIssueDetails saved={true} />
+            </PrivateRoute>
+          }
+        />
+        <Route
           path="/issues/new-issue/:auditId"
           element={
             <PrivateRoute auth={{ isAuthenticated: isAuth() }}>
@@ -235,6 +278,10 @@ const AppRoutes = () => {
         <Route
           path="/public-issues/new-issue/:auditId"
           element={<CreateIssuePage isPublic={true} />}
+        />
+        <Route
+          path="/private-issues/new-issue/:auditId"
+          element={<CreateIssuePage saved={true} />}
         />
         <Route
           path="/create-project"
@@ -252,6 +299,26 @@ const AppRoutes = () => {
             </PrivateRoute>
           }
         />
+        <Route
+          path="/chat"
+          element={
+            <PrivateRoute auth={{ isAuthenticated: isAuth() }}>
+              <ChatPage />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/chat/:id"
+          element={
+            <PrivateRoute auth={{ isAuthenticated: isAuth() }}>
+              <ChatPage />
+            </PrivateRoute>
+          }
+        />
+
+        {/*Add new routes here*/}
+
+        <Route path="/:role/:linkId" element={<ProfilePage />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </>

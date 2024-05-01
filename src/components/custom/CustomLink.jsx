@@ -4,7 +4,7 @@ import GitHubIcon from '@mui/icons-material/GitHub.js';
 import LinkIcon from '@mui/icons-material/Link';
 import theme from '../../styles/themes.js';
 
-const linkShortener = (link, shortLinkLength) => {
+export const linkShortener = (link, shortLinkLength) => {
   const regex = /(^https?:\/\/(www\.)?(github\.com\/)?)|(\?.*$)/g;
   const shortLink = link.replace(regex, '');
   if (shortLinkLength) {
@@ -40,7 +40,7 @@ const CustomLink = ({ link, showIcon = true, sx = {}, shortLength = null }) => {
     const parts = fullLink.split('/');
     const repo = parts.slice(parts.indexOf('blob') - 1)[0];
     const sha = parts.slice(parts.indexOf('blob') + 1)[0];
-    const path = parts.slice(parts.length - 3, parts.length).join('/');
+    const path = parts.slice(parts.indexOf(sha) + 1, parts.length).join('/');
     return `${repo}/${sha?.slice(0, 7)}.../${path}`;
   };
 
@@ -71,7 +71,7 @@ const CustomLink = ({ link, showIcon = true, sx = {}, shortLength = null }) => {
           onClick={e => e.stopPropagation()}
         >
           <Tooltip sx={{ width: 'unset' }} title={link} arrow placement="top">
-            <span>
+            <span style={{ fontSize: '14px' }}>
               {link.includes('blob')
                 ? shortenLink(link)
                 : linkShortener(link, shortLinkLength)}

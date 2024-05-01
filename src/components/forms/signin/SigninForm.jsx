@@ -1,32 +1,48 @@
 import React, { useState } from 'react';
-import { Box, Button, Modal, useMediaQuery } from '@mui/material';
-import theme, { radiusOfComponents } from '../../../styles/themes.js';
-import PasswordField from '../fields/password-field.jsx';
+import { useDispatch, useSelector } from 'react-redux';
 import { Form, Formik } from 'formik';
 import * as Yup from 'yup';
+import { Box, Button, Modal, useMediaQuery } from '@mui/material';
+import GitHubIcon from '@mui/icons-material/GitHub.js';
+import theme, { radiusOfComponents } from '../../../styles/themes.js';
+import PasswordField from '../fields/password-field.jsx';
 import SimpleField from '../fields/simple-field.jsx';
-import { useDispatch, useSelector } from 'react-redux';
+import CustomSnackbar from '../../custom/CustomSnackbar.jsx';
+import RestorePassword from '../../RestorePassword.jsx';
+import { addTestsLabel, encodeBase64url, isAuth } from '../../../lib/helper.js';
 import {
   clearUserError,
   clearUserSuccess,
   signIn,
 } from '../../../redux/actions/userAction.js';
-import CustomSnackbar from '../../custom/CustomSnackbar.jsx';
-import RestorePassword from '../../RestorePassword.jsx';
-import { addTestsLabel, isAuth } from '../../../lib/helper.js';
+import { BASE_URL, GITHUB_CLIENT_ID } from '../../../services/urls.js';
 
 const SigninForm = () => {
   const dispatch = useDispatch();
-  const error = useSelector(s => s.user.error);
-  const [open, setOpen] = useState(false);
   const matchMd = useMediaQuery(theme.breakpoints.down('md'));
-  const successMessage = useSelector(s => s.user.success);
+  const { error, success } = useSelector(s => s.user);
+  const [open, setOpen] = useState(false);
+
   const initialValues = {
     email: '',
     password: '',
   };
+
   const handleClose = () => {
     setOpen(false);
+  };
+
+  const handleAuthGithub = () => {
+    const state = encodeBase64url(
+      JSON.stringify({
+        service: 'GitHub',
+        auth: true,
+      }),
+    );
+    window.open(
+      `https://github.com/login/oauth/authorize?client_id=${GITHUB_CLIENT_ID}&redirect_uri=${BASE_URL}oauth/callback&scope=read:user,user:email&state=${state}`,
+      '_self',
+    );
   };
 
   return (
@@ -45,13 +61,13 @@ const SigninForm = () => {
             <Box sx={formWrapper}>
               <CustomSnackbar
                 autoHideDuration={7000}
-                open={!!error || !!successMessage}
+                open={!!error || !!success}
                 onClose={() => {
                   dispatch(clearUserError());
                   dispatch(clearUserSuccess());
                 }}
-                severity={successMessage ? 'success' : 'error'}
-                text={error || successMessage}
+                severity={success ? 'success' : 'error'}
+                text={error || success}
               />
               <Modal
                 open={open}
@@ -84,8 +100,9 @@ const SigninForm = () => {
                 }}
               >
                 <Button
-                  type={'submit'}
-                  variant={'contained'}
+                  type="submit"
+                  variant="contained"
+                  color="secondary"
                   sx={submitButton}
                   {...addTestsLabel('sign-in-button')}
                   disabled={isAuth()}
@@ -93,8 +110,18 @@ const SigninForm = () => {
                   Sign in
                 </Button>
                 <Button
-                  type={'button'}
-                  variant={'text'}
+                  color="primary"
+                  type="button"
+                  sx={[submitButton, { mt: '25px' }]}
+                  variant="contained"
+                  onClick={handleAuthGithub}
+                >
+                  <GitHubIcon sx={{ marginRight: '15px' }} />
+                  Sign in with Github
+                </Button>
+                <Button
+                  type="button"
+                  variant="text"
                   sx={{ textTransform: 'unset', mt: '25px', fontSize: '12px' }}
                   onClick={() => setOpen(true)}
                   disabled={isAuth()}
@@ -145,18 +172,19 @@ const formWrapper = theme => ({
 });
 
 const submitButton = theme => ({
-  backgroundColor: theme.palette.secondary.main,
-  padding: '11px 140px',
+  padding: '11px 0',
   color: '#FCFAF6',
+  fontSize: '14px',
   fontWeight: 600,
+  lineHeight: 1.2,
   borderRadius: radiusOfComponents,
   maxWidth: '402px',
   margin: '0 auto',
-  fontSize: '16px',
   paddingY: '11px',
+  width: '100%',
   [theme.breakpoints.down('sm')]: {
     width: '225px',
-    padding: '13px 80px',
+    padding: '8px 0',
     fontSize: '14px',
   },
 });

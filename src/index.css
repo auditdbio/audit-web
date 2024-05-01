@@ -10,7 +10,7 @@ body {
 }
 
 #root {
-	background-image: url(../public/welcome_page/background_img.webp);
+	background-image: url(/welcome_page/background_img.webp);
 	background-position: center;
 	background-repeat: no-repeat;
 	background-size: cover;
@@ -33,10 +33,19 @@ a {
 
 .MuiPaper-elevation,.MuiPaper-rounded,.MuiPaper-elevation24,.MuiDialog-paper {
 	border-radius: 15px !important;
-	/*transform: unset;*/
 	border: none!important;
 }
 
+@supports not selector(::-webkit-scrollbar) {
+	* {
+		/* IE */
+		scrollbar-base-color: #6a737d;
+		scrollbar-arrow-color: white;
+		/* Mozilla Firefox */
+		scrollbar-width: thin;
+		scrollbar-color: #6a737d transparent;
+	}
+}
 
 *::-webkit-scrollbar {
 	width: 14px;
@@ -58,16 +67,6 @@ a {
 	background: linear-gradient(180deg, #6a737d, #6a737d);
 }
 
-* {
-	/* Scrollbar */
-	/* IE */
-	scrollbar-base-color: #6a737d;
-	scrollbar-arrow-color: white;
-	/* Mozilla Firefox */
-	scrollbar-width: 14px;
-	scrollbar-color: #6a737d transparent;
-}
-
 .MuiDialog-container.MuiDialog-scrollPaper .MuiPaper-root.MuiPaper-elevation.MuiPaper-rounded {
 	margin: 20px
 }
@@ -76,3 +75,9 @@ li.Mui-selected.selected-severity:hover {
 	background: #FF9900;
 	color: white;
 }
+
+.st0{fill:#15003E;}
+.st1{fill:#0FCE7C;}
+.st2{fill:#FFFFFF;}
+.st3{fill:#EFF4EE;}
+.st4{fill:#25E899;}

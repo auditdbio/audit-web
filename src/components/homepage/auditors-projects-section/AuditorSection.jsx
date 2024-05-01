@@ -1,4 +1,6 @@
-import AuditorCard from './AuditorCard';
+import { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom/dist';
 import {
   Box,
   Typography,
@@ -8,21 +10,20 @@ import {
   Grid,
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
+import AuditorCard from './AuditorCard';
 import theme from '../../../styles/themes';
-import { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import { getAuditors } from '../../../redux/actions/auditorAction.js';
-import { useNavigate } from 'react-router-dom/dist';
 import { addTestsLabel } from '../../../lib/helper.js';
+import { sliceCards } from './AuditorsProjectsSection.jsx';
 import { Link } from 'react-router-dom';
 
 const AuditorSection = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const matchSm = useMediaQuery(theme.breakpoints.down('xs'));
+  const matchSm = useMediaQuery(theme.breakpoints.down('sm'));
+  const matchXs = useMediaQuery(theme.breakpoints.down('xs'));
 
   const [searchInput, setSearchInput] = useState('');
-
   const [auditorFound, setAuditorFound] = useState(true);
 
   const auditorReducer = useSelector(state => state.auditor);
@@ -44,11 +45,7 @@ const AuditorSection = () => {
   }, [auditorReducer]);
 
   return (
-    <Box
-      sx={{
-        width: '100%',
-      }}
-    >
+    <Box sx={{ width: '100%' }}>
       <Box sx={headerWrapper}>
         <Typography variant="h1" sx={titleSx}>
           <Link style={{ color: '#fff' }} to={'/auditors'}>
@@ -57,12 +54,7 @@ const AuditorSection = () => {
         </Typography>
         <Box sx={searchWrapper}>
           <InputBase
-            sx={{
-              ml: 1,
-              flex: 1,
-              white: 'color',
-              padding: '0',
-            }}
+            sx={inputSx}
             inputProps={{
               'aria-label': 'search google maps',
               style: {
@@ -73,9 +65,7 @@ const AuditorSection = () => {
               ...addTestsLabel('homepage_auditors-search-input'),
             }}
             value={searchInput}
-            onChange={e => {
-              setSearchInput(e.target.value);
-            }}
+            onChange={e => setSearchInput(e.target.value)}
             onKeyDown={e => {
               if (e.key === 'Enter') {
                 navigate(`/auditors?search=${searchInput}`);
@@ -87,9 +77,7 @@ const AuditorSection = () => {
             sx={{ p: '10px', color: 'white' }}
             aria-label="search"
             disableRipple
-            onClick={() => {
-              navigate(`/auditors?search=${searchInput}`);
-            }}
+            onClick={() => navigate(`/auditors?search=${searchInput}`)}
             {...addTestsLabel('homepage_auditors-search-button')}
           >
             <SearchIcon />
@@ -107,29 +95,26 @@ const AuditorSection = () => {
           </Typography>
         </Box>
       )}
-      <Grid
-        container
-        rowSpacing={matchSm ? 2 : 4}
-        columnSpacing={matchSm ? 2 : 4}
-        // justifyContent="space-between"
-      >
+      <Grid container spacing={{ zero: 1, xs: 2, lg: 4 }}>
         {auditorReducer.auditors &&
-          auditorReducer?.auditors?.slice(0, matchSm ? 4 : 3)?.map(auditor => (
-            <Grid key={auditor.user_id} item sx={gridItemStylePublic}>
-              <AuditorCard auditor={auditor} />
-            </Grid>
-          ))}
+          auditorReducer?.auditors
+            ?.slice(...sliceCards(matchSm, matchXs))
+            ?.map(auditor => (
+              <Grid key={auditor.user_id} item zero={6} xs={4} sm={3}>
+                <AuditorCard auditor={auditor} />
+              </Grid>
+            ))}
       </Grid>
 
-      <Box
-        sx={{
-          display: 'flex',
-          justifyContent: 'end',
-          alignItems: 'center',
-        }}
-      >
-        {/*<Typography variant="body2">view more...</Typography>*/}
-      </Box>
+      {/*<Box*/}
+      {/*  sx={{*/}
+      {/*    display: 'flex',*/}
+      {/*    justifyContent: 'end',*/}
+      {/*    alignItems: 'center',*/}
+      {/*  }}*/}
+      {/*>*/}
+      {/*  <Typography variant="body2">view more...</Typography>*/}
+      {/*</Box>*/}
     </Box>
   );
 };
@@ -185,4 +170,12 @@ const searchWrapper = {
     width: '100%',
   },
 };
+
+const inputSx = {
+  ml: 1,
+  flex: 1,
+  white: 'color',
+  padding: '0',
+};
+
 export default AuditorSection;
