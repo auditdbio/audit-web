@@ -35,6 +35,7 @@ export const getBranches = repoOwner => {
           {
             headers: {
               Authorization: `Bearer ${token}`,
+              'Cache-Control': 'no-cache',
             },
           },
         );
@@ -59,6 +60,7 @@ export const getTags = repoOwner => {
     axios(`${API_URL}/github/repos/${repoOwner}/tags`, {
       headers: {
         Authorization: `Bearer ${Cookies.get('token')}`,
+        'Cache-Control': 'no-cache',
       },
     }).then(({ data }) => {
       dispatch({ type: GET_TAGS, payload: data });
@@ -74,6 +76,7 @@ export const getCommits = (repoOwner, branch, page) => {
       {
         headers: {
           Authorization: `Bearer ${token}`,
+          'Cache-Control': 'no-cache',
         },
       },
     )
@@ -93,6 +96,7 @@ export const getCommitData = (repoOwner, sha) => {
       {
         headers: {
           Authorization: `Bearer ${Cookies.get('token')}`,
+          'Cache-Control': 'no-cache',
         },
       },
     ).then(({ data }) => {
@@ -101,6 +105,7 @@ export const getCommitData = (repoOwner, sha) => {
     axios(`${API_URL}/github/repos/${repoOwner}/commits/${sha}`, {
       headers: {
         Authorization: `Bearer ${Cookies.get('token')}`,
+        'Cache-Control': 'no-cache',
       },
     }).then(({ data }) => {
       dispatch({ type: GET_COMMIT, payload: data });
@@ -237,6 +242,7 @@ export const getMyGithubOrgs = () => {
             axios(`${API_URL}/github/orgs/${org.login}/repos`, {
               headers: {
                 Authorization: `Bearer ${Cookies.get('token')}`,
+                'Cache-Control': 'no-cache',
               },
             }).then(({ data }) => {
               dispatch({
@@ -283,6 +289,7 @@ export const getMyPublicGithubOrgs = user => {
             axios(`${API_URL}/github/orgs/${org.login}/repos`, {
               headers: {
                 Authorization: `Bearer ${Cookies.get('token')}`,
+                'Cache-Control': 'no-cache',
               },
             }).then(({ data }) => {
               dispatch({
