@@ -21,6 +21,7 @@ import {
   SWITCH_GITHUB_TAB,
   GET_MY_PRIVATE_GITHUB_ORGANIZATION,
   NEED_TO_AUTH_GITHUB,
+  SWITCH_REPO,
 } from '../actions/types.js';
 
 const initialState = {
@@ -56,6 +57,11 @@ export const githubReducer = (state = initialState, action) => {
       return {
         ...state,
         tab: action.payload,
+      };
+    case SWITCH_REPO:
+      return {
+        branches: [],
+        branch: '',
       };
     case GET_TAG:
       return {

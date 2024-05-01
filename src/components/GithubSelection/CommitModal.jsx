@@ -209,21 +209,25 @@ const CommitModal = ({
 
   const checkAll = useMemo(() => {
     if (data && data.tree) {
-      return field.value.every(value => {
-        const pathIndex = value.indexOf('blob') + 46;
-        const path = value.slice(pathIndex);
-        return data.tree?.some(treeItem => treeItem.path === path);
-      });
+      return field.value
+        .filter(el => el.includes('github'))
+        .every(value => {
+          const pathIndex = value.indexOf('blob') + 46;
+          const path = value.slice(pathIndex);
+          return data.tree?.some(treeItem => treeItem.path === path);
+        });
     }
   }, [data?.tree, sha]);
 
   const checkAllSelected = useMemo(() => {
     if (data && data.tree) {
-      return selected.every(value => {
-        const pathIndex = value.indexOf('blob') + 46;
-        const path = value.slice(pathIndex);
-        return data.tree?.some(treeItem => treeItem.path === path);
-      });
+      return selected
+        .filter(el => el.includes('github'))
+        .every(value => {
+          const pathIndex = value.indexOf('blob') + 46;
+          const path = value.slice(pathIndex);
+          return data.tree?.some(treeItem => treeItem.path === path);
+        });
     }
   }, [data?.tree, sha]);
 
@@ -248,7 +252,9 @@ const CommitModal = ({
       filteredValue.forEach(el => {
         const pathIndex = el.indexOf('blob') + 46;
         const path = el.slice(pathIndex);
-        handleAddRemove({ path: path, type: 'blob' });
+        if (el.includes('github')) {
+          handleRemoveAll({ path, type: 'blob' });
+        }
       });
     }
   }, [data.tree, sha, checkAll]);

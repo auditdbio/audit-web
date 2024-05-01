@@ -37,6 +37,7 @@ import GithubOwnOrgs from './GithubOwnOrgs.jsx';
 import GitHubAuthComponent from './GitHubAuthComponent.jsx';
 import CommitModal from './CommitModal.jsx';
 import CommitsList from './CommitsList.jsx';
+import { SWITCH_REPO } from '../../redux/actions/types.js';
 
 const GITHUB_ID = import.meta.env.VITE_GITHUB_CLIENT_ID;
 const BASE_URL = import.meta.env.VITE_BASE_URL;
@@ -97,6 +98,7 @@ const GithubSelection = ({ project }) => {
       dispatch(getDefaultBranch(repository));
     }
   }, [repository]);
+
   useEffect(() => {
     if (repository && (branch || defaultBranch)) {
       dispatch(getTotalCommits(repository, branch, page));
@@ -150,6 +152,7 @@ const GithubSelection = ({ project }) => {
     fieldHelper.setValue([]);
     dispatch(clearRepoOwner());
     dispatch(clearCommit());
+    dispatch({ type: SWITCH_REPO });
   };
   useEffect(() => {
     const handleStorageChange = event => {
