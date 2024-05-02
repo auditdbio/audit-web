@@ -9,6 +9,7 @@ import {
   PROJECT_UPDATE,
   PROJECT_UPDATE_STATUS,
   SEARCH_PROJECTS,
+  GET_PROJECTS_BY_USER_ID,
 } from './types.js';
 import axios from 'axios';
 import Cookies from 'js-cookie';
@@ -33,6 +34,23 @@ export const createProject = values => {
       })
       .catch(e => {
         console.log(e, 'res');
+      });
+  };
+};
+
+export const getProjectsByUserId = id => {
+  return async dispatch => {
+    const token = Cookies.get('token');
+    await axios
+      .get(`${API_URL}/customer/${id}/project`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .then(({ data }) => {
+        console.log(data);
+        dispatch({ type: GET_PROJECTS_BY_USER_ID, payload: data });
+      })
+      .catch(({ response }) => {
+        console.log(response, 'res');
       });
   };
 };

@@ -478,7 +478,7 @@ const PublicConstructor = ({ saved, isPublic }) => {
                     >
                       <IssuesList
                         setIsOpenReset={setIsOpen}
-                        auditId={report.auditId || audit?.id}
+                        auditId={!saved ? report.auditId : audit?.id}
                         isPublic={isPublic}
                         saved={saved}
                         handleSubmit={handleSubmit}
