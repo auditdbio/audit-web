@@ -15,6 +15,7 @@ import {
   useMediaQuery,
   Collapse,
   IconButton,
+  Divider,
 } from '@mui/material';
 import theme from '../styles/themes.js';
 import { CustomCard } from '../components/custom/Card.jsx';
@@ -22,13 +23,16 @@ import Layout from '../styles/Layout.jsx';
 import {
   addReportAudit,
   clearMessage,
+  downloadReport,
   editAudit,
   getAudit,
+  getPublicReport,
   startAudit,
 } from '../redux/actions/auditAction.js';
 import AuditUpload from '../components/forms/audit-upload/index.jsx';
 import Loader from '../components/Loader.jsx';
 import {
+  AUDITOR,
   CLEAR_AUDIT,
   CUSTOMER,
   RESOLVED,
@@ -36,7 +40,7 @@ import {
   WAITING_FOR_AUDITS,
 } from '../redux/actions/types.js';
 import Markdown from '../components/markdown/Markdown.jsx';
-import { addTestsLabel } from '../lib/helper.js';
+import { addTestsLabel, isAuth, reportBuilder } from '../lib/helper.js';
 import CustomLink from '../components/custom/CustomLink.jsx';
 import IssueDetailsForm from '../components/issuesPage/IssueDetailsForm/IssueDetailsForm.jsx';
 import IssuesList from '../components/issuesPage/IssuesList.jsx';
@@ -49,13 +53,17 @@ import ChatIcon from '../components/icons/ChatIcon.jsx';
 import Headings from '../router/Headings.jsx';
 import MarkdownEditor from '../components/markdown/Markdown-editor.jsx';
 import EditIcon from '@mui/icons-material/Edit.js';
+import { BASE_URL } from '../services/urls.js';
+import ResolveAuditConfirmation from '../components/issuesPage/ResolveAuditConfirmation.jsx';
 
 const AuditOffer = () => {
   const { auditId } = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const matchXs = useMediaQuery(theme.breakpoints.down('xs'));
-
+  const matchMd = useMediaQuery(theme.breakpoints.down('md'));
+  const [resolveConfirmation, setResolveConfirmation] = useState(false);
+  const [allIssuesClosed, setAllIssuesClosed] = useState(false);
   const role = useSelector(s => s.user?.user?.current_role);
   const { successMessage, error } = useSelector(s => s.issues);
   const { issues, issuesAuditId } = useSelector(s => s.issues);
@@ -67,13 +75,14 @@ const AuditOffer = () => {
   const { user } = useSelector(s => s.user);
   const { chatList } = useSelector(s => s.chat);
   const notFound = useSelector(s => s.notFound.error);
-
+  const { auditor } = useSelector(s => s.auditor);
+  const { customer } = useSelector(s => s.customer);
   const [auditDBWorkflow, setAuditDBWorkflow] = useState(true);
   const [showReadMoreButton, setShowReadMoreButton] = useState(false);
   const [showFull, setShowFull] = useState(false);
   const [editConclusion, setEditConclusion] = useState(false);
   const [mdRef, setMdRef] = useState(null);
-
+  //
   const descriptionRef = useRef();
 
   useEffect(() => {
@@ -142,6 +151,44 @@ const AuditOffer = () => {
     }
   };
 
+  useEffect(() => {
+    const allClosed = issues?.every(
+      issue =>
+        issue.status === FIXED || issue.status === NOT_FIXED || !issue.include,
+    );
+    setAllIssuesClosed(allClosed);
+  }, [issues]);
+
+  const handleGenerateReport = () => {
+    // if (isPublic) {
+    //   if (report?.auditor_name && report?.project_name && report?.description) {
+    //     if (isAuth()) {
+    //       if (user.current_role === AUDITOR) {
+    //         const linkId = auditor.link_id || auditor.user_id;
+    //         report.profile_link = linkId
+    //           ? `${BASE_URL}a/${linkId}`
+    //           : `${BASE_URL}disclaimer/`;
+    //       } else if (user.current_role === CUSTOMER) {
+    //         const linkId = customer.link_id || customer.user_id;
+    //         report.profile_link = linkId
+    //           ? `${BASE_URL}c/${linkId}`
+    //           : `${BASE_URL}disclaimer/`;
+    //       }
+    //     }
+    //     const newData = reportBuilder(report, issuesArray);
+    //     dispatch(getPublicReport(newData, { generate: true }));
+    //   } else {
+    //     handleSubmit();
+    //     setOpenMessage(true);
+    //   }
+    //
+    //   setMenuAnchorEl(null);
+    // } else {
+    dispatch(downloadReport(audit, { generate: true }));
+    // setMenuAnchorEl(null);
+    // }
+  };
+
   if (!audit?.id && !notFound) {
     return (
       <Layout>
@@ -165,7 +212,11 @@ const AuditOffer = () => {
         }}
       >
         <Headings title={`${audit?.project_name} | Audit`} />
-
+        <ResolveAuditConfirmation
+          isOpen={resolveConfirmation}
+          setIsOpen={setResolveConfirmation}
+          audit={audit}
+        />
         <CustomCard sx={wrapper}>
           <Box sx={{ width: '100%' }}>
             <CustomSnackbar
@@ -332,82 +383,6 @@ const AuditOffer = () => {
                   ))}
                 </Box>
 
-                <Formik
-                  initialValues={{
-                    id: audit?.id,
-                    conclusion: audit?.conclusion || '',
-                  }}
-                  onSubmit={values => {
-                    dispatch(editAudit(values));
-                  }}
-                >
-                  {({ handleSubmit }) => (
-                    <Form
-                      onSubmit={handleSubmit}
-                      style={{ width: '100%', marginBottom: '20px' }}
-                    >
-                      {audit?.status?.toLowerCase() !==
-                        RESOLVED.toLowerCase() && (
-                        <Box sx={buttonWrapper}>
-                          {!audit?.conclusion && (
-                            <Button
-                              sx={buttonSx}
-                              type="button"
-                              variant="contained"
-                              color="secondary"
-                              onClick={() => handleConclusion(handleSubmit)}
-                            >
-                              {editConclusion
-                                ? 'Save conclusion'
-                                : 'Add conclusion'}
-                            </Button>
-                          )}
-                        </Box>
-                      )}
-                      <Collapse in={editConclusion || audit?.conclusion}>
-                        <Box sx={{ position: 'relative' }}>
-                          {audit?.conclusion && (
-                            <Box sx={conclusionTitle}>Conclusion</Box>
-                          )}
-                          <MarkdownEditor
-                            name="conclusion"
-                            setMdRef={setMdRef}
-                            mdProps={{
-                              style: {
-                                backgroundColor: '#fcfaf6',
-                                height: editConclusion ? '400px' : 'auto',
-                                maxHeight: '400px',
-                              },
-                              view: {
-                                menu: !audit?.conclusion,
-                                md: !audit?.conclusion,
-                                html: true,
-                              },
-                            }}
-                          />
-
-                          {audit?.conclusion &&
-                            audit?.status?.toLowerCase() !==
-                              RESOLVED.toLowerCase() && (
-                              <IconButton
-                                type="button"
-                                aria-label="Edit description"
-                                onClick={() => handleConclusion(handleSubmit)}
-                                sx={editButton}
-                                {...addTestsLabel('edit-conclusion-button')}
-                              >
-                                <EditIcon color="secondary" fontSize="small" />
-                                <Box component="span" sx={editButtonText}>
-                                  {editConclusion ? 'Save' : 'Edit'}
-                                </Box>
-                              </IconButton>
-                            )}
-                        </Box>
-                      </Collapse>
-                    </Form>
-                  )}
-                </Formik>
-
                 <Box sx={{ display: 'flex', justifyContent: 'center' }}>
                   <Button
                     variant="text"
@@ -531,6 +506,131 @@ const AuditOffer = () => {
             </Box>
           </Box>
 
+          <Formik
+            initialValues={{
+              id: audit?.id,
+              conclusion: audit?.conclusion || '',
+            }}
+            onSubmit={values => {
+              dispatch(editAudit(values));
+            }}
+          >
+            {({ handleSubmit }) => (
+              <Form onSubmit={handleSubmit} style={{ width: '100%' }}>
+                {matchMd &&
+                  audit?.status?.toLowerCase() !== RESOLVED.toLowerCase() && (
+                    <>
+                      <Typography variant={'h3'} sx={{ mb: '10px' }}>
+                        Audit actions
+                      </Typography>
+                      <Divider sx={{ mb: '25px' }} />
+                    </>
+                  )}
+                {audit?.status?.toLowerCase() !== RESOLVED.toLowerCase() && (
+                  <Box
+                    sx={[
+                      buttonWrapper,
+                      { width: '100%', maxWidth: 'unset' },
+                      auditActionWrapperSx,
+                    ]}
+                  >
+                    {!audit?.conclusion && (
+                      <Button
+                        sx={[buttonSx, { marginLeft: '0!important' }]}
+                        type="button"
+                        variant="contained"
+                        color="secondary"
+                        onClick={() => handleConclusion(handleSubmit)}
+                      >
+                        {editConclusion ? 'Save conclusion' : 'Add conclusion'}
+                      </Button>
+                    )}
+                    <Button
+                      variant="contained"
+                      color="secondary"
+                      sx={[
+                        buttonSx,
+                        {
+                          marginRight: '0!important',
+                          marginLeft: '0!important',
+                        },
+                        // publicBtnSx
+                      ]}
+                      onClick={handleGenerateReport}
+                    >
+                      Generate report
+                    </Button>
+                    <Tooltip
+                      arrow
+                      placement="top"
+                      title={
+                        allIssuesClosed
+                          ? ''
+                          : "To resolve an audit, it is necessary that the status of all issues be 'Fixed' or 'Not fixed'. Or do not include some issues in the audit."
+                      }
+                    >
+                      <span>
+                        <Button
+                          variant="contained"
+                          color="primary"
+                          onClick={() => setResolveConfirmation(true)}
+                          disabled={!allIssuesClosed}
+                          sx={[
+                            buttonSx,
+                            { marginRight: '0!important', ml: '15px' },
+                          ]}
+                          {...addTestsLabel('resolve-button')}
+                        >
+                          Resolve audit
+                        </Button>
+                      </span>
+                    </Tooltip>
+                  </Box>
+                )}
+                <Collapse in={editConclusion || audit?.conclusion}>
+                  <Box sx={{ position: 'relative' }}>
+                    {audit?.conclusion && (
+                      <Box sx={conclusionTitle}>Conclusion</Box>
+                    )}
+                    <MarkdownEditor
+                      name="conclusion"
+                      setMdRef={setMdRef}
+                      mdProps={{
+                        style: {
+                          backgroundColor: '#fcfaf6',
+                          height: editConclusion ? '400px' : 'auto',
+                          maxHeight: '400px',
+                        },
+                        view: {
+                          menu: !audit?.conclusion,
+                          md: !audit?.conclusion,
+                          html: true,
+                        },
+                      }}
+                    />
+
+                    {audit?.conclusion &&
+                      audit?.status?.toLowerCase() !==
+                        RESOLVED.toLowerCase() && (
+                        <IconButton
+                          type="button"
+                          aria-label="Edit description"
+                          onClick={() => handleConclusion(handleSubmit)}
+                          sx={editButton}
+                          {...addTestsLabel('edit-conclusion-button')}
+                        >
+                          <EditIcon color="secondary" fontSize="small" />
+                          <Box component="span" sx={editButtonText}>
+                            {editConclusion ? 'Save' : 'Edit'}
+                          </Box>
+                        </IconButton>
+                      )}
+                  </Box>
+                </Collapse>
+              </Form>
+            )}
+          </Formik>
+
           {auditDBWorkflow &&
             audit?.status?.toLowerCase() !==
               WAITING_FOR_AUDITS.toLowerCase() && (
@@ -569,6 +669,17 @@ export default AuditOffer;
 const SubmitValidation = Yup.object().shape({
   report: Yup.string().required('File is required'),
 });
+
+const auditActionWrapperSx = {
+  [theme.breakpoints.down(630)]: {
+    flexDirection: 'column',
+    gap: '15px',
+    '& button': {
+      width: '100%',
+      margin: 0,
+    },
+  },
+};
 
 const wrapper = theme => ({
   padding: '30px 60px 60px',
@@ -737,18 +848,21 @@ const buttonWrapper = {
 };
 
 const buttonSx = theme => ({
-  padding: '11px 0',
+  padding: '8.5px 0',
   fontSize: '16px',
   textTransform: 'unset',
   fontWeight: 600,
-  margin: '0 12px',
+  mr: '15px',
   width: '270px',
   borderRadius: '10px',
   [theme.breakpoints.down('sm')]: {
     width: '240px',
   },
+  [theme.breakpoints.down(920)]: {
+    width: '160px',
+  },
   [theme.breakpoints.down('xs')]: {
-    margin: '0 6px',
+    // margin: '0 6px',
     padding: '12px 0',
     fontSize: '14px',
   },
