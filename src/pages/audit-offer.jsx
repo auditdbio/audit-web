@@ -256,7 +256,7 @@ const AuditOffer = () => {
                   wordBreak: 'break-word',
                 }}
               >
-                {audit?.project_name}
+                {audit?.project_name} ршр шрш р
               </Typography>
             </Box>
 
@@ -415,7 +415,7 @@ const AuditOffer = () => {
                         WAITING_FOR_AUDITS.toLowerCase() ? (
                           <Box sx={buttonWrapper}>
                             <Button
-                              sx={buttonSx}
+                              sx={[buttonSx, { marginX: 0 }]}
                               variant="contained"
                               color="secondary"
                               type="button"
@@ -540,6 +540,10 @@ const AuditOffer = () => {
                         type="button"
                         variant="contained"
                         color="secondary"
+                        disabled={
+                          audit?.status?.toLowerCase() ===
+                          WAITING_FOR_AUDITS.toLowerCase()
+                        }
                         onClick={() => handleConclusion(handleSubmit)}
                       >
                         {editConclusion ? 'Save conclusion' : 'Add conclusion'}
@@ -556,6 +560,10 @@ const AuditOffer = () => {
                         },
                         // publicBtnSx
                       ]}
+                      disabled={
+                        audit?.status?.toLowerCase() ===
+                        WAITING_FOR_AUDITS.toLowerCase()
+                      }
                       onClick={handleGenerateReport}
                     >
                       Generate report
@@ -574,7 +582,7 @@ const AuditOffer = () => {
                           variant="contained"
                           color="primary"
                           onClick={() => setResolveConfirmation(true)}
-                          disabled={!allIssuesClosed}
+                          disabled={!allIssuesClosed || !issues?.length}
                           sx={[
                             buttonSx,
                             { marginRight: '0!important', ml: '15px' },
