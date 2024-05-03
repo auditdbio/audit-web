@@ -71,7 +71,8 @@ const GithubOwnRepositories = ({
       </Box>
       <Divider />
       <List sx={[listWrapper, { marginX: '0px!important' }]}>
-        {tabValue !== 2 &&
+        {typeof myOrganizations?.message !== 'string' &&
+          tabValue !== 2 &&
           myOrganizations
             ?.filter(el => el.login?.startsWith(inputValue))
             ?.map(org => {

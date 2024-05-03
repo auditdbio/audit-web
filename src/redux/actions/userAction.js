@@ -60,8 +60,6 @@ export const signUpGithub = data => {
             { some: true },
           );
         }
-
-
       })
       .catch(({ response }) => {
         console.error(response);
@@ -288,6 +286,9 @@ export const authGithub = (user_id, values) => {
       .post(`${API_URL}/auth/github`, values)
       .then(({ data }) => {
         if (user.linked_accounts.find(el => el.name === 'GitHub')) {
+          localStorage.setItem('token', JSON.stringify(data.token));
+          localStorage.setItem('user', JSON.stringify(data.user));
+          dispatch({ type: USER_SIGNIN, payload: data });
           localStorage.setItem('authenticated', 'true');
           window.close();
         }

@@ -55,6 +55,7 @@ import {
   clearCommit,
   clearRepoOwner,
   getCommitData,
+  getMyGithub,
   getRepoOwner,
   getSha,
 } from '../redux/actions/githubAction.js';
@@ -99,6 +100,17 @@ const CreateProjectCard = ({ projectInfo }) => {
   useEffect(() => {
     dispatch(getAuditsRequest('customer'));
   }, []);
+  const githubData = useSelector(s =>
+    s.user?.user?.linked_accounts?.find(
+      el => el?.name?.toLowerCase() === 'github',
+    ),
+  );
+
+  useEffect(() => {
+    if (githubData?.id && githubData?.scope?.includes('repo')) {
+      dispatch(getMyGithub());
+    }
+  }, [githubData?.scope?.includes('repo'), githubData?.id]);
 
   useEffect(() => {
     if (auditReducer.auditRequests && projectInfo) {
