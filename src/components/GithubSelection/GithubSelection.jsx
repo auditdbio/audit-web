@@ -149,7 +149,7 @@ const GithubSelection = ({ project }) => {
   const handleReset = () => {
     setRepository(null);
     setUrlRepo('');
-    fieldHelper.setValue([]);
+    fieldHelper.setValue(field.value.filter(el => !el.includes('github.com')));
     dispatch(clearRepoOwner());
     dispatch(clearCommit());
     dispatch({ type: SWITCH_REPO });

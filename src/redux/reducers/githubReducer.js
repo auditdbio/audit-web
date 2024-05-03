@@ -60,6 +60,7 @@ export const githubReducer = (state = initialState, action) => {
       };
     case SWITCH_REPO:
       return {
+        ...state,
         branches: [],
         branch: '',
       };
