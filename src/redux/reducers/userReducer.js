@@ -24,6 +24,7 @@ import {
   GET_PUBLIC_PROFILE,
   CLEAR_MESSAGES,
   GET_MY_PROFILE,
+  NEED_TO_AUTH_GITHUB,
 } from '../actions/types.js';
 
 const initialState = {
@@ -56,6 +57,19 @@ export const userReducer = (state = initialState, action) => {
         user: {
           ...state.user,
           linked_accounts: [...state.user.linked_accounts, action.payload],
+        },
+      };
+    case NEED_TO_AUTH_GITHUB:
+      return {
+        ...state,
+        user: {
+          ...state.user,
+          linked_accounts: state.user.linked_accounts.map(account => {
+            if (account.name === 'GitHub') {
+              return { ...account, scope: account.scope.replace(',repo', '') };
+            }
+            return account;
+          }),
         },
       };
     case GET_PROFILE:

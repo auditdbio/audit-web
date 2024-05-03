@@ -22,8 +22,10 @@ import {
   clearRepoOwner,
   getCommits,
   getDefaultBranch,
+  getGithubPublicRepos,
   getMyGithub,
   getMyGithubOrgs,
+  getMyPublicGithubOrgs,
   getRepoOwner,
   getTotalCommits,
 } from '../../redux/actions/githubAction.js';
@@ -35,6 +37,7 @@ import GithubOwnOrgs from './GithubOwnOrgs.jsx';
 import GitHubAuthComponent from './GitHubAuthComponent.jsx';
 import CommitModal from './CommitModal.jsx';
 import CommitsList from './CommitsList.jsx';
+import { SWITCH_REPO } from '../../redux/actions/types.js';
 
 const GITHUB_ID = import.meta.env.VITE_GITHUB_CLIENT_ID;
 const BASE_URL = import.meta.env.VITE_BASE_URL;
@@ -44,6 +47,7 @@ const GithubSelection = ({ project }) => {
   const [urlRepo, setUrlRepo] = useState('');
   const { branch } = useSelector(state => state.github);
   const [isOpen, setIsOpen] = useState(false);
+  const [selected, setSelected] = useState([]);
   const {
     defaultBranch,
     totalCommitsPage,
@@ -94,6 +98,7 @@ const GithubSelection = ({ project }) => {
       dispatch(getDefaultBranch(repository));
     }
   }, [repository]);
+
   useEffect(() => {
     if (repository && (branch || defaultBranch)) {
       dispatch(getTotalCommits(repository, branch, page));
@@ -101,11 +106,20 @@ const GithubSelection = ({ project }) => {
   }, [repository, branch, page]);
 
   useEffect(() => {
-    if (githubData?.id && !myRepositories?.length) {
-      dispatch(getMyGithub());
-      dispatch(getMyGithubOrgs());
+    if (githubData?.id && githubData?.username) {
+      if (githubData?.scope?.includes('repo')) {
+        dispatch(getMyGithubOrgs());
+        dispatch(getMyGithub());
+      } else {
+        dispatch(getGithubPublicRepos(githubData.username));
+        dispatch(getMyPublicGithubOrgs(githubData.username));
+      }
     }
-  }, []);
+  }, [githubData?.scope?.includes('repo'), githubData?.username]);
+
+  // useEffect(() => {
+  //   dispatch(getMyProfile());
+  // }, []);
 
   const handleAddProject = () => {
     if (urlRepo.includes('github.com/')) {
@@ -135,9 +149,10 @@ const GithubSelection = ({ project }) => {
   const handleReset = () => {
     setRepository(null);
     setUrlRepo('');
-    fieldHelper.setValue([]);
+    fieldHelper.setValue(field.value.filter(el => !el.includes('github.com')));
     dispatch(clearRepoOwner());
     dispatch(clearCommit());
+    dispatch({ type: SWITCH_REPO });
   };
   useEffect(() => {
     const handleStorageChange = event => {
@@ -226,12 +241,21 @@ const GithubSelection = ({ project }) => {
                       Submit
                     </Button>
                   </Box>
-                  {githubData?.id && !orgs.message ? (
-                    <GithubOwnRepositories
-                      setRepository={handleOpenOwnRepo}
-                      myRepositories={myRepositories}
-                      myOrganizations={myOrganizations}
-                    />
+                  {githubData?.id ? (
+                    <>
+                      {!githubData?.scope?.includes('repo') && (
+                        <GitHubAuthComponent
+                          desc={
+                            'Authenticate via GitHub to select from your private repositories'
+                          }
+                        />
+                      )}
+                      <GithubOwnRepositories
+                        setRepository={handleOpenOwnRepo}
+                        myRepositories={myRepositories}
+                        myOrganizations={myOrganizations}
+                      />
+                    </>
                   ) : (
                     <GitHubAuthComponent />
                   )}
@@ -248,6 +272,8 @@ const GithubSelection = ({ project }) => {
           {sha && (
             <CommitModal
               sha={sha}
+              selected={selected}
+              setSelected={setSelected}
               handleCloseCommit={handleCloseCommit}
               repository={repository}
               onClose={handleClose}
