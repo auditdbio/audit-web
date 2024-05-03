@@ -8,29 +8,36 @@ import { useDispatch, useSelector } from 'react-redux';
 import MyProjectListCard from '../components/My-project-list-card.jsx';
 import AuditorModal from '../components/AuditorModal.jsx';
 import { useParams, useSearchParams } from 'react-router-dom';
-import { createRequest } from '../redux/actions/auditAction.js';
-import { getAuditors } from '../redux/actions/auditorAction.js';
+import { getCurrentAuditor } from '../redux/actions/auditorAction.js';
+import { clearMessage, createRequest } from '../redux/actions/auditAction.js';
+import { getAuditorById } from '../redux/actions/auditorAction.js';
 import { addTestsLabel } from '../lib/helper.js';
 import CustomSnackbar from '../components/custom/CustomSnackbar.jsx';
+import Headings from '../router/Headings.jsx';
+import { CLEAR_MESSAGES } from '../redux/actions/types.js';
 
 const MyProjects = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const myProjects = useSelector(state => state.project.myProjects);
   const params = useParams();
+  const successMessage = useSelector(s => s.audits.successMessage);
   const [searchParams, setSearchParams] = useSearchParams();
   const [isOpenView, setIsOpenView] = useState(false);
   const [chosen, setChosen] = useState([]);
-  const auditor = useSelector(state =>
-    state?.auditor?.auditors?.find(auditor => auditor.user_id === params.id),
-  );
+  const auditor = useSelector(state => state?.auditor?.currentAuditor);
   const [errorMessage, setErrorMessage] = useState(null);
 
+  const { myProjects } = useSelector(s => s.project);
+  const { currentAuditor } = useSelector(s => s.auditor);
+
   useEffect(() => {
-    if (!auditor) {
-      dispatch(getAuditors());
-    }
-  }, []);
+    // if (!auditor) {
+    dispatch(getAuditorById(params.id));
+    // }
+    return () => {
+      localStorage.removeItem('chat-path');
+    };
+  }, [params.id]);
 
   const handleCloseView = () => {
     setIsOpenView(false);
@@ -47,8 +54,18 @@ const MyProjects = () => {
           time: values?.time,
           project_id: project?.id,
         };
-        dispatch(createRequest(data, true, '/profile/projects'));
+        dispatch(
+          createRequest(
+            data,
+            true,
+            '/profile/projects',
+            !!localStorage.getItem('chat-path'),
+          ),
+        );
       });
+      if (localStorage.getItem('chat-path')) {
+        navigate(localStorage.getItem('chat-path'));
+      }
     }
   };
 
@@ -70,6 +87,8 @@ const MyProjects = () => {
 
   return (
     <Layout>
+      <Headings title="Choose Project" />
+
       <CustomCard sx={wrapper}>
         <CustomSnackbar
           autoHideDuration={3000}
@@ -79,6 +98,15 @@ const MyProjects = () => {
           }}
           severity="error"
           text={errorMessage}
+        />
+        <CustomSnackbar
+          autoHideDuration={3000}
+          open={!!successMessage}
+          onClose={() => {
+            dispatch(clearMessage());
+          }}
+          severity="success"
+          text={successMessage}
         />
         <Box
           sx={{
@@ -113,16 +141,16 @@ const MyProjects = () => {
           variant="contained"
           sx={submitBtn}
           onClick={handleOpenView}
-          disabled={chosen.length === 0 || !auditor}
+          disabled={chosen.length === 0 || (!auditor && !currentAuditor)}
           {...addTestsLabel('invite-button')}
         >
           Invite to project
         </Button>
-        {auditor && (
+        {(auditor || currentAuditor) && (
           <AuditorModal
             open={isOpenView}
             handleClose={handleCloseView}
-            auditor={auditor}
+            auditor={auditor || currentAuditor}
             isForm={true}
             onSubmit={handleInviteAuditor}
             setError={setErrorMessage}

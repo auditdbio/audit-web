@@ -55,6 +55,7 @@ const PublicIssueDetailsForm = ({ issue = null, editMode = false, saved }) => {
     include: issue?.include ?? true,
     links: issue?.links || [],
     feedback: issue?.feedback || '',
+    id: issue?.id,
   };
 
   const handleSubmitForm = (values, { setFieldValue }) => {
@@ -97,7 +98,9 @@ const PublicIssueDetailsForm = ({ issue = null, editMode = false, saved }) => {
     } else {
       if (saved) {
         dispatch(addAuditIssue(auditId, values));
-        navigate(-1);
+        if (editMode) {
+          navigate(-1);
+        }
       } else {
         const newValue = { ...values, auditId: Date.now(), id: Date.now() };
         localStorage.setItem(
@@ -273,8 +276,5 @@ const editButtonText = theme => ({
 
 const infoWrapperSx = theme => ({
   display: 'flex',
-  [theme.breakpoints.down('xs')]: {
-    flexDirection: 'column',
-    alignItems: 'center',
-  },
+  flexDirection: 'column-reverse',
 });

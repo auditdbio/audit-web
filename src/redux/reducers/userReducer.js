@@ -22,6 +22,9 @@ import {
   ERROR_IDENTITY,
   GET_PROFILE,
   GET_PUBLIC_PROFILE,
+  CLEAR_MESSAGES,
+  GET_MY_PROFILE,
+  NEED_TO_AUTH_GITHUB,
 } from '../actions/types.js';
 
 const initialState = {
@@ -32,6 +35,7 @@ const initialState = {
   success: null,
   publicUser: null,
 };
+
 export const userReducer = (state = initialState, action) => {
   switch (action.type) {
     case USER_SIGNIN:
@@ -53,6 +57,19 @@ export const userReducer = (state = initialState, action) => {
         user: {
           ...state.user,
           linked_accounts: [...state.user.linked_accounts, action.payload],
+        },
+      };
+    case NEED_TO_AUTH_GITHUB:
+      return {
+        ...state,
+        user: {
+          ...state.user,
+          linked_accounts: state.user.linked_accounts.map(account => {
+            if (account.name === 'GitHub') {
+              return { ...account, scope: account.scope.replace(',repo', '') };
+            }
+            return account;
+          }),
         },
       };
     case GET_PROFILE:
@@ -119,6 +136,8 @@ export const userReducer = (state = initialState, action) => {
       };
     case CLEAR_SUCCESS:
       return { ...state, success: null };
+    case CLEAR_MESSAGES:
+      return { ...state, success: null, error: null };
     case CHANGE_ROLE_HAVE_PROFILE_CUSTOMER:
       return {
         ...state,
@@ -142,6 +161,11 @@ export const userReducer = (state = initialState, action) => {
         ...state,
         user: action.payload,
         success: 'Fill your auditor profile',
+      };
+    case GET_MY_PROFILE:
+      return {
+        ...state,
+        user: action.payload,
       };
     default:
       return state;

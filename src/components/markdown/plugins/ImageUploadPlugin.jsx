@@ -107,14 +107,13 @@ const ImageUploadPlugin = ({ editor }) => {
       <svg
         version="1.1"
         xmlns="http://www.w3.org/2000/svg"
-        xmlns:xlink="http://www.w3.org/1999/xlink"
         x="0px"
         y="0px"
         viewBox="0 0 298.73 298.73"
         width="16"
         height="16"
         fill="#757575"
-        xml:space="preserve"
+        xmlSpace="preserve"
       >
         <g>
           <path

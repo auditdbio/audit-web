@@ -9,6 +9,7 @@ import {
   CLOSE_THE_PROJECT,
   LOG_OUT,
   GET_CURRENT_PROJECT,
+  GET_PROJECTS_BY_USER_ID,
   GET_CLOC,
   CLEAR_CLOC,
   PROJECT_ERROR,
@@ -24,6 +25,7 @@ const initialState = {
   message: null,
   searchTotalProjects: 0,
   currentProject: null,
+  userProjects: [],
   cloc: null,
 };
 
@@ -35,6 +37,11 @@ export const projectReducer = (state = initialState, action) => {
         recentProject: action.payload,
         myProjects: [...state.myProjects, action.payload],
         projects: [...state.projects, action.payload],
+      };
+    case GET_PROJECTS_BY_USER_ID:
+      return {
+        ...state,
+        userProjects: action.payload,
       };
     case GET_PROJECTS:
       return {

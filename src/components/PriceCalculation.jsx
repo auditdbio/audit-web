@@ -34,6 +34,8 @@ const PriceCalculation = ({ scope, price = 0, color = 'primary', sx = {} }) => {
   useEffect(() => {
     if (scope) {
       const links = scope.reduce((acc, url) => {
+        if (!url.startsWith('http')) return acc;
+
         const parsedUrl = GitUrlParse(url);
         if (
           ((parsedUrl.resource === 'github.com' ||

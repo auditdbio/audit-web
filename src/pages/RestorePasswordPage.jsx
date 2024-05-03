@@ -16,6 +16,7 @@ import CustomSnackbar from '../components/custom/CustomSnackbar.jsx';
 import PasswordField from '../components/forms/fields/password-field.jsx';
 import { radiusOfComponents } from '../styles/themes.js';
 import { addTestsLabel } from '../lib/helper.js';
+import Headings from '../router/Headings.jsx';
 
 const RestorePasswordPage = () => {
   const dispatch = useDispatch();
@@ -31,6 +32,8 @@ const RestorePasswordPage = () => {
 
   return (
     <Layout>
+      <Headings title="Restore password" noIndex={true} />
+
       <CustomCard sx={cardWrapper}>
         <Formik
           initialValues={initialValues}

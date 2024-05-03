@@ -18,10 +18,30 @@ export const addSpacesToCamelCase = str => {
   return typeof str === 'string' ? str.replace(/([a-z])([A-Z])/g, '$1 $2') : '';
 };
 
+export const capitalize = str => {
+  return typeof str === 'string' && str.length
+    ? str[0].toUpperCase() + str.slice(1).toLowerCase()
+    : '';
+};
+
+export const encodeBase64url = str => {
+  return window
+    .btoa(str)
+    .replace(/\+/g, '-')
+    .replace(/\//g, '~')
+    .replace(/=/g, '_');
+};
+
+export const decodeBase64url = str => {
+  const s = str.replace(/-/g, '+').replace(/~/g, '/').replace(/_/g, '=');
+  return window.atob(s);
+};
+
 export const reportBuilder = (report, issuesArray) => {
   return {
     auditor_name: report.auditor_name,
     project_name: report.project_name,
+    profile_link: report.profile_link || null,
     report_data: [
       {
         type: 'markdown',

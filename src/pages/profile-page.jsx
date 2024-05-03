@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom/dist';
+import { Navigate, useParams } from 'react-router-dom/dist';
 import { useDispatch, useSelector } from 'react-redux';
 import Layout from '../styles/Layout.jsx';
 import { Box } from '@mui/material';
@@ -13,32 +13,57 @@ import AuditRequest from '../components/Audit-request.jsx';
 import { clearUserSuccess } from '../redux/actions/userAction.js';
 import CustomSnackbar from '../components/custom/CustomSnackbar.jsx';
 import { isAuth } from '../lib/helper.js';
+import PublicProfile from './Public-profile.jsx';
+import NotFound from './Not-Found.jsx';
 
 const ProfilePage = () => {
-  const { tab } = useParams();
-  const [chooseTab, setChooseTab] = useState(tab);
-  const currentRole = useSelector(s => s.user.user.current_role);
-  const message = useSelector(s => s.user.success);
   const dispatch = useDispatch();
-  const navigate = useNavigate();
+  const { tab, role, linkId } = useParams();
+
+  const [chooseTab, setChooseTab] = useState(tab || 'user-info');
+  const currentRole = useSelector(s => s.user.user.current_role);
+  const { user, success } = useSelector(s => s.user);
+  const { auditor } = useSelector(s => s.auditor);
+  const { customer } = useSelector(s => s.customer);
 
   useEffect(() => {
-    if (!isAuth()) {
-      navigate('/');
+    if (tab) setChooseTab(tab);
+  }, [tab]);
+
+  if (linkId && role) {
+    if (/^c|a$/i.test(role)) {
+      const userLinkId =
+        user?.current_role === AUDITOR ? auditor?.link_id : customer?.link_id;
+      if (
+        !isAuth() ||
+        (user?.id &&
+          linkId.toLowerCase() !== userLinkId?.toLowerCase() &&
+          linkId.toLowerCase() !== user?.id)
+      ) {
+        return <PublicProfile />;
+      } else if (
+        (user?.current_role === AUDITOR && !/^a$/i.test(role)) ||
+        (user?.current_role === CUSTOMER && !/^c$/i.test(role))
+      ) {
+        return <PublicProfile notFoundRedirect={false} />;
+      }
+    } else {
+      return <NotFound />;
     }
-  }, [isAuth()]);
+  }
 
-  useEffect(() => {
-    setChooseTab(tab);
-  }, [tab, chooseTab]);
+  if (tab && !isAuth()) {
+    return <Navigate to="/sign-in" />;
+  }
+
   return (
     <Layout>
       <CustomSnackbar
         autoHideDuration={3000}
-        open={!!message}
+        open={!!success}
         onClose={() => dispatch(clearUserSuccess())}
         severity="success"
-        text={message}
+        text={success}
       />
 
       <Box sx={wrapper}>
@@ -48,6 +73,9 @@ const ProfilePage = () => {
           choosenTab={chooseTab}
           tabs={currentRole === AUDITOR ? auditorTabs : customerTabs}
           setTab={setChooseTab}
+          user={user}
+          auditor={auditor}
+          customer={customer}
         />
         <InfoCard role={currentRole}>
           {chooseTab === 'audits' && currentRole === CUSTOMER && <Audits />}
@@ -60,7 +88,9 @@ const ProfilePage = () => {
           {chooseTab === 'audit-requests' && currentRole === AUDITOR && (
             <AuditRequest />
           )}
-          {chooseTab === 'user-info' && <UserInfo role={currentRole} />}
+          {chooseTab === 'user-info' && (
+            <UserInfo role={currentRole} linkId={linkId} />
+          )}
         </InfoCard>
       </Box>
     </Layout>
