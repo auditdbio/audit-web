@@ -15,7 +15,11 @@ import {
 } from '@mui/material';
 import { CustomCard } from './custom/Card.jsx';
 import theme from '../styles/themes.js';
-import { deleteAuditRequest } from '../redux/actions/auditAction.js';
+import {
+  clearMessage,
+  confirmAudit,
+  deleteAuditRequest,
+} from '../redux/actions/auditAction.js';
 import Markdown from './markdown/Markdown.jsx';
 import { addTestsLabel, isAuth } from '../lib/helper.js';
 import { AUDITOR, CUSTOMER } from '../redux/actions/types.js';
@@ -29,6 +33,7 @@ import ShareProjectButton from './custom/ShareProjectButton.jsx';
 import { setCurrentChat } from '../redux/actions/chatActions.js';
 import ChatIcon from './icons/ChatIcon.jsx';
 import ConfirmModal from './modal/ConfirmModal.jsx';
+import CustomSnackbar from './custom/CustomSnackbar.jsx';
 
 const AuditRequestInfo = ({
   project,
@@ -43,9 +48,15 @@ const AuditRequestInfo = ({
   const matchXs = useMediaQuery(theme.breakpoints.down('xs'));
   const [open, setOpen] = useState(false);
   const [confirmDeclineOpen, setConfirmDeclineOpen] = useState(false);
+  const [showAcceptButton, setShowAcceptButton] = useState(true);
+
   const { auditor } = useSelector(s => s.auditor);
+  const { auditRequest, auditRequests, successMessage } = useSelector(
+    s => s.audits,
+  );
   const { user } = useSelector(s => s.user);
   const { chatList } = useSelector(s => s.chat);
+
   const dispatch = useDispatch();
 
   const handleOpen = () => {
@@ -121,8 +132,25 @@ const AuditRequestInfo = ({
     onClose();
   };
 
+  const handleAccept = () => {
+    const isRequestFound = auditRequests?.find(
+      req => req.id === auditRequest.id,
+    );
+    if (isRequestFound) {
+      dispatch(confirmAudit(auditRequest, true, '/profile/audits'));
+    }
+  };
+
   return (
     <CustomCard sx={wrapper} className="audit-request-wrapper">
+      <CustomSnackbar
+        open={!!successMessage}
+        severity="success"
+        autoHideDuration={5000}
+        onClose={() => dispatch(clearMessage())}
+        text={successMessage}
+      />
+
       <Box sx={{ display: 'flex', width: '100%', position: 'relative' }}>
         <Button
           sx={backButtonSx}
@@ -440,6 +468,19 @@ const AuditRequestInfo = ({
         >
           Make offer
         </Button>
+        {showAcceptButton &&
+          auditRequest &&
+          !isModal &&
+          auditRequest?.last_changer?.toLowerCase() === CUSTOMER && (
+            <Button
+              variant="contained"
+              sx={buttonSx}
+              onClick={handleAccept}
+              {...addTestsLabel('accept-button')}
+            >
+              Accept
+            </Button>
+          )}
         <Button
           variant="text"
           // sx={[buttonSx, messageButton]}
@@ -464,9 +505,14 @@ const AuditRequestInfo = ({
           user={user}
           redirect={redirect}
           setError={setError}
-          onClose={onClose}
           stayHere={stayHere}
           handleClose={handleClose}
+          onSubmit={() => {
+            setShowAcceptButton(false);
+            if (onClose) {
+              onClose();
+            }
+          }}
         />
       </Modal>
 
@@ -511,14 +557,21 @@ const wrapper = theme => ({
   },
 });
 
-const buttonWrapper = {
+const buttonWrapper = theme => ({
   mt: '40px',
   display: 'flex',
   mb: '10px',
-  maxWidth: '450px',
+  maxWidth: '550px',
   width: '100%',
   justifyContent: 'center',
-};
+  [theme.breakpoints.down(500)]: {
+    flexDirection: 'column-reverse',
+    '& button': {
+      mb: '10px',
+      width: '100%',
+    },
+  },
+});
 
 const contentWrapper = {
   display: 'flex',
@@ -597,9 +650,6 @@ const buttonSx = theme => ({
     width: '140px',
     mr: '10px',
     fontSize: '12px',
-  },
-  [theme.breakpoints.down('xxs')]: {
-    width: '122px',
   },
 });
 
