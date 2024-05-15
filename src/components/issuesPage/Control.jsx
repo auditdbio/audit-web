@@ -5,11 +5,13 @@ import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined.js';
 import {
   Box,
   Button,
+  Divider,
   InputAdornment,
   Menu,
   MenuItem,
   TextField,
   Tooltip,
+  Typography,
   useMediaQuery,
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
@@ -59,6 +61,7 @@ const Control = ({
   const audit = useSelector(s =>
     s.audits.audits?.find(audit => audit.id === auditId),
   );
+  const matchMd = useMediaQuery(theme.breakpoints.down('md'));
   const { auditor } = useSelector(s => s.auditor);
   const { customer } = useSelector(s => s.customer);
   const issuesArray = useSelector(s => s.issues.issues);
@@ -82,10 +85,6 @@ const Control = ({
       navigate(`/issues/new-issue/${auditId}`);
     }
     window.scrollTo(0, 0);
-  };
-
-  const handleOpenMenu = e => {
-    setMenuAnchorEl(e.currentTarget);
   };
 
   const handleCloseMenu = () => {
@@ -205,6 +204,14 @@ const Control = ({
         setIsOpen={setResolveConfirmation}
         audit={audit}
       />
+      {matchMd && !saved && !isPublic && user?.current_role !== CUSTOMER && (
+        <Box sx={{ width: '100%' }}>
+          <Typography variant={'h3'} sx={{ mb: '10px' }}>
+            Issue actions
+          </Typography>
+          <Divider sx={{ width: '100%' }} />
+        </Box>
+      )}
       {isPublic ? (
         <Box sx={publicBtnWrapper}>
           <CustomSnackbar
@@ -252,64 +259,31 @@ const Control = ({
           )}
         </Box>
       ) : (
-        <Box sx={publicBtnWrapper}>
+        <>
           {xss && saved && (
-            <Button
-              variant="contained"
-              color="secondary"
-              sx={[buttonSx, (isPublic || saved) && xss ? publicBtnSx : {}]}
-              onClick={handleGenerateReport}
-            >
-              Generate report
-            </Button>
+            <Box sx={publicBtnWrapper}>
+              <Button
+                variant="contained"
+                color="secondary"
+                sx={[buttonSx, (isPublic || saved) && xss ? publicBtnSx : {}]}
+                onClick={handleGenerateReport}
+              >
+                Generate report
+              </Button>
+            </Box>
           )}
-        </Box>
+        </>
       )}
-      <Box sx={isPublic || saved ? wrapperPublic : wrapper}>
+      <Box
+        sx={[
+          user?.current_role === CUSTOMER
+            ? customerViewSx
+            : isPublic || saved
+            ? wrapperPublic
+            : wrapper,
+        ]}
+      >
         <Box sx={[isPublic || saved ? publicSearchBlock : searchBlock]}>
-          {!isPublic && !saved && (
-            <IconButton
-              aria-label="Menu"
-              color="secondary"
-              onClick={handleOpenMenu}
-              sx={menuButton}
-            >
-              <MenuIcon fontSize="large" sx={{ color: 'white' }} />
-            </IconButton>
-          )}
-
-          {!isPublic && !saved && (
-            <Menu
-              open={!!menuAnchorEl}
-              anchorEl={menuAnchorEl}
-              anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
-              transformOrigin={{ vertical: 'top', horizontal: 'left' }}
-              onClose={handleCloseMenu}
-              PaperProps={{
-                sx: { width: '250px', borderRadius: '10px !important' },
-              }}
-            >
-              {user.current_role === AUDITOR && (
-                <MenuItem
-                  disabled={checkDraftIssues()}
-                  onClick={handleDiscloseAll}
-                >
-                  Disclose all
-                </MenuItem>
-              )}
-              {!isPublic && (
-                <MenuItem disabled onClick={handleCloseMenu}>
-                  Mark all as read
-                </MenuItem>
-              )}
-              {user.current_role !== CUSTOMER && (
-                <MenuItem onClick={handleGenerateReport}>
-                  Generate report
-                </MenuItem>
-              )}
-            </Menu>
-          )}
-
           {saved && !xss && (
             <Button
               variant="contained"
@@ -339,51 +313,65 @@ const Control = ({
         </Box>
 
         {user?.current_role !== CUSTOMER ? (
-          <Box sx={buttonBoxSx}>
+          <Box
+            sx={[
+              buttonBoxSx,
+              isPublic || saved ? { width: 'unset!important' } : {},
+            ]}
+          >
             {audit?.status?.toLowerCase() !== RESOLVED.toLowerCase() ? (
               <>
-                <Button
-                  variant="contained"
-                  color="secondary"
-                  sx={[buttonSx, (isPublic || saved) && xss ? publicBtnSx : {}]}
-                  disabled={
-                    audit?.status?.toLowerCase() === RESOLVED.toLowerCase()
-                  }
-                  onClick={handleNewIssue}
-                  {...addTestsLabel('new-issue-button')}
-                >
-                  New issue
-                </Button>
-                {!isPublic && !saved && (
-                  <Tooltip
-                    arrow
-                    placement="top"
-                    title={
-                      allIssuesClosed
-                        ? ''
-                        : "To resolve an audit, it is necessary that the status of all issues be 'Fixed' or 'Not fixed'. Or do not include some issues in the audit."
+                <Box sx={issueActionWrapperSx}>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    sx={[
+                      buttonSx,
+                      (isPublic || saved) && xss ? publicBtnSx : {},
+                      isPublic || saved ? singleButtonSx : {},
+                    ]}
+                    disabled={
+                      audit?.status?.toLowerCase() === RESOLVED.toLowerCase()
                     }
+                    onClick={handleNewIssue}
+                    {...addTestsLabel('new-issue-button')}
                   >
-                    <span>
-                      <Button
-                        variant="contained"
-                        color="primary"
-                        onClick={() => setResolveConfirmation(true)}
-                        disabled={!allIssuesClosed}
-                        sx={buttonSx}
-                        {...addTestsLabel('resolve-button')}
-                      >
-                        Resolve audit
-                      </Button>
-                    </span>
-                  </Tooltip>
-                )}
+                    New issue
+                  </Button>
+                  {user.current_role === AUDITOR && !saved && !isPublic && (
+                    <Button
+                      variant="contained"
+                      color="secondary"
+                      sx={[
+                        buttonSx,
+                        (isPublic || saved) && xss ? publicBtnSx : {},
+                      ]}
+                      disabled={checkDraftIssues()}
+                      onClick={handleDiscloseAll}
+                    >
+                      Disclose all
+                    </Button>
+                  )}
+                  {!isPublic && !saved && (
+                    <Button
+                      variant="contained"
+                      color="secondary"
+                      sx={[
+                        buttonSx,
+                        (isPublic || saved) && xss ? publicBtnSx : {},
+                      ]}
+                      onClick={handleCloseMenu}
+                    >
+                      Mark all as read
+                    </Button>
+                  )}
+                </Box>
               </>
             ) : (
               <Button
                 variant="contained"
                 color="secondary"
-                sx={[buttonSx, { width: '100%' }]}
+                sx={[buttonSx, { width: '100%' }, generateButtonSx]}
                 onClick={handleDownloadReport}
                 {...addTestsLabel('auditor-report-button')}
               >
@@ -392,16 +380,26 @@ const Control = ({
             )}
           </Box>
         ) : !isPublic ? (
-          <Button
-            variant="contained"
-            color="primary"
-            disabled={!audit?.report}
-            onClick={() => dispatch(downloadReport(audit))}
-            sx={buttonSx}
-            {...addTestsLabel('customer-report-button')}
-          >
-            Download report
-          </Button>
+          <Box className={'customer-button-wrapper'}>
+            <Button
+              variant="contained"
+              color="primary"
+              disabled={!audit?.report}
+              onClick={() => dispatch(downloadReport(audit))}
+              sx={buttonSx}
+              {...addTestsLabel('customer-report-button')}
+            >
+              Download report
+            </Button>
+            <Button
+              variant="contained"
+              color="secondary"
+              sx={[buttonSx, (isPublic || saved) && xss ? publicBtnSx : {}]}
+              onClick={handleCloseMenu}
+            >
+              Mark all as read
+            </Button>
+          </Box>
         ) : (
           <Button
             variant="contained"
@@ -415,11 +413,63 @@ const Control = ({
           </Button>
         )}
       </Box>
+      <ResolveAuditConfirmation
+        isOpen={resolveConfirmation}
+        setIsOpen={setResolveConfirmation}
+        audit={audit}
+      />
     </>
   );
 };
 
 export default Control;
+
+const generateButtonSx = theme => ({
+  width: '270px',
+  [theme.breakpoints.down('md')]: {
+    width: '240px',
+  },
+  [theme.breakpoints.down(630)]: {
+    width: '100%',
+  },
+});
+
+const customerViewSx = theme => ({
+  width: '100%',
+  display: 'flex',
+  gap: '15px',
+  '& .MuiInputBase-root': {
+    paddingY: 0,
+  },
+  [theme.breakpoints.down('md')]: {
+    '& .MuiButtonBase-root': {
+      width: '190px',
+    },
+  },
+  [theme.breakpoints.down(769)]: {
+    '& .MuiBox-root': {
+      marginTop: 'unset',
+    },
+    '& .MuiButtonBase-root': {
+      width: '160px',
+    },
+    '& .customer-button-wrapper': {
+      display: 'flex',
+    },
+  },
+  [theme.breakpoints.down(700)]: {
+    flexDirection: 'column',
+    gap: '15px',
+    '& .customer-button-wrapper': {
+      gap: '15px',
+      flexDirection: 'column',
+    },
+    '& .MuiButtonBase-root': {
+      width: '100%',
+      margin: 0,
+    },
+  },
+});
 
 const publicBtnWrapper = theme => ({
   display: 'flex',
@@ -436,7 +486,8 @@ const wrapper = theme => ({
   display: 'flex',
   width: '100%',
   mb: '10px',
-  [theme.breakpoints.down('xs')]: {
+  gap: '25px',
+  [theme.breakpoints.down('md')]: {
     flexDirection: 'column-reverse',
   },
 });
@@ -445,6 +496,7 @@ const wrapperPublic = theme => ({
   display: 'flex',
   width: '100%',
   mb: '10px',
+  gap: '15px',
   [theme.breakpoints.down(555)]: {
     flexDirection: 'column-reverse',
   },
@@ -463,9 +515,6 @@ const publicSearchBlock = theme => ({
   display: 'flex',
   flexGrow: 1,
   alignItems: 'center',
-  [theme.breakpoints.down('xs')]: {
-    mr: '15px',
-  },
   [theme.breakpoints.down(555)]: {
     mt: '20px',
     mr: 0,
@@ -474,15 +523,16 @@ const publicSearchBlock = theme => ({
 
 const textFieldSx = theme => ({
   width: '100%',
-  mr: '20px',
-  [theme.breakpoints.down('xs')]: {
-    mr: 0,
+  [theme.breakpoints.down('lg')]: {
+    '& .MuiInputBase-root': {
+      paddingY: '3.5px',
+    },
   },
 });
 
 const menuButton = theme => ({
   width: '42px',
-  height: '42px',
+  height: '45px',
   borderRadius: '8px',
   background: theme.palette.secondary.main,
   padding: 0,
@@ -498,27 +548,53 @@ const menuButton = theme => ({
 });
 
 const buttonBoxSx = theme => ({
-  [theme.breakpoints.down('xs')]: {
-    display: 'flex',
-    justifyContent: 'center',
+  display: 'flex',
+  justifyContent: 'center',
+  [theme.breakpoints.down('md')]: {
+    width: '100%',
+  },
+  [theme.breakpoints.down(630)]: {
+    flexDirection: 'column',
+    gap: '15px',
+  },
+});
+
+const issueActionWrapperSx = theme => ({
+  display: 'flex',
+  [theme.breakpoints.down(630)]: {
+    flexDirection: 'column',
+    gap: '15px',
+    '& button': {
+      width: '100%',
+      margin: 0,
+      padding: '10px 0',
+      fontSize: '14px',
+    },
   },
 });
 
 const buttonSx = theme => ({
-  padding: '10px 24px',
+  padding: '8.5px 0',
   flexShrink: 0,
   fontWeight: '600!important',
   fontSize: '16px',
-  lineHeight: '25px',
+  lineHeight: '1.75',
   textTransform: 'none',
   borderRadius: '10px',
-  mr: '20px',
+  width: '180px',
+  mr: '15px',
   '&:last-child': { mr: 0 },
   [theme.breakpoints.down('md')]: {
     fontWeight: '500!important',
+    width: '270px',
   },
   [theme.breakpoints.down('sm')]: {
-    padding: '7px 24px',
+    padding: '8.5px 24px',
+    width: '240px',
+  },
+  [theme.breakpoints.down(920)]: {
+    width: '160px',
+    paddingX: '0',
   },
   [theme.breakpoints.down('xs')]: {
     padding: '7px 10px',
@@ -533,5 +609,15 @@ const publicBtnSx = theme => ({
   [theme.breakpoints.down(690)]: {
     width: '100%',
     mr: 0,
+  },
+});
+
+const singleButtonSx = theme => ({
+  [theme.breakpoints.down(690)]: {
+    width: '130px!important',
+    mr: 0,
+  },
+  [theme.breakpoints.down(555)]: {
+    width: '100%!important',
   },
 });
