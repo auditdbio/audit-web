@@ -87,6 +87,7 @@ const DescriptionModal = ({ item, request }) => {
             setAnchorEl(e.currentTarget);
           }}
           sx={compareSx}
+          disabled={!auditHistory.filter(el => el.id !== item.id).length}
         >
           Compare with
         </Button>
