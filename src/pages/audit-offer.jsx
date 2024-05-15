@@ -38,6 +38,9 @@ import { FIXED, NOT_FIXED } from '../components/issuesPage/constants.js';
 import { setCurrentChat } from '../redux/actions/chatActions.js';
 import ChatIcon from '../components/icons/ChatIcon.jsx';
 import Headings from '../router/Headings.jsx';
+import DescriptionHistory from '../components/DescriptionHistory/index.jsx';
+import EditDescription from '../components/EditDescription/index.jsx';
+import EditIcon from '@mui/icons-material/Edit';
 
 const AuditOffer = () => {
   const { auditId } = useParams();
@@ -52,8 +55,6 @@ const AuditOffer = () => {
   const notFound = useSelector(s => s.notFound.error);
 
   const [auditDBWorkflow, setAuditDBWorkflow] = useState(true);
-  const [showReadMoreButton, setShowReadMoreButton] = useState(false);
-  const [showFull, setShowFull] = useState(false);
 
   const descriptionRef = useRef();
 
@@ -181,6 +182,20 @@ const AuditOffer = () => {
                     >
                       <ArrowBackIcon color="secondary" />
                     </Button>
+                    {/*<Button*/}
+                    {/*  sx={editButtonSx}*/}
+                    {/*  onClick={() => {*/}
+                    {/*    if (localStorage.getItem('prevPath')) {*/}
+                    {/*      navigate(localStorage.getItem('prevPath'));*/}
+                    {/*      localStorage.removeItem('prevPath');*/}
+                    {/*    } else {*/}
+                    {/*      navigate('/profile/audits');*/}
+                    {/*    }*/}
+                    {/*  }}*/}
+                    {/*  {...addTestsLabel('go-back-button')}*/}
+                    {/*>*/}
+                    {/*  <EditIcon fontSize={'small'} />*/}
+                    {/*</Button>*/}
                     <Typography
                       variant="h3"
                       sx={{
@@ -298,19 +313,21 @@ const AuditOffer = () => {
                     </Box>
 
                     <Box sx={infoWrapper}>
-                      <Box sx={descriptionSx(showFull)}>
-                        <Box ref={descriptionRef}>
-                          <Markdown value={audit?.description} />
-                        </Box>
-                      </Box>
-                      {showReadMoreButton && (
-                        <Button
-                          onClick={() => setShowFull(!showFull)}
-                          sx={readAllButton}
-                        >
-                          {showFull ? 'Hide ▲' : `Read all ▼`}
-                        </Button>
-                      )}
+                      {/*<Box sx={descriptionSx(showFull)}>*/}
+                      {/*  <Box ref={descriptionRef}>*/}
+                      {/*    <Markdown value={audit?.description} />*/}
+                      {/*  </Box>*/}
+                      {/*</Box>*/}
+                      <EditDescription audit={audit} />
+                      <DescriptionHistory audit={audit} />
+                      {/*{showReadMoreButton && (*/}
+                      {/*  <Button*/}
+                      {/*    onClick={() => setShowFull(!showFull)}*/}
+                      {/*    sx={readAllButton}*/}
+                      {/*  >*/}
+                      {/*    {showFull ? 'Hide ▲' : `Read all ▼`}*/}
+                      {/*  </Button>*/}
+                      {/*)}*/}
 
                       <Box sx={linkWrapper}>
                         {audit?.scope?.map((el, idx) => (
@@ -624,6 +641,16 @@ const backButtonSx = theme => ({
   [theme.breakpoints.down('sm')]: {
     top: '-30px',
     left: '-20px',
+  },
+});
+
+const editButtonSx = theme => ({
+  position: 'absolute',
+  right: '-58px',
+  top: '-20px',
+  [theme.breakpoints.down('sm')]: {
+    top: '-30px',
+    right: '-20px',
   },
 });
 

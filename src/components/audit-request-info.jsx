@@ -29,6 +29,8 @@ import ShareProjectButton from './custom/ShareProjectButton.jsx';
 import { setCurrentChat } from '../redux/actions/chatActions.js';
 import ChatIcon from './icons/ChatIcon.jsx';
 import ConfirmModal from './modal/ConfirmModal.jsx';
+import EditDescription from './EditDescription/index.jsx';
+import DescriptionHistory from './DescriptionHistory/index.jsx';
 
 const AuditRequestInfo = ({
   project,
@@ -304,7 +306,9 @@ const AuditRequestInfo = ({
         </Box>
 
         <Box sx={infoWrapper} className="audit-request-info">
-          <Markdown value={project?.description} />
+          {/*<Markdown value={project?.description} />*/}
+          <EditDescription audit={project} auditRequest={true} />
+          <DescriptionHistory audit={project} request={true} />
           {matchXs && (
             <Box
               sx={{

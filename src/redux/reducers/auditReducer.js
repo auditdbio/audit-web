@@ -26,6 +26,8 @@ import {
   EDIT_AUDIT_CUSTOMER,
   SAVE_PUBLIC_REPORT,
   EDIT_AUDIT_REQUEST_CUSTOMER,
+  GET_AUDIT_HISTORY,
+  GET_AUDIT_REQUEST_HISTORY,
 } from '../actions/types.js';
 
 const initialState = {
@@ -37,6 +39,8 @@ const initialState = {
   successMessage: null,
   currentAuditPartner: null,
   publicReport: {},
+  auditHistory: [],
+  auditRequestHistory: [],
 };
 export const auditReducer = (state = initialState, action) => {
   switch (action.type) {
@@ -92,6 +96,16 @@ export const auditReducer = (state = initialState, action) => {
       return {
         ...state,
         publicReport: {},
+      };
+    case GET_AUDIT_HISTORY:
+      return {
+        ...state,
+        auditHistory: action.payload,
+      };
+    case GET_AUDIT_REQUEST_HISTORY:
+      return {
+        ...state,
+        auditRequestHistory: action.payload,
       };
     case GET_NEW_AUDIT:
       return {

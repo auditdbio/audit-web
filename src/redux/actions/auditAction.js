@@ -13,7 +13,9 @@ import {
   EDIT_AUDIT_CUSTOMER,
   EDIT_AUDIT_REQUEST_CUSTOMER,
   GET_AUDIT,
+  GET_AUDIT_HISTORY,
   GET_AUDIT_REQUEST,
+  GET_AUDIT_REQUEST_HISTORY,
   GET_AUDITS,
   GET_PUBLIC_REPORT,
   GET_REQUEST,
@@ -293,6 +295,37 @@ export const editAuditCustomer = (values, goBack) => {
       })
       .then(({ data }) => {
         dispatch({ type: EDIT_AUDIT_CUSTOMER, payload: data });
+        dispatch(getAuditHistory(values.id));
+      });
+  };
+};
+
+export const getAuditHistory = id => {
+  return dispatch => {
+    const token = Cookies.get('token');
+    axios
+      .get(`${API_URL}/audit/${id}/edit_history `, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then(({ data }) => {
+        dispatch({ type: GET_AUDIT_HISTORY, payload: data });
+      });
+  };
+};
+
+export const getAuditRequestHistory = id => {
+  return dispatch => {
+    const token = Cookies.get('token');
+    axios
+      .get(`${API_URL}/audit_request/${id}/edit_history `, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then(({ data }) => {
+        dispatch({ type: GET_AUDIT_REQUEST_HISTORY, payload: data });
       });
   };
 };
@@ -308,6 +341,7 @@ export const editAuditRequestCustomer = (values, goBack) => {
       })
       .then(({ data }) => {
         dispatch({ type: EDIT_AUDIT_REQUEST_CUSTOMER, payload: data });
+        dispatch(getAuditRequestHistory(values.id));
       });
   };
 };
@@ -476,4 +510,19 @@ export const savePublicReport = data => {
 
 export const clearMessage = () => {
   return { type: CLEAR_MESSAGES };
+};
+
+export const addCommentAudit = (id, values) => {
+  return dispatch => {
+    const token = Cookies.get('token');
+    axios
+      .patch(`${API_URL}/audit/${id}`, values, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then(({ data }) => {
+        console.log(data);
+      });
+  };
 };

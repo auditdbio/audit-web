@@ -46,27 +46,23 @@ import { setCurrentChat } from '../redux/actions/chatActions.js';
 import ChatIcon from '../components/icons/ChatIcon.jsx';
 import ConfirmModal from '../components/modal/ConfirmModal.jsx';
 import Headings from '../router/Headings.jsx';
+import EditDescription from '../components/EditDescription/index.jsx';
+import DescriptionHistory from '../components/DescriptionHistory/index.jsx';
 
-const AuditInfo = ({ audit, auditRequest, issues, confirmed, handleClose }) => {
+const AuditInfo = ({
+  audit,
+  auditRequest,
+  issues,
+  confirmed,
+  handleClose,
+  request,
+}) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const [showFull, setShowFull] = useState(false);
-  const [showReadMoreButton, setShowReadMoreButton] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { successMessage, error } = useSelector(s => s.audits);
   const { user } = useSelector(s => s.user);
   const { chatList } = useSelector(s => s.chat);
-  const descriptionRef = useRef();
-  const matchXs = useMediaQuery(theme.breakpoints.down('xs'));
-  const [editMode, setEditMode] = useState(false);
-
-  useEffect(() => {
-    setTimeout(() => {
-      if (descriptionRef?.current?.offsetHeight > 400) {
-        setShowReadMoreButton(true);
-      }
-    }, 500);
-  }, [descriptionRef.current]);
 
   const handleConfirm = () => {
     dispatch(confirmAudit(audit));
@@ -119,10 +115,6 @@ const AuditInfo = ({ audit, auditRequest, issues, confirmed, handleClose }) => {
   //
   const goToIssues = () => {
     navigate(`/issues/audit-issue/${audit?.id}`);
-  };
-
-  const handleEdit = () => {
-    setEditMode(true);
   };
 
   return (
@@ -277,94 +269,8 @@ const AuditInfo = ({ audit, auditRequest, issues, confirmed, handleClose }) => {
             </Box>
           )}
         </Box>
-
-        <Box sx={descriptionSx(showFull || editMode)}>
-          <Box ref={descriptionRef}>
-            {!editMode ? (
-              <Markdown value={audit?.description} />
-            ) : (
-              <Formik
-                initialValues={{
-                  description: audit?.description,
-                  ...audit,
-                }}
-                onSubmit={values => {
-                  if (auditRequest) {
-                    dispatch(editAuditRequestCustomer(values));
-                  } else {
-                    dispatch(editAuditCustomer(values));
-                  }
-                  setEditMode(false);
-                }}
-              >
-                {({ handleSubmit, setFieldTouched, dirty }) => {
-                  return (
-                    <Form onSubmit={handleSubmit}>
-                      <Box sx={{ position: 'relative' }}>
-                        <MarkdownEditor
-                          name="description"
-                          setFieldTouched={setFieldTouched}
-                          fastSave={true}
-                          mdProps={{
-                            view: { menu: true, md: true, html: !matchXs },
-                          }}
-                        />
-                        <Box sx={editBtnSx}>
-                          <Button
-                            variant={'text'}
-                            type={'submit'}
-                            disabled={!dirty}
-                          >
-                            <SaveIcon />
-                          </Button>
-                          <Button>
-                            <CloseIcon
-                              color={'secondary'}
-                              onClick={() => setEditMode(false)}
-                            />
-                          </Button>
-                        </Box>
-                      </Box>
-                    </Form>
-                  );
-                }}
-              </Formik>
-            )}
-          </Box>
-        </Box>
-        <Box
-          sx={[
-            {
-              display: 'flex',
-              background: '#E5E5E5',
-              borderRadius: 0,
-              boxShadow: '0px -24px 14px -8px rgba(252, 250, 246, 1)',
-              ':hover': { background: '#D5D5D5' },
-              padding: '8px',
-              position: 'relative',
-            },
-          ]}
-        >
-          {showReadMoreButton && !editMode && (
-            <Button onClick={() => setShowFull(!showFull)} sx={readAllButton}>
-              {showFull ? 'Hide ▲' : `Read all ▼`}
-            </Button>
-          )}
-          {!editMode &&
-            audit?.status?.toLowerCase() !== RESOLVED.toLowerCase() && (
-              <Box
-                sx={{
-                  position: 'absolute',
-                  bottom: '20px',
-                  right: '10px',
-                }}
-              >
-                <Button variant={'text'} onClick={handleEdit}>
-                  <EditIcon fontSize={'large'} />
-                </Button>
-              </Box>
-            )}
-        </Box>
+        <EditDescription auditRequest={request} audit={audit} />
+        <DescriptionHistory audit={audit} request={request} />
       </Box>
       <Box>
         <Box
