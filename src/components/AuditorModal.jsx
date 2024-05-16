@@ -27,6 +27,7 @@ import {
 import * as Yup from 'yup';
 import CustomSnackbar from './custom/CustomSnackbar.jsx';
 import ShareProfileButton from './custom/ShareProfileButton.jsx';
+import PriceCalculation from './PriceCalculation.jsx';
 import { setCurrentChat } from '../redux/actions/chatActions.js';
 import ChatIcon from './icons/ChatIcon.jsx';
 
@@ -39,15 +40,19 @@ export default function AuditorModal({
   handleError,
   setError,
   budge,
+  chosen,
 }) {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
   const customerReducer = useSelector(state => state.customer.customer);
   const { user } = useSelector(s => s.user);
   const { chatList } = useSelector(s => s.chat);
+  const myProjects = useSelector(state => state.project.myProjects);
+
   const [mode, setMode] = useState('info');
   const [message, setMessage] = useState('');
-  const myProjects = useSelector(state => state.project.myProjects);
-  const dispatch = useDispatch();
+  const [scope, setScope] = useState([]);
 
   const handleInvite = () => {
     if (user.current_role === CUSTOMER && isAuth() && myProjects.length) {
@@ -117,9 +122,15 @@ export default function AuditorModal({
     }
   }, [open, isForm]);
 
+  useEffect(() => {
+    if (chosen) {
+      setScope(chosen.reduce((acc, project) => [...acc, ...project.scope], []));
+    }
+  }, [chosen]);
+
   return (
-    <Dialog open={open} onClose={handleClose}>
-      <Box className="auditor-modal">
+    <Dialog open={open} onClose={handleClose} sx={dialogSx}>
+      <Box className="auditor-modal" sx={{ overflowX: 'hidden' }}>
         {mode === 'info' && (
           <DialogContent sx={modalWindow}>
             <CustomSnackbar
@@ -372,6 +383,11 @@ export default function AuditorModal({
                           }}
                         >
                           <SalarySlider name={'price'} />
+                          <PriceCalculation
+                            price={values.price}
+                            sx={priceCalc}
+                            scope={scope}
+                          />
                         </Box>
                         <Box sx={{ justifyContent: 'center', display: 'flex' }}>
                           <Button
@@ -485,6 +501,17 @@ const avatarStyle = theme => ({
   },
 });
 
+const dialogSx = theme => ({
+  '& .MuiPaper-root': {
+    [theme.breakpoints.down('md')]: {
+      width: '680px !important',
+    },
+    [theme.breakpoints.down('xs')]: {
+      width: '100% !important',
+    },
+  },
+});
+
 const contentWrapper = theme => ({
   display: 'flex',
   flexDirection: 'column',
@@ -574,7 +601,7 @@ const fieldButtonContainer = theme => ({
 const offerDialogStyle = {
   backgroundColor: 'white',
   padding: '10px',
-  width: '700px',
+  width: '720px',
   display: 'flex',
   justifyContent: 'center',
   alignItems: 'center',
@@ -692,4 +719,10 @@ const dateStyle = {
       fontSize: '10px',
     },
   },
+};
+
+const priceCalc = {
+  width: '100%',
+  margin: '30px 0',
+  '& .head': { justifyContent: 'center' },
 };

@@ -55,6 +55,7 @@ import MarkdownEditor from '../components/markdown/Markdown-editor.jsx';
 import EditIcon from '@mui/icons-material/Edit.js';
 import { BASE_URL } from '../services/urls.js';
 import ResolveAuditConfirmation from '../components/issuesPage/ResolveAuditConfirmation.jsx';
+import PriceCalculation from '../components/PriceCalculation.jsx';
 
 const AuditOffer = () => {
   const { auditId } = useParams();
@@ -77,12 +78,13 @@ const AuditOffer = () => {
   const notFound = useSelector(s => s.notFound.error);
   const { auditor } = useSelector(s => s.auditor);
   const { customer } = useSelector(s => s.customer);
+
   const [auditDBWorkflow, setAuditDBWorkflow] = useState(true);
   const [showReadMoreButton, setShowReadMoreButton] = useState(false);
   const [showFull, setShowFull] = useState(false);
   const [editConclusion, setEditConclusion] = useState(false);
   const [mdRef, setMdRef] = useState(null);
-  //
+
   const descriptionRef = useRef();
 
   useEffect(() => {
@@ -382,6 +384,13 @@ const AuditOffer = () => {
                     <CustomLink link={el} key={idx} />
                   ))}
                 </Box>
+
+                <PriceCalculation
+                  price={audit?.price}
+                  sx={priceCalc}
+                  color="secondary"
+                  scope={audit?.scope}
+                />
 
                 <Box sx={{ display: 'flex', justifyContent: 'center' }}>
                   <Button
@@ -937,3 +946,9 @@ const editButtonText = theme => ({
   fontSize: '14px',
   lineHeight: '17px',
 });
+
+const priceCalc = {
+  width: '100%',
+  mb: '30px',
+  '& .head': { justifyContent: 'center' },
+};

@@ -40,15 +40,16 @@ const TagsField = ({
       }
     } else {
       if (field.value.length < 20) {
-        if (/^https?:\/\//.test(state)) {
-          fieldHelper.setValue([...field.value, state]);
-          setState('');
-        } else {
-          fieldHelper.setValue([...field.value, `https://${state}`]);
-          setState('');
-        }
-        if (handleSubmit) {
-          handleSubmit();
+        const link = state.trim();
+        if (/^.+\..+/.test(link)) {
+          if (/^https?:\/\//.test(link)) {
+            fieldHelper.setValue([...field.value, link]);
+            setState('');
+          } else {
+            fieldHelper.setValue([...field.value, `https://${link}`]);
+            setState('');
+          }
+          if (handleSubmit) handleSubmit();
         }
       } else {
         setError('The maximum number of links that can be added is 20');
