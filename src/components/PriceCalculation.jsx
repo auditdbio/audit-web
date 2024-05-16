@@ -21,53 +21,61 @@ import theme from '../styles/themes.js';
 import { clearProjectError, getCloc } from '../redux/actions/projectAction.js';
 import CustomSnackbar from './custom/CustomSnackbar.jsx';
 
-const PriceCalculation = ({ scope, price = 0, color = 'primary', sx = {} }) => {
+const PriceCalculation = ({
+  scope,
+  price = 0,
+  color = 'primary',
+  sx = {},
+  autoCheck = true,
+}) => {
   const dispatch = useDispatch();
 
   const { cloc, error } = useSelector(s => s.project);
   const [isDetailsPrice, setIsDetailsPrice] = useState(false);
   const [isDetailsMore, setIsDetailsMore] = useState(false);
-  // const [isAutoCheckOn, setIsAutoCheckOn] = useState(false);
+  const [isAutoCheckOn, setIsAutoCheckOn] = useState(autoCheck);
   const [isLoading, setIsLoading] = useState(false);
-  const [githubLinks, setGithubLinks] = useState([]);
+  const [correctLinks, setCorrectLinks] = useState([]);
 
   useEffect(() => {
     if (scope) {
       const links = scope.reduce((acc, url) => {
         if (!url.startsWith('http')) return acc;
 
-        const parsedUrl = GitUrlParse(url);
-        if (
-          ((parsedUrl.resource === 'github.com' ||
-            parsedUrl.source === 'github.com') &&
-            url.includes('/blob/')) ||
-          parsedUrl.source === 'githubusercontent.com' ||
-          parsedUrl.resource === 'raw.githubusercontent.com'
-        ) {
-          acc.push(url);
-        }
+        // const parsedUrl = GitUrlParse(url);
+        // if (
+        //   ((parsedUrl.resource === 'github.com' ||
+        //     parsedUrl.source === 'github.com') &&
+        //     url.includes('/blob/')) ||
+        //   parsedUrl.source === 'githubusercontent.com' ||
+        //   parsedUrl.resource === 'raw.githubusercontent.com'
+        // ) {
+        //   acc.push(url);
+        // }
+
+        acc.push(url);
         return acc;
       }, []);
 
-      setGithubLinks(links);
+      setCorrectLinks(links);
     }
   }, [scope]);
 
   useEffect(() => {
-    if (githubLinks.length) {
-      dispatch(getCloc({ links: githubLinks }));
+    if (correctLinks.length && isAutoCheckOn) {
+      dispatch(getCloc({ links: correctLinks }));
     }
-  }, [githubLinks]);
+  }, [correctLinks, isAutoCheckOn]);
 
-  // const handleCheckCost = () => {
-  //   if (githubLinks.length) {
-  //     setIsLoading(prev => !prev);
-  //     setIsAutoCheckOn(true);
-  //     dispatch(getCloc({ links: githubLinks }));
-  //   }
-  // };
+  const handleCheckCost = () => {
+    if (correctLinks.length) {
+      setIsLoading(prev => !prev);
+      setIsAutoCheckOn(true);
+      dispatch(getCloc({ links: correctLinks }));
+    }
+  };
 
-  if (!githubLinks.length) {
+  if (!correctLinks.length) {
     return null;
   }
 
@@ -95,32 +103,33 @@ const PriceCalculation = ({ scope, price = 0, color = 'primary', sx = {} }) => {
         >
           <HelpOutlineIcon fontSize="small" cursor="pointer" />
         </Tooltip>
-        {/*{!cloc && (*/}
-        {/*  <Tooltip*/}
-        {/*    title={!+price ? 'Add the price per line of code' : ''}*/}
-        {/*    arrow*/}
-        {/*    placement="bottom"*/}
-        {/*    enterDelay={200}*/}
-        {/*    leaveDelay={100}*/}
-        {/*  >*/}
-        {/*    <span>*/}
-        {/*      <Button*/}
-        {/*        sx={checkButton}*/}
-        {/*        color={color}*/}
-        {/*        variant="contained"*/}
-        {/*        type="button"*/}
-        {/*        onClick={handleCheckCost}*/}
-        {/*        disabled={!+price}*/}
-        {/*      >*/}
-        {/*        {isLoading ? (*/}
-        {/*          <CircularProgress size={15} color="light" thickness={8} />*/}
-        {/*        ) : (*/}
-        {/*          'Check'*/}
-        {/*        )}*/}
-        {/*      </Button>*/}
-        {/*    </span>*/}
-        {/*  </Tooltip>*/}
-        {/*)}*/}
+
+        {!cloc && !isAutoCheckOn && (
+          <Tooltip
+            title={!+price ? 'Add the price per line of code' : ''}
+            arrow
+            placement="bottom"
+            enterDelay={200}
+            leaveDelay={100}
+          >
+            <span>
+              <Button
+                sx={checkButton}
+                color={color}
+                variant="contained"
+                type="button"
+                onClick={handleCheckCost}
+                disabled={!+price}
+              >
+                {isLoading ? (
+                  <CircularProgress size={15} color="light" thickness={8} />
+                ) : (
+                  'Check'
+                )}
+              </Button>
+            </span>
+          </Tooltip>
+        )}
       </Box>
 
       {cloc && (
