@@ -20,7 +20,7 @@ import {
   deleteAudit,
   deleteAuditRequest,
   downloadReport,
-  editAuditCustomer,
+  editAudit,
   editAuditRequestCustomer,
 } from '../redux/actions/auditAction.js';
 import {
@@ -292,7 +292,7 @@ const AuditInfo = ({ audit, auditRequest, issues, confirmed, handleClose }) => {
                   if (auditRequest) {
                     dispatch(editAuditRequestCustomer(values));
                   } else {
-                    dispatch(editAuditCustomer(values));
+                    dispatch(editAudit(values));
                   }
                   setEditMode(false);
                 }}
@@ -366,6 +366,13 @@ const AuditInfo = ({ audit, auditRequest, issues, confirmed, handleClose }) => {
             )}
         </Box>
       </Box>
+
+      {audit?.conclusion && (
+        <Box sx={{ border: '2px solid #E5E5E5', width: '100%' }}>
+          <Box sx={conclusionTitle}>Conclusion</Box>
+          <Markdown value={audit.conclusion} />
+        </Box>
+      )}
 
       <PriceCalculation
         price={audit?.price || auditRequest?.price}
@@ -703,6 +710,13 @@ const editBtnSx = theme => ({
   gap: '7px',
   flexDirection: 'column',
   right: '10px',
+});
+
+const conclusionTitle = theme => ({
+  padding: '10px 0',
+  fontSize: '20px',
+  fontWeight: 500,
+  textAlign: 'center',
 });
 
 const priceCalc = theme => ({
