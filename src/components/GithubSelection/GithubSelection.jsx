@@ -150,6 +150,7 @@ const GithubSelection = ({ project }) => {
     setRepository(null);
     setUrlRepo('');
     fieldHelper.setValue(field.value.filter(el => !el.includes('github.com')));
+    setSelected(field.value.filter(el => !el.includes('github.com')));
     dispatch(clearRepoOwner());
     dispatch(clearCommit());
     dispatch({ type: SWITCH_REPO });
@@ -283,7 +284,10 @@ const GithubSelection = ({ project }) => {
         </Box>
       </Modal>
       <Button
-        onClick={() => setIsOpen(true)}
+        onClick={() => {
+          setIsOpen(true);
+          setSelected(field.value);
+        }}
         variant={'contained'}
         sx={githubBtnSx}
       >
