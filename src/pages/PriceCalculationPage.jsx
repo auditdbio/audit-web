@@ -38,6 +38,17 @@ const PriceCalculationPage = () => {
           >
             Price calculation
           </Typography>
+          <ul>
+            <p style={{ fontWeight: 500 }}>Tool scope description:</p>
+            <li>Processing links to retrieve file contents.</li>
+            <li>
+              Requiring files to be publicly accessible and downloadable without
+              authorization.
+            </li>
+            <li>
+              Supporting both github.com and raw.githubusercontent.com URLs.
+            </li>
+          </ul>
           <Formik
             initialValues={{
               scope: [],
@@ -189,4 +200,12 @@ const wrapper = theme => ({
   maxWidth: '1300px',
   minHeight: '560px!important',
   width: '100%',
+  '& ul': {
+    fontSize: '16px',
+    marginBottom: '20px',
+    '& li': {
+      marginLeft: '15px',
+      marginTop: '7px',
+    },
+  },
 });

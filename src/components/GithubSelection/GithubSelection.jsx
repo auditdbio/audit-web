@@ -107,7 +107,7 @@ const GithubSelection = ({ project, noPrivate }) => {
 
   useEffect(() => {
     if (githubData?.id && githubData?.username) {
-      if (githubData?.scope?.includes('repo')) {
+      if (githubData?.scope?.includes('repo') && !noPrivate) {
         dispatch(getMyGithubOrgs());
         dispatch(getMyGithub());
       } else {
@@ -157,7 +157,11 @@ const GithubSelection = ({ project, noPrivate }) => {
   };
   useEffect(() => {
     const handleStorageChange = event => {
-      if (event.key === 'authenticated' && event.newValue === 'true') {
+      if (
+        event.key === 'authenticated' &&
+        event.newValue === 'true' &&
+        !noPrivate
+      ) {
         dispatch(getMyProfile());
         dispatch(getMyGithub());
         dispatch(getMyGithubOrgs());
