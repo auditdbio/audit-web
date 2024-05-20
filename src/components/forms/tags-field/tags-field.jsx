@@ -99,6 +99,7 @@ const TagsField = ({
               handleAddTag();
             }
           }}
+          className={'tag-input-field'}
           onChange={handleChange}
           onBlur={handleBlur}
           sx={[fieldSx, meta.error && meta.touched ? errorSx : {}, sx]}
