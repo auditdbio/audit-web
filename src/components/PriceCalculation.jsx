@@ -137,8 +137,7 @@ const PriceCalculation = ({
         <Box sx={calcResultHead}>
           <Box>
             <Box sx={{ mb: '3px' }}>
-              Total price:&nbsp;
-              {(cloc?.result?.SUM?.code || 0) * price}
+              Total price:&nbsp; $ {(cloc?.result?.SUM?.code || 0) * price}
             </Box>
             <Box>
               Total lines of code:&nbsp;
@@ -206,7 +205,7 @@ const PriceCalculation = ({
                               {cloc.result[lang].code}
                             </TableCell>
                             <TableCell align="right" sx={priceCellSx}>
-                              {cloc.result[lang].code * price}
+                              $ {cloc.result[lang].code * price}
                             </TableCell>
                           </>
                         ) : (

@@ -12,9 +12,11 @@ import { Form, Formik } from 'formik';
 import theme from '../styles/themes.js';
 import { addTestsLabel } from '../lib/helper.js';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import { useNavigate } from 'react-router-dom/dist';
 
 const PriceCalculationPage = () => {
   const matchSm = useMediaQuery(theme.breakpoints.down('sm'));
+  const navigate = useNavigate();
 
   return (
     <Layout>
@@ -202,7 +204,7 @@ const wrapper = theme => ({
   width: '100%',
   '& ul': {
     fontSize: '16px',
-    marginBottom: '20px',
+    marginBottom: '28px',
     '& li': {
       marginLeft: '15px',
       marginTop: '7px',

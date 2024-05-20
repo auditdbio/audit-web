@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Slider } from '@mui/material';
+import { Box, InputAdornment, Slider } from '@mui/material';
 import { FastField, useField } from 'formik';
 import { TextField } from 'formik-mui';
 import { useSelector } from 'react-redux';
@@ -39,6 +39,9 @@ const SalarySlider = ({ min = 0, max = 100, name }) => {
         sx={infoWrapper}
         size="small"
         onChange={handleChange}
+        InputProps={{
+          startAdornment: <InputAdornment position="start">$</InputAdornment>,
+        }}
       />
     </Box>
   );
