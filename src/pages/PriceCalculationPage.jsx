@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Headings from '../router/Headings.jsx';
 import { CustomCard } from '../components/custom/Card.jsx';
 import Layout from '../styles/Layout.jsx';
@@ -13,10 +13,22 @@ import theme from '../styles/themes.js';
 import { addTestsLabel } from '../lib/helper.js';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { useNavigate } from 'react-router-dom/dist';
+import { getFilterData } from '../redux/actions/configAction.js';
+import { clearCommit, clearRepoOwner } from '../redux/actions/githubAction.js';
+import { useDispatch } from 'react-redux';
 
 const PriceCalculationPage = () => {
   const matchSm = useMediaQuery(theme.breakpoints.down('sm'));
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(getFilterData());
+    return () => {
+      dispatch(clearRepoOwner());
+      dispatch(clearCommit());
+    };
+  }, []);
 
   return (
     <Layout>

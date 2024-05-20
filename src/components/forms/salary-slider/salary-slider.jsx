@@ -40,7 +40,14 @@ const SalarySlider = ({ min = 0, max = 100, name }) => {
         size="small"
         onChange={handleChange}
         InputProps={{
-          startAdornment: <InputAdornment position="start">$</InputAdornment>,
+          startAdornment: (
+            <InputAdornment
+              sx={{ '& p': { fontSize: '16px!important' } }}
+              position="start"
+            >
+              $
+            </InputAdornment>
+          ),
         }}
       />
     </Box>
@@ -49,11 +56,14 @@ const SalarySlider = ({ min = 0, max = 100, name }) => {
 
 export default SalarySlider;
 
-export const sliderWrapper = {
+export const sliderWrapper = theme => ({
   display: 'flex',
   alignItems: 'center',
   gap: '34px',
-};
+  [theme.breakpoints.down('xs')]: {
+    gap: '15px',
+  },
+});
 
 const sliderSx = {
   height: '9px',
@@ -63,7 +73,7 @@ const sliderSx = {
   },
 };
 
-const infoWrapper = {
+const infoWrapper = theme => ({
   width: '100px',
   '& .MuiOutlinedInput-input': {
     fontSize: '16px',
@@ -73,4 +83,7 @@ const infoWrapper = {
       '-webkit-appearance': 'none',
     },
   },
-};
+  [theme.breakpoints.down('xs')]: {
+    width: '130px',
+  },
+});
