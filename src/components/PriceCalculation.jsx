@@ -18,7 +18,11 @@ import {
   CircularProgress,
 } from '@mui/material';
 import theme from '../styles/themes.js';
-import { clearProjectError, getCloc } from '../redux/actions/projectAction.js';
+import {
+  clearCloc,
+  clearProjectError,
+  getCloc,
+} from '../redux/actions/projectAction.js';
 import CustomSnackbar from './custom/CustomSnackbar.jsx';
 
 const PriceCalculation = ({
@@ -65,6 +69,9 @@ const PriceCalculation = ({
     if (correctLinks.length && isAutoCheckOn) {
       dispatch(getCloc({ links: correctLinks }));
     }
+    return () => {
+      dispatch(clearCloc());
+    };
   }, [correctLinks, isAutoCheckOn]);
 
   const handleCheckCost = () => {
