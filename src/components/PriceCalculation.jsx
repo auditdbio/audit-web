@@ -75,9 +75,9 @@ const PriceCalculation = ({
     }
   };
 
-  if (!correctLinks.length) {
-    return null;
-  }
+  // if (!correctLinks.length) {
+  //   return null;
+  // }
 
   return (
     <Box sx={sx}>
@@ -132,62 +132,62 @@ const PriceCalculation = ({
         )}
       </Box>
 
-      {cloc && (
-        <Box sx={calcResult}>
-          <Box sx={calcResultHead}>
-            <Box>
-              <Box sx={{ mb: '3px' }}>
-                Total price:&nbsp;
-                {(cloc.result?.SUM?.code || 0) * price}
-              </Box>
-              <Box>
-                Total lines of code:&nbsp;
-                {cloc.result?.SUM?.code || 0}
-              </Box>
+      {/*{cloc && (*/}
+      <Box sx={calcResult}>
+        <Box sx={calcResultHead}>
+          <Box>
+            <Box sx={{ mb: '3px' }}>
+              Total price:&nbsp; $ {(cloc?.result?.SUM?.code || 0) * price}
             </Box>
-            <Button
-              sx={detailsButton}
-              onClick={() => setIsDetailsMore(!isDetailsMore)}
-            >
-              <span>Details</span>
-              {!isDetailsMore ? (
-                <ExpandMoreIcon fontSize="small" />
-              ) : (
-                <ExpandLessIcon fontSize="small" />
-              )}
-            </Button>
-          </Box>
-
-          {isDetailsMore && (
             <Box>
-              <Box sx={switchSx(color)}>
-                <Switch
-                  color={color}
-                  size="small"
-                  onChange={() => setIsDetailsPrice(prev => !prev)}
-                />
-                <span>{isDetailsPrice ? 'Price' : 'Code'}</span>
-              </Box>
-              <TableContainer>
-                <Table sx={tableSx} size="small" aria-label="Price table">
-                  <TableHead>
-                    <TableRow>
-                      <TableCell>Language</TableCell>
-                      {isDetailsPrice ? (
-                        <>
-                          <TableCell align="right">Code</TableCell>
-                          <TableCell align="right">Price</TableCell>
-                        </>
-                      ) : (
-                        <>
-                          <TableCell align="right">Files</TableCell>
-                          <TableCell align="right">Code</TableCell>
-                          <TableCell align="right">Comment</TableCell>
-                          <TableCell align="right">Blank</TableCell>
-                        </>
-                      )}
-                    </TableRow>
-                  </TableHead>
+              Total lines of code:&nbsp;
+              {cloc?.result?.SUM?.code || 0}
+            </Box>
+          </Box>
+          <Button
+            sx={detailsButton}
+            onClick={() => setIsDetailsMore(!isDetailsMore)}
+          >
+            <span>Details</span>
+            {!isDetailsMore ? (
+              <ExpandMoreIcon fontSize="small" />
+            ) : (
+              <ExpandLessIcon fontSize="small" />
+            )}
+          </Button>
+        </Box>
+
+        {isDetailsMore && (
+          <Box>
+            <Box sx={switchSx(color)}>
+              <Switch
+                color={color}
+                size="small"
+                onChange={() => setIsDetailsPrice(prev => !prev)}
+              />
+              <span>{isDetailsPrice ? 'Price' : 'Code'}</span>
+            </Box>
+            <TableContainer>
+              <Table sx={tableSx} size="small" aria-label="Price table">
+                <TableHead>
+                  <TableRow>
+                    <TableCell>Language</TableCell>
+                    {isDetailsPrice ? (
+                      <>
+                        <TableCell align="right">Code</TableCell>
+                        <TableCell align="right">Price</TableCell>
+                      </>
+                    ) : (
+                      <>
+                        <TableCell align="right">Files</TableCell>
+                        <TableCell align="right">Code</TableCell>
+                        <TableCell align="right">Comment</TableCell>
+                        <TableCell align="right">Blank</TableCell>
+                      </>
+                    )}
+                  </TableRow>
+                </TableHead>
+                {cloc && (
                   <TableBody>
                     {Object.keys(cloc.result).map(lang => (
                       <TableRow
@@ -205,7 +205,7 @@ const PriceCalculation = ({
                               {cloc.result[lang].code}
                             </TableCell>
                             <TableCell align="right" sx={priceCellSx}>
-                              {cloc.result[lang].code * price}
+                              $ {cloc.result[lang].code * price}
                             </TableCell>
                           </>
                         ) : (
@@ -227,12 +227,13 @@ const PriceCalculation = ({
                       </TableRow>
                     ))}
                   </TableBody>
-                </Table>
-              </TableContainer>
-            </Box>
-          )}
-        </Box>
-      )}
+                )}
+              </Table>
+            </TableContainer>
+          </Box>
+        )}
+      </Box>
+      {/*)}*/}
     </Box>
   );
 };

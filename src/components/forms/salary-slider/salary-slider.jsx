@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Slider } from '@mui/material';
+import { Box, InputAdornment, Slider } from '@mui/material';
 import { FastField, useField } from 'formik';
 import { TextField } from 'formik-mui';
 import { useSelector } from 'react-redux';
@@ -39,6 +39,16 @@ const SalarySlider = ({ min = 0, max = 100, name }) => {
         sx={infoWrapper}
         size="small"
         onChange={handleChange}
+        InputProps={{
+          startAdornment: (
+            <InputAdornment
+              sx={{ '& p': { fontSize: '16px!important' } }}
+              position="start"
+            >
+              $
+            </InputAdornment>
+          ),
+        }}
       />
     </Box>
   );
@@ -46,11 +56,14 @@ const SalarySlider = ({ min = 0, max = 100, name }) => {
 
 export default SalarySlider;
 
-export const sliderWrapper = {
+export const sliderWrapper = theme => ({
   display: 'flex',
   alignItems: 'center',
   gap: '34px',
-};
+  [theme.breakpoints.down('xs')]: {
+    gap: '15px',
+  },
+});
 
 const sliderSx = {
   height: '9px',
@@ -60,7 +73,7 @@ const sliderSx = {
   },
 };
 
-const infoWrapper = {
+const infoWrapper = theme => ({
   width: '100px',
   '& .MuiOutlinedInput-input': {
     fontSize: '16px',
@@ -70,4 +83,7 @@ const infoWrapper = {
       '-webkit-appearance': 'none',
     },
   },
-};
+  [theme.breakpoints.down('xs')]: {
+    width: '130px',
+  },
+});

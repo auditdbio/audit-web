@@ -42,7 +42,7 @@ import { SWITCH_REPO } from '../../redux/actions/types.js';
 const GITHUB_ID = import.meta.env.VITE_GITHUB_CLIENT_ID;
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 
-const GithubSelection = ({ project }) => {
+const GithubSelection = ({ project, noPrivate }) => {
   const [field, _, fieldHelper] = useField('scope');
   const [urlRepo, setUrlRepo] = useState('');
   const { branch } = useSelector(state => state.github);
@@ -107,7 +107,7 @@ const GithubSelection = ({ project }) => {
 
   useEffect(() => {
     if (githubData?.id && githubData?.username) {
-      if (githubData?.scope?.includes('repo')) {
+      if (githubData?.scope?.includes('repo') && !noPrivate) {
         dispatch(getMyGithubOrgs());
         dispatch(getMyGithub());
       } else {
@@ -157,7 +157,11 @@ const GithubSelection = ({ project }) => {
   };
   useEffect(() => {
     const handleStorageChange = event => {
-      if (event.key === 'authenticated' && event.newValue === 'true') {
+      if (
+        event.key === 'authenticated' &&
+        event.newValue === 'true' &&
+        !noPrivate
+      ) {
         dispatch(getMyProfile());
         dispatch(getMyGithub());
         dispatch(getMyGithubOrgs());
@@ -246,6 +250,7 @@ const GithubSelection = ({ project }) => {
                     <>
                       {!githubData?.scope?.includes('repo') && (
                         <GitHubAuthComponent
+                          noPrivate={noPrivate}
                           desc={
                             'Authenticate via GitHub to select from your private repositories'
                           }
@@ -290,6 +295,7 @@ const GithubSelection = ({ project }) => {
         }}
         variant={'contained'}
         sx={githubBtnSx}
+        className={'github-btn'}
       >
         Use github
       </Button>
