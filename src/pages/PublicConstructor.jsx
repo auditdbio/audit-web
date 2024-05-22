@@ -82,6 +82,7 @@ const PublicConstructor = ({ saved, isPublic }) => {
         project_name: report?.project_name || '',
         report: report?.report || '',
         description: report?.description || '',
+        conclusion: report?.conclusion || '',
         scope: report?.scope?.length ? report?.scope : [],
         tags: report?.tags?.length ? report?.tags : [],
         issues: report?.issues?.length ? report?.issues : publicIssues,
@@ -95,6 +96,7 @@ const PublicConstructor = ({ saved, isPublic }) => {
         project_name: audit?.project_name || '',
         report: audit?.report || '',
         description: audit?.description || '',
+        conclusion: audit?.conclusion || '',
         scope: audit?.scope?.length ? audit?.scope : [],
         tags: audit?.tags?.length ? audit?.tags : [],
         issues: audit?.issues?.length ? audit?.issues : [],
@@ -110,6 +112,7 @@ const PublicConstructor = ({ saved, isPublic }) => {
     setFieldValue('report', '');
     setFieldValue('report_name', '');
     setFieldValue('description', '');
+    setFieldValue('conclusion', '');
     setFieldValue('scope', []);
     setFieldValue('tags', []);
     setFieldValue('issues', []);
@@ -293,10 +296,10 @@ const PublicConstructor = ({ saved, isPublic }) => {
                               mdProps={{
                                 view: { menu: true, md: true, html: !matchXs },
                               }}
-                            />{' '}
+                            />
                           </Box>
                           <Box
-                            sx={{ display: 'flex', gap: '10px', my: '15px' }}
+                            sx={{ display: 'flex', gap: '10px', my: '20px' }}
                           >
                             <Box sx={{ width: '100%' }}>
                               <TagsField
@@ -332,6 +335,22 @@ const PublicConstructor = ({ saved, isPublic }) => {
                               />
                             </Box>
                           </Box>
+
+                          <Box sx={conclusionWrapper}>
+                            <Typography sx={descriptionTitleSx} variant={'h6'}>
+                              Conclusion
+                            </Typography>
+                            <MarkdownEditor
+                              saved={saved}
+                              name="conclusion"
+                              handleBlur={handleSubmit}
+                              setFieldTouched={setFieldTouched}
+                              mdProps={{
+                                style: { height: '250px' },
+                                view: { menu: true, md: true, html: !matchXs },
+                              }}
+                            />
+                          </Box>
                         </Box>
                         <Button
                           onClick={() => setShowFull(!showFull)}
@@ -342,6 +361,7 @@ const PublicConstructor = ({ saved, isPublic }) => {
                       </Box>
                     </Box>
                   </Box>
+
                   <Modal
                     open={isOpen}
                     onClose={() => setIsOpen(false)}
@@ -384,6 +404,7 @@ const PublicConstructor = ({ saved, isPublic }) => {
                       </Box>
                     </Box>
                   </Modal>
+
                   {!issues.length && (
                     <Box sx={actionWrapper}>
                       <CustomSnackbar
@@ -560,6 +581,13 @@ const descriptionSx = full => ({
   overflow: 'hidden',
   transition: 'max-height 1s',
   scrollBehavior: 'smooth',
+});
+
+const conclusionWrapper = () => ({
+  mb: '20px',
+  '& .md-editor-wrapper': {
+    border: 'none',
+  },
 });
 
 const fieldsWrapperSx = theme => ({

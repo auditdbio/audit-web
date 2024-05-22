@@ -1,7 +1,9 @@
 import React, { useRef, useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate, Link } from 'react-router-dom/dist';
 import dayjs from 'dayjs';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { CustomCard } from '../components/custom/Card.jsx';
-import Layout from '../styles/Layout.jsx';
 import {
   Avatar,
   Box,
@@ -10,10 +12,7 @@ import {
   Tooltip,
   useMediaQuery,
 } from '@mui/material';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import { useNavigate, Link } from 'react-router-dom/dist';
 import TagsList from '../components/tagsList.jsx';
-import { useDispatch, useSelector } from 'react-redux';
 import {
   acceptAudit,
   clearMessage,
@@ -21,7 +20,7 @@ import {
   deleteAudit,
   deleteAuditRequest,
   downloadReport,
-  editAuditCustomer,
+  editAudit,
   editAuditRequestCustomer,
 } from '../redux/actions/auditAction.js';
 import {
@@ -45,6 +44,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import { setCurrentChat } from '../redux/actions/chatActions.js';
 import ChatIcon from '../components/icons/ChatIcon.jsx';
 import ConfirmModal from '../components/modal/ConfirmModal.jsx';
+import PriceCalculation from '../components/PriceCalculation.jsx';
 import Headings from '../router/Headings.jsx';
 
 const AuditInfo = ({ audit, auditRequest, issues, confirmed, handleClose }) => {
@@ -116,7 +116,7 @@ const AuditInfo = ({ audit, auditRequest, issues, confirmed, handleClose }) => {
     localStorage.setItem('path', window.location.pathname);
     navigate(`/chat/${audit?.auditor_id}`);
   };
-  //
+
   const goToIssues = () => {
     navigate(`/issues/audit-issue/${audit?.id}`);
   };
@@ -292,7 +292,7 @@ const AuditInfo = ({ audit, auditRequest, issues, confirmed, handleClose }) => {
                   if (auditRequest) {
                     dispatch(editAuditRequestCustomer(values));
                   } else {
-                    dispatch(editAuditCustomer(values));
+                    dispatch(editAudit(values));
                   }
                   setEditMode(false);
                 }}
@@ -366,6 +366,20 @@ const AuditInfo = ({ audit, auditRequest, issues, confirmed, handleClose }) => {
             )}
         </Box>
       </Box>
+
+      {audit?.conclusion && (
+        <Box sx={{ border: '2px solid #E5E5E5', width: '100%' }}>
+          <Box sx={conclusionTitle}>Conclusion</Box>
+          <Markdown value={audit.conclusion} />
+        </Box>
+      )}
+
+      <PriceCalculation
+        price={audit?.price || auditRequest?.price}
+        sx={priceCalc}
+        scope={audit?.scope || auditRequest?.project_scope}
+      />
+
       <Box>
         <Box
           sx={{
@@ -696,4 +710,25 @@ const editBtnSx = theme => ({
   gap: '7px',
   flexDirection: 'column',
   right: '10px',
+});
+
+const conclusionTitle = theme => ({
+  padding: '10px 0',
+  fontSize: '20px',
+  fontWeight: 500,
+  textAlign: 'center',
+});
+
+const priceCalc = theme => ({
+  width: '725px',
+  '& .head': { justifyContent: 'center' },
+  [theme.breakpoints.down('md')]: {
+    width: '590px',
+  },
+  [theme.breakpoints.down('sm')]: {
+    width: '80%',
+  },
+  [theme.breakpoints.down('xs')]: {
+    width: '100%',
+  },
 });

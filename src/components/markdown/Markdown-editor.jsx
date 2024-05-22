@@ -92,6 +92,7 @@ const MarkdownEditor = ({
   return (
     <Box
       data-color-mode="light"
+      className="md-editor-wrapper"
       sx={[
         wrapper,
         {

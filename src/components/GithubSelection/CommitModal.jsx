@@ -76,11 +76,11 @@ const CommitModal = ({
     });
   };
 
-  useEffect(() => {
-    if (sha && field.value.length) {
-      fieldHelper.setValue(updateCommitShaInLinks(field.value, sha));
-    }
-  }, [sha]);
+  // useEffect(() => {
+  //   if (sha && field.value.length) {
+  //     fieldHelper.setValue(updateCommitShaInLinks(field.value, sha));
+  //   }
+  // }, [sha]);
 
   useEffect(() => {
     if (sha && selected.length) {
@@ -145,13 +145,7 @@ const CommitModal = ({
 
       if (selected.includes(blobUrl) && !addAll) {
         setSelected(setStateFilter);
-      } else if (field.value.includes(blobUrl)) {
-        if (deletedFromField.includes(blobUrl)) {
-          setDeletedFromField(setStateFilter);
-        } else if (!addAll) {
-          setDeletedFromField(prev => [...prev, blobUrl]);
-        }
-      } else if (!field.value.includes(blobUrl)) {
+      } else if (!selected.includes(blobUrl)) {
         setSelected(prev =>
           !prev.includes(blobUrl) ? [...prev, blobUrl] : prev,
         );
@@ -166,10 +160,6 @@ const CommitModal = ({
       const blobUrl = createBlopUrl(repository, sha, node.path);
       if (selected.includes(blobUrl)) {
         setSelected(prev => prev.filter(item => item !== blobUrl));
-      } else if (field.value.includes(blobUrl)) {
-        setDeletedFromField(prev =>
-          !prev.includes(blobUrl) ? [...prev, blobUrl] : prev,
-        );
       }
     } else if (node.type === 'tree') {
       node.tree.map(el => handleRemoveAll(el));
@@ -184,22 +174,19 @@ const CommitModal = ({
     }
   };
 
-  const handleSave = () => {
-    fieldHelper.setValue([
-      ...field.value.filter(el => !deletedFromField.includes(el)),
-      ...selected,
-    ]);
-    setSelected([]);
-    onClose();
-  };
-
   const handleReset = () => {
     setSelected([]);
     fieldHelper.setValue([]);
   };
 
+  const checkDiff = useMemo(() => {
+    return selected.every((el, idx) => {
+      return field.value.includes(el);
+    });
+  }, [selected, field.value]);
+
   const closeModal = () => {
-    if (selected.length || deletedFromField.length) {
+    if (!checkDiff) {
       setModalOpenAlert(true);
     } else {
       setSelected([]);
@@ -207,17 +194,17 @@ const CommitModal = ({
     }
   };
 
-  const checkAll = useMemo(() => {
-    if (data && data.tree) {
-      return field.value
-        .filter(el => el.includes('github'))
-        .every(value => {
-          const pathIndex = value.indexOf('blob') + 46;
-          const path = value.slice(pathIndex);
-          return data.tree?.some(treeItem => treeItem.path === path);
-        });
-    }
-  }, [data?.tree, sha]);
+  // const checkAll = useMemo(() => {
+  //   if (data && data.tree) {
+  //     return selected
+  //       .filter(el => el.includes('github'))
+  //       .every(value => {
+  //         const pathIndex = value.indexOf('blob') + 46;
+  //         const path = value.slice(pathIndex);
+  //         return data.tree?.some(treeItem => treeItem.path === path);
+  //       });
+  //   }
+  // }, [data?.tree, sha]);
 
   const checkAllSelected = useMemo(() => {
     if (data && data.tree) {
@@ -233,8 +220,9 @@ const CommitModal = ({
 
   useEffect(() => {
     if (
-      (checkAll !== undefined && checkAll === false) ||
-      (checkAllSelected !== undefined && checkAllSelected === false)
+      // (checkAll !== undefined && checkAll === false) ||
+      checkAllSelected !== undefined &&
+      checkAllSelected === false
     ) {
       setCheckLength(true);
     } else {
@@ -242,26 +230,45 @@ const CommitModal = ({
     }
   }, [data?.tree, sha]);
 
-  useEffect(() => {
-    if (checkAll !== undefined && !checkAll) {
-      const filteredValue = field.value.filter(value => {
+  const handleSave = () => {
+    if (checkLength) {
+      const filteredValue = selected.filter(el => !el.includes('github.com'));
+      const filteredValue2 = selected.filter(value => {
         const pathIndex = value.indexOf('blob') + 46;
         const path = value.slice(pathIndex);
-        return !data?.tree?.some(treeItem => treeItem.path === path);
+        return data.tree?.some(treeItem => treeItem.path === path);
       });
-      filteredValue.forEach(el => {
-        const pathIndex = el.indexOf('blob') + 46;
-        const path = el.slice(pathIndex);
-        if (el.includes('github')) {
-          handleRemoveAll({ path, type: 'blob' });
-        }
-      });
+      fieldHelper.setValue([...filteredValue, ...filteredValue2]);
+    } else {
+      fieldHelper.setValue([
+        // ...field.value.filter(el => !deletedFromField.includes(el)),
+        ...selected,
+      ]);
     }
-  }, [data.tree, sha, checkAll]);
+    setSelected([]);
+    onClose();
+  };
+
+  // useEffect(() => {
+  //   if (checkAll !== undefined && !checkAll) {
+  //     const filteredValue = field.value.filter(value => {
+  //       const pathIndex = value.indexOf('blob') + 46;
+  //       const path = value.slice(pathIndex);
+  //       return !data?.tree?.some(treeItem => treeItem.path === path);
+  //     });
+  //     filteredValue.forEach(el => {
+  //       const pathIndex = el.indexOf('blob') + 46;
+  //       const path = el.slice(pathIndex);
+  //       if (el.includes('github')) {
+  //         handleRemoveAll({ path, type: 'blob' });
+  //       }
+  //     });
+  //   }
+  // }, [data.tree, sha, checkAll]);
 
   const handleAgree = () => {
     fieldHelper.setValue([
-      ...field.value.filter(el => !deletedFromField.includes(el)),
+      // ...field.value.filter(el => !deletedFromField.includes(el)),
       ...selected,
     ]);
     setSelected([]);
@@ -280,10 +287,9 @@ const CommitModal = ({
       )
       .every(childNode => {
         const blobUrl = createBlopUrl(repository, sha, `${childNode.path}`);
-        return (
-          selected.includes(blobUrl) ||
-          (field.value.includes(blobUrl) && !deletedFromField.includes(blobUrl))
-        );
+        return selected.includes(blobUrl);
+        // ||
+        // (field.value.includes(blobUrl) && !deletedFromField.includes(blobUrl))
       });
   }, [selected, field.value, deletedFromField, data]);
 
@@ -294,10 +300,9 @@ const CommitModal = ({
       )
       .some(childNode => {
         const blobUrl = createBlopUrl(repository, sha, `${childNode.path}`);
-        return (
-          selected.includes(blobUrl) ||
-          (field.value.includes(blobUrl) && !deletedFromField.includes(blobUrl))
-        );
+        return selected.includes(blobUrl);
+        // ||
+        // (field.value.includes(blobUrl) && !deletedFromField.includes(blobUrl))
       });
   }, [selected, field.value, deletedFromField, data]);
 
@@ -351,7 +356,7 @@ const CommitModal = ({
               aria-describedby="modal-modal-description"
             >
               <Box sx={alertModalSx}>
-                <ModalOfAlert onClose={handleDisagree} onSave={handleAgree} />
+                <ModalOfAlert onClose={handleDisagree} onSave={handleSave} />
               </Box>
             </Modal>
             {/*<Button*/}
@@ -430,7 +435,7 @@ const CommitModal = ({
               />
               <Box sx={{ display: 'flex', fontSize: '14px', gap: '15px' }}>
                 <Button
-                  disabled={!selected.length && !deletedFromField.length}
+                  disabled={checkDiff}
                   variant={'contained'}
                   onClick={handleSave}
                 >

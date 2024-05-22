@@ -86,6 +86,18 @@ export const authorizedPages = [
         itemName: 'Audit builder',
         link: `/audit-builder/${auditId}`,
       },
+      {
+        id: 331,
+        role: AUDITOR,
+        itemName: 'Price calculator',
+        link: `/price-calculation`,
+      },
+      {
+        id: 3312,
+        role: CUSTOMER,
+        itemName: 'Price calculator',
+        link: `/price-calculation`,
+      },
     ],
   },
 ];

@@ -10,7 +10,7 @@ import {
   DELETE_AUDIT,
   DELETE_REQUEST,
   DOWNLOAD_REPORT_START,
-  EDIT_AUDIT_CUSTOMER,
+  EDIT_AUDIT,
   EDIT_AUDIT_REQUEST_CUSTOMER,
   GET_AUDIT,
   GET_AUDIT_REQUEST,
@@ -282,7 +282,7 @@ export const startAudit = (values, goBack) => {
   };
 };
 
-export const editAuditCustomer = (values, goBack) => {
+export const editAudit = (values, goBack) => {
   return dispatch => {
     const token = Cookies.get('token');
     axios
@@ -292,7 +292,11 @@ export const editAuditCustomer = (values, goBack) => {
         },
       })
       .then(({ data }) => {
-        dispatch({ type: EDIT_AUDIT_CUSTOMER, payload: data });
+        dispatch({ type: EDIT_AUDIT, payload: data });
+        if (goBack) history.back();
+      })
+      .catch(() => {
+        dispatch({ type: REQUEST_ERROR });
       });
   };
 };

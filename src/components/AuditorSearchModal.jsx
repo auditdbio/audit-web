@@ -27,6 +27,7 @@ import * as Yup from 'yup';
 import { useParams } from 'react-router-dom';
 import { addTestsLabel } from '../lib/helper.js';
 import CustomSnackbar from './custom/CustomSnackbar.jsx';
+import PriceCalculation from './PriceCalculation.jsx';
 
 export default function AuditorSearchModal({
   open,
@@ -265,6 +266,14 @@ export default function AuditorSearchModal({
                       >
                         <SalarySlider name={'price'} />
                       </Box>
+                      <PriceCalculation
+                        price={values.price}
+                        scope={values.scope}
+                        sx={{
+                          mb: '15px',
+                          '& .head': { justifyContent: 'center' },
+                        }}
+                      />
                       <Box sx={{ justifyContent: 'center', display: 'flex' }}>
                         <Button
                           sx={sendButton}

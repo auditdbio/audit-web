@@ -10,6 +10,10 @@ import {
   LOG_OUT,
   GET_CURRENT_PROJECT,
   GET_PROJECTS_BY_USER_ID,
+  GET_CLOC,
+  CLEAR_CLOC,
+  PROJECT_ERROR,
+  CLEAR_ERROR,
 } from '../actions/types.js';
 
 const initialState = {
@@ -22,7 +26,9 @@ const initialState = {
   searchTotalProjects: 0,
   currentProject: null,
   userProjects: [],
+  cloc: null,
 };
+
 export const projectReducer = (state = initialState, action) => {
   switch (action.type) {
     case PROJECT_CREATE:
@@ -95,6 +101,18 @@ export const projectReducer = (state = initialState, action) => {
       };
     case CLEAR_SUCCESS: {
       return { ...state, message: null };
+    }
+    case PROJECT_ERROR: {
+      return { ...state, error: action.payload };
+    }
+    case CLEAR_ERROR: {
+      return { ...state, error: null };
+    }
+    case GET_CLOC: {
+      return { ...state, cloc: action.payload };
+    }
+    case CLEAR_CLOC: {
+      return { ...state, cloc: null };
     }
     case LOG_OUT:
       return {
