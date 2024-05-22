@@ -48,6 +48,9 @@ import ConfirmModal from '../components/modal/ConfirmModal.jsx';
 import Headings from '../router/Headings.jsx';
 import EditDescription from '../components/EditDescription/index.jsx';
 import DescriptionHistory from '../components/DescriptionHistory/index.jsx';
+import EditButton from '../components/EditDescription/EditButton.jsx';
+import TagsField from '../components/forms/tags-field/tags-field.jsx';
+import EditTags from '../components/EditDescription/EditTags.jsx';
 
 const AuditInfo = ({
   audit,
@@ -63,6 +66,9 @@ const AuditInfo = ({
   const { successMessage, error } = useSelector(s => s.audits);
   const { user } = useSelector(s => s.user);
   const { chatList } = useSelector(s => s.chat);
+  const [editPrice, setEditPrice] = useState(false);
+  const [priceValue, setPriceValue] = useState(audit?.price);
+  const [editTags, setEditTags] = useState(false);
 
   const handleConfirm = () => {
     dispatch(confirmAudit(audit));
@@ -117,6 +123,15 @@ const AuditInfo = ({
     navigate(`/issues/audit-issue/${audit?.id}`);
   };
 
+  const handleUpdateAudit = () => {
+    const data = {
+      id: audit.id,
+      price: priceValue,
+    };
+    setEditPrice(false);
+    dispatch(editAuditCustomer(data));
+  };
+
   return (
     <CustomCard sx={wrapper} className={'audit-info-wrapper'}>
       <Headings title={audit?.project_name || 'Audit Info'} />
@@ -146,16 +161,16 @@ const AuditInfo = ({
         {!handleClose ? <ArrowBackIcon /> : <CloseIcon />}
       </Button>
       <Box sx={{ display: 'flex', width: '100%', justifyContent: 'center' }}>
-        {confirmed ? (
-          <Box
-            sx={{
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'center',
-              alignItems: 'center',
-              width: '100%',
-            }}
-          >
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center',
+            alignItems: 'center',
+            width: '100%',
+          }}
+        >
+          {confirmed ? (
             <Typography
               variant="h3"
               sx={{
@@ -171,24 +186,24 @@ const AuditInfo = ({
                 {audit?.project_name}
               </Link>
             </Typography>
-            <Typography sx={titleSx}>
-              {audit?.tags?.map(el => el).join(', ') ?? ''}
+          ) : (
+            <Typography sx={{ width: '100%', textAlign: 'center' }}>
+              You have offer to audit for&nbsp;
+              <span style={{ fontWeight: 500, wordBreak: 'break-word' }}>
+                <Link
+                  style={{ color: '#000' }}
+                  to={`/projects/${audit.project_id}`}
+                >
+                  {audit?.project_name}
+                </Link>
+              </span>
+              &nbsp;project!
             </Typography>
-          </Box>
-        ) : (
-          <Typography sx={{ width: '100%', textAlign: 'center' }}>
-            You have offer to audit for&nbsp;
-            <span style={{ fontWeight: 500, wordBreak: 'break-word' }}>
-              <Link
-                style={{ color: '#000' }}
-                to={`/projects/${audit.project_id}`}
-              >
-                {audit?.project_name}
-              </Link>
-            </span>
-            &nbsp;project!
-          </Typography>
-        )}
+          )}
+          <>
+            <EditTags audit={audit} confirmed={confirmed} />
+          </>
+        </Box>
       </Box>
       <Box sx={{ maxWidth: '100%', width: '100%' }}>
         <Box sx={contentWrapper}>
@@ -249,7 +264,39 @@ const AuditInfo = ({
             </Box>
             <Box sx={infoWrapper}>
               <span>Price:</span>
-              <Typography>${audit?.price} per line</Typography>
+              {/*{!editPrice ? (*/}
+              <Typography>$ {audit?.price} per line</Typography>
+              {/*) : (*/}
+              {/*  <Box sx={{ display: 'flex', alignItems: 'center', gap: '7px' }}>*/}
+              {/*    <TextField*/}
+              {/*      // label="Size"*/}
+              {/*      id="filled-size-normal"*/}
+              {/*      // defaultValue="Normal"*/}
+              {/*      variant="standard"*/}
+              {/*      value={priceValue}*/}
+              {/*      sx={{*/}
+              {/*        width: 'auto',*/}
+              {/*        maxWidth: '60px',*/}
+              {/*        '& input': {*/}
+              {/*          paddingTop: 'unset',*/}
+              {/*        },*/}
+              {/*      }}*/}
+              {/*      onChange={({ target }) => setPriceValue(target.value)}*/}
+              {/*      InputProps={{*/}
+              {/*        startAdornment: (*/}
+              {/*          <InputAdornment position="start">$</InputAdornment>*/}
+              {/*        ),*/}
+              {/*      }}*/}
+              {/*    />*/}
+              {/*    <Typography>per line</Typography>*/}
+              {/*  </Box>*/}
+              {/*)}*/}
+              {/*<EditButton*/}
+              {/*  handleClick={*/}
+              {/*    editPrice ? handleUpdateAudit : () => setEditPrice(!editPrice)*/}
+              {/*  }*/}
+              {/*  editMode={editPrice}*/}
+              {/*/>*/}
             </Box>
           </Box>
 

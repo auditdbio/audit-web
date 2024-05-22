@@ -41,6 +41,10 @@ import Headings from '../router/Headings.jsx';
 import DescriptionHistory from '../components/DescriptionHistory/index.jsx';
 import EditDescription from '../components/EditDescription/index.jsx';
 import EditIcon from '@mui/icons-material/Edit';
+import EditButton from '../components/EditDescription/EditButton.jsx';
+import TagsField from '../components/forms/tags-field/tags-field.jsx';
+import CloseIcon from '@mui/icons-material/Close.js';
+import EditTags from '../components/EditDescription/EditTags.jsx';
 
 const AuditOffer = () => {
   const { auditId } = useParams();
@@ -210,9 +214,7 @@ const AuditOffer = () => {
 
                   <Box sx={{ width: '100%' }}>
                     <Box sx={contentWrapper}>
-                      <Typography sx={titleSx}>
-                        {audit?.tags?.map(el => el).join(', ') ?? ''}
-                      </Typography>
+                      <EditTags audit={audit} confirmed={true} />
                       <Box sx={salaryWrapper}>
                         <Box
                           sx={{

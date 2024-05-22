@@ -31,6 +31,7 @@ import ChatIcon from './icons/ChatIcon.jsx';
 import ConfirmModal from './modal/ConfirmModal.jsx';
 import EditDescription from './EditDescription/index.jsx';
 import DescriptionHistory from './DescriptionHistory/index.jsx';
+import EditTags from './EditDescription/EditTags.jsx';
 
 const AuditRequestInfo = ({
   project,
@@ -153,11 +154,7 @@ const AuditRequestInfo = ({
       <Box sx={{ width: '100%' }} className="audit-content">
         <Box sx={contentWrapper} className="audit-request-content-wrapper">
           <Typography sx={titleSx} className="audit-request-title">
-            {project?.tags?.map((el, idx) => (
-              <span key={idx}>
-                {idx + 1 !== project?.tags?.length ? el + ',' : el}
-              </span>
-            ))}
+            <EditTags audit={project} />
           </Typography>
           <Box sx={salaryWrapper} className={'audit-request-salary'}>
             {project?.price > 0 && (
