@@ -29,6 +29,7 @@ import ShareProjectButton from './custom/ShareProjectButton.jsx';
 import { setCurrentChat } from '../redux/actions/chatActions.js';
 import ChatIcon from './icons/ChatIcon.jsx';
 import ConfirmModal from './modal/ConfirmModal.jsx';
+import PriceCalculation from './PriceCalculation.jsx';
 
 const AuditRequestInfo = ({
   project,
@@ -296,7 +297,7 @@ const AuditRequestInfo = ({
 
         <Box sx={{ textAlign: 'center', mt: '10px' }}>
           <ShareProjectButton
-            projectId={project?.id}
+            projectId={project?.project_id}
             sx={{ fontSize: '12px' }}
             showIcon
             isModal
@@ -415,6 +416,16 @@ const AuditRequestInfo = ({
           </Box>
         </Box>
       </Box>
+
+      {/*{!isModal && (*/}
+      {/*  <PriceCalculation*/}
+      {/*    price={project?.price}*/}
+      {/*    sx={priceCalc}*/}
+      {/*    color="secondary"*/}
+      {/*    scope={project?.project_scope || project?.scope}*/}
+      {/*  />*/}
+      {/*)}*/}
+
       <Box sx={buttonWrapper} className="audit-request-button-wrapper">
         <Button
           variant="contained"
@@ -620,3 +631,8 @@ const messageButton = theme => ({
     width: '254px',
   },
 });
+
+const priceCalc = {
+  width: '100%',
+  '& .head': { justifyContent: 'center' },
+};
