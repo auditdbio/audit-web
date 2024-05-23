@@ -374,11 +374,11 @@ const AuditInfo = ({ audit, auditRequest, issues, confirmed, handleClose }) => {
         </Box>
       )}
 
-      <PriceCalculation
-        price={audit?.price || auditRequest?.price}
-        sx={priceCalc}
-        scope={audit?.scope || auditRequest?.project_scope}
-      />
+      {/*<PriceCalculation*/}
+      {/*  price={audit?.price || auditRequest?.price}*/}
+      {/*  sx={priceCalc}*/}
+      {/*  scope={audit?.scope || auditRequest?.project_scope}*/}
+      {/*/>*/}
 
       <Box>
         <Box

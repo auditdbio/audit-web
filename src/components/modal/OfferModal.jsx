@@ -102,12 +102,12 @@ const OfferModal = ({
                   Price per line of code
                 </Typography>
                 <SalarySlider name="price" />
-                <PriceCalculation
-                  price={values.price}
-                  scope={values.scope}
-                  sx={{ mt: '10px', '& .head': { justifyContent: 'center' } }}
-                  color="secondary"
-                />
+                {/*<PriceCalculation*/}
+                {/*  price={values.price}*/}
+                {/*  scope={values.scope}*/}
+                {/*  sx={{ mt: '10px', '& .head': { justifyContent: 'center' } }}*/}
+                {/*  color="secondary"*/}
+                {/*/>*/}
               </Box>
               <Box>
                 <Typography variant="caption">Time frame</Typography>

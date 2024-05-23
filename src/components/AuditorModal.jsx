@@ -383,11 +383,11 @@ export default function AuditorModal({
                           }}
                         >
                           <SalarySlider name={'price'} />
-                          <PriceCalculation
-                            price={values.price}
-                            sx={priceCalc}
-                            scope={scope}
-                          />
+                          {/*<PriceCalculation*/}
+                          {/*  price={values.price}*/}
+                          {/*  sx={priceCalc}*/}
+                          {/*  scope={scope}*/}
+                          {/*/>*/}
                         </Box>
                         <Box sx={{ justifyContent: 'center', display: 'flex' }}>
                           <Button

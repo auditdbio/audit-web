@@ -258,7 +258,7 @@ const AuditOffer = () => {
                   wordBreak: 'break-word',
                 }}
               >
-                {audit?.project_name} ршр шрш р
+                {audit?.project_name}
               </Typography>
             </Box>
 
@@ -385,12 +385,12 @@ const AuditOffer = () => {
                   ))}
                 </Box>
 
-                <PriceCalculation
-                  price={audit?.price}
-                  sx={priceCalc}
-                  color="secondary"
-                  scope={audit?.scope}
-                />
+                {/*<PriceCalculation*/}
+                {/*  price={audit?.price}*/}
+                {/*  sx={priceCalc}*/}
+                {/*  color="secondary"*/}
+                {/*  scope={audit?.scope}*/}
+                {/*/>*/}
 
                 <Box sx={{ display: 'flex', justifyContent: 'center' }}>
                   <Button
