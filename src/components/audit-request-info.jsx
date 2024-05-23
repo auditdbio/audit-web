@@ -417,14 +417,14 @@ const AuditRequestInfo = ({
         </Box>
       </Box>
 
-      {!isModal && (
-        <PriceCalculation
-          price={project?.price}
-          sx={priceCalc}
-          color="secondary"
-          scope={project?.project_scope || project?.scope}
-        />
-      )}
+      {/*{!isModal && (*/}
+      {/*  <PriceCalculation*/}
+      {/*    price={project?.price}*/}
+      {/*    sx={priceCalc}*/}
+      {/*    color="secondary"*/}
+      {/*    scope={project?.project_scope || project?.scope}*/}
+      {/*  />*/}
+      {/*)}*/}
 
       <Box sx={buttonWrapper} className="audit-request-button-wrapper">
         <Button
