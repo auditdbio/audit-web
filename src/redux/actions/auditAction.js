@@ -295,7 +295,7 @@ export const editAuditCustomer = (values, goBack) => {
       })
       .then(({ data }) => {
         dispatch({ type: EDIT_AUDIT_CUSTOMER, payload: data });
-        // dispatch(getAuditHistory(values.id));
+        dispatch(getAuditHistory(values.id));
       });
   };
 };
@@ -341,7 +341,7 @@ export const editAuditRequestCustomer = (values, goBack) => {
       })
       .then(({ data }) => {
         dispatch({ type: EDIT_AUDIT_REQUEST_CUSTOMER, payload: data });
-        // dispatch(getAuditRequestHistory(values.id));
+        dispatch(getAuditRequestHistory(values.id));
       });
   };
 };
