@@ -45,6 +45,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import { setCurrentChat } from '../redux/actions/chatActions.js';
 import ChatIcon from '../components/icons/ChatIcon.jsx';
 import ConfirmModal from '../components/modal/ConfirmModal.jsx';
+import PriceCalculation from '../components/PriceCalculation.jsx';
 import Headings from '../router/Headings.jsx';
 import EditDescription from '../components/EditDescription/index.jsx';
 import DescriptionHistory from '../components/DescriptionHistory/index.jsx';
@@ -118,7 +119,7 @@ const AuditInfo = ({
     localStorage.setItem('path', window.location.pathname);
     navigate(`/chat/${audit?.auditor_id}`);
   };
-  //
+
   const goToIssues = () => {
     navigate(`/issues/audit-issue/${audit?.id}`);
   };
@@ -319,6 +320,20 @@ const AuditInfo = ({
         <EditDescription auditRequest={request} audit={audit} />
         <DescriptionHistory audit={audit} request={request} />
       </Box>
+
+      {audit?.conclusion && (
+        <Box sx={{ border: '2px solid #E5E5E5', width: '100%' }}>
+          <Box sx={conclusionTitle}>Conclusion</Box>
+          <Markdown value={audit.conclusion} />
+        </Box>
+      )}
+
+      {/*<PriceCalculation*/}
+      {/*  price={audit?.price || auditRequest?.price}*/}
+      {/*  sx={priceCalc}*/}
+      {/*  scope={audit?.scope || auditRequest?.project_scope}*/}
+      {/*/>*/}
+
       <Box>
         <Box
           sx={{
@@ -649,4 +664,25 @@ const editBtnSx = theme => ({
   gap: '7px',
   flexDirection: 'column',
   right: '10px',
+});
+
+const conclusionTitle = theme => ({
+  padding: '10px 0',
+  fontSize: '20px',
+  fontWeight: 500,
+  textAlign: 'center',
+});
+
+const priceCalc = theme => ({
+  width: '725px',
+  '& .head': { justifyContent: 'center' },
+  [theme.breakpoints.down('md')]: {
+    width: '590px',
+  },
+  [theme.breakpoints.down('sm')]: {
+    width: '80%',
+  },
+  [theme.breakpoints.down('xs')]: {
+    width: '100%',
+  },
 });

@@ -286,7 +286,7 @@ export const getMyPublicGithubOrgs = user => {
         });
         if (!data.message) {
           data?.map(org => {
-            axios(`${API_URL}/github/orgs/${org.login}/repos`, {
+            axios(`${API_URL}/github/users/${org.login}/repos`, {
               headers: {
                 Authorization: `Bearer ${Cookies.get('token')}`,
                 'Cache-Control': 'no-cache',
