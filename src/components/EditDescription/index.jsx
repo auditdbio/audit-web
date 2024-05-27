@@ -1,11 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Markdown from '../markdown/Markdown.jsx';
-import { Form, Formik } from 'formik';
+import { FastField, Form, Formik } from 'formik';
 import {
   editAuditCustomer,
   editAuditRequestCustomer,
 } from '../../redux/actions/auditAction.js';
-import { Box, Button, IconButton, useMediaQuery } from '@mui/material';
+import { Box, Button, IconButton, Modal, useMediaQuery } from '@mui/material';
 import MarkdownEditor from '../markdown/Markdown-editor.jsx';
 import CloseIcon from '@mui/icons-material/Close.js';
 import SaveIcon from '@mui/icons-material/Save.js';
@@ -18,10 +18,12 @@ import CustomLink from '../custom/CustomLink.jsx';
 import TagsField from '../forms/tags-field/tags-field.jsx';
 import { addTestsLabel } from '../../lib/helper.js';
 import AddLinkIcon from '@mui/icons-material/AddLink.js';
+import { TextField } from 'formik-mui';
 
 const EditDescription = ({ audit, auditRequest }) => {
   const [editMode, setEditMode] = useState(false);
   const [showFull, setShowFull] = useState(false);
+  const [showComment, setShowComment] = useState(false);
   const descriptionRef = useRef();
   const dispatch = useDispatch();
   const [showReadMoreButton, setShowReadMoreButton] = useState(false);
@@ -48,7 +50,8 @@ const EditDescription = ({ audit, auditRequest }) => {
           <Formik
             initialValues={{
               description: audit?.description,
-              ...audit,
+              id: audit?.id,
+              comment: '',
             }}
             onSubmit={values => {
               if (auditRequest) {
@@ -146,10 +149,57 @@ const EditDescription = ({ audit, auditRequest }) => {
                           variant={'text'}
                           type={'button'}
                           disabled={!dirty}
-                          onClick={handleSubmit}
+                          onClick={() => setShowComment(true)}
                         >
                           <SaveIcon fontSize={'small'} />
                         </Button>
+                        <Modal
+                          open={showComment}
+                          onClose={() => setShowComment(false)}
+                          aria-labelledby="modal-modal-title"
+                          aria-describedby="modal-modal-description"
+                        >
+                          <Box
+                            sx={{
+                              position: 'absolute',
+                              top: '50%',
+                              left: '50%',
+                              transform: 'translate(-50%, -50%)',
+                              width: '100%',
+                              maxWidth: '650px',
+                              bgcolor: 'background.paper',
+                              boxShadow: 24,
+                              borderRadius: '10px',
+                              p: 2,
+                            }}
+                          >
+                            <FastField
+                              component={TextField}
+                              name={'comment'}
+                              // label={label}
+                              placeholder={'Add a comment'}
+                              fullWidth={true}
+                              disabled={false}
+                              maxRows={4}
+                              multiline={true}
+                              rows={4}
+                              inputProps={{ ...addTestsLabel(`comment-input`) }}
+                            />
+                            <Button
+                              sx={{
+                                mt: '15px',
+                                marginLeft: 'auto',
+                                marginRight: 0,
+                                display: 'block',
+                                textTransform: 'unset',
+                              }}
+                              variant={'contained'}
+                              onClick={handleSubmit}
+                            >
+                              Save
+                            </Button>
+                          </Box>
+                        </Modal>
                         <Button>
                           <CloseIcon
                             fontSize={'small'}

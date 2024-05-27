@@ -3,20 +3,25 @@ import {
   editAuditCustomer,
   editAuditRequestCustomer,
 } from '../../redux/actions/auditAction.js';
-import { Form, Formik } from 'formik';
-import { Box, Button, Typography } from '@mui/material';
+import { FastField, Form, Formik } from 'formik';
+import { Box, Button, Modal, Typography } from '@mui/material';
 import EditButton from './EditButton.jsx';
 import TagsField from '../forms/tags-field/tags-field.jsx';
 import CloseIcon from '@mui/icons-material/Close.js';
 import { useDispatch } from 'react-redux';
+import TagsArray from '../tagsArray/index.jsx';
+import { TextField } from 'formik-mui';
+import { addTestsLabel } from '../../lib/helper.js';
 
 const EditTags = ({ audit, confirmed }) => {
   const [editTags, setEditTags] = useState(false);
+  const [showComment, setShowComment] = useState(false);
   const dispatch = useDispatch();
   return (
     <Formik
       initialValues={{
         tags: audit?.tags,
+        comment: '',
         id: audit?.id,
       }}
       onSubmit={values => {
@@ -44,12 +49,19 @@ const EditTags = ({ audit, confirmed }) => {
                   justifyContent: 'center',
                   gap: '5px',
                   alignItems: 'center',
-                  height: '32px',
+                  mt: '5px',
+                  '& .tags-array-wrapper': {
+                    gap: '5px',
+                  },
                 }}
               >
-                <Typography sx={titleSx}>
-                  {values?.tags?.map(el => el).join(', ') ?? ''}
-                </Typography>
+                {!editTags ? (
+                  <Typography sx={titleSx}>
+                    {values?.tags?.map(el => el).join(', ') ?? ''}
+                  </Typography>
+                ) : (
+                  <TagsArray name="tags" />
+                )}
                 {!editTags && (
                   <EditButton
                     handleClick={() => setEditTags(!editTags)}
@@ -60,7 +72,8 @@ const EditTags = ({ audit, confirmed }) => {
               {editTags && (
                 <Box
                   sx={{
-                    width: '325px',
+                    maxWidth: '325px',
+                    width: '100%',
                     mt: '7px',
                     display: 'flex',
                     gap: '7px',
@@ -79,15 +92,66 @@ const EditTags = ({ audit, confirmed }) => {
                       '& button': { height: '40px' },
                     }}
                   >
-                    <EditButton handleClick={submitTags} editMode={editTags} />
+                    <EditButton
+                      handleClick={() => setShowComment(true)}
+                      editMode={editTags}
+                    />
                     <Button
                       onClick={() => {
                         setEditTags(false);
                         resetForm();
                       }}
+                      sx={{ minWidth: 'unset' }}
                     >
                       <CloseIcon fontSize={'small'} />
                     </Button>
+                    <Modal
+                      open={showComment}
+                      onClose={() => setShowComment(false)}
+                      aria-labelledby="modal-modal-title"
+                      aria-describedby="modal-modal-description"
+                    >
+                      <Box
+                        sx={{
+                          position: 'absolute',
+                          top: '50%',
+                          left: '50%',
+                          transform: 'translate(-50%, -50%)',
+                          width: '100%',
+                          maxWidth: '650px',
+                          bgcolor: 'background.paper',
+                          boxShadow: 24,
+                          borderRadius: '10px',
+                          p: 2,
+                        }}
+                      >
+                        <FastField
+                          component={TextField}
+                          name={'comment'}
+                          // label={label}
+                          placeholder={'Add a comment'}
+                          fullWidth={true}
+                          disabled={false}
+                          maxRows={4}
+                          multiline={true}
+                          rows={4}
+                          inputProps={{ ...addTestsLabel(`comment-input`) }}
+                        />
+                        <Button
+                          sx={{
+                            mt: '15px',
+                            marginLeft: 'auto',
+                            marginRight: 0,
+                            display: 'block',
+                            textTransform: 'unset',
+                          }}
+                          variant={'contained'}
+                          onClick={submitTags}
+                        >
+                          Save
+                        </Button>
+                      </Box>
+                    </Modal>
                   </Box>
                 </Box>
               )}

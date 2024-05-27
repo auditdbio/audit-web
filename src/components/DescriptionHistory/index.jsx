@@ -49,13 +49,20 @@ const HistoryDescription = ({ audit, request }) => {
             <Box sx={{ margin: '15px', height: '100%', overflow: 'auto' }}>
               <Box>
                 {(request ? auditRequestHistory : auditHistory)?.map(
-                  (item, index) => (
-                    <DescriptionModal
-                      key={item.id}
-                      item={item}
-                      request={request}
-                    />
-                  ),
+                  (item, index, arr) => {
+                    if (index < arr.length - 1) {
+                      return (
+                        <React.Fragment key={item.id}>
+                          <DescriptionModal
+                            oldValue={arr[index + 1]}
+                            item={item}
+                            request={request}
+                          />
+                        </React.Fragment>
+                      );
+                    }
+                    return null;
+                  },
                 )}
               </Box>
             </Box>

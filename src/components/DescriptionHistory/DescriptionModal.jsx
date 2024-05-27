@@ -24,7 +24,7 @@ import { addTestsLabel } from '../../lib/helper.js';
 import MenuItem from '@mui/material/MenuItem';
 import { addCommentAudit } from '../../redux/actions/auditAction.js';
 
-const DescriptionModal = ({ item, request }) => {
+const DescriptionModal = ({ item, request, oldValue }) => {
   const [isOpenDiff, setIsOpenDiff] = useState(false);
   const { audit, auditRequest } = useSelector(s => s.audits);
   const [openComment, setOpenComment] = useState(false);
@@ -37,11 +37,7 @@ const DescriptionModal = ({ item, request }) => {
   const mediaSx = useMediaQuery(theme => theme.breakpoints.down('xs'));
 
   const mainAudit = useMemo(() => {
-    if (request) {
-      return auditRequest;
-    } else {
-      return audit;
-    }
+    return JSON.parse(oldValue.audit);
   }, [item, request]);
 
   const handleClose = () => {
@@ -50,6 +46,7 @@ const DescriptionModal = ({ item, request }) => {
   };
   //
   const data = JSON.parse(item?.audit);
+
   const checkAudit = useMemo(() => {
     if (compare) {
       return JSON.parse(compare.audit);
@@ -65,11 +62,6 @@ const DescriptionModal = ({ item, request }) => {
       };
     }
   }, [mainAudit, compare]);
-
-  const handleAddComment = () => {
-    const data = { description: checkAudit.description, comment: commentField };
-    dispatch(addCommentAudit(audit.id, data));
-  };
 
   return (
     <Box sx={{ margin: '8px 0' }}>
@@ -154,7 +146,9 @@ const DescriptionModal = ({ item, request }) => {
             <Box sx={compareUserSx}>
               <Box sx={headerSx}>
                 <Avatar src={`${ASSET_URL}/${item.author.avatar}`} />
-                <Box sx={{ display: 'flex', gap: '7px', alignItems: 'center' }}>
+                <Box
+                  sx={{ display: 'flex', gap: '7px', flexDirection: 'column' }}
+                >
                   <Typography
                     variant={'h5'}
                     onClick={() => setIsOpenDiff(true)}
@@ -167,21 +161,29 @@ const DescriptionModal = ({ item, request }) => {
                   </Typography>
                 </Box>
               </Box>
-              {compare && (
+              {(oldValue || compare) && (
                 <Box sx={headerSx}>
-                  <Avatar src={`${ASSET_URL}/${compare.author.avatar}`} />
+                  <Avatar
+                    src={`${ASSET_URL}/${(oldValue || compare).author.avatar}`}
+                  />
                   <Box
-                    sx={{ display: 'flex', gap: '7px', alignItems: 'center' }}
+                    sx={{
+                      display: 'flex',
+                      gap: '7px',
+                      flexDirection: 'column',
+                    }}
                   >
                     <Typography
                       variant={'h5'}
                       onClick={() => setIsOpenDiff(true)}
                       sx={[titleSx, compareUserTitleSx]}
                     >
-                      {compare.author.name}{' '}
+                      {(oldValue || compare).author.name}{' '}
                     </Typography>
                     <Typography variant={'h5'} sx={{ fontSize: '16px' }}>
-                      {dayjs(compare.date / 1000).format('MM.DD.YYYY HH:mm')}
+                      {dayjs((oldValue || compare).date / 1000).format(
+                        'MM.DD.YYYY HH:mm',
+                      )}
                     </Typography>
                   </Box>
                 </Box>
@@ -193,8 +195,8 @@ const DescriptionModal = ({ item, request }) => {
                   Price
                 </Typography>
                 <ReactDiffViewer
-                  oldValue={JSON.stringify(data.price, null, 2)}
-                  newValue={JSON.stringify(checkAudit.price, null, 2)}
+                  oldValue={JSON.stringify(checkAudit.price, null, 2)}
+                  newValue={JSON.stringify(data.price, null, 2)}
                   splitView={!mediaSx}
                   compareMethod={DiffMethod.WORDS}
                 />
@@ -206,8 +208,8 @@ const DescriptionModal = ({ item, request }) => {
                   Description
                 </Typography>
                 <ReactDiffViewer
-                  oldValue={JSON.stringify(data.description, null, 2)}
-                  newValue={JSON.stringify(checkAudit.description, null, 2)}
+                  oldValue={JSON.stringify(checkAudit.description, null, 2)}
+                  newValue={JSON.stringify(data.description, null, 2)}
                   splitView={!mediaSx}
                   compareMethod={DiffMethod.WORDS}
                 />
@@ -220,8 +222,8 @@ const DescriptionModal = ({ item, request }) => {
                   Scope
                 </Typography>
                 <ReactDiffViewer
-                  oldValue={JSON.stringify(data.scope, null, 2)}
-                  newValue={JSON.stringify(checkAudit.scope, null, 2)}
+                  oldValue={JSON.stringify(checkAudit.scope, null, 2)}
+                  newValue={JSON.stringify(data.scope, null, 2)}
                   splitView={!mediaSx}
                   compareMethod={DiffMethod.WORDS}
                 />
@@ -233,8 +235,8 @@ const DescriptionModal = ({ item, request }) => {
                   Tags
                 </Typography>
                 <ReactDiffViewer
-                  oldValue={JSON.stringify(data.tags, null, 2)}
-                  newValue={JSON.stringify(checkAudit.tags, null, 2)}
+                  oldValue={JSON.stringify(checkAudit.tags, null, 2)}
+                  newValue={JSON.stringify(data.tags, null, 2)}
                   splitView={!mediaSx}
                   compareMethod={DiffMethod.WORDS}
                 />
@@ -246,45 +248,32 @@ const DescriptionModal = ({ item, request }) => {
                   Conclusion
                 </Typography>
                 <ReactDiffViewer
-                  oldValue={JSON.stringify(data.conclusion, null, 2)}
-                  newValue={JSON.stringify(checkAudit.conclusion, null, 2)}
+                  oldValue={JSON.stringify(checkAudit.conclusion, null, 2)}
+                  newValue={JSON.stringify(data.conclusion, null, 2)}
                   splitView={!mediaSx}
                   compareMethod={DiffMethod.WORDS}
                 />
               </>
             )}
-            {/*{item.comment ? (*/}
-            {/*  <Typography>{item.comment}</Typography>*/}
-            {/*) : (*/}
-            {/*  <Button*/}
-            {/*    variant={'contained'}*/}
-            {/*    sx={{ marginY: '15px' }}*/}
-            {/*    onClick={() => {*/}
-            {/*      console.log(openComment);*/}
-            {/*      setOpenComment(!openComment);*/}
-            {/*    }}*/}
-            {/*  >*/}
-            {/*    {openComment ? 'Close comment' : 'Open comment'}*/}
-            {/*  </Button>*/}
-            {/*)}*/}
-            {/*{openComment && (*/}
-            {/*  <>*/}
-            {/*    <TextField*/}
-            {/*      label="Comment"*/}
-            {/*      multiline*/}
-            {/*      rows={4}*/}
-            {/*      variant="outlined"*/}
-            {/*      fullWidth*/}
-            {/*      sx={{ marginY: '15px' }}*/}
-            {/*      onChange={e => {*/}
-            {/*        setCommentField(e.target.value);*/}
-            {/*      }}*/}
-            {/*    />*/}
-            {/*    <Button variant={'contained'} onClick={handleAddComment}>*/}
-            {/*      Submit*/}
-            {/*    </Button>*/}
-            {/*  </>*/}
-            {/*)}*/}
+            {item.comment && (
+              <>
+                <Typography variant={'h6'} sx={{ fontWeight: 500 }}>
+                  Comments
+                </Typography>
+                <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+                  <ReactDiffViewer
+                    oldValue={JSON.stringify(
+                      oldValue.comment || compare?.comment || '',
+                      null,
+                      2,
+                    )}
+                    newValue={JSON.stringify(item.comment || '', null, 2)}
+                    splitView={!mediaSx}
+                    compareMethod={DiffMethod.WORDS}
+                  />
+                </Box>
+              </>
+            )}
           </Box>
         </Box>
       </Modal>
@@ -396,8 +385,8 @@ const modalSx = theme => ({
   paddingTop: '7px',
   [theme.breakpoints.down('xs')]: {
     padding: 2,
-    '& .react-diff-1klnsbn-empty-gutter': {
-      display: 'none',
-    },
+    // '& .react-diff-1klnsbn-empty-gutter': {
+    //   display: 'none',
+    // },
   },
 });
