@@ -153,7 +153,7 @@ const PriceCalculation = ({
             </Box>
             {!!totalPrice && (
               <Box sx={{ mt: '3px' }}>
-                Price per line:&nbsp;
+                Price per line:&nbsp; ${' '}
                 {(totalPrice / cloc?.result?.SUM?.code || 0).toFixed(2)}
               </Box>
             )}
