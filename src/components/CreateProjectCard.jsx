@@ -103,9 +103,6 @@ const CreateProjectCard = ({ projectInfo }) => {
   const [state, setState] = useState(false);
   const [isDirty, setIsDirty] = useState(false);
   const [changeStatus, setChangeStatus] = useState(false);
-  const [isTotalCost, setIsTotalCost] = useState(
-    projectInfo?.total_cost || false,
-  );
 
   useEffect(() => {
     dispatch(getAuditsRequest('customer'));
@@ -228,12 +225,12 @@ const CreateProjectCard = ({ projectInfo }) => {
       onSubmit={values => {
         const newValue = {
           ...values,
-          [!isTotalCost ? 'price' : 'total_cost']: parseInt(
-            !isTotalCost ? values.price : values.total_cost,
+          [!values.total_cost ? 'price' : 'total_cost']: parseInt(
+            !values.total_cost ? values.price : values.total_cost,
           ),
         };
 
-        if (!isTotalCost) {
+        if (!values.total_cost) {
           delete newValue.total_cost;
         } else {
           delete newValue.price;

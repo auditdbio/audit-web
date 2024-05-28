@@ -3,12 +3,20 @@ import { Box, Switch } from '@mui/material';
 import SalarySlider from '../salary-slider/salary-slider.jsx';
 import { useSelector } from 'react-redux';
 import { CUSTOMER } from '../../../redux/actions/types.js';
+import { useField } from 'formik';
 
 const TotalPrice = () => {
   const currentRole = useSelector(s => s.user.user.current_role);
-  const [isTotalCost, setIsTotalCost] = useState(true);
+  const [field, fieldMeta, fieldHelper] = useField('total_cost');
+  const [fieldPrice, fiel, priceHelper] = useField('price');
+  const [isTotalCost, setIsTotalCost] = useState(!!field.value);
   const handleChangePriceToCost = () => {
     setIsTotalCost(!isTotalCost);
+    if (isTotalCost) {
+      fieldHelper.setValue(null);
+    } else {
+      priceHelper.setValue(null);
+    }
   };
 
   return (
