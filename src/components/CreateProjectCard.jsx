@@ -8,6 +8,7 @@ import {
   FormControl,
   InputLabel,
   Select,
+  Switch,
 } from '@mui/material';
 import theme, { radiusOfComponents } from '../styles/themes.js';
 import { useNavigate } from 'react-router-dom/dist';
@@ -63,6 +64,7 @@ import {
   getRepoOwner,
   getSha,
 } from '../redux/actions/githubAction.js';
+import TotalPrice from './forms/TotalPrice/TotalPrice.jsx';
 
 const GoBack = ({ role }) => {
   const location = useLocation();
@@ -101,6 +103,9 @@ const CreateProjectCard = ({ projectInfo }) => {
   const [state, setState] = useState(false);
   const [isDirty, setIsDirty] = useState(false);
   const [changeStatus, setChangeStatus] = useState(false);
+  const [isTotalCost, setIsTotalCost] = useState(
+    projectInfo?.total_cost || false,
+  );
 
   useEffect(() => {
     dispatch(getAuditsRequest('customer'));
@@ -160,6 +165,7 @@ const CreateProjectCard = ({ projectInfo }) => {
     tags: projectInfo ? projectInfo.tags : [],
     status: projectInfo?.status === DONE ? DONE : '',
     price: projectInfo ? projectInfo.price : 0,
+    total_cost: projectInfo ? projectInfo.total_cost : 0,
     creator_contacts: customerReducer?.customer?.contacts,
   };
   const [openInvite, setOpenInvite] = useState(false);
@@ -220,8 +226,20 @@ const CreateProjectCard = ({ projectInfo }) => {
       initialValues={initialValues}
       validationSchema={validationSchema}
       onSubmit={values => {
-        const newValue = { ...values, price: parseInt(values.price) };
+        const newValue = {
+          ...values,
+          [!isTotalCost ? 'price' : 'total_cost']: parseInt(
+            !isTotalCost ? values.price : values.total_cost,
+          ),
+        };
+
+        if (!isTotalCost) {
+          delete newValue.total_cost;
+        } else {
+          delete newValue.price;
+        }
         setIsDirty(false);
+        //
         if (editMode && projectInfo.id) {
           if (!state) {
             dispatch(
@@ -365,13 +383,13 @@ const CreateProjectCard = ({ projectInfo }) => {
                         </Box>
                         <ProjectLinksList name="scope" />
                         <Box>
-                          <Box sx={priceLabelSx}>Price per line of code</Box>
-                          <SalarySlider name="price" />
+                          <TotalPrice />
                         </Box>
                         {!matchMd && (
                           <PriceCalculation
                             price={values.price}
                             scope={values.scope}
+                            totalPrice={values.total_cost}
                           />
                         )}
                       </Box>
@@ -380,6 +398,7 @@ const CreateProjectCard = ({ projectInfo }) => {
                       <PriceCalculation
                         price={values.price}
                         scope={values.scope}
+                        totalPrice={values.total_cost}
                         sx={{ '& .head': { justifyContent: 'center' } }}
                       />
                     )}
@@ -696,10 +715,4 @@ const formAllFields = {
   display: 'flex',
   flexDirection: 'column',
   gap: '20px',
-};
-
-const priceLabelSx = {
-  fontSize: '14px',
-  fontWeight: 500,
-  color: '#B3B3B3',
 };

@@ -287,7 +287,7 @@ const AuditOffer = () => {
                         fill="#FF9900"
                       />
                     </svg>
-                    {audit?.price}
+                    {audit?.price || audit.total_cost}
                   </Box>
                   <Box
                     sx={{

@@ -11,7 +11,7 @@ const SalarySlider = ({ min = 0, max = 100, name }) => {
 
   const handleChange = e => {
     let { value } = e.target;
-    if (value > 100) {
+    if (value > 10000) {
       value = 100;
     } else if (value < 0) {
       value = 0;
@@ -74,7 +74,7 @@ const sliderSx = {
 };
 
 const infoWrapper = theme => ({
-  width: '100px',
+  width: '140px',
   '& .MuiOutlinedInput-input': {
     fontSize: '16px',
     textAlign: 'center',

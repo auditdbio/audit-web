@@ -31,6 +31,7 @@ const PriceCalculation = ({
   color = 'primary',
   sx = {},
   autoCheck = true,
+  totalPrice,
 }) => {
   const dispatch = useDispatch();
 
@@ -150,6 +151,12 @@ const PriceCalculation = ({
               Total lines of code:&nbsp;
               {cloc?.result?.SUM?.code || 0}
             </Box>
+            {!!totalPrice && (
+              <Box sx={{ mt: '3px' }}>
+                Price per line:&nbsp;
+                {(totalPrice / cloc?.result?.SUM?.code || 0).toFixed(2)}
+              </Box>
+            )}
           </Box>
           <Button
             sx={detailsButton}
