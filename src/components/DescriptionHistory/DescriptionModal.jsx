@@ -3,6 +3,7 @@ import { Box } from '@mui/system';
 import {
   Avatar,
   Button,
+  Chip,
   ClickAwayListener,
   FormControl,
   InputLabel,
@@ -22,16 +23,17 @@ import { FastField, Field } from 'formik';
 import { TextField } from '@mui/material';
 import { addTestsLabel } from '../../lib/helper.js';
 import MenuItem from '@mui/material/MenuItem';
-import { addCommentAudit } from '../../redux/actions/auditAction.js';
+import CheckRoundedIcon from '@mui/icons-material/CheckRounded';
+import { approveHistory } from '../../redux/actions/auditAction.js';
+import PendingIcon from '@mui/icons-material/Pending';
 
 const DescriptionModal = ({ item, request, oldValue }) => {
   const [isOpenDiff, setIsOpenDiff] = useState(false);
+  const approvedChange = useSelector(s => s.audits.approvedHistory);
+  const user = useSelector(s => s.user.user);
   const { audit, auditRequest } = useSelector(s => s.audits);
-  const [openComment, setOpenComment] = useState(false);
   const [compare, setCompare] = useState(null);
   const auditHistory = useSelector(s => s.audits.auditHistory);
-  const [showCompareList, setShowCompareList] = useState(false);
-  const [commentField, setCommentField] = useState('');
   const dispatch = useDispatch();
   const [anchorEl, setAnchorEl] = useState(null);
   const mediaSx = useMediaQuery(theme => theme.breakpoints.down('xs'));
@@ -45,6 +47,7 @@ const DescriptionModal = ({ item, request, oldValue }) => {
     setCompare(null);
   };
   //
+
   const data = JSON.parse(item?.audit);
 
   const checkAudit = useMemo(() => {
@@ -63,26 +66,61 @@ const DescriptionModal = ({ item, request, oldValue }) => {
     }
   }, [mainAudit, compare]);
 
+  const handleApprove = () => {
+    // console.log(22);
+    dispatch(approveHistory(audit.id, item, request));
+    setIsOpenDiff(false);
+  };
+  //
+  const approve = Object.entries(approvedChange).map(([key, value]) => {
+    return { id: key, value: value };
+  });
+  const isApprovedByMe = approve.filter(
+    el => el.value === item.id && el.id === user.id,
+  );
+
+  const isApprovedByOther = approve.filter(
+    el => el.value === item.id && el.id !== user.id,
+  );
+
+  console.log(isApprovedByMe);
   return (
-    <Box sx={{ margin: '8px 0' }}>
+    <Box sx={{ margin: '8px 0', paddingLeft: '12px' }}>
       <Box sx={itemWrapperSx}>
         <Box sx={userTitleSx} onClick={() => setIsOpenDiff(true)}>
           <Avatar src={`${ASSET_URL}/${item.author.avatar}`} />
-          <Typography sx={titleSx} variant={'h5'}>
+          <Typography sx={[titleSx, { mr: '7px' }]} variant={'h5'}>
             {item.author.name}
           </Typography>
+          {/*{approvedChange === 2 && <Chip label="Approved" color="primary" />}*/}
         </Box>
-        <Button
-          variant={'contained'}
-          onClick={e => {
-            e.stopPropagation();
-            setAnchorEl(e.currentTarget);
+        <Box
+          sx={{
+            width: '300px',
+            '& .MuiChip-root': {
+              fontSize: '10px',
+            },
           }}
-          sx={compareSx}
-          disabled={!auditHistory.filter(el => el.id !== item.id).length}
         >
-          Compare with
-        </Button>
+          {!!isApprovedByMe.length && (
+            <Chip size={'small'} label={'Approved by you'} color="info" />
+          )}
+          {!!isApprovedByOther.length && (
+            <Chip label={'Waiting for approve'} size={'small'} color="error" />
+          )}
+          <Button
+            variant={'contained'}
+            onClick={e => {
+              e.stopPropagation();
+              setAnchorEl(e.currentTarget);
+            }}
+            sx={compareSx}
+            disabled={!auditHistory.filter(el => el.id !== item.id).length}
+          >
+            Compare with
+          </Button>
+        </Box>
+
         <Popover
           open={Boolean(anchorEl)}
           anchorEl={anchorEl}
@@ -125,10 +163,7 @@ const DescriptionModal = ({ item, request, oldValue }) => {
           </ClickAwayListener>
         </Popover>
 
-        <Typography
-          variant={'h6'}
-          sx={{ width: '150px', marginLeft: '8px', fontSize: '16px' }}
-        >
+        <Typography variant={'h6'} sx={dateSx}>
           {dayjs(item.date / 1000).format('MM.DD.YYYY HH:mm')}
         </Typography>
       </Box>
@@ -274,6 +309,14 @@ const DescriptionModal = ({ item, request, oldValue }) => {
                 </Box>
               </>
             )}
+            <Button
+              onClick={handleApprove}
+              variant={'contained'}
+              sx={{ mt: '15px', textTransform: 'unset' }}
+              // disabled={item.approved.length === 2}
+            >
+              Approve changes
+            </Button>
           </Box>
         </Box>
       </Modal>
@@ -282,6 +325,16 @@ const DescriptionModal = ({ item, request, oldValue }) => {
 };
 
 export default DescriptionModal;
+
+const dateSx = theme => ({
+  width: '150px',
+  marginLeft: '8px',
+  fontSize: '16px',
+  [theme.breakpoints.down('sm')]: {
+    fontSize: '14px',
+    width: '122px',
+  },
+});
 
 const closeBtnSx = theme => ({
   minWidth: 'unset',
@@ -339,7 +392,7 @@ const itemWrapperSx = theme => ({
   cursor: 'pointer',
   [theme.breakpoints.down('xs')]: {
     flexDirection: 'column',
-    gap: '5px',
+    gap: '8px',
     padding: '10px 0',
     alignItems: 'flex-start',
   },
@@ -348,6 +401,9 @@ const itemWrapperSx = theme => ({
 const compareSx = theme => ({
   position: 'relative',
   textTransform: 'unset',
+  [theme.breakpoints.down('sm')]: {
+    fontSize: '12px',
+  },
   [theme.breakpoints.down('xs')]: {
     order: 1,
   },

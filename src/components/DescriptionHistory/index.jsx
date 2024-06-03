@@ -21,7 +21,6 @@ const HistoryDescription = ({ audit, request }) => {
       dispatch(getAuditHistory(audit?.id));
     }
   }, [audit]);
-
   return (
     <Box>
       <Modal
@@ -46,7 +45,14 @@ const HistoryDescription = ({ audit, request }) => {
             <Typography variant={'h4'} sx={titleSx}>
               History of changes
             </Typography>
-            <Box sx={{ margin: '15px', height: '100%', overflow: 'auto' }}>
+            <Box
+              sx={{
+                height: '100%',
+                marginRight: '-6px',
+                marginTop: '10px',
+                overflow: 'auto',
+              }}
+            >
               <Box>
                 {(request ? auditRequestHistory : auditHistory)?.map(
                   (item, index, arr) => {
@@ -73,7 +79,7 @@ const HistoryDescription = ({ audit, request }) => {
         sx={{ marginY: '15px', textTransform: 'unset' }}
         variant={'contained'}
         onClick={() => setIsOpen(true)}
-        disabled={(request ? auditRequestHistory : auditHistory)?.length === 0}
+        disabled={(request ? auditRequestHistory : auditHistory)?.length <= 1}
       >
         Show history
       </Button>
@@ -87,6 +93,7 @@ const titleSx = theme => ({
   marginLeft: '15px',
   fontWeight: 500,
   fontSize: '28px',
+  mt: '12px',
   [theme.breakpoints.down('md')]: {
     fontSize: '24px',
   },
@@ -94,7 +101,7 @@ const titleSx = theme => ({
 
 const modalStyle = theme => ({
   position: 'absolute',
-  width: '80%',
+  width: '95%',
   p: 2,
   top: '50%',
   left: '50%',
@@ -104,7 +111,6 @@ const modalStyle = theme => ({
   justifyContent: 'center',
   alignItems: 'center',
   [theme.breakpoints.down('sm')]: {
-    width: '95%',
     height: '95%',
   },
 });
@@ -112,6 +118,7 @@ const modalStyle = theme => ({
 const modalSx = theme => ({
   bgcolor: 'background.paper',
   boxShadow: 24,
+  paddingRight: '12px',
   borderRadius: '10px',
   height: 'auto',
   maxHeight: '100%',

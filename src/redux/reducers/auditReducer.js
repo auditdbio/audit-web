@@ -40,6 +40,8 @@ const initialState = {
   currentAuditPartner: null,
   publicReport: {},
   auditHistory: [],
+  approvedHistory: null,
+  unreadHistory: null,
   auditRequestHistory: [],
 };
 export const auditReducer = (state = initialState, action) => {
@@ -101,12 +103,16 @@ export const auditReducer = (state = initialState, action) => {
     case GET_AUDIT_HISTORY:
       return {
         ...state,
-        auditHistory: action.payload,
+        auditHistory: action.payload.edit_history,
+        approvedHistory: action.payload.approved_by,
+        unreadHistory: action.payload.unread,
       };
     case GET_AUDIT_REQUEST_HISTORY:
       return {
         ...state,
         auditRequestHistory: action.payload,
+        approvedHistory: action.payload.approved_by,
+        unreadHistory: action.payload.unread,
       };
     case GET_NEW_AUDIT:
       return {

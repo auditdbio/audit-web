@@ -526,3 +526,26 @@ export const addCommentAudit = (id, values) => {
       });
   };
 };
+
+export const approveHistory = (auditId, value, request) => {
+  return dispatch => {
+    const token = Cookies.get('token');
+    axios
+      .patch(
+        `${API_URL}/audit/${auditId}/edit_history/${value.id}`,
+        { is_approved: true },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      )
+      .then(({ data }) => {
+        if (request) {
+          dispatch(getAuditRequestHistory(auditId));
+        } else {
+          dispatch(getAuditHistory(auditId));
+        }
+      });
+  };
+};

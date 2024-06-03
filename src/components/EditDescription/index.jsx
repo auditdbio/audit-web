@@ -51,6 +51,7 @@ const EditDescription = ({ audit, auditRequest }) => {
             initialValues={{
               description: audit?.description,
               id: audit?.id,
+              scope: audit?.scope,
               comment: '',
             }}
             onSubmit={values => {
@@ -59,6 +60,7 @@ const EditDescription = ({ audit, auditRequest }) => {
               } else {
                 dispatch(editAuditCustomer(values));
               }
+              setShowComment(false);
               setEditMode(false);
             }}
           >

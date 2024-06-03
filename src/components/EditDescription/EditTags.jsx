@@ -31,6 +31,7 @@ const EditTags = ({ audit, confirmed }) => {
           dispatch(editAuditRequestCustomer(values));
         }
         setEditTags(false);
+        setShowComment(false);
       }}
     >
       {({ handleSubmit: submitTags, values, resetForm }) => {
@@ -43,32 +44,6 @@ const EditTags = ({ audit, confirmed }) => {
                 alignItems: 'center',
               }}
             >
-              <Box
-                sx={{
-                  display: 'flex',
-                  justifyContent: 'center',
-                  gap: '5px',
-                  alignItems: 'center',
-                  mt: '5px',
-                  '& .tags-array-wrapper': {
-                    gap: '5px',
-                  },
-                }}
-              >
-                {!editTags ? (
-                  <Typography sx={titleSx}>
-                    {values?.tags?.map(el => el).join(', ') ?? ''}
-                  </Typography>
-                ) : (
-                  <TagsArray name="tags" />
-                )}
-                {!editTags && (
-                  <EditButton
-                    handleClick={() => setEditTags(!editTags)}
-                    editMode={editTags}
-                  />
-                )}
-              </Box>
               {editTags && (
                 <Box
                   sx={{
@@ -85,7 +60,12 @@ const EditTags = ({ audit, confirmed }) => {
                     },
                   }}
                 >
-                  <TagsField size={'small'} name="tags" tags={audit?.tags} />
+                  <TagsField
+                    handleSubmit={submitTags}
+                    size={'small'}
+                    name="tags"
+                    tags={audit?.tags}
+                  />
                   <Box
                     sx={{
                       display: 'flex',
@@ -155,6 +135,34 @@ const EditTags = ({ audit, confirmed }) => {
                   </Box>
                 </Box>
               )}
+              <Box
+                sx={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                  gap: '5px',
+                  alignItems: 'center',
+                  mt: '5px',
+                  '& .tags-array-wrapper': {
+                    gap: '5px',
+                  },
+                }}
+              >
+                {!editTags ? (
+                  <Typography sx={titleSx}>
+                    {values?.tags?.map(el => el).join(', ') ?? ''}
+                  </Typography>
+                ) : (
+                  <Box sx={{ width: '325px' }}>
+                    <TagsArray name="tags" />
+                  </Box>
+                )}
+                {!editTags && (
+                  <EditButton
+                    handleClick={() => setEditTags(!editTags)}
+                    editMode={editTags}
+                  />
+                )}
+              </Box>
             </Box>
           </Form>
         );
