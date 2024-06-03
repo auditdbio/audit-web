@@ -15,15 +15,16 @@ const GithubOwnOrgs = ({ repo, setRepository, inputValue }) => {
 
   return (
     <Box sx={{ width: '100%' }}>
-      <Box sx={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+      <Box
+        sx={{ display: 'flex', alignItems: 'center', gap: '10px' }}
+        onClick={() => setIsOpen(!isOpen)}
+      >
         <Avatar
           sx={{ width: '25px', height: '25px' }}
           size={'small'}
           src={repo.avatar_url}
         />
-        <Typography onClick={() => setIsOpen(!isOpen)} sx={{ width: '100%' }}>
-          {repo.login}
-        </Typography>
+        <Typography sx={{ width: '100%' }}>{repo.login}</Typography>
         <ArrowDropDownIcon />
       </Box>
       {isOpen && (

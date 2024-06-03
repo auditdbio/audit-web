@@ -77,11 +77,7 @@ const StatusSeverityBlock = ({
                 renderValue={selected => {
                   return (
                     <Box sx={{ textAlign: 'center' }}>
-                      <IssueSeverity
-                        text={
-                          selected === NOT_FIXED ? 'Will not fix' : selected
-                        }
-                      />
+                      <IssueSeverity text={selected} />
                     </Box>
                   );
                 }}

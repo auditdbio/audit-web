@@ -10,10 +10,12 @@ import {
   GET_MY_GITHUB_ORGANIZATION,
   GET_MY_GITHUB_ORGANIZATION_REPOSITORIES,
   GET_MY_GITHUB_REPOSITORIES,
+  GET_MY_PRIVATE_GITHUB_ORGANIZATION,
   GET_REPO_OWNER,
   GET_SHA,
   GET_TAGS,
   GET_TOTAL_COMMITS,
+  NEED_TO_AUTH_GITHUB,
 } from './types.js';
 import axios from 'axios';
 import Cookies from 'js-cookie';
@@ -33,6 +35,7 @@ export const getBranches = repoOwner => {
           {
             headers: {
               Authorization: `Bearer ${token}`,
+              'Cache-Control': 'no-cache',
             },
           },
         );
@@ -57,6 +60,7 @@ export const getTags = repoOwner => {
     axios(`${API_URL}/github/repos/${repoOwner}/tags`, {
       headers: {
         Authorization: `Bearer ${Cookies.get('token')}`,
+        'Cache-Control': 'no-cache',
       },
     }).then(({ data }) => {
       dispatch({ type: GET_TAGS, payload: data });
@@ -72,6 +76,7 @@ export const getCommits = (repoOwner, branch, page) => {
       {
         headers: {
           Authorization: `Bearer ${token}`,
+          'Cache-Control': 'no-cache',
         },
       },
     )
@@ -91,6 +96,7 @@ export const getCommitData = (repoOwner, sha) => {
       {
         headers: {
           Authorization: `Bearer ${Cookies.get('token')}`,
+          'Cache-Control': 'no-cache',
         },
       },
     ).then(({ data }) => {
@@ -99,6 +105,7 @@ export const getCommitData = (repoOwner, sha) => {
     axios(`${API_URL}/github/repos/${repoOwner}/commits/${sha}`, {
       headers: {
         Authorization: `Bearer ${Cookies.get('token')}`,
+        'Cache-Control': 'no-cache',
       },
     }).then(({ data }) => {
       dispatch({ type: GET_COMMIT, payload: data });
@@ -181,6 +188,37 @@ export const getMyGithub = () => {
         });
       })
       .catch(error => {
+        dispatch({ type: NEED_TO_AUTH_GITHUB });
+        const user = JSON.parse(localStorage.getItem('user'));
+        const newData = {
+          ...user,
+          linked_accounts: user.linked_accounts.map(account => {
+            if (account.name === 'GitHub') {
+              return { ...account, scope: null };
+            }
+            return account;
+          }),
+        };
+        localStorage.setItem('user', JSON.stringify(newData));
+      });
+  };
+};
+
+export const getGithubPublicRepos = user => {
+  return dispatch => {
+    axios(`${API_URL}/github/users/${user}/repos?per_page=100&`, {
+      headers: {
+        Authorization: `Bearer ${Cookies.get('token')}`,
+        'Cache-Control': 'no-cache',
+      },
+    })
+      .then(({ data }) => {
+        dispatch({
+          type: GET_MY_GITHUB_REPOSITORIES,
+          payload: data.filter(el => el.owner.type === 'User'),
+        });
+      })
+      .catch(error => {
         console.error(error);
       });
   };
@@ -196,7 +234,7 @@ export const getMyGithubOrgs = () => {
     })
       .then(({ data }) => {
         dispatch({
-          type: GET_MY_GITHUB_ORGANIZATION,
+          type: GET_MY_PRIVATE_GITHUB_ORGANIZATION,
           payload: data,
         });
         if (!data.message) {
@@ -204,6 +242,54 @@ export const getMyGithubOrgs = () => {
             axios(`${API_URL}/github/orgs/${org.login}/repos`, {
               headers: {
                 Authorization: `Bearer ${Cookies.get('token')}`,
+                'Cache-Control': 'no-cache',
+              },
+            }).then(({ data }) => {
+              dispatch({
+                type: GET_MY_GITHUB_ORGANIZATION_REPOSITORIES,
+                payload: data,
+              });
+            });
+          });
+        }
+      })
+      .catch(error => {
+        // console.log(error);
+        dispatch({ type: NEED_TO_AUTH_GITHUB });
+        const user = JSON.parse(localStorage.getItem('user'));
+        const newData = {
+          ...user,
+          linked_accounts: user.linked_accounts.map(account => {
+            if (account.name === 'github') {
+              return { ...account, scope: account.scope.replace(',repo', '') };
+            }
+            return account;
+          }),
+        };
+        localStorage.setItem('user', JSON.stringify(newData));
+      });
+  };
+};
+//
+export const getMyPublicGithubOrgs = user => {
+  return dispatch => {
+    axios(`${API_URL}/github/users/${user}/orgs?per_page=100`, {
+      headers: {
+        Authorization: `Bearer ${Cookies.get('token')}`,
+        'Cache-Control': 'no-cache',
+      },
+    })
+      .then(({ data }) => {
+        dispatch({
+          type: GET_MY_GITHUB_ORGANIZATION,
+          payload: data,
+        });
+        if (!data.message) {
+          data?.map(org => {
+            axios(`${API_URL}/github/users/${org.login}/repos`, {
+              headers: {
+                Authorization: `Bearer ${Cookies.get('token')}`,
+                'Cache-Control': 'no-cache',
               },
             }).then(({ data }) => {
               dispatch({
