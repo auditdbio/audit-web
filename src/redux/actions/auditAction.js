@@ -67,7 +67,7 @@ export const createRequest = (values, redirect, navigateTo, stay) => {
       });
   };
 };
-//
+
 export const createRequestModal = values => {
   return dispatch => {
     const token = Cookies.get('token');
@@ -243,7 +243,7 @@ export const acceptAudit = values => {
   };
 };
 
-export const confirmAudit = (values, shouldRedirect) => {
+export const confirmAudit = (values, shouldRedirect, redirectPath) => {
   return dispatch => {
     const token = Cookies.get('token');
     axios
@@ -253,8 +253,12 @@ export const confirmAudit = (values, shouldRedirect) => {
         },
       })
       .then(({ data }) => {
-        if (!shouldRedirect) {
-          history.back();
+        if (shouldRedirect) {
+          if (redirectPath) {
+            history.push(redirectPath);
+          } else {
+            history.back();
+          }
         }
         dispatch({ type: CONFIRM_AUDIT, payload: data });
       });

@@ -96,7 +96,7 @@ const AuditMessage = ({ message, handleError }) => {
   };
 
   const handleConfirm = () => {
-    dispatch(confirmAudit(data, true));
+    dispatch(confirmAudit(data));
   };
 
   // useEffect(() => {
@@ -246,6 +246,7 @@ const AuditMessage = ({ message, handleError }) => {
             </Box>
           </Box>
         )}
+
       {user.current_role === AUDITOR &&
         data.status === 'Request' &&
         message.from?.id !== user.id && (
@@ -254,7 +255,10 @@ const AuditMessage = ({ message, handleError }) => {
               <Button
                 sx={{ textTransform: 'unset', width: '100%' }}
                 variant={'contained'}
-                disabled={user.current_role === AUDITOR}
+                disabled={
+                  user.current_role === AUDITOR &&
+                  data.last_changer?.toLowerCase() !== CUSTOMER
+                }
                 onClick={() => handleConfirm(data)}
               >
                 Accept

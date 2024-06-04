@@ -69,7 +69,7 @@ const AuditInfo = ({ audit, auditRequest, issues, confirmed, handleClose }) => {
   }, [descriptionRef.current]);
 
   const handleConfirm = () => {
-    dispatch(confirmAudit(audit));
+    dispatch(confirmAudit(audit, true));
   };
 
   const handleDecline = () => {
