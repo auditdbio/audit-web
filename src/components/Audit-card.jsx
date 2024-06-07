@@ -96,7 +96,7 @@ const AuditCard = ({ audit, request }) => {
               : {},
           ]}
           disabled={audit?.last_changer?.toLowerCase() === CUSTOMER}
-          onClick={() => dispatch(confirmAudit(audit, true))}
+          onClick={() => dispatch(confirmAudit(audit))}
           {...addTestsLabel('audits_accept-button')}
         >
           Accept

@@ -37,7 +37,11 @@ import GithubOwnOrgs from './GithubOwnOrgs.jsx';
 import GitHubAuthComponent from './GitHubAuthComponent.jsx';
 import CommitModal from './CommitModal.jsx';
 import CommitsList from './CommitsList.jsx';
-import { SWITCH_REPO } from '../../redux/actions/types.js';
+import {
+  CLEAR_NOT_FOUND,
+  CLEAR_NOT_FOUND_ERROR,
+  SWITCH_REPO,
+} from '../../redux/actions/types.js';
 
 const GITHUB_ID = import.meta.env.VITE_GITHUB_CLIENT_ID;
 const BASE_URL = import.meta.env.VITE_BASE_URL;
@@ -58,6 +62,7 @@ const GithubSelection = ({ project, noPrivate }) => {
     repoOwner,
     tag,
     commitInfo,
+    notFound,
     commitPage: page,
   } = useSelector(state => state.github);
   const [repository, setRepository] = useState(null);
@@ -124,9 +129,11 @@ const GithubSelection = ({ project, noPrivate }) => {
   const handleAddProject = () => {
     if (urlRepo.includes('github.com/')) {
       function parseGitHubUrl(gitHubUrl) {
-        const urlParts = gitHubUrl.split('/');
-        const owner = urlParts[3];
-        const repo = urlParts[4];
+        const url = gitHubUrl.replace(/^https?:\/\//, '');
+        const urlParts = url.split('/');
+
+        const owner = urlParts[1];
+        const repo = urlParts[2];
 
         return `${owner}/${repo}`;
       }
@@ -154,6 +161,7 @@ const GithubSelection = ({ project, noPrivate }) => {
     dispatch(clearRepoOwner());
     dispatch(clearCommit());
     dispatch({ type: SWITCH_REPO });
+    dispatch({ type: CLEAR_NOT_FOUND_ERROR });
   };
   useEffect(() => {
     const handleStorageChange = event => {
@@ -267,11 +275,52 @@ const GithubSelection = ({ project, noPrivate }) => {
                   )}
                 </Box>
               ) : (
-                <CommitsList
-                  handleReset={handleReset}
-                  handleClose={handleClose}
-                  repository={repository}
-                />
+                <>
+                  {!notFound ? (
+                    <CommitsList
+                      handleReset={handleReset}
+                      handleClose={handleClose}
+                      repository={repository}
+                    />
+                  ) : (
+                    <Box sx={notFoundSx}>
+                      <Button
+                        sx={{
+                          marginLeft: '-15px',
+                          minWidth: '34px',
+                          marginBottom: '5px',
+                          alignSelf: 'flex-start',
+                        }}
+                        onClick={() => {
+                          handleClose();
+                          dispatch({ type: CLEAR_NOT_FOUND_ERROR });
+                          handleReset();
+                        }}
+                      >
+                        <CloseRoundedIcon />
+                      </Button>
+                      <Box
+                        sx={{
+                          display: 'flex',
+                          flexDirection: 'column',
+                          alignItems: 'center',
+                        }}
+                      >
+                        <Typography variant={'h4'}>
+                          Repository not found
+                        </Typography>
+                        <Button
+                          sx={buttonSx}
+                          color={'primary'}
+                          variant={'contained'}
+                          onClick={handleReset}
+                        >
+                          Switch repository
+                        </Button>
+                      </Box>
+                    </Box>
+                  )}
+                </>
               )}
             </Box>
           )}
@@ -304,6 +353,31 @@ const GithubSelection = ({ project, noPrivate }) => {
 };
 
 export default GithubSelection;
+
+const notFoundSx = theme => ({
+  display: 'flex',
+  height: '100%',
+  alignItems: 'center',
+  flexDirection: 'column',
+  '& h4': {
+    fontSize: '28px',
+  },
+  [theme.breakpoints.down('sm')]: {
+    '& h4': {
+      fontSize: '22px',
+    },
+  },
+});
+
+const buttonSx = theme => ({
+  textTransform: 'unset',
+  display: 'flex',
+  gap: '5px',
+  fontSize: '14px!important',
+  lineHeight: '22px',
+  maxWidth: '100%',
+  marginTop: '25px',
+});
 
 const wrapper = theme => ({
   height: '100%',

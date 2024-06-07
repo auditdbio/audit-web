@@ -23,7 +23,7 @@ const OfferModal = ({
   user,
   redirect,
   setError,
-  onClose,
+  onSubmit,
   handleClose,
   stayHere,
 }) => {
@@ -75,7 +75,6 @@ const OfferModal = ({
           if (newValue.auditor_id !== newValue.customer_id) {
             if (stayHere) {
               dispatch(createRequestModal(newValue));
-              handleClose();
             } else {
               dispatch(createRequest(newValue, redirect, stayHere));
             }
@@ -83,8 +82,8 @@ const OfferModal = ({
             setError('You cannot create an audit request for your own project');
           }
           handleClose();
-          if (onClose) {
-            onClose();
+          if (onSubmit) {
+            onSubmit();
           }
         }}
       >

@@ -75,7 +75,7 @@ const AuditInfo = ({
   const [editTags, setEditTags] = useState(false);
 
   const handleConfirm = () => {
-    dispatch(confirmAudit(audit));
+    dispatch(confirmAudit(audit, true));
   };
 
   const handleDecline = () => {
