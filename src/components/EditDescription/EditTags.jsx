@@ -34,7 +34,7 @@ const EditTags = ({ audit, confirmed }) => {
         setShowComment(false);
       }}
     >
-      {({ handleSubmit: submitTags, values, resetForm }) => {
+      {({ handleSubmit: submitTags, values, resetForm, dirty }) => {
         return (
           <Form>
             <Box
@@ -60,12 +60,7 @@ const EditTags = ({ audit, confirmed }) => {
                     },
                   }}
                 >
-                  <TagsField
-                    handleSubmit={submitTags}
-                    size={'small'}
-                    name="tags"
-                    tags={audit?.tags}
-                  />
+                  <TagsField size={'small'} name="tags" tags={audit?.tags} />
                   <Box
                     sx={{
                       display: 'flex',

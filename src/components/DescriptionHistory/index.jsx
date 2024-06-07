@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Button, Modal, Typography } from '@mui/material';
+import { Box, Button, Modal, Typography, useMediaQuery } from '@mui/material';
 import DescriptionModal from './DescriptionModal.jsx';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import { useDispatch, useSelector } from 'react-redux';
@@ -7,12 +7,18 @@ import {
   getAuditHistory,
   getAuditRequestHistory,
 } from '../../redux/actions/auditAction.js';
+import Badge from '@mui/material/Badge';
+import { CUSTOMER } from '../../redux/actions/types.js';
 
 const HistoryDescription = ({ audit, request }) => {
   const [isOpen, setIsOpen] = useState(false);
   const dispatch = useDispatch();
   const auditHistory = useSelector(s => s.audits.auditHistory);
   const auditRequestHistory = useSelector(s => s.audits.auditRequestHistory);
+  const matchSx = useMediaQuery(theme => theme.breakpoints.down('xs'));
+  const approvedChange = useSelector(s => s.audits.approvedHistory);
+  const unread = useSelector(s => s.audits.unreadHistory);
+  const user = useSelector(s => s.user.user);
 
   useEffect(() => {
     if (request) {
@@ -21,6 +27,7 @@ const HistoryDescription = ({ audit, request }) => {
       dispatch(getAuditHistory(audit?.id));
     }
   }, [audit]);
+  //
   return (
     <Box>
       <Modal
@@ -53,6 +60,30 @@ const HistoryDescription = ({ audit, request }) => {
                 overflow: 'auto',
               }}
             >
+              {approvedChange && !matchSx && (
+                <Box
+                  sx={{
+                    display: 'flex',
+                    // justifyContent: 'space-between',
+                    paddingX: '12px',
+                  }}
+                >
+                  <Typography variant={'h4'} sx={listHeaderSx}>
+                    User
+                  </Typography>
+                  <Box sx={listWrapperSx}>
+                    <Typography
+                      variant={'h4'}
+                      sx={{ fontSize: '20px', fontWeight: 600 }}
+                    >
+                      Approve
+                    </Typography>
+                    <Typography variant={'h4'} sx={dateTitleSx}>
+                      Date
+                    </Typography>
+                  </Box>
+                </Box>
+              )}
               <Box>
                 {(request ? auditRequestHistory : auditHistory)?.map(
                   (item, index, arr) => {
@@ -63,6 +94,7 @@ const HistoryDescription = ({ audit, request }) => {
                             oldValue={arr[index + 1]}
                             item={item}
                             request={request}
+                            idx={index}
                           />
                         </React.Fragment>
                       );
@@ -75,19 +107,74 @@ const HistoryDescription = ({ audit, request }) => {
           </Box>
         </Box>
       </Modal>
-      <Button
-        sx={{ marginY: '15px', textTransform: 'unset' }}
-        variant={'contained'}
-        onClick={() => setIsOpen(true)}
-        disabled={(request ? auditRequestHistory : auditHistory)?.length <= 1}
-      >
-        Show history
-      </Button>
+      {unread && unread[user?.id] > 0 ? (
+        <Badge
+          color={'secondary'}
+          badgeContent="new"
+          sx={{
+            '& .MuiBadge-badge': {
+              top: '16px',
+            },
+          }}
+        >
+          <Button
+            sx={{ marginY: '15px', textTransform: 'unset' }}
+            variant={'contained'}
+            onClick={() => setIsOpen(true)}
+            disabled={
+              (request ? auditRequestHistory : auditHistory)?.length <= 1
+            }
+          >
+            Show history
+          </Button>
+        </Badge>
+      ) : (
+        <Button
+          sx={{ marginY: '15px', textTransform: 'unset' }}
+          variant={'contained'}
+          onClick={() => setIsOpen(true)}
+          disabled={(request ? auditRequestHistory : auditHistory)?.length <= 1}
+        >
+          Show history
+        </Button>
+      )}
     </Box>
   );
 };
 
 export default HistoryDescription;
+
+const dateTitleSx = theme => ({
+  fontSize: '20px',
+  fontWeight: 600,
+  marginLeft: '225px',
+  [theme.breakpoints.down('md')]: {
+    marginLeft: '184px',
+  },
+  [theme.breakpoints.down('sm')]: {
+    marginLeft: '154px',
+  },
+});
+
+const listWrapperSx = theme => ({
+  display: 'flex',
+  width: '450px',
+  [theme.breakpoints.down('sm')]: {
+    width: '370px',
+  },
+});
+
+const listHeaderSx = theme => ({
+  fontSize: '20px',
+  fontWeight: 600,
+  width: 'calc(100% - 454px)',
+  [theme.breakpoints.down('md')]: {
+    width: 'calc(100% - 355px)',
+  },
+  [theme.breakpoints.down('sm')]: {
+    width: 'calc(100% - 330px)',
+  },
+});
 
 const titleSx = theme => ({
   marginLeft: '15px',

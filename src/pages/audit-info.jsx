@@ -9,6 +9,8 @@ import {
   Typography,
   Tooltip,
   useMediaQuery,
+  InputAdornment,
+  TextField,
 } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { useNavigate, Link } from 'react-router-dom/dist';
@@ -52,6 +54,7 @@ import DescriptionHistory from '../components/DescriptionHistory/index.jsx';
 import EditButton from '../components/EditDescription/EditButton.jsx';
 import TagsField from '../components/forms/tags-field/tags-field.jsx';
 import EditTags from '../components/EditDescription/EditTags.jsx';
+import EditPrice from '../components/EditDescription/EditPrice.jsx';
 
 const AuditInfo = ({
   audit,
@@ -127,7 +130,7 @@ const AuditInfo = ({
   const handleUpdateAudit = () => {
     const data = {
       id: audit.id,
-      price: priceValue,
+      price: parseInt(priceValue),
     };
     setEditPrice(false);
     dispatch(editAuditCustomer(data));
@@ -263,41 +266,26 @@ const AuditInfo = ({
                 )}
               </Box>
             </Box>
-            <Box sx={infoWrapper}>
-              <span>Price:</span>
-              {/*{!editPrice ? (*/}
-              <Typography>$ {audit?.price} per line</Typography>
-              {/*) : (*/}
-              {/*  <Box sx={{ display: 'flex', alignItems: 'center', gap: '7px' }}>*/}
-              {/*    <TextField*/}
-              {/*      // label="Size"*/}
-              {/*      id="filled-size-normal"*/}
-              {/*      // defaultValue="Normal"*/}
-              {/*      variant="standard"*/}
-              {/*      value={priceValue}*/}
-              {/*      sx={{*/}
-              {/*        width: 'auto',*/}
-              {/*        maxWidth: '60px',*/}
-              {/*        '& input': {*/}
-              {/*          paddingTop: 'unset',*/}
-              {/*        },*/}
-              {/*      }}*/}
-              {/*      onChange={({ target }) => setPriceValue(target.value)}*/}
-              {/*      InputProps={{*/}
-              {/*        startAdornment: (*/}
-              {/*          <InputAdornment position="start">$</InputAdornment>*/}
-              {/*        ),*/}
-              {/*      }}*/}
-              {/*    />*/}
-              {/*    <Typography>per line</Typography>*/}
-              {/*  </Box>*/}
-              {/*)}*/}
-              {/*<EditButton*/}
-              {/*  handleClick={*/}
-              {/*    editPrice ? handleUpdateAudit : () => setEditPrice(!editPrice)*/}
-              {/*  }*/}
-              {/*  editMode={editPrice}*/}
-              {/*/>*/}
+            <Box
+              sx={{
+                display: 'flex',
+                color: '#434242',
+                '& p': {
+                  fontSize: '15px!important',
+                  maxWidth: '200px',
+                  fontWeight: 400,
+                },
+              }}
+            >
+              <Box sx={infoWrapper}>
+                <span>Price:</span>
+              </Box>
+              <EditPrice
+                hideIcon={true}
+                audit={audit}
+                user={user}
+                request={request}
+              />
             </Box>
           </Box>
 

@@ -10,6 +10,7 @@ import {
   DELETE_AUDIT,
   DELETE_REQUEST,
   DOWNLOAD_REPORT_START,
+  EDIT_AUDIT,
   EDIT_AUDIT_CUSTOMER,
   EDIT_AUDIT_REQUEST_CUSTOMER,
   GET_AUDIT,
@@ -21,6 +22,7 @@ import {
   GET_REQUEST,
   IN_PROGRESS,
   NOT_FOUND,
+  READ_AUDIT_HISTORY,
   REQUEST_ERROR,
   RESET_PUBLIC_AUDIT,
   RESOLVED,
@@ -104,18 +106,16 @@ export const createRequestModal = values => {
 export const getAuditsRequest = role => {
   return dispatch => {
     const token = Cookies.get('token');
-    axios
-      .get(`${API_URL}/my_audit_request/${role}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-      .then(({ data }) => {
-        dispatch({ type: GET_AUDIT_REQUEST, payload: data });
-        // history.push("/home-customer", {
-        //     some: true
-        // });
-      });
+    axios(`${API_URL}/my_audit_request/${role}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }).then(({ data }) => {
+      dispatch({ type: GET_AUDIT_REQUEST, payload: data });
+      // history.push("/home-customer", {
+      //     some: true
+      // });
+    });
   };
 };
 
@@ -160,12 +160,11 @@ export const getAudits = role => {
 export const getAudit = id => {
   return dispatch => {
     const token = Cookies.get('token');
-    axios
-      .get(`${API_URL}/audit/${id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
+    axios(`${API_URL}/audit/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
       .then(({ data }) => {
         if (data.id) {
           dispatch({ type: GET_AUDIT, payload: data });
@@ -294,7 +293,7 @@ export const editAuditCustomer = (values, goBack) => {
         },
       })
       .then(({ data }) => {
-        dispatch({ type: EDIT_AUDIT_CUSTOMER, payload: data });
+        dispatch({ type: EDIT_AUDIT, payload: data });
         dispatch(getAuditHistory(values.id));
       });
   };
@@ -546,6 +545,52 @@ export const approveHistory = (auditId, value, request) => {
         } else {
           dispatch(getAuditHistory(auditId));
         }
+      });
+  };
+};
+
+export const handleReadHistory = (auditId, count, userId) => {
+  const token = Cookies.get('token');
+  return dispatch => {
+    console.log(count);
+    axios
+      .patch(
+        `${API_URL}/audit/${auditId}/unread/${count}`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      )
+      .then(({ data }) => {
+        console.log(data);
+        dispatch({
+          type: READ_AUDIT_HISTORY,
+          payload: { userId: userId, unread: count },
+        });
+      });
+  };
+};
+
+export const handleReadRequestHistory = (auditId, count, userId) => {
+  const token = Cookies.get('token');
+  return dispatch => {
+    axios
+      .patch(
+        `${API_URL}/audit_request/${auditId}/unread/${count}`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      )
+      .then(({ data }) => {
+        dispatch({
+          type: READ_AUDIT_HISTORY,
+          payload: { userId: userId, unread: count },
+        });
       });
   };
 };

@@ -28,6 +28,8 @@ import {
   EDIT_AUDIT_REQUEST_CUSTOMER,
   GET_AUDIT_HISTORY,
   GET_AUDIT_REQUEST_HISTORY,
+  READ_AUDIT_HISTORY,
+  READ_AUDIT_REQUEST_HISTORY,
 } from '../actions/types.js';
 
 const initialState = {
@@ -61,6 +63,15 @@ export const auditReducer = (state = initialState, action) => {
           request => request.id !== action.payload.id,
         ),
       };
+    case READ_AUDIT_HISTORY:
+      return {
+        ...state,
+        unreadHistory: {
+          ...state.unreadHistory,
+          [action.payload.userId]:
+            state.unreadHistory[action.payload.userId] - action.payload.unread,
+        },
+      };
     case DELETE_AUDIT:
       return {
         ...state,
@@ -84,6 +95,7 @@ export const auditReducer = (state = initialState, action) => {
           audit.id === action.payload.id ? action.payload : audit,
         ),
         auditRequest: action.payload,
+        successMessage: 'Saved successfully',
       };
     case GET_AUDITS:
       return { ...state, audits: action.payload };
@@ -110,8 +122,7 @@ export const auditReducer = (state = initialState, action) => {
     case GET_AUDIT_REQUEST_HISTORY:
       return {
         ...state,
-        auditRequestHistory: action.payload,
-        approvedHistory: action.payload.approved_by,
+        auditRequestHistory: action.payload.edit_history,
         unreadHistory: action.payload.unread,
       };
     case GET_NEW_AUDIT:

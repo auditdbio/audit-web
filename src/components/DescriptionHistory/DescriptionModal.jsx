@@ -24,19 +24,27 @@ import { TextField } from '@mui/material';
 import { addTestsLabel } from '../../lib/helper.js';
 import MenuItem from '@mui/material/MenuItem';
 import CheckRoundedIcon from '@mui/icons-material/CheckRounded';
-import { approveHistory } from '../../redux/actions/auditAction.js';
+import {
+  approveHistory,
+  handleReadHistory,
+  handleReadRequestHistory,
+} from '../../redux/actions/auditAction.js';
 import PendingIcon from '@mui/icons-material/Pending';
+import Badge from '@mui/material/Badge';
+import { CUSTOMER } from '../../redux/actions/types.js';
 
-const DescriptionModal = ({ item, request, oldValue }) => {
+const DescriptionModal = ({ item, request, oldValue, idx }) => {
   const [isOpenDiff, setIsOpenDiff] = useState(false);
   const approvedChange = useSelector(s => s.audits.approvedHistory);
   const user = useSelector(s => s.user.user);
   const { audit, auditRequest } = useSelector(s => s.audits);
   const [compare, setCompare] = useState(null);
   const auditHistory = useSelector(s => s.audits.auditHistory);
+  const unread = useSelector(s => s.audits.unreadHistory);
   const dispatch = useDispatch();
   const [anchorEl, setAnchorEl] = useState(null);
   const mediaSx = useMediaQuery(theme => theme.breakpoints.down('xs'));
+  const auditRequestHistory = useSelector(s => s.audits.auditRequestHistory);
 
   const mainAudit = useMemo(() => {
     return JSON.parse(oldValue.audit);
@@ -67,12 +75,11 @@ const DescriptionModal = ({ item, request, oldValue }) => {
   }, [mainAudit, compare]);
 
   const handleApprove = () => {
-    // console.log(22);
     dispatch(approveHistory(audit.id, item, request));
     setIsOpenDiff(false);
   };
-  //
-  const approve = Object.entries(approvedChange).map(([key, value]) => {
+
+  const approve = Object.entries(approvedChange || []).map(([key, value]) => {
     return { id: key, value: value };
   });
   const isApprovedByMe = approve.filter(
@@ -83,43 +90,119 @@ const DescriptionModal = ({ item, request, oldValue }) => {
     el => el.value === item.id && el.id !== user.id,
   );
 
-  console.log(isApprovedByMe);
+  const isApproved = approve.every(el => el.value === item.id);
+
+  const handleOpen = () => {
+    setIsOpenDiff(true);
+    if (unread[user?.id] >= idx + 1 && unread[user?.id] > 0) {
+      if (!request) {
+        dispatch(handleReadHistory(audit.id, unread[user?.id] - idx, user.id));
+      } else {
+        dispatch(
+          handleReadRequestHistory(
+            auditRequest.id,
+            unread[user?.id] - idx,
+            user.id,
+          ),
+        );
+      }
+    }
+  };
+
   return (
     <Box sx={{ margin: '8px 0', paddingLeft: '12px' }}>
       <Box sx={itemWrapperSx}>
-        <Box sx={userTitleSx} onClick={() => setIsOpenDiff(true)}>
-          <Avatar src={`${ASSET_URL}/${item.author.avatar}`} />
-          <Typography sx={[titleSx, { mr: '7px' }]} variant={'h5'}>
-            {item.author.name}
-          </Typography>
-          {/*{approvedChange === 2 && <Chip label="Approved" color="primary" />}*/}
+        <Box sx={userTitleSx} onClick={handleOpen}>
+          {unread && unread[user?.id] >= idx + 1 && unread[user?.id] > 0 ? (
+            <Badge
+              color={user.current_role === CUSTOMER ? 'primary' : 'secondary'}
+              badgeContent="new"
+            >
+              <Avatar
+                src={
+                  item.author.avatar ? `${ASSET_URL}/${item.author.avatar}` : ''
+                }
+              />
+            </Badge>
+          ) : (
+            <Avatar
+              src={
+                item.author.avatar ? `${ASSET_URL}/${item.author.avatar}` : ''
+              }
+            />
+          )}
+          <Box sx={titleWrapper}>
+            <Typography sx={[titleSx, { mr: '7px' }]} variant={'h5'}>
+              {item.author.name}
+            </Typography>
+            {!mediaSx && (
+              <Box sx={chipSx}>
+                {approvedChange && isApproved ? (
+                  <Chip size={'small'} label={'Approved'} color="success" />
+                ) : (
+                  <>
+                    {!!isApprovedByMe.length && (
+                      <Chip
+                        size={'small'}
+                        label={
+                          user.current_role === CUSTOMER
+                            ? 'Customer'
+                            : 'Auditor'
+                        }
+                        color="info"
+                      />
+                    )}
+                    {!!isApprovedByOther.length && (
+                      <Chip
+                        label={
+                          user.current_role !== CUSTOMER
+                            ? 'Customer'
+                            : 'Auditor'
+                        }
+                        size={'small'}
+                        color="error"
+                      />
+                    )}
+                  </>
+                )}
+              </Box>
+            )}
+          </Box>
         </Box>
-        <Box
-          sx={{
-            width: '300px',
-            '& .MuiChip-root': {
-              fontSize: '10px',
-            },
+        {mediaSx && (!!isApprovedByMe.length || !!isApprovedByOther.length) && (
+          <Box sx={{ display: 'flex', gap: '8px' }}>
+            <Typography sx={{ fontWeight: 600 }}>Approve</Typography>
+            {!!isApprovedByMe.length && (
+              <Chip
+                size={'small'}
+                label={user.current_role === CUSTOMER ? 'Customer' : 'Auditor'}
+                color="info"
+              />
+            )}
+            {!!isApprovedByOther.length && (
+              <Chip
+                label={user.current_role !== CUSTOMER ? 'Customer' : 'Auditor'}
+                size={'small'}
+                color="error"
+              />
+            )}
+          </Box>
+        )}
+        <Button
+          variant={'contained'}
+          onClick={e => {
+            e.stopPropagation();
+            setAnchorEl(e.currentTarget);
           }}
+          sx={compareSx}
+          disabled={
+            !(request ? auditRequestHistory : auditHistory).filter(
+              el => el.id !== item.id,
+            ).length
+          }
         >
-          {!!isApprovedByMe.length && (
-            <Chip size={'small'} label={'Approved by you'} color="info" />
-          )}
-          {!!isApprovedByOther.length && (
-            <Chip label={'Waiting for approve'} size={'small'} color="error" />
-          )}
-          <Button
-            variant={'contained'}
-            onClick={e => {
-              e.stopPropagation();
-              setAnchorEl(e.currentTarget);
-            }}
-            sx={compareSx}
-            disabled={!auditHistory.filter(el => el.id !== item.id).length}
-          >
-            Compare with
-          </Button>
-        </Box>
+          Compare with
+        </Button>
 
         <Popover
           open={Boolean(anchorEl)}
@@ -143,8 +226,8 @@ const DescriptionModal = ({ item, request, oldValue }) => {
                 borderRadius: '5px',
               }}
             >
-              {auditHistory
-                .filter(el => el.id !== item.id)
+              {(request ? auditRequestHistory : auditHistory)
+                ?.filter(el => el.id !== item.id)
                 .map(el => (
                   <MenuItem
                     sx={{ color: 'black', borderBottom: '1px solid #c9c9c9' }}
@@ -180,7 +263,13 @@ const DescriptionModal = ({ item, request, oldValue }) => {
           <Box>
             <Box sx={compareUserSx}>
               <Box sx={headerSx}>
-                <Avatar src={`${ASSET_URL}/${item.author.avatar}`} />
+                <Avatar
+                  src={
+                    item.author.avatar
+                      ? `${ASSET_URL}/${item.author.avatar}`
+                      : ''
+                  }
+                />
                 <Box
                   sx={{ display: 'flex', gap: '7px', flexDirection: 'column' }}
                 >
@@ -199,7 +288,11 @@ const DescriptionModal = ({ item, request, oldValue }) => {
               {(oldValue || compare) && (
                 <Box sx={headerSx}>
                   <Avatar
-                    src={`${ASSET_URL}/${(oldValue || compare).author.avatar}`}
+                    src={
+                      item.author.avatar
+                        ? `${ASSET_URL}/${(oldValue || compare).author.avatar}`
+                        : ''
+                    }
                   />
                   <Box
                     sx={{
@@ -326,6 +419,23 @@ const DescriptionModal = ({ item, request, oldValue }) => {
 
 export default DescriptionModal;
 
+const titleWrapper = theme => ({
+  display: 'flex',
+  justifyContent: 'space-between',
+  alignItems: 'center',
+  width: '100%',
+});
+
+const chipSx = theme => ({
+  width: '148px',
+  [theme.breakpoints.down('md')]: {
+    width: '95px',
+  },
+  [theme.breakpoints.down('sm')]: {
+    width: '85px',
+  },
+});
+
 const dateSx = theme => ({
   width: '150px',
   marginLeft: '8px',
@@ -413,13 +523,13 @@ const userTitleSx = theme => ({
   display: 'flex',
   gap: '10px',
   alignItems: 'center',
-  width: '550px',
+  width: 'calc(100% - 320px)',
   textOverflow: 'hidden',
-  [theme.breakpoints.down('md')]: {
-    width: '400px',
-  },
+  // [theme.breakpoints.down('md')]: {
+  //   width: '400px',
+  // },
   [theme.breakpoints.down('sm')]: {
-    width: '350px',
+    width: 'calc(100% - 280px)',
   },
   [theme.breakpoints.down('xs')]: {
     width: '100%',
