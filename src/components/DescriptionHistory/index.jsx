@@ -9,6 +9,7 @@ import {
 } from '../../redux/actions/auditAction.js';
 import Badge from '@mui/material/Badge';
 import { CUSTOMER } from '../../redux/actions/types.js';
+import CustomSnackbar from '../custom/CustomSnackbar.jsx';
 
 const HistoryDescription = ({ audit, request }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -19,6 +20,7 @@ const HistoryDescription = ({ audit, request }) => {
   const approvedChange = useSelector(s => s.audits.approvedHistory);
   const unread = useSelector(s => s.audits.unreadHistory);
   const user = useSelector(s => s.user.user);
+  const [showRecap, setShowRecap] = useState(false);
 
   useEffect(() => {
     if (request) {
@@ -27,9 +29,28 @@ const HistoryDescription = ({ audit, request }) => {
       dispatch(getAuditHistory(audit?.id));
     }
   }, [audit]);
-  //
+
+  useEffect(() => {
+    if (!!unread && unread[user?.id] > 0) {
+      setShowRecap(true);
+    }
+  }, [unread]);
+
+  const handleOpen = () => {
+    setIsOpen(true);
+    setShowRecap(false);
+  };
+
   return (
     <Box>
+      <CustomSnackbar
+        open={showRecap}
+        action={handleOpen}
+        buttonText={'Open'}
+        autoHideDuration={50000}
+        onClose={() => setShowRecap(false)}
+        text="You have modifications awaiting your approval."
+      />
       <Modal
         open={isOpen}
         onClose={() => setIsOpen(false)}

@@ -149,7 +149,7 @@ const DescriptionModal = ({ item, request, oldValue, idx }) => {
                             ? 'Customer'
                             : 'Auditor'
                         }
-                        color="info"
+                        color="warning"
                       />
                     )}
                     {!!isApprovedByOther.length && (
@@ -160,7 +160,7 @@ const DescriptionModal = ({ item, request, oldValue, idx }) => {
                             : 'Auditor'
                         }
                         size={'small'}
-                        color="error"
+                        color="secondary"
                       />
                     )}
                   </>
