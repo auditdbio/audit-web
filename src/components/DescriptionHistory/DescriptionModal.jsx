@@ -330,6 +330,19 @@ const DescriptionModal = ({ item, request, oldValue, idx }) => {
                 />
               </>
             )}
+            {data.total_cost && (
+              <>
+                <Typography variant={'h6'} sx={{ fontWeight: 500 }}>
+                  Total cost
+                </Typography>
+                <ReactDiffViewer
+                  oldValue={JSON.stringify(checkAudit.price, null, 2)}
+                  newValue={JSON.stringify(data.total_cost, null, 2)}
+                  splitView={!mediaSx}
+                  compareMethod={DiffMethod.WORDS}
+                />
+              </>
+            )}
             {data.description && (
               <>
                 <Typography variant={'h6'} sx={{ fontWeight: 500 }}>
