@@ -20,7 +20,7 @@ import { addTestsLabel } from '../../lib/helper.js';
 import AddLinkIcon from '@mui/icons-material/AddLink.js';
 import { TextField } from 'formik-mui';
 
-const EditDescription = ({ audit, auditRequest }) => {
+const EditDescription = ({ audit, auditRequest, hideChange }) => {
   const [editMode, setEditMode] = useState(false);
   const [showFull, setShowFull] = useState(false);
   const [showComment, setShowComment] = useState(false);
@@ -42,7 +42,7 @@ const EditDescription = ({ audit, auditRequest }) => {
   const handleEdit = () => {
     setEditMode(true);
   };
-  //
+
   return (
     <>
       <Box sx={descriptionSx}>
@@ -104,130 +104,139 @@ const EditDescription = ({ audit, auditRequest }) => {
                       alignItems: 'center',
                     }}
                   >
-                    <Box>
-                      <IconButton
-                        type="button"
-                        aria-label="add link"
-                        onClick={() => {
-                          setAddLinkField(!addLinkField);
-                        }}
-                        sx={[addLinkButton]}
-                        {...addTestsLabel('add-link-button')}
-                      >
-                        <AddLinkIcon
-                          color={
-                            user.current_role === CUSTOMER
-                              ? 'primary'
-                              : 'secondary'
-                          }
-                        />
-                        <Box component="span" sx={editButtonText(theme, user)}>
-                          {addLinkField ? 'Close' : 'Add Link'}
-                        </Box>
-                      </IconButton>
-                    </Box>
-                    {!editMode ? (
-                      audit?.status?.toLowerCase() !==
-                        RESOLVED.toLowerCase() && (
-                        <Button
-                          variant={'text'}
-                          sx={{
-                            textTransform: 'unset',
+                    {!hideChange && (
+                      <Box>
+                        <IconButton
+                          type="button"
+                          aria-label="add link"
+                          onClick={() => {
+                            setAddLinkField(!addLinkField);
                           }}
-                          color={
-                            user.current_role === CUSTOMER
-                              ? 'primary'
-                              : 'secondary'
-                          }
-                          onClick={handleEdit}
+                          sx={[addLinkButton]}
+                          {...addTestsLabel('add-link-button')}
                         >
-                          <EditIcon fontSize={'small'} sx={{ mr: '5px' }} />{' '}
-                          Edit
-                        </Button>
-                      )
-                    ) : (
-                      <Box sx={editBtnSx}>
-                        <Button
-                          variant={'text'}
-                          type={'button'}
-                          disabled={!dirty}
-                          onClick={() => setShowComment(true)}
-                        >
-                          <SaveIcon fontSize={'small'} />
-                        </Button>
-                        <Modal
-                          open={showComment}
-                          onClose={() => setShowComment(false)}
-                          aria-labelledby="modal-modal-title"
-                          aria-describedby="modal-modal-description"
-                        >
-                          <Box
-                            sx={{
-                              position: 'absolute',
-                              top: '50%',
-                              left: '50%',
-                              transform: 'translate(-50%, -50%)',
-                              width: '100%',
-                              maxWidth: '650px',
-                              bgcolor: 'background.paper',
-                              boxShadow: 24,
-                              borderRadius: '10px',
-                              p: 2,
-                            }}
-                          >
-                            <FastField
-                              component={TextField}
-                              name={'comment'}
-                              // label={label}
-                              placeholder={'Add a comment'}
-                              fullWidth={true}
-                              disabled={false}
-                              maxRows={4}
-                              multiline={true}
-                              rows={4}
-                              inputProps={{ ...addTestsLabel(`comment-input`) }}
-                            />
-                            <Button
-                              sx={{
-                                mt: '15px',
-                                marginLeft: 'auto',
-                                marginRight: 0,
-                                display: 'block',
-                                textTransform: 'unset',
-                              }}
-                              variant={'contained'}
-                              onClick={handleSubmit}
-                            >
-                              Save
-                            </Button>
-                          </Box>
-                        </Modal>
-                        <Button>
-                          <CloseIcon
-                            fontSize={'small'}
-                            color={'secondary'}
-                            onClick={() => setEditMode(false)}
+                          <AddLinkIcon
+                            color={
+                              user.current_role === CUSTOMER
+                                ? 'primary'
+                                : 'secondary'
+                            }
                           />
-                        </Button>
+                          <Box
+                            component="span"
+                            sx={editButtonText(theme, user)}
+                          >
+                            {addLinkField ? 'Close' : 'Add Link'}
+                          </Box>
+                        </IconButton>
                       </Box>
                     )}
+                    {!hideChange &&
+                      (!editMode ? (
+                        audit?.status?.toLowerCase() !==
+                          RESOLVED.toLowerCase() && (
+                          <Button
+                            variant={'text'}
+                            sx={{
+                              textTransform: 'unset',
+                            }}
+                            color={
+                              user.current_role === CUSTOMER
+                                ? 'primary'
+                                : 'secondary'
+                            }
+                            onClick={handleEdit}
+                          >
+                            <EditIcon fontSize={'small'} sx={{ mr: '5px' }} />{' '}
+                            Edit
+                          </Button>
+                        )
+                      ) : (
+                        <Box sx={editBtnSx}>
+                          <Button
+                            variant={'text'}
+                            type={'button'}
+                            disabled={!dirty}
+                            onClick={() => setShowComment(true)}
+                          >
+                            <SaveIcon fontSize={'small'} />
+                          </Button>
+                          <Modal
+                            open={showComment}
+                            onClose={() => setShowComment(false)}
+                            aria-labelledby="modal-modal-title"
+                            aria-describedby="modal-modal-description"
+                          >
+                            <Box
+                              sx={{
+                                position: 'absolute',
+                                top: '50%',
+                                left: '50%',
+                                transform: 'translate(-50%, -50%)',
+                                width: '100%',
+                                maxWidth: '650px',
+                                bgcolor: 'background.paper',
+                                boxShadow: 24,
+                                borderRadius: '10px',
+                                p: 2,
+                              }}
+                            >
+                              <FastField
+                                component={TextField}
+                                name={'comment'}
+                                // label={label}
+                                placeholder={'Add a comment'}
+                                fullWidth={true}
+                                disabled={false}
+                                maxRows={4}
+                                multiline={true}
+                                rows={4}
+                                inputProps={{
+                                  ...addTestsLabel(`comment-input`),
+                                }}
+                              />
+                              <Button
+                                sx={{
+                                  mt: '15px',
+                                  marginLeft: 'auto',
+                                  marginRight: 0,
+                                  display: 'block',
+                                  textTransform: 'unset',
+                                }}
+                                variant={'contained'}
+                                onClick={handleSubmit}
+                              >
+                                Save
+                              </Button>
+                            </Box>
+                          </Modal>
+                          <Button>
+                            <CloseIcon
+                              fontSize={'small'}
+                              color={'secondary'}
+                              onClick={() => setEditMode(false)}
+                            />
+                          </Button>
+                        </Box>
+                      ))}
                   </Box>
-                  <Box>
-                    {/*{user.current_role !== CUSTOMER &&*/}
-                    {audit?.status?.toLowerCase() !== RESOLVED.toLowerCase() ? (
-                      <Box sx={linksList}>
-                        <ProjectLinksList
-                          name="scope"
-                          handleSubmit={handleSubmit}
-                        />
-                      </Box>
-                    ) : (
-                      <Box sx={customerLinksList}>
-                        {values.scope?.map((link, idx) => (
-                          <CustomLink link={link} key={idx} />
-                        ))}
-                      </Box>
-                    )}
+                  <Box sx={hideChange ? linksList : {}}>
+                    {!hideChange &&
+                      (audit?.status?.toLowerCase() !==
+                      RESOLVED.toLowerCase() ? (
+                        <Box sx={linksList}>
+                          <ProjectLinksList
+                            name="scope"
+                            handleSubmit={handleSubmit}
+                          />
+                        </Box>
+                      ) : (
+                        <Box sx={customerLinksList}>
+                          {values.scope?.map((link, idx) => (
+                            <CustomLink link={link} key={idx} />
+                          ))}
+                        </Box>
+                      ))}
                   </Box>
                   {addLinkField && (
                     <Box sx={{ mt: '10px' }}>

@@ -41,6 +41,7 @@ const PublicProjectCard = ({ project }) => {
             isModal={true}
             redirect={true}
             setError={setErrorMessage}
+            hideChange={true}
           />
         </Box>
       </Modal>

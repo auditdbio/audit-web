@@ -48,6 +48,7 @@ const AuditRequestInfo = ({
   isModal,
   setError,
   stayHere,
+  hideChange,
 }) => {
   const navigate = useNavigate();
   const matchXs = useMediaQuery(theme.breakpoints.down('xs'));
@@ -186,10 +187,15 @@ const AuditRequestInfo = ({
       <Box sx={{ width: '100%' }} className="audit-content">
         <Box sx={contentWrapper} className="audit-request-content-wrapper">
           <Typography sx={titleSx} className="audit-request-title">
-            <EditTags audit={project} />
+            <EditTags hideChange={hideChange} audit={project} />
           </Typography>
           <Box sx={salaryWrapper} className={'audit-request-salary'}>
-            <EditPrice audit={project} request={true} user={user} />
+            <EditPrice
+              hideChange={hideChange}
+              audit={project}
+              request={true}
+              user={user}
+            />
             {/*<Box sx={{ display: 'flex', alignItems: 'center', gap: '15px' }}>*/}
             {/*  <svg*/}
             {/*    width="26"*/}
@@ -320,8 +326,12 @@ const AuditRequestInfo = ({
 
         <Box sx={infoWrapper} className="audit-request-info">
           {/*<Markdown value={project?.description} />*/}
-          <EditDescription audit={project} auditRequest={true} />
-          <DescriptionHistory audit={project} request={true} />
+          <EditDescription
+            hideChange={hideChange}
+            audit={project}
+            auditRequest={true}
+          />
+          {!hideChange && <DescriptionHistory audit={project} request={true} />}
           {matchXs && (
             <Box
               sx={{
