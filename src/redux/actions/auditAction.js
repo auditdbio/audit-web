@@ -556,7 +556,6 @@ export const approveHistory = (auditId, value, request) => {
 export const handleReadHistory = (auditId, count, userId) => {
   const token = Cookies.get('token');
   return dispatch => {
-    console.log(count);
     axios
       .patch(
         `${API_URL}/audit/${auditId}/unread/${count}`,
@@ -568,7 +567,6 @@ export const handleReadHistory = (auditId, count, userId) => {
         },
       )
       .then(({ data }) => {
-        console.log(data);
         dispatch({
           type: READ_AUDIT_HISTORY,
           payload: { userId: userId, unread: count },

@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Box } from '@mui/system';
 import {
   Avatar,
@@ -33,7 +33,14 @@ import PendingIcon from '@mui/icons-material/Pending';
 import Badge from '@mui/material/Badge';
 import { CUSTOMER } from '../../redux/actions/types.js';
 
-const DescriptionModal = ({ item, request, oldValue, idx }) => {
+const DescriptionModal = ({
+  item,
+  request,
+  oldValue,
+  idx,
+  openDiff,
+  handleCloseRecap,
+}) => {
   const [isOpenDiff, setIsOpenDiff] = useState(false);
   const approvedChange = useSelector(s => s.audits.approvedHistory);
   const user = useSelector(s => s.user.user);
@@ -46,6 +53,12 @@ const DescriptionModal = ({ item, request, oldValue, idx }) => {
   const mediaSx = useMediaQuery(theme => theme.breakpoints.down('xs'));
   const auditRequestHistory = useSelector(s => s.audits.auditRequestHistory);
 
+  useEffect(() => {
+    if (openDiff) {
+      openDiff(setIsOpenDiff);
+    }
+  }, [openDiff]);
+
   const mainAudit = useMemo(() => {
     return JSON.parse(oldValue.audit);
   }, [item, request]);
@@ -53,8 +66,10 @@ const DescriptionModal = ({ item, request, oldValue, idx }) => {
   const handleClose = () => {
     setIsOpenDiff(false);
     setCompare(null);
+    if (handleCloseRecap) {
+      handleCloseRecap();
+    }
   };
-  //
 
   const data = JSON.parse(item?.audit);
 
@@ -70,6 +85,7 @@ const DescriptionModal = ({ item, request, oldValue, idx }) => {
         price: mainAudit.price,
         time: mainAudit.time,
         conclusion: mainAudit.conclusion,
+        total_cost: mainAudit.total_cost,
       };
     }
   }, [mainAudit, compare]);
@@ -96,15 +112,9 @@ const DescriptionModal = ({ item, request, oldValue, idx }) => {
     setIsOpenDiff(true);
     if (unread[user?.id] >= idx + 1 && unread[user?.id] > 0) {
       if (!request) {
-        dispatch(handleReadHistory(audit.id, unread[user?.id] - idx, user.id));
+        dispatch(handleReadHistory(audit.id, idx, user.id));
       } else {
-        dispatch(
-          handleReadRequestHistory(
-            auditRequest.id,
-            unread[user?.id] - idx,
-            user.id,
-          ),
-        );
+        dispatch(handleReadRequestHistory(auditRequest.id, idx, user.id));
       }
     }
   };
@@ -133,7 +143,7 @@ const DescriptionModal = ({ item, request, oldValue, idx }) => {
           )}
           <Box sx={titleWrapper}>
             <Typography sx={[titleSx, { mr: '7px' }]} variant={'h5'}>
-              {item.author.name}
+              {item.author.name} {item.id}
             </Typography>
             {!mediaSx && (
               <Box sx={chipSx}>
@@ -265,8 +275,8 @@ const DescriptionModal = ({ item, request, oldValue, idx }) => {
               <Box sx={headerSx}>
                 <Avatar
                   src={
-                    item.author.avatar
-                      ? `${ASSET_URL}/${item.author.avatar}`
+                    (oldValue || compare).author.avatar
+                      ? `${ASSET_URL}/${(oldValue || compare).author.avatar}`
                       : ''
                   }
                 />
@@ -278,19 +288,21 @@ const DescriptionModal = ({ item, request, oldValue, idx }) => {
                     onClick={() => setIsOpenDiff(true)}
                     sx={[titleSx, compareUserTitleSx]}
                   >
-                    {item.author.name}{' '}
+                    {(oldValue || compare).author.name}{' '}
                   </Typography>
                   <Typography variant={'h5'} sx={{ fontSize: '16px' }}>
-                    {dayjs(item.date / 1000).format('MM.DD.YYYY HH:mm')}
+                    {dayjs((oldValue || compare).date / 1000).format(
+                      'MM.DD.YYYY HH:mm',
+                    )}
                   </Typography>
                 </Box>
               </Box>
-              {(oldValue || compare) && (
+              {item && (
                 <Box sx={headerSx}>
                   <Avatar
                     src={
                       item.author.avatar
-                        ? `${ASSET_URL}/${(oldValue || compare).author.avatar}`
+                        ? `${ASSET_URL}/${item.author.avatar}`
                         : ''
                     }
                   />
@@ -306,12 +318,10 @@ const DescriptionModal = ({ item, request, oldValue, idx }) => {
                       onClick={() => setIsOpenDiff(true)}
                       sx={[titleSx, compareUserTitleSx]}
                     >
-                      {(oldValue || compare).author.name}{' '}
+                      {item.author.name}{' '}
                     </Typography>
                     <Typography variant={'h5'} sx={{ fontSize: '16px' }}>
-                      {dayjs((oldValue || compare).date / 1000).format(
-                        'MM.DD.YYYY HH:mm',
-                      )}
+                      {dayjs(item.date / 1000).format('MM.DD.YYYY HH:mm')}
                     </Typography>
                   </Box>
                 </Box>
@@ -336,7 +346,7 @@ const DescriptionModal = ({ item, request, oldValue, idx }) => {
                   Total cost
                 </Typography>
                 <ReactDiffViewer
-                  oldValue={JSON.stringify(checkAudit.price, null, 2)}
+                  oldValue={JSON.stringify(checkAudit.total_cost, null, 2)}
                   newValue={JSON.stringify(data.total_cost, null, 2)}
                   splitView={!mediaSx}
                   compareMethod={DiffMethod.WORDS}

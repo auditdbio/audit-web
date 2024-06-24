@@ -68,8 +68,7 @@ export const auditReducer = (state = initialState, action) => {
         ...state,
         unreadHistory: {
           ...state.unreadHistory,
-          [action.payload.userId]:
-            state.unreadHistory[action.payload.userId] - action.payload.unread,
+          [action.payload.userId]: action.payload.unread,
         },
       };
     case DELETE_AUDIT:

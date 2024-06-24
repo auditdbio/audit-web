@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Box, Button, Modal, Typography, useMediaQuery } from '@mui/material';
 import DescriptionModal from './DescriptionModal.jsx';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
@@ -21,6 +21,7 @@ const HistoryDescription = ({ audit, request }) => {
   const unread = useSelector(s => s.audits.unreadHistory);
   const user = useSelector(s => s.user.user);
   const [showRecap, setShowRecap] = useState(false);
+  const [showChanges, setShowChanges] = useState(false);
 
   useEffect(() => {
     if (request) {
@@ -31,7 +32,7 @@ const HistoryDescription = ({ audit, request }) => {
   }, [audit]);
 
   useEffect(() => {
-    if (!!unread && unread[user?.id] > 0) {
+    if (!!unread && unread[user?.id] > 0 && unread[user?.id] !== 0) {
       setShowRecap(true);
     }
   }, [unread]);
@@ -41,11 +42,27 @@ const HistoryDescription = ({ audit, request }) => {
     setShowRecap(false);
   };
 
+  const handleOpenRecap = () => {
+    setShowRecap(false);
+    setIsOpen(true);
+    setShowChanges(true);
+  };
+
+  const handleCloseRecap = () => {
+    setShowRecap(false);
+    setShowChanges(false);
+    setIsOpen(false);
+  };
+
+  const arrData = useMemo(() => {
+    return request ? auditRequestHistory : auditHistory;
+  }, [request, auditHistory, auditRequestHistory]);
+
   return (
     <Box>
       <CustomSnackbar
         open={showRecap}
-        action={handleOpen}
+        action={handleOpenRecap}
         buttonText={'Open'}
         autoHideDuration={50000}
         onClose={() => setShowRecap(false)}
@@ -106,28 +123,36 @@ const HistoryDescription = ({ audit, request }) => {
                 </Box>
               )}
               <Box>
-                {(request ? auditRequestHistory : auditHistory)?.map(
-                  (item, index, arr) => {
-                    if (index < arr.length - 1) {
-                      return (
-                        <React.Fragment key={item.id}>
-                          <DescriptionModal
-                            oldValue={arr[index + 1]}
-                            item={item}
-                            request={request}
-                            idx={index}
-                          />
-                        </React.Fragment>
-                      );
-                    }
-                    return null;
-                  },
-                )}
+                {arrData?.map((item, index, arr) => {
+                  if (index < arr.length - 1) {
+                    return (
+                      <React.Fragment key={item.id}>
+                        <DescriptionModal
+                          oldValue={arr[index + 1]}
+                          item={item}
+                          request={request}
+                          idx={index}
+                        />
+                      </React.Fragment>
+                    );
+                  }
+                  return null;
+                })}
               </Box>
             </Box>
           </Box>
         </Box>
       </Modal>
+      {showChanges && (
+        <DescriptionModal
+          oldValue={arrData[unread[user?.id]]}
+          item={arrData[0]}
+          request={request}
+          idx={0}
+          openDiff={func => func(true)}
+          handleCloseRecap={handleCloseRecap}
+        />
+      )}
       {unread && unread[user?.id] > 0 ? (
         <Badge
           color={'secondary'}
