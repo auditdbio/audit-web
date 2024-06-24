@@ -15,6 +15,7 @@ import CustomSnackbar from '../components/custom/CustomSnackbar.jsx';
 import { isAuth } from '../lib/helper.js';
 import PublicProfile from './Public-profile.jsx';
 import NotFound from './Not-Found.jsx';
+import Organization from '../components/Organization.jsx';
 
 const ProfilePage = () => {
   const dispatch = useDispatch();
@@ -91,6 +92,9 @@ const ProfilePage = () => {
           {chooseTab === 'user-info' && (
             <UserInfo role={currentRole} linkId={linkId} />
           )}
+          {chooseTab === 'organizations' && (
+            <Organization role={currentRole} linkId={linkId} />
+          )}
         </InfoCard>
       </Box>
     </Layout>
@@ -126,6 +130,10 @@ const customerTabs = [
   {
     value: 'user-info',
     label: 'User info',
+  },
+  {
+    value: 'organizations',
+    label: 'My organizations',
   },
 ];
 

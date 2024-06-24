@@ -7,6 +7,11 @@ import {
   Link,
   useMediaQuery,
   Tooltip,
+  ListItemText,
+  List,
+  ListItem,
+  Checkbox,
+  ListItemAvatar,
 } from '@mui/material';
 import GitHubIcon from '@mui/icons-material/GitHub.js';
 import theme from '../styles/themes.js';
@@ -25,13 +30,15 @@ import XTwitterLogo from './icons/XTwitter-logo.jsx';
 import { clearUserMessages } from '../redux/actions/userAction.js';
 import CustomSnackbar from './custom/CustomSnackbar.jsx';
 import Headings from '../router/Headings.jsx';
+import ListItemButton from '@mui/material/ListItemButton';
+import DeleteForeverRoundedIcon from '@mui/icons-material/DeleteForeverRounded';
 
-const UserInfo = ({ role, linkId }) => {
+const Organization = ({ role, linkId }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const matchXs = useMediaQuery(theme.breakpoints.down('xs'));
   const matchXxs = useMediaQuery(theme.breakpoints.down(590));
-
+  //
   const {
     customer,
     error: customerError,
@@ -55,12 +62,27 @@ const UserInfo = ({ role, linkId }) => {
       return customer;
     }
   }, [role, customer, auditor]);
-
+  //
   useEffect(() => {
     if (linkId && data?.link_id && data?.link_id !== linkId) {
       navigate(`/${role[0]}/${data.link_id}`);
     }
   }, [linkId, data]);
+
+  const [checked, setChecked] = React.useState([1]);
+
+  const handleToggle = value => () => {
+    const currentIndex = checked.indexOf(value);
+    const newChecked = [...checked];
+
+    if (currentIndex === -1) {
+      newChecked.push(value);
+    } else {
+      newChecked.splice(currentIndex, 1);
+    }
+
+    setChecked(newChecked);
+  };
 
   if (!data) {
     return <Loader role={role} />;
@@ -105,35 +127,29 @@ const UserInfo = ({ role, linkId }) => {
             }}
           >
             <Avatar
-              src={data.avatar && `${ASSET_URL}/${data.avatar}`}
-              sx={avatarStyle}
+              // src={data.avatar && `${ASSET_URL}/${data.avatar}`}
+              sx={[
+                avatarStyle,
+                { backgroundColor: theme.palette.primary.main },
+              ]}
               alt="User photo"
-            />
-            <Box sx={{ display: 'flex', gap: '10px' }}>
-              <Avatar sx={{ backgroundColor: theme.palette.primary.main }}>
-                N
-              </Avatar>
-              <Avatar sx={{ backgroundColor: theme.palette.secondary.main }}>
-                S
-              </Avatar>
-              <Avatar sx={{ backgroundColor: theme.palette.secondary.main }}>
-                N
-              </Avatar>
-            </Box>
+            >
+              N
+            </Avatar>
           </Box>
           <Box sx={infoStyle}>
             <Box sx={infoInnerStyle}>
               <Box sx={infoWrapper}>
-                <span>First Name</span>
-                <Typography noWrap={true}>{data.first_name}</Typography>
-              </Box>
-              <Box sx={infoWrapper}>
-                <span>Last name</span>
-                <Typography noWrap={true}>{data.last_name}</Typography>
+                <span>Name</span>
+                <Typography noWrap={true}>Org Name</Typography>
               </Box>
               <Box sx={infoWrapper}>
                 <span>Telegram</span>
                 <Typography noWrap={true}>{data.contacts?.telegram}</Typography>
+              </Box>
+              <Box sx={infoWrapper}>
+                <span>E-mail</span>
+                <Typography noWrap={true}>Org Email</Typography>
               </Box>
               {role === AUDITOR && (
                 <Box sx={infoWrapper}>
@@ -147,33 +163,61 @@ const UserInfo = ({ role, linkId }) => {
                 </Box>
               )}
             </Box>
-            <Box sx={infoInnerStyle}>
-              {role !== AUDITOR && (
-                <Box sx={infoWrapper}>
-                  <span>Company</span>
-                  <Typography noWrap={true}>{data.company}</Typography>
-                </Box>
-              )}
-              <Box sx={infoWrapper}>
-                <span>E-mail</span>
-                <Typography noWrap={true}>{data.contacts?.email}</Typography>
+            <Box sx={userListSx}>
+              <Box>
+                <List
+                  dense
+                  sx={{
+                    padding: 'unset',
+                    width: '100%',
+                    // maxWidth: 360,
+                    // bgcolor: 'background.paper',
+                  }}
+                >
+                  {['Mike', 'John', 'David', 'Viktor'].map(value => {
+                    const labelId = `checkbox-list-secondary-label-${value}`;
+                    return (
+                      <ListItem
+                        key={value}
+                        sx={{ borderBottom: '1px solid rgba(0, 0, 0, 0.23)' }}
+                        secondaryAction={
+                          <Button>
+                            <DeleteForeverRoundedIcon color={'error'} />
+                          </Button>
+                        }
+                        disablePadding
+                      >
+                        <ListItemButton>
+                          <ListItemAvatar>
+                            <Avatar
+                              sx={{ width: '30px', height: '30px' }}
+                              alt={`Avatar n°${value + 1}`}
+                              src={`/static/images/avatar/${value + 1}.jpg`}
+                            />
+                          </ListItemAvatar>
+                          <ListItemText id={labelId} primary={value} />
+                        </ListItemButton>
+                      </ListItem>
+                    );
+                  })}
+                </List>
               </Box>
             </Box>
-            <Box sx={[infoWrapper, aboutWrapper]}>
-              <span>About</span>
-              <Typography
-                sx={{
-                  maxWidth: 'unset!important',
-                  width: '100%',
-                  wordBreak: 'break-word',
-                }}
-              >
-                {data.about}
-              </Typography>
-            </Box>
-            {!matchXs && <TagsList data={data.tags} fullView={true} />}
           </Box>
         </Box>
+        {/*<Box sx={[infoWrapper, aboutWrapper]}>*/}
+        {/*  <span>About</span>*/}
+        {/*  <Typography*/}
+        {/*    sx={{*/}
+        {/*      maxWidth: 'unset!important',*/}
+        {/*      width: '100%',*/}
+        {/*      wordBreak: 'break-word',*/}
+        {/*    }}*/}
+        {/*  >*/}
+        {/*    {data.about}*/}
+        {/*  </Typography>*/}
+        {/*</Box>*/}
+        {!matchXs && <TagsList data={data.tags} fullView={true} />}
         {matchXs && <MobileTagsList data={data.tags} />}
         <Box sx={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
           {user.linked_accounts?.map(account => {
@@ -264,9 +308,9 @@ const UserInfo = ({ role, linkId }) => {
               Edit
             </Button>
             <IdentitySetting />
-            <Button sx={buttonSx} variant={'contained'}>
-              Create organization
-            </Button>
+            {/*<Button sx={buttonSx} variant={'contained'}>*/}
+            {/*  Create organization*/}
+            {/*</Button>*/}
           </Box>
         </Box>
       </Box>
@@ -274,7 +318,7 @@ const UserInfo = ({ role, linkId }) => {
   }
 };
 
-export default UserInfo;
+export default Organization;
 
 const aboutWrapper = theme => ({
   width: '100%',
@@ -322,13 +366,19 @@ const infoInnerStyle = theme => ({
   display: 'flex',
   flexDirection: 'column',
   gap: '16px',
+  paddingTop: '10px',
+});
+
+const userListSx = theme => ({
+  width: '100%',
 });
 
 const infoStyle = theme => ({
   display: 'flex',
   margin: '0 0 50px',
   flexDirection: 'row',
-  flexWrap: 'wrap',
+  // flexWrap: 'wrap',
+  width: '100%',
   gap: '40px',
   rowGap: '15px',
   '& .tagsWrapper': {
@@ -359,7 +409,7 @@ const avatarStyle = theme => ({
 const contentWrapper = theme => ({
   display: 'flex',
   gap: '70px',
-  justifyContent: 'space-between',
+  // justifyContent: 'space-between',
   [theme.breakpoints.down('md')]: {
     gap: '50px',
   },
