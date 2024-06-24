@@ -35,7 +35,7 @@ const HistoryDescription = ({ audit, request }) => {
     if (!!unread && unread[user?.id] > 0 && unread[user?.id] !== 0) {
       setShowRecap(true);
     }
-  }, [unread]);
+  }, [auditHistory, auditRequestHistory]);
 
   const handleOpen = () => {
     setIsOpen(true);
