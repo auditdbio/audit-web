@@ -30,6 +30,7 @@ import ShareProfileButton from './custom/ShareProfileButton.jsx';
 import PriceCalculation from './PriceCalculation.jsx';
 import { setCurrentChat } from '../redux/actions/chatActions.js';
 import ChatIcon from './icons/ChatIcon.jsx';
+import TypeChat from './Chat/TypeChat.jsx';
 
 export default function AuditorModal({
   open,
@@ -49,6 +50,7 @@ export default function AuditorModal({
   const { user } = useSelector(s => s.user);
   const { chatList } = useSelector(s => s.chat);
   const myProjects = useSelector(state => state.project.myProjects);
+  const [isOpenType, setIsOpenType] = useState(false);
 
   const [mode, setMode] = useState('info');
   const [message, setMessage] = useState('');
@@ -87,29 +89,33 @@ export default function AuditorModal({
   };
 
   const handleSendMessage = () => {
-    window.scrollTo(0, 0);
+    if (true) {
+      setIsOpenType(true);
+    } else {
+      window.scrollTo(0, 0);
 
-    const existingChat = chatList.find(chat =>
-      chat.members?.find(
-        member =>
-          member.id === auditor?.user_id &&
-          member.role?.toLowerCase() === AUDITOR,
-      ),
-    );
-    const chatId = existingChat ? existingChat.id : auditor?.user_id;
-    const members = [auditor?.user_id, user.id];
+      const existingChat = chatList.find(chat =>
+        chat.members?.find(
+          member =>
+            member.id === auditor?.user_id &&
+            member.role?.toLowerCase() === AUDITOR,
+        ),
+      );
+      const chatId = existingChat ? existingChat.id : auditor?.user_id;
+      const members = [auditor?.user_id, user.id];
 
-    dispatch(
-      setCurrentChat(chatId, {
-        name: auditor.first_name,
-        avatar: auditor.avatar,
-        role: AUDITOR,
-        isNew: !existingChat,
-        members,
-      }),
-    );
-    localStorage.setItem('path', window.location.pathname);
-    navigate(`/chat/${existingChat ? existingChat.id : auditor?.user_id}`);
+      dispatch(
+        setCurrentChat(chatId, {
+          name: auditor.first_name,
+          avatar: auditor.avatar,
+          role: AUDITOR,
+          isNew: !existingChat,
+          members,
+        }),
+      );
+      localStorage.setItem('path', window.location.pathname);
+      navigate(`/chat/${existingChat ? existingChat.id : auditor?.user_id}`);
+    }
   };
 
   useEffect(() => {
@@ -259,6 +265,7 @@ export default function AuditorModal({
                     {...addTestsLabel('message-button')}
                   >
                     <ChatIcon />
+                    {isOpenType && <TypeChat />}
                   </Button>
                 )}
               </Box>

@@ -151,17 +151,10 @@ const Organization = ({ role, linkId }) => {
                 <span>E-mail</span>
                 <Typography noWrap={true}>Org Email</Typography>
               </Box>
-              {role === AUDITOR && (
-                <Box sx={infoWrapper}>
-                  <span>Price range:</span>
-                  {data?.price_range?.from && data?.price_range?.to && (
-                    <Typography>
-                      ${data?.price_range?.from} - {data?.price_range?.to} per
-                      line
-                    </Typography>
-                  )}
-                </Box>
-              )}
+              <Box sx={infoWrapper}>
+                <span>Type</span>
+                <Typography noWrap={true}>Customer organization</Typography>
+              </Box>
             </Box>
             <Box sx={userListSx}>
               <Box>
