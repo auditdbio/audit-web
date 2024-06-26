@@ -100,7 +100,7 @@ const DescriptionModal = ({
         dispatch(handleReadRequestHistory(auditRequest.id, idx, user.id));
       }
     }
-    setIsOpenDiff(false);
+    handleClose();
   };
 
   const approve = Object.entries(approvedChange || []).map(([key, value]) => {
