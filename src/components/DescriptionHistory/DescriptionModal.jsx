@@ -40,6 +40,7 @@ const DescriptionModal = ({
   idx,
   openDiff,
   handleCloseRecap,
+  closeChangesRecap,
 }) => {
   const [isOpenDiff, setIsOpenDiff] = useState(false);
   const approvedChange = useSelector(s => s.audits.approvedHistory);
@@ -92,6 +93,13 @@ const DescriptionModal = ({
 
   const handleApprove = () => {
     dispatch(approveHistory(audit.id, item, request));
+    if (unread[user?.id] >= idx + 1 && unread[user?.id] > 0) {
+      if (!request) {
+        dispatch(handleReadHistory(audit.id, idx, user.id));
+      } else {
+        dispatch(handleReadRequestHistory(auditRequest.id, idx, user.id));
+      }
+    }
     setIsOpenDiff(false);
   };
 
@@ -433,6 +441,20 @@ const DescriptionModal = ({
             >
               Approve changes
             </Button>
+            {openDiff && (
+              <Button
+                onClick={() => {
+                  setIsOpenDiff(false);
+                  setCompare(null);
+                  closeChangesRecap(false);
+                }}
+                variant={'contained'}
+                sx={{ mt: '15px', textTransform: 'unset', ml: '20px' }}
+                // disabled={item.approved.length === 2}
+              >
+                Show history
+              </Button>
+            )}
           </Box>
         </Box>
       </Modal>

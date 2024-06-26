@@ -151,6 +151,7 @@ const HistoryDescription = ({ audit, request }) => {
           idx={0}
           openDiff={func => func(true)}
           handleCloseRecap={handleCloseRecap}
+          closeChangesRecap={setShowChanges}
         />
       )}
       {unread && unread[user?.id] > 0 ? (
