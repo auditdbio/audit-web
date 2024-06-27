@@ -9,6 +9,7 @@ import {
   CLEAR_MESSAGES,
   AUDITOR_SET_ERROR,
   SELECT_ROLE,
+  GET_AUDITOR_RATING_DETAILS,
 } from '../actions/types.js';
 
 const initialState = {
@@ -19,6 +20,7 @@ const initialState = {
   error: null,
   success: null,
   currentAuditor: null,
+  auditorRating: null,
 };
 
 export const auditorReducer = (state = initialState, action) => {
@@ -30,6 +32,11 @@ export const auditorReducer = (state = initialState, action) => {
         ...state,
         auditor: action.payload.auditor,
         success: action.payload.message,
+      };
+    case GET_AUDITOR_RATING_DETAILS:
+      return {
+        ...state,
+        auditorRating: action.payload,
       };
     case SEARCH_AUDITOR:
       return { ...state, searchAuditors: action.payload };

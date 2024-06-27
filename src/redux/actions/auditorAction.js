@@ -4,6 +4,7 @@ import {
   AUDITOR_SET_ERROR,
   DELETE_BADGE,
   GET_AUDITOR,
+  GET_AUDITOR_RATING_DETAILS,
   GET_AUDITORS,
   GET_CURRENT_AUDITOR,
   GET_PUBLIC_PROFILE,
@@ -166,6 +167,18 @@ export const getAuditorById = id => {
       .catch(({ response }) => {
         console.log(response, 'res');
       });
+  };
+};
+
+export const getAuditorRating = (id, getDetails = false) => {
+  return dispatch => {
+    let url = getDetails
+      ? `${API_URL}/rating/auditor/${id}/details`
+      : `${API_URL}/rating/auditor/${id}`;
+
+    axios.get(url).then(({ data }) => {
+      dispatch({ type: GET_AUDITOR_RATING_DETAILS, payload: data });
+    });
   };
 };
 

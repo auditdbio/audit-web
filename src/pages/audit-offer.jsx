@@ -56,6 +56,7 @@ import EditIcon from '@mui/icons-material/Edit.js';
 import { BASE_URL } from '../services/urls.js';
 import ResolveAuditConfirmation from '../components/issuesPage/ResolveAuditConfirmation.jsx';
 import PriceCalculation from '../components/PriceCalculation.jsx';
+import Star from '../components/icons/Star.jsx';
 
 const AuditOffer = () => {
   const { auditId } = useParams();
@@ -289,31 +290,16 @@ const AuditOffer = () => {
                     </svg>
                     {audit?.price}
                   </Box>
-                  <Box
-                    sx={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '15px',
-                    }}
-                  >
-                    <svg
-                      width="20"
-                      height="20"
-                      viewBox="0 0 26 26"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        d="M13.2559 25.5499C20.2424 25.5499 25.9061 19.8862 25.9061 12.8997C25.9061 5.91319 20.2424 0.249512 13.2559 0.249512C6.26939 0.249512 0.605713 5.91319 0.605713 12.8997C0.605713 19.8862 6.26939 25.5499 13.2559 25.5499Z"
-                        fill="#52176D"
-                      />
-                      <path
-                        d="M13.257 4.64941L15.4702 9.71865L20.4071 10.5528L16.8321 14.4671L17.6833 20.0496L13.257 17.4188L8.83078 20.0496L9.68199 14.4671L6.10693 10.5528L11.0439 9.71865L13.257 4.64941Z"
-                        fill="#FFCA28"
-                      />
-                    </svg>
-                    150
-                  </Box>
+                  {/*<Box*/}
+                  {/*  sx={{*/}
+                  {/*    display: 'flex',*/}
+                  {/*    alignItems: 'center',*/}
+                  {/*    gap: '15px',*/}
+                  {/*  }}*/}
+                  {/*>*/}
+                  {/*  <Star size={20} />*/}
+                  {/*  150*/}
+                  {/*</Box>*/}
                 </Box>
               </Box>
 

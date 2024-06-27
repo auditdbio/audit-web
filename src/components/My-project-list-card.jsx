@@ -52,10 +52,10 @@ const MyProjectListCard = ({ type, project, setState, state, isChecked }) => {
             <Currency />
             <Typography>{project.price}</Typography>
           </Box>
-          <Box sx={infoWrapper}>
-            <Star />
-            <Typography>150</Typography>
-          </Box>
+          {/*<Box sx={infoWrapper}>*/}
+          {/*  <Star />*/}
+          {/*  <Typography>150</Typography>*/}
+          {/*</Box>*/}
         </Box>
       </Box>
       <Box

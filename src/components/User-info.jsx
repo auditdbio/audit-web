@@ -1,4 +1,4 @@
-import React, { useMemo, useEffect } from 'react';
+import React, { useMemo, useEffect, useState } from 'react';
 import {
   Avatar,
   Box,
@@ -10,14 +10,14 @@ import {
 } from '@mui/material';
 import GitHubIcon from '@mui/icons-material/GitHub.js';
 import theme from '../styles/themes.js';
-import { useNavigate } from 'react-router-dom/dist';
+import { useNavigate, useSearchParams } from 'react-router-dom/dist';
 import { useDispatch, useSelector } from 'react-redux';
 import Loader from './Loader.jsx';
 import { AUDITOR, CUSTOMER } from '../redux/actions/types.js';
 import TagsList from './tagsList';
 import { ASSET_URL } from '../services/urls.js';
 import MobileTagsList from './MobileTagsList/index.jsx';
-import { addTestsLabel, capitalize } from '../lib/helper.js';
+import { addTestsLabel } from '../lib/helper.js';
 import ShareProfileButton from './custom/ShareProfileButton.jsx';
 import IdentitySetting from './IdentitySetting/IdentitySetting.jsx';
 import LinkedinIcon from './icons/LinkedinIcon.jsx';
@@ -25,12 +25,21 @@ import XTwitterLogo from './icons/XTwitter-logo.jsx';
 import { clearUserMessages } from '../redux/actions/userAction.js';
 import CustomSnackbar from './custom/CustomSnackbar.jsx';
 import Headings from '../router/Headings.jsx';
+import Star from './icons/Star.jsx';
+import { getAuditorRating } from '../redux/actions/auditorAction.js';
+import RatingDetails from './RatingDetails.jsx';
 
 const UserInfo = ({ role, linkId }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
   const matchXs = useMediaQuery(theme.breakpoints.down('xs'));
   const matchXxs = useMediaQuery(theme.breakpoints.down(590));
+
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [isDetailsOpen, setIsDetailsOpen] = useState(
+    searchParams.get('rating') || false,
+  );
 
   const {
     customer,
@@ -39,6 +48,7 @@ const UserInfo = ({ role, linkId }) => {
   } = useSelector(s => s.customer);
   const {
     auditor,
+    auditorRating,
     error: auditorError,
     success: auditorSuccess,
   } = useSelector(s => s.auditor);
@@ -46,6 +56,15 @@ const UserInfo = ({ role, linkId }) => {
 
   const handleEdit = () => {
     navigate('/edit-profile');
+  };
+
+  const openRating = () => {
+    setIsDetailsOpen(prev => !prev);
+    if (isDetailsOpen) {
+      setSearchParams({});
+    } else {
+      setSearchParams({ rating: 'true' });
+    }
   };
 
   const data = useMemo(() => {
@@ -61,6 +80,12 @@ const UserInfo = ({ role, linkId }) => {
       navigate(`/${role[0]}/${data.link_id}`);
     }
   }, [linkId, data]);
+
+  useEffect(() => {
+    if (data?.user_id && role.toLowerCase() === AUDITOR) {
+      dispatch(getAuditorRating(data.user_id, true));
+    }
+  }, [data]);
 
   if (!data) {
     return <Loader role={role} />;
@@ -109,62 +134,83 @@ const UserInfo = ({ role, linkId }) => {
               sx={avatarStyle}
               alt="User photo"
             />
+            {role === AUDITOR && auditorRating && (
+              <Button sx={ratingButton} type="button" onClick={openRating}>
+                <Star size={25} />
+                <Typography
+                  component="span"
+                  sx={{ ml: '10px', fontWeight: 500, fontSize: '20px' }}
+                >
+                  {auditorRating.user_id === data.user_id
+                    ? Math.trunc(auditorRating.summary)
+                    : Math.trunc(data.rating || 0)}
+                </Typography>
+              </Button>
+            )}
           </Box>
-          <Box sx={infoStyle}>
-            <Box sx={infoInnerStyle}>
-              <Box sx={infoWrapper}>
-                <span>First Name</span>
-                <Typography noWrap={true}>{data.first_name}</Typography>
-              </Box>
-              <Box sx={infoWrapper}>
-                <span>Last name</span>
-                <Typography noWrap={true}>{data.last_name}</Typography>
-              </Box>
-              <Box sx={infoWrapper}>
-                <span>Telegram</span>
-                <Typography noWrap={true}>{data.contacts?.telegram}</Typography>
-              </Box>
-              {role === AUDITOR && (
+
+          {isDetailsOpen ? (
+            <RatingDetails rating={auditorRating} role={role} />
+          ) : (
+            <Box sx={infoStyle}>
+              <Box sx={infoInnerStyle}>
                 <Box sx={infoWrapper}>
-                  <span>Price range:</span>
-                  {data?.price_range?.from && data?.price_range?.to && (
-                    <Typography>
-                      ${data?.price_range?.from} - {data?.price_range?.to} per
-                      line
-                    </Typography>
-                  )}
+                  <span>First Name</span>
+                  <Typography noWrap={true}>{data.first_name}</Typography>
                 </Box>
-              )}
-            </Box>
-            <Box sx={infoInnerStyle}>
-              {role !== AUDITOR && (
                 <Box sx={infoWrapper}>
-                  <span>Company</span>
-                  <Typography noWrap={true}>{data.company}</Typography>
+                  <span>Last name</span>
+                  <Typography noWrap={true}>{data.last_name}</Typography>
                 </Box>
-              )}
-              <Box sx={infoWrapper}>
-                <span>E-mail</span>
-                <Typography noWrap={true}>{data.contacts?.email}</Typography>
+                <Box sx={infoWrapper}>
+                  <span>Telegram</span>
+                  <Typography noWrap={true}>
+                    {data.contacts?.telegram}
+                  </Typography>
+                </Box>
+                {role === AUDITOR && (
+                  <Box sx={infoWrapper}>
+                    <span>Price range:</span>
+                    {data?.price_range?.from && data?.price_range?.to && (
+                      <Typography>
+                        ${data?.price_range?.from} - {data?.price_range?.to} per
+                        line
+                      </Typography>
+                    )}
+                  </Box>
+                )}
               </Box>
+              <Box sx={infoInnerStyle}>
+                {role !== AUDITOR && (
+                  <Box sx={infoWrapper}>
+                    <span>Company</span>
+                    <Typography noWrap={true}>{data.company}</Typography>
+                  </Box>
+                )}
+                <Box sx={infoWrapper}>
+                  <span>E-mail</span>
+                  <Typography noWrap={true}>{data.contacts?.email}</Typography>
+                </Box>
+              </Box>
+              <Box sx={[infoWrapper, aboutWrapper]}>
+                <span>About</span>
+                <Typography
+                  sx={{
+                    maxWidth: 'unset!important',
+                    width: '100%',
+                    wordBreak: 'break-word',
+                  }}
+                >
+                  {data.about}
+                </Typography>
+              </Box>
+              {!matchXs && <TagsList data={data.tags} fullView={true} />}
             </Box>
-            <Box sx={[infoWrapper, aboutWrapper]}>
-              <span>About</span>
-              <Typography
-                sx={{
-                  maxWidth: 'unset!important',
-                  width: '100%',
-                  wordBreak: 'break-word',
-                }}
-              >
-                {data.about}
-              </Typography>
-            </Box>
-            {!matchXs && <TagsList data={data.tags} fullView={true} />}
-          </Box>
+          )}
         </Box>
-        {matchXs && <MobileTagsList data={data.tags} />}
-        <Box sx={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
+        {matchXs && !isDetailsOpen && <MobileTagsList data={data.tags} />}
+
+        <Box sx={accountsSection}>
           {user.linked_accounts?.map(account => {
             if (account.name.toLowerCase() === 'linkedin') {
               return (
@@ -218,15 +264,8 @@ const UserInfo = ({ role, linkId }) => {
             }
           })}
         </Box>
-        <Box
-          sx={{
-            display: 'flex',
-            justifyContent: 'center',
-            flexDirection: 'column',
-            alignItems: 'center',
-            gap: '20px',
-          }}
-        >
+
+        <Box sx={buttonsSection}>
           {((role === AUDITOR && auditor.user_id) ||
             (role === CUSTOMER && customer.user_id)) && (
             <ShareProfileButton
@@ -421,10 +460,23 @@ const infoWrapper = theme => ({
   },
 });
 
-const accountLink = {
-  height: '30px',
+const ratingButton = {
+  color: 'black',
+  mt: '20px',
   display: 'flex',
   alignItems: 'center',
-  color: 'black',
-  textDecoration: 'none',
+};
+
+const buttonsSection = {
+  display: 'flex',
+  justifyContent: 'center',
+  flexDirection: 'column',
+  alignItems: 'center',
+  gap: '20px',
+};
+
+const accountsSection = {
+  display: 'flex',
+  gap: '10px',
+  justifyContent: 'center',
 };

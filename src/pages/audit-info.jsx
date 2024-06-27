@@ -205,7 +205,10 @@ const AuditInfo = ({ audit, auditRequest, issues, confirmed, handleClose }) => {
               src={audit?.avatar ? `${ASSET_URL}/${audit?.avatar}` : ''}
               alt="auditor photo"
             />
-            <Box sx={{ display: 'grid', textAlign: 'center' }}>
+            <Link
+              to={`/a/${audit.auditor_id}`}
+              style={{ display: 'grid', textAlign: 'center' }}
+            >
               <Tooltip title={audit?.auditor_first_name} arrow placement="top">
                 <Typography noWrap={true} sx={userNameWrapper}>
                   {audit?.auditor_first_name}
@@ -216,7 +219,7 @@ const AuditInfo = ({ audit, auditRequest, issues, confirmed, handleClose }) => {
                   {audit?.auditor_last_name}
                 </Typography>
               </Tooltip>
-            </Box>
+            </Link>
           </Box>
           <Box sx={userInfoWrapper}>
             <Box sx={infoWrapper}>
@@ -563,7 +566,7 @@ const userWrapper = theme => ({
     fontSize: '15px',
     fontWeight: 500,
     '&:nth-of-type(1)': {
-      margin: '13px 0 18px',
+      margin: '13px 0 5px',
     },
   },
   [theme.breakpoints.down('md')]: {

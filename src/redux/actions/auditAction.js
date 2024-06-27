@@ -320,16 +320,21 @@ export const editAuditRequestCustomer = (values, goBack) => {
   };
 };
 
-export const resolveAudit = values => {
+export const resolveAudit = audit => {
   return dispatch => {
     const token = Cookies.get('token');
     axios
       .patch(
-        `${API_URL}/audit/${values.id}`,
+        `${API_URL}/audit/${audit.id}`,
         { action: 'resolve' },
         { headers: { Authorization: `Bearer ${token}` } },
       )
       .then(({ data }) => dispatch({ type: RESOLVED, payload: data }))
+      .then(() =>
+        axios.patch(
+          `${API_URL}/rating/recalculate/auditor/${audit.auditor_id}`,
+        ),
+      )
       .catch(() => dispatch({ type: REQUEST_ERROR }));
   };
 };
