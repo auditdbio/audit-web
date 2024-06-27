@@ -127,15 +127,6 @@ const AuditInfo = ({
     navigate(`/issues/audit-issue/${audit?.id}`);
   };
 
-  const handleUpdateAudit = () => {
-    const data = {
-      id: audit.id,
-      price: parseInt(priceValue),
-    };
-    setEditPrice(false);
-    dispatch(editAuditCustomer(data));
-  };
-
   return (
     <CustomCard sx={wrapper} className={'audit-info-wrapper'}>
       <Headings title={audit?.project_name || 'Audit Info'} />

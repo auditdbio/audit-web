@@ -37,11 +37,6 @@ const HistoryDescription = ({ audit, request }) => {
     }
   }, [auditHistory, auditRequestHistory]);
 
-  const handleOpen = () => {
-    setIsOpen(true);
-    setShowRecap(false);
-  };
-
   const handleOpenRecap = () => {
     setShowRecap(false);
     setIsOpen(true);
