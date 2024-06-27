@@ -145,7 +145,7 @@ const HistoryDescription = ({ audit, request }) => {
       </Modal>
       {showChanges && (
         <DescriptionModal
-          oldValue={arrData[unread[user?.id]]}
+          oldValue={arrData[unread[user?.id] - 1]}
           item={arrData[0]}
           request={request}
           idx={0}

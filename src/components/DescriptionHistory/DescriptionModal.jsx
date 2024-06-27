@@ -433,28 +433,41 @@ const DescriptionModal = ({
                 </Box>
               </>
             )}
-            <Button
-              onClick={handleApprove}
-              variant={'contained'}
-              sx={{ mt: '15px', textTransform: 'unset' }}
-              // disabled={item.approved.length === 2}
+            <Box
+              sx={[
+                openDiff ? { display: 'flex', justifyContent: 'center' } : {},
+                { mt: '20px' },
+              ]}
             >
-              Approve changes
-            </Button>
-            {openDiff && (
               <Button
-                onClick={() => {
-                  setIsOpenDiff(false);
-                  setCompare(null);
-                  closeChangesRecap(false);
-                }}
+                onClick={handleApprove}
                 variant={'contained'}
-                sx={{ mt: '15px', textTransform: 'unset', ml: '20px' }}
+                sx={{ mt: '15px', textTransform: 'unset', width: '157px' }}
                 // disabled={item.approved.length === 2}
               >
-                Show history
+                Approve changes
               </Button>
-            )}
+              {openDiff && (
+                <Button
+                  onClick={() => {
+                    setIsOpenDiff(false);
+                    setCompare(null);
+                    closeChangesRecap(false);
+                  }}
+                  color={'secondary'}
+                  variant={'contained'}
+                  sx={{
+                    mt: '15px',
+                    textTransform: 'unset',
+                    ml: '20px',
+                    width: '157px',
+                  }}
+                  // disabled={item.approved.length === 2}
+                >
+                  Show history
+                </Button>
+              )}
+            </Box>
           </Box>
         </Box>
       </Modal>
