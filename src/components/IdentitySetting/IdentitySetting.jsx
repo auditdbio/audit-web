@@ -277,14 +277,6 @@ const IdentitySetting = () => {
                 </Button>
               </Box>
             </Box>
-            <Box
-              sx={{
-                marginTop: 'auto',
-                marginBottom: '0',
-                display: 'flex',
-                justifyContent: 'center',
-              }}
-            ></Box>
           </Box>
         </Box>
       </Modal>

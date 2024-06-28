@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { createWeb3Modal, defaultWagmiConfig } from '@web3modal/wagmi/react';
 import { WagmiConfig } from 'wagmi';
 import { mainnet } from 'viem/chains';
@@ -25,7 +25,7 @@ const WalletConnect = ({ linkedAccounts, sx = {} }) => {
     enableInjected: false,
   });
 
-  createWeb3Modal({
+  const modal = createWeb3Modal({
     wagmiConfig,
     projectId,
     chains,
