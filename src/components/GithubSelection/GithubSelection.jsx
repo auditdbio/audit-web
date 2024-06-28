@@ -20,11 +20,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
   clearCommit,
   clearRepoOwner,
-  getCommitData,
   getCommits,
   getDefaultBranch,
+  getGithubPublicRepos,
   getMyGithub,
   getMyGithubOrgs,
+  getMyPublicGithubOrgs,
   getRepoOwner,
   getTotalCommits,
 } from '../../redux/actions/githubAction.js';
@@ -34,24 +35,23 @@ import { getMyProfile, logout } from '../../redux/actions/userAction.js';
 import GithubOwnRepositories from './GithubOwnRepositories.jsx';
 import GithubOwnOrgs from './GithubOwnOrgs.jsx';
 import GitHubAuthComponent from './GitHubAuthComponent.jsx';
-import {
-  CONNECT_ACCOUNT,
-  NEXT_PAGE,
-  PREV_PAGE,
-} from '../../redux/actions/types.js';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import CommitModal from './CommitModal.jsx';
 import CommitsList from './CommitsList.jsx';
-import Loader from '../Loader.jsx';
+import {
+  CLEAR_NOT_FOUND,
+  CLEAR_NOT_FOUND_ERROR,
+  SWITCH_REPO,
+} from '../../redux/actions/types.js';
 
 const GITHUB_ID = import.meta.env.VITE_GITHUB_CLIENT_ID;
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 
-const GithubSelection = ({ project }) => {
+const GithubSelection = ({ project, noPrivate }) => {
   const [field, _, fieldHelper] = useField('scope');
   const [urlRepo, setUrlRepo] = useState('');
   const { branch } = useSelector(state => state.github);
   const [isOpen, setIsOpen] = useState(false);
+  const [selected, setSelected] = useState([]);
   const {
     defaultBranch,
     totalCommitsPage,
@@ -60,7 +60,9 @@ const GithubSelection = ({ project }) => {
     myRepositories,
     sha,
     repoOwner,
+    tag,
     commitInfo,
+    notFound,
     commitPage: page,
   } = useSelector(state => state.github);
   const [repository, setRepository] = useState(null);
@@ -101,6 +103,7 @@ const GithubSelection = ({ project }) => {
       dispatch(getDefaultBranch(repository));
     }
   }, [repository]);
+
   useEffect(() => {
     if (repository && (branch || defaultBranch)) {
       dispatch(getTotalCommits(repository, branch, page));
@@ -108,18 +111,29 @@ const GithubSelection = ({ project }) => {
   }, [repository, branch, page]);
 
   useEffect(() => {
-    if (githubData?.id && !myRepositories?.length) {
-      dispatch(getMyGithub());
-      dispatch(getMyGithubOrgs());
+    if (githubData?.id && githubData?.username) {
+      if (githubData?.scope?.includes('repo') && !noPrivate) {
+        dispatch(getMyGithubOrgs());
+        dispatch(getMyGithub());
+      } else {
+        dispatch(getGithubPublicRepos(githubData.username));
+        dispatch(getMyPublicGithubOrgs(githubData.username));
+      }
     }
-  }, []);
+  }, [githubData?.scope?.includes('repo'), githubData?.username]);
+
+  // useEffect(() => {
+  //   dispatch(getMyProfile());
+  // }, []);
 
   const handleAddProject = () => {
     if (urlRepo.includes('github.com/')) {
       function parseGitHubUrl(gitHubUrl) {
-        const urlParts = gitHubUrl.split('/');
-        const owner = urlParts[3];
-        const repo = urlParts[4];
+        const url = gitHubUrl.replace(/^https?:\/\//, '');
+        const urlParts = url.split('/');
+
+        const owner = urlParts[1];
+        const repo = urlParts[2];
 
         return `${owner}/${repo}`;
       }
@@ -142,13 +156,20 @@ const GithubSelection = ({ project }) => {
   const handleReset = () => {
     setRepository(null);
     setUrlRepo('');
-    fieldHelper.setValue([]);
+    fieldHelper.setValue(field.value.filter(el => !el.includes('github.com')));
+    setSelected(field.value.filter(el => !el.includes('github.com')));
     dispatch(clearRepoOwner());
     dispatch(clearCommit());
+    dispatch({ type: SWITCH_REPO });
+    dispatch({ type: CLEAR_NOT_FOUND_ERROR });
   };
   useEffect(() => {
     const handleStorageChange = event => {
-      if (event.key === 'authenticated' && event.newValue === 'true') {
+      if (
+        event.key === 'authenticated' &&
+        event.newValue === 'true' &&
+        !noPrivate
+      ) {
         dispatch(getMyProfile());
         dispatch(getMyGithub());
         dispatch(getMyGithubOrgs());
@@ -233,28 +254,81 @@ const GithubSelection = ({ project }) => {
                       Submit
                     </Button>
                   </Box>
-                  {githubData?.id && !orgs.message ? (
-                    <GithubOwnRepositories
-                      setRepository={handleOpenOwnRepo}
-                      myRepositories={myRepositories}
-                      myOrganizations={myOrganizations}
-                    />
+                  {githubData?.id ? (
+                    <>
+                      {!githubData?.scope?.includes('repo') && (
+                        <GitHubAuthComponent
+                          noPrivate={noPrivate}
+                          desc={
+                            'Authenticate via GitHub to select from your private repositories'
+                          }
+                        />
+                      )}
+                      <GithubOwnRepositories
+                        setRepository={handleOpenOwnRepo}
+                        myRepositories={myRepositories}
+                        myOrganizations={myOrganizations}
+                      />
+                    </>
                   ) : (
                     <GitHubAuthComponent />
                   )}
                 </Box>
               ) : (
-                <CommitsList
-                  handleReset={handleReset}
-                  handleClose={handleClose}
-                  repository={repository}
-                />
+                <>
+                  {!notFound ? (
+                    <CommitsList
+                      handleReset={handleReset}
+                      handleClose={handleClose}
+                      repository={repository}
+                    />
+                  ) : (
+                    <Box sx={notFoundSx}>
+                      <Button
+                        sx={{
+                          marginLeft: '-15px',
+                          minWidth: '34px',
+                          marginBottom: '5px',
+                          alignSelf: 'flex-start',
+                        }}
+                        onClick={() => {
+                          handleClose();
+                          dispatch({ type: CLEAR_NOT_FOUND_ERROR });
+                          handleReset();
+                        }}
+                      >
+                        <CloseRoundedIcon />
+                      </Button>
+                      <Box
+                        sx={{
+                          display: 'flex',
+                          flexDirection: 'column',
+                          alignItems: 'center',
+                        }}
+                      >
+                        <Typography variant={'h4'}>
+                          Repository not found
+                        </Typography>
+                        <Button
+                          sx={buttonSx}
+                          color={'primary'}
+                          variant={'contained'}
+                          onClick={handleReset}
+                        >
+                          Switch repository
+                        </Button>
+                      </Box>
+                    </Box>
+                  )}
+                </>
               )}
             </Box>
           )}
           {sha && (
             <CommitModal
               sha={sha}
+              selected={selected}
+              setSelected={setSelected}
               handleCloseCommit={handleCloseCommit}
               repository={repository}
               onClose={handleClose}
@@ -264,9 +338,13 @@ const GithubSelection = ({ project }) => {
         </Box>
       </Modal>
       <Button
-        onClick={() => setIsOpen(true)}
+        onClick={() => {
+          setIsOpen(true);
+          setSelected(field.value);
+        }}
         variant={'contained'}
         sx={githubBtnSx}
+        className={'github-btn'}
       >
         Use github
       </Button>
@@ -275,6 +353,31 @@ const GithubSelection = ({ project }) => {
 };
 
 export default GithubSelection;
+
+const notFoundSx = theme => ({
+  display: 'flex',
+  height: '100%',
+  alignItems: 'center',
+  flexDirection: 'column',
+  '& h4': {
+    fontSize: '28px',
+  },
+  [theme.breakpoints.down('sm')]: {
+    '& h4': {
+      fontSize: '22px',
+    },
+  },
+});
+
+const buttonSx = theme => ({
+  textTransform: 'unset',
+  display: 'flex',
+  gap: '5px',
+  fontSize: '14px!important',
+  lineHeight: '22px',
+  maxWidth: '100%',
+  marginTop: '25px',
+});
 
 const wrapper = theme => ({
   height: '100%',

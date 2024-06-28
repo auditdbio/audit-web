@@ -1,13 +1,13 @@
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
   Box,
   Button,
+  Typography,
+  useMediaQuery,
+  Tooltip,
   FormControl,
   InputLabel,
-  Typography,
-  Tooltip,
   Select,
-  useMediaQuery,
 } from '@mui/material';
 import theme, { radiusOfComponents } from '../styles/themes.js';
 import { useNavigate } from 'react-router-dom/dist';
@@ -17,6 +17,9 @@ import SimpleField from './forms/fields/simple-field.jsx';
 import { ProjectLinksList } from './custom/ProjectLinksList.jsx';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack.js';
 import MenuRoundedIcon from '@mui/icons-material/MenuRounded';
+import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import AuditorSearchModal from './AuditorSearchModal.jsx';
 import TagsField from './forms/tags-field/tags-field.jsx';
 import {
@@ -32,7 +35,10 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 import * as Yup from 'yup';
 import { useLocation, useSearchParams } from 'react-router-dom';
-import { getAuditsRequest } from '../redux/actions/auditAction.js';
+import {
+  clearMessage,
+  getAuditsRequest,
+} from '../redux/actions/auditAction.js';
 import { AuditRequestsArray } from './custom/AuditRequestsArray.jsx';
 import MarkdownEditor from './markdown/Markdown-editor.jsx';
 import SalarySlider from './forms/salary-slider/salary-slider.jsx';
@@ -41,6 +47,7 @@ import { AUDITOR, DONE } from '../redux/actions/types.js';
 import CustomSnackbar from './custom/CustomSnackbar.jsx';
 import { addTestsLabel } from '../lib/helper.js';
 import { history } from '../services/history.js';
+import PriceCalculation from './PriceCalculation.jsx';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import QuestionMarkIcon from '@mui/icons-material/QuestionMark';
@@ -52,6 +59,7 @@ import {
   clearCommit,
   clearRepoOwner,
   getCommitData,
+  getMyGithub,
   getRepoOwner,
   getSha,
 } from '../redux/actions/githubAction.js';
@@ -88,13 +96,26 @@ const CreateProjectCard = ({ projectInfo }) => {
   const [isClosed, setIsClosed] = useState(
     projectInfo?.status === DONE || false,
   );
+  const { successMessage, errorMessage } = useSelector(s => s.audits);
   const [closeConfirmIsOpen, setCloseConfirmIsOpen] = useState(false);
   const [state, setState] = useState(false);
   const [isDirty, setIsDirty] = useState(false);
   const [changeStatus, setChangeStatus] = useState(false);
+
   useEffect(() => {
     dispatch(getAuditsRequest('customer'));
   }, []);
+  const githubData = useSelector(s =>
+    s.user?.user?.linked_accounts?.find(
+      el => el?.name?.toLowerCase() === 'github',
+    ),
+  );
+
+  useEffect(() => {
+    if (githubData?.id && githubData?.scope?.includes('repo')) {
+      dispatch(getMyGithub());
+    }
+  }, [githubData?.scope?.includes('repo'), githubData?.id]);
 
   useEffect(() => {
     if (auditReducer.auditRequests && projectInfo) {
@@ -295,6 +316,13 @@ const CreateProjectCard = ({ projectInfo }) => {
               setState={setState}
               setError={setError}
             />
+            <CustomSnackbar
+              autoHideDuration={5000}
+              open={!!errorMessage || !!successMessage}
+              severity={errorMessage ? 'error' : 'success'}
+              text={errorMessage || successMessage}
+              onClose={() => dispatch(clearMessage())}
+            />
 
             {/*<CloseProjectModal*/}
             {/*  isOpen={closeConfirmIsOpen}*/}
@@ -336,9 +364,25 @@ const CreateProjectCard = ({ projectInfo }) => {
                           <GithubSelection project={projectInfo} />
                         </Box>
                         <ProjectLinksList name="scope" />
-                        <SalarySlider name="price" />
+                        <Box>
+                          <Box sx={priceLabelSx}>Price per line of code</Box>
+                          <SalarySlider name="price" />
+                        </Box>
+                        {!matchMd && (
+                          <PriceCalculation
+                            price={values.price}
+                            scope={values.scope}
+                          />
+                        )}
                       </Box>
                     </Box>
+                    {matchMd && (
+                      <PriceCalculation
+                        price={values.price}
+                        scope={values.scope}
+                        sx={{ '& .head': { justifyContent: 'center' } }}
+                      />
+                    )}
 
                     {/*<Box>*/}
                     {/*  <AuditRequestsArray requests={auditRequests ?? []} />*/}
@@ -652,4 +696,10 @@ const formAllFields = {
   display: 'flex',
   flexDirection: 'column',
   gap: '20px',
+};
+
+const priceLabelSx = {
+  fontSize: '14px',
+  fontWeight: 500,
+  color: '#B3B3B3',
 };

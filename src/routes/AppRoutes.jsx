@@ -52,6 +52,8 @@ import ConnectAccount from '../pages/Connect-account.jsx';
 import DisclaimerPage from '../pages/DisclaimerPage.jsx';
 import Headings from '../router/Headings.jsx';
 import { AUDITOR, CUSTOMER } from '../redux/actions/types.js';
+import UserProjects from '../pages/UserProjects.jsx';
+import PriceCalculationPage from '../pages/PriceCalculationPage.jsx';
 
 const AppRoutes = () => {
   const { token } = useSelector(s => s.user);
@@ -191,6 +193,14 @@ const AppRoutes = () => {
           }
         />
         <Route
+          path="/customer-projects/:id"
+          element={
+            <PrivateRoute auth={{ isAuthenticated: isAuth() }}>
+              <UserProjects />
+            </PrivateRoute>
+          }
+        />
+        <Route
           path="/audit-info/:id/customer"
           element={
             <PrivateRoute auth={{ isAuthenticated: isAuth() }}>
@@ -303,6 +313,14 @@ const AppRoutes = () => {
           element={
             <PrivateRoute auth={{ isAuthenticated: isAuth() }}>
               <ChatPage />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/price-calculation"
+          element={
+            <PrivateRoute auth={{ isAuthenticated: isAuth() }}>
+              <PriceCalculationPage />
             </PrivateRoute>
           }
         />

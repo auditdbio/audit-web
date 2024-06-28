@@ -156,6 +156,19 @@ export const getAuditors = (values = '', amount = 0) => {
   };
 };
 
+export const getAuditorById = id => {
+  return dispatch => {
+    axios
+      .get(`${API_URL}/auditor/${id}`)
+      .then(({ data }) => {
+        dispatch({ type: GET_CURRENT_AUDITOR, payload: data });
+      })
+      .catch(({ response }) => {
+        console.log(response, 'res');
+      });
+  };
+};
+
 export const searchAuditor = (values, badges = true) => {
   const kind = badges ? 'auditor badge' : 'auditor';
   const queryString = createSearchValues(values, kind);

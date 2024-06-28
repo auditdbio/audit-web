@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack.js';
 import TelegramIcon from '@mui/icons-material/Telegram';
 import EmailIcon from '@mui/icons-material/Email';
+import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import {
   Box,
   Button,
@@ -14,7 +15,11 @@ import {
 } from '@mui/material';
 import { CustomCard } from './custom/Card.jsx';
 import theme from '../styles/themes.js';
-import { deleteAuditRequest } from '../redux/actions/auditAction.js';
+import {
+  clearMessage,
+  confirmAudit,
+  deleteAuditRequest,
+} from '../redux/actions/auditAction.js';
 import Markdown from './markdown/Markdown.jsx';
 import { addTestsLabel, isAuth } from '../lib/helper.js';
 import { AUDITOR, CUSTOMER } from '../redux/actions/types.js';
@@ -28,6 +33,8 @@ import ShareProjectButton from './custom/ShareProjectButton.jsx';
 import { setCurrentChat } from '../redux/actions/chatActions.js';
 import ChatIcon from './icons/ChatIcon.jsx';
 import ConfirmModal from './modal/ConfirmModal.jsx';
+import CustomSnackbar from './custom/CustomSnackbar.jsx';
+import PriceCalculation from './PriceCalculation.jsx';
 
 const AuditRequestInfo = ({
   project,
@@ -36,14 +43,21 @@ const AuditRequestInfo = ({
   redirect,
   isModal,
   setError,
+  stayHere,
 }) => {
   const navigate = useNavigate();
   const matchXs = useMediaQuery(theme.breakpoints.down('xs'));
   const [open, setOpen] = useState(false);
   const [confirmDeclineOpen, setConfirmDeclineOpen] = useState(false);
+  const [showAcceptButton, setShowAcceptButton] = useState(true);
+
   const { auditor } = useSelector(s => s.auditor);
+  const { auditRequest, auditRequests, successMessage } = useSelector(
+    s => s.audits,
+  );
   const { user } = useSelector(s => s.user);
   const { chatList } = useSelector(s => s.chat);
+
   const dispatch = useDispatch();
 
   const handleOpen = () => {
@@ -115,22 +129,42 @@ const AuditRequestInfo = ({
 
   const handleDecline = () => {
     setConfirmDeclineOpen(false);
-    dispatch(deleteAuditRequest(project.id));
+    dispatch(deleteAuditRequest(project.id, stayHere));
+    onClose();
+  };
+
+  const handleAccept = () => {
+    const isRequestFound = auditRequests?.find(
+      req => req.id === auditRequest.id,
+    );
+    if (isRequestFound) {
+      dispatch(confirmAudit(auditRequest, true, '/profile/audits'));
+    }
   };
 
   return (
     <CustomCard sx={wrapper} className="audit-request-wrapper">
+      <CustomSnackbar
+        open={!!successMessage}
+        severity="success"
+        autoHideDuration={5000}
+        onClose={() => dispatch(clearMessage())}
+        text={successMessage}
+      />
+
       <Box sx={{ display: 'flex', width: '100%', position: 'relative' }}>
-        {!isModal && (
-          <Button
-            sx={backButtonSx}
-            className="audit-request-back-btn"
-            onClick={handleBack}
-            {...addTestsLabel('go-back-button')}
-          >
-            <ArrowBackIcon color="secondary" />
-          </Button>
-        )}
+        <Button
+          sx={backButtonSx}
+          className={'audit-request-back-btn'}
+          onClick={handleBack}
+          {...addTestsLabel('go-back-button')}
+        >
+          {onClose ? (
+            <CloseRoundedIcon color={'secondary'} />
+          ) : (
+            <ArrowBackIcon color={'secondary'} />
+          )}
+        </Button>
         <Typography
           variant="h3"
           sx={{
@@ -291,7 +325,7 @@ const AuditRequestInfo = ({
 
         <Box sx={{ textAlign: 'center', mt: '10px' }}>
           <ShareProjectButton
-            projectId={project?.id}
+            projectId={project?.project_id}
             sx={{ fontSize: '12px' }}
             showIcon
             isModal
@@ -410,6 +444,16 @@ const AuditRequestInfo = ({
           </Box>
         </Box>
       </Box>
+
+      {/*{!isModal && (*/}
+      {/*  <PriceCalculation*/}
+      {/*    price={project?.price}*/}
+      {/*    sx={priceCalc}*/}
+      {/*    color="secondary"*/}
+      {/*    scope={project?.project_scope || project?.scope}*/}
+      {/*  />*/}
+      {/*)}*/}
+
       <Box sx={buttonWrapper} className="audit-request-button-wrapper">
         <Button
           variant="contained"
@@ -435,6 +479,19 @@ const AuditRequestInfo = ({
         >
           Make offer
         </Button>
+        {showAcceptButton &&
+          auditRequest &&
+          !isModal &&
+          auditRequest?.last_changer?.toLowerCase() === CUSTOMER && (
+            <Button
+              variant="contained"
+              sx={buttonSx}
+              onClick={handleAccept}
+              {...addTestsLabel('accept-button')}
+            >
+              Accept
+            </Button>
+          )}
         <Button
           variant="text"
           // sx={[buttonSx, messageButton]}
@@ -460,7 +517,14 @@ const AuditRequestInfo = ({
           redirect={redirect}
           setError={setError}
           onClose={onClose}
+          stayHere={stayHere}
           handleClose={handleClose}
+          onSubmit={() => {
+            setShowAcceptButton(false);
+            if (onClose) {
+              onClose();
+            }
+          }}
         />
       </Modal>
 
@@ -505,14 +569,21 @@ const wrapper = theme => ({
   },
 });
 
-const buttonWrapper = {
+const buttonWrapper = theme => ({
   mt: '40px',
   display: 'flex',
   mb: '10px',
-  maxWidth: '450px',
+  maxWidth: '550px',
   width: '100%',
   justifyContent: 'center',
-};
+  [theme.breakpoints.down(500)]: {
+    flexDirection: 'column-reverse',
+    '& button': {
+      mb: '10px',
+      width: '100%',
+    },
+  },
+});
 
 const contentWrapper = {
   display: 'flex',
@@ -563,11 +634,11 @@ const linkWrapper = theme => ({
 
 const backButtonSx = theme => ({
   position: 'absolute',
-  left: '-58px',
+  left: '-28px',
   top: '-20px',
   [theme.breakpoints.down('sm')]: {
     left: '-25px',
-    top: '-30px',
+    // top: '-30px',
   },
 });
 
@@ -614,3 +685,8 @@ const messageButton = theme => ({
     width: '254px',
   },
 });
+
+const priceCalc = {
+  width: '100%',
+  '& .head': { justifyContent: 'center' },
+};

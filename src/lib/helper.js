@@ -38,6 +38,35 @@ export const decodeBase64url = str => {
 };
 
 export const reportBuilder = (report, issuesArray) => {
+  const getSummarySubsections = () => {
+    const subsections = [
+      {
+        type: 'project_description',
+        title: 'Project description',
+        text: report.description,
+        include_in_toc: true,
+      },
+    ];
+    if (report.scope?.length) {
+      subsections.push({
+        type: 'scope',
+        title: 'Scope',
+        text: '',
+        include_in_toc: true,
+        links: report.scope,
+      });
+    }
+    if (report.conclusion) {
+      subsections.push({
+        type: 'markdown',
+        title: 'Conclusion',
+        text: report.conclusion,
+        include_in_toc: true,
+      });
+    }
+    return subsections;
+  };
+
   return {
     auditor_name: report.auditor_name,
     project_name: report.project_name,
@@ -61,21 +90,7 @@ export const reportBuilder = (report, issuesArray) => {
         type: 'plain_text',
         title: 'Summary',
         include_in_toc: true,
-        subsections: [
-          {
-            type: 'project_description',
-            title: 'Project description',
-            text: report.description,
-            include_in_toc: true,
-          },
-          {
-            type: 'scope',
-            title: 'Scope',
-            text: '',
-            include_in_toc: true,
-            links: report.scope,
-          },
-        ],
+        subsections: getSummarySubsections(),
       },
       {
         type: 'statistics',

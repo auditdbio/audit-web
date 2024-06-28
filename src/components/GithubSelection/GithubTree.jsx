@@ -96,11 +96,10 @@ const GithubTreeNode = ({
         return newData.tree.every(childNode => {
           if (childNode.type === 'blob') {
             const blobUrl = createBlopUrl(repoOwner, sha, `${childNode.path}`);
-            return (
-              selected.includes(blobUrl) ||
-              (field.value.includes(blobUrl) &&
-                !deletedFromField.includes(blobUrl))
-            );
+            return selected.includes(blobUrl);
+            // ||
+            // (field.value.includes(blobUrl) &&
+            //   !deletedFromField.includes(blobUrl))
           } else if (childNode.type === 'tree') {
             return checkIfAllSelected(childNode);
           }
@@ -122,10 +121,9 @@ const GithubTreeNode = ({
         );
       } else if (currentNode.type === 'blob') {
         const blobUrl = createBlopUrl(repoOwner, sha, `${currentNode.path}`);
-        return (
-          selected.includes(blobUrl) ||
-          (field.value.includes(blobUrl) && !deletedFromField.includes(blobUrl))
-        );
+        return selected.includes(blobUrl);
+        // ||
+        // (field.value.includes(blobUrl) && !deletedFromField.includes(blobUrl))
       } else {
         return false;
       }
@@ -138,10 +136,9 @@ const GithubTreeNode = ({
     const blobUrl = createBlopUrl(repoOwner, sha, node.path);
     const callback = item => item === blobUrl;
 
-    return (
-      selected.some(callback) ||
-      (field.value.some(callback) && !deletedFromField.includes(blobUrl))
-    );
+    return selected.some(callback);
+    // ||
+    // (field.value.some(callback) && !deletedFromField.includes(blobUrl))
   };
 
   useEffect(() => {

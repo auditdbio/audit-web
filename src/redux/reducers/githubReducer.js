@@ -16,6 +16,15 @@ import {
   PREV_PAGE,
   NEXT_PAGE,
   CLEAR_COMMITINFO,
+  GET_TAGS,
+  GET_TAG,
+  SWITCH_GITHUB_TAB,
+  GET_MY_PRIVATE_GITHUB_ORGANIZATION,
+  NEED_TO_AUTH_GITHUB,
+  SWITCH_REPO,
+  NOT_FOUND_REPOS,
+  CLEAR_NOT_FOUND,
+  CLEAR_NOT_FOUND_ERROR,
 } from '../actions/types.js';
 
 const initialState = {
@@ -32,6 +41,11 @@ const initialState = {
   myOrganizations: [],
   organizationRepositories: [],
   commitPage: 1,
+  githubAuth: false,
+  tag: '',
+  tags: [],
+  tab: 'branches',
+  notFound: false,
 };
 
 export const githubReducer = (state = initialState, action) => {
@@ -42,6 +56,38 @@ export const githubReducer = (state = initialState, action) => {
       return {
         ...state,
         commits: action.payload,
+      };
+    case NOT_FOUND_REPOS:
+      return {
+        ...state,
+        notFound: true,
+      };
+    case CLEAR_NOT_FOUND_ERROR:
+      return {
+        ...state,
+        notFound: false,
+      };
+    case SWITCH_GITHUB_TAB:
+      return {
+        ...state,
+        tab: action.payload,
+      };
+    case SWITCH_REPO:
+      return {
+        ...state,
+        branches: [],
+        branch: '',
+      };
+    case GET_TAG:
+      return {
+        ...state,
+        tag: action.payload.name,
+        sha: action.payload.commit.sha,
+      };
+    case GET_TAGS:
+      return {
+        ...state,
+        tags: action.payload,
       };
     case GET_COMMIT:
       return {
@@ -105,6 +151,11 @@ export const githubReducer = (state = initialState, action) => {
         ...state,
         repoOwner: action.payload,
       };
+    case NEED_TO_AUTH_GITHUB:
+      return {
+        ...state,
+        githubAuth: false,
+      };
     case CLEAR_REPO_OWNER:
       return {
         ...state,
@@ -122,6 +173,12 @@ export const githubReducer = (state = initialState, action) => {
       return {
         ...state,
         myOrganizations: action.payload,
+      };
+    case GET_MY_PRIVATE_GITHUB_ORGANIZATION:
+      return {
+        ...state,
+        myOrganizations: action.payload,
+        githubAuth: true,
       };
     case GET_MY_GITHUB_ORGANIZATION_REPOSITORIES:
       return {

@@ -13,6 +13,7 @@ import CustomPagination from '../components/custom/CustomPagination.jsx';
 import { addTestsLabel } from '../lib/helper.js';
 import theme from '../styles/themes.js';
 import Headings from '../router/Headings.jsx';
+import CustomSnackbar from '../components/custom/CustomSnackbar.jsx';
 
 const ProjectPage = () => {
   const matchXs = useMediaQuery(theme.breakpoints.down('xs'));
@@ -25,6 +26,7 @@ const ProjectPage = () => {
   const [query, setQuery] = useState(undefined);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const { successMessage, errorMessage } = useSelector(s => s.audits);
 
   const applyFilter = filter => {
     setQuery(query => {
@@ -105,6 +107,13 @@ const ProjectPage = () => {
     <Layout>
       <Headings title="Projects" />
 
+      <CustomSnackbar
+        autoHideDuration={5000}
+        open={!!successMessage}
+        severity={'success'}
+        text={successMessage}
+        onClose={() => dispatch(clearMessage())}
+      />
       <Box sx={wrapper}>
         <Box sx={projectTopWrapper}>
           <Button

@@ -110,7 +110,7 @@ const ChatList = ({ chatList, chatListIsOpen, setChatListIsOpen }) => {
                         member.id === auditor.user_id &&
                         member.role?.toLowerCase() === AUDITOR,
                     ),
-                  ),
+                  ) && auditor.user_id !== user.id,
               )
               .map(auditor => (
                 <ChatListItem
@@ -139,7 +139,7 @@ const ChatList = ({ chatList, chatListIsOpen, setChatListIsOpen }) => {
                         member.id === customer.user_id &&
                         member.role?.toLowerCase() === CUSTOMER,
                     ),
-                  ),
+                  ) && customer.user_id !== user.id,
               )
               .map(customer => (
                 <ChatListItem

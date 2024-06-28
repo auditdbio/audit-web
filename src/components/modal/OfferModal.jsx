@@ -9,9 +9,13 @@ import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { addTestsLabel } from '../../lib/helper.js';
-import { createRequest } from '../../redux/actions/auditAction.js';
+import {
+  createRequest,
+  createRequestModal,
+} from '../../redux/actions/auditAction.js';
 import SalarySlider from '../forms/salary-slider/salary-slider.jsx';
 import theme from '../../styles/themes.js';
+import PriceCalculation from '../PriceCalculation.jsx';
 
 const OfferModal = ({
   auditor,
@@ -19,19 +23,20 @@ const OfferModal = ({
   user,
   redirect,
   setError,
-  onClose,
+  onSubmit,
   handleClose,
+  stayHere,
 }) => {
   const dispatch = useDispatch();
 
   return (
     <Box sx={modalWrapper}>
       <Button
-        className={'audit-request-back-btn'}
+        className="audit-request-back-btn"
         onClick={handleClose}
         {...addTestsLabel('go-back-button')}
       >
-        <ArrowBackIcon color={'secondary'} />
+        <ArrowBackIcon color="secondary" />
       </Button>
       <Formik
         validationSchema={MakeOfferSchema}
@@ -53,7 +58,7 @@ const OfferModal = ({
             to: dayjs(project?.time?.to) || new Date(),
           },
           project_id: project?.project_id || project?.id,
-          scope: project?.scope,
+          scope: project?.scope || project?.project_scope,
           time_frame: '',
         }}
         onSubmit={values => {
@@ -68,13 +73,17 @@ const OfferModal = ({
             },
           };
           if (newValue.auditor_id !== newValue.customer_id) {
-            dispatch(createRequest(newValue, redirect));
+            if (stayHere) {
+              dispatch(createRequestModal(newValue));
+            } else {
+              dispatch(createRequest(newValue, redirect, stayHere));
+            }
           } else {
             setError('You cannot create an audit request for your own project');
           }
           handleClose();
-          if (onClose) {
-            onClose();
+          if (onSubmit) {
+            onSubmit();
           }
         }}
       >
@@ -82,19 +91,25 @@ const OfferModal = ({
           return (
             <Form onSubmit={handleSubmit}>
               <Typography
-                variant={'h5'}
+                variant="h5"
                 sx={{ width: '100%', textAlign: 'center' }}
               >
                 Add more info
               </Typography>
               <Box sx={{ width: '100%' }}>
-                <Typography variant={'caption'}>
+                <Typography variant="caption">
                   Price per line of code
                 </Typography>
-                <SalarySlider name={'price'} />
+                <SalarySlider name="price" />
+                {/*<PriceCalculation*/}
+                {/*  price={values.price}*/}
+                {/*  scope={values.scope}*/}
+                {/*  sx={{ mt: '10px', '& .head': { justifyContent: 'center' } }}*/}
+                {/*  color="secondary"*/}
+                {/*/>*/}
               </Box>
               <Box>
-                <Typography variant={'caption'}>Time frame</Typography>
+                <Typography variant="caption">Time frame</Typography>
                 <Box
                   sx={{
                     display: 'flex',
@@ -106,7 +121,7 @@ const OfferModal = ({
                   <LocalizationProvider dateAdapter={AdapterDayjs}>
                     <Field
                       component={DatePicker}
-                      name={'time.from'}
+                      name="time.from"
                       value={dayjs(values.time?.from)}
                       sx={dateStyle}
                       inputFormat="DD.MM.YYYY"
@@ -117,7 +132,7 @@ const OfferModal = ({
                       disablePast
                       minDate={new Date()}
                     />
-                    <Typography variant={'caption'}>-</Typography>
+                    <Typography variant="caption">-</Typography>
                     <Field
                       component={DatePicker}
                       value={dayjs(values.time?.to)}
@@ -134,10 +149,10 @@ const OfferModal = ({
                 </Box>
               </Box>
               <Button
-                variant={'contained'}
+                variant="contained"
                 sx={submitBtn}
-                type={'submit'}
-                color={'secondary'}
+                type="submit"
+                color="secondary"
                 {...addTestsLabel('send-offer-button')}
               >
                 Send offer
@@ -200,6 +215,8 @@ const modalWrapper = theme => ({
   left: '50%',
   transform: 'translate(-50%, -50%)',
   width: 650,
+  maxHeight: '90vh',
+  overflow: 'auto',
   backgroundColor: '#fff',
   border: '1.5px solid #D9D9D9',
   boxShadow:

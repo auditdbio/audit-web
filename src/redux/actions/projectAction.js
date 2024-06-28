@@ -1,6 +1,8 @@
 import {
   CLEAR_SUCCESS,
   CLOSE_THE_PROJECT,
+  GET_CLOC,
+  CLEAR_CLOC,
   GET_CURRENT_PROJECT,
   GET_MY_PROJECTS,
   GET_PROJECTS,
@@ -9,6 +11,9 @@ import {
   PROJECT_UPDATE,
   PROJECT_UPDATE_STATUS,
   SEARCH_PROJECTS,
+  GET_PROJECTS_BY_USER_ID,
+  CLEAR_ERROR,
+  PROJECT_ERROR,
 } from './types.js';
 import axios from 'axios';
 import Cookies from 'js-cookie';
@@ -33,6 +38,23 @@ export const createProject = values => {
       })
       .catch(e => {
         console.log(e, 'res');
+      });
+  };
+};
+
+export const getProjectsByUserId = id => {
+  return async dispatch => {
+    const token = Cookies.get('token');
+    await axios
+      .get(`${API_URL}/customer/${id}/project`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .then(({ data }) => {
+        console.log(data);
+        dispatch({ type: GET_PROJECTS_BY_USER_ID, payload: data });
+      })
+      .catch(({ response }) => {
+        console.log(response, 'res');
       });
   };
 };
@@ -207,4 +229,29 @@ export const searchProjects = values => {
         console.error(response, 'res');
       });
   };
+};
+
+export const getCloc = links => {
+  const token = Cookies.get('token');
+  return dispatch => {
+    axios
+      .post(`${API_URL}/cloc/count`, links, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .then(({ data }) => {
+        delete data.result?.header;
+        dispatch({ type: GET_CLOC, payload: data });
+      })
+      .catch(() => {
+        dispatch({ type: PROJECT_ERROR, payload: 'Price calculation error' });
+      });
+  };
+};
+
+export const clearCloc = () => {
+  return { type: CLEAR_CLOC };
+};
+
+export const clearProjectError = () => {
+  return { type: CLEAR_ERROR };
 };
