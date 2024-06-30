@@ -23,6 +23,7 @@ import {
   RESET_PUBLIC_AUDIT,
   RESOLVED,
   SAVE_PUBLIC_REPORT,
+  SET_AUDIT_FEEDBACK,
   SET_CURRENT_AUDIT_PARTNER,
 } from './types.js';
 import { history } from '../../services/history.js';
@@ -489,4 +490,33 @@ export const savePublicReport = data => {
 
 export const clearMessage = () => {
   return { type: CLEAR_MESSAGES };
+};
+
+export const getAuditFeedback = (receiverRole, receiverId, auditId) => {
+  const token = Cookies.get('token');
+  return dispatch => {
+    axios
+      .get(
+        `${API_URL}/rating/feedback/${receiverRole}/${receiverId}/${auditId}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        },
+      )
+      .then(({ data }) => {
+        dispatch({ type: SET_AUDIT_FEEDBACK, payload: data });
+      });
+  };
+};
+
+export const sendAuditFeedback = feedback => {
+  const token = Cookies.get('token');
+  return dispatch => {
+    axios
+      .post(`${API_URL}/rating/send_feedback`, feedback, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .then(({ data }) => {
+        dispatch({ type: SET_AUDIT_FEEDBACK, payload: data });
+      });
+  };
 };

@@ -38,6 +38,7 @@ export const GET_MY_PROJECTS = 'GET_MY_PROJECTS';
 export const CONFIRM_AUDIT = 'CONFIRM_AUDIT';
 export const DONE = 'done';
 export const SUBMIT_AUDIT = 'SUBMIT_AUDIT';
+export const SET_AUDIT_FEEDBACK = 'SET_AUDIT_FEEDBACK';
 export const GET_AUDIT_ISSUES = 'GET_AUDIT_ISSUES';
 export const ADD_AUDIT_ISSUE = 'ADD_AUDIT_ISSUE';
 export const UPDATE_AUDIT_ISSUE = 'UPDATE_AUDIT_ISSUE';

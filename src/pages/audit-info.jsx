@@ -22,6 +22,7 @@ import {
   downloadReport,
   editAudit,
   editAuditRequestCustomer,
+  sendAuditFeedback,
 } from '../redux/actions/auditAction.js';
 import {
   AUDITOR,
@@ -46,13 +47,15 @@ import ChatIcon from '../components/icons/ChatIcon.jsx';
 import ConfirmModal from '../components/modal/ConfirmModal.jsx';
 import PriceCalculation from '../components/PriceCalculation.jsx';
 import Headings from '../router/Headings.jsx';
+import AuditFeedbackModal from '../components/modal/AuditFeedbackModal.jsx';
 
 const AuditInfo = ({ audit, auditRequest, issues, confirmed, handleClose }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [showFull, setShowFull] = useState(false);
   const [showReadMoreButton, setShowReadMoreButton] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+  const [isFeedbackModalOpen, setIsFeedbackModalOpen] = useState(false);
   const { successMessage, error } = useSelector(s => s.audits);
   const { user } = useSelector(s => s.user);
   const { chatList } = useSelector(s => s.chat);
@@ -123,6 +126,12 @@ const AuditInfo = ({ audit, auditRequest, issues, confirmed, handleClose }) => {
 
   const handleEdit = () => {
     setEditMode(true);
+  };
+
+  const handleSendFeedback = values => {
+    const feedback = { audit_id: audit.id, ...values };
+    dispatch(sendAuditFeedback(feedback));
+    setIsFeedbackModalOpen(false);
   };
 
   return (
@@ -408,7 +417,7 @@ const AuditInfo = ({ audit, auditRequest, issues, confirmed, handleClose }) => {
             <Button
               variant="contained"
               color="secondary"
-              onClick={() => setIsModalOpen(true)}
+              onClick={() => setIsConfirmModalOpen(true)}
               sx={buttonSx}
               {...addTestsLabel('decline-button')}
             >
@@ -451,6 +460,22 @@ const AuditInfo = ({ audit, auditRequest, issues, confirmed, handleClose }) => {
             </Button>
           </Box>
         )}
+
+        {audit?.status?.toLowerCase() === RESOLVED.toLowerCase() &&
+          !audit.no_customer && (
+            <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={() => setIsFeedbackModalOpen(true)}
+                sx={[buttonSx, { marginBottom: '20px' }]}
+                {...addTestsLabel('feddback-button')}
+              >
+                Leave feedback
+              </Button>
+            </Box>
+          )}
+
         {audit?.status !== SUBMITED && audit?.status === DONE && (
           <Button
             variant="contained"
@@ -473,7 +498,7 @@ const AuditInfo = ({ audit, auditRequest, issues, confirmed, handleClose }) => {
               color="primary"
               type="button"
               onClick={goToIssues}
-              sx={[buttonSx, { mt: '7px' }]}
+              sx={[buttonSx, { marginBottom: '20px' }]}
               {...addTestsLabel('issues-button')}
             >
               Issues ({issues?.length})
@@ -483,9 +508,16 @@ const AuditInfo = ({ audit, auditRequest, issues, confirmed, handleClose }) => {
       </Box>
 
       <ConfirmModal
-        isOpen={isModalOpen}
+        isOpen={isConfirmModalOpen}
         handleAgree={handleDecline}
-        handleDisagree={() => setIsModalOpen(false)}
+        handleDisagree={() => setIsConfirmModalOpen(false)}
+      />
+
+      <AuditFeedbackModal
+        isOpen={isFeedbackModalOpen}
+        handleClose={() => setIsFeedbackModalOpen(false)}
+        handleSend={handleSendFeedback}
+        feedback={audit.feedback}
       />
     </CustomCard>
   );
