@@ -63,84 +63,86 @@ const HistoryDescription = ({ audit, request }) => {
         onClose={() => setShowRecap(false)}
         text="You have modifications awaiting your approval."
       />
-      <Modal
-        open={isOpen}
-        onClose={() => setIsOpen(false)}
-        aria-labelledby="parent-modal-title"
-        aria-describedby="parent-modal-description"
-      >
+      {isOpen && (
         <Box sx={modalStyle}>
-          <Box sx={modalSx}>
-            <Button
-              sx={{
-                minWidth: 'unset',
-                position: 'sticky',
-                top: '-20px',
-                alignSelf: 'flex-start',
-              }}
-              onClick={() => setIsOpen(false)}
-            >
-              <CloseRoundedIcon />
-            </Button>
-            <Typography variant={'h4'} sx={titleSx}>
-              History of changes
-            </Typography>
-            <Box
-              sx={{
-                height: '100%',
-                marginRight: '-6px',
-                marginTop: '10px',
-                overflow: 'auto',
-              }}
-            >
-              {approvedChange && !matchSx && (
-                <Box
-                  sx={{
-                    display: 'flex',
-                    // justifyContent: 'space-between',
-                    paddingX: '12px',
-                  }}
-                >
-                  <Typography variant={'h4'} sx={listHeaderSx}>
-                    User
-                  </Typography>
-                  <Box sx={listWrapperSx}>
-                    <Typography
-                      variant={'h4'}
-                      sx={{ fontSize: '20px', fontWeight: 600 }}
-                    >
-                      Approve
+          <Modal
+            open={isOpen}
+            onClose={() => setIsOpen(false)}
+            aria-labelledby="parent-modal-title"
+            aria-describedby="parent-modal-description"
+          >
+            <Box sx={modalSx}>
+              <Button
+                sx={{
+                  minWidth: 'unset',
+                  position: 'sticky',
+                  top: '-20px',
+                  alignSelf: 'flex-start',
+                }}
+                onClick={() => setIsOpen(false)}
+              >
+                <CloseRoundedIcon />
+              </Button>
+              <Typography variant={'h4'} sx={titleSx}>
+                History of changes
+              </Typography>
+              <Box
+                sx={{
+                  height: '100%',
+                  marginRight: '-6px',
+                  marginTop: '10px',
+                  overflow: 'auto',
+                }}
+              >
+                {approvedChange && !matchSx && (
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      // justifyContent: 'space-between',
+                      paddingX: '12px',
+                    }}
+                  >
+                    <Typography variant={'h4'} sx={listHeaderSx}>
+                      User
                     </Typography>
-                    <Typography variant={'h4'} sx={dateTitleSx}>
-                      Date
-                    </Typography>
+                    <Box sx={listWrapperSx}>
+                      <Typography
+                        variant={'h4'}
+                        sx={{ fontSize: '20px', fontWeight: 600 }}
+                      >
+                        Approve
+                      </Typography>
+                      <Typography variant={'h4'} sx={dateTitleSx}>
+                        Date
+                      </Typography>
+                    </Box>
                   </Box>
+                )}
+                <Box>
+                  {arrData?.map((item, index, arr) => {
+                    if (index < arr.length - 1) {
+                      return (
+                        <React.Fragment key={item.id}>
+                          <DescriptionModal
+                            oldValue={arr[index + 1]}
+                            item={item}
+                            request={request}
+                            idx={index}
+                          />
+                        </React.Fragment>
+                      );
+                    }
+                    return null;
+                  })}
                 </Box>
-              )}
-              <Box>
-                {arrData?.map((item, index, arr) => {
-                  if (index < arr.length - 1) {
-                    return (
-                      <React.Fragment key={item.id}>
-                        <DescriptionModal
-                          oldValue={arr[index + 1]}
-                          item={item}
-                          request={request}
-                          idx={index}
-                        />
-                      </React.Fragment>
-                    );
-                  }
-                  return null;
-                })}
               </Box>
             </Box>
-          </Box>
+          </Modal>
         </Box>
-      </Modal>
+      )}
       {showChanges && (
         <DescriptionModal
-          oldValue={arrData[unread[user?.id] - 1]}
+          oldValue={arrData[unread[user?.id]]}
           item={arrData[0]}
           request={request}
           idx={0}
@@ -229,12 +231,9 @@ const titleSx = theme => ({
 });
 
 const modalStyle = theme => ({
-  position: 'absolute',
   width: '95%',
   p: 2,
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
+
   height: '80%',
   display: 'flex',
   justifyContent: 'center',
@@ -247,11 +246,15 @@ const modalStyle = theme => ({
 const modalSx = theme => ({
   bgcolor: 'background.paper',
   boxShadow: 24,
+  top: '50%',
+  left: '50%',
+  position: 'absolute',
+  transform: 'translate(-50%, -50%)',
   paddingRight: '12px',
   borderRadius: '10px',
   height: 'auto',
-  maxHeight: '100%',
-  width: '100%',
+  maxHeight: '80%',
+  width: '95%',
   // overflow: 'auto',
   display: 'flex',
   flexDirection: 'column',
