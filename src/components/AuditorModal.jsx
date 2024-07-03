@@ -89,6 +89,7 @@ export default function AuditorModal({
   };
 
   const handleSendMessage = () => {
+    // TODO add check for pm or org chat
     if (true) {
       setIsOpenType(true);
     } else {
