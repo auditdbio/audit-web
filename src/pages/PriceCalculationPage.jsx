@@ -34,90 +34,84 @@ const PriceCalculationPage = () => {
     <Layout>
       <Headings title="Price calculation" />
 
-      <CustomCard sx={wrapper}>
-        <Box>
-          <Button
-            sx={backButtonSx}
-            onClick={() => navigate(-1)}
-            aria-label="Ga back"
-            {...addTestsLabel('go-back-button')}
-          >
-            <ArrowBackIcon />
-          </Button>
-        </Box>
-        <Box sx={contentWrapperSx}>
-          <Typography
-            variant={'h4'}
-            sx={{ marginBottom: '20px', textAlign: 'center' }}
-          >
-            Price calculation
-          </Typography>
-          <ul>
-            <p style={{ fontWeight: 500 }}>Tool scope description:</p>
-            <li>Processing links to retrieve file contents.</li>
-            <li>
-              Requiring files to be publicly accessible and downloadable without
-              authorization.
-            </li>
-            <li>
-              Supporting both github.com and raw.githubusercontent.com URLs.
-            </li>
-          </ul>
-          <Formik
-            initialValues={{
-              scope: [],
-              price: 0,
-            }}
-            onSubmit={values => {
-              console.log(values);
-            }}
-          >
-            {({
-              handleSubmit,
-              values,
-              setFieldValue,
-              setFieldTouched,
-              dirty,
-              touched,
-              errors,
-            }) => {
-              return (
-                <Form onSubmit={handleSubmit}>
-                  <Box sx={fieldWrapper}>
-                    <Box sx={blockSx}>
-                      <Box sx={linkFieldWrapper}>
-                        <TagsField
-                          size={matchSm ? 'small' : 'medium'}
-                          name="scope"
-                          label="Project links"
-                          setFieldTouched={setFieldTouched}
-                        />
-                        <GithubSelection noPrivate={true} />
-                      </Box>
-                      {!matchSm && <ProjectLinksList name="scope" />}
-                    </Box>
-                    <Box sx={blockSx}>
-                      <Box>
-                        <Box sx={priceLabelSx}>Price per line of code</Box>
-                        <SalarySlider name="price" />
-                      </Box>
-                      <PriceCalculation
-                        price={values.price}
-                        scope={values.scope}
-                      />
-                      {matchSm && (
-                        <Box sx={{ mt: '15px' }}>
-                          <ProjectLinksList name="scope" />
+      <>
+        <CustomCard sx={wrapper}>
+          <Box>
+            <Button
+              sx={backButtonSx}
+              onClick={() => navigate(-1)}
+              aria-label="Ga back"
+              {...addTestsLabel('go-back-button')}
+            >
+              <ArrowBackIcon />
+            </Button>
+          </Box>
+          <Box sx={contentWrapperSx}>
+            <Typography
+              variant={'h4'}
+              sx={{ marginBottom: '20px', textAlign: 'center' }}
+            >
+              Price calculation
+            </Typography>
+            <ul>
+              <p style={{ fontWeight: 500 }}>Tool scope description:</p>
+              <li>Processing links to retrieve file contents.</li>
+              <li>
+                Requiring files to be publicly accessible and downloadable
+                without authorization.
+              </li>
+              <li>
+                Supporting both github.com and raw.githubusercontent.com URLs.
+              </li>
+            </ul>
+            <Formik
+              initialValues={{
+                scope: [],
+                price: 0,
+              }}
+              onSubmit={values => {
+                console.log(values);
+              }}
+            >
+              {({ handleSubmit, values, setFieldTouched }) => {
+                return (
+                  <Form onSubmit={handleSubmit}>
+                    <Box sx={fieldWrapper}>
+                      <Box sx={blockSx}>
+                        <Box sx={linkFieldWrapper}>
+                          <TagsField
+                            size={matchSm ? 'small' : 'medium'}
+                            name="scope"
+                            label="Project links"
+                            setFieldTouched={setFieldTouched}
+                          />
+                          <GithubSelection />
                         </Box>
-                      )}
+                        {!matchSm && <ProjectLinksList name="scope" />}
+                      </Box>
+                      <Box sx={blockSx}>
+                        <Box>
+                          <Box sx={priceLabelSx}>Price per line of code</Box>
+                          <SalarySlider name="price" />
+                        </Box>
+                        <PriceCalculation
+                          price={values.price}
+                          scope={values.scope}
+                        />
+                        {matchSm && (
+                          <Box sx={{ mt: '15px' }}>
+                            <ProjectLinksList name="scope" />
+                          </Box>
+                        )}
+                      </Box>
                     </Box>
-                  </Box>
-                </Form>
-              );
-            }}
-          </Formik>
-        </Box>
-      </CustomCard>
+                  </Form>
+                );
+              }}
+            </Formik>
+          </Box>
+        </CustomCard>
+      </>
     </Layout>
   );
 };
