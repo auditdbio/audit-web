@@ -42,6 +42,7 @@ import GitHubIcon from '@mui/icons-material/GitHub';
 import Headings from '../router/Headings.jsx';
 import Star from '../components/icons/Star.jsx';
 import RatingDetails from '../components/RatingDetails.jsx';
+import UserFeedbacks from '../components/UserFeedbacks.jsx';
 
 const PublicProfile = ({ notFoundRedirect = true }) => {
   const navigate = useNavigate();
@@ -139,8 +140,6 @@ const PublicProfile = ({ notFoundRedirect = true }) => {
     setIsDetailsOpen(prev => !prev);
     if (isDetailsOpen) {
       setSearchParams({});
-    } else {
-      setSearchParams({ rating: 'true' });
     }
   };
 
@@ -398,6 +397,10 @@ const PublicProfile = ({ notFoundRedirect = true }) => {
               </Box>
               <MobileTagsList data={data.tags} />
             </Box>
+          )}
+
+          {isDetailsOpen && (
+            <UserFeedbacks feedbacks={auditorRating?.user_feedbacks} />
           )}
 
           <Box sx={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>

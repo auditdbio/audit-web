@@ -503,7 +503,10 @@ export const getAuditFeedback = (receiverRole, receiverId, auditId) => {
         },
       )
       .then(({ data }) => {
-        dispatch({ type: SET_AUDIT_FEEDBACK, payload: data });
+        dispatch({
+          type: SET_AUDIT_FEEDBACK,
+          payload: { feedback: data, message: null },
+        });
       });
   };
 };
@@ -516,7 +519,13 @@ export const sendAuditFeedback = feedback => {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then(({ data }) => {
-        dispatch({ type: SET_AUDIT_FEEDBACK, payload: data });
+        dispatch({
+          type: SET_AUDIT_FEEDBACK,
+          payload: { feedback: data, message: 'Feedback sent successfully!' },
+        });
+      })
+      .catch(() => {
+        dispatch({ type: REQUEST_ERROR });
       });
   };
 };

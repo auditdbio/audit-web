@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
 import { Box, Typography } from '@mui/material';
 import Loader from './Loader.jsx';
+import RatingProgressBar from './custom/RatingProgressBar.jsx';
 
 const RatingDetails = ({ rating, role }) => {
   const ratingDetails = useMemo(() => {
@@ -27,19 +28,47 @@ const RatingDetails = ({ rating, role }) => {
 
   return (
     <Box sx={wrapper}>
-      <Box sx={{ fontWeight: 500 }}>User rating:</Box>
+      <Box sx={titleSx}>User rating:</Box>
       <Box sx={infoWrapper}>
         <span>Summary</span>
-        <Typography noWrap={true}>
-          <b>{rating?.summary}</b> out of 100.
-        </Typography>
+        <RatingProgressBar value={rating?.summary} sx={{ height: '20px' }} />
       </Box>
-      {Object.keys(ratingDetails).map(point => (
-        <Box sx={infoWrapper} key={point}>
-          <span>{point}</span>
-          <Typography noWrap={true}>{ratingDetails[point]}.</Typography>
-        </Box>
-      ))}
+      <hr />
+      <Box>
+        {Object.keys(ratingDetails).map(point => (
+          <Box sx={infoWrapper} key={point}>
+            <span>{point}</span>
+            <RatingProgressBar
+              value={ratingDetails[point].split('/')[0]}
+              maxValue={ratingDetails[point].split('/')[1]}
+              sx={{ height: '20px' }}
+            />
+          </Box>
+        ))}
+
+        {/*<Box sx={{ display: 'flex', flexWrap: 'wrap' }}>*/}
+        {/*  {Object.keys(ratingDetails).map(point => (*/}
+        {/*    <Box*/}
+        {/*      key={point}*/}
+        {/*      sx={{*/}
+        {/*        display: 'flex',*/}
+        {/*        flexDirection: 'column',*/}
+        {/*        width: '50%',*/}
+        {/*        alignItems: 'center',*/}
+        {/*        padding: '20px',*/}
+        {/*      }}*/}
+        {/*    >*/}
+        {/*      <span style={{ marginBottom: '10px', fontWeight: 500 }}>*/}
+        {/*        {point}*/}
+        {/*      </span>*/}
+        {/*      <CircularProgressBar*/}
+        {/*        value={ratingDetails[point].split('/')[0]}*/}
+        {/*        maxValue={ratingDetails[point].split('/')[1]}*/}
+        {/*      />*/}
+        {/*    </Box>*/}
+        {/*  ))}*/}
+        {/*</Box>*/}
+      </Box>
       <hr />
       <Box sx={infoWrapper}>
         <span>Total completed audits</span>
@@ -64,45 +93,38 @@ const wrapper = {
   gap: '16px',
 };
 
+const titleSx = theme => ({
+  fontWeight: 500,
+  [theme.breakpoints.down('sm')]: {
+    textAlign: 'center',
+  },
+});
+
 const infoWrapper = theme => ({
   display: 'flex',
   alignItems: 'center',
   fontWeight: 500,
+  fontSize: '15px',
   color: '#434242',
-  '& p': {
-    fontSize: 'inherit',
-    maxWidth: '250px',
-  },
-  '& span': {
+  width: '100%',
+  '& p': { fontSize: 'inherit' },
+  '& > span': {
     width: '230px',
     marginRight: '30px',
     color: '#B2B3B3',
   },
-  fontSize: '15px',
   [theme.breakpoints.down('md')]: {
-    '& span': {
-      width: '90px',
+    '& > span': {
+      fontSize: '14px',
       marginRight: '20px',
-    },
-    '& p': {
-      maxWidth: '190px',
     },
   },
   [theme.breakpoints.down('sm')]: {
-    '& p': {
-      maxWidth: '240px',
-    },
+    flexDirection: 'column',
+    alignItems: 'flex-start',
+    '& > span': { fontSize: '13px' },
   },
   [theme.breakpoints.down('xs')]: {
-    fontSize: '12px',
-  },
-  [theme.breakpoints.down(450)]: {
-    '& span': {
-      width: '70px',
-      marginRight: '20px',
-    },
-    '& p': {
-      maxWidth: '180px',
-    },
+    '& > span': { fontSize: '12px' },
   },
 });

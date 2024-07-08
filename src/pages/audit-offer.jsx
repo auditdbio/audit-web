@@ -26,6 +26,7 @@ import {
   downloadReport,
   editAudit,
   getAudit,
+  getAuditFeedback,
   getPublicReport,
   startAudit,
 } from '../redux/actions/auditAction.js';
@@ -62,10 +63,19 @@ const AuditOffer = () => {
   const { auditId } = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
   const matchXs = useMediaQuery(theme.breakpoints.down('xs'));
   const matchMd = useMediaQuery(theme.breakpoints.down('md'));
+  const descriptionRef = useRef();
+
   const [resolveConfirmation, setResolveConfirmation] = useState(false);
   const [allIssuesClosed, setAllIssuesClosed] = useState(false);
+  const [auditDBWorkflow, setAuditDBWorkflow] = useState(true);
+  const [showReadMoreButton, setShowReadMoreButton] = useState(false);
+  const [showFull, setShowFull] = useState(false);
+  const [editConclusion, setEditConclusion] = useState(false);
+  const [mdRef, setMdRef] = useState(null);
+
   const role = useSelector(s => s.user?.user?.current_role);
   const { successMessage, error } = useSelector(s => s.issues);
   const { issues, issuesAuditId } = useSelector(s => s.issues);
@@ -80,13 +90,16 @@ const AuditOffer = () => {
   const { auditor } = useSelector(s => s.auditor);
   const { customer } = useSelector(s => s.customer);
 
-  const [auditDBWorkflow, setAuditDBWorkflow] = useState(true);
-  const [showReadMoreButton, setShowReadMoreButton] = useState(false);
-  const [showFull, setShowFull] = useState(false);
-  const [editConclusion, setEditConclusion] = useState(false);
-  const [mdRef, setMdRef] = useState(null);
-
-  const descriptionRef = useRef();
+  // TODO show customer feedback for auditor
+  useEffect(() => {
+    if (
+      audit &&
+      !audit.no_customer &&
+      audit.status.toLowerCase() === RESOLVED.toLowerCase()
+    ) {
+      dispatch(getAuditFeedback(AUDITOR, audit.auditor_id, audit.id));
+    }
+  }, [audit?.id]);
 
   useEffect(() => {
     dispatch(getAudit(auditId));

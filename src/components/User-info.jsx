@@ -28,6 +28,7 @@ import Headings from '../router/Headings.jsx';
 import Star from './icons/Star.jsx';
 import { getAuditorRating } from '../redux/actions/auditorAction.js';
 import RatingDetails from './RatingDetails.jsx';
+import UserFeedbacks from './UserFeedbacks.jsx';
 
 const UserInfo = ({ role, linkId }) => {
   const dispatch = useDispatch();
@@ -62,8 +63,6 @@ const UserInfo = ({ role, linkId }) => {
     setIsDetailsOpen(prev => !prev);
     if (isDetailsOpen) {
       setSearchParams({});
-    } else {
-      setSearchParams({ rating: 'true' });
     }
   };
 
@@ -150,7 +149,9 @@ const UserInfo = ({ role, linkId }) => {
           </Box>
 
           {isDetailsOpen ? (
-            <RatingDetails rating={auditorRating} role={role} />
+            <Box sx={ratingWrapper}>
+              <RatingDetails rating={auditorRating} role={role} />
+            </Box>
           ) : (
             <Box sx={infoStyle}>
               <Box sx={infoInnerStyle}>
@@ -209,6 +210,10 @@ const UserInfo = ({ role, linkId }) => {
           )}
         </Box>
         {matchXs && !isDetailsOpen && <MobileTagsList data={data.tags} />}
+
+        {isDetailsOpen && (
+          <UserFeedbacks feedbacks={auditorRating?.user_feedbacks} />
+        )}
 
         <Box sx={accountsSection}>
           {user.linked_accounts?.map(account => {
@@ -340,6 +345,16 @@ const wrapper = theme => ({
     '& .mobile-tag-wrapper': {
       maxWidth: '380px',
     },
+  },
+});
+
+const ratingWrapper = theme => ({
+  flexGrow: 1,
+  [theme.breakpoints.down('sm')]: {
+    width: '80%',
+  },
+  [theme.breakpoints.down('xs')]: {
+    width: '100%',
   },
 });
 

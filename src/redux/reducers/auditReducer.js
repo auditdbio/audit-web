@@ -182,8 +182,12 @@ export const auditReducer = (state = initialState, action) => {
       return {
         ...state,
         audit: state.audit
-          ? { ...state.audit, feedback: action.payload }
+          ? {
+              ...state.audit,
+              feedback: action.payload.feedback,
+            }
           : null,
+        successMessage: action.payload.message,
       };
     case SAVE_PUBLIC_REPORT: {
       return {

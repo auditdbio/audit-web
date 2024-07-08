@@ -93,12 +93,15 @@ const AuditFeedbackModal = ({ isOpen, handleSend, handleClose, feedback }) => {
 
 export default AuditFeedbackModal;
 
-const ratingField = {
+const ratingField = theme => ({
   display: 'flex',
   justifyContent: 'space-between',
   alignItems: 'center',
   mb: '8px',
-};
+  '& > .MuiRating-root': {
+    color: theme.palette.primary.main,
+  },
+});
 
 const ratingTitle = {
   fontSize: '16px',

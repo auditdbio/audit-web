@@ -52,16 +52,19 @@ import AuditFeedbackModal from '../components/modal/AuditFeedbackModal.jsx';
 const AuditInfo = ({ audit, auditRequest, issues, confirmed, handleClose }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
   const [showFull, setShowFull] = useState(false);
   const [showReadMoreButton, setShowReadMoreButton] = useState(false);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const [isFeedbackModalOpen, setIsFeedbackModalOpen] = useState(false);
+  const [editMode, setEditMode] = useState(false);
+
   const { successMessage, error } = useSelector(s => s.audits);
   const { user } = useSelector(s => s.user);
   const { chatList } = useSelector(s => s.chat);
+
   const descriptionRef = useRef();
   const matchXs = useMediaQuery(theme.breakpoints.down('xs'));
-  const [editMode, setEditMode] = useState(false);
 
   useEffect(() => {
     setTimeout(() => {
@@ -440,6 +443,7 @@ const AuditInfo = ({ audit, auditRequest, issues, confirmed, handleClose }) => {
           <Button
             variant="text"
             onClick={handleSendMessage}
+            sx={{ mb: '15px' }}
             disabled={audit?.auditor_id === user.id}
             {...addTestsLabel('message-button')}
           >
@@ -448,7 +452,7 @@ const AuditInfo = ({ audit, auditRequest, issues, confirmed, handleClose }) => {
         </Box>
 
         {audit?.report && !!issues?.length && (
-          <Box sx={{ display: 'flex', justifyContent: 'center', mt: '15px' }}>
+          <Box sx={{ display: 'flex', justifyContent: 'center' }}>
             <Button
               variant={'contained'}
               color={'secondary'}
@@ -471,7 +475,7 @@ const AuditInfo = ({ audit, auditRequest, issues, confirmed, handleClose }) => {
                 sx={[buttonSx, { marginBottom: '20px' }]}
                 {...addTestsLabel('feddback-button')}
               >
-                Leave feedback
+                {audit.feedback ? 'My feedback' : 'Leave feedback'}
               </Button>
             </Box>
           )}
