@@ -12,6 +12,7 @@ import {
   useMediaQuery,
   Modal,
   Tooltip,
+  Divider,
 } from '@mui/material';
 import { CustomCard } from './custom/Card.jsx';
 import theme from '../styles/themes.js';
@@ -189,6 +190,8 @@ const AuditRequestInfo = ({
           <Typography sx={titleSx} className="audit-request-title">
             <EditTags hideChange={hideChange} audit={project} />
           </Typography>
+          <Divider sx={{ width: '100%' }} />
+
           <Box sx={salaryWrapper} className={'audit-request-salary'}>
             <EditPrice
               hideChange={hideChange}

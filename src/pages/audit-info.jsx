@@ -11,6 +11,7 @@ import {
   useMediaQuery,
   InputAdornment,
   TextField,
+  Divider,
 } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { useNavigate, Link } from 'react-router-dom/dist';
@@ -155,7 +156,14 @@ const AuditInfo = ({
       >
         {!handleClose ? <ArrowBackIcon /> : <CloseIcon />}
       </Button>
-      <Box sx={{ display: 'flex', width: '100%', justifyContent: 'center' }}>
+      <Box
+        sx={{
+          display: 'flex',
+          width: '100%',
+          justifyContent: 'center',
+          flexDirection: 'column',
+        }}
+      >
         <Box
           sx={{
             display: 'flex',
@@ -199,6 +207,7 @@ const AuditInfo = ({
             <EditTags audit={audit} confirmed={confirmed} />
           </>
         </Box>
+        <Divider sx={{ mt: '15px' }} />
       </Box>
       <Box sx={{ maxWidth: '100%', width: '100%' }}>
         <Box sx={contentWrapper}>

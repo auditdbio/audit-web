@@ -42,24 +42,11 @@ const EditTags = ({ audit, confirmed, hideChange }) => {
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',
+                mt: '15px',
               }}
             >
               {editTags && (
-                <Box
-                  sx={{
-                    maxWidth: '325px',
-                    width: '100%',
-                    mt: '7px',
-                    display: 'flex',
-                    gap: '7px',
-                    alignItems: 'flex-start',
-                    justifyContent: 'center',
-                    '& input': {
-                      paddingX: '5.5px',
-                      paddingLeft: '10px',
-                    },
-                  }}
-                >
+                <Box sx={fieldWrapper}>
                   <TagsField size={'small'} name="tags" tags={audit?.tags} />
                   <Box
                     sx={{
@@ -67,14 +54,14 @@ const EditTags = ({ audit, confirmed, hideChange }) => {
                       '& button': { height: '40px' },
                     }}
                   >
-                    <EditButton
-                      handleClick={() => setShowComment(true)}
-                      editMode={editTags}
-                    />
                     <Button
                       onClick={() => {
-                        setEditTags(false);
-                        resetForm();
+                        if (dirty) {
+                          setShowComment(true);
+                        } else {
+                          setEditTags(false);
+                          resetForm();
+                        }
                       }}
                       sx={{ minWidth: 'unset' }}
                     >
@@ -104,7 +91,7 @@ const EditTags = ({ audit, confirmed, hideChange }) => {
                           component={TextField}
                           name={'comment'}
                           // label={label}
-                          placeholder={'Add a comment'}
+                          placeholder={'Add your comment for tag updates'}
                           fullWidth={true}
                           disabled={false}
                           maxRows={4}
@@ -147,7 +134,7 @@ const EditTags = ({ audit, confirmed, hideChange }) => {
                     {values?.tags?.map(el => el).join(', ') ?? ''}
                   </Typography>
                 ) : (
-                  <Box sx={{ width: '325px' }}>
+                  <Box sx={tagsWrapper}>
                     <TagsArray name="tags" />
                   </Box>
                 )}
@@ -173,5 +160,29 @@ const titleSx = theme => ({
   fontSize: '16px !important',
   [theme.breakpoints.down('sm')]: {
     fontSize: '14px !important',
+  },
+});
+
+const tagsWrapper = theme => ({
+  width: '325px',
+  [theme.breakpoints.down('xs')]: {
+    width: '300px',
+  },
+});
+
+const fieldWrapper = theme => ({
+  maxWidth: '325px',
+  width: '100%',
+  mt: '7px',
+  display: 'flex',
+  gap: '7px',
+  alignItems: 'flex-start',
+  justifyContent: 'center',
+  '& input': {
+    paddingX: '5.5px',
+    paddingLeft: '10px',
+  },
+  [theme.breakpoints.down('xs')]: {
+    maxWidth: '300px',
   },
 });

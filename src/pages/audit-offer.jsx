@@ -308,6 +308,7 @@ const AuditOffer = () => {
             <Box sx={{ width: '100%' }}>
               <Box sx={contentWrapper}>
                 <EditTags audit={audit} confirmed={true} />
+                <Divider sx={{ width: '100%' }} />
                 <EditPrice audit={audit} user={user} role={role} />
               </Box>
 
