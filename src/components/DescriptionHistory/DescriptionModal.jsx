@@ -5,6 +5,7 @@ import {
   Button,
   Chip,
   ClickAwayListener,
+  Divider,
   FormControl,
   InputLabel,
   Modal,
@@ -151,7 +152,7 @@ const DescriptionModal = ({
           )}
           <Box sx={titleWrapper}>
             <Typography sx={[titleSx, { mr: '7px' }]} variant={'h5'}>
-              {item.author.name} {item.id}
+              {item.author.name}
             </Typography>
             {!mediaSx && (
               <Box sx={chipSx}>
@@ -416,6 +417,7 @@ const DescriptionModal = ({
             )}
             {item.comment && (
               <>
+                <Divider sx={{ mt: '20px' }} />
                 <Typography variant={'h6'} sx={{ fontWeight: 500 }}>
                   Comments
                 </Typography>
