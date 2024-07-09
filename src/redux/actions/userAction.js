@@ -208,11 +208,15 @@ export const changeAccountVisibility = (user_id, values, account_id) => {
   };
 };
 
-export const connect_account = (user_id, values) => {
+export const connect_account = (user_id, values, isWallet = false) => {
   const user = JSON.parse(localStorage.getItem('user'));
+  const url = isWallet
+    ? `${API_URL}/user/${user_id}/wallet`
+    : `${API_URL}/user/${user_id}/linked_account`;
+
   return (dispatch, getState) => {
     axios
-      .post(`${API_URL}/user/${user_id}/linked_account`, values, {
+      .post(url, values, {
         headers: {
           Authorization: 'Bearer ' + Cookies.get('token'),
           'Content-Type': 'application/json',
