@@ -12,7 +12,13 @@ import {
 } from '@mui/material';
 import { addTestsLabel } from '../../lib/helper.js';
 
-const AuditFeedbackModal = ({ isOpen, handleSend, handleClose, feedback }) => {
+const AuditFeedbackModal = ({
+  isOpen,
+  handleSend = () => {},
+  handleClose,
+  feedback,
+  readOnly = false,
+}) => {
   const initialValues = feedback
     ? { ...feedback.rating }
     : {
@@ -27,7 +33,7 @@ const AuditFeedbackModal = ({ isOpen, handleSend, handleClose, feedback }) => {
         {({ handleSubmit, values, setFieldValue }) => (
           <Form onSubmit={handleSubmit}>
             <DialogTitle sx={{ padding: '16px 70px', textAlign: 'center' }}>
-              Leave feedback
+              {readOnly ? 'Feedback' : 'Leave feedback'}
             </DialogTitle>
             <DialogContent sx={{ width: '400px' }}>
               <Box>
@@ -38,6 +44,7 @@ const AuditFeedbackModal = ({ isOpen, handleSend, handleClose, feedback }) => {
                   <Rating
                     name="quality_of_work"
                     value={values.quality_of_work}
+                    readOnly={readOnly}
                     onChange={(e, v) => {
                       setFieldValue('quality_of_work', v);
                     }}
@@ -50,6 +57,7 @@ const AuditFeedbackModal = ({ isOpen, handleSend, handleClose, feedback }) => {
                   <Rating
                     name="time_management"
                     value={values.time_management}
+                    readOnly={readOnly}
                     onChange={(e, v) => setFieldValue('time_management', v)}
                   />
                 </Box>
@@ -60,6 +68,7 @@ const AuditFeedbackModal = ({ isOpen, handleSend, handleClose, feedback }) => {
                   <Rating
                     name="collaboration"
                     value={values.collaboration}
+                    readOnly={readOnly}
                     onChange={(e, v) => setFieldValue('collaboration', v)}
                   />
                 </Box>
@@ -74,15 +83,17 @@ const AuditFeedbackModal = ({ isOpen, handleSend, handleClose, feedback }) => {
               >
                 Close
               </Button>
-              <Button
-                type="submit"
-                variant="contained"
-                color="secondary"
-                autoFocus
-                {...addTestsLabel('send-button')}
-              >
-                Send
-              </Button>
+              {!readOnly && (
+                <Button
+                  type="submit"
+                  variant="contained"
+                  color="secondary"
+                  autoFocus
+                  {...addTestsLabel('send-button')}
+                >
+                  Send
+                </Button>
+              )}
             </DialogActions>
           </Form>
         )}

@@ -10,6 +10,7 @@ import {
 } from '@mui/material';
 import { ASSET_URL } from '../services/urls.js';
 import theme from '../styles/themes.js';
+import { capitalize } from '../lib/helper.js';
 
 const UserFeedbacks = ({ feedbacks }) => {
   const matchXxs = useMediaQuery(theme.breakpoints.down(500));
@@ -17,13 +18,15 @@ const UserFeedbacks = ({ feedbacks }) => {
 
   return (
     <Box sx={wrapper}>
-      <Button
-        color="secondary"
-        type="button"
-        onClick={() => setIsShowFeedbacks(prev => !prev)}
-      >
-        {isShowFeedbacks ? 'Hide' : 'Show user feedbacks'}
-      </Button>
+      {!!feedbacks?.length && (
+        <Button
+          color="secondary"
+          type="button"
+          onClick={() => setIsShowFeedbacks(prev => !prev)}
+        >
+          {isShowFeedbacks ? 'Hide' : 'Show user feedbacks'}
+        </Button>
+      )}
       <Box sx={feedbacksContainer}>
         {isShowFeedbacks &&
           feedbacks &&
@@ -44,39 +47,19 @@ const UserFeedbacks = ({ feedbacks }) => {
                       {fb.from?.username}
                     </Link>
                   </Box>
-                  <Box sx={ratingField}>
-                    <Typography component="legend" sx={ratingTitle}>
-                      Quality of work
-                    </Typography>
-                    <Rating
-                      size={matchXxs ? 'small' : 'medium'}
-                      name="quality_of_work"
-                      value={fb.rating.quality_of_work}
-                      readOnly
-                    />
-                  </Box>
-                  <Box sx={ratingField}>
-                    <Typography component="legend" sx={ratingTitle}>
-                      Time management
-                    </Typography>
-                    <Rating
-                      size={matchXxs ? 'small' : 'medium'}
-                      name="time_management"
-                      value={fb.rating.time_management}
-                      readOnly
-                    />
-                  </Box>
-                  <Box sx={ratingField}>
-                    <Typography component="legend" sx={ratingTitle}>
-                      Collaboration
-                    </Typography>
-                    <Rating
-                      size={matchXxs ? 'small' : 'medium'}
-                      name="collaboration"
-                      value={fb.rating.collaboration}
-                      readOnly
-                    />
-                  </Box>
+                  {Object.keys(fb.rating).map(item => (
+                    <Box sx={ratingField} key={item}>
+                      <Typography component="legend" sx={ratingTitle}>
+                        {capitalize(item).replace(/_/g, ' ')}
+                      </Typography>
+                      <Rating
+                        size={matchXxs ? 'small' : 'medium'}
+                        name={item}
+                        value={fb.rating[item]}
+                        readOnly
+                      />
+                    </Box>
+                  ))}
                 </Box>
               </Box>
             </Box>

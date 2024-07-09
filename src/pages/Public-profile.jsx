@@ -19,6 +19,7 @@ import TagsList from '../components/tagsList.jsx';
 import theme from '../styles/themes.js';
 import Layout from '../styles/Layout.jsx';
 import {
+  clearCurrentAuditor,
   getAuditorByLinkId,
   getAuditorRating,
   getCurrentAuditor,
@@ -170,6 +171,7 @@ const PublicProfile = ({ notFoundRedirect = true }) => {
     return () => {
       localStorage.removeItem('go-back');
       window.removeEventListener('beforeunload', handleBeforeUnload);
+      dispatch(clearCurrentAuditor());
     };
   }, [navigate]);
 

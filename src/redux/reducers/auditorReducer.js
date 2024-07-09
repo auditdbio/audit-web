@@ -10,6 +10,7 @@ import {
   AUDITOR_SET_ERROR,
   SELECT_ROLE,
   GET_AUDITOR_RATING_DETAILS,
+  CLEAR_CURRENT_AUDITOR_CUSTOMER,
 } from '../actions/types.js';
 
 const initialState = {
@@ -79,6 +80,11 @@ export const auditorReducer = (state = initialState, action) => {
         ...state,
         success: null,
         error: null,
+      };
+    case CLEAR_CURRENT_AUDITOR_CUSTOMER:
+      return {
+        ...state,
+        currentAuditor: null,
       };
     default:
       return state;

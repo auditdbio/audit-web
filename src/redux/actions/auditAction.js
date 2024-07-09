@@ -498,9 +498,7 @@ export const getAuditFeedback = (receiverRole, receiverId, auditId) => {
     axios
       .get(
         `${API_URL}/rating/feedback/${receiverRole}/${receiverId}/${auditId}`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        },
+        { headers: { Authorization: `Bearer ${token}` } },
       )
       .then(({ data }) => {
         dispatch({

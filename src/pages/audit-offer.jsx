@@ -27,7 +27,6 @@ import {
   editAudit,
   getAudit,
   getAuditFeedback,
-  getPublicReport,
   startAudit,
 } from '../redux/actions/auditAction.js';
 import AuditUpload from '../components/forms/audit-upload/index.jsx';
@@ -41,7 +40,7 @@ import {
   WAITING_FOR_AUDITS,
 } from '../redux/actions/types.js';
 import Markdown from '../components/markdown/Markdown.jsx';
-import { addTestsLabel, isAuth, reportBuilder } from '../lib/helper.js';
+import { addTestsLabel, getAverageFeedbackRating } from '../lib/helper.js';
 import CustomLink from '../components/custom/CustomLink.jsx';
 import IssueDetailsForm from '../components/issuesPage/IssueDetailsForm/IssueDetailsForm.jsx';
 import IssuesList from '../components/issuesPage/IssuesList.jsx';
@@ -54,10 +53,9 @@ import ChatIcon from '../components/icons/ChatIcon.jsx';
 import Headings from '../router/Headings.jsx';
 import MarkdownEditor from '../components/markdown/Markdown-editor.jsx';
 import EditIcon from '@mui/icons-material/Edit.js';
-import { BASE_URL } from '../services/urls.js';
 import ResolveAuditConfirmation from '../components/issuesPage/ResolveAuditConfirmation.jsx';
-import PriceCalculation from '../components/PriceCalculation.jsx';
 import Star from '../components/icons/Star.jsx';
+import AuditFeedbackModal from '../components/modal/AuditFeedbackModal.jsx';
 
 const AuditOffer = () => {
   const { auditId } = useParams();
@@ -73,6 +71,7 @@ const AuditOffer = () => {
   const [auditDBWorkflow, setAuditDBWorkflow] = useState(true);
   const [showReadMoreButton, setShowReadMoreButton] = useState(false);
   const [showFull, setShowFull] = useState(false);
+  const [showFeedback, setShowFeedback] = useState(false);
   const [editConclusion, setEditConclusion] = useState(false);
   const [mdRef, setMdRef] = useState(null);
 
@@ -303,16 +302,27 @@ const AuditOffer = () => {
                     </svg>
                     {audit?.price}
                   </Box>
-                  {/*<Box*/}
-                  {/*  sx={{*/}
-                  {/*    display: 'flex',*/}
-                  {/*    alignItems: 'center',*/}
-                  {/*    gap: '15px',*/}
-                  {/*  }}*/}
-                  {/*>*/}
-                  {/*  <Star size={20} />*/}
-                  {/*  150*/}
-                  {/*</Box>*/}
+                  {audit?.feedback?.rating && (
+                    <Tooltip
+                      title="Feedback from the customer"
+                      arrow
+                      placement="top"
+                    >
+                      <Button
+                        type="button"
+                        onClick={() => setShowFeedback(p => !p)}
+                        sx={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '15px',
+                          color: 'black',
+                        }}
+                      >
+                        <Star size={20} />
+                        {getAverageFeedbackRating(audit?.feedback?.rating)}
+                      </Button>
+                    </Tooltip>
+                  )}
                 </Box>
               </Box>
 
@@ -671,6 +681,13 @@ const AuditOffer = () => {
               </Box>
             )}
         </CustomCard>
+
+        <AuditFeedbackModal
+          feedback={audit?.feedback}
+          isOpen={showFeedback}
+          handleClose={() => setShowFeedback(false)}
+          readOnly
+        />
       </Layout>
     );
   }

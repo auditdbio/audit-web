@@ -2,6 +2,7 @@ import Cookies from 'js-cookie';
 import axios from 'axios';
 import {
   AUDITOR_SET_ERROR,
+  CLEAR_CURRENT_AUDITOR_CUSTOMER,
   DELETE_BADGE,
   GET_AUDITOR,
   GET_AUDITOR_RATING_DETAILS,
@@ -255,4 +256,8 @@ export const mergeAccount = (values, secret) => {
         dispatch({ type: SIGN_IN_ERROR, payload: response.data });
       });
   };
+};
+
+export const clearCurrentAuditor = () => {
+  return { type: CLEAR_CURRENT_AUDITOR_CUSTOMER };
 };
