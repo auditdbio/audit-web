@@ -174,9 +174,9 @@ const UserInfo = ({ role, linkId }) => {
                   sx={{ display: 'flex', alignItems: 'center', gap: '7px' }}
                 >
                   <Tooltip title={account.url} placement="top">
-                    <Link href={account.url} target={'_blank'}>
-                      <LinkedinIcon />
-                    </Link>
+                    {/*<Link href={account.url} target={'_blank'}>*/}
+                    <LinkedinIcon />
+                    {/*</Link>*/}
                   </Tooltip>
                 </Box>
               );
