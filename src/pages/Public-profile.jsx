@@ -240,12 +240,14 @@ const PublicProfile = ({ notFoundRedirect = true }) => {
               : theme.palette.primary.main,
           )}
         >
-          {localStorage.getItem('go-back') && (
+          {(localStorage.getItem('go-back') || isDetailsOpen) && (
             <Button
               variant="text"
               color={role.toLowerCase() === AUDITOR ? 'secondary' : 'primary'}
               sx={goBackSx}
-              onClick={() => navigate(-1)}
+              onClick={() => {
+                isDetailsOpen ? setIsDetailsOpen(false) : navigate(-1);
+              }}
             >
               <ArrowBackIcon />
             </Button>

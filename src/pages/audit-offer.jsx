@@ -89,7 +89,6 @@ const AuditOffer = () => {
   const { auditor } = useSelector(s => s.auditor);
   const { customer } = useSelector(s => s.customer);
 
-  // TODO show customer feedback for auditor
   useEffect(() => {
     if (
       audit &&

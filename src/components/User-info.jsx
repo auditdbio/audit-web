@@ -29,6 +29,7 @@ import Star from './icons/Star.jsx';
 import { getAuditorRating } from '../redux/actions/auditorAction.js';
 import RatingDetails from './RatingDetails.jsx';
 import UserFeedbacks from './UserFeedbacks.jsx';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack.js';
 
 const UserInfo = ({ role, linkId }) => {
   const dispatch = useDispatch();
@@ -120,6 +121,17 @@ const UserInfo = ({ role, linkId }) => {
         />
 
         <Box sx={contentWrapper}>
+          {isDetailsOpen && (
+            <Button
+              variant="text"
+              color={role.toLowerCase() === AUDITOR ? 'secondary' : 'primary'}
+              sx={goBackSx}
+              onClick={() => setIsDetailsOpen(false)}
+            >
+              <ArrowBackIcon />
+            </Button>
+          )}
+
           <Box
             sx={{
               display: 'flex',
@@ -327,6 +339,7 @@ const aboutWrapper = theme => ({
 });
 
 const wrapper = theme => ({
+  position: 'relative',
   width: '100%',
   minHeight: '520px',
   display: 'flex',
@@ -494,4 +507,10 @@ const accountsSection = {
   display: 'flex',
   gap: '10px',
   justifyContent: 'center',
+};
+
+const goBackSx = {
+  position: 'absolute',
+  top: '10px',
+  left: '10px',
 };
