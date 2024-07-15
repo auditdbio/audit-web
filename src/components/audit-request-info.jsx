@@ -187,7 +187,7 @@ const AuditRequestInfo = ({
             ))}
           </Typography>
           <Box sx={salaryWrapper} className={'audit-request-salary'}>
-            {project?.price > 0 && (
+            {(project?.price || project?.total_cost) > 0 && (
               <Box sx={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
                 <svg
                   width="27"
@@ -201,7 +201,7 @@ const AuditRequestInfo = ({
                     fill="#FF9900"
                   />
                 </svg>
-                {project?.price}
+                {project?.price || project?.total_cost}
               </Box>
             )}
             <Box sx={{ display: 'flex', alignItems: 'center', gap: '15px' }}>

@@ -257,7 +257,11 @@ const AuditInfo = ({ audit, auditRequest, issues, confirmed, handleClose }) => {
             </Box>
             <Box sx={infoWrapper}>
               <span>Price:</span>
-              <Typography>${audit?.price} per line</Typography>
+              {!audit?.total_cost ? (
+                <Typography>${audit?.price} per line</Typography>
+              ) : (
+                <Typography>${audit?.total_cost} total cost</Typography>
+              )}
             </Box>
           </Box>
 

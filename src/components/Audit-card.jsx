@@ -42,7 +42,13 @@ const AuditCard = ({ audit, request }) => {
           </Typography>
         </Tooltip>
       </Box>
-      <Typography sx={priceTextStyle}>${audit?.price} per line</Typography>
+      {!audit.total_cost ? (
+        <Typography sx={priceTextStyle}>${audit?.price} per line</Typography>
+      ) : (
+        <Typography sx={priceTextStyle}>
+          ${audit?.total_cost} total cost
+        </Typography>
+      )}
       <Box sx={dateWrapper}>
         <Typography sx={dateStyle}>
           {dayjs(audit?.time?.from).format('DD.MM.YYYY')}
