@@ -22,7 +22,7 @@ const SalarySlider = ({ min = 0, max = 100, name }) => {
   return (
     <Box sx={sliderWrapper} className="salary-slider">
       <Slider
-        value={+taxField.value}
+        value={taxField.value === null ? 0 : +taxField.value}
         multiple
         name={taxField.name}
         valueLabelDisplay="off"
@@ -35,6 +35,7 @@ const SalarySlider = ({ min = 0, max = 100, name }) => {
       <FastField
         component={TextField}
         name={taxField.name}
+        value={taxField.value === null ? 0 : +taxField.value}
         type="number"
         sx={infoWrapper}
         size="small"

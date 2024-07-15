@@ -254,30 +254,6 @@ export default function AuditorSearchModal({
                         </LocalizationProvider>
                       </Box>
                       <TotalPrice />
-                      {/*<Typography style={rateLabel()}>*/}
-                      {/*  Price per line of code*/}
-                      {/*</Typography>*/}
-                      {/*<Box*/}
-                      {/*  sx={{*/}
-                      {/*    display: 'flex',*/}
-                      {/*    justifyContent: 'space-between',*/}
-                      {/*    alignItems: 'center',*/}
-                      {/*    marginY: '20px',*/}
-                      {/*    '& .salary-slider': {*/}
-                      {/*      width: '100%',*/}
-                      {/*    },*/}
-                      {/*  }}*/}
-                      {/*>*/}
-                      {/*  <SalarySlider name={'price'} />*/}
-                      {/*</Box>*/}
-                      {/*<PriceCalculation*/}
-                      {/*  price={values.price}*/}
-                      {/*  scope={values.scope}*/}
-                      {/*  sx={{*/}
-                      {/*    mb: '15px',*/}
-                      {/*    '& .head': { justifyContent: 'center' },*/}
-                      {/*  }}*/}
-                      {/*/>*/}
                       <Box sx={{ justifyContent: 'center', display: 'flex' }}>
                         <Button
                           sx={sendButton}
@@ -304,7 +280,7 @@ const CustomPaper = props => {
 };
 
 const MakeOfferSchema = Yup.object().shape({
-  price: Yup.number().required(),
+  // price: Yup.number(),
   price_range: Yup.object(),
   project_id: Yup.string(),
   time_frame: Yup.string(),
