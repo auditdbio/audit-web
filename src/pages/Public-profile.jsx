@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
   Avatar,
   Button,
+  Divider,
   Link,
   Tooltip,
   Typography,
@@ -39,6 +40,8 @@ import LinkedinIcon from '../components/icons/LinkedinIcon.jsx';
 import XTwitterLogo from '../components/icons/XTwitter-logo.jsx';
 import GitHubIcon from '@mui/icons-material/GitHub';
 import Headings from '../router/Headings.jsx';
+import { getPublicAuditsAuditor } from '../redux/actions/auditAction.js';
+import ProjectCardList from '../components/Project-card-list.jsx';
 
 const PublicProfile = ({ notFoundRedirect = true }) => {
   const navigate = useNavigate();
@@ -53,6 +56,7 @@ const PublicProfile = ({ notFoundRedirect = true }) => {
   const { myProjects } = useSelector(s => s.project);
   const { user, publicUser } = useSelector(s => s.user);
   const { chatList } = useSelector(s => s.chat);
+  const { publicAudits } = useSelector(s => s.audits);
 
   const [errorMessage, setErrorMessage] = useState(null);
   const [message, setMessage] = useState(null);
@@ -134,6 +138,7 @@ const PublicProfile = ({ notFoundRedirect = true }) => {
         dispatch(getCurrentAuditor(id));
       } else if (linkId) {
         dispatch(getAuditorByLinkId(linkId, notFoundRedirect));
+        dispatch(getPublicAuditsAuditor(linkId));
       }
     } else if (role.toLowerCase() === CUSTOMER) {
       if (id) {
@@ -450,6 +455,16 @@ const PublicProfile = ({ notFoundRedirect = true }) => {
                 </Button>
               )}
           </Box>
+          {role === AUDITOR && (
+            <>
+              <Divider sx={{ mb: '15px' }} />
+              <ProjectCardList
+                projects={publicAudits}
+                role={role}
+                isPublic={true}
+              />
+            </>
+          )}
         </Box>
       </Layout>
     );

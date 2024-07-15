@@ -15,6 +15,7 @@ import {
   GET_AUDIT,
   GET_AUDIT_REQUEST,
   GET_AUDITS,
+  GET_AUDITS_OF_AUDITOR,
   GET_PUBLIC_REPORT,
   GET_REQUEST,
   IN_PROGRESS,
@@ -331,6 +332,21 @@ export const resolveAudit = values => {
       )
       .then(({ data }) => dispatch({ type: RESOLVED, payload: data }))
       .catch(() => dispatch({ type: REQUEST_ERROR }));
+  };
+};
+
+export const getPublicAuditsAuditor = id => {
+  return dispatch => {
+    const token = Cookies.get('token');
+    axios
+      .get(
+        `${API_URL}/public_audits/${id}/auditor`,
+        // { action: 'resolve' },
+        // { headers: { Authorization: `Bearer ${token}` } },
+      )
+      .then(({ data }) => {
+        dispatch({ type: GET_AUDITS_OF_AUDITOR, payload: data });
+      });
   };
 };
 

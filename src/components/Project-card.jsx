@@ -16,9 +16,9 @@ import { startAudit } from '../redux/actions/auditAction.js';
 import ShareProjectButton from './custom/ShareProjectButton.jsx';
 import theme from '../styles/themes.js';
 
-const ProjectCard = ({ type, project }) => {
+const ProjectCard = ({ type, project, currentRole, isPublic }) => {
   const navigate = useNavigate();
-  const currentRole = useSelector(s => s.user.user.current_role);
+  // const currentRole = AUDITOR;
   const dispatch = useDispatch();
   const matchSx = useMediaQuery(theme.breakpoints.down('xs'));
 
@@ -138,47 +138,63 @@ const ProjectCard = ({ type, project }) => {
             </Typography>
           </Box>
         )}
-        <Button
-          variant="contained"
-          sx={[editButton, type === 'auditor' ? editAuditor : {}]}
-          onClick={handleClick}
-          {...addTestsLabel(type === AUDITOR ? 'submit-button' : 'edit-button')}
-        >
-          {type === AUDITOR
-            ? project?.status.toLowerCase() !==
-                WAITING_FOR_AUDITS.toLowerCase() &&
-              project?.status.toLowerCase() !== RESOLVED.toLowerCase()
-              ? 'Proceed'
-              : 'View'
-            : 'Edit'}
-        </Button>
-        {type !== AUDITOR ? (
-          <Box sx={smallButtonsBox}>
-            <Button
-              sx={copyBtn}
-              onClick={handleMakeCopy}
-              {...addTestsLabel('make-copy-button')}
-            >
-              Make a copy
-            </Button>
-            {project.publish_options.publish && (
-              <ShareProjectButton projectId={project.id} />
+        {isPublic ? (
+          <Button
+            variant="contained"
+            sx={[editButton, type === 'auditor' ? editAuditor : {}]}
+            onClick={() => navigate(`/audit-info/${project.id}`)}
+            {...addTestsLabel(
+              type === AUDITOR ? 'submit-button' : 'edit-button',
             )}
-          </Box>
+          >
+            View
+          </Button>
         ) : (
-          project?.status.toLowerCase() ===
-            WAITING_FOR_AUDITS.toLowerCase() && (
-            <Button
-              sx={[editButton, { marginTop: '12px' }]}
-              variant="contained"
-              color={'primary'}
-              onClick={handleStartAudit}
-              {...addTestsLabel('make-copy-button')}
-            >
-              Start audit
-            </Button>
-          )
+          <Button
+            variant="contained"
+            sx={[editButton, type === 'auditor' ? editAuditor : {}]}
+            onClick={handleClick}
+            {...addTestsLabel(
+              type === AUDITOR ? 'submit-button' : 'edit-button',
+            )}
+          >
+            {type === AUDITOR
+              ? project?.status.toLowerCase() !==
+                  WAITING_FOR_AUDITS.toLowerCase() &&
+                project?.status.toLowerCase() !== RESOLVED.toLowerCase()
+                ? 'Proceed'
+                : 'View'
+              : 'Edit'}
+          </Button>
         )}
+        {!isPublic &&
+          (type !== AUDITOR ? (
+            <Box sx={smallButtonsBox}>
+              <Button
+                sx={copyBtn}
+                onClick={handleMakeCopy}
+                {...addTestsLabel('make-copy-button')}
+              >
+                Make a copy
+              </Button>
+              {project.publish_options.publish && (
+                <ShareProjectButton projectId={project.id} />
+              )}
+            </Box>
+          ) : (
+            project?.status.toLowerCase() ===
+              WAITING_FOR_AUDITS.toLowerCase() && (
+              <Button
+                sx={[editButton, { marginTop: '12px' }]}
+                variant="contained"
+                color={'primary'}
+                onClick={handleStartAudit}
+                {...addTestsLabel('make-copy-button')}
+              >
+                Start audit
+              </Button>
+            )
+          ))}
       </Box>
     </Box>
   );

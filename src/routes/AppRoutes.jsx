@@ -54,6 +54,7 @@ import Headings from '../router/Headings.jsx';
 import { AUDITOR, CUSTOMER } from '../redux/actions/types.js';
 import UserProjects from '../pages/UserProjects.jsx';
 import PriceCalculationPage from '../pages/PriceCalculationPage.jsx';
+import PublicAuditInfo from '../pages/PublicAuditInfo.jsx';
 
 const AppRoutes = () => {
   const { token } = useSelector(s => s.user);
@@ -326,6 +327,8 @@ const AppRoutes = () => {
         />
 
         {/*Add new routes here*/}
+
+        <Route path="/audit-info/:auditId" element={<PublicAuditInfo />} />
 
         <Route path="/:role/:linkId" element={<ProfilePage />} />
         <Route path="*" element={<NotFound />} />
