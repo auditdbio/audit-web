@@ -40,15 +40,13 @@ const EditPrice = ({ role, audit, user, request, hideIcon, hideChange }) => {
     <Formik
       initialValues={{
         id: audit?.id,
-        price: audit?.price,
-        total_cost: audit?.total_cost,
+        price: audit?.price || audit?.total_cost,
+        // total_cost: audit?.total_cost,
       }}
       onSubmit={values => {
         const newValue = {
           ...values,
-          [!isTotalPrice ? 'price' : 'total_cost']: parseInt(
-            !isTotalPrice ? values.price : values.total_cost,
-          ),
+          [!isTotalPrice ? 'price' : 'total_cost']: parseInt(values.price),
         };
         if (!isTotalPrice) {
           delete newValue.total_cost;
@@ -130,7 +128,7 @@ const EditPrice = ({ role, audit, user, request, hideIcon, hideChange }) => {
                         </svg>
                       )}
                       <Typography sx={{ fontWeight: 500 }}>
-                        {audit?.price ? values.price : values.total_cost}{' '}
+                        {values.price}{' '}
                         {audit?.total_cost ? 'total cost' : 'per line'}
                       </Typography>
                     </Box>
@@ -175,7 +173,7 @@ const EditPrice = ({ role, audit, user, request, hideIcon, hideChange }) => {
                       >
                         <FastField
                           component={TextField}
-                          name={isTotalPrice ? 'total_cost' : 'price'}
+                          name={'price'}
                           disabled={false}
                           sx={{
                             width: 'auto',
