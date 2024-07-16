@@ -42,12 +42,12 @@ const AuditCard = ({ audit, request }) => {
           </Typography>
         </Tooltip>
       </Box>
-      {audit?.total_cost ? (
+      {!audit.total_cost ? (
+        <Typography sx={priceTextStyle}>${audit?.price} per line</Typography>
+      ) : (
         <Typography sx={priceTextStyle}>
           ${audit?.total_cost} total cost
         </Typography>
-      ) : (
-        <Typography sx={priceTextStyle}>${audit?.price} per line</Typography>
       )}
       <Box sx={dateWrapper}>
         <Typography sx={dateStyle}>

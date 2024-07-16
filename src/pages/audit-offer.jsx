@@ -99,16 +99,6 @@ const AuditOffer = () => {
 
   const descriptionRef = useRef();
 
-  // const handleUpdateAudit = () => {
-  //   const data = {
-  //     id: audit.id,
-  //     price: parseInt(priceValue),
-  //   };
-  //   setEditPrice(false);
-  //   dispatch(editAuditCustomer(data));
-  // };
-  // //
-  // console.log(priceValue);
   useEffect(() => {
     dispatch(getAudit(auditId));
     return () => {
@@ -279,20 +269,6 @@ const AuditOffer = () => {
               >
                 <ArrowBackIcon color="secondary" />
               </Button>
-              {/*<Button*/}
-              {/*  sx={editButtonSx}*/}
-              {/*  onClick={() => {*/}
-              {/*    if (localStorage.getItem('prevPath')) {*/}
-              {/*      navigate(localStorage.getItem('prevPath'));*/}
-              {/*      localStorage.removeItem('prevPath');*/}
-              {/*    } else {*/}
-              {/*      navigate('/profile/audits');*/}
-              {/*    }*/}
-              {/*  }}*/}
-              {/*  {...addTestsLabel('go-back-button')}*/}
-              {/*>*/}
-              {/*  <EditIcon fontSize={'small'} />*/}
-              {/*</Button>*/}
               <Typography
                 variant="h3"
                 sx={{

@@ -50,7 +50,7 @@ const MyProjectListCard = ({ type, project, setState, state, isChecked }) => {
         <Box sx={priceWrapper}>
           <Box sx={infoWrapper}>
             <Currency />
-            <Typography>{project.price}</Typography>
+            <Typography>{project.price || project.total_cost}</Typography>
           </Box>
           <Box sx={infoWrapper}>
             <Star />
