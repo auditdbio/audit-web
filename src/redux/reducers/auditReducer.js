@@ -45,6 +45,7 @@ export const auditReducer = (state = initialState, action) => {
         ...state,
         auditRequests: [...state.auditRequests, action.payload],
         successMessage: 'Audit request created successfully',
+        auditRequest: action.payload,
       };
     case GET_AUDIT_REQUEST:
       return { ...state, auditRequests: action.payload };

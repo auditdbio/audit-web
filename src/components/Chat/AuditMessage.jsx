@@ -120,18 +120,13 @@ const AuditMessage = ({ message, handleError }) => {
         </Box>
       ) : (
         <>
-          <Box
-            sx={{
-              display: 'flex',
-              gap: '10px',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-            }}
-          >
+          <Box sx={infoWrapper}>
             <Typography
               sx={{ fontSize: '14px!important', padding: '0!important' }}
             >
-              ${data.price} per line
+              {data.price
+                ? `$ ${data.price} per line`
+                : `$ ${data.total_cost} total cost`}
             </Typography>
             <Box>
               <Typography
@@ -428,6 +423,16 @@ const statusWrapper = theme => ({
     borderRadius: '50%',
   },
   margin: '0',
+});
+
+const infoWrapper = theme => ({
+  display: 'flex',
+  gap: '10px',
+  justifyContent: 'space-between',
+  alignItems: 'center',
+  [theme.breakpoints.down('xs')]: {
+    gap: '5px',
+  },
 });
 
 const modalSx = theme => ({

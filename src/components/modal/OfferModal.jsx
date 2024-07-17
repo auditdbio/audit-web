@@ -177,7 +177,7 @@ const MakeOfferSchema = Yup.object().shape({
   customer_contacts: Yup.object(),
   customer_id: Yup.string(),
   opener: Yup.string(),
-  price: Yup.number(),
+  // price: Yup.number(),
   price_range: Yup.object(),
   project_id: Yup.string(),
   scope: Yup.array(),
