@@ -27,6 +27,8 @@ import MenuItem from '@mui/material/MenuItem';
 import CheckRoundedIcon from '@mui/icons-material/CheckRounded';
 import {
   approveHistory,
+  approveHistoryAndRead,
+  approveHistoryAndReadRequest,
   handleReadHistory,
   handleReadRequestHistory,
 } from '../../redux/actions/auditAction.js';
@@ -93,14 +95,18 @@ const DescriptionModal = ({
   }, [mainAudit, compare]);
 
   const handleApprove = () => {
-    dispatch(approveHistory(audit.id, item, request));
-    if (unread[user?.id] >= idx + 1 && unread[user?.id] > 0) {
+    if (openDiff) {
       if (!request) {
-        dispatch(handleReadHistory(audit.id, idx, user.id));
+        dispatch(approveHistoryAndRead(audit.id, item, idx, request, user.id));
       } else {
-        dispatch(handleReadRequestHistory(auditRequest.id, idx, user.id));
+        dispatch(
+          approveHistoryAndReadRequest(audit.id, item, idx, request, user.id),
+        );
       }
+    } else {
+      dispatch(approveHistory(audit.id, item, request));
     }
+
     handleClose();
   };
 

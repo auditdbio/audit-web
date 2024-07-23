@@ -553,6 +553,65 @@ export const approveHistory = (auditId, value, request) => {
   };
 };
 
+export const approveHistoryAndReadRequest = (
+  auditId,
+  value,
+  count,
+  request,
+  userId,
+) => {
+  const token = Cookies.get('token');
+  return dispatch => {
+    axios
+      .patch(
+        `${API_URL}/audit_request/${auditId}/unread/${count}`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      )
+      .then(({ data }) => {
+        dispatch(approveHistory(auditId, value, request));
+        dispatch({
+          type: READ_AUDIT_HISTORY,
+          payload: { userId: userId, unread: count },
+        });
+      });
+  };
+};
+
+export const approveHistoryAndRead = (
+  auditId,
+  value,
+  count,
+  request,
+  userId,
+) => {
+  const token = Cookies.get('token');
+
+  return dispatch => {
+    axios
+      .patch(
+        `${API_URL}/audit/${auditId}/unread/${count}`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      )
+      .then(({ data }) => {
+        dispatch(approveHistory(auditId, value, request));
+        dispatch({
+          type: READ_AUDIT_HISTORY,
+          payload: { userId: userId, unread: count },
+        });
+      });
+  };
+};
+
 export const handleReadHistory = (auditId, count, userId) => {
   const token = Cookies.get('token');
   return dispatch => {
