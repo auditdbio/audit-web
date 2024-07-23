@@ -14,6 +14,7 @@ import { notFoundReducer } from './reducers/notFoundReducer.js';
 import { chatReducer } from './reducers/chatReducer.js';
 import { githubReducer } from './reducers/githubReducer.js';
 import { filterConfig } from './reducers/configReducer.js';
+import { organizationReducer } from './reducers/organizationReducer.js';
 
 export const store = createStore(
   combineReducers({
@@ -29,6 +30,7 @@ export const store = createStore(
     chat: chatReducer,
     github: githubReducer,
     filter: filterConfig,
+    organization: organizationReducer,
   }),
   composeWithDevTools(applyMiddleware(thunk, websocketMiddleware())),
 );

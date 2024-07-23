@@ -14,8 +14,9 @@ import {
   ListItemAvatar,
 } from '@mui/material';
 import GitHubIcon from '@mui/icons-material/GitHub.js';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack.js';
 import theme from '../styles/themes.js';
-import { useNavigate } from 'react-router-dom/dist';
+import { useNavigate, useParams } from 'react-router-dom/dist';
 import { useDispatch, useSelector } from 'react-redux';
 import Loader from './Loader.jsx';
 import { AUDITOR, CUSTOMER } from '../redux/actions/types.js';
@@ -32,13 +33,23 @@ import CustomSnackbar from './custom/CustomSnackbar.jsx';
 import Headings from '../router/Headings.jsx';
 import ListItemButton from '@mui/material/ListItemButton';
 import DeleteForeverRoundedIcon from '@mui/icons-material/DeleteForeverRounded';
+import Layout from '../styles/Layout.jsx';
+import { CustomCard } from './custom/Card.jsx';
+import {
+  clearOrganization,
+  getOrganizationById,
+} from '../redux/actions/organizationAction.js';
+import InfoCard from './custom/info-card.jsx';
 
-const Organization = ({ role, linkId }) => {
+const Organization = () => {
+  const { id: linkId } = useParams();
+  const role = useSelector(s => s.user.user.current_role);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const matchXs = useMediaQuery(theme.breakpoints.down('xs'));
   const matchXxs = useMediaQuery(theme.breakpoints.down(590));
-  //
+  const organization = useSelector(s => s.organization.organization);
+
   const {
     customer,
     error: customerError,
@@ -51,8 +62,15 @@ const Organization = ({ role, linkId }) => {
   } = useSelector(s => s.auditor);
   const { user, error } = useSelector(s => s.user);
 
+  useEffect(() => {
+    dispatch(getOrganizationById(linkId));
+    return () => {
+      dispatch(clearOrganization());
+    };
+  }, [linkId]);
+
   const handleEdit = () => {
-    navigate('/edit-profile');
+    navigate(`/edit-organization/${linkId}`);
   };
 
   const data = useMemo(() => {
@@ -69,249 +87,284 @@ const Organization = ({ role, linkId }) => {
     }
   }, [linkId, data]);
 
-  const [checked, setChecked] = React.useState([1]);
-
-  const handleToggle = value => () => {
-    const currentIndex = checked.indexOf(value);
-    const newChecked = [...checked];
-
-    if (currentIndex === -1) {
-      newChecked.push(value);
-    } else {
-      newChecked.splice(currentIndex, 1);
-    }
-
-    setChecked(newChecked);
-  };
-
-  if (!data) {
-    return <Loader role={role} />;
+  if (!organization.id) {
+    return (
+      <Layout>
+        <Headings title="Organization" />
+        <CustomCard
+          sx={[
+            wrapper,
+            { height: '100%', justifyContent: 'center', alignItems: 'center' },
+          ]}
+        >
+          <Loader />
+        </CustomCard>
+      </Layout>
+    );
   } else {
     return (
-      <Box sx={wrapper}>
-        <Headings
-          title={user?.name || 'Profile'}
-          image={data.avatar}
-          description={`${data.first_name} ${data.last_name} | ${data.about}`}
-        />
-
-        <CustomSnackbar
-          autoHideDuration={5000}
-          open={
-            !!error ||
-            !!customerError ||
-            !!auditorError ||
-            !!customerSuccess ||
-            !!auditorSuccess
-          }
-          text={
-            error ||
-            customerError ||
-            auditorError ||
-            customerSuccess ||
-            auditorSuccess
-          }
-          severity={
-            error || customerError || auditorError ? 'error' : 'success'
-          }
-          onClose={() => dispatch(clearUserMessages())}
-        />
-
-        <Box sx={contentWrapper}>
-          <Box
-            sx={{
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              gap: '20px',
-            }}
-          >
-            <Avatar
-              // src={data.avatar && `${ASSET_URL}/${data.avatar}`}
-              sx={[
-                avatarStyle,
-                { backgroundColor: theme.palette.primary.main },
-              ]}
-              alt="User photo"
+      <Layout>
+        <CustomCard sx={wrapper}>
+          <InfoCard role={role} sx={{ position: 'relative' }}>
+            <Button
+              sx={{
+                top: '15px',
+                left: '10px',
+                position: 'absolute',
+                minWidth: 'unset',
+              }}
+              onClick={() => navigate(-1)}
             >
-              N
-            </Avatar>
-          </Box>
-          <Box sx={infoStyle}>
-            <Box sx={infoInnerStyle}>
-              <Box sx={infoWrapper}>
-                <span>Name</span>
-                <Typography noWrap={true}>Org Name</Typography>
-              </Box>
-              <Box sx={infoWrapper}>
-                <span>Telegram</span>
-                <Typography noWrap={true}>{data.contacts?.telegram}</Typography>
-              </Box>
-              <Box sx={infoWrapper}>
-                <span>E-mail</span>
-                <Typography noWrap={true}>Org Email</Typography>
-              </Box>
-              <Box sx={infoWrapper}>
-                <span>Type</span>
-                <Typography noWrap={true}>Customer organization</Typography>
-              </Box>
-            </Box>
-            <Box sx={userListSx}>
-              <Box>
-                <List
-                  dense
+              <ArrowBackIcon
+                color={role === CUSTOMER ? 'primary' : 'secondary'}
+              />
+            </Button>
+            <Box sx={innerWrapper}>
+              {/*<Headings*/}
+              {/*  title={user?.name || 'Profile'}*/}
+              {/*  image={data.avatar}*/}
+              {/*  description={`${data.first_name} ${data.last_name} | ${data.about}`}*/}
+              {/*/>*/}
+
+              <CustomSnackbar
+                autoHideDuration={5000}
+                open={
+                  !!error ||
+                  !!customerError ||
+                  !!auditorError ||
+                  !!customerSuccess ||
+                  !!auditorSuccess
+                }
+                text={
+                  error ||
+                  customerError ||
+                  auditorError ||
+                  customerSuccess ||
+                  auditorSuccess
+                }
+                severity={
+                  error || customerError || auditorError ? 'error' : 'success'
+                }
+                onClose={() => dispatch(clearUserMessages())}
+              />
+
+              <Box sx={contentWrapper}>
+                <Box
                   sx={{
-                    padding: 'unset',
-                    width: '100%',
-                    // maxWidth: 360,
-                    // bgcolor: 'background.paper',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    gap: '20px',
                   }}
                 >
-                  {['Mike', 'John', 'David', 'Viktor'].map(value => {
-                    const labelId = `checkbox-list-secondary-label-${value}`;
-                    return (
-                      <ListItem
-                        key={value}
-                        sx={{ borderBottom: '1px solid rgba(0, 0, 0, 0.23)' }}
-                        secondaryAction={
-                          <Button>
-                            <DeleteForeverRoundedIcon color={'error'} />
-                          </Button>
-                        }
-                        disablePadding
+                  <Avatar
+                    src={
+                      organization.avatar &&
+                      `${ASSET_URL}/${organization.avatar}`
+                    }
+                    sx={[
+                      avatarStyle,
+                      { backgroundColor: theme.palette.primary.main },
+                    ]}
+                    alt="User photo"
+                  >
+                    N
+                  </Avatar>
+                </Box>
+                <Box sx={infoStyle}>
+                  <Box sx={infoInnerStyle}>
+                    <Box sx={infoWrapper}>
+                      <span>Name</span>
+                      <Typography noWrap={true}>{organization.name}</Typography>
+                    </Box>
+                    <Box sx={infoWrapper}>
+                      <span>Telegram</span>
+                      <Typography noWrap={true}>
+                        {organization.contacts?.telegram}
+                      </Typography>
+                    </Box>
+                    <Box sx={infoWrapper}>
+                      <span>E-mail</span>
+                      <Typography noWrap={true}>
+                        {organization.contacts?.email}
+                      </Typography>
+                    </Box>
+                    <Box sx={infoWrapper}>
+                      <span>Type</span>
+                      <Typography noWrap={true}>
+                        {organization.organization_type}
+                      </Typography>
+                    </Box>
+                  </Box>
+                  <Box sx={userListSx}>
+                    <Box>
+                      <List
+                        dense
+                        sx={{
+                          padding: 'unset',
+                          width: '100%',
+                          // maxWidth: 360,
+                          // bgcolor: 'background.paper',
+                        }}
                       >
-                        <ListItemButton>
-                          <ListItemAvatar>
-                            <Avatar
-                              sx={{ width: '30px', height: '30px' }}
-                              alt={`Avatar n°${value + 1}`}
-                              src={`/static/images/avatar/${value + 1}.jpg`}
-                            />
-                          </ListItemAvatar>
-                          <ListItemText id={labelId} primary={value} />
-                        </ListItemButton>
-                      </ListItem>
+                        {organization.members.map(value => {
+                          const labelId = `checkbox-list-secondary-label-${value}`;
+                          return (
+                            <ListItem
+                              key={value.user_id}
+                              sx={{
+                                borderBottom: '1px solid rgba(0, 0, 0, 0.23)',
+                              }}
+                              secondaryAction={
+                                <Button>
+                                  <DeleteForeverRoundedIcon color={'error'} />
+                                </Button>
+                              }
+                              disablePadding
+                            >
+                              <ListItemButton>
+                                <ListItemAvatar>
+                                  <Avatar
+                                    sx={{ width: '30px', height: '30px' }}
+                                    alt={`Avatar n°${value + 1}`}
+                                    src={`${ASSET_URL}/${value.avatar}`}
+                                  />
+                                </ListItemAvatar>
+                                <ListItemText
+                                  id={labelId}
+                                  primary={value.username}
+                                />
+                              </ListItemButton>
+                            </ListItem>
+                          );
+                        })}
+                      </List>
+                    </Box>
+                  </Box>
+                </Box>
+              </Box>
+
+              {!matchXs && (
+                <TagsList data={organization.tags} fullView={true} />
+              )}
+              {matchXs && <MobileTagsList data={organization.tags} />}
+              <Box
+                sx={{ display: 'flex', gap: '10px', justifyContent: 'center' }}
+              >
+                {user.linked_accounts?.map(account => {
+                  if (account.name.toLowerCase() === 'linkedin') {
+                    return (
+                      <Box
+                        key={account.id}
+                        sx={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '7px',
+                        }}
+                      >
+                        <Tooltip title={account.url} placement="top">
+                          <Link href={account.url} target={'_blank'}>
+                            <LinkedinIcon />
+                          </Link>
+                        </Tooltip>
+                      </Box>
                     );
-                  })}
-                </List>
+                  } else if (account.name.toLowerCase() === 'github') {
+                    return (
+                      <Box
+                        key={account.id}
+                        sx={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '7px',
+                        }}
+                      >
+                        <Tooltip title={account.url} placement="top">
+                          <Link
+                            href={account.url}
+                            sx={{ color: 'initial' }}
+                            target={'_blank'}
+                          >
+                            <GitHubIcon
+                              sx={{
+                                width: '50px',
+                                height: '50px',
+                                padding: '4px',
+                              }}
+                            />
+                          </Link>
+                        </Tooltip>
+                      </Box>
+                    );
+                  } else {
+                    return (
+                      <Box
+                        key={account.id}
+                        sx={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '7px',
+                        }}
+                      >
+                        <Tooltip title={account.url} placement="top">
+                          <Link
+                            href={account.url}
+                            sx={{ color: 'initial' }}
+                            target={'_blank'}
+                          >
+                            <XTwitterLogo width={'38px'} height={'38px'} />
+                          </Link>
+                        </Tooltip>
+                      </Box>
+                    );
+                  }
+                })}
+              </Box>
+              <Box
+                sx={{
+                  display: 'flex',
+                  gap: '20px',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  '& button': {
+                    margin: 'unset',
+                  },
+                }}
+              >
+                <Button
+                  sx={[buttonSx, role === 'auditor' ? submitAuditor : {}]}
+                  variant={'contained'}
+                  onClick={handleEdit}
+                  {...addTestsLabel('user_edit-button')}
+                >
+                  Edit
+                </Button>
+                {/*<IdentitySetting />*/}
               </Box>
             </Box>
-          </Box>
-        </Box>
-        {/*<Box sx={[infoWrapper, aboutWrapper]}>*/}
-        {/*  <span>About</span>*/}
-        {/*  <Typography*/}
-        {/*    sx={{*/}
-        {/*      maxWidth: 'unset!important',*/}
-        {/*      width: '100%',*/}
-        {/*      wordBreak: 'break-word',*/}
-        {/*    }}*/}
-        {/*  >*/}
-        {/*    {data.about}*/}
-        {/*  </Typography>*/}
-        {/*</Box>*/}
-        {!matchXs && <TagsList data={data.tags} fullView={true} />}
-        {matchXs && <MobileTagsList data={data.tags} />}
-        <Box sx={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
-          {user.linked_accounts?.map(account => {
-            if (account.name.toLowerCase() === 'linkedin') {
-              return (
-                <Box
-                  key={account.id}
-                  sx={{ display: 'flex', alignItems: 'center', gap: '7px' }}
-                >
-                  <Tooltip title={account.url} placement="top">
-                    <Link href={account.url} target={'_blank'}>
-                      <LinkedinIcon />
-                    </Link>
-                  </Tooltip>
-                </Box>
-              );
-            } else if (account.name.toLowerCase() === 'github') {
-              return (
-                <Box
-                  key={account.id}
-                  sx={{ display: 'flex', alignItems: 'center', gap: '7px' }}
-                >
-                  <Tooltip title={account.url} placement="top">
-                    <Link
-                      href={account.url}
-                      sx={{ color: 'initial' }}
-                      target={'_blank'}
-                    >
-                      <GitHubIcon
-                        sx={{ width: '50px', height: '50px', padding: '4px' }}
-                      />
-                    </Link>
-                  </Tooltip>
-                </Box>
-              );
-            } else {
-              return (
-                <Box
-                  key={account.id}
-                  sx={{ display: 'flex', alignItems: 'center', gap: '7px' }}
-                >
-                  <Tooltip title={account.url} placement="top">
-                    <Link
-                      href={account.url}
-                      sx={{ color: 'initial' }}
-                      target={'_blank'}
-                    >
-                      <XTwitterLogo width={'38px'} height={'38px'} />
-                    </Link>
-                  </Tooltip>
-                </Box>
-              );
-            }
-          })}
-        </Box>
-        <Box
-          sx={{
-            display: 'flex',
-            justifyContent: 'center',
-            flexDirection: 'column',
-            alignItems: 'center',
-            gap: '20px',
-          }}
-        >
-          {((role === AUDITOR && auditor.user_id) ||
-            (role === CUSTOMER && customer.user_id)) && (
-            <ShareProfileButton
-              role={role}
-              userId={
-                role === AUDITOR
-                  ? auditor.link_id || auditor.user_id
-                  : customer.link_id || customer.user_id
-              }
-            />
-          )}
-          <Box
-            sx={[
-              { display: 'flex', gap: '15px' },
-              matchXxs ? { flexDirection: 'column' } : {},
-            ]}
-          >
-            <Button
-              sx={[buttonSx, role === 'auditor' ? submitAuditor : {}]}
-              variant={'contained'}
-              onClick={handleEdit}
-              {...addTestsLabel('user_edit-button')}
-            >
-              Edit
-            </Button>
-            <IdentitySetting />
-            {/*<Button sx={buttonSx} variant={'contained'}>*/}
-            {/*  Create organization*/}
-            {/*</Button>*/}
-          </Box>
-        </Box>
-      </Box>
+          </InfoCard>
+        </CustomCard>
+      </Layout>
     );
   }
 };
 
 export default Organization;
+
+const wrapper = theme => ({
+  display: 'flex',
+  flexDirection: 'column',
+  maxWidth: '1300px',
+  width: '100%',
+  '& ul': {
+    fontSize: '16px',
+    marginBottom: '28px',
+    '& li': {
+      marginLeft: '15px',
+      marginTop: '7px',
+    },
+  },
+});
 
 const aboutWrapper = theme => ({
   width: '100%',
@@ -333,7 +386,7 @@ const aboutWrapper = theme => ({
   },
 });
 
-const wrapper = theme => ({
+const innerWrapper = theme => ({
   width: '100%',
   minHeight: '520px',
   display: 'flex',

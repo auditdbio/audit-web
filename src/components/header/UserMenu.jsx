@@ -26,6 +26,7 @@ export const UserMenu = ({ open, handleClose, anchor, userAvatar, pages }) => {
   const { customer } = useSelector(s => s.customer);
   const navigate = useNavigate();
   const matchSm = useMediaQuery(theme.breakpoints.down(1080));
+  const organizations = useSelector(s => s.organization.organizations);
 
   const currentRole = useSelector(s => s.user.user.current_role);
   const { differentRoleUnreadMessages } = useSelector(s => s.chat);
@@ -47,6 +48,10 @@ export const UserMenu = ({ open, handleClose, anchor, userAvatar, pages }) => {
         ? auditor?.link_id
         : customer?.link_id) || reduxUser.id;
     navigate(`/${rolePrefix}/${link_id}`);
+  };
+
+  const handleMyOrganizationClick = () => {
+    navigate(`/my-organizations`);
   };
 
   return (
@@ -129,6 +134,17 @@ export const UserMenu = ({ open, handleClose, anchor, userAvatar, pages }) => {
           My Account
         </Button>
       </MenuItem>
+      {!!organizations.length && (
+        <MenuItem onClick={handleClose}>
+          <Button
+            sx={popupLinkSx(reduxUser.current_role)}
+            onClick={handleMyOrganizationClick}
+            {...addTestsLabel('header_my-account')}
+          >
+            My Organizations
+          </Button>
+        </MenuItem>
+      )}
       {matchSm &&
         pages?.map(el =>
           el.menuOptions

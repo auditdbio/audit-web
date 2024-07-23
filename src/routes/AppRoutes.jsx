@@ -54,6 +54,10 @@ import Headings from '../router/Headings.jsx';
 import { AUDITOR, CUSTOMER } from '../redux/actions/types.js';
 import UserProjects from '../pages/UserProjects.jsx';
 import PriceCalculationPage from '../pages/PriceCalculationPage.jsx';
+import Organization from '../components/Organization.jsx';
+import CreateEditOrganization from '../pages/CreateEditOrganization.jsx';
+import { getMyOrganizations } from '../redux/actions/organizationAction.js';
+import MyOrganization from '../pages/MyOrganizations.jsx';
 
 const AppRoutes = () => {
   const { token } = useSelector(s => s.user);
@@ -67,6 +71,12 @@ const AppRoutes = () => {
   useEffect(() => {
     if (isAuth()) {
       dispatch(getUnreadMessages());
+    }
+  }, [isAuth()]);
+
+  useEffect(() => {
+    if (isAuth()) {
+      dispatch(getMyOrganizations());
     }
   }, [isAuth()]);
 
@@ -321,6 +331,42 @@ const AppRoutes = () => {
           element={
             <PrivateRoute auth={{ isAuthenticated: isAuth() }}>
               <PriceCalculationPage />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/create-organization"
+          element={
+            <PrivateRoute auth={{ isAuthenticated: isAuth() }}>
+              <CreateEditOrganization />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/edit-organization/:id"
+          element={
+            <PrivateRoute auth={{ isAuthenticated: isAuth() }}>
+              <CreateEditOrganization />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/o/:id"
+          element={
+            <PrivateRoute auth={{ isAuthenticated: isAuth() }}>
+              <Organization />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/my-organizations"
+          element={
+            <PrivateRoute auth={{ isAuthenticated: isAuth() }}>
+              <MyOrganization />
             </PrivateRoute>
           }
         />

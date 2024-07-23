@@ -342,7 +342,7 @@ const buttonSx = theme => ({
   fontWeight: 600,
   fontSize: '18px',
   // padding: '9px 50px',
-  width: '214px',
+  width: '234px',
   borderRadius: '10px',
   [theme.breakpoints.down('xs')]: {
     padding: '9px 10px',

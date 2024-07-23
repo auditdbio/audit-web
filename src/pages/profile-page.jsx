@@ -92,9 +92,6 @@ const ProfilePage = () => {
           {chooseTab === 'user-info' && (
             <UserInfo role={currentRole} linkId={linkId} />
           )}
-          {chooseTab === 'organizations' && (
-            <Organization role={currentRole} linkId={linkId} />
-          )}
         </InfoCard>
       </Box>
     </Layout>
@@ -130,10 +127,6 @@ const customerTabs = [
   {
     value: 'user-info',
     label: 'User info',
-  },
-  {
-    value: 'organizations',
-    label: 'My organizations',
   },
 ];
 

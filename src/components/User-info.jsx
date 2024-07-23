@@ -4,13 +4,12 @@ import {
   Box,
   Button,
   Typography,
-  Link,
   useMediaQuery,
   Tooltip,
 } from '@mui/material';
 import GitHubIcon from '@mui/icons-material/GitHub.js';
 import theme from '../styles/themes.js';
-import { useNavigate } from 'react-router-dom/dist';
+import { useNavigate, Link } from 'react-router-dom/dist';
 import { useDispatch, useSelector } from 'react-redux';
 import Loader from './Loader.jsx';
 import { AUDITOR, CUSTOMER } from '../redux/actions/types.js';
@@ -30,7 +29,8 @@ const UserInfo = ({ role, linkId }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const matchXs = useMediaQuery(theme.breakpoints.down('xs'));
-  const matchXxs = useMediaQuery(theme.breakpoints.down(590));
+  const matchXxs = useMediaQuery(theme.breakpoints.down(850));
+  const organizations = useSelector(s => s.organization.organizations);
 
   const {
     customer,
@@ -109,17 +109,61 @@ const UserInfo = ({ role, linkId }) => {
               sx={avatarStyle}
               alt="User photo"
             />
-            <Box sx={{ display: 'flex', gap: '10px' }}>
-              <Avatar sx={{ backgroundColor: theme.palette.primary.main }}>
-                N
-              </Avatar>
-              <Avatar sx={{ backgroundColor: theme.palette.secondary.main }}>
-                S
-              </Avatar>
-              <Avatar sx={{ backgroundColor: theme.palette.secondary.main }}>
-                N
-              </Avatar>
-            </Box>
+            {!!organizations.length && (
+              <Box
+                sx={{
+                  flexDirection: 'column',
+                  gap: '10px',
+                  display: 'flex',
+                  maxWidth: '200px',
+                  width: '100%',
+                  alignItems: 'center',
+                  flexWrap: 'wrap',
+                  '& span': {
+                    color: '#B2B3B3',
+                  },
+                }}
+              >
+                <Link to={'/my-organizations'}>
+                  <span>Organization</span>
+                </Link>
+                <Box sx={{ display: 'flex', gap: '10px' }}>
+                  {organizations?.map(org => {
+                    if (org.avatar) {
+                      return (
+                        <Link to={`/o/${org.id}`}>
+                          <Tooltip title={org.name} placement="top" arrow>
+                            <Avatar
+                              src={`${ASSET_URL}/${org.avatar}`}
+                              sx={{
+                                border: `1.5px solid ${theme.palette.primary.main}`,
+                                padding: '4px',
+                              }}
+                            />
+                          </Tooltip>
+                        </Link>
+                      );
+                    } else {
+                      return (
+                        <Link to={`/o/${org.id}`}>
+                          <Tooltip title={org.name} placement="top" arrow>
+                            <Avatar
+                              src={`${ASSET_URL}/${org.avatar}`}
+                              sx={{
+                                padding: '4px',
+                                border: `1px solid ${theme.palette.primary.main}`,
+                              }}
+                            >
+                              {org.name}
+                            </Avatar>
+                          </Tooltip>
+                        </Link>
+                      );
+                    }
+                  })}
+                </Box>
+              </Box>
+            )}
           </Box>
           <Box sx={infoStyle}>
             <Box sx={infoInnerStyle}>
@@ -264,7 +308,11 @@ const UserInfo = ({ role, linkId }) => {
               Edit
             </Button>
             <IdentitySetting />
-            <Button sx={buttonSx} variant={'contained'}>
+            <Button
+              onClick={() => navigate('/create-organization')}
+              sx={buttonSx}
+              variant={'contained'}
+            >
               Create organization
             </Button>
           </Box>
