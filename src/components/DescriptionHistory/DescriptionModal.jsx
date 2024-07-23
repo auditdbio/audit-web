@@ -98,10 +98,6 @@ const DescriptionModal = ({
     if (openDiff) {
       if (!request) {
         dispatch(approveHistoryAndRead(audit.id, item, idx, request, user.id));
-      } else {
-        dispatch(
-          approveHistoryAndReadRequest(audit.id, item, idx, request, user.id),
-        );
       }
     } else {
       dispatch(approveHistory(audit.id, item, request));
@@ -109,7 +105,6 @@ const DescriptionModal = ({
 
     handleClose();
   };
-
   const approve = Object.entries(approvedChange || []).map(([key, value]) => {
     return { id: key, value: value };
   });

@@ -159,11 +159,13 @@ export const auditReducer = (state = initialState, action) => {
       return {
         ...state,
         auditRequest: null,
+        unreadHistory: null,
       };
     case CLEAR_AUDIT:
       return {
         ...state,
         audit: null,
+        unreadHistory: null,
       };
     case CREATE_PUBLIC_REPORT:
       return {

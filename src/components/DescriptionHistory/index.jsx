@@ -32,7 +32,12 @@ const HistoryDescription = ({ audit, request }) => {
   }, [audit]);
 
   useEffect(() => {
-    if (!!unread && unread[user?.id] > 0 && unread[user?.id] !== 0) {
+    if (
+      !!unread &&
+      unread[user?.id] > 0 &&
+      unread[user?.id] !== 0 &&
+      !request
+    ) {
       setShowRecap(true);
     }
   }, [auditHistory, auditRequestHistory]);
