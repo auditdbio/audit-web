@@ -91,6 +91,7 @@ const ProjectListCard = ({ project }) => {
             handleError={handleError}
             isModal={true}
             redirect={true}
+            hideChange={true}
             setError={setErrorState}
           />
         </Box>

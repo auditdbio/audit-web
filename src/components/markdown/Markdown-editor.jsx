@@ -46,6 +46,7 @@ const MarkdownEditor = ({
   handleBlur,
   isPublic,
   fastSave,
+  sx,
 }) => {
   const [markdownField, meta, markdownHelper] = useField(name);
   const [markdown, setMarkdown] = useState('');
@@ -102,6 +103,7 @@ const MarkdownEditor = ({
               : 'transparent'
           }`,
         },
+        sx,
       ]}
     >
       <MdEditor
