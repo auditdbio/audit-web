@@ -66,7 +66,7 @@ const MyOrganization = () => {
                 position: 'absolute',
                 minWidth: 'unset',
               }}
-              onClick={() => navigate(`/c/${user.id}`)}
+              onClick={() => navigate(`/${user.current_role[0]}/${user.id}`)}
             >
               <ArrowBackIcon
                 color={role === CUSTOMER ? 'primary' : 'secondary'}
@@ -92,7 +92,11 @@ const MyOrganization = () => {
                             <Tooltip title={org.name} placement="top" arrow>
                               <Box sx={organizationSx}>
                                 <Avatar
-                                  src={`${ASSET_URL}/${org.avatar}`}
+                                  src={
+                                    org.avatar
+                                      ? `${ASSET_URL}/${org.avatar}`
+                                      : ''
+                                  }
                                   sx={avatarSx}
                                 />
                                 <Typography sx={{ mt: '10px' }}>
@@ -124,7 +128,11 @@ const MyOrganization = () => {
                             <Tooltip title={org.name} placement="top" arrow>
                               <Box sx={organizationSx}>
                                 <Avatar
-                                  src={`${ASSET_URL}/${org.avatar}`}
+                                  src={
+                                    org.avatar
+                                      ? `${ASSET_URL}/${org.avatar}`
+                                      : ''
+                                  }
                                   sx={avatarSx}
                                 />
                                 <Typography sx={{ mt: '10px' }}>

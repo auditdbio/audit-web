@@ -25,7 +25,8 @@ export const organizationReducer = (state = initialState, action) => {
     case CREATE_ORGANIZATION:
       return {
         ...state,
-        organization: [...state.organization, action.payload],
+        organization: action.payload,
+        organizations: [...state.organizations, action.payload],
         own: [...state.own, action.payload],
       };
     case UPDATE_ORGANIZATION:
@@ -33,6 +34,9 @@ export const organizationReducer = (state = initialState, action) => {
         ...state,
         organization: action.payload,
         own: state.own.map(el =>
+          el.id === action.payload.id ? action.payload : el,
+        ),
+        organizations: state.organizations.map(el =>
           el.id === action.payload.id ? action.payload : el,
         ),
       };

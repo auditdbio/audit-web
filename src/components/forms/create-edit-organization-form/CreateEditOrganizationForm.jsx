@@ -36,7 +36,7 @@ const GoBack = ({ role, newLinkId }) => {
   );
 };
 
-const CreateEditOrganizationForm = ({ role, organization }) => {
+const CreateEditOrganizationForm = ({ role, needLoad, organization }) => {
   const matchSm = useMediaQuery(theme.breakpoints.down('sm'));
   const matchXs = useMediaQuery(theme.breakpoints.down('xs'));
   const dispatch = useDispatch();
@@ -46,7 +46,7 @@ const CreateEditOrganizationForm = ({ role, organization }) => {
   const navigate = useNavigate();
   const [isDirty, setIsDirty] = useState(false);
 
-  if (!organization.id) {
+  if (!organization.id && needLoad) {
     return <Loader />;
   } else {
     return (
@@ -71,10 +71,14 @@ const CreateEditOrganizationForm = ({ role, organization }) => {
         validateOnChange={false}
         onSubmit={values => {
           setIsDirty(false);
-          if (values.id) {
-            dispatch(updateOrganization(values, navigateTo));
+          if (!values.id) {
+            dispatch(
+              createOrganization(values, `/${user.current_role[0]}/${user.id}`),
+            );
           } else {
-            dispatch(createOrganization(values, navigateTo));
+            dispatch(
+              updateOrganization(values, `/${user.current_role[0]}/${user.id}`),
+            );
           }
         }}
       >
@@ -204,28 +208,6 @@ const CreateEditOrganizationForm = ({ role, organization }) => {
                       multiline
                       rows={3}
                     />
-                    {role !== CUSTOMER && (
-                      <Box>
-                        <Typography sx={rateLabel}>
-                          Price per line of code
-                        </Typography>
-                        <Field
-                          name="price_range"
-                          value={values.price_range}
-                          component={SliderRange}
-                          sx={{ color: theme.palette.secondary.main }}
-                          min={0}
-                          max={200}
-                          onChange={(e, newValue) => {
-                            const value = Array.isArray(newValue)
-                              ? newValue
-                              : [newValue, newValue];
-                            setFieldValue('price_range.from', value[0]);
-                            setFieldValue('price_range.to', value[1]);
-                          }}
-                        />
-                      </Box>
-                    )}
                   </Box>
                 </Box>
               </Box>

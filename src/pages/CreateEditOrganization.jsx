@@ -21,7 +21,9 @@ const CreateEditOrganization = () => {
       dispatch(getOrganizationById(id));
     }
     return () => {
-      dispatch(clearOrganization());
+      if (id) {
+        dispatch(clearOrganization());
+      }
     };
   }, [id]);
 
@@ -33,7 +35,11 @@ const CreateEditOrganization = () => {
       />
 
       <CustomCard sx={editWrapper}>
-        <CreateEditOrganizationForm role={role} organization={organization} />
+        <CreateEditOrganizationForm
+          role={role}
+          needLoad={id}
+          organization={organization}
+        />
       </CustomCard>
     </Layout>
   );

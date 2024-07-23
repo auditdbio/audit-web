@@ -127,16 +127,22 @@ const UserInfo = ({ role, linkId }) => {
                 <Link to={'/my-organizations'}>
                   <span>Organization</span>
                 </Link>
-                <Box sx={{ display: 'flex', gap: '10px' }}>
+                <Box sx={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
                   {organizations?.map(org => {
                     if (org.avatar) {
                       return (
                         <Link to={`/o/${org.id}`} key={org.id}>
                           <Tooltip title={org.name} placement="top" arrow>
                             <Avatar
-                              src={`${ASSET_URL}/${org.avatar}`}
+                              src={
+                                org.avatar ? `${ASSET_URL}/${org.avatar}` : ''
+                              }
                               sx={{
-                                border: `1.5px solid ${theme.palette.primary.main}`,
+                                border: `1px solid ${
+                                  user.current_role === CUSTOMER
+                                    ? theme.palette.primary.main
+                                    : theme.palette.secondary.main
+                                }`,
                                 padding: '4px',
                               }}
                             />
@@ -148,10 +154,16 @@ const UserInfo = ({ role, linkId }) => {
                         <Link to={`/o/${org.id}`} key={org.id}>
                           <Tooltip title={org.name} placement="top" arrow>
                             <Avatar
-                              src={`${ASSET_URL}/${org.avatar}`}
+                              src={
+                                org.avatar ? `${ASSET_URL}/${org.avatar}` : ''
+                              }
                               sx={{
                                 padding: '4px',
-                                border: `1px solid ${theme.palette.primary.main}`,
+                                border: `1px solid ${
+                                  user.current_role === CUSTOMER
+                                    ? theme.palette.primary.main
+                                    : theme.palette.secondary.main
+                                }`,
                               }}
                             >
                               {org.name}
