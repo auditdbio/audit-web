@@ -138,13 +138,8 @@ const IdentitySetting = () => {
                 {linkedAccounts
                   ?.filter(el => el.name.toLowerCase() === 'github')
                   ?.map(el => (
-                    <>
-                      <Tooltip
-                        key={el.id}
-                        arrow
-                        placement="top"
-                        title="Show in profile"
-                      >
+                    <Box key={el.id} sx={{ display: 'flex' }}>
+                      <Tooltip arrow placement="top" title="Show in profile">
                         <Checkbox
                           key={el.id}
                           checked={el.is_public}
@@ -159,7 +154,7 @@ const IdentitySetting = () => {
                       >
                         <DeleteForeverIcon color={'error'} />
                       </Button>
-                    </>
+                    </Box>
                   ))}
               </Box>
               <Box
@@ -187,13 +182,8 @@ const IdentitySetting = () => {
                 {linkedAccounts
                   ?.filter(el => el.name.toLowerCase() === 'linkedin')
                   ?.map(el => (
-                    <>
-                      <Tooltip
-                        key={el.id}
-                        arrow
-                        placement="top"
-                        title="Show in profile"
-                      >
+                    <Box key={el.id} sx={{ display: 'flex' }}>
+                      <Tooltip arrow placement="top" title="Show in profile">
                         <Checkbox
                           key={el.id}
                           checked={el.is_public}
@@ -208,7 +198,7 @@ const IdentitySetting = () => {
                       >
                         <DeleteForeverIcon color={'error'} />
                       </Button>
-                    </>
+                    </Box>
                   ))}
               </Box>
               <Box

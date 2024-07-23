@@ -131,7 +131,7 @@ const UserInfo = ({ role, linkId }) => {
                   {organizations?.map(org => {
                     if (org.avatar) {
                       return (
-                        <Link to={`/o/${org.id}`}>
+                        <Link to={`/o/${org.id}`} key={org.id}>
                           <Tooltip title={org.name} placement="top" arrow>
                             <Avatar
                               src={`${ASSET_URL}/${org.avatar}`}
@@ -145,7 +145,7 @@ const UserInfo = ({ role, linkId }) => {
                       );
                     } else {
                       return (
-                        <Link to={`/o/${org.id}`}>
+                        <Link to={`/o/${org.id}`} key={org.id}>
                           <Tooltip title={org.name} placement="top" arrow>
                             <Avatar
                               src={`${ASSET_URL}/${org.avatar}`}
