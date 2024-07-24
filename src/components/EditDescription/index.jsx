@@ -75,7 +75,7 @@ const EditDescription = ({ audit, auditRequest, hideChange }) => {
                         fastSave={true}
                         mdProps={{
                           view: { menu: true, md: true, html: !matchXs },
-                          style: markdownSx(matchXs),
+                          style: editMarkdownSx(),
                         }}
                         sx={{
                           border: 'unset',
@@ -88,7 +88,7 @@ const EditDescription = ({ audit, auditRequest, hideChange }) => {
                       setFieldTouched={setFieldTouched}
                       mdProps={{
                         view: { menu: false, md: false, html: true },
-                        style: markdownSx(matchXs),
+                        style: markdownSx(matchXs, values.description),
                       }}
                       sx={{
                         border: 'unset',
@@ -300,7 +300,21 @@ const linkFieldSx = {
   '&::before': eventLine(10),
 };
 
-const markdownSx = matchXs => ({
+const markdownSx = (matchXs, description, editMode) => ({
+  height: !matchXs
+    ? description && description.length > 250
+      ? '550px'
+      : '150px'
+    : description && description.length > 250
+    ? '550px'
+    : '220px',
+  backgroundColor: '#fcfaf6',
+  fontWeight: 500,
+  fontSize: '20px !important',
+  lineHeight: '24px',
+});
+
+const editMarkdownSx = (matchXs, description, editMode) => ({
   height: '550px',
   backgroundColor: '#fcfaf6',
   fontWeight: 500,
@@ -334,19 +348,5 @@ const editBtnSx = theme => ({
 const descriptionSx = full => ({
   '& .rc-md-editor': {
     borderBottom: 'none',
-  },
-});
-
-const readAllButton = theme => ({
-  width: '100%',
-  padding: '8px',
-  fontWeight: 600,
-  fontSize: '16px',
-  color: 'black',
-  textTransform: 'none',
-  lineHeight: '25px',
-  [theme.breakpoints.down('xs')]: {
-    fontSize: '16px',
-    border: 'none',
   },
 });
