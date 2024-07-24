@@ -24,11 +24,7 @@ const WalletConnectButton = ({ linkedAccounts, sx = {} }) => {
   const { setThemeMode, setThemeVariables } = useWeb3ModalTheme();
   const { disconnect } = useDisconnect();
   const { address, isConnected, connector } = useAccount();
-  const {
-    data: signature,
-    isSuccess,
-    signMessage,
-  } = useSignMessage({ message });
+  const { data: signature, isSuccess, signMessage } = useSignMessage();
 
   const handleOpen = async () => {
     await open();
@@ -44,9 +40,7 @@ const WalletConnectButton = ({ linkedAccounts, sx = {} }) => {
   const handleDelete = e => {
     e.stopPropagation();
     dispatch(handleDeleteLinkedAccount(user.id, linked.id));
-    if (isConnected) {
-      disconnect();
-    }
+    disconnect();
   };
 
   useEffect(() => {
@@ -65,7 +59,7 @@ const WalletConnectButton = ({ linkedAccounts, sx = {} }) => {
 
   useEffect(() => {
     if (isConnected && connector && !linked) {
-      signMessage();
+      signMessage({ message });
     }
   }, [isConnected, connector, linked]);
 
