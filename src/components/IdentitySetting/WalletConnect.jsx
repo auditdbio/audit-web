@@ -1,12 +1,16 @@
-import React, { useEffect } from 'react';
-import { createWeb3Modal, defaultWagmiConfig } from '@web3modal/wagmi/react';
-import { WagmiConfig } from 'wagmi';
-import { mainnet } from 'viem/chains';
+import React from 'react';
+import { createWeb3Modal } from '@web3modal/wagmi/react';
+import { defaultWagmiConfig } from '@web3modal/wagmi/react/config';
+import { WagmiProvider } from 'wagmi';
+import { arbitrum, mainnet } from 'wagmi/chains';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import WalletConnectButton from './WalletConnectButton.jsx';
 
 const projectId = import.meta.env.VITE_WALLET_CONNECT_ID;
 const chains = [mainnet];
 const url = import.meta.env.VITE_BASE_URL;
+
+const queryClient = new QueryClient();
 
 const metadata = {
   name: 'AuditDB',
@@ -21,11 +25,15 @@ const WalletConnect = ({ linkedAccounts, sx = {} }) => {
     projectId,
     metadata,
     enableCoinbase: false,
-    enableEmail: false,
     enableInjected: false,
+    auth: {
+      email: false,
+    },
   });
 
   const modal = createWeb3Modal({
+    enableAnalytics: false,
+    enableOnramp: false,
     wagmiConfig,
     projectId,
     chains,
@@ -38,9 +46,11 @@ const WalletConnect = ({ linkedAccounts, sx = {} }) => {
 
   return (
     <>
-      <WagmiConfig config={wagmiConfig}>
-        <WalletConnectButton sx={sx} linkedAccounts={linkedAccounts} />
-      </WagmiConfig>
+      <WagmiProvider config={wagmiConfig}>
+        <QueryClientProvider client={queryClient}>
+          <WalletConnectButton sx={sx} linkedAccounts={linkedAccounts} />
+        </QueryClientProvider>
+      </WagmiProvider>
     </>
   );
 };
