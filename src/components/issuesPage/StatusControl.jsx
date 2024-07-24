@@ -40,7 +40,7 @@ const StatusControl = ({ status, setFieldValue }) => {
       if (status === FIXED) {
         actions.push({ action: VERIFIED_ACTION, text: 'Not Fixed' });
       }
-      if (status === NOT_FIXED) {
+      if (status === NOT_FIXED || status === 'WillNotFix') {
         actions.push({ action: REOPEN_ACTION, text: 'Reopen' });
       }
     } else if (user?.current_role === CUSTOMER) {
@@ -50,7 +50,7 @@ const StatusControl = ({ status, setFieldValue }) => {
           { action: DISCARD_ACTION, text: 'Discard' },
         );
       }
-      if (status === NOT_FIXED) {
+      if ((status === NOT_FIXED) | (status === 'WillNotFix')) {
         actions.push({ action: REOPEN_ACTION, text: 'In Progress' });
       }
       if (status === VERIFICATION) {
