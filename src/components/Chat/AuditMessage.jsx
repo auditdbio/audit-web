@@ -96,7 +96,7 @@ const AuditMessage = ({ message, handleError }) => {
   };
 
   const handleConfirm = () => {
-    dispatch(confirmAudit(data, true));
+    dispatch(confirmAudit(data));
   };
 
   // useEffect(() => {
@@ -120,18 +120,13 @@ const AuditMessage = ({ message, handleError }) => {
         </Box>
       ) : (
         <>
-          <Box
-            sx={{
-              display: 'flex',
-              gap: '10px',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-            }}
-          >
+          <Box sx={infoWrapper}>
             <Typography
               sx={{ fontSize: '14px!important', padding: '0!important' }}
             >
-              ${data.price} per line
+              {data.price
+                ? `$ ${data.price} per line`
+                : `$ ${data.total_cost} total cost`}
             </Typography>
             <Box>
               <Typography
@@ -246,6 +241,7 @@ const AuditMessage = ({ message, handleError }) => {
             </Box>
           </Box>
         )}
+
       {user.current_role === AUDITOR &&
         data.status === 'Request' &&
         message.from?.id !== user.id && (
@@ -254,7 +250,10 @@ const AuditMessage = ({ message, handleError }) => {
               <Button
                 sx={{ textTransform: 'unset', width: '100%' }}
                 variant={'contained'}
-                disabled={user.current_role === AUDITOR}
+                disabled={
+                  user.current_role === AUDITOR &&
+                  data.last_changer?.toLowerCase() !== CUSTOMER
+                }
                 onClick={() => handleConfirm(data)}
               >
                 Accept
@@ -424,6 +423,16 @@ const statusWrapper = theme => ({
     borderRadius: '50%',
   },
   margin: '0',
+});
+
+const infoWrapper = theme => ({
+  display: 'flex',
+  gap: '10px',
+  justifyContent: 'space-between',
+  alignItems: 'center',
+  [theme.breakpoints.down('xs')]: {
+    gap: '5px',
+  },
 });
 
 const modalSx = theme => ({

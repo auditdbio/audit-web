@@ -16,6 +16,7 @@ import {
 import SalarySlider from '../forms/salary-slider/salary-slider.jsx';
 import theme from '../../styles/themes.js';
 import PriceCalculation from '../PriceCalculation.jsx';
+import TotalPrice from '../forms/TotalPrice/TotalPrice.jsx';
 
 const OfferModal = ({
   auditor,
@@ -23,7 +24,7 @@ const OfferModal = ({
   user,
   redirect,
   setError,
-  onClose,
+  onSubmit,
   handleClose,
   stayHere,
 }) => {
@@ -48,6 +49,7 @@ const OfferModal = ({
           customer_id: project?.customer_id,
           last_changer: user.current_role,
           price: project?.price || '',
+          total_cost: project?.total_cost || '',
           description: project?.description || '',
           price_range: {
             from: project?.price || '',
@@ -67,6 +69,7 @@ const OfferModal = ({
             auditor_id: auditor?.user_id,
             auditor_contacts: { ...auditor?.contacts },
             price: parseInt(values.price),
+            total_cost: parseInt(values.total_cost),
             price_range: {
               from: parseInt(values.price),
               to: parseInt(values.price),
@@ -75,7 +78,6 @@ const OfferModal = ({
           if (newValue.auditor_id !== newValue.customer_id) {
             if (stayHere) {
               dispatch(createRequestModal(newValue));
-              handleClose();
             } else {
               dispatch(createRequest(newValue, redirect, stayHere));
             }
@@ -83,8 +85,8 @@ const OfferModal = ({
             setError('You cannot create an audit request for your own project');
           }
           handleClose();
-          if (onClose) {
-            onClose();
+          if (onSubmit) {
+            onSubmit();
           }
         }}
       >
@@ -98,10 +100,11 @@ const OfferModal = ({
                 Add more info
               </Typography>
               <Box sx={{ width: '100%' }}>
-                <Typography variant="caption">
-                  Price per line of code
-                </Typography>
-                <SalarySlider name="price" />
+                {/*<Typography variant="caption">*/}
+                {/*  Price per line of code*/}
+                {/*</Typography>*/}
+                {/*<SalarySlider name="price" />*/}
+                <TotalPrice />
                 {/*<PriceCalculation*/}
                 {/*  price={values.price}*/}
                 {/*  scope={values.scope}*/}
@@ -174,7 +177,7 @@ const MakeOfferSchema = Yup.object().shape({
   customer_contacts: Yup.object(),
   customer_id: Yup.string(),
   opener: Yup.string(),
-  price: Yup.number(),
+  // price: Yup.number(),
   price_range: Yup.object(),
   project_id: Yup.string(),
   scope: Yup.array(),
