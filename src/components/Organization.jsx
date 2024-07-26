@@ -1,4 +1,4 @@
-import React, { useMemo, useEffect } from 'react';
+import React, { useMemo, useEffect, useState } from 'react';
 import {
   Avatar,
   Box,
@@ -40,6 +40,7 @@ import {
   getOrganizationById,
 } from '../redux/actions/organizationAction.js';
 import InfoCard from './custom/info-card.jsx';
+import AuditorSearchModal from './AuditorSearchModal.jsx';
 
 const Organization = () => {
   const { id: linkId } = useParams();
@@ -49,7 +50,8 @@ const Organization = () => {
   const matchXs = useMediaQuery(theme.breakpoints.down('xs'));
   const matchXxs = useMediaQuery(theme.breakpoints.down(590));
   const organization = useSelector(s => s.organization.organization);
-
+  const [showAddUser, setShowAddUser] = useState(false);
+  //
   const {
     customer,
     error: customerError,
@@ -71,6 +73,10 @@ const Organization = () => {
 
   const handleEdit = () => {
     navigate(`/edit-organization/${linkId}`);
+  };
+
+  const handleAddUser = () => {
+    setShowAddUser(!showAddUser);
   };
 
   const data = useMemo(() => {
@@ -119,6 +125,15 @@ const Organization = () => {
                 color={role === CUSTOMER ? 'primary' : 'secondary'}
               />
             </Button>
+            <AuditorSearchModal
+              open={showAddUser}
+              editMode={true}
+              invite={true}
+              handleClose={() => setShowAddUser(false)}
+              handleSubmit={() => console.log(123)}
+              setState={() => console.log(444)}
+              setError={() => console.log('error')}
+            />
             <Box sx={innerWrapper}>
               {/*<Headings*/}
               {/*  title={user?.name || 'Profile'}*/}
@@ -320,17 +335,15 @@ const Organization = () => {
                   }
                 })}
               </Box>
-              <Box
-                sx={{
-                  display: 'flex',
-                  gap: '20px',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  '& button': {
-                    margin: 'unset',
-                  },
-                }}
-              >
+              <Box sx={buttonsWrapper}>
+                <Button
+                  sx={[buttonSx, role === 'auditor' ? submitAuditor : {}]}
+                  variant={'contained'}
+                  onClick={handleAddUser}
+                  {...addTestsLabel('user_edit-button')}
+                >
+                  Add user
+                </Button>
                 <Button
                   sx={[buttonSx, role === 'auditor' ? submitAuditor : {}]}
                   variant={'contained'}
@@ -350,6 +363,19 @@ const Organization = () => {
 };
 
 export default Organization;
+
+const buttonsWrapper = theme => ({
+  display: 'flex',
+  gap: '20px',
+  alignItems: 'center',
+  justifyContent: 'center',
+  '& button': {
+    margin: 'unset',
+  },
+  [theme.breakpoints.down(630)]: {
+    flexDirection: 'column',
+  },
+});
 
 const wrapper = theme => ({
   display: 'flex',

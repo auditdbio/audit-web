@@ -9,7 +9,14 @@ import InputAdornment from '@mui/material/InputAdornment';
 import SearchIcon from '@mui/icons-material/Search';
 import Autocomplete from '@mui/material/Autocomplete';
 import { useEffect, useState } from 'react';
-import { Paper, Slider, Typography } from '@mui/material';
+import {
+  Avatar,
+  Checkbox,
+  FormControlLabel,
+  Paper,
+  Slider,
+  Typography,
+} from '@mui/material';
 import AuditorSearchListBox from './custom/AuditorSearchListBox.jsx';
 import IconButton from '@mui/material/IconButton';
 import { ArrowBack } from '@mui/icons-material';
@@ -28,6 +35,7 @@ import { useParams } from 'react-router-dom';
 import { addTestsLabel } from '../lib/helper.js';
 import CustomSnackbar from './custom/CustomSnackbar.jsx';
 import PriceCalculation from './PriceCalculation.jsx';
+import { ASSET_URL } from '../services/urls.js';
 
 export default function AuditorSearchModal({
   open,
@@ -35,6 +43,7 @@ export default function AuditorSearchModal({
   handleSubmit,
   setState,
   setError,
+  invite,
 }) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -43,6 +52,7 @@ export default function AuditorSearchModal({
   const projectReducer = useSelector(state => state.project);
   const customerReducer = useSelector(state => state.customer);
   const [selectedAuditor, setSelectedAuditor] = useState({});
+  const organization = useSelector(s => s.organization.organization);
 
   const [openDrop, setOpenDrop] = useState(false);
   const [mode, setMode] = useState('search');
@@ -60,7 +70,15 @@ export default function AuditorSearchModal({
 
   const handleOptionChange = option => {
     setSelectedAuditor(option);
-    setMode('offer');
+    if (invite) {
+      setMode('invite');
+    } else {
+      setMode('offer');
+    }
+  };
+
+  const handleInviteUser = () => {
+    console.log({ ...selectedAuditor });
   };
 
   const handleSearch = async () => {
@@ -289,6 +307,62 @@ export default function AuditorSearchModal({
               );
             }}
           </Formik>
+        </DialogContent>
+      )}
+      {mode === 'invite' && (
+        <DialogContent sx={offerDialogStyle}>
+          <Box sx={{ p: '15px' }}>
+            <Typography variant={'h4'} sx={{ fontWeight: 500 }}>
+              Current organization
+            </Typography>
+            <Box
+              sx={{
+                display: 'flex',
+                gap: '10px',
+                alignItems: 'center',
+                marginY: '15px',
+              }}
+            >
+              <Avatar src={`${ASSET_URL}/${organization.avatar}`} />
+              <Typography variant={'h5'}>{organization.name}</Typography>
+            </Box>
+            <Typography variant={'h5'} sx={{ fontWeight: 500 }}>
+              Rules for the selected user in the organization
+            </Typography>
+            <Box
+              sx={{
+                mt: '10px',
+                display: 'flex',
+                justifyContent: 'center',
+                gap: '20px',
+              }}
+            >
+              <FormControlLabel
+                value="Representative"
+                control={<Checkbox />}
+                label="Representative"
+                labelPlacement="top"
+              />
+              <FormControlLabel
+                value="Editor"
+                control={<Checkbox />}
+                label="Editor"
+                labelPlacement="top"
+              />
+            </Box>
+            <Button
+              variant={'contained'}
+              sx={{
+                textTransform: 'unset',
+                display: 'block',
+                marginX: 'auto',
+                marginTop: '20px',
+              }}
+              onClick={handleInviteUser}
+            >
+              Invite
+            </Button>
+          </Box>
         </DialogContent>
       )}
     </Dialog>
