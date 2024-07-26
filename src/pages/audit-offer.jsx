@@ -494,7 +494,7 @@ const AuditOffer = () => {
               conclusion: audit?.conclusion || '',
             }}
             onSubmit={values => {
-              dispatch(editAudit(values));
+              dispatch(editAuditCustomer(values));
             }}
           >
             {({ handleSubmit }) => (
