@@ -57,7 +57,16 @@ const ProjectListCard = ({ project }) => {
           height: '100%',
         }}
       >
-        {project.price > 0 && <Typography>${project.price}</Typography>}
+        {(project.price || project.total_cost) > 0 && (
+          <>
+            <Typography>$ {project.price || project.total_cost}</Typography>
+            {project.total_cost && (
+              <Typography color={'grey'} sx={{ fontSize: '14px', mt: '7px' }}>
+                total cost
+              </Typography>
+            )}
+          </>
+        )}
         <Button
           color="secondary"
           size="small"
@@ -82,6 +91,7 @@ const ProjectListCard = ({ project }) => {
             handleError={handleError}
             isModal={true}
             redirect={true}
+            hideChange={true}
             setError={setErrorState}
           />
         </Box>

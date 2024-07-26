@@ -146,6 +146,7 @@ const AppRoutes = () => {
       <CustomSnackbar
         open={isOpen}
         action={handleReload}
+        buttonText={'Reload'}
         autoHideDuration={50000}
         onClose={() => setIsOpen(false)}
         text="New version is available. Please reload the page"

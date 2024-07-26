@@ -1,5 +1,13 @@
 import React from 'react';
-import { Alert, AlertTitle, Button, Snackbar, Stack } from '@mui/material';
+import {
+  Alert,
+  AlertTitle,
+  Box,
+  Button,
+  Snackbar,
+  Stack,
+  Typography,
+} from '@mui/material';
 import ErrorOutlineOutlinedIcon from '@mui/icons-material/ErrorOutlineOutlined';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import WarningAmberOutlinedIcon from '@mui/icons-material/WarningAmberOutlined';
@@ -12,6 +20,7 @@ const CustomSnackbar = ({
   autoHideDuration,
   severity,
   action,
+  buttonText,
 }) => {
   return (
     <Snackbar
@@ -34,17 +43,19 @@ const CustomSnackbar = ({
           }}
         >
           <AlertTitle sx={{ mb: 0 }}>
-            {text}{' '}
-            {action && (
-              <Button
-                color={'secondary'}
-                variant={'contained'}
-                onClick={action}
-                sx={{ textTransform: 'unset', ml: '5px' }}
-              >
-                Reload
-              </Button>
-            )}
+            <Box sx={{ display: 'flex', gap: '15px', alignItems: 'center' }}>
+              <Typography>{text} </Typography>
+              {action && (
+                <Button
+                  color={'secondary'}
+                  variant={'contained'}
+                  onClick={action}
+                  sx={{ textTransform: 'unset', ml: '5px' }}
+                >
+                  {buttonText}
+                </Button>
+              )}
+            </Box>
           </AlertTitle>
         </Alert>
       </Stack>

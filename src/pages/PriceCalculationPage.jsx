@@ -72,15 +72,7 @@ const PriceCalculationPage = () => {
               console.log(values);
             }}
           >
-            {({
-              handleSubmit,
-              values,
-              setFieldValue,
-              setFieldTouched,
-              dirty,
-              touched,
-              errors,
-            }) => {
+            {({ handleSubmit, values, setFieldTouched }) => {
               return (
                 <Form onSubmit={handleSubmit}>
                   <Box sx={fieldWrapper}>
@@ -92,7 +84,7 @@ const PriceCalculationPage = () => {
                           label="Project links"
                           setFieldTouched={setFieldTouched}
                         />
-                        <GithubSelection noPrivate={true} />
+                        <GithubSelection />
                       </Box>
                       {!matchSm && <ProjectLinksList name="scope" />}
                     </Box>

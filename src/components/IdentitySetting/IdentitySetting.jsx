@@ -18,14 +18,14 @@ import {
   GITHUB_CLIENT_ID,
   LINKEDIN_CLIENT_ID,
   TWITTER_CLIENT_ID,
+  BASE_URL,
 } from '../../services/urls.js';
 import {
   changeAccountVisibility,
   handleDeleteLinkedAccount,
 } from '../../redux/actions/userAction.js';
 import { encodeBase64url } from '../../lib/helper.js';
-
-const BASE_URL = import.meta.env.VITE_BASE_URL;
+import WalletConnect from './WalletConnect.jsx';
 
 const IdentitySetting = () => {
   const dispatch = useDispatch();
@@ -251,6 +251,9 @@ const IdentitySetting = () => {
                     </>
                   ))}
               </Box>
+
+              <WalletConnect sx={cardSx} linkedAccounts={linkedAccounts} />
+
               <Box>
                 <Button
                   sx={[
@@ -264,14 +267,6 @@ const IdentitySetting = () => {
                 </Button>
               </Box>
             </Box>
-            <Box
-              sx={{
-                marginTop: 'auto',
-                marginBottom: '0',
-                display: 'flex',
-                justifyContent: 'center',
-              }}
-            ></Box>
           </Box>
         </Box>
       </Modal>

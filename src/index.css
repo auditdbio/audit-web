@@ -20,6 +20,10 @@ a {
 	text-decoration: none;
 }
 
+w3m-modal {
+	z-index: 1500;
+}
+
 .mobile-buttons .swiper-button-prev::after {
 	font-size: 20px !important;
 	width: 20px !important;
