@@ -168,7 +168,10 @@ const AuditOffer = () => {
   useEffect(() => {
     const allClosed = issues?.every(
       issue =>
-        issue.status === FIXED || issue.status === NOT_FIXED || !issue.include,
+        issue.status === FIXED ||
+        issue.status === NOT_FIXED ||
+        issue.status === 'WillNotFix' ||
+        !issue.include,
     );
     setAllIssuesClosed(allClosed);
   }, [issues]);
