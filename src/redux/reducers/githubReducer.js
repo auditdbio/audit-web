@@ -22,6 +22,9 @@ import {
   GET_MY_PRIVATE_GITHUB_ORGANIZATION,
   NEED_TO_AUTH_GITHUB,
   SWITCH_REPO,
+  NOT_FOUND_REPOS,
+  CLEAR_NOT_FOUND,
+  CLEAR_NOT_FOUND_ERROR,
 } from '../actions/types.js';
 
 const initialState = {
@@ -42,6 +45,7 @@ const initialState = {
   tag: '',
   tags: [],
   tab: 'branches',
+  notFound: false,
 };
 
 export const githubReducer = (state = initialState, action) => {
@@ -52,6 +56,16 @@ export const githubReducer = (state = initialState, action) => {
       return {
         ...state,
         commits: action.payload,
+      };
+    case NOT_FOUND_REPOS:
+      return {
+        ...state,
+        notFound: true,
+      };
+    case CLEAR_NOT_FOUND_ERROR:
+      return {
+        ...state,
+        notFound: false,
       };
     case SWITCH_GITHUB_TAB:
       return {

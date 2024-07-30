@@ -37,7 +37,11 @@ const AuditInfoReqPage = () => {
   if (auditRequest?.id && !notFound) {
     return (
       <Layout>
-        <AuditInfo audit={auditRequest} auditRequest={auditRequest} />
+        <AuditInfo
+          audit={auditRequest}
+          auditRequest={auditRequest}
+          request={true}
+        />
       </Layout>
     );
   }

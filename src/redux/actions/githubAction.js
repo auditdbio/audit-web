@@ -16,6 +16,7 @@ import {
   GET_TAGS,
   GET_TOTAL_COMMITS,
   NEED_TO_AUTH_GITHUB,
+  NOT_FOUND_REPOS,
 } from './types.js';
 import axios from 'axios';
 import Cookies from 'js-cookie';
@@ -120,9 +121,13 @@ export const getDefaultBranch = repoOwner => {
         Authorization: `Bearer ${token}`,
         'Cache-Control': 'no-cache',
       },
-    }).then(({ data }) => {
-      dispatch({ type: GET_DEFAULT_BRANCH, payload: data.default_branch });
-    });
+    })
+      .then(({ data }) => {
+        dispatch({ type: GET_DEFAULT_BRANCH, payload: data.default_branch });
+      })
+      .catch(error => {
+        dispatch({ type: NOT_FOUND_REPOS });
+      });
   };
 };
 

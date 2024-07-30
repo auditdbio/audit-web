@@ -28,6 +28,7 @@ import { useParams } from 'react-router-dom';
 import { addTestsLabel } from '../lib/helper.js';
 import CustomSnackbar from './custom/CustomSnackbar.jsx';
 import PriceCalculation from './PriceCalculation.jsx';
+import TotalPrice from './forms/TotalPrice/TotalPrice.jsx';
 
 export default function AuditorSearchModal({
   open,
@@ -159,6 +160,7 @@ export default function AuditorSearchModal({
                 from: 0,
                 to: 0,
               },
+              total_cost: 0,
               project_id: projectReducer?.recentProject?.id,
               scope: projectReducer?.recentProject?.scope,
               time: {
@@ -173,6 +175,7 @@ export default function AuditorSearchModal({
               await handleSubmit();
               const newValue = {
                 ...values,
+                total_cost: parseInt(values.total_cost),
                 price: parseInt(values.price),
                 price_range: {
                   from: parseInt(values.price),
@@ -250,30 +253,7 @@ export default function AuditorSearchModal({
                           />
                         </LocalizationProvider>
                       </Box>
-                      <Typography style={rateLabel()}>
-                        Price per line of code
-                      </Typography>
-                      <Box
-                        sx={{
-                          display: 'flex',
-                          justifyContent: 'space-between',
-                          alignItems: 'center',
-                          marginY: '20px',
-                          '& .salary-slider': {
-                            width: '100%',
-                          },
-                        }}
-                      >
-                        <SalarySlider name={'price'} />
-                      </Box>
-                      <PriceCalculation
-                        price={values.price}
-                        scope={values.scope}
-                        sx={{
-                          mb: '15px',
-                          '& .head': { justifyContent: 'center' },
-                        }}
-                      />
+                      <TotalPrice />
                       <Box sx={{ justifyContent: 'center', display: 'flex' }}>
                         <Button
                           sx={sendButton}
@@ -300,7 +280,7 @@ const CustomPaper = props => {
 };
 
 const MakeOfferSchema = Yup.object().shape({
-  price: Yup.number().required(),
+  // price: Yup.number(),
   price_range: Yup.object(),
   project_id: Yup.string(),
   time_frame: Yup.string(),
