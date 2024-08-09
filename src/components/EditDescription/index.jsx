@@ -26,6 +26,7 @@ const EditDescription = ({ audit, auditRequest, hideChange }) => {
   const [showComment, setShowComment] = useState(false);
   const descriptionRef = useRef();
   const dispatch = useDispatch();
+  const [editorRef, setEditorRef] = useState(null);
   const [showReadMoreButton, setShowReadMoreButton] = useState(false);
   const matchXs = useMediaQuery(theme.breakpoints.down('xs'));
   const [addLinkField, setAddLinkField] = useState(false);
@@ -43,6 +44,7 @@ const EditDescription = ({ audit, auditRequest, hideChange }) => {
     setEditMode(true);
   };
 
+  // custom-html-style
   return (
     <>
       <Box sx={descriptionSx}>
@@ -90,6 +92,7 @@ const EditDescription = ({ audit, auditRequest, hideChange }) => {
                         view: { menu: false, md: false, html: true },
                         style: markdownSx(matchXs, values.description),
                       }}
+                      setMdRef={setEditorRef}
                       sx={{
                         border: 'unset',
                       }}
@@ -301,13 +304,7 @@ const linkFieldSx = {
 };
 
 const markdownSx = (matchXs, description, editMode) => ({
-  height: !matchXs
-    ? description && description.length > 250
-      ? '550px'
-      : '150px'
-    : description && description.length > 250
-    ? '550px'
-    : '220px',
+  maxHeight: '550px',
   backgroundColor: '#fcfaf6',
   fontWeight: 500,
   fontSize: '20px !important',
