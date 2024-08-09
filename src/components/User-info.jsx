@@ -25,6 +25,7 @@ import WalletConnectIcon from './icons/WalletConnectIcon.jsx';
 import { clearUserMessages } from '../redux/actions/userAction.js';
 import CustomSnackbar from './custom/CustomSnackbar.jsx';
 import Headings from '../router/Headings.jsx';
+import OrganizationList from './OrganizationList/OrganizationList.jsx';
 
 const UserInfo = ({ role, linkId }) => {
   const dispatch = useDispatch();
@@ -32,6 +33,7 @@ const UserInfo = ({ role, linkId }) => {
   const matchXs = useMediaQuery(theme.breakpoints.down('xs'));
   const matchXxs = useMediaQuery(theme.breakpoints.down(850));
   const organizations = useSelector(s => s.organization.organizations);
+  const invites = useSelector(s => s.organization.invites);
 
   const {
     customer,
@@ -125,56 +127,16 @@ const UserInfo = ({ role, linkId }) => {
                   },
                 }}
               >
+                {!!invites.length && (
+                  <>
+                    <span>Invites</span>
+                    <OrganizationList organizations={invites} />
+                  </>
+                )}
                 <Link to={'/my-organizations'}>
                   <span>Organization</span>
                 </Link>
-                <Box sx={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
-                  {organizations?.map(org => {
-                    if (org.avatar) {
-                      return (
-                        <Link to={`/o/${org.id}`} key={org.id}>
-                          <Tooltip title={org.name} placement="top" arrow>
-                            <Avatar
-                              src={
-                                org.avatar ? `${ASSET_URL}/${org.avatar}` : ''
-                              }
-                              sx={{
-                                border: `1px solid ${
-                                  user.current_role === CUSTOMER
-                                    ? theme.palette.primary.main
-                                    : theme.palette.secondary.main
-                                }`,
-                                padding: '4px',
-                              }}
-                            />
-                          </Tooltip>
-                        </Link>
-                      );
-                    } else {
-                      return (
-                        <Link to={`/o/${org.id}`} key={org.id}>
-                          <Tooltip title={org.name} placement="top" arrow>
-                            <Avatar
-                              src={
-                                org.avatar ? `${ASSET_URL}/${org.avatar}` : ''
-                              }
-                              sx={{
-                                padding: '4px',
-                                border: `1px solid ${
-                                  user.current_role === CUSTOMER
-                                    ? theme.palette.primary.main
-                                    : theme.palette.secondary.main
-                                }`,
-                              }}
-                            >
-                              {org.name}
-                            </Avatar>
-                          </Tooltip>
-                        </Link>
-                      );
-                    }
-                  })}
-                </Box>
+                <OrganizationList organizations={organizations} />
               </Box>
             )}
           </Box>

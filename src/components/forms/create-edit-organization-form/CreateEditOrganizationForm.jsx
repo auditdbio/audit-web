@@ -23,11 +23,20 @@ import {
   createOrganization,
   updateOrganization,
 } from '../../../redux/actions/organizationAction.js';
+import Radio from '@mui/material/Radio';
+import RadioGroup from '@mui/material/RadioGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import FormControl from '@mui/material/FormControl';
+import FormLabel from '@mui/material/FormLabel';
 
 const GoBack = ({ role, newLinkId }) => {
   const navigate = useNavigate();
   const handleGoBack = () => {
-    navigate(-1);
+    if (newLinkId) {
+      navigate(`/${role[0]}/${newLinkId}`);
+    } else {
+      navigate(-1);
+    }
   };
   return (
     <Button sx={backBtnSx} onClick={handleGoBack}>
@@ -36,7 +45,12 @@ const GoBack = ({ role, newLinkId }) => {
   );
 };
 
-const CreateEditOrganizationForm = ({ role, needLoad, organization }) => {
+const CreateEditOrganizationForm = ({
+  role,
+  needLoad,
+  organization,
+  newLinkId,
+}) => {
   const matchSm = useMediaQuery(theme.breakpoints.down('sm'));
   const matchXs = useMediaQuery(theme.breakpoints.down('xs'));
   const dispatch = useDispatch();
@@ -54,17 +68,18 @@ const CreateEditOrganizationForm = ({ role, needLoad, organization }) => {
         initialValues={{
           id: organization.id || '',
           avatar: organization.avatar || '',
-          // last_name: data?.last_name || getPrefilledLastName(),
           contacts: {
             telegram: organization?.contacts?.telegram || '',
             email: organization?.contacts?.email || '',
             public_contacts: organization.contacts?.public_contacts || false,
           },
           name: organization.name || '',
-          about: organization?.about || '',
+          // about: organization?.about || '',
           company: organization?.company || '',
           organization_type:
-            organization.organization_type || user.current_role,
+            organization.organization_type ||
+            user.current_role.slice(0, 1).toUpperCase() +
+              user.current_role.slice(1),
         }}
         validationSchema={EditOrganizationSchema}
         validateOnBlur={false}
@@ -118,7 +133,7 @@ const CreateEditOrganizationForm = ({ role, needLoad, organization }) => {
           return (
             <Form onSubmit={handleSubmit}>
               <Box sx={wrapper}>
-                <GoBack role={role} />
+                <GoBack role={role} newLinkId={newLinkId} />
                 <Box sx={avatarWrapper}>
                   <Box
                     sx={{
@@ -200,14 +215,61 @@ const CreateEditOrganizationForm = ({ role, needLoad, organization }) => {
                     </Box>
                   </Box>
                   <Box sx={fieldWrapper}>
-                    <SimpleField
-                      name="about"
-                      label="About"
-                      size={matchXs ? 'small' : 'medium'}
-                      emptyPH
-                      multiline
-                      rows={3}
-                    />
+                    {/*<SimpleField*/}
+                    {/*  name="about"*/}
+                    {/*  label="About"*/}
+                    {/*  size={matchXs ? 'small' : 'medium'}*/}
+                    {/*  emptyPH*/}
+                    {/*  multiline*/}
+                    {/*  rows={3}*/}
+                    {/*/>*/}
+                    <FormControl
+                      onChange={e =>
+                        setFieldValue('organization_type', e.target.value)
+                      }
+                      disabled={!!organization?.id}
+                    >
+                      <FormLabel
+                        color={
+                          user.current_role === CUSTOMER
+                            ? 'primary'
+                            : 'secondary'
+                        }
+                      >
+                        Organization type
+                      </FormLabel>
+                      <RadioGroup
+                        defaultValue={values.organization_type}
+                        name="radio-buttons-group"
+                      >
+                        <FormControlLabel
+                          value={'Customer'}
+                          control={
+                            <Radio
+                              color={
+                                user.current_role === CUSTOMER
+                                  ? 'primary'
+                                  : 'secondary'
+                              }
+                            />
+                          }
+                          label="Customer"
+                        />
+                        <FormControlLabel
+                          value={'Auditor'}
+                          control={
+                            <Radio
+                              color={
+                                user.current_role === CUSTOMER
+                                  ? 'primary'
+                                  : 'secondary'
+                              }
+                            />
+                          }
+                          label="Auditor"
+                        />
+                      </RadioGroup>
+                    </FormControl>
                   </Box>
                 </Box>
               </Box>

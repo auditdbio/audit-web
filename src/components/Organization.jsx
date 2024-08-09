@@ -23,7 +23,7 @@ import { AUDITOR, CUSTOMER } from '../redux/actions/types.js';
 import TagsList from './tagsList';
 import { ASSET_URL } from '../services/urls.js';
 import MobileTagsList from './MobileTagsList/index.jsx';
-import { addTestsLabel, capitalize } from '../lib/helper.js';
+import { addTestsLabel, capitalize, isAuth } from '../lib/helper.js';
 import ShareProfileButton from './custom/ShareProfileButton.jsx';
 import IdentitySetting from './IdentitySetting/IdentitySetting.jsx';
 import LinkedinIcon from './icons/LinkedinIcon.jsx';
@@ -36,22 +36,27 @@ import DeleteForeverRoundedIcon from '@mui/icons-material/DeleteForeverRounded';
 import Layout from '../styles/Layout.jsx';
 import { CustomCard } from './custom/Card.jsx';
 import {
+  acceptInvites,
   clearOrganization,
+  deleteInvites,
+  deleteUserFromOrganization,
   getOrganizationById,
 } from '../redux/actions/organizationAction.js';
 import InfoCard from './custom/info-card.jsx';
 import AuditorSearchModal from './AuditorSearchModal.jsx';
+import ConfirmModal from './modal/ConfirmModal.jsx';
 
-const Organization = () => {
-  const { id: linkId } = useParams();
+const Organization = ({ linkId }) => {
   const role = useSelector(s => s.user.user.current_role);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const matchXs = useMediaQuery(theme.breakpoints.down('xs'));
   const matchXxs = useMediaQuery(theme.breakpoints.down(590));
   const organization = useSelector(s => s.organization.organization);
+  const invites = useSelector(s => s.organization.invites);
   const [showAddUser, setShowAddUser] = useState(false);
-  //
+  const [openConfirm, setIsOpenConfirm] = useState(false);
+
   const {
     customer,
     error: customerError,
@@ -86,12 +91,18 @@ const Organization = () => {
       return customer;
     }
   }, [role, customer, auditor]);
-  //
-  useEffect(() => {
-    if (linkId && data?.link_id && data?.link_id !== linkId) {
-      navigate(`/${role[0]}/${data.link_id}`);
-    }
-  }, [linkId, data]);
+
+  const inviteMe = useMemo(() => {
+    return !!invites.find(el => el.id === organization.id);
+  }, [organization.id, invites]);
+
+  const isMyOrg = useMemo(() => {
+    return !!(
+      isAuth() &&
+      organization?.id &&
+      organization?.owner.user_id === user.id
+    );
+  }, [organization]);
 
   if (!organization.id) {
     return (
@@ -119,7 +130,7 @@ const Organization = () => {
                 position: 'absolute',
                 minWidth: 'unset',
               }}
-              onClick={() => navigate(-1)}
+              onClick={() => navigate('/my-organizations')}
             >
               <ArrowBackIcon
                 color={role === CUSTOMER ? 'primary' : 'secondary'}
@@ -129,9 +140,9 @@ const Organization = () => {
               open={showAddUser}
               editMode={true}
               invite={true}
-              handleClose={() => setShowAddUser(false)}
-              handleSubmit={() => console.log(123)}
-              setState={() => console.log(444)}
+              handleClose={() => {
+                setShowAddUser(false);
+              }}
               setError={() => console.log('error')}
             />
             <Box sx={innerWrapper}>
@@ -231,9 +242,21 @@ const Organization = () => {
                                 borderBottom: '1px solid rgba(0, 0, 0, 0.23)',
                               }}
                               secondaryAction={
-                                <Button>
-                                  <DeleteForeverRoundedIcon color={'error'} />
-                                </Button>
+                                organization.owner.user_id === user.id &&
+                                value.user_id !== user.id && (
+                                  <Button
+                                    onClick={() => {
+                                      dispatch(
+                                        deleteUserFromOrganization(
+                                          organization.id,
+                                          value.user_id,
+                                        ),
+                                      );
+                                    }}
+                                  >
+                                    <DeleteForeverRoundedIcon color={'error'} />
+                                  </Button>
+                                )
                               }
                               disablePadding
                             >
@@ -242,7 +265,11 @@ const Organization = () => {
                                   <Avatar
                                     sx={{ width: '30px', height: '30px' }}
                                     alt={`Avatar n°${value + 1}`}
-                                    src={`${ASSET_URL}/${value.avatar}`}
+                                    src={
+                                      value.avatar
+                                        ? `${ASSET_URL}/${value.avatar}`
+                                        : ''
+                                    }
                                   />
                                 </ListItemAvatar>
                                 <ListItemText
@@ -335,25 +362,55 @@ const Organization = () => {
                   }
                 })}
               </Box>
-              <Box sx={buttonsWrapper}>
-                <Button
-                  sx={[buttonSx, role === 'auditor' ? submitAuditor : {}]}
-                  variant={'contained'}
-                  onClick={handleAddUser}
-                  {...addTestsLabel('user_edit-button')}
-                >
-                  Add user
-                </Button>
-                <Button
-                  sx={[buttonSx, role === 'auditor' ? submitAuditor : {}]}
-                  variant={'contained'}
-                  onClick={handleEdit}
-                  {...addTestsLabel('user_edit-button')}
-                >
-                  Edit
-                </Button>
-                {/*<IdentitySetting />*/}
-              </Box>
+              {isAuth() && isMyOrg && (
+                <Box sx={buttonsWrapper}>
+                  <Button
+                    sx={[buttonSx, role === 'auditor' ? submitAuditor : {}]}
+                    variant={'contained'}
+                    onClick={handleAddUser}
+                    {...addTestsLabel('user_edit-button')}
+                  >
+                    Add user
+                  </Button>
+                  <Button
+                    sx={[buttonSx, role === 'auditor' ? submitAuditor : {}]}
+                    variant={'contained'}
+                    onClick={handleEdit}
+                    {...addTestsLabel('user_edit-button')}
+                  >
+                    Edit
+                  </Button>
+                  {/*<IdentitySetting />*/}
+                </Box>
+              )}
+              {inviteMe && !isMyOrg && (
+                <Box sx={buttonsWrapper}>
+                  <Button
+                    sx={[buttonSx, role === 'auditor' ? submitAuditor : {}]}
+                    variant={'contained'}
+                    onClick={() => dispatch(acceptInvites(organization.id))}
+                    {...addTestsLabel('user_edit-button')}
+                  >
+                    Accept
+                  </Button>
+                  <Button
+                    sx={[buttonSx, role === 'auditor' ? submitAuditor : {}]}
+                    variant={'contained'}
+                    onClick={() => setIsOpenConfirm(true)}
+                    {...addTestsLabel('user_edit-button')}
+                  >
+                    Decline
+                  </Button>
+                </Box>
+              )}
+              <ConfirmModal
+                handleAgree={() => {
+                  dispatch(deleteInvites(organization.id, user.id));
+                  setIsOpenConfirm(false);
+                }}
+                handleDisagree={() => setIsOpenConfirm(false)}
+                isOpen={openConfirm}
+              />
             </Box>
           </InfoCard>
         </CustomCard>

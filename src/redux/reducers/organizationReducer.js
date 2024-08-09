@@ -4,6 +4,8 @@ import {
   GET_ORGANIZATION_BY_ID,
   UPDATE_ORGANIZATION,
   CLEAR_ORGANIZATION,
+  DELETE_INVITES,
+  ACCEPT_INVITE,
 } from '../actions/types.js';
 
 const initialState = {
@@ -11,6 +13,7 @@ const initialState = {
   own: [],
   includeMe: [],
   organization: {},
+  invites: [],
 };
 
 export const organizationReducer = (state = initialState, action) => {
@@ -21,6 +24,7 @@ export const organizationReducer = (state = initialState, action) => {
         organizations: [...action.payload.owner, ...action.payload.member],
         own: action.payload.owner,
         includeMe: action.payload.member,
+        invites: action.payload.invites,
       };
     case CREATE_ORGANIZATION:
       return {
@@ -44,6 +48,17 @@ export const organizationReducer = (state = initialState, action) => {
       return {
         ...state,
         organization: action.payload,
+      };
+    case DELETE_INVITES:
+      return {
+        ...state,
+        invites: state.invites.filter(el => el.id !== action.payload.id),
+      };
+    case ACCEPT_INVITE:
+      return {
+        ...state,
+        invites: state.invites.filter(el => el.id !== action.payload.id),
+        organizations: [...state.organizations, action.payload],
       };
     case CLEAR_ORGANIZATION:
       return {

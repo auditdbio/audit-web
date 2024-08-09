@@ -9,12 +9,15 @@ import {
   clearOrganization,
   getOrganizationById,
 } from '../redux/actions/organizationAction.js';
+import ChangeLinkId from '../components/forms/change-link-id/index.jsx';
 
 const CreateEditOrganization = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
   const role = useSelector(s => s.user.user.current_role);
   const organization = useSelector(s => s.organization.organization);
+  const [newLinkId, setNewLinkId] = useState(null);
+  const [showChangeLinkId, setShowChangeLinkId] = useState(false);
 
   useEffect(() => {
     if (id) {
@@ -38,8 +41,10 @@ const CreateEditOrganization = () => {
         <CreateEditOrganizationForm
           role={role}
           needLoad={id}
+          newLinkId={newLinkId}
           organization={organization}
         />
+        <ChangeLinkId org={organization} setNewLinkId={setNewLinkId} />
       </CustomCard>
     </Layout>
   );

@@ -30,6 +30,7 @@ import {
   GET_AUDIT_REQUEST_HISTORY,
   READ_AUDIT_HISTORY,
   READ_AUDIT_REQUEST_HISTORY,
+  GET_ORGANIZATION_AUDIT_REQUESTS,
 } from '../actions/types.js';
 
 const initialState = {
@@ -45,6 +46,7 @@ const initialState = {
   approvedHistory: null,
   unreadHistory: null,
   auditRequestHistory: [],
+  organizationAuditRequests: [],
 };
 export const auditReducer = (state = initialState, action) => {
   switch (action.type) {
@@ -78,6 +80,14 @@ export const auditReducer = (state = initialState, action) => {
         audits: state.audits.filter(
           request => request.id !== action.payload.id,
         ),
+      };
+    case GET_ORGANIZATION_AUDIT_REQUESTS:
+      return {
+        ...state,
+        organizationAuditRequests: [
+          ...state.organizationAuditRequests,
+          ...action.payload,
+        ],
       };
     case EDIT_AUDIT:
       return {

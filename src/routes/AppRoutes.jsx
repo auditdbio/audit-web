@@ -56,7 +56,10 @@ import UserProjects from '../pages/UserProjects.jsx';
 import PriceCalculationPage from '../pages/PriceCalculationPage.jsx';
 import Organization from '../components/Organization.jsx';
 import CreateEditOrganization from '../pages/CreateEditOrganization.jsx';
-import { getMyOrganizations } from '../redux/actions/organizationAction.js';
+import {
+  getAuditRequests,
+  getMyOrganizations,
+} from '../redux/actions/organizationAction.js';
 import MyOrganization from '../pages/MyOrganizations.jsx';
 
 const AppRoutes = () => {
@@ -67,6 +70,7 @@ const AppRoutes = () => {
   const dispatch = useDispatch();
   const { reconnect, connected, needUpdate } = useSelector(s => s.websocket);
   const [isOpen, setIsOpen] = React.useState(false);
+  const organizations = useSelector(s => s.organization.organizations);
 
   useEffect(() => {
     if (isAuth()) {
@@ -78,7 +82,15 @@ const AppRoutes = () => {
     if (isAuth()) {
       dispatch(getMyOrganizations());
     }
-  }, [isAuth()]);
+  }, [isAuth(), currentRole]);
+
+  useEffect(() => {
+    if (organizations.length) {
+      organizations.map(org => {
+        dispatch(getAuditRequests(org.id));
+      });
+    }
+  }, [organizations]);
 
   useEffect(() => {
     if (isAuth()) {
@@ -350,15 +362,6 @@ const AppRoutes = () => {
           element={
             <PrivateRoute auth={{ isAuthenticated: isAuth() }}>
               <CreateEditOrganization />
-            </PrivateRoute>
-          }
-        />
-
-        <Route
-          path="/o/:id"
-          element={
-            <PrivateRoute auth={{ isAuthenticated: isAuth() }}>
-              <Organization />
             </PrivateRoute>
           }
         />

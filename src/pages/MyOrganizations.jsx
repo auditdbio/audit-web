@@ -88,7 +88,7 @@ const MyOrganization = () => {
                     >
                       {own?.map(org => {
                         return (
-                          <Link to={`/o/${org.id}`} key={org.id}>
+                          <Link to={`/o/${org.link_id}`} key={org.id}>
                             <Tooltip title={org.name} placement="top" arrow>
                               <Box sx={organizationSx}>
                                 <Avatar
@@ -110,7 +110,7 @@ const MyOrganization = () => {
                     </Box>
                   </Box>
                 )}
-                {!!own.length && (
+                {!!organizations.length && (
                   <Box sx={{ width: '100%' }}>
                     <Typography variant={'h4'}>Organizations</Typography>
                     <Box

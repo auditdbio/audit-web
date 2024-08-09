@@ -71,9 +71,6 @@ const AuditInfo = ({
   const { successMessage, error } = useSelector(s => s.audits);
   const { user } = useSelector(s => s.user);
   const { chatList } = useSelector(s => s.chat);
-  const [editPrice, setEditPrice] = useState(false);
-  const [priceValue, setPriceValue] = useState(audit?.price);
-  const [editTags, setEditTags] = useState(false);
 
   const handleConfirm = () => {
     dispatch(confirmAudit(audit, true));
@@ -211,61 +208,138 @@ const AuditInfo = ({
       </Box>
       <Box sx={{ maxWidth: '100%', width: '100%' }}>
         <Box sx={contentWrapper}>
-          <Box sx={userWrapper}>
-            <Avatar
-              src={audit?.avatar ? `${ASSET_URL}/${audit?.avatar}` : ''}
-              alt="auditor photo"
-            />
-            <Box sx={{ display: 'grid', textAlign: 'center' }}>
-              <Tooltip title={audit?.auditor_first_name} arrow placement="top">
-                <Typography noWrap={true} sx={userNameWrapper}>
-                  {audit?.auditor_first_name}
+          {audit.auditor_organization?.id ? (
+            <Box sx={userWrapper}>
+              <Avatar
+                src={
+                  audit?.auditor_organization.avatar
+                    ? `${ASSET_URL}/${audit?.auditor_organization?.avatar}`
+                    : ''
+                }
+                alt="auditor photo"
+              />
+              <Box sx={{ display: 'grid', textAlign: 'center' }}>
+                <Typography
+                  noWrap={true}
+                  sx={{ fontSize: '14px', color: 'grey!important' }}
+                >
+                  Organization:
                 </Typography>
-              </Tooltip>
-              <Tooltip title={audit?.auditor_last_name} arrow placement="top">
-                <Typography noWrap={true} sx={userNameWrapper}>
-                  {audit?.auditor_last_name}
-                </Typography>
-              </Tooltip>
+                <Tooltip
+                  title={audit?.auditor_organization.name}
+                  arrow
+                  placement="top"
+                >
+                  <Typography noWrap={true} sx={userNameWrapper}>
+                    {audit?.auditor_organization.name}
+                  </Typography>
+                </Tooltip>
+              </Box>
             </Box>
-          </Box>
+          ) : (
+            <Box sx={userWrapper}>
+              <Avatar
+                src={audit?.avatar ? `${ASSET_URL}/${audit?.avatar}` : ''}
+                alt="auditor photo"
+              />
+              <Box sx={{ display: 'grid', textAlign: 'center' }}>
+                <Tooltip
+                  title={audit?.auditor_first_name}
+                  arrow
+                  placement="top"
+                >
+                  <Typography noWrap={true} sx={userNameWrapper}>
+                    {audit?.auditor_first_name}
+                  </Typography>
+                </Tooltip>
+                <Tooltip title={audit?.auditor_last_name} arrow placement="top">
+                  <Typography noWrap={true} sx={userNameWrapper}>
+                    {audit?.auditor_last_name}
+                  </Typography>
+                </Tooltip>
+              </Box>
+            </Box>
+          )}
           <Box sx={userInfoWrapper}>
-            <Box sx={infoWrapper}>
-              <span>E-mail:</span>
-              <Box sx={{ display: 'grid' }}>
-                {!!audit?.auditor_contacts?.email ? (
-                  <Tooltip
-                    title={audit?.auditor_contacts?.email}
-                    arrow
-                    placement="top"
-                  >
-                    <Typography noWrap={true}>
-                      {audit?.auditor_contacts?.email}
-                    </Typography>
-                  </Tooltip>
-                ) : (
-                  <Typography noWrap={true}>Not specified</Typography>
-                )}
-              </Box>
-            </Box>
-            <Box sx={infoWrapper}>
-              <span>Telegram:</span>
-              <Box sx={{ display: 'grid' }}>
-                {!!audit?.auditor_contacts?.telegram ? (
-                  <Tooltip
-                    title={audit?.auditor_contacts?.telegram}
-                    arrow
-                    placement="top"
-                  >
-                    <Typography noWrap={true}>
-                      {audit?.auditor_contacts?.telegram}
-                    </Typography>
-                  </Tooltip>
-                ) : (
-                  <Typography noWrap={true}>Not specified</Typography>
-                )}
-              </Box>
-            </Box>
+            {audit.auditor_organization?.id ? (
+              <>
+                <Box sx={infoWrapper}>
+                  <span>E-mail:</span>
+                  <Box sx={{ display: 'grid' }}>
+                    {!!audit?.auditor_organization?.contacts?.email ? (
+                      <Tooltip
+                        title={audit?.auditor_organization?.contacts?.email}
+                        arrow
+                        placement="top"
+                      >
+                        <Typography noWrap={true}>
+                          {audit?.auditor_organization?.contacts?.email}
+                        </Typography>
+                      </Tooltip>
+                    ) : (
+                      <Typography noWrap={true}>Not specified</Typography>
+                    )}
+                  </Box>
+                </Box>
+                <Box sx={infoWrapper}>
+                  <span>Telegram:</span>
+                  <Box sx={{ display: 'grid' }}>
+                    {!!audit?.auditor_organization?.contacts?.telegram ? (
+                      <Tooltip
+                        title={audit?.auditor_organization?.contacts?.telegram}
+                        arrow
+                        placement="top"
+                      >
+                        <Typography noWrap={true}>
+                          {audit?.auditor_organization?.contacts?.telegram}
+                        </Typography>
+                      </Tooltip>
+                    ) : (
+                      <Typography noWrap={true}>Not specified</Typography>
+                    )}
+                  </Box>
+                </Box>
+              </>
+            ) : (
+              <>
+                <Box sx={infoWrapper}>
+                  <span>E-mail:</span>
+                  <Box sx={{ display: 'grid' }}>
+                    {!!audit?.auditor_contacts?.email ? (
+                      <Tooltip
+                        title={audit?.auditor_contacts?.email}
+                        arrow
+                        placement="top"
+                      >
+                        <Typography noWrap={true}>
+                          {audit?.auditor_contacts?.email}
+                        </Typography>
+                      </Tooltip>
+                    ) : (
+                      <Typography noWrap={true}>Not specified</Typography>
+                    )}
+                  </Box>
+                </Box>
+                <Box sx={infoWrapper}>
+                  <span>Telegram:</span>
+                  <Box sx={{ display: 'grid' }}>
+                    {!!audit?.auditor_contacts?.telegram ? (
+                      <Tooltip
+                        title={audit?.auditor_contacts?.telegram}
+                        arrow
+                        placement="top"
+                      >
+                        <Typography noWrap={true}>
+                          {audit?.auditor_contacts?.telegram}
+                        </Typography>
+                      </Tooltip>
+                    ) : (
+                      <Typography noWrap={true}>Not specified</Typography>
+                    )}
+                  </Box>
+                </Box>
+              </>
+            )}
             <Box
               sx={{
                 display: 'flex',

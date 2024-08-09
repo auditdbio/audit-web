@@ -13,6 +13,12 @@ import {
   Modal,
   Tooltip,
   Divider,
+  Popover,
+  Avatar,
+  ListItemAvatar,
+  ListItem,
+  ListItemText,
+  List,
 } from '@mui/material';
 import { CustomCard } from './custom/Card.jsx';
 import theme from '../styles/themes.js';
@@ -40,6 +46,8 @@ import EditDescription from './EditDescription/index.jsx';
 import DescriptionHistory from './DescriptionHistory/index.jsx';
 import EditTags from './EditDescription/EditTags.jsx';
 import EditPrice from './EditDescription/EditPrice.jsx';
+import { ASSET_URL } from '../services/urls.js';
+import ListItemButton from '@mui/material/ListItemButton';
 
 const AuditRequestInfo = ({
   project,
@@ -54,10 +62,13 @@ const AuditRequestInfo = ({
   const navigate = useNavigate();
   const matchXs = useMediaQuery(theme.breakpoints.down('xs'));
   const [open, setOpen] = useState(false);
+  const [anchorEl, setAnchorEl] = useState(null);
   const [confirmDeclineOpen, setConfirmDeclineOpen] = useState(false);
   const [showAcceptButton, setShowAcceptButton] = useState(true);
-
+  const [visible, setVisible] = useState(false);
+  const organizations = useSelector(state => state.organization.organizations);
   const { auditor } = useSelector(s => s.auditor);
+  const [auditorData, setAuditorData] = useState({});
   const { auditRequest, auditRequests, successMessage } = useSelector(
     s => s.audits,
   );
@@ -68,9 +79,36 @@ const AuditRequestInfo = ({
   const { successMessage: auditSuccessMessage, error: auditError } =
     useSelector(s => s.audits);
 
-  const handleOpen = () => {
+  const handleClick = event => {
+    setAnchorEl(event.currentTarget);
+    setVisible(true);
+  };
+
+  const handleCloseAnchor = () => {
+    setAnchorEl(null);
+  };
+
+  const anchorOrigin = {
+    vertical: visible ? 'bottom' : 'top',
+    horizontal: 'left',
+  };
+
+  const transformOrigin = {
+    vertical: visible ? 'top' : 'bottom',
+    horizontal: 'left',
+  };
+
+  const openAnchor = Boolean(anchorEl);
+  const id = openAnchor ? 'simple-popover' : undefined;
+
+  const handleOpen = event => {
     if (user.current_role === AUDITOR && isAuth() && auditor?.first_name) {
-      setOpen(true);
+      if (!organizations.length) {
+        setAuditorData(auditor);
+        setOpen(true);
+      } else {
+        handleClick(event);
+      }
     } else if (
       user.current_role !== AUDITOR &&
       isAuth() &&
@@ -78,6 +116,7 @@ const AuditRequestInfo = ({
     ) {
       dispatch(changeRolePublicAuditorNoRedirect(AUDITOR, user.id, auditor));
       handleError();
+      setAuditorData(auditor);
       setOpen(true);
     } else if (
       !auditor?.first_name &&
@@ -92,12 +131,18 @@ const AuditRequestInfo = ({
     ) {
       dispatch(changeRolePublicAuditor(AUDITOR, user.id, auditor));
       handleError();
+      setAuditorData(auditor);
       setOpen(true);
     } else {
       navigate('/sign-in');
     }
   };
 
+  const handleChose = auditor => {
+    setAuditorData(auditor);
+    setOpen(true);
+  };
+  //
   const handleClose = () => {
     setOpen(false);
   };
@@ -185,6 +230,28 @@ const AuditRequestInfo = ({
           {project?.name || project?.project_name}
         </Typography>
       </Box>
+      {project?.auditor_organization?.id && (
+        <Box>
+          <Typography
+            variant="h5"
+            sx={{ mb: '7px', fontSize: '14px!important', color: 'grey' }}
+            textAlign="center"
+          >
+            Organization:
+          </Typography>
+          <Typography
+            variant="h5"
+            sx={{
+              width: '100%',
+              textAlign: 'center',
+              wordBreak: 'break-word',
+              px: '10px',
+            }}
+          >
+            {project?.auditor_organization.name}
+          </Typography>
+        </Box>
+      )}
       <Box sx={{ width: '100%' }} className="audit-content">
         <Box sx={contentWrapper} className="audit-request-content-wrapper">
           <Typography sx={titleSx} className="audit-request-title">
@@ -480,6 +547,61 @@ const AuditRequestInfo = ({
         >
           Make offer
         </Button>
+        <Popover
+          id={id}
+          open={openAnchor}
+          anchorEl={anchorEl}
+          onClose={handleCloseAnchor}
+          anchorOrigin={anchorOrigin}
+          transformOrigin={transformOrigin}
+        >
+          <List
+            dense
+            sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}
+          >
+            <ListItem disablePadding onClick={() => handleChose(auditor)}>
+              <ListItemButton>
+                <ListItemAvatar>
+                  <Avatar
+                    alt={user.name}
+                    // src={org.avatar && `${ASSET_URL}/${org.avatar}`}
+                  />
+                </ListItemAvatar>
+                <ListItemText id={user.name} primary={user.name} />
+              </ListItemButton>
+            </ListItem>
+            {organizations.map(org => (
+              <ListItem
+                key={org.id}
+                disablePadding
+                disabled={
+                  !org.members
+                    .find(member => member.user_id === user.id)
+                    .access_level.some(level => level === 'Editor')
+                }
+                onClick={() => {
+                  if (
+                    org.members
+                      .find(member => member.user_id === user.id)
+                      .access_level.some(level => level === 'Editor')
+                  ) {
+                    handleChose(org);
+                  }
+                }}
+              >
+                <ListItemButton>
+                  <ListItemAvatar>
+                    <Avatar
+                      alt={org.name}
+                      src={org.avatar && `${ASSET_URL}/${org.avatar}`}
+                    />
+                  </ListItemAvatar>
+                  <ListItemText id={org.id} primary={org.name} />
+                </ListItemButton>
+              </ListItem>
+            ))}
+          </List>
+        </Popover>
         {showAcceptButton &&
           auditRequest &&
           !isModal &&
@@ -512,7 +634,7 @@ const AuditRequestInfo = ({
         disableScrollLock
       >
         <OfferModal
-          auditor={auditor}
+          auditor={auditorData}
           project={project}
           user={user}
           redirect={redirect}

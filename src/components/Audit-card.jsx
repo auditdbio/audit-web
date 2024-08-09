@@ -25,23 +25,58 @@ const AuditCard = ({ audit, request }) => {
       <Tooltip title={audit.project_name} arrow placement="top">
         <Typography sx={auditNameStyle}>{audit.project_name}</Typography>
       </Tooltip>
-      <Box sx={{ display: 'grid' }}>
-        <Tooltip
-          title={
-            audit?.auditor_contacts.email !== null
-              ? audit?.auditor_contacts?.email
-              : 'Hidden'
-          }
-          arrow
-          placement="top"
+      {audit?.auditor_organization?.id ? (
+        <Box sx={{ display: 'grid' }}>
+          <Tooltip
+            title={
+              audit?.auditor_organization?.contacts?.email !== null
+                ? audit?.auditor_organization?.contacts?.email
+                : 'Hidden'
+            }
+            arrow
+            placement="top"
+          >
+            <Typography sx={nameTextStyle} noWrap={true}>
+              {audit?.auditor_organization?.contacts?.email !== null
+                ? audit?.auditor_organization?.contacts?.email
+                : 'Hidden'}
+            </Typography>
+          </Tooltip>
+        </Box>
+      ) : (
+        <Box sx={{ display: 'grid' }}>
+          <Tooltip
+            title={
+              audit?.auditor_contacts.email !== null
+                ? audit?.auditor_contacts?.email
+                : 'Hidden'
+            }
+            arrow
+            placement="top"
+          >
+            <Typography sx={nameTextStyle} noWrap={true}>
+              {audit?.auditor_contacts.email !== null
+                ? audit?.auditor_contacts?.email
+                : 'Hidden'}
+            </Typography>
+          </Tooltip>
+        </Box>
+      )}
+      {audit?.auditor_organization?.id && (
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            gap: '7px',
+          }}
         >
-          <Typography sx={nameTextStyle} noWrap={true}>
-            {audit?.auditor_contacts.email !== null
-              ? audit?.auditor_contacts?.email
-              : 'Hidden'}
+          <Typography sx={priceTextStyle}>Organization</Typography>
+          <Typography sx={auditNameStyle}>
+            {audit?.auditor_organization?.name}
           </Typography>
-        </Tooltip>
-      </Box>
+        </Box>
+      )}
       {!audit.total_cost ? (
         <Typography sx={priceTextStyle}>${audit?.price} per line</Typography>
       ) : (
