@@ -131,7 +131,7 @@ export const UserMenu = ({ open, handleClose, anchor, userAvatar, pages }) => {
           onClick={handleMyAccountClick}
           {...addTestsLabel('header_my-account')}
         >
-          My Account
+          My account
         </Button>
       </MenuItem>
       {!!organizations.length && (
@@ -141,7 +141,7 @@ export const UserMenu = ({ open, handleClose, anchor, userAvatar, pages }) => {
             onClick={handleMyOrganizationClick}
             {...addTestsLabel('header_my-account')}
           >
-            My Organizations
+            My organizations
           </Button>
         </MenuItem>
       )}

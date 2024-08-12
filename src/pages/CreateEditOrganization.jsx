@@ -44,7 +44,9 @@ const CreateEditOrganization = () => {
           newLinkId={newLinkId}
           organization={organization}
         />
-        <ChangeLinkId org={organization} setNewLinkId={setNewLinkId} />
+        {organization.id && (
+          <ChangeLinkId org={organization} setNewLinkId={setNewLinkId} />
+        )}
       </CustomCard>
     </Layout>
   );

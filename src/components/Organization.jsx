@@ -122,7 +122,7 @@ const Organization = ({ linkId }) => {
     return (
       <Layout>
         <CustomCard sx={wrapper}>
-          <InfoCard role={role} sx={{ position: 'relative' }}>
+          <Box role={role} sx={{ position: 'relative' }}>
             <Button
               sx={{
                 top: '15px',
@@ -190,11 +190,16 @@ const Organization = ({ linkId }) => {
                     }
                     sx={[
                       avatarStyle,
-                      { backgroundColor: theme.palette.primary.main },
+                      {
+                        backgroundColor:
+                          role === CUSTOMER
+                            ? theme.palette.primary.main
+                            : theme.palette.secondary.main,
+                      },
                     ]}
                     alt="User photo"
                   >
-                    N
+                    {organization.name}
                   </Avatar>
                 </Box>
                 <Box sx={infoStyle}>
@@ -286,82 +291,82 @@ const Organization = ({ linkId }) => {
                 </Box>
               </Box>
 
-              {!matchXs && (
-                <TagsList data={organization.tags} fullView={true} />
-              )}
-              {matchXs && <MobileTagsList data={organization.tags} />}
-              <Box
-                sx={{ display: 'flex', gap: '10px', justifyContent: 'center' }}
-              >
-                {user.linked_accounts?.map(account => {
-                  if (account.name.toLowerCase() === 'linkedin') {
-                    return (
-                      <Box
-                        key={account.id}
-                        sx={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: '7px',
-                        }}
-                      >
-                        <Tooltip title={account.url} placement="top">
-                          <Link href={account.url} target={'_blank'}>
-                            <LinkedinIcon />
-                          </Link>
-                        </Tooltip>
-                      </Box>
-                    );
-                  } else if (account.name.toLowerCase() === 'github') {
-                    return (
-                      <Box
-                        key={account.id}
-                        sx={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: '7px',
-                        }}
-                      >
-                        <Tooltip title={account.url} placement="top">
-                          <Link
-                            href={account.url}
-                            sx={{ color: 'initial' }}
-                            target={'_blank'}
-                          >
-                            <GitHubIcon
-                              sx={{
-                                width: '50px',
-                                height: '50px',
-                                padding: '4px',
-                              }}
-                            />
-                          </Link>
-                        </Tooltip>
-                      </Box>
-                    );
-                  } else {
-                    return (
-                      <Box
-                        key={account.id}
-                        sx={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: '7px',
-                        }}
-                      >
-                        <Tooltip title={account.url} placement="top">
-                          <Link
-                            href={account.url}
-                            sx={{ color: 'initial' }}
-                            target={'_blank'}
-                          >
-                            <XTwitterLogo width={'38px'} height={'38px'} />
-                          </Link>
-                        </Tooltip>
-                      </Box>
-                    );
-                  }
-                })}
-              </Box>
+              {/*{!matchXs && (*/}
+              {/*  <TagsList data={organization.tags} fullView={true} />*/}
+              {/*)}*/}
+              {/*{matchXs && <MobileTagsList data={organization.tags} />}*/}
+              {/*<Box*/}
+              {/*  sx={{ display: 'flex', gap: '10px', justifyContent: 'center' }}*/}
+              {/*>*/}
+              {/*  {user.linked_accounts?.map(account => {*/}
+              {/*    if (account.name.toLowerCase() === 'linkedin') {*/}
+              {/*      return (*/}
+              {/*        <Box*/}
+              {/*          key={account.id}*/}
+              {/*          sx={{*/}
+              {/*            display: 'flex',*/}
+              {/*            alignItems: 'center',*/}
+              {/*            gap: '7px',*/}
+              {/*          }}*/}
+              {/*        >*/}
+              {/*          <Tooltip title={account.url} placement="top">*/}
+              {/*            <Link href={account.url} target={'_blank'}>*/}
+              {/*              <LinkedinIcon />*/}
+              {/*            </Link>*/}
+              {/*          </Tooltip>*/}
+              {/*        </Box>*/}
+              {/*      );*/}
+              {/*    } else if (account.name.toLowerCase() === 'github') {*/}
+              {/*      return (*/}
+              {/*        <Box*/}
+              {/*          key={account.id}*/}
+              {/*          sx={{*/}
+              {/*            display: 'flex',*/}
+              {/*            alignItems: 'center',*/}
+              {/*            gap: '7px',*/}
+              {/*          }}*/}
+              {/*        >*/}
+              {/*          <Tooltip title={account.url} placement="top">*/}
+              {/*            <Link*/}
+              {/*              href={account.url}*/}
+              {/*              sx={{ color: 'initial' }}*/}
+              {/*              target={'_blank'}*/}
+              {/*            >*/}
+              {/*              <GitHubIcon*/}
+              {/*                sx={{*/}
+              {/*                  width: '50px',*/}
+              {/*                  height: '50px',*/}
+              {/*                  padding: '4px',*/}
+              {/*                }}*/}
+              {/*              />*/}
+              {/*            </Link>*/}
+              {/*          </Tooltip>*/}
+              {/*        </Box>*/}
+              {/*      );*/}
+              {/*    } else {*/}
+              {/*      return (*/}
+              {/*        <Box*/}
+              {/*          key={account.id}*/}
+              {/*          sx={{*/}
+              {/*            display: 'flex',*/}
+              {/*            alignItems: 'center',*/}
+              {/*            gap: '7px',*/}
+              {/*          }}*/}
+              {/*        >*/}
+              {/*          <Tooltip title={account.url} placement="top">*/}
+              {/*            <Link*/}
+              {/*              href={account.url}*/}
+              {/*              sx={{ color: 'initial' }}*/}
+              {/*              target={'_blank'}*/}
+              {/*            >*/}
+              {/*              <XTwitterLogo width={'38px'} height={'38px'} />*/}
+              {/*            </Link>*/}
+              {/*          </Tooltip>*/}
+              {/*        </Box>*/}
+              {/*      );*/}
+              {/*    }*/}
+              {/*  })}*/}
+              {/*</Box>*/}
               {isAuth() && isMyOrg && (
                 <Box sx={buttonsWrapper}>
                   <Button
@@ -412,7 +417,7 @@ const Organization = ({ linkId }) => {
                 isOpen={openConfirm}
               />
             </Box>
-          </InfoCard>
+          </Box>
         </CustomCard>
       </Layout>
     );
@@ -436,6 +441,7 @@ const buttonsWrapper = theme => ({
 
 const wrapper = theme => ({
   display: 'flex',
+  borderColor: 'grey',
   flexDirection: 'column',
   maxWidth: '1300px',
   width: '100%',

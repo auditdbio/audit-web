@@ -48,7 +48,7 @@ export const updateOrganization = (value, navigateTo) => {
       .then(({ data }) => {
         dispatch({ type: UPDATE_ORGANIZATION, payload: data });
         if (navigateTo) {
-          history.push({ pathname: `/o/${navigateTo}` }, { some: true });
+          history.push({ pathname: `/o/${data.link_id}` }, { some: true });
         }
       })
       .catch(({ response }) => {
@@ -149,12 +149,13 @@ export const getAuditRequests = org_id => {
   return dispatch => {
     const token = Cookies.get('token');
     axios
-      .get(`${API_URL}/audit_request/organization/${org_id}`, {
+      .get(`${API_URL}/audit_request/organization/all`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       })
       .then(({ data }) => {
+        console.log(data);
         dispatch({ type: GET_ORGANIZATION_AUDIT_REQUESTS, payload: data });
       });
   };

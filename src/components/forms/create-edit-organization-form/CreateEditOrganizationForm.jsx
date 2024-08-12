@@ -293,11 +293,11 @@ const CreateEditOrganizationForm = ({
 export default CreateEditOrganizationForm;
 
 const EditOrganizationSchema = Yup.object().shape({
-  name: Yup.string(),
-  contacts: Yup.object().shape({
-    email: Yup.string().email('Invalid email').required('required'),
-    telegram: Yup.string(),
-  }),
+  name: Yup.string().required('required'),
+  // contacts: Yup.object().shape({
+  //   email: Yup.string().email('Invalid email').required('required'),
+  //   telegram: Yup.string(),
+  // }),
 });
 
 const backBtnSx = theme => ({

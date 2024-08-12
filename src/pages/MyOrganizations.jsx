@@ -58,7 +58,7 @@ const MyOrganization = () => {
     return (
       <Layout>
         <CustomCard sx={wrapper}>
-          <InfoCard role={role} sx={{ position: 'relative' }}>
+          <Box role={role} sx={{ position: 'relative' }}>
             <Button
               sx={{
                 top: '15px',
@@ -148,7 +148,7 @@ const MyOrganization = () => {
                 )}
               </Box>
             </Box>
-          </InfoCard>
+          </Box>
         </CustomCard>
       </Layout>
     );

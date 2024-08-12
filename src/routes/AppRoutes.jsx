@@ -86,9 +86,7 @@ const AppRoutes = () => {
 
   useEffect(() => {
     if (organizations.length) {
-      organizations.map(org => {
-        dispatch(getAuditRequests(org.id));
-      });
+      dispatch(getAuditRequests());
     }
   }, [organizations]);
 
