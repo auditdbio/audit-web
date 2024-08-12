@@ -40,6 +40,7 @@ import LinkedinIcon from '../components/icons/LinkedinIcon.jsx';
 import XTwitterLogo from '../components/icons/XTwitter-logo.jsx';
 import GitHubIcon from '@mui/icons-material/GitHub';
 import Headings from '../router/Headings.jsx';
+import WalletConnectIcon from '../components/icons/WalletConnectIcon.jsx';
 import { getPublicAuditsAuditor } from '../redux/actions/auditAction.js';
 import ProjectCardList from '../components/Project-card-list.jsx';
 
@@ -396,6 +397,25 @@ const PublicProfile = ({ notFoundRedirect = true }) => {
                             }}
                           />
                         </Link>
+                      </Tooltip>
+                    </Box>
+                  );
+                } else if (account.name.toLowerCase() === 'walletconnect') {
+                  return (
+                    <Box
+                      key={account.id}
+                      sx={{ display: 'flex', alignItems: 'center', gap: '7px' }}
+                    >
+                      <Tooltip title={account.name} placement="top">
+                        <Box sx={{ color: 'initial' }}>
+                          <WalletConnectIcon
+                            sx={{
+                              width: '45px',
+                              height: '45px',
+                              padding: '4px',
+                            }}
+                          />
+                        </Box>
                       </Tooltip>
                     </Box>
                   );

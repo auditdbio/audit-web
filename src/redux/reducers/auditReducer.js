@@ -26,6 +26,10 @@ import {
   EDIT_AUDIT,
   SAVE_PUBLIC_REPORT,
   EDIT_AUDIT_REQUEST_CUSTOMER,
+  GET_AUDIT_HISTORY,
+  GET_AUDIT_REQUEST_HISTORY,
+  READ_AUDIT_HISTORY,
+  READ_AUDIT_REQUEST_HISTORY,
   GET_AUDITS_OF_AUDITOR,
 } from '../actions/types.js';
 
@@ -39,6 +43,10 @@ const initialState = {
   currentAuditPartner: null,
   publicReport: {},
   publicAudits: [],
+  auditHistory: [],
+  approvedHistory: null,
+  unreadHistory: null,
+  auditRequestHistory: [],
 };
 export const auditReducer = (state = initialState, action) => {
   switch (action.type) {
@@ -47,6 +55,7 @@ export const auditReducer = (state = initialState, action) => {
         ...state,
         auditRequests: [...state.auditRequests, action.payload],
         successMessage: 'Audit request created successfully',
+        auditRequest: action.payload,
       };
     case GET_AUDIT_REQUEST:
       return { ...state, auditRequests: action.payload };
@@ -56,6 +65,14 @@ export const auditReducer = (state = initialState, action) => {
         auditRequests: state.auditRequests.filter(
           request => request.id !== action.payload.id,
         ),
+      };
+    case READ_AUDIT_HISTORY:
+      return {
+        ...state,
+        unreadHistory: {
+          ...state.unreadHistory,
+          [action.payload.userId]: action.payload.unread,
+        },
       };
     case DELETE_AUDIT:
       return {
@@ -80,6 +97,7 @@ export const auditReducer = (state = initialState, action) => {
           audit.id === action.payload.id ? action.payload : audit,
         ),
         auditRequest: action.payload,
+        successMessage: 'Saved successfully',
       };
     case GET_AUDITS:
       return { ...state, audits: action.payload };
@@ -95,6 +113,19 @@ export const auditReducer = (state = initialState, action) => {
       return {
         ...state,
         publicReport: {},
+      };
+    case GET_AUDIT_HISTORY:
+      return {
+        ...state,
+        auditHistory: action.payload.edit_history,
+        approvedHistory: action.payload.approved_by,
+        unreadHistory: action.payload.unread,
+      };
+    case GET_AUDIT_REQUEST_HISTORY:
+      return {
+        ...state,
+        auditRequestHistory: action.payload.edit_history,
+        unreadHistory: action.payload.unread,
       };
     case GET_NEW_AUDIT:
       return {
@@ -136,11 +167,13 @@ export const auditReducer = (state = initialState, action) => {
       return {
         ...state,
         auditRequest: null,
+        unreadHistory: null,
       };
     case CLEAR_AUDIT:
       return {
         ...state,
         audit: null,
+        unreadHistory: null,
       };
     case CREATE_PUBLIC_REPORT:
       return {

@@ -11,7 +11,7 @@ const SalarySlider = ({ min = 0, max = 100, name }) => {
 
   const handleChange = e => {
     let { value } = e.target;
-    if (value > 100) {
+    if (value > 10000) {
       value = 100;
     } else if (value < 0) {
       value = 0;
@@ -22,7 +22,7 @@ const SalarySlider = ({ min = 0, max = 100, name }) => {
   return (
     <Box sx={sliderWrapper} className="salary-slider">
       <Slider
-        value={+taxField.value}
+        value={taxField.value === null ? 0 : +taxField.value}
         multiple
         name={taxField.name}
         valueLabelDisplay="off"
@@ -35,6 +35,7 @@ const SalarySlider = ({ min = 0, max = 100, name }) => {
       <FastField
         component={TextField}
         name={taxField.name}
+        value={taxField.value === null ? 0 : +taxField.value}
         type="number"
         sx={infoWrapper}
         size="small"
@@ -74,7 +75,7 @@ const sliderSx = {
 };
 
 const infoWrapper = theme => ({
-  width: '100px',
+  width: '140px',
   '& .MuiOutlinedInput-input': {
     fontSize: '16px',
     textAlign: 'center',
