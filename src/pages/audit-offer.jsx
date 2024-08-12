@@ -16,6 +16,9 @@ import {
   Collapse,
   IconButton,
   Divider,
+  InputAdornment,
+  Slider,
+  Switch,
 } from '@mui/material';
 import theme from '../styles/themes.js';
 import { CustomCard } from '../components/custom/Card.jsx';
@@ -24,7 +27,7 @@ import {
   addReportAudit,
   clearMessage,
   downloadReport,
-  editAudit,
+  editAuditCustomer,
   getAudit,
   getAuditFeedback,
   startAudit,
@@ -39,7 +42,6 @@ import {
   SUBMITED,
   WAITING_FOR_AUDITS,
 } from '../redux/actions/types.js';
-import Markdown from '../components/markdown/Markdown.jsx';
 import { addTestsLabel, getAverageFeedbackRating } from '../lib/helper.js';
 import CustomLink from '../components/custom/CustomLink.jsx';
 import IssueDetailsForm from '../components/issuesPage/IssueDetailsForm/IssueDetailsForm.jsx';
@@ -51,11 +53,19 @@ import { FIXED, NOT_FIXED } from '../components/issuesPage/constants.js';
 import { setCurrentChat } from '../redux/actions/chatActions.js';
 import ChatIcon from '../components/icons/ChatIcon.jsx';
 import Headings from '../router/Headings.jsx';
+import DescriptionHistory from '../components/DescriptionHistory/index.jsx';
+import EditDescription from '../components/EditDescription/index.jsx';
+import EditIcon from '@mui/icons-material/Edit';
+import EditButton from '../components/EditDescription/EditButton.jsx';
+import TagsField from '../components/forms/tags-field/tags-field.jsx';
+import CloseIcon from '@mui/icons-material/Close.js';
+import SaveIcon from '@mui/icons-material/Save.js';
+import EditTags from '../components/EditDescription/EditTags.jsx';
 import MarkdownEditor from '../components/markdown/Markdown-editor.jsx';
-import EditIcon from '@mui/icons-material/Edit.js';
 import ResolveAuditConfirmation from '../components/issuesPage/ResolveAuditConfirmation.jsx';
 import Star from '../components/icons/Star.jsx';
 import AuditFeedbackModal from '../components/modal/AuditFeedbackModal.jsx';
+import EditPrice from '../components/EditDescription/EditPrice.jsx';
 
 const AuditOffer = () => {
   const { auditId } = useParams();
@@ -168,7 +178,10 @@ const AuditOffer = () => {
   useEffect(() => {
     const allClosed = issues?.every(
       issue =>
-        issue.status === FIXED || issue.status === NOT_FIXED || !issue.include,
+        issue.status === FIXED ||
+        issue.status === NOT_FIXED ||
+        issue.status === 'WillNotFix' ||
+        !issue.include,
     );
     setAllIssuesClosed(allClosed);
   }, [issues]);
@@ -257,7 +270,14 @@ const AuditOffer = () => {
             >
               <Button
                 sx={backButtonSx}
-                onClick={() => navigate('/profile/audits')}
+                onClick={() => {
+                  if (localStorage.getItem('prevPath')) {
+                    navigate(localStorage.getItem('prevPath'));
+                    localStorage.removeItem('prevPath');
+                  } else {
+                    navigate('/profile/audits');
+                  }
+                }}
                 {...addTestsLabel('go-back-button')}
               >
                 <ArrowBackIcon color="secondary" />
@@ -276,53 +296,31 @@ const AuditOffer = () => {
 
             <Box sx={{ width: '100%' }}>
               <Box sx={contentWrapper}>
-                <Typography sx={titleSx}>
-                  {audit?.tags?.map(el => el).join(', ') ?? ''}
-                </Typography>
-                <Box sx={salaryWrapper}>
-                  <Box
-                    sx={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '15px',
-                    }}
+                <EditTags audit={audit} confirmed={true} />
+                <Divider sx={{ width: '100%' }} />
+                <EditPrice audit={audit} user={user} role={role} />
+
+                {audit?.feedback?.rating && (
+                  <Tooltip
+                    title="Feedback from the customer"
+                    arrow
+                    placement="top"
                   >
-                    <svg
-                      width="20"
-                      height="20"
-                      viewBox="0 0 27 26"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
+                    <Button
+                      type="button"
+                      onClick={() => setShowFeedback(p => !p)}
+                      sx={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '15px',
+                        color: 'black',
+                      }}
                     >
-                      <path
-                        d="M13.6131 0.249512C11.1111 0.249512 8.66532 0.991432 6.58501 2.38145C4.5047 3.77147 2.8833 5.74716 1.92583 8.05868C0.968372 10.3702 0.717856 12.9137 1.20597 15.3676C1.69408 17.8215 2.89889 20.0756 4.66805 21.8447C6.43721 23.6139 8.69125 24.8187 11.1451 25.3068C13.599 25.7949 16.1426 25.5444 18.4541 24.5869C20.7656 23.6295 22.7413 22.0081 24.1313 19.9278C25.5213 17.8474 26.2633 15.4017 26.2633 12.8997C26.2568 9.54663 24.922 6.33274 22.551 3.96177C20.18 1.59079 16.9661 0.255941 13.6131 0.249512ZM15.0727 18.7382H14.5862V19.7113C14.5862 19.9694 14.4836 20.2169 14.3012 20.3994C14.1187 20.5819 13.8712 20.6844 13.6131 20.6844C13.355 20.6844 13.1075 20.5819 12.925 20.3994C12.7425 20.2169 12.64 19.9694 12.64 19.7113V18.7382H10.6938C10.4357 18.7382 10.1882 18.6357 10.0057 18.4532C9.82324 18.2707 9.72071 18.0232 9.72071 17.7651C9.72071 17.5071 9.82324 17.2596 10.0057 17.0771C10.1882 16.8946 10.4357 16.7921 10.6938 16.7921H15.0727C15.4598 16.7921 15.8311 16.6383 16.1048 16.3645C16.3786 16.0908 16.5323 15.7195 16.5323 15.3324C16.5323 14.9453 16.3786 14.574 16.1048 14.3003C15.8311 14.0266 15.4598 13.8728 15.0727 13.8728H12.1534C11.2502 13.8728 10.3839 13.514 9.74516 12.8752C9.10645 12.2365 8.74762 11.3702 8.74762 10.467C8.74762 9.56369 9.10645 8.6974 9.74516 8.05869C10.3839 7.41997 11.2502 7.06115 12.1534 7.06115H12.64V6.08806C12.64 5.82998 12.7425 5.58247 12.925 5.39998C13.1075 5.21749 13.355 5.11497 13.6131 5.11497C13.8712 5.11497 14.1187 5.21749 14.3012 5.39998C14.4836 5.58247 14.5862 5.82998 14.5862 6.08806V7.06115H16.5323C16.7904 7.06115 17.0379 7.16367 17.2204 7.34616C17.4029 7.52865 17.5054 7.77616 17.5054 8.03424C17.5054 8.29232 17.4029 8.53983 17.2204 8.72232C17.0379 8.90481 16.7904 9.00733 16.5323 9.00733H12.1534C11.7663 9.00733 11.3951 9.16111 11.1213 9.43485C10.8476 9.70858 10.6938 10.0798 10.6938 10.467C10.6938 10.8541 10.8476 11.2253 11.1213 11.4991C11.3951 11.7728 11.7663 11.9266 12.1534 11.9266H15.0727C15.976 11.9266 16.8423 12.2854 17.481 12.9241C18.1197 13.5629 18.4785 14.4291 18.4785 15.3324C18.4785 16.2357 18.1197 17.102 17.481 17.7407C16.8423 18.3794 15.976 18.7382 15.0727 18.7382Z"
-                        fill="#FF9900"
-                      />
-                    </svg>
-                    {audit?.price}
-                  </Box>
-                  {audit?.feedback?.rating && (
-                    <Tooltip
-                      title="Feedback from the customer"
-                      arrow
-                      placement="top"
-                    >
-                      <Button
-                        type="button"
-                        onClick={() => setShowFeedback(p => !p)}
-                        sx={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: '15px',
-                          color: 'black',
-                        }}
-                      >
-                        <Star size={20} />
-                        {getAverageFeedbackRating(audit?.feedback?.rating)}
-                      </Button>
-                    </Tooltip>
-                  )}
-                </Box>
+                      <Star size={20} />
+                      {getAverageFeedbackRating(audit?.feedback?.rating)}
+                    </Button>
+                  </Tooltip>
+                )}
               </Box>
 
               <Box sx={[{ display: 'flex', gap: '25px' }, contactWrapper]}>
@@ -373,32 +371,27 @@ const AuditOffer = () => {
               </Box>
 
               <Box sx={infoWrapper}>
-                <Box sx={descriptionSx(showFull)}>
-                  <Box ref={descriptionRef}>
-                    <Markdown value={audit?.description} />
-                  </Box>
-                </Box>
-                {showReadMoreButton && (
-                  <Button
-                    onClick={() => setShowFull(!showFull)}
-                    sx={readAllButton}
-                  >
-                    {showFull ? 'Hide ▲' : `Read all ▼`}
-                  </Button>
-                )}
+                {/*<Box sx={descriptionSx(showFull)}>*/}
+                {/*  <Box ref={descriptionRef}>*/}
+                {/*    <Markdown value={audit?.description} />*/}
+                {/*  </Box>*/}
+                {/*</Box>*/}
+                <EditDescription audit={audit} />
+                <DescriptionHistory audit={audit} />
+                {/*{showReadMoreButton && (*/}
+                {/*  <Button*/}
+                {/*    onClick={() => setShowFull(!showFull)}*/}
+                {/*    sx={readAllButton}*/}
+                {/*  >*/}
+                {/*    {showFull ? 'Hide ▲' : `Read all ▼`}*/}
+                {/*  </Button>*/}
+                {/*)}*/}
 
                 <Box sx={linkWrapper}>
                   {audit?.scope?.map((el, idx) => (
                     <CustomLink link={el} key={idx} />
                   ))}
                 </Box>
-
-                {/*<PriceCalculation*/}
-                {/*  price={audit?.price}*/}
-                {/*  sx={priceCalc}*/}
-                {/*  color="secondary"*/}
-                {/*  scope={audit?.scope}*/}
-                {/*/>*/}
 
                 <Box sx={{ display: 'flex', justifyContent: 'center' }}>
                   <Button
@@ -529,7 +522,7 @@ const AuditOffer = () => {
               conclusion: audit?.conclusion || '',
             }}
             onSubmit={values => {
-              dispatch(editAudit(values));
+              dispatch(editAuditCustomer(values));
             }}
           >
             {({ handleSubmit }) => (

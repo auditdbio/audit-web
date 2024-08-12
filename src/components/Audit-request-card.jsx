@@ -42,7 +42,11 @@ const AuditRequestCard = ({ type, request, audit }) => {
         <Box sx={priceWrapper}>
           <Box sx={infoWrapper}>
             <Currency />
-            <Typography>{request.price}</Typography>
+            {request.total_cost ? (
+              <Typography>{request.total_cost}</Typography>
+            ) : (
+              <Typography>{request.price}</Typography>
+            )}
           </Box>
           {/*<Box sx={infoWrapper}>*/}
           {/*  <Star />*/}

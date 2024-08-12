@@ -22,6 +22,7 @@ import ShareProfileButton from './custom/ShareProfileButton.jsx';
 import IdentitySetting from './IdentitySetting/IdentitySetting.jsx';
 import LinkedinIcon from './icons/LinkedinIcon.jsx';
 import XTwitterLogo from './icons/XTwitter-logo.jsx';
+import WalletConnectIcon from './icons/WalletConnectIcon.jsx';
 import { clearUserMessages } from '../redux/actions/userAction.js';
 import CustomSnackbar from './custom/CustomSnackbar.jsx';
 import Headings from '../router/Headings.jsx';
@@ -236,9 +237,9 @@ const UserInfo = ({ role, linkId }) => {
                   sx={{ display: 'flex', alignItems: 'center', gap: '7px' }}
                 >
                   <Tooltip title={account.url} placement="top">
-                    <Link href={account.url} target={'_blank'}>
-                      <LinkedinIcon />
-                    </Link>
+                    {/*<Link href={account.url} target={'_blank'}>*/}
+                    <LinkedinIcon />
+                    {/*</Link>*/}
                   </Tooltip>
                 </Box>
               );
@@ -258,6 +259,21 @@ const UserInfo = ({ role, linkId }) => {
                         sx={{ width: '50px', height: '50px', padding: '4px' }}
                       />
                     </Link>
+                  </Tooltip>
+                </Box>
+              );
+            } else if (account.name === 'WalletConnect') {
+              return (
+                <Box
+                  key={account.id}
+                  sx={{ display: 'flex', alignItems: 'center', gap: '7px' }}
+                >
+                  <Tooltip title={account.name} placement="top">
+                    <Box sx={{ color: 'initial' }}>
+                      <WalletConnectIcon
+                        sx={{ width: '45px', height: '45px', padding: '4px' }}
+                      />
+                    </Box>
                   </Tooltip>
                 </Box>
               );

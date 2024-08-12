@@ -32,6 +32,9 @@ const TagsField = ({
         if (field.value.length < 20) {
           fieldHelper.setValue([...field.value, state]);
           setState('');
+          if (handleSubmit) {
+            handleSubmit();
+          }
         } else {
           setError('The maximum number of tags that can be added is 20');
         }

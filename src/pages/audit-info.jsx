@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, Link } from 'react-router-dom/dist';
 import dayjs from 'dayjs';
@@ -10,7 +10,7 @@ import {
   Button,
   Typography,
   Tooltip,
-  useMediaQuery,
+  Divider,
 } from '@mui/material';
 import TagsList from '../components/tagsList.jsx';
 import {
@@ -20,8 +20,6 @@ import {
   deleteAudit,
   deleteAuditRequest,
   downloadReport,
-  editAudit,
-  editAuditRequestCustomer,
   sendAuditFeedback,
 } from '../redux/actions/auditAction.js';
 import {
@@ -36,43 +34,33 @@ import Markdown from '../components/markdown/Markdown.jsx';
 import { ASSET_URL } from '../services/urls.js';
 import { addTestsLabel } from '../lib/helper.js';
 import CustomSnackbar from '../components/custom/CustomSnackbar.jsx';
-import MarkdownEditor from '../components/markdown/Markdown-editor.jsx';
-import theme from '../styles/themes.js';
-import { Form, Formik } from 'formik';
-import EditIcon from '@mui/icons-material/Edit';
-import SaveIcon from '@mui/icons-material/Save.js';
 import CloseIcon from '@mui/icons-material/Close';
 import { setCurrentChat } from '../redux/actions/chatActions.js';
 import ChatIcon from '../components/icons/ChatIcon.jsx';
 import ConfirmModal from '../components/modal/ConfirmModal.jsx';
-import PriceCalculation from '../components/PriceCalculation.jsx';
 import Headings from '../router/Headings.jsx';
 import AuditFeedbackModal from '../components/modal/AuditFeedbackModal.jsx';
+import EditDescription from '../components/EditDescription/index.jsx';
+import DescriptionHistory from '../components/DescriptionHistory/index.jsx';
+import EditTags from '../components/EditDescription/EditTags.jsx';
+import EditPrice from '../components/EditDescription/EditPrice.jsx';
 
-const AuditInfo = ({ audit, auditRequest, issues, confirmed, handleClose }) => {
+const AuditInfo = ({
+  audit,
+  auditRequest,
+  issues,
+  confirmed,
+  handleClose,
+  request,
+}) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-
-  const [showFull, setShowFull] = useState(false);
-  const [showReadMoreButton, setShowReadMoreButton] = useState(false);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
-  const [isFeedbackModalOpen, setIsFeedbackModalOpen] = useState(false);
-  const [editMode, setEditMode] = useState(false);
-
   const { successMessage, error } = useSelector(s => s.audits);
   const { user } = useSelector(s => s.user);
   const { chatList } = useSelector(s => s.chat);
 
-  const descriptionRef = useRef();
-  const matchXs = useMediaQuery(theme.breakpoints.down('xs'));
-
-  useEffect(() => {
-    setTimeout(() => {
-      if (descriptionRef?.current?.offsetHeight > 400) {
-        setShowReadMoreButton(true);
-      }
-    }, 500);
-  }, [descriptionRef.current]);
+  const [isFeedbackModalOpen, setIsFeedbackModalOpen] = useState(false);
 
   const handleConfirm = () => {
     dispatch(confirmAudit(audit, true));
@@ -127,10 +115,6 @@ const AuditInfo = ({ audit, auditRequest, issues, confirmed, handleClose }) => {
     navigate(`/issues/audit-issue/${audit?.id}`);
   };
 
-  const handleEdit = () => {
-    setEditMode(true);
-  };
-
   const handleSendFeedback = values => {
     const feedback = { audit_id: audit.id, ...values };
     dispatch(sendAuditFeedback(feedback));
@@ -165,17 +149,24 @@ const AuditInfo = ({ audit, auditRequest, issues, confirmed, handleClose }) => {
       >
         {!handleClose ? <ArrowBackIcon /> : <CloseIcon />}
       </Button>
-      <Box sx={{ display: 'flex', width: '100%', justifyContent: 'center' }}>
-        {confirmed ? (
-          <Box
-            sx={{
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'center',
-              alignItems: 'center',
-              width: '100%',
-            }}
-          >
+      <Box
+        sx={{
+          display: 'flex',
+          width: '100%',
+          justifyContent: 'center',
+          flexDirection: 'column',
+        }}
+      >
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center',
+            alignItems: 'center',
+            width: '100%',
+          }}
+        >
+          {confirmed ? (
             <Typography
               variant="h3"
               sx={{
@@ -191,24 +182,25 @@ const AuditInfo = ({ audit, auditRequest, issues, confirmed, handleClose }) => {
                 {audit?.project_name}
               </Link>
             </Typography>
-            <Typography sx={titleSx}>
-              {audit?.tags?.map(el => el).join(', ') ?? ''}
+          ) : (
+            <Typography sx={{ width: '100%', textAlign: 'center' }}>
+              You have offer to audit for&nbsp;
+              <span style={{ fontWeight: 500, wordBreak: 'break-word' }}>
+                <Link
+                  style={{ color: '#000' }}
+                  to={`/projects/${audit.project_id}`}
+                >
+                  {audit?.project_name}
+                </Link>
+              </span>
+              &nbsp;project!
             </Typography>
-          </Box>
-        ) : (
-          <Typography sx={{ width: '100%', textAlign: 'center' }}>
-            You have offer to audit for&nbsp;
-            <span style={{ fontWeight: 500, wordBreak: 'break-word' }}>
-              <Link
-                style={{ color: '#000' }}
-                to={`/projects/${audit.project_id}`}
-              >
-                {audit?.project_name}
-              </Link>
-            </span>
-            &nbsp;project!
-          </Typography>
-        )}
+          )}
+          <>
+            <EditTags audit={audit} confirmed={confirmed} />
+          </>
+        </Box>
+        <Divider sx={{ mt: '15px' }} />
       </Box>
       <Box sx={{ maxWidth: '100%', width: '100%' }}>
         <Box sx={contentWrapper}>
@@ -270,9 +262,26 @@ const AuditInfo = ({ audit, auditRequest, issues, confirmed, handleClose }) => {
                 )}
               </Box>
             </Box>
-            <Box sx={infoWrapper}>
-              <span>Price:</span>
-              <Typography>${audit?.price} per line</Typography>
+            <Box
+              sx={{
+                display: 'flex',
+                color: '#434242',
+                '& p': {
+                  fontSize: '15px!important',
+                  maxWidth: '200px',
+                  fontWeight: 400,
+                },
+              }}
+            >
+              <Box sx={infoWrapper}>
+                <span>Price:</span>
+              </Box>
+              <EditPrice
+                hideIcon={true}
+                audit={audit}
+                user={user}
+                request={request}
+              />
             </Box>
           </Box>
 
@@ -292,94 +301,8 @@ const AuditInfo = ({ audit, auditRequest, issues, confirmed, handleClose }) => {
             </Box>
           )}
         </Box>
-
-        <Box sx={descriptionSx(showFull || editMode)}>
-          <Box ref={descriptionRef}>
-            {!editMode ? (
-              <Markdown value={audit?.description} />
-            ) : (
-              <Formik
-                initialValues={{
-                  description: audit?.description,
-                  ...audit,
-                }}
-                onSubmit={values => {
-                  if (auditRequest) {
-                    dispatch(editAuditRequestCustomer(values));
-                  } else {
-                    dispatch(editAudit(values));
-                  }
-                  setEditMode(false);
-                }}
-              >
-                {({ handleSubmit, setFieldTouched, dirty }) => {
-                  return (
-                    <Form onSubmit={handleSubmit}>
-                      <Box sx={{ position: 'relative' }}>
-                        <MarkdownEditor
-                          name="description"
-                          setFieldTouched={setFieldTouched}
-                          fastSave={true}
-                          mdProps={{
-                            view: { menu: true, md: true, html: !matchXs },
-                          }}
-                        />
-                        <Box sx={editBtnSx}>
-                          <Button
-                            variant={'text'}
-                            type={'submit'}
-                            disabled={!dirty}
-                          >
-                            <SaveIcon />
-                          </Button>
-                          <Button>
-                            <CloseIcon
-                              color={'secondary'}
-                              onClick={() => setEditMode(false)}
-                            />
-                          </Button>
-                        </Box>
-                      </Box>
-                    </Form>
-                  );
-                }}
-              </Formik>
-            )}
-          </Box>
-        </Box>
-        <Box
-          sx={[
-            {
-              display: 'flex',
-              background: '#E5E5E5',
-              borderRadius: 0,
-              boxShadow: '0px -24px 14px -8px rgba(252, 250, 246, 1)',
-              ':hover': { background: '#D5D5D5' },
-              padding: '8px',
-              position: 'relative',
-            },
-          ]}
-        >
-          {showReadMoreButton && !editMode && (
-            <Button onClick={() => setShowFull(!showFull)} sx={readAllButton}>
-              {showFull ? 'Hide ▲' : `Read all ▼`}
-            </Button>
-          )}
-          {!editMode &&
-            audit?.status?.toLowerCase() !== RESOLVED.toLowerCase() && (
-              <Box
-                sx={{
-                  position: 'absolute',
-                  bottom: '20px',
-                  right: '10px',
-                }}
-              >
-                <Button variant={'text'} onClick={handleEdit}>
-                  <EditIcon fontSize={'large'} />
-                </Button>
-              </Box>
-            )}
-        </Box>
+        <EditDescription auditRequest={request} audit={audit} />
+        <DescriptionHistory audit={audit} request={request} />
       </Box>
 
       {audit?.conclusion && (
@@ -388,12 +311,6 @@ const AuditInfo = ({ audit, auditRequest, issues, confirmed, handleClose }) => {
           <Markdown value={audit.conclusion} />
         </Box>
       )}
-
-      {/*<PriceCalculation*/}
-      {/*  price={audit?.price || auditRequest?.price}*/}
-      {/*  sx={priceCalc}*/}
-      {/*  scope={audit?.scope || auditRequest?.project_scope}*/}
-      {/*/>*/}
 
       <Box>
         <Box
@@ -491,9 +408,6 @@ const AuditInfo = ({ audit, auditRequest, issues, confirmed, handleClose }) => {
           </Button>
         )}
 
-        {/*{(audit?.status === DONE ||*/}
-        {/*  audit?.status === SUBMITED ||*/}
-        {/*  audit?.status === PENDING) && (*/}
         {audit?.status &&
           !!issues?.length &&
           audit?.status?.toLowerCase() !== WAITING_FOR_AUDITS.toLowerCase() && (
@@ -546,14 +460,6 @@ const wrapper = theme => ({
     '& h3': {
       fontSize: '20px',
     },
-  },
-});
-
-const titleSx = theme => ({
-  fontWeight: 500,
-  fontSize: '16px !important',
-  [theme.breakpoints.down('sm')]: {
-    fontSize: '14px !important',
   },
 });
 
@@ -722,52 +628,9 @@ const infoWrapper = theme => ({
   },
 });
 
-const descriptionSx = full => ({
-  maxHeight: full ? 'unset' : '400px',
-  overflow: 'hidden',
-  border: '2px solid #E5E5E5',
-});
-
-const readAllButton = theme => ({
-  width: '100%',
-  padding: '8px',
-  fontWeight: 600,
-  fontSize: '16px',
-  color: 'black',
-  textTransform: 'none',
-  lineHeight: '25px',
-  [theme.breakpoints.down('xs')]: {
-    fontSize: '16px',
-    border: 'none',
-  },
-});
-
-const editBtnSx = theme => ({
-  position: 'absolute',
-  bottom: '15px',
-  display: 'flex',
-  gap: '7px',
-  flexDirection: 'column',
-  right: '10px',
-});
-
 const conclusionTitle = theme => ({
   padding: '10px 0',
   fontSize: '20px',
   fontWeight: 500,
   textAlign: 'center',
-});
-
-const priceCalc = theme => ({
-  width: '725px',
-  '& .head': { justifyContent: 'center' },
-  [theme.breakpoints.down('md')]: {
-    width: '590px',
-  },
-  [theme.breakpoints.down('sm')]: {
-    width: '80%',
-  },
-  [theme.breakpoints.down('xs')]: {
-    width: '100%',
-  },
 });

@@ -12,6 +12,7 @@ import {
   useMediaQuery,
   Modal,
   Tooltip,
+  Divider,
 } from '@mui/material';
 import { CustomCard } from './custom/Card.jsx';
 import theme from '../styles/themes.js';
@@ -35,6 +36,10 @@ import ChatIcon from './icons/ChatIcon.jsx';
 import ConfirmModal from './modal/ConfirmModal.jsx';
 import CustomSnackbar from './custom/CustomSnackbar.jsx';
 import PriceCalculation from './PriceCalculation.jsx';
+import EditDescription from './EditDescription/index.jsx';
+import DescriptionHistory from './DescriptionHistory/index.jsx';
+import EditTags from './EditDescription/EditTags.jsx';
+import EditPrice from './EditDescription/EditPrice.jsx';
 import Star from './icons/Star.jsx';
 import Currency from './icons/Currency.jsx';
 
@@ -46,6 +51,7 @@ const AuditRequestInfo = ({
   isModal,
   setError,
   stayHere,
+  hideChange,
 }) => {
   const navigate = useNavigate();
   const matchXs = useMediaQuery(theme.breakpoints.down('xs'));
@@ -61,6 +67,8 @@ const AuditRequestInfo = ({
   const { chatList } = useSelector(s => s.chat);
 
   const dispatch = useDispatch();
+  const { successMessage: auditSuccessMessage, error: auditError } =
+    useSelector(s => s.audits);
 
   const handleOpen = () => {
     if (user.current_role === AUDITOR && isAuth() && auditor?.first_name) {
@@ -182,21 +190,34 @@ const AuditRequestInfo = ({
       <Box sx={{ width: '100%' }} className="audit-content">
         <Box sx={contentWrapper} className="audit-request-content-wrapper">
           <Typography sx={titleSx} className="audit-request-title">
-            {project?.tags?.map((el, idx) => (
-              <span key={idx}>
-                {idx + 1 !== project?.tags?.length ? el + ',' : el}
-              </span>
-            ))}
+            <EditTags hideChange={hideChange} audit={project} />
           </Typography>
+          <Divider sx={{ width: '100%' }} />
+
           <Box sx={salaryWrapper} className={'audit-request-salary'}>
-            {project?.price > 0 && (
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
-                <Currency size={26} />
-                {project?.price}
-              </Box>
-            )}
+            <EditPrice
+              hideChange={hideChange}
+              audit={project}
+              request={true}
+              user={user}
+            />
             {/*<Box sx={{ display: 'flex', alignItems: 'center', gap: '15px' }}>*/}
-            {/*  <Star size={26} />*/}
+            {/*  <svg*/}
+            {/*    width="26"*/}
+            {/*    height="26"*/}
+            {/*    viewBox="0 0 26 26"*/}
+            {/*    fill="none"*/}
+            {/*    xmlns="http://www.w3.org/2000/svg"*/}
+            {/*  >*/}
+            {/*    <path*/}
+            {/*      d="M13.2559 25.5499C20.2424 25.5499 25.9061 19.8862 25.9061 12.8997C25.9061 5.91319 20.2424 0.249512 13.2559 0.249512C6.26939 0.249512 0.605713 5.91319 0.605713 12.8997C0.605713 19.8862 6.26939 25.5499 13.2559 25.5499Z"*/}
+            {/*      fill="#52176D"*/}
+            {/*    />*/}
+            {/*    <path*/}
+            {/*      d="M13.257 4.64941L15.4702 9.71865L20.4071 10.5528L16.8321 14.4671L17.6833 20.0496L13.257 17.4188L8.83078 20.0496L9.68199 14.4671L6.10693 10.5528L11.0439 9.71865L13.257 4.64941Z"*/}
+            {/*      fill="#FFCA28"*/}
+            {/*    />*/}
+            {/*  </svg>*/}
             {/*  150*/}
             {/*</Box>*/}
           </Box>
@@ -309,7 +330,13 @@ const AuditRequestInfo = ({
         </Box>
 
         <Box sx={infoWrapper} className="audit-request-info">
-          <Markdown value={project?.description} />
+          {/*<Markdown value={project?.description} />*/}
+          <EditDescription
+            hideChange={hideChange}
+            audit={project}
+            auditRequest={true}
+          />
+          {!hideChange && <DescriptionHistory audit={project} request={true} />}
           {matchXs && (
             <Box
               sx={{
@@ -549,7 +576,7 @@ const buttonWrapper = theme => ({
   mt: '40px',
   display: 'flex',
   mb: '10px',
-  maxWidth: '550px',
+  maxWidth: '450px',
   width: '100%',
   justifyContent: 'center',
   [theme.breakpoints.down(500)]: {

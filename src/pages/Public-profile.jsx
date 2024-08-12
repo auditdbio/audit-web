@@ -44,6 +44,7 @@ import Headings from '../router/Headings.jsx';
 import Star from '../components/icons/Star.jsx';
 import RatingDetails from '../components/RatingDetails.jsx';
 import UserFeedbacks from '../components/UserFeedbacks.jsx';
+import WalletConnectIcon from '../components/icons/WalletConnectIcon.jsx';
 
 const PublicProfile = ({ notFoundRedirect = true }) => {
   const navigate = useNavigate();
@@ -452,6 +453,25 @@ const PublicProfile = ({ notFoundRedirect = true }) => {
                             }}
                           />
                         </Link>
+                      </Tooltip>
+                    </Box>
+                  );
+                } else if (account.name.toLowerCase() === 'walletconnect') {
+                  return (
+                    <Box
+                      key={account.id}
+                      sx={{ display: 'flex', alignItems: 'center', gap: '7px' }}
+                    >
+                      <Tooltip title={account.name} placement="top">
+                        <Box sx={{ color: 'initial' }}>
+                          <WalletConnectIcon
+                            sx={{
+                              width: '45px',
+                              height: '45px',
+                              padding: '4px',
+                            }}
+                          />
+                        </Box>
                       </Tooltip>
                     </Box>
                   );
