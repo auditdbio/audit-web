@@ -139,7 +139,6 @@ const PublicProfile = ({ notFoundRedirect = true }) => {
         dispatch(getCurrentAuditor(id));
       } else if (linkId) {
         dispatch(getAuditorByLinkId(linkId, notFoundRedirect));
-        dispatch(getPublicAuditsAuditor(linkId));
       }
     } else if (role.toLowerCase() === CUSTOMER) {
       if (id) {
@@ -152,6 +151,12 @@ const PublicProfile = ({ notFoundRedirect = true }) => {
       dispatch(getPublicProfile(id));
     }
   }, [id, role, linkId]);
+
+  useEffect(() => {
+    if (currentAuditor?.user_id) {
+      dispatch(getPublicAuditsAuditor(currentAuditor.user_id));
+    }
+  }, [currentAuditor?.user_id]);
 
   useEffect(() => {
     const handleBeforeUnload = () => {

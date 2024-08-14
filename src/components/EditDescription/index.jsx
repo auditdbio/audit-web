@@ -20,7 +20,7 @@ import { addTestsLabel } from '../../lib/helper.js';
 import AddLinkIcon from '@mui/icons-material/AddLink.js';
 import { TextField } from 'formik-mui';
 
-const EditDescription = ({ audit, auditRequest, hideChange }) => {
+const EditDescription = ({ audit, auditRequest, hideChange, isPublic }) => {
   const [editMode, setEditMode] = useState(false);
   const [showFull, setShowFull] = useState(false);
   const [showComment, setShowComment] = useState(false);
@@ -104,7 +104,7 @@ const EditDescription = ({ audit, auditRequest, hideChange }) => {
                       alignItems: 'center',
                     }}
                   >
-                    {!hideChange && (
+                    {!hideChange && !isPublic && (
                       <Box>
                         <IconButton
                           type="button"

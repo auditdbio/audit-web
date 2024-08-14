@@ -1,7 +1,15 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom/dist';
 import { useDispatch, useSelector } from 'react-redux';
-import { Box, Button, Tooltip, Typography, useMediaQuery } from '@mui/material';
+import {
+  Box,
+  Button,
+  FormControlLabel,
+  Switch,
+  Tooltip,
+  Typography,
+  useMediaQuery,
+} from '@mui/material';
 import Currency from './icons/Currency.jsx';
 import Star from './icons/Star.jsx';
 import {
@@ -12,13 +20,16 @@ import {
   WAITING_FOR_AUDITS,
 } from '../redux/actions/types.js';
 import { addTestsLabel } from '../lib/helper.js';
-import { startAudit } from '../redux/actions/auditAction.js';
+import {
+  handlePublishAudit,
+  startAudit,
+} from '../redux/actions/auditAction.js';
 import ShareProjectButton from './custom/ShareProjectButton.jsx';
 import theme from '../styles/themes.js';
 
 const ProjectCard = ({ type, project, currentRole, isPublic }) => {
   const navigate = useNavigate();
-  // const currentRole = AUDITOR;
+
   const dispatch = useDispatch();
   const matchSx = useMediaQuery(theme.breakpoints.down('xs'));
 
@@ -138,6 +149,27 @@ const ProjectCard = ({ type, project, currentRole, isPublic }) => {
             </Typography>
           </Box>
         )}
+        {!isPublic &&
+          project?.status.toLowerCase() === RESOLVED.toLowerCase() && (
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={project.isPublic}
+                  onChange={e =>
+                    dispatch(
+                      handlePublishAudit({
+                        id: project.id,
+                        public: e.target.checked,
+                      }),
+                    )
+                  }
+                  name="Publish"
+                />
+              }
+              sx={{ '& .MuiTypography-root': { fontSize: '14px' }, mb: '5px' }}
+              label="Publish"
+            />
+          )}
         {isPublic ? (
           <Button
             variant="contained"

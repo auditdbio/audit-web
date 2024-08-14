@@ -288,6 +288,19 @@ export const startAudit = (values, goBack) => {
   };
 };
 
+export const handlePublishAudit = values => {
+  const token = Cookies.get('token');
+  return dispatch => {
+    axios
+      .patch(`${API_URL}/audit/${values.id}`, values, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then(({ data }) => dispatch({ type: IN_PROGRESS, payload: data }));
+  };
+};
+
 export const editAuditCustomer = (values, goBack) => {
   return dispatch => {
     const token = Cookies.get('token');

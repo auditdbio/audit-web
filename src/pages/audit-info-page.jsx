@@ -11,7 +11,7 @@ import { CLEAR_AUDIT } from '../redux/actions/types.js';
 import { CustomCard } from '../components/custom/Card.jsx';
 import Headings from '../router/Headings.jsx';
 
-const AuditInfoPage = () => {
+const AuditInfoPage = ({ isPublic }) => {
   const { id } = useParams();
   const dispatch = useDispatch();
   const notFound = useSelector(s => s.notFound.error);
@@ -47,7 +47,12 @@ const AuditInfoPage = () => {
   if (auditConfirm?.id && !notFound) {
     return (
       <Layout>
-        <AuditInfo audit={auditConfirm} confirmed={true} issues={issues} />
+        <AuditInfo
+          isPublic={isPublic}
+          audit={auditConfirm}
+          confirmed={true}
+          issues={issues}
+        />
       </Layout>
     );
   }

@@ -13,7 +13,7 @@ import TagsArray from '../tagsArray/index.jsx';
 import { TextField } from 'formik-mui';
 import { addTestsLabel } from '../../lib/helper.js';
 
-const EditTags = ({ audit, confirmed, hideChange }) => {
+const EditTags = ({ audit, confirmed, hideChange, isPublic }) => {
   const [editTags, setEditTags] = useState(false);
   const [showComment, setShowComment] = useState(false);
   const dispatch = useDispatch();
@@ -138,7 +138,7 @@ const EditTags = ({ audit, confirmed, hideChange }) => {
                     <TagsArray name="tags" />
                   </Box>
                 )}
-                {!hideChange && !editTags && (
+                {!hideChange && !editTags && !isPublic && (
                   <EditButton
                     handleClick={() => setEditTags(!editTags)}
                     editMode={editTags}

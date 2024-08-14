@@ -355,11 +355,11 @@ const AuditOffer = () => {
                 {/*  </Button>*/}
                 {/*)}*/}
 
-                <Box sx={linkWrapper}>
-                  {audit?.scope?.map((el, idx) => (
-                    <CustomLink link={el} key={idx} />
-                  ))}
-                </Box>
+                {/*<Box sx={linkWrapper}>*/}
+                {/*  {audit?.scope?.map((el, idx) => (*/}
+                {/*    <CustomLink link={el} key={idx} />*/}
+                {/*  ))}*/}
+                {/*</Box>*/}
 
                 {/*<PriceCalculation*/}
                 {/*  price={audit?.price}*/}

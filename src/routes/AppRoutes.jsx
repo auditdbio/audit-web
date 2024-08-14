@@ -211,6 +211,10 @@ const AppRoutes = () => {
           }
         />
         <Route
+          path="/audit-info/:id"
+          element={<AuditInfoPage isPublic={true} />}
+        />
+        <Route
           path="/audit-builder/edit/:auditId"
           element={
             <PrivateRoute auth={{ isAuthenticated: isAuth() }}>

@@ -64,6 +64,7 @@ const AuditInfo = ({
   confirmed,
   handleClose,
   request,
+  isPublic,
 }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -142,13 +143,17 @@ const AuditInfo = ({
       <Button
         sx={backButtonSx}
         onClick={() => {
-          if (handleClose) {
-            handleClose();
+          if (!isPublic) {
+            if (handleClose) {
+              handleClose();
+            } else {
+              if (localStorage.getItem('prevPath')) {
+                navigate(localStorage.getItem('prevPath'));
+                localStorage.removeItem('prevPath');
+              } else navigate('/profile/audits');
+            }
           } else {
-            if (localStorage.getItem('prevPath')) {
-              navigate(localStorage.getItem('prevPath'));
-              localStorage.removeItem('prevPath');
-            } else navigate('/profile/audits');
+            navigate(-1);
           }
         }}
         aria-label="Go back"
@@ -204,7 +209,7 @@ const AuditInfo = ({
             </Typography>
           )}
           <>
-            <EditTags audit={audit} confirmed={confirmed} />
+            <EditTags isPublic={isPublic} audit={audit} confirmed={confirmed} />
           </>
         </Box>
         <Divider sx={{ mt: '15px' }} />
@@ -284,6 +289,7 @@ const AuditInfo = ({
                 hideIcon={true}
                 audit={audit}
                 user={user}
+                isPublic={isPublic}
                 request={request}
               />
             </Box>
@@ -305,7 +311,11 @@ const AuditInfo = ({
             </Box>
           )}
         </Box>
-        <EditDescription auditRequest={request} audit={audit} />
+        <EditDescription
+          isPublic={isPublic}
+          auditRequest={request}
+          audit={audit}
+        />
         <DescriptionHistory audit={audit} request={request} />
       </Box>
 
