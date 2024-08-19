@@ -12,7 +12,7 @@ import { ASSET_URL } from '../services/urls.js';
 import theme from '../styles/themes.js';
 import { capitalize } from '../lib/helper.js';
 
-const UserFeedbacks = ({ feedbacks }) => {
+const UserFeedbacks = ({ feedbacks, setIsDetailsOpen }) => {
   const matchXxs = useMediaQuery(theme.breakpoints.down(500));
   const [isShowFeedbacks, setIsShowFeedbacks] = useState(false);
 
@@ -43,8 +43,11 @@ const UserFeedbacks = ({ feedbacks }) => {
 
                 <Box sx={{ width: '100%' }}>
                   <Box sx={usernameSx}>
-                    <Link to={`/${fb.from?.role?.[0]}/${fb.from?.user_id}`}>
-                      {fb.from?.username}
+                    <Link
+                      to={`/${fb.from?.role?.[0]}/${fb.from?.user_id}`}
+                      onClick={() => setIsDetailsOpen(false)}
+                    >
+                      {fb.from?.username || 'Show profile'}
                     </Link>
                   </Box>
                   {Object.keys(fb.rating).map(item => (

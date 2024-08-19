@@ -67,8 +67,6 @@ const AuditRequestInfo = ({
   const { chatList } = useSelector(s => s.chat);
 
   const dispatch = useDispatch();
-  const { successMessage: auditSuccessMessage, error: auditError } =
-    useSelector(s => s.audits);
 
   const handleOpen = () => {
     if (user.current_role === AUDITOR && isAuth() && auditor?.first_name) {

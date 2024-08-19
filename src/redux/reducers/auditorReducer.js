@@ -85,6 +85,7 @@ export const auditorReducer = (state = initialState, action) => {
       return {
         ...state,
         currentAuditor: null,
+        auditorRating: null,
       };
     default:
       return state;

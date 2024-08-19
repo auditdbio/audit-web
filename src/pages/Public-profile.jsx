@@ -146,13 +146,15 @@ const PublicProfile = ({ notFoundRedirect = true }) => {
   };
 
   useEffect(() => {
-    if (role.toLowerCase() === AUDITOR) {
+    if (roleParams.toLowerCase() === 'a') {
+      setRole(AUDITOR);
       if (id) {
         dispatch(getCurrentAuditor(id));
       } else if (linkId) {
         dispatch(getAuditorByLinkId(linkId, notFoundRedirect));
       }
-    } else if (role.toLowerCase() === CUSTOMER) {
+    } else if (roleParams.toLowerCase() === 'c') {
+      setRole(CUSTOMER);
       if (id) {
         dispatch(getCurrentCustomer(id));
       } else if (linkId) {
@@ -162,7 +164,7 @@ const PublicProfile = ({ notFoundRedirect = true }) => {
     if (id) {
       dispatch(getPublicProfile(id));
     }
-  }, [id, role, linkId]);
+  }, [id, roleParams, linkId]);
 
   useEffect(() => {
     const handleBeforeUnload = () => {
@@ -177,16 +179,16 @@ const PublicProfile = ({ notFoundRedirect = true }) => {
   }, [navigate]);
 
   const data = useMemo(() => {
-    if (role.toLowerCase() === AUDITOR) {
+    if (roleParams.toLowerCase() === 'a') {
       return currentAuditor;
     } else {
       return currentCustomer;
     }
-  }, [role, currentCustomer, currentAuditor]);
+  }, [roleParams, currentCustomer, currentAuditor]);
 
   useEffect(() => {
     if (linkId && data?.link_id && data?.link_id !== linkId) {
-      navigate(`/${roleParams}/${data.link_id}`);
+      navigate(`/${roleParams}/${data.link_id}`, { replace: true });
     }
   }, [linkId, data]);
 
@@ -405,7 +407,10 @@ const PublicProfile = ({ notFoundRedirect = true }) => {
           )}
 
           {isDetailsOpen && (
-            <UserFeedbacks feedbacks={auditorRating?.user_feedbacks} />
+            <UserFeedbacks
+              feedbacks={auditorRating?.user_feedbacks}
+              setIsDetailsOpen={setIsDetailsOpen}
+            />
           )}
 
           <Box sx={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
