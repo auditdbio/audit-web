@@ -193,11 +193,7 @@ const PublicProfile = ({ notFoundRedirect = true }) => {
   }, [linkId, data]);
 
   useEffect(() => {
-    if (
-      data?.user_id &&
-      role.toLowerCase() === AUDITOR &&
-      user.id !== data?.user_id
-    ) {
+    if (data?.user_id && role.toLowerCase() === AUDITOR) {
       dispatch(getAuditorRating(data.user_id, true));
     }
   }, [data, user]);
