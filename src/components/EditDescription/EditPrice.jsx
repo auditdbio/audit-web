@@ -11,7 +11,7 @@ import {
   Typography,
 } from '@mui/material';
 import { TextField } from 'formik-mui';
-import { CUSTOMER } from '../../redux/actions/types.js';
+import { CUSTOMER, RESOLVED } from '../../redux/actions/types.js';
 import EditIcon from '@mui/icons-material/Edit.js';
 import {
   editAuditCustomer,
@@ -264,21 +264,23 @@ const EditPrice = ({ role, audit, user, request, hideIcon, hideChange }) => {
                       </Button>
                     </Box>
                   </Modal>
-                  {!hideChange && !editPrice && (
-                    <Button
-                      sx={{ minWidth: 'unset' }}
-                      onClick={() => setEditPrice(!editPrice)}
-                    >
-                      <EditIcon
-                        color={
-                          user.current_role === CUSTOMER
-                            ? 'primary'
-                            : 'secondary'
-                        }
-                        fontSize={'small'}
-                      />
-                    </Button>
-                  )}
+                  {!hideChange &&
+                    !editPrice &&
+                    audit?.status.toLowerCase() !== RESOLVED.toLowerCase() && (
+                      <Button
+                        sx={{ minWidth: 'unset' }}
+                        onClick={() => setEditPrice(!editPrice)}
+                      >
+                        <EditIcon
+                          color={
+                            user.current_role === CUSTOMER
+                              ? 'primary'
+                              : 'secondary'
+                          }
+                          fontSize={'small'}
+                        />
+                      </Button>
+                    )}
                 </Box>
               </Box>
             </Box>
