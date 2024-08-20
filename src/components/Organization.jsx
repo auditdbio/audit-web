@@ -12,6 +12,9 @@ import {
   ListItem,
   Checkbox,
   ListItemAvatar,
+  Chip,
+  Modal,
+  FormControlLabel,
 } from '@mui/material';
 import GitHubIcon from '@mui/icons-material/GitHub.js';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack.js';
@@ -45,6 +48,8 @@ import {
 import InfoCard from './custom/info-card.jsx';
 import AuditorSearchModal from './AuditorSearchModal.jsx';
 import ConfirmModal from './modal/ConfirmModal.jsx';
+import EditIcon from '@mui/icons-material/Edit';
+import UserLIstItem from './UserListItem/UserLIstItem.jsx';
 
 const Organization = ({ linkId }) => {
   const role = useSelector(s => s.user.user.current_role);
@@ -241,48 +246,11 @@ const Organization = ({ linkId }) => {
                         {organization.members.map(value => {
                           const labelId = `checkbox-list-secondary-label-${value}`;
                           return (
-                            <ListItem
-                              key={value.user_id}
-                              sx={{
-                                borderBottom: '1px solid rgba(0, 0, 0, 0.23)',
-                              }}
-                              secondaryAction={
-                                organization.owner.user_id === user.id &&
-                                value.user_id !== user.id && (
-                                  <Button
-                                    onClick={() => {
-                                      dispatch(
-                                        deleteUserFromOrganization(
-                                          organization.id,
-                                          value.user_id,
-                                        ),
-                                      );
-                                    }}
-                                  >
-                                    <DeleteForeverRoundedIcon color={'error'} />
-                                  </Button>
-                                )
-                              }
-                              disablePadding
-                            >
-                              <ListItemButton>
-                                <ListItemAvatar>
-                                  <Avatar
-                                    sx={{ width: '30px', height: '30px' }}
-                                    alt={`Avatar n°${value + 1}`}
-                                    src={
-                                      value.avatar
-                                        ? `${ASSET_URL}/${value.avatar}`
-                                        : ''
-                                    }
-                                  />
-                                </ListItemAvatar>
-                                <ListItemText
-                                  id={labelId}
-                                  primary={value.username}
-                                />
-                              </ListItemButton>
-                            </ListItem>
+                            <UserLIstItem
+                              value={value}
+                              labelId={labelId}
+                              organization={organization}
+                            />
                           );
                         })}
                       </List>

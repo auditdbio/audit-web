@@ -10,12 +10,16 @@ import {
   getOrganizationById,
 } from '../redux/actions/organizationAction.js';
 import ChangeLinkId from '../components/forms/change-link-id/index.jsx';
+import NotFound from './Not-Found.jsx';
+import { Box } from '@mui/material';
+import Loader from '../components/Loader.jsx';
 
 const CreateEditOrganization = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
   const role = useSelector(s => s.user.user.current_role);
   const organization = useSelector(s => s.organization.organization);
+  const notFound = useSelector(s => s.organization.notFound);
   const [newLinkId, setNewLinkId] = useState(null);
   const [showChangeLinkId, setShowChangeLinkId] = useState(false);
 
@@ -30,26 +34,30 @@ const CreateEditOrganization = () => {
     };
   }, [id]);
 
-  return (
-    <Layout>
-      <Headings
-        title={id ? 'Edit Organization' : 'Create Organization'}
-        noIndex={true}
-      />
-
-      <CustomCard sx={editWrapper}>
-        <CreateEditOrganizationForm
-          role={role}
-          needLoad={id}
-          newLinkId={newLinkId}
-          organization={organization}
+  if (!notFound) {
+    return (
+      <Layout>
+        <Headings
+          title={id ? 'Edit Organization' : 'Create Organization'}
+          noIndex={true}
         />
-        {organization.id && (
-          <ChangeLinkId org={organization} setNewLinkId={setNewLinkId} />
-        )}
-      </CustomCard>
-    </Layout>
-  );
+
+        <CustomCard sx={editWrapper}>
+          <CreateEditOrganizationForm
+            role={role}
+            needLoad={!!id}
+            newLinkId={newLinkId}
+            organization={organization}
+          />
+          {organization.id && (
+            <ChangeLinkId org={organization} setNewLinkId={setNewLinkId} />
+          )}
+        </CustomCard>
+      </Layout>
+    );
+  } else {
+    return <NotFound />;
+  }
 };
 
 export default CreateEditOrganization;

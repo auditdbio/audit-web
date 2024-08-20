@@ -9,6 +9,7 @@ import {
   GET_MY_ORGANIZATION,
   GET_ORGANIZATION_AUDIT_REQUESTS,
   GET_ORGANIZATION_BY_ID,
+  NOT_FOUND_ORGANIZATION,
   UPDATE_ORGANIZATION,
 } from './types.js';
 import { history } from '../../services/history.js';
@@ -92,7 +93,8 @@ export const getOrganizationById = id => {
       })
       .then(({ data }) => {
         dispatch({ type: GET_ORGANIZATION_BY_ID, payload: data });
-      });
+      })
+      .catch(e => dispatch({ type: NOT_FOUND_ORGANIZATION }));
   };
 };
 
@@ -110,8 +112,23 @@ export const addUserInOrganization = (orgLinkId, data, id) => {
       });
   };
 };
-//
-export const deleteUserFromOrganization = (orgId, userId) => {
+
+export const changeAccessLevel = (org_id, user_id, data, orgLinkId) => {
+  const token = Cookies.get('token');
+  return dispatch => {
+    axios
+      .patch(`${API_URL}/organization/${org_id}/members/${user_id}`, data, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then(({ data }) => {
+        dispatch(getOrganizationById(orgLinkId));
+      });
+  };
+};
+
+export const deleteUserFromOrganization = (orgId, userId, linkId) => {
   return dispatch => {
     const token = Cookies.get('token');
     axios
@@ -121,7 +138,7 @@ export const deleteUserFromOrganization = (orgId, userId) => {
         },
       })
       .then(({ data }) => {
-        dispatch(getOrganizationById(orgId));
+        dispatch(getOrganizationById(linkId));
       });
   };
 };
@@ -155,7 +172,6 @@ export const getAuditRequests = org_id => {
         },
       })
       .then(({ data }) => {
-        console.log(data);
         dispatch({ type: GET_ORGANIZATION_AUDIT_REQUESTS, payload: data });
       });
   };

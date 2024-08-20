@@ -6,6 +6,7 @@ import {
   CLEAR_ORGANIZATION,
   DELETE_INVITES,
   ACCEPT_INVITE,
+  NOT_FOUND_ORGANIZATION,
 } from '../actions/types.js';
 
 const initialState = {
@@ -14,6 +15,7 @@ const initialState = {
   includeMe: [],
   organization: {},
   invites: [],
+  notFound: false,
 };
 
 export const organizationReducer = (state = initialState, action) => {
@@ -32,6 +34,11 @@ export const organizationReducer = (state = initialState, action) => {
         organization: action.payload,
         organizations: [...state.organizations, action.payload],
         own: [...state.own, action.payload],
+      };
+    case NOT_FOUND_ORGANIZATION:
+      return {
+        ...state,
+        notFound: true,
       };
     case UPDATE_ORGANIZATION:
       return {

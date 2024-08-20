@@ -61,7 +61,11 @@ const CreateEditOrganizationForm = ({
   const [isDirty, setIsDirty] = useState(false);
 
   if (!organization.id && needLoad) {
-    return <Loader />;
+    return (
+      <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+        <Loader />
+      </Box>
+    );
   } else {
     return (
       <Formik
@@ -130,6 +134,7 @@ const CreateEditOrganizationForm = ({
               unblock();
             };
           }, [history, isDirty]);
+
           return (
             <Form onSubmit={handleSubmit}>
               <Box sx={wrapper}>
@@ -268,6 +273,15 @@ const CreateEditOrganizationForm = ({
                           }
                           label="Auditor"
                         />
+                        {user.current_role.slice(0, 1).toUpperCase() +
+                          user.current_role.slice(1) !==
+                          values.organization_type && (
+                          <Typography>
+                            The role you've assigned to the organization is
+                            different from yours. As a result, your role will be
+                            changed when the creation process is finished.
+                          </Typography>
+                        )}
                       </RadioGroup>
                     </FormControl>
                   </Box>
