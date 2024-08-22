@@ -1,7 +1,13 @@
 import React from 'react';
-import { LinearProgress, Box, Typography, useTheme } from '@mui/material';
+import {
+  LinearProgress,
+  Box,
+  Typography,
+  useTheme,
+  Tooltip,
+} from '@mui/material';
 
-const RatingProgressBar = ({ value = 0, maxValue = 100, sx = {} }) => {
+const RatingProgressBar = ({ value = 0, maxValue = 100, sx = {}, tooltip }) => {
   return (
     <Box sx={wrapper}>
       <Box sx={{ width: '100%', mr: 1 }}>
@@ -12,11 +18,33 @@ const RatingProgressBar = ({ value = 0, maxValue = 100, sx = {} }) => {
           sx={{ height: '7px', borderRadius: '1px', ...sx }}
         />
       </Box>
-      <Box sx={textValueSx}>
-        <Typography>
-          {value} / {maxValue}
-        </Typography>
-      </Box>
+      <Tooltip title={tooltip} placement="top">
+        <Box sx={textValueSx}>
+          <Typography sx={{ textAlign: 'center', flex: 1 }}>
+            <span
+              style={{
+                float: 'left',
+                width: '40%',
+                textAlign: 'right',
+                fontFamily: 'monospace',
+              }}
+            >
+              {value.toFixed(1)}
+            </span>
+            <span style={{ fontFamily: 'monospace' }}>/</span>
+            <span
+              style={{
+                float: 'right',
+                width: '30%',
+                textAlign: 'left',
+                fontFamily: 'monospace',
+              }}
+            >
+              {maxValue}
+            </span>
+          </Typography>
+        </Box>
+      </Tooltip>
     </Box>
   );
 };
@@ -86,9 +114,12 @@ const wrapper = theme => ({
 });
 
 const textValueSx = theme => ({
-  width: '90px',
   whiteSpace: 'nowrap',
-  textAlign: 'right',
+  width: '100px',
+  ml: '10px',
+  display: 'flex',
+  justifyContent: 'center',
+  cursor: 'pointer',
   [theme.breakpoints.down('sm')]: {
     fontSize: '12px',
   },

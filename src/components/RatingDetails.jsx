@@ -35,12 +35,13 @@ const RatingDetails = ({ rating, role }) => {
       </Box>
       <hr />
       <Box>
-        {Object.keys(ratingDetails).map(point => (
-          <Box sx={infoWrapper} key={point}>
-            <span>{point}</span>
+        {Object.keys(ratingDetails).map(r => (
+          <Box sx={infoWrapper} key={r}>
+            <span>{r}</span>
             <RatingProgressBar
-              value={ratingDetails[point].split('/')[0]}
-              maxValue={ratingDetails[point].split('/')[1]}
+              value={+ratingDetails[r].points?.split('/')[0]}
+              maxValue={+ratingDetails[r].points?.split('/')[1]}
+              tooltip={ratingDetails[r].label}
               sx={{ height: '20px' }}
             />
           </Box>
@@ -71,11 +72,11 @@ const RatingDetails = ({ rating, role }) => {
       </Box>
       <hr />
       <Box sx={infoWrapper}>
-        <span>Total completed audits</span>
+        <span>Total resolved audits</span>
         <Typography noWrap={true}>{rating.total_completed_audits}</Typography>
       </Box>
       <Box sx={infoWrapper}>
-        <span>Completed last 90 days</span>
+        <span>Resolved last 90 days</span>
         <Typography noWrap={true}>
           {rating.completed_last_ninety_days?.length}
         </Typography>
