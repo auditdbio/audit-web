@@ -163,7 +163,11 @@ const UserInfo = ({ role, linkId }) => {
 
           {isDetailsOpen ? (
             <Box sx={ratingWrapper}>
-              <RatingDetails rating={auditorRating} role={role} />
+              <RatingDetails
+                rating={auditorRating}
+                role={role}
+                username={`${data.first_name} ${data.last_name}`}
+              />
             </Box>
           ) : (
             <Box sx={infoStyle}>

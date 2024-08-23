@@ -18,7 +18,7 @@ const RatingProgressBar = ({ value = 0, maxValue = 100, sx = {}, tooltip }) => {
           sx={{ height: '7px', borderRadius: '1px', ...sx }}
         />
       </Box>
-      <Tooltip title={tooltip} placement="top">
+      <Tooltip title={tooltip} placement="top" arrow enterDelay={300}>
         <Box sx={textValueSx}>
           <Typography sx={{ textAlign: 'center', flex: 1 }}>
             <span
@@ -119,7 +119,7 @@ const textValueSx = theme => ({
   ml: '10px',
   display: 'flex',
   justifyContent: 'center',
-  cursor: 'pointer',
+  cursor: 'default',
   [theme.breakpoints.down('sm')]: {
     fontSize: '12px',
   },

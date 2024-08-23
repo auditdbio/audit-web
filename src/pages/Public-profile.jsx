@@ -294,7 +294,11 @@ const PublicProfile = ({ notFoundRedirect = true }) => {
             </Box>
 
             {isDetailsOpen ? (
-              <RatingDetails role={role} rating={auditorRating} />
+              <RatingDetails
+                role={role}
+                rating={auditorRating}
+                username={`${data.first_name} ${data.last_name}`}
+              />
             ) : (
               <>
                 <Box sx={{ [theme.breakpoints.down(560)]: { width: '100%' } }}>

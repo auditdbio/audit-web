@@ -1,9 +1,10 @@
 import React, { useMemo } from 'react';
-import { Box, Typography } from '@mui/material';
+import { Box, Typography, Tooltip } from '@mui/material';
 import Loader from './Loader.jsx';
 import RatingProgressBar from './custom/RatingProgressBar.jsx';
+import HelpOutlineIcon from '@mui/icons-material/HelpOutline.js';
 
-const RatingDetails = ({ rating, role }) => {
+const RatingDetails = ({ rating, role, username }) => {
   const ratingDetails = useMemo(() => {
     if (rating) {
       return JSON.parse(rating.rating_details);
@@ -28,16 +29,43 @@ const RatingDetails = ({ rating, role }) => {
 
   return (
     <Box sx={wrapper}>
-      <Box sx={titleSx}>User rating:</Box>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+        <Box sx={titleSx}>{username} rating:</Box>
+        <Tooltip
+          title={
+            <span style={{ whiteSpace: 'pre-line' }}>{ratingHelpText}</span>
+          }
+          arrow
+          placement="bottom-end"
+          enterDelay={300}
+          leaveDelay={200}
+          componentsProps={{
+            tooltip: { sx: { backgroundColor: 'rgb(97, 97, 97)' } },
+          }}
+        >
+          <HelpOutlineIcon fontSize="small" cursor="help" />
+        </Tooltip>
+      </Box>
       <Box sx={infoWrapper}>
         <span>Summary</span>
-        <RatingProgressBar value={rating?.summary} sx={{ height: '20px' }} />
+        <RatingProgressBar
+          value={rating?.summary}
+          sx={{ height: '20px' }}
+          tooltip="Total points."
+        />
       </Box>
       <hr />
       <Box>
         {Object.keys(ratingDetails).map(r => (
           <Box sx={infoWrapper} key={r}>
-            <span>{r}</span>
+            <Tooltip
+              title={ratingDetails[r].label}
+              placement="top"
+              arrow
+              enterDelay={300}
+            >
+              <span>{r}</span>
+            </Tooltip>
             <RatingProgressBar
               value={+ratingDetails[r].points?.split('/')[0]}
               maxValue={+ratingDetails[r].points?.split('/')[1]}
@@ -129,3 +157,8 @@ const infoWrapper = theme => ({
     '& > span': { fontSize: '12px' },
   },
 });
+
+const ratingHelpText = `Identity points: Earn points by linking your identity accounts to your profile.\n
+Last resolved audits points: Earn points by successfully resolving audits.\n
+Resolved on time points: Earn extra points for resolving audits on time.\n
+Feedback points: Earn points based on feedback for resolved audits.`;
