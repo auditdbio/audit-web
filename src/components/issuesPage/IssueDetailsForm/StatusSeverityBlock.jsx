@@ -34,6 +34,7 @@ const StatusSeverityBlock = ({
   handleSubmit,
   errors,
   touched,
+  hideControl,
   dirty,
   user,
   audit,
@@ -115,7 +116,11 @@ const StatusSeverityBlock = ({
           <Box sx={[severityWrapper, blockSx]}>
             <Typography
               sx={[statusBlockTitle, { cursor: 'pointer' }]}
-              onClick={() => setSeverityListOpen(true)}
+              onClick={() => {
+                if (!hideControl) {
+                  setSeverityListOpen(true);
+                }
+              }}
             >
               <ArrowIcon />
               <span>Severity</span>
@@ -123,7 +128,11 @@ const StatusSeverityBlock = ({
             <Field
               open={severityListOpen}
               onClose={() => setSeverityListOpen(false)}
-              onOpen={() => setSeverityListOpen(true)}
+              onOpen={() => {
+                if (!hideControl) {
+                  setSeverityListOpen(true);
+                }
+              }}
               onChange={e => {
                 setFieldValue('severity', e.target.value);
                 if (editMode) handleSubmit();

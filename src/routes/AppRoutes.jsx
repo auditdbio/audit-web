@@ -263,6 +263,14 @@ const AppRoutes = () => {
           }
         />
         <Route
+          path="/p-issues/audit-issue/:auditId/:issueId"
+          element={
+            // <PrivateRoute auth={{ isAuthenticated: isAuth() }}>
+            <AuditIssueDetails hideControl={true} />
+            // </PrivateRoute>
+          }
+        />
+        <Route
           path="/public-issues/audit-issue/:auditId/:issueId"
           element={<AuditIssueDetails isPublic={true} />}
         />

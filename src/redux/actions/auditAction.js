@@ -19,6 +19,7 @@ import {
   GET_AUDIT_REQUEST_HISTORY,
   GET_AUDITS,
   GET_AUDITS_OF_AUDITOR,
+  GET_PUBLIC_AUDIT,
   GET_PUBLIC_REPORT,
   GET_REQUEST,
   IN_PROGRESS,
@@ -155,6 +156,27 @@ export const getAudits = role => {
         //     some: true
         // });
       });
+  };
+};
+
+export const getPublicAudit = (id, code) => {
+  return dispatch => {
+    const token = Cookies.get('token');
+    let url;
+    if (code) {
+      url = `${API_URL}/audit/${id}?code=${code}`;
+    } else {
+      url = `${API_URL}/audit/${id}`;
+    }
+    axios(url)
+      .then(({ data }) => {
+        if (data.id) {
+          dispatch({ type: GET_PUBLIC_AUDIT, payload: data });
+        } else {
+          dispatch({ type: NOT_FOUND });
+        }
+      })
+      .catch(() => dispatch({ type: NOT_FOUND }));
   };
 };
 

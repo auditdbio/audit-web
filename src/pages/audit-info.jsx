@@ -56,6 +56,7 @@ import EditButton from '../components/EditDescription/EditButton.jsx';
 import TagsField from '../components/forms/tags-field/tags-field.jsx';
 import EditTags from '../components/EditDescription/EditTags.jsx';
 import EditPrice from '../components/EditDescription/EditPrice.jsx';
+import IssuesList from '../components/issuesPage/IssuesList.jsx';
 
 const AuditInfo = ({
   audit,
@@ -64,6 +65,7 @@ const AuditInfo = ({
   confirmed,
   handleClose,
   request,
+  code,
   isPublic,
 }) => {
   const navigate = useNavigate();
@@ -316,7 +318,7 @@ const AuditInfo = ({
           auditRequest={request}
           audit={audit}
         />
-        <DescriptionHistory audit={audit} request={request} />
+        {!isPublic && <DescriptionHistory audit={audit} request={request} />}
       </Box>
 
       {audit?.conclusion && (
@@ -369,7 +371,7 @@ const AuditInfo = ({
               <Button
                 variant={'contained'}
                 color={'secondary'}
-                onClick={() => dispatch(downloadReport(audit))}
+                onClick={() => dispatch(Report(audit))}
                 sx={[buttonSx]}
                 {...addTestsLabel('report-button')}
               >
@@ -416,6 +418,7 @@ const AuditInfo = ({
         {/*  audit?.status === PENDING) && (*/}
         {audit?.status &&
           !!issues?.length &&
+          !isPublic &&
           audit?.status?.toLowerCase() !== WAITING_FOR_AUDITS.toLowerCase() && (
             <Button
               variant="contained"
@@ -430,6 +433,14 @@ const AuditInfo = ({
           )}
         {/*)}*/}
       </Box>
+      {isPublic && (
+        <IssuesList
+          isPublic={isPublic}
+          hideControl={true}
+          auditId={audit.id}
+          code={code}
+        />
+      )}
 
       <ConfirmModal
         isOpen={isModalOpen}

@@ -5,6 +5,7 @@ import {
   DELETE_PUBLIC_ISSUE,
   DISCLOSE_ALL_ISSUES,
   GET_AUDIT_ISSUES,
+  GET_PUBLIC_AUDIT,
   REQUEST_ERROR,
   RESET_PUBLIC_AUDIT,
   SET_READ_CHANGES,
@@ -47,6 +48,11 @@ export const issueReducer = (state = initialState, action) => {
         ...state,
         issues: action.payload,
         successMessage: 'All issues disclosed',
+      };
+    case GET_PUBLIC_AUDIT:
+      return {
+        ...state,
+        issues: action.payload.issues,
       };
     case REQUEST_ERROR:
       return { ...state, error: 'Error while processing request' };

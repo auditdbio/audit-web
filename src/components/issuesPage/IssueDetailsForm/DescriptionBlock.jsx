@@ -23,6 +23,7 @@ const DescriptionBlock = ({
   isEditFeedback,
   setIsEditFeedback,
   isPublic,
+  hideControl,
 }) => {
   const matchXs = useMediaQuery(theme.breakpoints.down('xs'));
   const { isValid } = useFormikContext();
@@ -96,6 +97,7 @@ const DescriptionBlock = ({
       </Box>
 
       {(user.current_role !== CUSTOMER || isPublic) &&
+        !hideControl &&
         audit?.status?.toLowerCase() !== RESOLVED.toLowerCase() && (
           <Box
             sx={[
@@ -136,8 +138,13 @@ const DescriptionBlock = ({
 
       <Box sx={linksList}>
         {user.current_role !== CUSTOMER &&
+        !hideControl &&
         audit?.status?.toLowerCase() !== RESOLVED.toLowerCase() ? (
-          <ProjectLinksList name="links" handleSubmit={handleSubmit} />
+          <ProjectLinksList
+            hideControl={hideControl}
+            name="links"
+            handleSubmit={handleSubmit}
+          />
         ) : (
           <Box sx={customerLinksList}>
             {values.links?.map((link, idx) => (

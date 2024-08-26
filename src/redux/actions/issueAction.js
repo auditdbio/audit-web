@@ -25,6 +25,17 @@ export const getIssues = auditId => {
   };
 };
 
+export const getPublicIssue = auditId => {
+  return dispatch => {
+    const token = Cookies.get('token');
+    axios
+      .get(`${API_URL}/audit/${auditId}/issue`)
+      .then(({ data: issues }) =>
+        dispatch({ type: GET_AUDIT_ISSUES, payload: { auditId, issues } }),
+      );
+  };
+};
+
 export const getPublicIssues = (data, auditId) => {
   return dispatch => {
     dispatch({ type: GET_AUDIT_ISSUES, payload: { auditId, issues: data } });
