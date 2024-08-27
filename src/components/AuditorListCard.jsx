@@ -14,6 +14,7 @@ import {
   changeRolePublicCustomerNoRedirect,
 } from '../redux/actions/userAction.js';
 import CustomSnackbar from './custom/CustomSnackbar.jsx';
+import Star from './icons/Star.jsx';
 
 const AuditorListCard = ({ auditor, projectIdToInvite, budge }) => {
   const navigate = useNavigate();
@@ -114,6 +115,19 @@ const AuditorListCard = ({ auditor, projectIdToInvite, budge }) => {
               sx={avatarStyle}
               alt={`${auditor.first_name} photo`}
             />
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                mt: '5px',
+              }}
+            >
+              <Star size={14} />
+              <Typography sx={{ fontSize: '12px!important', ml: '5px' }}>
+                {Math.trunc(auditor.rating || 0)}
+              </Typography>
+            </Box>
           </Box>
           <Box sx={descriptionStyle(theme)}>
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
@@ -143,6 +157,7 @@ const AuditorListCard = ({ auditor, projectIdToInvite, budge }) => {
           <TagsList data={auditor.tags} />
         </Box>
       </Box>
+
       <Box sx={cardRightSide}>
         {(auditor.price_range.from > 0 || auditor.price_range.to > 0) && (
           <Typography sx={priceStyle}>

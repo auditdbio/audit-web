@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom/dist';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom/dist';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   Avatar,
@@ -13,13 +13,15 @@ import { AUDITOR, CUSTOMER } from '../redux/actions/types.js';
 import Loader from '../components/Loader.jsx';
 import { Box } from '@mui/system';
 import { ASSET_URL } from '../services/urls.js';
-import { addTestsLabel, capitalize, isAuth } from '../lib/helper.js';
+import { addTestsLabel, isAuth } from '../lib/helper.js';
 import MobileTagsList from '../components/MobileTagsList/index.jsx';
 import TagsList from '../components/tagsList.jsx';
 import theme from '../styles/themes.js';
 import Layout from '../styles/Layout.jsx';
 import {
+  clearCurrentAuditor,
   getAuditorByLinkId,
+  getAuditorRating,
   getCurrentAuditor,
 } from '../redux/actions/auditorAction.js';
 import {
@@ -39,6 +41,9 @@ import LinkedinIcon from '../components/icons/LinkedinIcon.jsx';
 import XTwitterLogo from '../components/icons/XTwitter-logo.jsx';
 import GitHubIcon from '@mui/icons-material/GitHub';
 import Headings from '../router/Headings.jsx';
+import Star from '../components/icons/Star.jsx';
+import RatingDetails from '../components/RatingDetails.jsx';
+import UserFeedbacks from '../components/UserFeedbacks.jsx';
 import WalletConnectIcon from '../components/icons/WalletConnectIcon.jsx';
 
 const PublicProfile = ({ notFoundRedirect = true }) => {
@@ -50,7 +55,7 @@ const PublicProfile = ({ notFoundRedirect = true }) => {
   const { role: roleParams, id, linkId } = useParams();
 
   const { currentCustomer, customer } = useSelector(s => s.customer);
-  const { currentAuditor, auditor } = useSelector(s => s.auditor);
+  const { currentAuditor, auditorRating } = useSelector(s => s.auditor);
   const { myProjects } = useSelector(s => s.project);
   const { user, publicUser } = useSelector(s => s.user);
   const { chatList } = useSelector(s => s.chat);
@@ -62,6 +67,10 @@ const PublicProfile = ({ notFoundRedirect = true }) => {
     if (roleParams.toLowerCase() === 'a') return AUDITOR;
     return roleParams;
   });
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [isDetailsOpen, setIsDetailsOpen] = useState(
+    searchParams.get('rating') || false,
+  );
 
   const handleError = () => {
     setErrorMessage(null);
@@ -129,14 +138,23 @@ const PublicProfile = ({ notFoundRedirect = true }) => {
     navigate(`/chat/${chatId}`);
   };
 
+  const openRating = () => {
+    setIsDetailsOpen(prev => !prev);
+    if (isDetailsOpen) {
+      setSearchParams({});
+    }
+  };
+
   useEffect(() => {
-    if (role.toLowerCase() === AUDITOR) {
+    if (roleParams.toLowerCase() === 'a') {
+      setRole(AUDITOR);
       if (id) {
         dispatch(getCurrentAuditor(id));
       } else if (linkId) {
         dispatch(getAuditorByLinkId(linkId, notFoundRedirect));
       }
-    } else if (role.toLowerCase() === CUSTOMER) {
+    } else if (roleParams.toLowerCase() === 'c') {
+      setRole(CUSTOMER);
       if (id) {
         dispatch(getCurrentCustomer(id));
       } else if (linkId) {
@@ -146,7 +164,7 @@ const PublicProfile = ({ notFoundRedirect = true }) => {
     if (id) {
       dispatch(getPublicProfile(id));
     }
-  }, [id, role, linkId]);
+  }, [id, roleParams, linkId]);
 
   useEffect(() => {
     const handleBeforeUnload = () => {
@@ -156,22 +174,29 @@ const PublicProfile = ({ notFoundRedirect = true }) => {
     return () => {
       localStorage.removeItem('go-back');
       window.removeEventListener('beforeunload', handleBeforeUnload);
+      dispatch(clearCurrentAuditor());
     };
   }, [navigate]);
 
   const data = useMemo(() => {
-    if (role.toLowerCase() === AUDITOR) {
+    if (roleParams.toLowerCase() === 'a') {
       return currentAuditor;
     } else {
       return currentCustomer;
     }
-  }, [role, currentCustomer, currentAuditor]);
+  }, [roleParams, currentCustomer, currentAuditor]);
 
   useEffect(() => {
     if (linkId && data?.link_id && data?.link_id !== linkId) {
-      navigate(`/${roleParams}/${data.link_id}`);
+      navigate(`/${roleParams}/${data.link_id}`, { replace: true });
     }
   }, [linkId, data]);
+
+  useEffect(() => {
+    if (data?.user_id && role.toLowerCase() === AUDITOR) {
+      dispatch(getAuditorRating(data.user_id, true));
+    }
+  }, [data, user]);
 
   if (!data) {
     return (
@@ -214,12 +239,14 @@ const PublicProfile = ({ notFoundRedirect = true }) => {
               : theme.palette.primary.main,
           )}
         >
-          {localStorage.getItem('go-back') && (
+          {(localStorage.getItem('go-back') || isDetailsOpen) && (
             <Button
               variant="text"
               color={role.toLowerCase() === AUDITOR ? 'secondary' : 'primary'}
               sx={goBackSx}
-              onClick={() => navigate(-1)}
+              onClick={() => {
+                isDetailsOpen ? setIsDetailsOpen(false) : navigate(-1);
+              }}
             >
               <ArrowBackIcon />
             </Button>
@@ -239,89 +266,120 @@ const PublicProfile = ({ notFoundRedirect = true }) => {
               severity={!errorMessage ? 'success' : 'error'}
               text={message || errorMessage}
             />
-            <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                flexDirection: 'column',
+              }}
+            >
               <Avatar
                 src={data.avatar && `${ASSET_URL}/${data.avatar}`}
                 sx={avatarStyle}
                 alt="User photo"
               />
-            </Box>
-
-            <Box sx={{ [theme.breakpoints.down(560)]: { width: '100%' } }}>
-              <Box sx={infoStyle}>
-                <Box sx={infoInnerStyle}>
-                  <Box sx={infoWrapper}>
-                    <span>{data.last_name ? 'First Name' : 'Name'}</span>
-                    <Typography noWrap={true}>{data.first_name}</Typography>
-                  </Box>
-                  {data.last_name && (
-                    <Box sx={infoWrapper}>
-                      <span>Last name</span>
-                      <Typography noWrap={true}>{data.last_name}</Typography>
-                    </Box>
-                  )}
-
-                  {role.toLowerCase() === AUDITOR && (
-                    <Box sx={infoWrapper}>
-                      <span>Price range:</span>
-                      {data.price_range?.from && data.price_range?.to ? (
-                        <Typography>
-                          ${data.price_range.from} - {data.price_range.to} per
-                          line
-                        </Typography>
-                      ) : (
-                        <Typography>not specified</Typography>
-                      )}
-                    </Box>
-                  )}
-
-                  {role.toLowerCase() !== AUDITOR && data.company && (
-                    <Box sx={infoWrapper}>
-                      <span>Company</span>
-                      <Typography noWrap={true}>{data.company}</Typography>
-                    </Box>
-                  )}
-                </Box>
-                <Box sx={infoInnerStyle}>
-                  <Box sx={infoWrapper}>
-                    <span>E-mail</span>
-                    <Typography noWrap={true}>
-                      {data.contacts?.public_contacts
-                        ? data.contacts?.email
-                        : 'Hidden'}
-                    </Typography>
-                  </Box>
-                  <Box sx={infoWrapper}>
-                    <span>Telegram</span>
-                    <Typography noWrap={true}>
-                      {data.contacts?.public_contacts
-                        ? data.contacts?.telegram
-                        : 'Hidden'}
-                    </Typography>
-                  </Box>
-                </Box>
-              </Box>
-
-              {!matchSm && (data.about || !!data.tags?.length) && (
-                <Box sx={aboutWrapper}>
-                  <Box sx={infoWrapper}>
-                    <Typography
-                      sx={{
-                        wordBreak: 'break-word',
-                        maxWidth: 'unset!important',
-                      }}
-                    >
-                      <span className="about-title">About</span>
-                      {data.about}
-                    </Typography>
-                  </Box>
-                  <TagsList data={data.tags} fullView={true} />
-                </Box>
+              {role === AUDITOR && auditorRating && (
+                <Button sx={ratingButton} type="button" onClick={openRating}>
+                  <Star size={25} />
+                  <Typography
+                    component="span"
+                    sx={{ ml: '10px', fontWeight: 500, fontSize: '20px' }}
+                  >
+                    {auditorRating.user_id === data.user_id
+                      ? Math.trunc(auditorRating.summary)
+                      : Math.trunc(data.rating || 0)}
+                  </Typography>
+                </Button>
               )}
             </Box>
+
+            {isDetailsOpen ? (
+              <RatingDetails
+                role={role}
+                rating={auditorRating}
+                username={`${data.first_name} ${data.last_name}`}
+              />
+            ) : (
+              <>
+                <Box sx={{ [theme.breakpoints.down(560)]: { width: '100%' } }}>
+                  <Box sx={infoStyle}>
+                    <Box sx={infoInnerStyle}>
+                      <Box sx={infoWrapper}>
+                        <span>{data.last_name ? 'First Name' : 'Name'}</span>
+                        <Typography noWrap={true}>{data.first_name}</Typography>
+                      </Box>
+                      {data.last_name && (
+                        <Box sx={infoWrapper}>
+                          <span>Last name</span>
+                          <Typography noWrap={true}>
+                            {data.last_name}
+                          </Typography>
+                        </Box>
+                      )}
+
+                      {role.toLowerCase() === AUDITOR && (
+                        <Box sx={infoWrapper}>
+                          <span>Price range:</span>
+                          {data.price_range?.from && data.price_range?.to ? (
+                            <Typography>
+                              ${data.price_range.from} - {data.price_range.to}{' '}
+                              per line
+                            </Typography>
+                          ) : (
+                            <Typography>not specified</Typography>
+                          )}
+                        </Box>
+                      )}
+
+                      {role.toLowerCase() !== AUDITOR && data.company && (
+                        <Box sx={infoWrapper}>
+                          <span>Company</span>
+                          <Typography noWrap={true}>{data.company}</Typography>
+                        </Box>
+                      )}
+                    </Box>
+                    <Box sx={infoInnerStyle}>
+                      <Box sx={infoWrapper}>
+                        <span>E-mail</span>
+                        <Typography noWrap={true}>
+                          {data.contacts?.public_contacts
+                            ? data.contacts?.email
+                            : 'Hidden'}
+                        </Typography>
+                      </Box>
+                      <Box sx={infoWrapper}>
+                        <span>Telegram</span>
+                        <Typography noWrap={true}>
+                          {data.contacts?.public_contacts
+                            ? data.contacts?.telegram
+                            : 'Hidden'}
+                        </Typography>
+                      </Box>
+                    </Box>
+                  </Box>
+
+                  {!matchSm && (data.about || !!data.tags?.length) && (
+                    <Box sx={aboutWrapper}>
+                      <Box sx={infoWrapper}>
+                        <Typography
+                          sx={{
+                            wordBreak: 'break-word',
+                            maxWidth: 'unset!important',
+                          }}
+                        >
+                          <span className="about-title">About</span>
+                          {data.about}
+                        </Typography>
+                      </Box>
+                      <TagsList data={data.tags} fullView={true} />
+                    </Box>
+                  )}
+                </Box>
+              </>
+            )}
           </Box>
 
-          {matchSm && (data.about || !!data.tags?.length) && (
+          {matchSm && !isDetailsOpen && (data.about || !!data.tags?.length) && (
             <Box sx={aboutWrapper}>
               <Box sx={[infoWrapper, { flexDirection: 'column' }]}>
                 <span
@@ -347,6 +405,14 @@ const PublicProfile = ({ notFoundRedirect = true }) => {
               <MobileTagsList data={data.tags} />
             </Box>
           )}
+
+          {isDetailsOpen && (
+            <UserFeedbacks
+              feedbacks={auditorRating?.user_feedbacks}
+              setIsDetailsOpen={setIsDetailsOpen}
+            />
+          )}
+
           <Box sx={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
             {publicUser?.linked_accounts
               ?.filter(account => account.is_public)
@@ -575,11 +641,19 @@ const avatarStyle = theme => ({
   },
 });
 
+const ratingButton = {
+  color: 'black',
+  mt: '20px',
+  display: 'flex',
+  alignItems: 'center',
+};
+
 const contentWrapper = theme => ({
   display: 'flex',
   gap: '70px',
-  justifyContent: 'center',
+  // justifyContent: 'center',
   margin: '0 auto',
+  width: '100%',
   maxWidth: '1200px',
   [theme.breakpoints.down('md')]: {
     gap: '50px',
@@ -587,7 +661,7 @@ const contentWrapper = theme => ({
   [theme.breakpoints.down('sm')]: {
     alignItems: 'center',
     maxWidth: 'unset',
-    justifyContent: 'flex-start',
+    // justifyContent: 'flex-start',
     margin: 0,
     gap: '30px',
     width: '100%',

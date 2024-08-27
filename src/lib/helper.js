@@ -37,6 +37,16 @@ export const decodeBase64url = str => {
   return window.atob(s);
 };
 
+export const getAverageFeedbackRating = rating => {
+  if (rating) {
+    const values = Object.values(rating).filter(it => !!it);
+    const average = values.reduce((acc, it) => acc + it, 0) / values.length;
+    return Math.round(average * 100) / 100;
+  }
+
+  return 0;
+};
+
 export const reportBuilder = (report, issuesArray) => {
   const getSummarySubsections = () => {
     const subsections = [

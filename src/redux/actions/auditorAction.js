@@ -2,8 +2,10 @@ import Cookies from 'js-cookie';
 import axios from 'axios';
 import {
   AUDITOR_SET_ERROR,
+  CLEAR_CURRENT_AUDITOR_CUSTOMER,
   DELETE_BADGE,
   GET_AUDITOR,
+  GET_AUDITOR_RATING_DETAILS,
   GET_AUDITORS,
   GET_CURRENT_AUDITOR,
   GET_PUBLIC_PROFILE,
@@ -169,6 +171,18 @@ export const getAuditorById = id => {
   };
 };
 
+export const getAuditorRating = (id, getDetails = false) => {
+  return dispatch => {
+    let url = getDetails
+      ? `${API_URL}/rating/auditor/${id}/details`
+      : `${API_URL}/rating/auditor/${id}`;
+
+    axios.get(url).then(({ data }) => {
+      dispatch({ type: GET_AUDITOR_RATING_DETAILS, payload: data });
+    });
+  };
+};
+
 export const searchAuditor = (values, badges = true) => {
   const kind = badges ? 'auditor badge' : 'auditor';
   const queryString = createSearchValues(values, kind);
@@ -242,4 +256,8 @@ export const mergeAccount = (values, secret) => {
         dispatch({ type: SIGN_IN_ERROR, payload: response.data });
       });
   };
+};
+
+export const clearCurrentAuditor = () => {
+  return { type: CLEAR_CURRENT_AUDITOR_CUSTOMER };
 };

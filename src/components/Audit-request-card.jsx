@@ -48,10 +48,10 @@ const AuditRequestCard = ({ type, request, audit }) => {
               <Typography>{request.price}</Typography>
             )}
           </Box>
-          <Box sx={infoWrapper}>
-            <Star />
-            <Typography>150</Typography>
-          </Box>
+          {/*<Box sx={infoWrapper}>*/}
+          {/*  <Star />*/}
+          {/*  <Typography>150</Typography>*/}
+          {/*</Box>*/}
         </Box>
       </Box>
       <Box sx={buttonWrapper}>

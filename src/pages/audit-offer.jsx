@@ -2,8 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom/dist';
-import { FastField, Form, Formik } from 'formik';
-import { TextField } from 'formik-mui';
+import { Form, Formik } from 'formik';
 import * as Yup from 'yup';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack.js';
 import TelegramIcon from '@mui/icons-material/Telegram';
@@ -29,9 +28,8 @@ import {
   clearMessage,
   downloadReport,
   editAuditCustomer,
-  // editAudit,
   getAudit,
-  getPublicReport,
+  getAuditFeedback,
   startAudit,
 } from '../redux/actions/auditAction.js';
 import AuditUpload from '../components/forms/audit-upload/index.jsx';
@@ -44,8 +42,7 @@ import {
   SUBMITED,
   WAITING_FOR_AUDITS,
 } from '../redux/actions/types.js';
-import Markdown from '../components/markdown/Markdown.jsx';
-import { addTestsLabel, isAuth, reportBuilder } from '../lib/helper.js';
+import { addTestsLabel, getAverageFeedbackRating } from '../lib/helper.js';
 import CustomLink from '../components/custom/CustomLink.jsx';
 import IssueDetailsForm from '../components/issuesPage/IssueDetailsForm/IssueDetailsForm.jsx';
 import IssuesList from '../components/issuesPage/IssuesList.jsx';
@@ -65,19 +62,29 @@ import CloseIcon from '@mui/icons-material/Close.js';
 import SaveIcon from '@mui/icons-material/Save.js';
 import EditTags from '../components/EditDescription/EditTags.jsx';
 import MarkdownEditor from '../components/markdown/Markdown-editor.jsx';
-import { BASE_URL } from '../services/urls.js';
 import ResolveAuditConfirmation from '../components/issuesPage/ResolveAuditConfirmation.jsx';
-import PriceCalculation from '../components/PriceCalculation.jsx';
+import Star from '../components/icons/Star.jsx';
+import AuditFeedbackModal from '../components/modal/AuditFeedbackModal.jsx';
 import EditPrice from '../components/EditDescription/EditPrice.jsx';
 
 const AuditOffer = () => {
   const { auditId } = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
   const matchXs = useMediaQuery(theme.breakpoints.down('xs'));
   const matchMd = useMediaQuery(theme.breakpoints.down('md'));
+  const descriptionRef = useRef();
+
   const [resolveConfirmation, setResolveConfirmation] = useState(false);
   const [allIssuesClosed, setAllIssuesClosed] = useState(false);
+  const [auditDBWorkflow, setAuditDBWorkflow] = useState(true);
+  const [showReadMoreButton, setShowReadMoreButton] = useState(false);
+  const [showFull, setShowFull] = useState(false);
+  const [showFeedback, setShowFeedback] = useState(false);
+  const [editConclusion, setEditConclusion] = useState(false);
+  const [mdRef, setMdRef] = useState(null);
+
   const role = useSelector(s => s.user?.user?.current_role);
   const { successMessage, error } = useSelector(s => s.issues);
   const { issues, issuesAuditId } = useSelector(s => s.issues);
@@ -91,13 +98,16 @@ const AuditOffer = () => {
   const notFound = useSelector(s => s.notFound.error);
   const { auditor } = useSelector(s => s.auditor);
   const { customer } = useSelector(s => s.customer);
-  const [auditDBWorkflow, setAuditDBWorkflow] = useState(true);
-  const [showReadMoreButton, setShowReadMoreButton] = useState(false);
-  const [showFull, setShowFull] = useState(false);
-  const [editConclusion, setEditConclusion] = useState(false);
-  const [mdRef, setMdRef] = useState(null);
 
-  const descriptionRef = useRef();
+  useEffect(() => {
+    if (
+      audit &&
+      !audit.no_customer &&
+      audit.status.toLowerCase() === RESOLVED.toLowerCase()
+    ) {
+      dispatch(getAuditFeedback(AUDITOR, audit.auditor_id, audit.id));
+    }
+  }, [audit?.id]);
 
   useEffect(() => {
     dispatch(getAudit(auditId));
@@ -289,6 +299,28 @@ const AuditOffer = () => {
                 <EditTags audit={audit} confirmed={true} />
                 <Divider sx={{ width: '100%' }} />
                 <EditPrice audit={audit} user={user} role={role} />
+
+                {audit?.feedback?.rating && (
+                  <Tooltip
+                    title="Feedback from the customer"
+                    arrow
+                    placement="top"
+                  >
+                    <Button
+                      type="button"
+                      onClick={() => setShowFeedback(p => !p)}
+                      sx={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '15px',
+                        color: 'black',
+                      }}
+                    >
+                      <Star size={20} />
+                      {getAverageFeedbackRating(audit?.feedback?.rating)}
+                    </Button>
+                  </Tooltip>
+                )}
               </Box>
 
               <Box sx={[{ display: 'flex', gap: '25px' }, contactWrapper]}>
@@ -360,13 +392,6 @@ const AuditOffer = () => {
                     <CustomLink link={el} key={idx} />
                   ))}
                 </Box>
-
-                {/*<PriceCalculation*/}
-                {/*  price={audit?.price}*/}
-                {/*  sx={priceCalc}*/}
-                {/*  color="secondary"*/}
-                {/*  scope={audit?.scope}*/}
-                {/*/>*/}
 
                 <Box sx={{ display: 'flex', justifyContent: 'center' }}>
                   <Button
@@ -648,6 +673,13 @@ const AuditOffer = () => {
               </Box>
             )}
         </CustomCard>
+
+        <AuditFeedbackModal
+          feedback={audit?.feedback}
+          isOpen={showFeedback}
+          handleClose={() => setShowFeedback(false)}
+          readOnly
+        />
       </Layout>
     );
   }
@@ -755,7 +787,7 @@ const titleSx = theme => ({
 
 const salaryWrapper = {
   display: 'flex',
-  gap: '20px',
+  gap: '50px',
   fontSize: '16px',
   fontWeight: 500,
 };
@@ -829,16 +861,6 @@ const backButtonSx = theme => ({
   [theme.breakpoints.down('sm')]: {
     top: '-30px',
     left: '-20px',
-  },
-});
-
-const editButtonSx = theme => ({
-  position: 'absolute',
-  right: '-58px',
-  top: '-20px',
-  [theme.breakpoints.down('sm')]: {
-    top: '-30px',
-    right: '-20px',
   },
 });
 
