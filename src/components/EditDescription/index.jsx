@@ -26,18 +26,20 @@ const EditDescription = ({ audit, auditRequest, hideChange }) => {
   const [showComment, setShowComment] = useState(false);
   const descriptionRef = useRef();
   const dispatch = useDispatch();
+  const [editorRef, setEditorRef] = useState(null);
   const [showReadMoreButton, setShowReadMoreButton] = useState(false);
   const matchXs = useMediaQuery(theme.breakpoints.down('xs'));
   const [addLinkField, setAddLinkField] = useState(false);
   const user = useSelector(s => s.user.user);
+  const descriptionMd = document?.querySelector('.custom-html-style');
 
   useEffect(() => {
     setTimeout(() => {
-      if (descriptionRef?.current?.offsetHeight > 400) {
+      if (descriptionMd?.offsetHeight > 450) {
         setShowReadMoreButton(true);
       }
     }, 500);
-  }, [descriptionRef.current]);
+  }, [descriptionMd?.offsetHeight]);
 
   const handleEdit = () => {
     setEditMode(true);
@@ -46,7 +48,7 @@ const EditDescription = ({ audit, auditRequest, hideChange }) => {
   return (
     <>
       <Box sx={descriptionSx}>
-        <Box ref={descriptionRef}>
+        <Box>
           <Formik
             initialValues={{
               description: audit?.description,
@@ -87,9 +89,16 @@ const EditDescription = ({ audit, auditRequest, hideChange }) => {
                       name="description"
                       setFieldTouched={setFieldTouched}
                       mdProps={{
-                        view: { menu: false, md: false, html: true },
+                        view: { menu: true, md: false, html: true },
                         style: markdownSx(matchXs, values.description),
                       }}
+                      plugins={
+                        showReadMoreButton
+                          ? [{ pluginName: 'full-screen' }]
+                          : []
+                      }
+                      hideMenu={true}
+                      setMdRef={setEditorRef}
                       sx={{
                         border: 'unset',
                       }}
@@ -301,13 +310,7 @@ const linkFieldSx = {
 };
 
 const markdownSx = (matchXs, description, editMode) => ({
-  height: !matchXs
-    ? description && description.length > 250
-      ? '550px'
-      : '150px'
-    : description && description.length > 250
-    ? '550px'
-    : '220px',
+  height: '450px',
   backgroundColor: '#fcfaf6',
   fontWeight: 500,
   fontSize: '20px !important',
