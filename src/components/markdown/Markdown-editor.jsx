@@ -39,6 +39,7 @@ const initialPlugins = [
 const MarkdownEditor = ({
   name,
   saved,
+  hideMenu,
   setMdRef,
   mdProps = {},
   plugins = [],
@@ -113,7 +114,10 @@ const MarkdownEditor = ({
         onBlur={handleEditorBlur ? handleEditorBlur : null}
         style={{ height: '400px' }}
         ref={mdRef}
-        plugins={[...plugins.map(p => p.pluginName), ...initialPlugins]}
+        plugins={[
+          ...plugins.map(p => p.pluginName),
+          ...(!hideMenu ? initialPlugins : []),
+        ]}
         {...mdProps}
       />
     </Box>

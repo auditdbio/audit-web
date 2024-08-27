@@ -31,24 +31,24 @@ const EditDescription = ({ audit, auditRequest, hideChange }) => {
   const matchXs = useMediaQuery(theme.breakpoints.down('xs'));
   const [addLinkField, setAddLinkField] = useState(false);
   const user = useSelector(s => s.user.user);
+  const descriptionMd = document?.querySelector('.custom-html-style');
 
   useEffect(() => {
     setTimeout(() => {
-      if (descriptionRef?.current?.offsetHeight > 400) {
+      if (descriptionMd?.offsetHeight > 450) {
         setShowReadMoreButton(true);
       }
     }, 500);
-  }, [descriptionRef.current]);
+  }, [descriptionMd?.offsetHeight]);
 
   const handleEdit = () => {
     setEditMode(true);
   };
 
-  // custom-html-style
   return (
     <>
       <Box sx={descriptionSx}>
-        <Box ref={descriptionRef}>
+        <Box>
           <Formik
             initialValues={{
               description: audit?.description,
@@ -89,9 +89,15 @@ const EditDescription = ({ audit, auditRequest, hideChange }) => {
                       name="description"
                       setFieldTouched={setFieldTouched}
                       mdProps={{
-                        view: { menu: false, md: false, html: true },
+                        view: { menu: true, md: false, html: true },
                         style: markdownSx(matchXs, values.description),
                       }}
+                      plugins={
+                        showReadMoreButton
+                          ? [{ pluginName: 'full-screen' }]
+                          : []
+                      }
+                      hideMenu={true}
                       setMdRef={setEditorRef}
                       sx={{
                         border: 'unset',
@@ -304,7 +310,7 @@ const linkFieldSx = {
 };
 
 const markdownSx = (matchXs, description, editMode) => ({
-  maxHeight: '550px',
+  height: '450px',
   backgroundColor: '#fcfaf6',
   fontWeight: 500,
   fontSize: '20px !important',

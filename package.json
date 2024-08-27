@@ -53,6 +53,7 @@
     "redux-devtools-extension": "^2.13.9",
     "redux-thunk": "^2.4.2",
     "rehype-katex": "^6.0.3",
+    "remark-breaks": "^4.0.0",
     "remark-gfm": "^3.0.1",
     "remark-math": "^5.1.1",
     "styled-components": "^5.3.6",
