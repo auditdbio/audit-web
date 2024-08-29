@@ -275,28 +275,30 @@ const AuditInfo = ({
                 )}
               </Box>
             </Box>
-            <Box
-              sx={{
-                display: 'flex',
-                color: '#434242',
-                '& p': {
-                  fontSize: '15px!important',
-                  maxWidth: '200px',
-                  fontWeight: 400,
-                },
-              }}
-            >
-              <Box sx={infoWrapper}>
-                <span>Price:</span>
+            {!isPublic && (
+              <Box
+                sx={{
+                  display: 'flex',
+                  color: '#434242',
+                  '& p': {
+                    fontSize: '15px!important',
+                    maxWidth: '200px',
+                    fontWeight: 400,
+                  },
+                }}
+              >
+                <Box sx={infoWrapper}>
+                  <span>Price:</span>
+                </Box>
+                <EditPrice
+                  hideIcon={true}
+                  audit={audit}
+                  user={user}
+                  isPublic={isPublic}
+                  request={request}
+                />
               </Box>
-              <EditPrice
-                hideIcon={true}
-                audit={audit}
-                user={user}
-                isPublic={isPublic}
-                request={request}
-              />
-            </Box>
+            )}
           </Box>
 
           {!!audit?.time?.from && (
