@@ -35,7 +35,8 @@ const AuditInfoPage = ({ isPublic }) => {
     if (
       auditConfirm &&
       !auditConfirm.no_customer &&
-      auditConfirm.status.toLowerCase() === RESOLVED.toLowerCase()
+      auditConfirm.status.toLowerCase() === RESOLVED.toLowerCase() &&
+      !isPublic
     ) {
       dispatch(
         getAuditFeedback(AUDITOR, auditConfirm.auditor_id, auditConfirm.id),

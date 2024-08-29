@@ -262,16 +262,21 @@ const PublicProfile = ({ notFoundRedirect = true }) => {
             </Button>
           )}
 
-          {localStorage.getItem('prev') && (
-            <Button
-              variant="text"
-              color={role.toLowerCase() === AUDITOR ? 'secondary' : 'primary'}
-              sx={goBackSx}
-              onClick={() => navigate(localStorage.getItem('prev'))}
-            >
-              <ArrowBackIcon />
-            </Button>
-          )}
+          <Button
+            variant="text"
+            color={role.toLowerCase() === AUDITOR ? 'secondary' : 'primary'}
+            sx={goBackSx}
+            onClick={() => {
+              if (localStorage.getItem('prev')) {
+                navigate(localStorage.getItem('prev'));
+                localStorage.removeItem('prev');
+              } else {
+                navigate('/');
+              }
+            }}
+          >
+            <ArrowBackIcon />
+          </Button>
 
           {data.kind === 'badge' && (
             <Typography sx={badgeTitle}>Not in base AuditDB</Typography>

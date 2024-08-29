@@ -407,6 +407,7 @@ const AuditInfo = ({
         )}
 
         {audit?.status?.toLowerCase() === RESOLVED.toLowerCase() &&
+          !isPublic &&
           !audit.no_customer && (
             <Box sx={{ display: 'flex', justifyContent: 'center' }}>
               <Button
