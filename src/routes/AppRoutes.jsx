@@ -341,7 +341,7 @@ const AppRoutes = () => {
 
         {/*Add new routes here*/}
 
-        <Route path="/audit-info/:auditId" element={<PublicAuditInfo />} />
+        {/*<Route path="/audit-info/:auditId" element={<PublicAuditInfo />} />*/}
 
         <Route path="/:role/:linkId" element={<ProfilePage />} />
         <Route path="*" element={<NotFound />} />

@@ -235,6 +235,17 @@ const PublicProfile = ({ notFoundRedirect = true }) => {
             </Button>
           )}
 
+          {localStorage.getItem('prev') && (
+            <Button
+              variant="text"
+              color={role.toLowerCase() === AUDITOR ? 'secondary' : 'primary'}
+              sx={goBackSx}
+              onClick={() => navigate(localStorage.getItem('prev'))}
+            >
+              <ArrowBackIcon />
+            </Button>
+          )}
+
           {data.kind === 'badge' && (
             <Typography sx={badgeTitle}>Not in base AuditDB</Typography>
           )}

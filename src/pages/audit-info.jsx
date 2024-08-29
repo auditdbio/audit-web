@@ -23,6 +23,7 @@ import {
   confirmAudit,
   deleteAudit,
   deleteAuditRequest,
+  downloadPublicReport,
   downloadReport,
   editAuditCustomer,
   editAuditRequestCustomer,
@@ -74,9 +75,6 @@ const AuditInfo = ({
   const { successMessage, error } = useSelector(s => s.audits);
   const { user } = useSelector(s => s.user);
   const { chatList } = useSelector(s => s.chat);
-  const [editPrice, setEditPrice] = useState(false);
-  const [priceValue, setPriceValue] = useState(audit?.price);
-  const [editTags, setEditTags] = useState(false);
 
   const handleConfirm = () => {
     dispatch(confirmAudit(audit, true));
@@ -155,7 +153,12 @@ const AuditInfo = ({
               } else navigate('/profile/audits');
             }
           } else {
-            navigate(-1);
+            if (localStorage.getItem('prevPath')) {
+              navigate(localStorage.getItem('prevPath'));
+              localStorage.removeItem('prevPath');
+            } else {
+              navigate(-1);
+            }
           }
         }}
         aria-label="Go back"
@@ -394,7 +397,13 @@ const AuditInfo = ({
             <Button
               variant={'contained'}
               color={'secondary'}
-              onClick={() => dispatch(downloadReport(audit))}
+              onClick={() => {
+                if (!isPublic) {
+                  dispatch(downloadReport(audit));
+                } else {
+                  dispatch(downloadPublicReport(audit, code));
+                }
+              }}
               sx={[buttonSx, { marginBottom: '20px' }]}
               {...addTestsLabel('report-button')}
             >

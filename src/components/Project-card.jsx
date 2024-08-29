@@ -75,29 +75,31 @@ const ProjectCard = ({ type, project, currentRole, isPublic }) => {
             {project?.tags?.map(el => el).join(', ') ?? ''}
           </Typography>
         </Tooltip>
-        {!project.no_customer ? (
-          <Box sx={priceWrapper}>
-            <Box sx={infoWrapper}>
-              <Currency />
-              <Typography>{project.price || project.total_cost}</Typography>
+        {!isPublic &&
+          //
+          (!project.no_customer ? (
+            <Box sx={priceWrapper}>
+              <Box sx={infoWrapper}>
+                <Currency />
+                <Typography>{project.price || project.total_cost}</Typography>
+              </Box>
+              <Box sx={infoWrapper}>
+                <Star />
+                <Typography>150</Typography>
+              </Box>
             </Box>
-            <Box sx={infoWrapper}>
-              <Star />
-              <Typography>150</Typography>
+          ) : (
+            <Box sx={priceWrapper}>
+              <Typography
+                sx={[
+                  matchSx ? { mb: '0!important' } : { mb: '15px' },
+                  { fontSize: '18px!important' },
+                ]}
+              >
+                Audit builder
+              </Typography>
             </Box>
-          </Box>
-        ) : (
-          <Box sx={priceWrapper}>
-            <Typography
-              sx={[
-                matchSx ? { mb: '0!important' } : { mb: '15px' },
-                { fontSize: '18px!important' },
-              ]}
-            >
-              Audit builder
-            </Typography>
-          </Box>
-        )}
+          ))}
       </Box>
       <Box
         sx={{
@@ -174,7 +176,10 @@ const ProjectCard = ({ type, project, currentRole, isPublic }) => {
           <Button
             variant="contained"
             sx={[editButton, type === 'auditor' ? editAuditor : {}]}
-            onClick={() => navigate(`/audit-info/${project.id}`)}
+            onClick={() => {
+              localStorage.setItem('prevPath', window.location.pathname);
+              navigate(`/audit-info/${project.id}`);
+            }}
             {...addTestsLabel(
               type === AUDITOR ? 'submit-button' : 'edit-button',
             )}
@@ -198,6 +203,22 @@ const ProjectCard = ({ type, project, currentRole, isPublic }) => {
                 : 'View'
               : 'Edit'}
           </Button>
+        )}
+        {isPublic && (
+          <Box sx={priceWrapper}>
+            <Box sx={infoWrapper}>
+              <Button
+                sx={[editButton]}
+                variant={'contained'}
+                onClick={() => {
+                  localStorage.setItem('prev', window.location.pathname);
+                  navigate(`/c/${project.customer_id}`);
+                }}
+              >
+                Customer
+              </Button>
+            </Box>
+          </Box>
         )}
         {!isPublic &&
           (type !== AUDITOR ? (
