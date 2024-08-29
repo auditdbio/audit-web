@@ -26,6 +26,7 @@ import {
   EDIT_AUDIT,
   SAVE_PUBLIC_REPORT,
   EDIT_AUDIT_REQUEST_CUSTOMER,
+  SET_AUDIT_FEEDBACK,
   GET_AUDIT_HISTORY,
   GET_AUDIT_REQUEST_HISTORY,
   READ_AUDIT_HISTORY,
@@ -49,6 +50,7 @@ const initialState = {
   unreadHistory: null,
   auditRequestHistory: [],
 };
+
 export const auditReducer = (state = initialState, action) => {
   switch (action.type) {
     case AUDIT_REQUEST_CREATE:
@@ -224,6 +226,17 @@ export const auditReducer = (state = initialState, action) => {
         audits: state.audits?.map(audit =>
           audit.id === action.payload.id ? action.payload : audit,
         ),
+      };
+    case SET_AUDIT_FEEDBACK:
+      return {
+        ...state,
+        audit: state.audit
+          ? {
+              ...state.audit,
+              feedback: action.payload.feedback,
+            }
+          : null,
+        successMessage: action.payload.message,
       };
     case SAVE_PUBLIC_REPORT: {
       return {

@@ -1,22 +1,18 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate, Link } from 'react-router-dom/dist';
 import dayjs from 'dayjs';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { CustomCard } from '../components/custom/Card.jsx';
-import Layout from '../styles/Layout.jsx';
 import {
   Avatar,
   Box,
   Button,
   Typography,
   Tooltip,
-  useMediaQuery,
-  InputAdornment,
-  TextField,
   Divider,
 } from '@mui/material';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import { useNavigate, Link } from 'react-router-dom/dist';
 import TagsList from '../components/tagsList.jsx';
-import { useDispatch, useSelector } from 'react-redux';
 import {
   acceptAudit,
   clearMessage,
@@ -25,8 +21,7 @@ import {
   deleteAuditRequest,
   downloadPublicReport,
   downloadReport,
-  editAuditCustomer,
-  editAuditRequestCustomer,
+  sendAuditFeedback,
 } from '../redux/actions/auditAction.js';
 import {
   AUDITOR,
@@ -40,21 +35,14 @@ import Markdown from '../components/markdown/Markdown.jsx';
 import { ASSET_URL } from '../services/urls.js';
 import { addTestsLabel } from '../lib/helper.js';
 import CustomSnackbar from '../components/custom/CustomSnackbar.jsx';
-import MarkdownEditor from '../components/markdown/Markdown-editor.jsx';
-import theme from '../styles/themes.js';
-import { Form, Formik } from 'formik';
-import EditIcon from '@mui/icons-material/Edit';
-import SaveIcon from '@mui/icons-material/Save.js';
 import CloseIcon from '@mui/icons-material/Close';
 import { setCurrentChat } from '../redux/actions/chatActions.js';
 import ChatIcon from '../components/icons/ChatIcon.jsx';
 import ConfirmModal from '../components/modal/ConfirmModal.jsx';
-import PriceCalculation from '../components/PriceCalculation.jsx';
 import Headings from '../router/Headings.jsx';
+import AuditFeedbackModal from '../components/modal/AuditFeedbackModal.jsx';
 import EditDescription from '../components/EditDescription/index.jsx';
 import DescriptionHistory from '../components/DescriptionHistory/index.jsx';
-import EditButton from '../components/EditDescription/EditButton.jsx';
-import TagsField from '../components/forms/tags-field/tags-field.jsx';
 import EditTags from '../components/EditDescription/EditTags.jsx';
 import EditPrice from '../components/EditDescription/EditPrice.jsx';
 import IssuesList from '../components/issuesPage/IssuesList.jsx';
@@ -71,10 +59,12 @@ const AuditInfo = ({
 }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const { successMessage, error } = useSelector(s => s.audits);
   const { user } = useSelector(s => s.user);
   const { chatList } = useSelector(s => s.chat);
+
+  const [isFeedbackModalOpen, setIsFeedbackModalOpen] = useState(false);
 
   const handleConfirm = () => {
     dispatch(confirmAudit(audit, true));
@@ -127,6 +117,12 @@ const AuditInfo = ({
 
   const goToIssues = () => {
     navigate(`/issues/audit-issue/${audit?.id}`);
+  };
+
+  const handleSendFeedback = values => {
+    const feedback = { audit_id: audit.id, ...values };
+    dispatch(sendAuditFeedback(feedback));
+    setIsFeedbackModalOpen(false);
   };
 
   return (
@@ -226,7 +222,10 @@ const AuditInfo = ({
               src={audit?.avatar ? `${ASSET_URL}/${audit?.avatar}` : ''}
               alt="auditor photo"
             />
-            <Box sx={{ display: 'grid', textAlign: 'center' }}>
+            <Link
+              to={`/a/${audit.auditor_id}`}
+              style={{ display: 'grid', textAlign: 'center' }}
+            >
               <Tooltip title={audit?.auditor_first_name} arrow placement="top">
                 <Typography noWrap={true} sx={userNameWrapper}>
                   {audit?.auditor_first_name}
@@ -237,7 +236,7 @@ const AuditInfo = ({
                   {audit?.auditor_last_name}
                 </Typography>
               </Tooltip>
-            </Box>
+            </Link>
           </Box>
           <Box sx={userInfoWrapper}>
             <Box sx={infoWrapper}>
@@ -331,12 +330,6 @@ const AuditInfo = ({
         </Box>
       )}
 
-      {/*<PriceCalculation*/}
-      {/*  price={audit?.price || auditRequest?.price}*/}
-      {/*  sx={priceCalc}*/}
-      {/*  scope={audit?.scope || auditRequest?.project_scope}*/}
-      {/*/>*/}
-
       <Box>
         <Box
           sx={{
@@ -362,7 +355,7 @@ const AuditInfo = ({
             <Button
               variant="contained"
               color="secondary"
-              onClick={() => setIsModalOpen(true)}
+              onClick={() => setIsConfirmModalOpen(true)}
               sx={buttonSx}
               {...addTestsLabel('decline-button')}
             >
@@ -385,6 +378,7 @@ const AuditInfo = ({
           <Button
             variant="text"
             onClick={handleSendMessage}
+            sx={{ mb: '15px' }}
             disabled={audit?.auditor_id === user.id}
             {...addTestsLabel('message-button')}
           >
@@ -393,7 +387,7 @@ const AuditInfo = ({
         </Box>
 
         {audit?.report && !!issues?.length && (
-          <Box sx={{ display: 'flex', justifyContent: 'center', mt: '15px' }}>
+          <Box sx={{ display: 'flex', justifyContent: 'center' }}>
             <Button
               variant={'contained'}
               color={'secondary'}
@@ -411,6 +405,22 @@ const AuditInfo = ({
             </Button>
           </Box>
         )}
+
+        {audit?.status?.toLowerCase() === RESOLVED.toLowerCase() &&
+          !audit.no_customer && (
+            <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={() => setIsFeedbackModalOpen(true)}
+                sx={[buttonSx, { marginBottom: '20px' }]}
+                {...addTestsLabel('feddback-button')}
+              >
+                {audit.feedback ? 'My feedback' : 'Leave feedback'}
+              </Button>
+            </Box>
+          )}
+
         {audit?.status !== SUBMITED && audit?.status === DONE && (
           <Button
             variant="contained"
@@ -422,9 +432,6 @@ const AuditInfo = ({
           </Button>
         )}
 
-        {/*{(audit?.status === DONE ||*/}
-        {/*  audit?.status === SUBMITED ||*/}
-        {/*  audit?.status === PENDING) && (*/}
         {audit?.status &&
           !!issues?.length &&
           !isPublic &&
@@ -434,7 +441,7 @@ const AuditInfo = ({
               color="primary"
               type="button"
               onClick={goToIssues}
-              sx={[buttonSx, { mt: '7px' }]}
+              sx={[buttonSx, { marginBottom: '20px' }]}
               {...addTestsLabel('issues-button')}
             >
               Issues ({issues?.length})
@@ -452,9 +459,16 @@ const AuditInfo = ({
       )}
 
       <ConfirmModal
-        isOpen={isModalOpen}
+        isOpen={isConfirmModalOpen}
         handleAgree={handleDecline}
-        handleDisagree={() => setIsModalOpen(false)}
+        handleDisagree={() => setIsConfirmModalOpen(false)}
+      />
+
+      <AuditFeedbackModal
+        isOpen={isFeedbackModalOpen}
+        handleClose={() => setIsFeedbackModalOpen(false)}
+        handleSend={handleSendFeedback}
+        feedback={audit.feedback}
       />
     </CustomCard>
   );
@@ -479,14 +493,6 @@ const wrapper = theme => ({
     '& h3': {
       fontSize: '20px',
     },
-  },
-});
-
-const titleSx = theme => ({
-  fontWeight: 500,
-  fontSize: '16px !important',
-  [theme.breakpoints.down('sm')]: {
-    fontSize: '14px !important',
   },
 });
 
@@ -535,7 +541,7 @@ const userWrapper = theme => ({
     fontSize: '15px',
     fontWeight: 500,
     '&:nth-of-type(1)': {
-      margin: '13px 0 18px',
+      margin: '13px 0 5px',
     },
   },
   [theme.breakpoints.down('md')]: {
@@ -655,52 +661,9 @@ const infoWrapper = theme => ({
   },
 });
 
-const descriptionSx = full => ({
-  maxHeight: full ? 'unset' : '400px',
-  overflow: 'hidden',
-  border: '2px solid #E5E5E5',
-});
-
-const readAllButton = theme => ({
-  width: '100%',
-  padding: '8px',
-  fontWeight: 600,
-  fontSize: '16px',
-  color: 'black',
-  textTransform: 'none',
-  lineHeight: '25px',
-  [theme.breakpoints.down('xs')]: {
-    fontSize: '16px',
-    border: 'none',
-  },
-});
-
-const editBtnSx = theme => ({
-  position: 'absolute',
-  bottom: '15px',
-  display: 'flex',
-  gap: '7px',
-  flexDirection: 'column',
-  right: '10px',
-});
-
 const conclusionTitle = theme => ({
   padding: '10px 0',
   fontSize: '20px',
   fontWeight: 500,
   textAlign: 'center',
-});
-
-const priceCalc = theme => ({
-  width: '725px',
-  '& .head': { justifyContent: 'center' },
-  [theme.breakpoints.down('md')]: {
-    width: '590px',
-  },
-  [theme.breakpoints.down('sm')]: {
-    width: '80%',
-  },
-  [theme.breakpoints.down('xs')]: {
-    width: '100%',
-  },
 });

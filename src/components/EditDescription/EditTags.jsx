@@ -12,6 +12,7 @@ import { useDispatch } from 'react-redux';
 import TagsArray from '../tagsArray/index.jsx';
 import { TextField } from 'formik-mui';
 import { addTestsLabel } from '../../lib/helper.js';
+import { RESOLVED } from '../../redux/actions/types.js';
 
 const EditTags = ({ audit, confirmed, hideChange, isPublic }) => {
   const [editTags, setEditTags] = useState(false);
@@ -138,12 +139,15 @@ const EditTags = ({ audit, confirmed, hideChange, isPublic }) => {
                     <TagsArray name="tags" />
                   </Box>
                 )}
-                {!hideChange && !editTags && !isPublic && (
-                  <EditButton
-                    handleClick={() => setEditTags(!editTags)}
-                    editMode={editTags}
-                  />
-                )}
+                {!hideChange &&
+                  !editTags &&
+                  !isPublic &&
+                  audit?.status.toLowerCase() !== RESOLVED.toLowerCase() && (
+                    <EditButton
+                      handleClick={() => setEditTags(!editTags)}
+                      editMode={editTags}
+                    />
+                  )}
               </Box>
             </Box>
           </Form>
