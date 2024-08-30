@@ -36,6 +36,7 @@ const AuditorsPage = () => {
         ...data,
         page: 1,
         sort: filter.sort || '',
+        sort_by: filter.sort_by || '',
         search: filter.search || '',
         tags: filter.tags || [],
         dateFrom: filter.dateFrom || '',
@@ -54,7 +55,8 @@ const AuditorsPage = () => {
     tags: searchParams.getAll('tags') || [],
     dateFrom: searchParams.get('dateFrom') || new Date(),
     dateTo: searchParams.get('dateTo') || new Date(),
-    sort: searchParams.get('sort') || '',
+    sort: searchParams.get('sort') || '1',
+    sort_by: searchParams.get('sort_by') || 'rating',
     readyToWait: searchParams.get('readyToWait') || '',
     price: {
       from: searchParams.get('from') || 0,

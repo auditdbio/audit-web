@@ -181,8 +181,55 @@ const Filter = ({ target, submit, initial }) => {
                           />
                         </FormGroup>
                       </Box>
+                      {target === 'auditor' && (
+                        <Box sx={sortWrapper}>
+                          <Typography>Sort by</Typography>
+                          <FormGroup>
+                            <FormControlLabel
+                              name="sort_by"
+                              control={
+                                <Radio
+                                  onChange={e =>
+                                    setFieldValue('sort_by', e.target.value)
+                                  }
+                                  value="price"
+                                  color={mainColor}
+                                  checked={values.sort_by === 'price'}
+                                  inputProps={{
+                                    ...addTestsLabel('price'),
+                                  }}
+                                />
+                              }
+                              label="Price"
+                            />
+                            <FormControlLabel
+                              name="sort_by"
+                              control={
+                                <Radio
+                                  onChange={e =>
+                                    setFieldValue('sort_by', e.target.value)
+                                  }
+                                  value="rating"
+                                  sx={{
+                                    color: 'orange',
+                                    '&.Mui-checked': {
+                                      color: 'orange',
+                                    },
+                                  }}
+                                  checked={values.sort_by === 'rating'}
+                                  inputProps={{
+                                    ...addTestsLabel('rating'),
+                                  }}
+                                />
+                              }
+                              color={mainColor}
+                              label="Rating"
+                            />
+                          </FormGroup>
+                        </Box>
+                      )}
                       <Box sx={sortWrapper}>
-                        <Typography>Sort by</Typography>
+                        <Typography>Sort order</Typography>
                         <FormGroup>
                           <FormControlLabel
                             name="sort"
