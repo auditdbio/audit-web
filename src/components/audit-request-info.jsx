@@ -333,6 +333,7 @@ const AuditRequestInfo = ({
             hideChange={hideChange}
             audit={project}
             auditRequest={true}
+            isModal={isModal}
           />
           {!hideChange && <DescriptionHistory audit={project} request={true} />}
           {matchXs && (

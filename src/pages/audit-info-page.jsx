@@ -46,7 +46,7 @@ const AuditInfoPage = () => {
   }
   if (auditConfirm?.id && !notFound) {
     return (
-      <Layout>
+      <Layout sx={{ padding: '30px' }}>
         <AuditInfo audit={auditConfirm} confirmed={true} issues={issues} />
       </Layout>
     );

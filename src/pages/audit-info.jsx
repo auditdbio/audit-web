@@ -435,6 +435,7 @@ export default AuditInfo;
 const wrapper = theme => ({
   padding: '30px 60px 60px',
   display: 'flex',
+  maxWidth: '100%',
   flexDirection: 'column',
   alignItems: 'center',
   gap: '40px',
