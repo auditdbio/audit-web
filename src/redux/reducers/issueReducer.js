@@ -7,6 +7,7 @@ import {
   GET_AUDIT_ISSUES,
   REQUEST_ERROR,
   RESET_PUBLIC_AUDIT,
+  SET_READ_ALL_CHANGES,
   SET_READ_CHANGES,
   UPDATE_AUDIT_ISSUE,
 } from '../actions/types.js';
@@ -59,6 +60,14 @@ export const issueReducer = (state = initialState, action) => {
         issues: state.issues?.map(issue =>
           issue.id === issueId ? { ...issue, read: readCount } : issue,
         ),
+      };
+    case SET_READ_ALL_CHANGES:
+      return {
+        ...state,
+        issues: state.issues?.map(issue => ({
+          ...issue,
+          read: issue?.events?.length + 1 || 0,
+        })),
       };
     case DELETE_ISSUE:
       return {
