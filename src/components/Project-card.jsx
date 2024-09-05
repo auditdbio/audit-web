@@ -2,6 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom/dist';
 import { useDispatch, useSelector } from 'react-redux';
 import {
+  Avatar,
   Box,
   Button,
   FormControlLabel,
@@ -26,6 +27,7 @@ import {
 } from '../redux/actions/auditAction.js';
 import ShareProjectButton from './custom/ShareProjectButton.jsx';
 import theme from '../styles/themes.js';
+import { ASSET_URL } from '../services/urls.js';
 
 const ProjectCard = ({ type, project, currentRole, isPublic }) => {
   const navigate = useNavigate();
@@ -110,46 +112,74 @@ const ProjectCard = ({ type, project, currentRole, isPublic }) => {
           marginBottom: 0,
         }}
       >
-        {currentRole === AUDITOR ? (
-          !project.no_customer && (
-            <Box sx={statusWrapper}>
-              {project.status !== SUBMITED && (
-                <>
-                  {project.status.toLowerCase() === RESOLVED.toLowerCase() ? (
-                    <Box sx={{ backgroundColor: '#52176D' }} />
-                  ) : (
-                    project.status.toLowerCase() ===
-                      WAITING_FOR_AUDITS.toLowerCase() && (
-                      <Box sx={{ backgroundColor: '#FF9900' }} />
-                    )
-                  )}
-                  {project.status.toLowerCase() !==
-                    WAITING_FOR_AUDITS.toLowerCase() &&
-                    project.status.toLowerCase() !== RESOLVED.toLowerCase() && (
-                      <Box sx={{ backgroundColor: '#09C010' }} />
+        {!isPublic &&
+          (currentRole === AUDITOR ? (
+            !project.no_customer && (
+              <Box sx={statusWrapper}>
+                {project.status !== SUBMITED && (
+                  <>
+                    {project.status.toLowerCase() === RESOLVED.toLowerCase() ? (
+                      <Box sx={{ backgroundColor: '#52176D' }} />
+                    ) : (
+                      project.status.toLowerCase() ===
+                        WAITING_FOR_AUDITS.toLowerCase() && (
+                        <Box sx={{ backgroundColor: '#FF9900' }} />
+                      )
                     )}
-                </>
+                    {project.status.toLowerCase() !==
+                      WAITING_FOR_AUDITS.toLowerCase() &&
+                      project.status.toLowerCase() !==
+                        RESOLVED.toLowerCase() && (
+                        <Box sx={{ backgroundColor: '#09C010' }} />
+                      )}
+                  </>
+                )}
+                <Typography>{project.status}</Typography>
+              </Box>
+            )
+          ) : (
+            <Box sx={statusWrapper}>
+              {project.status === DONE ? (
+                <Box sx={{ backgroundColor: '#FF4444' }} />
+              ) : project.publish_options.publish ? (
+                <Box sx={{ backgroundColor: '#09C010' }} />
+              ) : (
+                <Box sx={{ backgroundColor: '#FF9900' }} />
               )}
-              <Typography>{project.status}</Typography>
+              <Typography>
+                {project.status === DONE
+                  ? 'Project closed'
+                  : project.publish_options.publish
+                  ? 'Published'
+                  : 'Hidden'}
+              </Typography>
             </Box>
-          )
-        ) : (
-          <Box sx={statusWrapper}>
-            {project.status === DONE ? (
-              <Box sx={{ backgroundColor: '#FF4444' }} />
-            ) : project.publish_options.publish ? (
-              <Box sx={{ backgroundColor: '#09C010' }} />
-            ) : (
-              <Box sx={{ backgroundColor: '#FF9900' }} />
-            )}
-            <Typography>
-              {project.status === DONE
-                ? 'Project closed'
-                : project.publish_options.publish
-                ? 'Published'
-                : 'Hidden'}
-            </Typography>
-          </Box>
+          ))}
+        {isPublic && !!project?.issues.length && (
+          <Typography>Issues {project?.issues.length}</Typography>
+        )}
+        {isPublic && (
+          // <Box sx={priceWrapper}>
+          //   <Box sx={infoWrapper}>
+          <Button
+            sx={userButtonSx}
+            variant={'text'}
+            onClick={() => {
+              localStorage.setItem('prev', window.location.pathname);
+              navigate(`/c/${project.customer_id}`);
+            }}
+          >
+            <Avatar
+              src={
+                project?.customer_avatar
+                  ? `${ASSET_URL}/${project?.customer_avatar}`
+                  : ''
+              }
+            />
+            <Typography>{project?.customer_first_name}</Typography>
+          </Button>
+          // </Box>
+          // </Box>
         )}
         {!isPublic &&
           project?.status.toLowerCase() === RESOLVED.toLowerCase() && (
@@ -204,22 +234,6 @@ const ProjectCard = ({ type, project, currentRole, isPublic }) => {
               : 'Edit'}
           </Button>
         )}
-        {isPublic && (
-          <Box sx={priceWrapper}>
-            <Box sx={infoWrapper}>
-              <Button
-                sx={[editButton]}
-                variant={'contained'}
-                onClick={() => {
-                  localStorage.setItem('prev', window.location.pathname);
-                  navigate(`/c/${project.customer_id}`);
-                }}
-              >
-                Customer
-              </Button>
-            </Box>
-          </Box>
-        )}
         {!isPublic &&
           (type !== AUDITOR ? (
             <Box sx={smallButtonsBox}>
@@ -254,6 +268,13 @@ const ProjectCard = ({ type, project, currentRole, isPublic }) => {
 };
 
 export default ProjectCard;
+
+export const userButtonSx = theme => ({
+  textTransform: 'unset',
+  display: 'flex',
+  gap: '8px',
+  marginY: '12px',
+});
 
 const priceWrapper = theme => ({
   display: 'flex',

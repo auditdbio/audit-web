@@ -216,8 +216,15 @@ const AuditInfo = ({
         <Divider sx={{ mt: '15px' }} />
       </Box>
       <Box sx={{ maxWidth: '100%', width: '100%' }}>
-        <Box sx={contentWrapper}>
+        <Box
+          sx={[contentWrapper, isPublic ? { alignItems: 'flex-start' } : {}]}
+        >
           <Box sx={userWrapper}>
+            {isPublic && (
+              <Typography sx={roleTitleSx} align={'center'}>
+                Auditor
+              </Typography>
+            )}
             <Avatar
               src={audit?.avatar ? `${ASSET_URL}/${audit?.avatar}` : ''}
               alt="auditor photo"
@@ -301,7 +308,7 @@ const AuditInfo = ({
             )}
           </Box>
 
-          {!!audit?.time?.from && (
+          {!!audit?.time?.from && !isPublic && (
             <Box sx={projectWrapper}>
               <Typography>Time for project:</Typography>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
@@ -314,6 +321,108 @@ const AuditInfo = ({
                 </Box>
               </Box>
               <TagsList />
+            </Box>
+          )}
+          {isPublic && (
+            <Box sx={userWrapper}>
+              <Typography align={'center'} sx={roleTitleSx}>
+                Customer
+              </Typography>
+              <Avatar
+                src={
+                  audit?.customer_avatar
+                    ? `${ASSET_URL}/${audit?.customer_avatar}`
+                    : ''
+                }
+                alt="auditor photo"
+              />
+              <Link
+                to={`/a/${audit.customer_id}`}
+                style={{ display: 'grid', textAlign: 'center' }}
+              >
+                <Tooltip
+                  title={audit?.customer_first_name}
+                  arrow
+                  placement="top"
+                >
+                  <Typography noWrap={true} sx={userNameWrapper}>
+                    {audit?.customer_first_name}
+                  </Typography>
+                </Tooltip>
+                <Tooltip
+                  title={audit?.customer_last_name}
+                  arrow
+                  placement="top"
+                >
+                  <Typography noWrap={true} sx={userNameWrapper}>
+                    {audit?.customer_last_name}
+                  </Typography>
+                </Tooltip>
+              </Link>
+            </Box>
+          )}
+          {isPublic && (
+            <Box sx={userInfoWrapper}>
+              <Box sx={infoWrapper}>
+                <span>E-mail:</span>
+                <Box sx={{ display: 'grid' }}>
+                  {!!audit?.customer_contacts?.email ? (
+                    <Tooltip
+                      title={audit?.customer_contacts?.email}
+                      arrow
+                      placement="top"
+                    >
+                      <Typography noWrap={true}>
+                        {audit?.customer_contacts?.email}
+                      </Typography>
+                    </Tooltip>
+                  ) : (
+                    <Typography noWrap={true}>Not specified</Typography>
+                  )}
+                </Box>
+              </Box>
+              <Box sx={infoWrapper}>
+                <span>Telegram:</span>
+                <Box sx={{ display: 'grid' }}>
+                  {!!audit?.customer_contacts?.telegram ? (
+                    <Tooltip
+                      title={audit?.customer_contacts?.telegram}
+                      arrow
+                      placement="top"
+                    >
+                      <Typography noWrap={true}>
+                        {audit?.customer_contacts?.telegram}
+                      </Typography>
+                    </Tooltip>
+                  ) : (
+                    <Typography noWrap={true}>Not specified</Typography>
+                  )}
+                </Box>
+              </Box>
+              {!isPublic && (
+                <Box
+                  sx={{
+                    display: 'flex',
+                    color: '#434242',
+                    '& p': {
+                      fontSize: '15px!important',
+                      maxWidth: '200px',
+                      fontWeight: 400,
+                    },
+                  }}
+                >
+                  <Box sx={infoWrapper}>
+                    <span>Price:</span>
+                  </Box>
+                  <EditPrice
+                    hideIcon={true}
+                    audit={audit}
+                    user={user}
+                    isPublic={isPublic}
+                    request={request}
+                  />
+                </Box>
+              )}
             </Box>
           )}
         </Box>
@@ -479,6 +588,12 @@ const AuditInfo = ({
 
 export default AuditInfo;
 
+const roleTitleSx = theme => ({
+  fontSize: '20px',
+  margin: 'unset!important',
+  // marginBottom: '15px',
+});
+
 const wrapper = theme => ({
   padding: '30px 60px 60px',
   display: 'flex',
@@ -535,6 +650,9 @@ const contentWrapper = theme => ({
 });
 
 const userWrapper = theme => ({
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '15px',
   '& .MuiAvatar-root': {
     width: '120px',
     height: '120px',
