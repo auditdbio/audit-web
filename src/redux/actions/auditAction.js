@@ -446,7 +446,7 @@ export const getPublicAuditReport = () => {
     dispatch({ type: GET_PUBLIC_REPORT, payload: report });
   };
 };
-export const downloadReport = (audit, { generate } = {}) => {
+export const downloadReport = (audit, { generate, isDraft } = {}) => {
   const token = Cookies.get('token');
 
   const downloadResponse = (res, audit) => {
@@ -480,9 +480,11 @@ export const downloadReport = (audit, { generate } = {}) => {
     dispatch({ type: DOWNLOAD_REPORT_START });
     if (generate) {
       axios
-        .post(`${API_URL}/report/${audit.id}`, null, {
-          headers: { Authorization: `Bearer ${token}` },
-        })
+        .post(
+          `${API_URL}/report/${audit.id}`,
+          { is_draft: isDraft },
+          { headers: { Authorization: `Bearer ${token}` } },
+        )
         .then(({ data }) => getReport(audit, data.path, dispatch))
         .catch(() => dispatch({ type: REQUEST_ERROR }));
     } else {
