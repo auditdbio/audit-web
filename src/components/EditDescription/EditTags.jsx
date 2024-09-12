@@ -43,11 +43,11 @@ const EditTags = ({ audit, confirmed, hideChange }) => {
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',
-                mt: '15px',
+                // mt: '15px',
               }}
             >
               {editTags && (
-                <Box sx={fieldWrapper}>
+                <Box sx={fieldWrapper} className={'tags-wrapper'}>
                   <TagsField size={'small'} name="tags" tags={audit?.tags} />
                   <Box
                     sx={{
@@ -124,7 +124,7 @@ const EditTags = ({ audit, confirmed, hideChange }) => {
                   justifyContent: 'center',
                   gap: '5px',
                   alignItems: 'center',
-                  mt: '5px',
+                  // mt: '5px',
                   '& .tags-array-wrapper': {
                     gap: '5px',
                   },
@@ -141,7 +141,7 @@ const EditTags = ({ audit, confirmed, hideChange }) => {
                 )}
                 {!hideChange &&
                   !editTags &&
-                  audit?.status.toLowerCase() !== RESOLVED.toLowerCase() && (
+                  audit?.status?.toLowerCase() !== RESOLVED.toLowerCase() && (
                     <EditButton
                       handleClick={() => setEditTags(!editTags)}
                       editMode={editTags}

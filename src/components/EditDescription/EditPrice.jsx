@@ -266,7 +266,7 @@ const EditPrice = ({ role, audit, user, request, hideIcon, hideChange }) => {
                   </Modal>
                   {!hideChange &&
                     !editPrice &&
-                    audit?.status.toLowerCase() !== RESOLVED.toLowerCase() && (
+                    audit?.status?.toLowerCase() !== RESOLVED.toLowerCase() && (
                       <Button
                         sx={{ minWidth: 'unset' }}
                         onClick={() => setEditPrice(!editPrice)}

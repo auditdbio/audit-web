@@ -105,7 +105,7 @@ const EditDescription = ({ audit, auditRequest, hideChange }) => {
                     }}
                   >
                     {!hideChange &&
-                      audit?.status.toLowerCase() !==
+                      audit?.status?.toLowerCase() !==
                         RESOLVED.toLowerCase() && (
                         <Box>
                           <IconButton
@@ -316,6 +316,7 @@ const markdownSx = (matchXs, description, editMode) => ({
   lineHeight: '24px',
 });
 
+// 1px solid #e0e0e0
 const editMarkdownSx = (matchXs, description, editMode) => ({
   height: '550px',
   backgroundColor: '#fcfaf6',

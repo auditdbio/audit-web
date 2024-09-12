@@ -81,6 +81,7 @@ const AuditOffer = () => {
   const [auditDBWorkflow, setAuditDBWorkflow] = useState(true);
   const [showReadMoreButton, setShowReadMoreButton] = useState(false);
   const [showFull, setShowFull] = useState(false);
+  const [showFullHeader, setShowFullHeader] = useState(false);
   const [showFeedback, setShowFeedback] = useState(false);
   const [editConclusion, setEditConclusion] = useState(false);
   const [mdRef, setMdRef] = useState(null);
@@ -118,11 +119,13 @@ const AuditOffer = () => {
 
   useEffect(() => {
     setTimeout(() => {
-      if (descriptionRef?.current?.offsetHeight > 400) {
+      if (
+        descriptionRef?.current?.children[0]?.children[0]?.offsetHeight > 150
+      ) {
         setShowReadMoreButton(true);
       }
     }, 500);
-  }, [descriptionRef.current]);
+  }, [descriptionRef?.current]);
 
   useEffect(() => {
     if (issuesAuditId !== auditId) {
@@ -232,7 +235,7 @@ const AuditOffer = () => {
   if (audit && !notFound) {
     return (
       <Layout
-        sx={{ padding: '40px' }}
+        sx={{ padding: '10px!important' }}
         containerSx={{
           maxWidth: 'unset!important',
           padding: '0 35px!important',
@@ -288,104 +291,141 @@ const AuditOffer = () => {
                   width: '100%',
                   textAlign: 'center',
                   wordBreak: 'break-word',
+                  mt: '15px',
                 }}
               >
                 {audit?.project_name}
               </Typography>
+              <Button
+                variant="text"
+                color="secondary"
+                sx={[buttonSx, sendMessageButton]}
+                onClick={handleSendMessage}
+                disabled={audit?.customer_id === user.id}
+                {...addTestsLabel('message-button')}
+              >
+                <ChatIcon />
+              </Button>
             </Box>
 
             <Box sx={{ width: '100%' }}>
-              <Box sx={contentWrapper}>
-                <EditTags audit={audit} confirmed={true} />
-                <Divider sx={{ width: '100%' }} />
-                <EditPrice audit={audit} user={user} role={role} />
-
-                {audit?.feedback?.rating && (
-                  <Tooltip
-                    title="Feedback from the customer"
-                    arrow
-                    placement="top"
-                  >
-                    <Button
-                      type="button"
-                      onClick={() => setShowFeedback(p => !p)}
-                      sx={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '15px',
-                        color: 'black',
-                      }}
+              <Collapse sx={{ mt: '15px' }} in={showFullHeader}>
+                <Box sx={contentWrapper}>
+                  <Box sx={headInfoSx}>
+                    <EditTags audit={audit} confirmed={true} />
+                    <EditPrice audit={audit} user={user} role={role} />
+                    <Box
+                      sx={[
+                        { display: 'flex', gap: '10px' },
+                        contactWrapper,
+                        { marginTop: 'unset', flexDirection: 'row!important' },
+                      ]}
                     >
-                      <Star size={20} />
-                      {getAverageFeedbackRating(audit?.feedback?.rating)}
-                    </Button>
-                  </Tooltip>
-                )}
-              </Box>
-
-              <Box sx={[{ display: 'flex', gap: '25px' }, contactWrapper]}>
-                {audit?.customer_contacts?.email && (
-                  <Box
-                    sx={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '10px',
-                    }}
-                  >
-                    <EmailIcon />
-                    <Box sx={{ display: 'grid' }}>
-                      <Tooltip
-                        title={audit?.customer_contacts?.email}
-                        arrow
-                        placement="top"
-                      >
-                        <Typography variant="caption" noWrap={true}>
-                          {audit?.customer_contacts?.email}
-                        </Typography>
-                      </Tooltip>
+                      {audit?.customer_contacts?.email && (
+                        <Box
+                          sx={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '10px',
+                          }}
+                        >
+                          <EmailIcon sx={{ height: '32px' }} />
+                          <Box sx={{ display: 'grid' }}>
+                            <Tooltip
+                              title={audit?.customer_contacts?.email}
+                              arrow
+                              placement="top"
+                            >
+                              <Typography variant="caption" noWrap={true}>
+                                {audit?.customer_contacts?.email}
+                              </Typography>
+                            </Tooltip>
+                          </Box>
+                        </Box>
+                      )}
+                      {audit?.customer_contacts?.telegram && (
+                        <Box
+                          sx={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '10px',
+                          }}
+                        >
+                          <TelegramIcon sx={{ height: '32px' }} />
+                          <Box sx={{ display: 'grid' }}>
+                            <Tooltip
+                              title={audit?.customer_contacts?.telegram}
+                              arrow
+                              placement="top"
+                            >
+                              <Typography variant="caption" noWrap={true}>
+                                {audit?.customer_contacts?.telegram}
+                              </Typography>
+                            </Tooltip>
+                          </Box>
+                        </Box>
+                      )}
                     </Box>
                   </Box>
-                )}
-                {audit?.customer_contacts?.telegram && (
-                  <Box
-                    sx={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '10px',
-                    }}
-                  >
-                    <TelegramIcon />
-                    <Box sx={{ display: 'grid' }}>
-                      <Tooltip
-                        title={audit?.customer_contacts?.telegram}
-                        arrow
-                        placement="top"
+                  {audit?.feedback?.rating && (
+                    <Tooltip
+                      title="Feedback from the customer"
+                      arrow
+                      placement="top"
+                    >
+                      <Button
+                        type="button"
+                        onClick={() => setShowFeedback(p => !p)}
+                        sx={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '15px',
+                          color: 'black',
+                        }}
                       >
-                        <Typography variant="caption" noWrap={true}>
-                          {audit?.customer_contacts?.telegram}
-                        </Typography>
-                      </Tooltip>
-                    </Box>
-                  </Box>
-                )}
-              </Box>
-
-              <Box sx={infoWrapper}>
+                        <Star size={20} />
+                        {getAverageFeedbackRating(audit?.feedback?.rating)}
+                      </Button>
+                    </Tooltip>
+                  )}
+                  <Divider sx={{ width: '100%' }} />
+                </Box>
+              </Collapse>
+              <Button
+                sx={readAllButton}
+                onClick={() => setShowFullHeader(!showFullHeader)}
+              >
+                {!showFullHeader ? 'Show ▼' : 'Hide ▲'}
+                {'  '}
+                <span style={{ marginLeft: '10px' }}>
+                  {!showFullHeader &&
+                    (audit?.price
+                      ? `$${audit?.price} per line`
+                      : `${audit?.total} total cost`)}
+                </span>
+              </Button>
+              <Box sx={infoWrapper} className={'qwe'}>
                 {/*<Box sx={descriptionSx(showFull)}>*/}
                 {/*  <Box ref={descriptionRef}>*/}
                 {/*    <Markdown value={audit?.description} />*/}
                 {/*  </Box>*/}
                 {/*</Box>*/}
-                <EditDescription audit={audit} />
-                <DescriptionHistory audit={audit} />
-                {/*{showReadMoreButton && (*/}
-                {/*  <Button*/}
-                {/*    onClick={() => setShowFull(!showFull)}*/}
-                {/*    sx={readAllButton}*/}
-                {/*  >*/}
-                {/*    {showFull ? 'Hide ▲' : `Read all ▼`}*/}
-                {/*  </Button>*/}
-                {/*)}*/}
+                <Collapse in={true} collapsedSize={showFull ? undefined : 150}>
+                  <Box
+                    sx={descriptionWrapper(theme, showFull)}
+                    ref={descriptionRef}
+                  >
+                    <EditDescription audit={audit} />
+                  </Box>
+                </Collapse>
+                {showReadMoreButton && (
+                  <Button
+                    onClick={() => setShowFull(!showFull)}
+                    sx={readAllButton}
+                  >
+                    {showFull ? 'Hide ▲' : `Read all ▼`}
+                  </Button>
+                )}
 
                 {/*<Box sx={linkWrapper}>*/}
                 {/*  {audit?.scope?.map((el, idx) => (*/}
@@ -393,19 +433,217 @@ const AuditOffer = () => {
                 {/*  ))}*/}
                 {/*</Box>*/}
 
-                <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-                  <Button
-                    variant="text"
-                    color="secondary"
-                    sx={[buttonSx, sendMessageButton]}
-                    onClick={handleSendMessage}
-                    disabled={audit?.customer_id === user.id}
-                    {...addTestsLabel('message-button')}
-                  >
-                    <ChatIcon />
-                  </Button>
-                </Box>
+                {/*<Box sx={{ display: 'flex', justifyContent: 'center' }}>*/}
+                {/*  */}
+                {/*</Box>*/}
+                <Formik
+                  initialValues={{
+                    id: audit?.id,
+                    conclusion: audit?.conclusion || '',
+                  }}
+                  onSubmit={values => {
+                    dispatch(editAuditCustomer(values));
+                  }}
+                >
+                  {({ handleSubmit }) => (
+                    <Form onSubmit={handleSubmit}>
+                      {/*{matchMd &&*/}
+                      {/*  audit?.status?.toLowerCase() !==*/}
+                      {/*    RESOLVED.toLowerCase() && (*/}
+                      {/*    <>*/}
+                      {/*      <Typography variant={'h3'} sx={{ mb: '10px' }}>*/}
+                      {/*        Audit actions*/}
+                      {/*      </Typography>*/}
+                      {/*      <Divider sx={{ mb: '25px' }} />*/}
+                      {/*    </>*/}
+                      {/*  )}*/}
+                      {audit?.status?.toLowerCase() !==
+                        RESOLVED.toLowerCase() && (
+                        <Box
+                          sx={[
+                            buttonWrapper,
+                            {
+                              width: '100%',
+                              maxWidth: 'unset',
+                              paddingBottom: 'unset',
+                            },
+                            auditActionWrapperSx,
+                          ]}
+                        >
+                          {!audit?.conclusion && (
+                            <Button
+                              sx={[
+                                buttonSx,
+                                {
+                                  marginX: '0!important',
+                                  marginTop: '20px',
+                                },
+                              ]}
+                              type="button"
+                              variant="contained"
+                              color="secondary"
+                              disabled={
+                                audit?.status?.toLowerCase() ===
+                                WAITING_FOR_AUDITS.toLowerCase()
+                              }
+                              onClick={() => handleConclusion(handleSubmit)}
+                            >
+                              {editConclusion
+                                ? 'Save conclusion'
+                                : 'Add conclusion'}
+                            </Button>
+                          )}
+                        </Box>
+                      )}
+                      <Collapse in={editConclusion || audit?.conclusion}>
+                        <Box sx={{ position: 'relative' }}>
+                          {audit?.conclusion && (
+                            <Box sx={conclusionTitle}>Conclusion</Box>
+                          )}
+                          <MarkdownEditor
+                            name="conclusion"
+                            setMdRef={setMdRef}
+                            mdProps={{
+                              style: {
+                                backgroundColor: '#fcfaf6',
+                                height: editConclusion ? '400px' : 'auto',
+                                maxHeight: '400px',
+                              },
+                              view: {
+                                menu: !audit?.conclusion,
+                                md: !audit?.conclusion,
+                                html: true,
+                              },
+                            }}
+                          />
 
+                          {audit?.conclusion &&
+                            audit?.status?.toLowerCase() !==
+                              RESOLVED.toLowerCase() && (
+                              <IconButton
+                                type="button"
+                                aria-label="Edit description"
+                                onClick={() => handleConclusion(handleSubmit)}
+                                sx={editButton}
+                                {...addTestsLabel('edit-conclusion-button')}
+                              >
+                                <EditIcon color="secondary" fontSize="small" />
+                                <Box component="span" sx={editButtonText}>
+                                  {editConclusion ? 'Save' : 'Edit'}
+                                </Box>
+                              </IconButton>
+                            )}
+                        </Box>
+                      </Collapse>
+                    </Form>
+                  )}
+                </Formik>
+                <Box sx={bottomActionSx}>
+                  <DescriptionHistory
+                    buttonStyle={buttonSx}
+                    audit={audit}
+                    spaceY={false}
+                    wrapperStyle={historyWrapperSx}
+                  />
+                  {/*<Box sx={auditActionSx}>*/}
+                  {audit?.status?.toLowerCase() ===
+                  WAITING_FOR_AUDITS.toLowerCase() ? (
+                    <Box>
+                      <Button
+                        sx={[buttonSx, { marginX: 0 }]}
+                        variant="contained"
+                        color="secondary"
+                        type="button"
+                        onClick={() => dispatch(startAudit(audit, true))}
+                      >
+                        Start audit
+                      </Button>
+                    </Box>
+                  ) : (
+                    <Box sx={uploadSx}>
+                      <Box sx={workflowToggleBox}>
+                        <Button
+                          onClick={() => setAuditDBWorkflow(true)}
+                          sx={workflowButton(auditDBWorkflow)}
+                          type="button"
+                          disabled={
+                            audit?.status?.toLowerCase() ===
+                              RESOLVED.toLowerCase() && !issues?.length
+                          }
+                        >
+                          {issues?.length
+                            ? `Issues (${issues.length})`
+                            : 'New issue'}
+                        </Button>
+                        <Button
+                          onClick={() => setAuditDBWorkflow(false)}
+                          type="button"
+                          disabled={
+                            !issues?.every(
+                              issue =>
+                                issue.status === FIXED ||
+                                issue.status === NOT_FIXED ||
+                                !issue.include,
+                            )
+                          }
+                          sx={workflowButton(!auditDBWorkflow)}
+                        >
+                          Upload audit
+                        </Button>
+                      </Box>
+                    </Box>
+                  )}
+                  <Box sx={bottomActionInnerWrapper}>
+                    <Button
+                      variant="contained"
+                      color="secondary"
+                      sx={[
+                        buttonSx,
+                        {
+                          marginRight: '0!important',
+                          marginLeft: '0!important',
+                        },
+                        // publicBtnSx
+                      ]}
+                      disabled={
+                        audit?.status?.toLowerCase() ===
+                        WAITING_FOR_AUDITS.toLowerCase()
+                      }
+                      onClick={handleGenerateReport}
+                    >
+                      Generate report
+                    </Button>
+                    <Tooltip
+                      arrow
+                      placement="top"
+                      title={
+                        allIssuesClosed
+                          ? ''
+                          : "To resolve an audit, it is necessary that the status of all issues be 'Fixed' or 'Not fixed'. Or do not include some issues in the audit."
+                      }
+                    >
+                      <span>
+                        <Button
+                          variant="contained"
+                          color="primary"
+                          onClick={() => setResolveConfirmation(true)}
+                          disabled={!allIssuesClosed || !issues?.length}
+                          sx={[
+                            buttonSx,
+                            {
+                              marginRight: '0!important',
+                              ml: '15px',
+                            },
+                          ]}
+                          {...addTestsLabel('resolve-button')}
+                        >
+                          Resolve audit
+                        </Button>
+                      </span>
+                    </Tooltip>
+                  </Box>
+                  {/*</Box>*/}
+                </Box>
                 <Formik
                   initialValues={{
                     id: audit?.id,
@@ -420,53 +658,7 @@ const AuditOffer = () => {
                 >
                   {({ handleSubmit, setFieldValue }) => {
                     return (
-                      <Form onSubmit={handleSubmit} style={{ width: '100%' }}>
-                        {audit?.status?.toLowerCase() ===
-                        WAITING_FOR_AUDITS.toLowerCase() ? (
-                          <Box sx={buttonWrapper}>
-                            <Button
-                              sx={[buttonSx, { marginX: 0 }]}
-                              variant="contained"
-                              color="secondary"
-                              type="button"
-                              onClick={() => dispatch(startAudit(audit, true))}
-                            >
-                              Start audit
-                            </Button>
-                          </Box>
-                        ) : (
-                          <Box sx={workflowToggleBox}>
-                            <Button
-                              onClick={() => setAuditDBWorkflow(true)}
-                              sx={workflowButton(auditDBWorkflow)}
-                              type="button"
-                              disabled={
-                                audit?.status?.toLowerCase() ===
-                                  RESOLVED.toLowerCase() && !issues?.length
-                              }
-                            >
-                              {issues?.length
-                                ? `Issues (${issues.length})`
-                                : 'New issue'}
-                            </Button>
-                            <Button
-                              onClick={() => setAuditDBWorkflow(false)}
-                              type="button"
-                              disabled={
-                                !issues?.every(
-                                  issue =>
-                                    issue.status === FIXED ||
-                                    issue.status === NOT_FIXED ||
-                                    !issue.include,
-                                )
-                              }
-                              sx={workflowButton(!auditDBWorkflow)}
-                            >
-                              Upload audit
-                            </Button>
-                          </Box>
-                        )}
-
+                      <Form onSubmit={handleSubmit}>
                         {!auditDBWorkflow &&
                           audit?.status.toLowerCase() !==
                             WAITING_FOR_AUDITS.toLowerCase() && (
@@ -515,140 +707,6 @@ const AuditOffer = () => {
               </Box>
             </Box>
           </Box>
-
-          <Formik
-            initialValues={{
-              id: audit?.id,
-              conclusion: audit?.conclusion || '',
-            }}
-            onSubmit={values => {
-              dispatch(editAuditCustomer(values));
-            }}
-          >
-            {({ handleSubmit }) => (
-              <Form onSubmit={handleSubmit} style={{ width: '100%' }}>
-                {matchMd &&
-                  audit?.status?.toLowerCase() !== RESOLVED.toLowerCase() && (
-                    <>
-                      <Typography variant={'h3'} sx={{ mb: '10px' }}>
-                        Audit actions
-                      </Typography>
-                      <Divider sx={{ mb: '25px' }} />
-                    </>
-                  )}
-                {audit?.status?.toLowerCase() !== RESOLVED.toLowerCase() && (
-                  <Box
-                    sx={[
-                      buttonWrapper,
-                      { width: '100%', maxWidth: 'unset' },
-                      auditActionWrapperSx,
-                    ]}
-                  >
-                    {!audit?.conclusion && (
-                      <Button
-                        sx={[buttonSx, { marginLeft: '0!important' }]}
-                        type="button"
-                        variant="contained"
-                        color="secondary"
-                        disabled={
-                          audit?.status?.toLowerCase() ===
-                          WAITING_FOR_AUDITS.toLowerCase()
-                        }
-                        onClick={() => handleConclusion(handleSubmit)}
-                      >
-                        {editConclusion ? 'Save conclusion' : 'Add conclusion'}
-                      </Button>
-                    )}
-                    <Button
-                      variant="contained"
-                      color="secondary"
-                      sx={[
-                        buttonSx,
-                        {
-                          marginRight: '0!important',
-                          marginLeft: '0!important',
-                        },
-                        // publicBtnSx
-                      ]}
-                      disabled={
-                        audit?.status?.toLowerCase() ===
-                        WAITING_FOR_AUDITS.toLowerCase()
-                      }
-                      onClick={handleGenerateReport}
-                    >
-                      Generate report
-                    </Button>
-                    <Tooltip
-                      arrow
-                      placement="top"
-                      title={
-                        allIssuesClosed
-                          ? ''
-                          : "To resolve an audit, it is necessary that the status of all issues be 'Fixed' or 'Not fixed'. Or do not include some issues in the audit."
-                      }
-                    >
-                      <span>
-                        <Button
-                          variant="contained"
-                          color="primary"
-                          onClick={() => setResolveConfirmation(true)}
-                          disabled={!allIssuesClosed || !issues?.length}
-                          sx={[
-                            buttonSx,
-                            { marginRight: '0!important', ml: '15px' },
-                          ]}
-                          {...addTestsLabel('resolve-button')}
-                        >
-                          Resolve audit
-                        </Button>
-                      </span>
-                    </Tooltip>
-                  </Box>
-                )}
-                <Collapse in={editConclusion || audit?.conclusion}>
-                  <Box sx={{ position: 'relative' }}>
-                    {audit?.conclusion && (
-                      <Box sx={conclusionTitle}>Conclusion</Box>
-                    )}
-                    <MarkdownEditor
-                      name="conclusion"
-                      setMdRef={setMdRef}
-                      mdProps={{
-                        style: {
-                          backgroundColor: '#fcfaf6',
-                          height: editConclusion ? '400px' : 'auto',
-                          maxHeight: '400px',
-                        },
-                        view: {
-                          menu: !audit?.conclusion,
-                          md: !audit?.conclusion,
-                          html: true,
-                        },
-                      }}
-                    />
-
-                    {audit?.conclusion &&
-                      audit?.status?.toLowerCase() !==
-                        RESOLVED.toLowerCase() && (
-                        <IconButton
-                          type="button"
-                          aria-label="Edit description"
-                          onClick={() => handleConclusion(handleSubmit)}
-                          sx={editButton}
-                          {...addTestsLabel('edit-conclusion-button')}
-                        >
-                          <EditIcon color="secondary" fontSize="small" />
-                          <Box component="span" sx={editButtonText}>
-                            {editConclusion ? 'Save' : 'Edit'}
-                          </Box>
-                        </IconButton>
-                      )}
-                  </Box>
-                </Collapse>
-              </Form>
-            )}
-          </Formik>
-
           {auditDBWorkflow &&
             audit?.status?.toLowerCase() !==
               WAITING_FOR_AUDITS.toLowerCase() && (
@@ -695,6 +753,107 @@ const SubmitValidation = Yup.object().shape({
   report: Yup.string().required('File is required'),
 });
 
+const descriptionWrapper = (theme, showFull) => ({
+  maxHeight: showFull ? 'none' : 150,
+  '& .rc-md-editor': {
+    height: '100%!important',
+  },
+  overflow: 'hidden',
+  transition: 'max-height 0.3s ease',
+  '& .rc-md-editor .editor-container>.section': {
+    borderRight: 'unset',
+  },
+  '& .editor-container': {
+    borderBottom: '1px solid #e0e0e0',
+  },
+});
+
+const bottomActionInnerWrapper = {
+  [theme.breakpoints.down(630)]: {
+    display: 'flex',
+    flexDirection: 'column',
+    width: '100%',
+    gap: '15px',
+  },
+};
+
+const headInfoSx = theme => ({
+  display: 'flex',
+  alignItems: 'flex-start',
+  mt: '15px',
+  gap: '15px',
+  flexWrap: 'wrap',
+  justifyContent: 'center',
+});
+
+const historyWrapperSx = theme => ({
+  width: '396px',
+  [theme.breakpoints.down(1400)]: {
+    width: '335px',
+  },
+  [theme.breakpoints.down(1124)]: {
+    width: 'unset',
+    '& .btn-history,': {
+      width: '270px!important',
+    },
+  },
+  [theme.breakpoints.down('sm')]: {
+    '& .btn-history,': {
+      width: '240px!important',
+    },
+  },
+  [theme.breakpoints.down(920)]: {
+    '& .btn-history,': {
+      width: '160px!important',
+    },
+  },
+  [theme.breakpoints.down(630)]: {
+    width: '100%',
+    '& .btn-history,': {
+      width: '100%!important',
+    },
+    '& .MuiBadge-root': {
+      width: '100%!important',
+    },
+  },
+});
+
+const bottomActionSx = theme => ({
+  display: 'flex',
+  justifyContent: 'space-between',
+  alignItems: 'center',
+  gap: '25px',
+  marginTop: '20px',
+  [theme.breakpoints.down(1124)]: {
+    flexWrap: 'wrap',
+    justifyContent: 'center',
+    gap: '15px',
+  },
+  [theme.breakpoints.down(630)]: {
+    flexDirection: 'column',
+  },
+});
+
+const auditActionSx = theme => ({
+  display: 'flex',
+  alignItems: 'center',
+  mt: '10px',
+  justifyContent: 'flex-end',
+  gap: '25px',
+  [theme.breakpoints.down(950)]: {
+    flexWrap: 'wrap',
+  },
+});
+
+const uploadSx = theme => ({
+  [theme.breakpoints.down(1124)]: {
+    order: 1,
+    width: '100%',
+    display: 'flex',
+    justifyContent: 'center',
+  },
+});
+//
 const auditActionWrapperSx = {
   [theme.breakpoints.down(630)]: {
     flexDirection: 'column',
@@ -707,7 +866,7 @@ const auditActionWrapperSx = {
 };
 
 const wrapper = theme => ({
-  padding: '30px 60px 60px',
+  padding: '25px 30px 60px',
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'center',
@@ -718,11 +877,11 @@ const wrapper = theme => ({
     fontWeight: 500,
   },
   [theme.breakpoints.down('md')]: {
-    padding: '30px 44px 0',
+    padding: '20px 24px 20px',
   },
   [theme.breakpoints.down('sm')]: {
     gap: '20px',
-    padding: '30px 20px 0',
+    padding: '30px 20px 20px',
     '& h3': {
       fontSize: '20px',
     },
@@ -763,6 +922,9 @@ const contentWrapper = {
   '& span': {
     fontSize: '18px',
     fontWeight: 500,
+  },
+  '& .tags-wrapper': {
+    marginTop: 'unset',
   },
 };
 
@@ -856,7 +1018,7 @@ const linkWrapper = theme => ({
 
 const backButtonSx = theme => ({
   position: 'absolute',
-  left: '-58px',
+  left: '-38px',
   top: '-20px',
   [theme.breakpoints.down('sm')]: {
     top: '-30px',
@@ -878,9 +1040,17 @@ const buttonSx = theme => ({
   textTransform: 'unset',
   fontWeight: 600,
   mr: '15px',
-  width: '270px',
+  width: '190px',
   borderRadius: '10px',
+  [theme.breakpoints.down(1400)]: {
+    width: '160px',
+  },
+  [theme.breakpoints.down(1124)]: {
+    height: '42px!important',
+    width: '270px',
+  },
   [theme.breakpoints.down('sm')]: {
+    height: '42px!important',
     width: '240px',
   },
   [theme.breakpoints.down(920)]: {
@@ -891,26 +1061,44 @@ const buttonSx = theme => ({
     padding: '12px 0',
     fontSize: '14px',
   },
+  [theme.breakpoints.down(630)]: {
+    margin: 'unset',
+    width: '100%',
+  },
 });
 
 const sendMessageButton = theme => ({
-  mb: '20px',
-  [theme.breakpoints.down('xs')]: {
-    mb: '15px',
+  width: 'unset!important',
+  position: 'absolute',
+  top: '-15px',
+  right: '-15px',
+  paddingY: 'unset!important',
+  marginRight: 'unset',
+  minWidth: 'unset',
+  '& svg': {
+    width: '45px',
+    height: '45px',
+  },
+  [theme.breakpoints.down('sm')]: {
+    top: '-20px',
+    right: '-10px',
   },
 });
 
 const workflowToggleBox = theme => ({
-  maxWidth: '410px',
-  margin: '0 auto 25px',
   padding: '3px 1px',
   display: 'flex',
   justifyContent: 'center',
   border: '1px solid #B2B3B3',
   borderRadius: '30px',
-  [theme.breakpoints.down('xs')]: {
+  height: '55px',
+  [theme.breakpoints.down(900)]: {
     width: '248px',
-    margin: '0 auto 20px',
+    // margin: '0 auto 20px',
+  },
+  [theme.breakpoints.down('xs')]: {
+    // width: '248px',
+    // margin: '0 auto 20px',
   },
 });
 
@@ -920,7 +1108,7 @@ const workflowButton = useWorkflow => ({
   color: useWorkflow ? 'white' : 'black',
   textTransform: 'none',
   padding: '10px 0',
-  width: '200px',
+  width: '160px',
   borderRadius: '30px',
   background: useWorkflow ? theme.palette.secondary.main : 'none',
   ':hover': { background: useWorkflow ? theme.palette.secondary.main : 'none' },
@@ -936,6 +1124,7 @@ const workflowButton = useWorkflow => ({
 
 const conclusionTitle = theme => ({
   mb: '10px',
+  mt: '20px',
   fontSize: '20px',
   fontWeight: 500,
   textAlign: 'center',
