@@ -24,10 +24,12 @@ import theme from '../../../styles/themes.js';
 import { SliderRange } from '../salary-slider/slider-range.jsx';
 import { PROJECTS } from '../../../redux/actions/types.js';
 import { addTestsLabel } from '../../../lib/helper.js';
+import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
+import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 
 const Filter = ({ target, submit, initial }) => {
   const [isOpen, setIsOpen] = useState(false);
-
+  const [upToDown, setUpToDown] = useState(initial.sort);
   const mainColor = target === PROJECTS ? 'secondary' : 'primary';
 
   useEffect(() => {
@@ -37,7 +39,6 @@ const Filter = ({ target, submit, initial }) => {
   const handleClose = () => {
     setIsOpen(false);
   };
-
   return (
     <Formik
       initialValues={initial}
@@ -185,102 +186,169 @@ const Filter = ({ target, submit, initial }) => {
                         <Box sx={sortWrapper}>
                           <Typography>Sort by</Typography>
                           <FormGroup>
-                            <FormControlLabel
-                              name="sort_by"
-                              control={
-                                <Radio
-                                  onChange={e =>
-                                    setFieldValue('sort_by', e.target.value)
+                            <Button
+                              sx={{
+                                display: 'flex',
+                                justifyContent: 'flex-start',
+                                minWidth: 'unset',
+                                padding: 'unset',
+                                width: '125px',
+                                textTransform: 'unset',
+                                '& label': {
+                                  marginRight: 'unset',
+                                },
+                              }}
+                              onClick={e => {
+                                if (values.sort_by === 'price') {
+                                  if (values.sort === '1') {
+                                    setFieldValue('sort', '-1');
+                                    setUpToDown('-1');
+                                  } else {
+                                    setFieldValue('sort', '1');
+                                    setUpToDown('1');
                                   }
-                                  value="price"
-                                  color={mainColor}
-                                  checked={values.sort_by === 'price'}
-                                  inputProps={{
-                                    ...addTestsLabel('price'),
-                                  }}
-                                />
-                              }
-                              label="Price"
-                            />
-                            <FormControlLabel
-                              name="sort_by"
-                              control={
-                                <Radio
-                                  onChange={e =>
-                                    setFieldValue('sort_by', e.target.value)
-                                  }
-                                  value="rating"
-                                  sx={{
-                                    color: 'orange',
-                                    '&.Mui-checked': {
+                                } else {
+                                  setFieldValue('sort_by', 'price');
+                                }
+                              }}
+                            >
+                              <FormControlLabel
+                                name="sort_by"
+                                control={
+                                  <Radio
+                                    onChange={e =>
+                                      setFieldValue('sort_by', e.target.value)
+                                    }
+                                    value="price"
+                                    sx={{
                                       color: 'orange',
-                                    },
-                                  }}
-                                  checked={values.sort_by === 'rating'}
-                                  inputProps={{
-                                    ...addTestsLabel('rating'),
-                                  }}
-                                />
-                              }
-                              color={mainColor}
-                              label="Rating"
-                            />
+                                      '&.Mui-checked': {
+                                        color: 'orange',
+                                      },
+                                    }}
+                                    checked={values.sort_by === 'price'}
+                                    inputProps={{
+                                      ...addTestsLabel('price'),
+                                    }}
+                                  />
+                                }
+                                color={mainColor}
+                                label={''}
+                              />
+                              <Box
+                                sx={{
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  gap: '4px',
+                                }}
+                              >
+                                <Typography sx={{ color: '#000!important' }}>
+                                  Price
+                                </Typography>
+                                {upToDown === '1' ? (
+                                  <ArrowUpwardIcon
+                                    sx={{
+                                      // fontSize: 'small',
+                                      color: 'black',
+                                      width: '19px',
+                                      height: '19px',
+                                    }}
+                                  />
+                                ) : (
+                                  <ArrowDownwardIcon
+                                    sx={{
+                                      // fontSize: 'small',
+                                      color: 'black',
+                                      width: '19px',
+                                      height: '19px',
+                                    }}
+                                  />
+                                )}
+                              </Box>
+                            </Button>
+                            <Button
+                              sx={{
+                                display: 'flex',
+                                justifyContent: 'flex-start',
+                                minWidth: 'unset',
+                                padding: 'unset',
+                                width: '125px',
+                                textTransform: 'unset',
+                                '& label': {
+                                  marginRight: 'unset',
+                                },
+                              }}
+                              onClick={e => {
+                                if (values.sort_by === 'rating') {
+                                  if (values.sort === '1') {
+                                    setFieldValue('sort', '-1');
+                                    setUpToDown('-1');
+                                  } else {
+                                    setFieldValue('sort', '1');
+                                    setUpToDown('1');
+                                  }
+                                } else {
+                                  setFieldValue('sort_by', 'rating');
+                                }
+                              }}
+                            >
+                              <FormControlLabel
+                                name="sort_by"
+                                control={
+                                  <Radio
+                                    onChange={e =>
+                                      setFieldValue('sort_by', e.target.value)
+                                    }
+                                    value="rating"
+                                    sx={{
+                                      color: 'orange',
+                                      '&.Mui-checked': {
+                                        color: 'orange',
+                                      },
+                                    }}
+                                    checked={values.sort_by === 'rating'}
+                                    inputProps={{
+                                      ...addTestsLabel('rating'),
+                                    }}
+                                  />
+                                }
+                                color={mainColor}
+                                label={''}
+                              />
+                              <Box
+                                sx={{
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  gap: '4px',
+                                }}
+                              >
+                                <Typography sx={{ color: '#000!important' }}>
+                                  Rating
+                                </Typography>
+                                {upToDown === '1' ? (
+                                  <ArrowUpwardIcon
+                                    sx={{
+                                      // fontSize: 'small',
+                                      color: 'black',
+                                      width: '19px',
+                                      height: '19px',
+                                    }}
+                                  />
+                                ) : (
+                                  <ArrowDownwardIcon
+                                    sx={{
+                                      // fontSize: 'small',
+                                      color: 'black',
+                                      width: '19px',
+                                      height: '19px',
+                                    }}
+                                  />
+                                )}
+                              </Box>
+                            </Button>
                           </FormGroup>
                         </Box>
                       )}
-                      <Box sx={sortWrapper}>
-                        <Typography>Sort order</Typography>
-                        <FormGroup>
-                          <FormControlLabel
-                            name="sort"
-                            control={
-                              // <Checkbox
-                              //   onChange={(e) =>
-                              //     setFieldValue("sort", e.target.value)
-                              //   }
-                              //   value={"height-to-low"}
-                              //   color={mainColor}
-                              //   checked={values.sort === "height-to-low"}
-                              // />
-                              <Radio
-                                onChange={e =>
-                                  setFieldValue('sort', e.target.value)
-                                }
-                                value="-1"
-                                color={mainColor}
-                                checked={values.sort === '-1'}
-                                inputProps={{
-                                  ...addTestsLabel('price-high'),
-                                }}
-                              />
-                            }
-                            label="Price: High to Low"
-                          />
-                          <FormControlLabel
-                            name="sort"
-                            control={
-                              <Radio
-                                onChange={e =>
-                                  setFieldValue('sort', e.target.value)
-                                }
-                                value="1"
-                                sx={{
-                                  color: 'orange',
-                                  '&.Mui-checked': {
-                                    color: 'orange',
-                                  },
-                                }}
-                                checked={values.sort === '1'}
-                                inputProps={{
-                                  ...addTestsLabel('price-low'),
-                                }}
-                              />
-                            }
-                            color={mainColor}
-                            label="Price: Low to High"
-                          />
-                        </FormGroup>
-                      </Box>
                       <Button
                         color={mainColor}
                         type="submit"
