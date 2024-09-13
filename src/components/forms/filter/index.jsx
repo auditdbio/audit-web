@@ -29,7 +29,10 @@ import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 
 const Filter = ({ target, submit, initial }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [upToDown, setUpToDown] = useState(initial.sort);
+  const [upToDown, setUpToDown] = useState({
+    sort: initial.sort,
+    sort_by: initial.sort_by,
+  });
   const mainColor = target === PROJECTS ? 'secondary' : 'primary';
 
   useEffect(() => {
@@ -202,13 +205,17 @@ const Filter = ({ target, submit, initial }) => {
                                 if (values.sort_by === 'price') {
                                   if (values.sort === '1') {
                                     setFieldValue('sort', '-1');
-                                    setUpToDown('-1');
+                                    setUpToDown({ ...upToDown, sort: '-1' });
                                   } else {
                                     setFieldValue('sort', '1');
-                                    setUpToDown('1');
+                                    setUpToDown({ ...upToDown, sort: '1' });
                                   }
                                 } else {
                                   setFieldValue('sort_by', 'price');
+                                  setUpToDown({
+                                    ...upToDown,
+                                    sort_by: 'price',
+                                  });
                                 }
                               }}
                             >
@@ -216,9 +223,13 @@ const Filter = ({ target, submit, initial }) => {
                                 name="sort_by"
                                 control={
                                   <Radio
-                                    onChange={e =>
-                                      setFieldValue('sort_by', e.target.value)
-                                    }
+                                    onChange={e => {
+                                      setFieldValue('sort_by', e.target.value);
+                                      setUpToDown({
+                                        ...upToDown,
+                                        sort_by: e.target.value,
+                                      });
+                                    }}
                                     value="price"
                                     sx={{
                                       color: 'orange',
@@ -245,25 +256,26 @@ const Filter = ({ target, submit, initial }) => {
                                 <Typography sx={{ color: '#000!important' }}>
                                   Price
                                 </Typography>
-                                {upToDown === '1' ? (
-                                  <ArrowUpwardIcon
-                                    sx={{
-                                      // fontSize: 'small',
-                                      color: 'black',
-                                      width: '19px',
-                                      height: '19px',
-                                    }}
-                                  />
-                                ) : (
-                                  <ArrowDownwardIcon
-                                    sx={{
-                                      // fontSize: 'small',
-                                      color: 'black',
-                                      width: '19px',
-                                      height: '19px',
-                                    }}
-                                  />
-                                )}
+                                {upToDown.sort_by === 'price' &&
+                                  (upToDown.sort === '1' ? (
+                                    <ArrowUpwardIcon
+                                      sx={{
+                                        // fontSize: 'small',
+                                        color: 'black',
+                                        width: '19px',
+                                        height: '19px',
+                                      }}
+                                    />
+                                  ) : (
+                                    <ArrowDownwardIcon
+                                      sx={{
+                                        // fontSize: 'small',
+                                        color: 'black',
+                                        width: '19px',
+                                        height: '19px',
+                                      }}
+                                    />
+                                  ))}
                               </Box>
                             </Button>
                             <Button
@@ -282,13 +294,17 @@ const Filter = ({ target, submit, initial }) => {
                                 if (values.sort_by === 'rating') {
                                   if (values.sort === '1') {
                                     setFieldValue('sort', '-1');
-                                    setUpToDown('-1');
+                                    setUpToDown({ ...upToDown, sort: '-1' });
                                   } else {
                                     setFieldValue('sort', '1');
-                                    setUpToDown('1');
+                                    setUpToDown({ ...upToDown, sort: '1' });
                                   }
                                 } else {
                                   setFieldValue('sort_by', 'rating');
+                                  setUpToDown({
+                                    ...upToDown,
+                                    sort_by: 'rating',
+                                  });
                                 }
                               }}
                             >
@@ -296,9 +312,13 @@ const Filter = ({ target, submit, initial }) => {
                                 name="sort_by"
                                 control={
                                   <Radio
-                                    onChange={e =>
-                                      setFieldValue('sort_by', e.target.value)
-                                    }
+                                    onChange={e => {
+                                      setFieldValue('sort_by', e.target.value);
+                                      setUpToDown({
+                                        ...upToDown,
+                                        sort_by: e.target.value,
+                                      });
+                                    }}
                                     value="rating"
                                     sx={{
                                       color: 'orange',
@@ -325,25 +345,26 @@ const Filter = ({ target, submit, initial }) => {
                                 <Typography sx={{ color: '#000!important' }}>
                                   Rating
                                 </Typography>
-                                {upToDown === '1' ? (
-                                  <ArrowUpwardIcon
-                                    sx={{
-                                      // fontSize: 'small',
-                                      color: 'black',
-                                      width: '19px',
-                                      height: '19px',
-                                    }}
-                                  />
-                                ) : (
-                                  <ArrowDownwardIcon
-                                    sx={{
-                                      // fontSize: 'small',
-                                      color: 'black',
-                                      width: '19px',
-                                      height: '19px',
-                                    }}
-                                  />
-                                )}
+                                {upToDown.sort_by === 'rating' &&
+                                  (upToDown.sort === '1' ? (
+                                    <ArrowUpwardIcon
+                                      sx={{
+                                        // fontSize: 'small',
+                                        color: 'black',
+                                        width: '19px',
+                                        height: '19px',
+                                      }}
+                                    />
+                                  ) : (
+                                    <ArrowDownwardIcon
+                                      sx={{
+                                        // fontSize: 'small',
+                                        color: 'black',
+                                        width: '19px',
+                                        height: '19px',
+                                      }}
+                                    />
+                                  ))}
                               </Box>
                             </Button>
                           </FormGroup>
