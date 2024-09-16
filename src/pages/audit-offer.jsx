@@ -75,7 +75,6 @@ const AuditOffer = () => {
   const matchXs = useMediaQuery(theme.breakpoints.down('xs'));
   const matchMd = useMediaQuery(theme.breakpoints.down('md'));
   const descriptionRef = useRef();
-
   const [resolveConfirmation, setResolveConfirmation] = useState(false);
   const [allIssuesClosed, setAllIssuesClosed] = useState(false);
   const [auditDBWorkflow, setAuditDBWorkflow] = useState(true);
@@ -99,6 +98,13 @@ const AuditOffer = () => {
   const notFound = useSelector(s => s.notFound.error);
   const { auditor } = useSelector(s => s.auditor);
   const { customer } = useSelector(s => s.customer);
+  const [conclusionState, setConclusionState] = useState('');
+
+  useEffect(() => {
+    if (audit?.conclusion) {
+      setConclusionState(audit?.conclusion);
+    }
+  }, [audit]);
 
   useEffect(() => {
     if (
@@ -171,6 +177,19 @@ const AuditOffer = () => {
     if (editConclusion) {
       mdRef?.current?.setView({ menu: false, md: false, html: true });
       handleSubmit();
+      setTimeout(() => setEditConclusion(prev => !prev), 500);
+    } else {
+      mdRef?.current?.setView({ menu: true, md: true, html: !matchXs });
+      setEditConclusion(prev => !prev);
+    }
+  };
+
+  const handleEditSaveConclusion = () => {
+    if (editConclusion) {
+      mdRef?.current?.setView({ menu: false, md: false, html: true });
+      dispatch(
+        editAuditCustomer({ id: audit?.id, conclusion: conclusionState }),
+      );
       setTimeout(() => setEditConclusion(prev => !prev), 500);
     } else {
       mdRef?.current?.setView({ menu: true, md: true, html: !matchXs });
@@ -395,14 +414,23 @@ const AuditOffer = () => {
                 sx={readAllButton}
                 onClick={() => setShowFullHeader(!showFullHeader)}
               >
-                {!showFullHeader ? 'Show ▼' : 'Hide ▲'}
-                {'  '}
-                <span style={{ marginLeft: '10px' }}>
+                {!showFullHeader ? 'Show' : 'Hide'}
+                <span
+                  style={{
+                    margin: '0 10px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '7px',
+                  }}
+                >
+                  <EmailIcon sx={{ height: '32px' }} />
+                  <TelegramIcon sx={{ height: '32px' }} />
                   {!showFullHeader &&
                     (audit?.price
                       ? `$${audit?.price} per line`
                       : `${audit?.total} total cost`)}
                 </span>
+                {!showFullHeader ? '▼' : '▲'}
               </Button>
               <Box sx={infoWrapper} className={'qwe'}>
                 {/*<Box sx={descriptionSx(showFull)}>*/}
@@ -445,106 +473,121 @@ const AuditOffer = () => {
                     dispatch(editAuditCustomer(values));
                   }}
                 >
-                  {({ handleSubmit }) => (
-                    <Form onSubmit={handleSubmit}>
-                      {/*{matchMd &&*/}
-                      {/*  audit?.status?.toLowerCase() !==*/}
-                      {/*    RESOLVED.toLowerCase() && (*/}
-                      {/*    <>*/}
-                      {/*      <Typography variant={'h3'} sx={{ mb: '10px' }}>*/}
-                      {/*        Audit actions*/}
-                      {/*      </Typography>*/}
-                      {/*      <Divider sx={{ mb: '25px' }} />*/}
-                      {/*    </>*/}
-                      {/*  )}*/}
-                      {audit?.status?.toLowerCase() !==
-                        RESOLVED.toLowerCase() && (
-                        <Box
-                          sx={[
-                            buttonWrapper,
-                            {
-                              width: '100%',
-                              maxWidth: 'unset',
-                              paddingBottom: 'unset',
-                            },
-                            auditActionWrapperSx,
-                          ]}
-                        >
-                          {!audit?.conclusion && (
-                            <Button
-                              sx={[
-                                buttonSx,
-                                {
-                                  marginX: '0!important',
-                                  marginTop: '20px',
-                                },
-                              ]}
-                              type="button"
-                              variant="contained"
-                              color="secondary"
-                              disabled={
-                                audit?.status?.toLowerCase() ===
-                                WAITING_FOR_AUDITS.toLowerCase()
-                              }
-                              onClick={() => handleConclusion(handleSubmit)}
-                            >
-                              {editConclusion
-                                ? 'Save conclusion'
-                                : 'Add conclusion'}
-                            </Button>
-                          )}
-                        </Box>
-                      )}
-                      <Collapse in={editConclusion || audit?.conclusion}>
-                        <Box sx={{ position: 'relative' }}>
-                          {audit?.conclusion && (
-                            <Box sx={conclusionTitle}>Conclusion</Box>
-                          )}
-                          <MarkdownEditor
-                            name="conclusion"
-                            setMdRef={setMdRef}
-                            mdProps={{
-                              style: {
-                                backgroundColor: '#fcfaf6',
-                                height: editConclusion ? '400px' : 'auto',
-                                maxHeight: '400px',
-                              },
-                              view: {
-                                menu: !audit?.conclusion,
-                                md: !audit?.conclusion,
-                                html: true,
-                              },
-                            }}
-                          />
+                  {({ handleSubmit, values }) => {
+                    useEffect(() => {
+                      setConclusionState(values?.conclusion);
+                    }, [values?.conclusion]);
 
-                          {audit?.conclusion &&
-                            audit?.status?.toLowerCase() !==
-                              RESOLVED.toLowerCase() && (
-                              <IconButton
-                                type="button"
-                                aria-label="Edit description"
-                                onClick={() => handleConclusion(handleSubmit)}
-                                sx={editButton}
-                                {...addTestsLabel('edit-conclusion-button')}
-                              >
-                                <EditIcon color="secondary" fontSize="small" />
-                                <Box component="span" sx={editButtonText}>
-                                  {editConclusion ? 'Save' : 'Edit'}
-                                </Box>
-                              </IconButton>
+                    return (
+                      <Form onSubmit={handleSubmit}>
+                        {/*{matchMd &&*/}
+                        {/*  audit?.status?.toLowerCase() !==*/}
+                        {/*    RESOLVED.toLowerCase() && (*/}
+                        {/*    <>*/}
+                        {/*      <Typography variant={'h3'} sx={{ mb: '10px' }}>*/}
+                        {/*        Audit actions*/}
+                        {/*      </Typography>*/}
+                        {/*      <Divider sx={{ mb: '25px' }} />*/}
+                        {/*    </>*/}
+                        {/*  )}*/}
+                        {/*{audit?.status?.toLowerCase() !==*/}
+                        {/*  RESOLVED.toLowerCase() && (*/}
+                        {/*  <Box*/}
+                        {/*    sx={[*/}
+                        {/*      buttonWrapper,*/}
+                        {/*      {*/}
+                        {/*        width: '100%',*/}
+                        {/*        maxWidth: 'unset',*/}
+                        {/*        paddingBottom: 'unset',*/}
+                        {/*      },*/}
+                        {/*      auditActionWrapperSx,*/}
+                        {/*    ]}*/}
+                        {/*  >*/}
+                        {/*   */}
+                        {/*  </Box>*/}
+                        {/*)}*/}
+                        <Collapse in={editConclusion || audit?.conclusion}>
+                          <Box sx={{ position: 'relative', mt: '20px' }}>
+                            {audit?.conclusion && (
+                              <Box sx={conclusionTitle}>Conclusion</Box>
                             )}
-                        </Box>
-                      </Collapse>
-                    </Form>
-                  )}
+                            <MarkdownEditor
+                              name="conclusion"
+                              setMdRef={setMdRef}
+                              fastSave={true}
+                              mdProps={{
+                                style: {
+                                  backgroundColor: '#fcfaf6',
+                                  height: editConclusion ? '400px' : 'auto',
+                                  maxHeight: '400px',
+                                },
+                                view: {
+                                  menu: !audit?.conclusion,
+                                  md: !audit?.conclusion,
+                                  html: true,
+                                },
+                              }}
+                            />
+
+                            {audit?.conclusion &&
+                              audit?.status?.toLowerCase() !==
+                                RESOLVED.toLowerCase() && (
+                                <IconButton
+                                  type="button"
+                                  aria-label="Edit description"
+                                  onClick={() => handleConclusion(handleSubmit)}
+                                  sx={editButton}
+                                  {...addTestsLabel('edit-conclusion-button')}
+                                >
+                                  <EditIcon
+                                    color="secondary"
+                                    fontSize="small"
+                                  />
+                                  <Box component="span" sx={editButtonText}>
+                                    {editConclusion ? 'Save' : 'Edit'}
+                                  </Box>
+                                </IconButton>
+                              )}
+                          </Box>
+                        </Collapse>
+                      </Form>
+                    );
+                  }}
                 </Formik>
                 <Box sx={bottomActionSx}>
-                  <DescriptionHistory
-                    buttonStyle={buttonSx}
-                    audit={audit}
-                    spaceY={false}
-                    wrapperStyle={historyWrapperSx}
-                  />
+                  <Box sx={bottomActionInnerWrapper}>
+                    <DescriptionHistory
+                      buttonStyle={buttonSx}
+                      audit={audit}
+                      spaceY={false}
+                      wrapperStyle={
+                        audit?.conclusion
+                          ? historyWrapperSx
+                          : historyWrapperSxNoConclusion
+                      }
+                    />
+                    {!audit?.conclusion && (
+                      <Button
+                        sx={[
+                          buttonSx,
+                          {
+                            marginX: '0!important',
+                            // marginTop: '20px',
+                          },
+                        ]}
+                        type="button"
+                        variant="contained"
+                        color="secondary"
+                        disabled={
+                          audit?.status?.toLowerCase() ===
+                          WAITING_FOR_AUDITS.toLowerCase()
+                        }
+                        onClick={() => handleEditSaveConclusion()}
+                      >
+                        {editConclusion ? 'Save conclusion' : 'Add conclusion'}
+                      </Button>
+                    )}
+                  </Box>
                   {/*<Box sx={auditActionSx}>*/}
                   {audit?.status?.toLowerCase() ===
                   WAITING_FOR_AUDITS.toLowerCase() ? (
@@ -632,7 +675,7 @@ const AuditOffer = () => {
                             buttonSx,
                             {
                               marginRight: '0!important',
-                              ml: '15px',
+                              // ml: '15px',
                             },
                           ]}
                           {...addTestsLabel('resolve-button')}
@@ -769,6 +812,8 @@ const descriptionWrapper = (theme, showFull) => ({
 });
 
 const bottomActionInnerWrapper = {
+  display: 'flex',
+  gap: '15px',
   [theme.breakpoints.down(630)]: {
     display: 'flex',
     flexDirection: 'column',
@@ -791,6 +836,34 @@ const historyWrapperSx = theme => ({
   [theme.breakpoints.down(1400)]: {
     width: '335px',
   },
+  [theme.breakpoints.down(1124)]: {
+    width: 'unset',
+    '& .btn-history,': {
+      width: '270px!important',
+    },
+  },
+  [theme.breakpoints.down('sm')]: {
+    '& .btn-history,': {
+      width: '240px!important',
+    },
+  },
+  [theme.breakpoints.down(920)]: {
+    '& .btn-history,': {
+      width: '160px!important',
+    },
+  },
+  [theme.breakpoints.down(630)]: {
+    width: '100%',
+    '& .btn-history,': {
+      width: '100%!important',
+    },
+    '& .MuiBadge-root': {
+      width: '100%!important',
+    },
+  },
+});
+
+const historyWrapperSxNoConclusion = theme => ({
   [theme.breakpoints.down(1124)]: {
     width: 'unset',
     '& .btn-history,': {
@@ -983,8 +1056,9 @@ const readAllButton = theme => ({
   color: 'black',
   textTransform: 'none',
   lineHeight: '25px',
-  background: '#E5E5E5',
+  // background: '#E5E5E5',
   borderRadius: 0,
+  borderBottom: '1px solid #E5E5E5',
   boxShadow: '0px -24px 14px -8px rgba(252, 250, 246, 1)',
   ':hover': { background: '#D5D5D5' },
   [theme.breakpoints.down('xs')]: {
