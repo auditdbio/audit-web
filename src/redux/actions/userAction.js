@@ -62,7 +62,7 @@ export const signUpGithub = data => {
           `${API_URL}/my_audit/${rolePrefix === 'c' ? 'customer' : 'auditor'}`,
           {
             headers: {
-              Authorization: `Bearer ${data.token}`,
+              Authorization: `Bearer ${responseData.token}`,
             },
           },
         );
