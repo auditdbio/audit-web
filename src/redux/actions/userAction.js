@@ -37,7 +37,7 @@ import { getAudits, savePublicReport } from './auditAction.js';
 import { isAuth } from '../../lib/helper.js';
 
 const API_URL = import.meta.env.VITE_API_BASE_URL;
-
+//
 export const signUpGithub = data => {
   return async dispatch => {
     try {
@@ -77,14 +77,16 @@ export const signUpGithub = data => {
             ? `profile/audits`
             : `/${rolePrefix}/${responseData.user.id}`,
         );
-        history.push(
-          {
-            pathname: auditData.length
-              ? `profile/audits`
-              : `/${rolePrefix}/${responseData.user.id}`,
-          },
-          { some: true },
-        );
+        if (isAuth()) {
+          history.push(
+            {
+              pathname: auditData.length
+                ? `profile/audits`
+                : `/${rolePrefix}/${responseData.user.id}`,
+            },
+            { some: true },
+          );
+        }
         console.log(isAuth());
       }
     } catch (error) {
@@ -126,14 +128,16 @@ export const signIn = values => {
         localStorage.setItem('token', JSON.stringify(data.token));
         localStorage.setItem('user', JSON.stringify(data.user));
         dispatch({ type: USER_SIGNIN, payload: data });
-        history.push(
-          {
-            pathname: auditData.length
-              ? `profile/audits`
-              : `/${role}/${data.user.id}`,
-          },
-          { some: true },
-        );
+        if (isAuth()) {
+          history.push(
+            {
+              pathname: auditData.length
+                ? `profile/audits`
+                : `/${role}/${data.user.id}`,
+            },
+            { some: true },
+          );
+        }
       }
     } catch (error) {
       const { response } = error;
