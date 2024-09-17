@@ -51,10 +51,10 @@ export const signUpGithub = data => {
           { is_new: false },
           { headers: { Authorization: `Bearer ${responseData.token}` } },
         );
+        dispatch({ type: USER_SIGNIN, payload: responseData });
         Cookies.set('token', responseData.token, { expires: 1 });
         localStorage.setItem('token', JSON.stringify(responseData.token));
         localStorage.setItem('user', JSON.stringify(responseData.user));
-        dispatch({ type: USER_SIGNIN, payload: responseData });
         history.push({ pathname: `/edit-profile` }, { some: true });
       } else {
         const rolePrefix = responseData.user?.current_role?.[0];
@@ -66,10 +66,11 @@ export const signUpGithub = data => {
             },
           },
         );
+        console.log(responseData);
+        dispatch({ type: USER_SIGNIN, payload: responseData });
         Cookies.set('token', responseData.token, { expires: 1 });
         localStorage.setItem('token', JSON.stringify(responseData.token));
         localStorage.setItem('user', JSON.stringify(responseData.user));
-        dispatch({ type: USER_SIGNIN, payload: responseData });
         history.push(
           {
             pathname: auditData.length

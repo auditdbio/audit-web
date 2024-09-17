@@ -89,7 +89,7 @@ const AppRoutes = () => {
       }
     }
   }, [currentRole, isAuth(), customer, auditor]);
-
+  console.log(isAuth());
   useEffect(() => {
     if (isAuth() && !connected) {
       dispatch(websocketConnect());
