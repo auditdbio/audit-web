@@ -31,78 +31,106 @@ import {
   CLEAR_MESSAGES,
   AUDITOR,
   CUSTOMER,
+  GET_AUDITS,
 } from './types.js';
-import { savePublicReport } from './auditAction.js';
+import { getAudits, savePublicReport } from './auditAction.js';
 
 const API_URL = import.meta.env.VITE_API_BASE_URL;
 
 export const signUpGithub = data => {
-  return dispatch => {
-    axios
-      .post(`${API_URL}/auth/github`, data)
-      .then(({ data }) => {
+  return async dispatch => {
+    try {
+      const { data: responseData } = await axios.post(
+        `${API_URL}/auth/github`,
+        data,
+      );
+
+      if (responseData.user?.is_new) {
+        await axios.patch(
+          `${API_URL}/user/${responseData.user?.id}`,
+          { is_new: false },
+          { headers: { Authorization: `Bearer ${responseData.token}` } },
+        );
+        Cookies.set('token', responseData.token, { expires: 1 });
+        localStorage.setItem('token', JSON.stringify(responseData.token));
+        localStorage.setItem('user', JSON.stringify(responseData.user));
+        dispatch({ type: USER_SIGNIN, payload: responseData });
+        history.push({ pathname: `/edit-profile` }, { some: true });
+      } else {
+        const rolePrefix = responseData.user?.current_role?.[0];
+        const { data: auditData } = await axios.get(
+          `${API_URL}/my_audit/${rolePrefix === 'c' ? 'customer' : 'auditor'}`,
+          {
+            headers: {
+              Authorization: `Bearer ${data.token}`,
+            },
+          },
+        );
         Cookies.set('token', data.token, { expires: 1 });
         localStorage.setItem('token', JSON.stringify(data.token));
         localStorage.setItem('user', JSON.stringify(data.user));
         dispatch({ type: USER_SIGNIN, payload: data });
-
-        if (data.user?.is_new) {
-          axios.patch(
-            `${API_URL}/user/${data.user?.id}`,
-            { is_new: false },
-            { headers: { Authorization: `Bearer ${data.token}` } },
-          );
-          history.push({ pathname: `/edit-profile` }, { some: true });
-        } else {
-          const rolePrefix = data.user?.current_role?.[0];
-          history.push(
-            { pathname: `/${rolePrefix}/${data.user.id}` },
-            { some: true },
-          );
-        }
-      })
-      .catch(({ response }) => {
-        console.error(response);
-        if (
-          response?.status === 400 &&
-          response?.data === 'ServiceError: Role required'
-        ) {
-          history.push('/sign-up?select_role=true');
-        } else {
-          dispatch({ type: SIGN_IN_ERROR, payload: 'Sign In Failed' });
-        }
-      });
+        history.push(
+          {
+            pathname: auditData.length
+              ? `profile/audits`
+              : `/${rolePrefix}/${data.user.id}`,
+          },
+          { some: true },
+        );
+      }
+    } catch (error) {
+      const { response } = error;
+      dispatch({ type: SIGN_IN_ERROR, payload: 'Sign In Failed' });
+    }
   };
 };
 
+//
+
 export const signIn = values => {
-  return dispatch => {
-    axios
-      .post(`${API_URL}/auth/login`, values)
-      .then(({ data }) => {
+  return async (dispatch, getState) => {
+    try {
+      const { data } = await axios.post(`${API_URL}/auth/login`, values);
+
+      if (data.user?.is_new) {
+        await axios.patch(
+          `${API_URL}/user/${data.user?.id}`,
+          { is_new: false },
+          { headers: { Authorization: `Bearer ${data.token}` } },
+        );
         Cookies.set('token', data.token, { expires: 1 });
         localStorage.setItem('token', JSON.stringify(data.token));
         localStorage.setItem('user', JSON.stringify(data.user));
         dispatch({ type: USER_SIGNIN, payload: data });
-
-        if (data.user?.is_new) {
-          axios.patch(
-            `${API_URL}/user/${data.user?.id}`,
-            { is_new: false },
-            { headers: { Authorization: `Bearer ${data.token}` } },
-          );
-          history.push({ pathname: `/edit-profile` }, { some: true });
-        } else {
-          const role = data.user?.current_role?.[0];
-          history.push(
-            { pathname: `/${role}/${data.user.id}` },
-            { some: true },
-          );
-        }
-      })
-      .catch(({ response }) => {
-        dispatch({ type: SIGN_IN_ERROR, payload: response.data });
-      });
+        history.push({ pathname: `/edit-profile` }, { some: true });
+      } else {
+        const role = data.user?.current_role?.[0];
+        const { data: auditData } = await axios.get(
+          `${API_URL}/my_audit/${role === 'c' ? 'customer' : 'auditor'}`,
+          {
+            headers: {
+              Authorization: `Bearer ${data.token}`,
+            },
+          },
+        );
+        Cookies.set('token', data.token, { expires: 1 });
+        localStorage.setItem('token', JSON.stringify(data.token));
+        localStorage.setItem('user', JSON.stringify(data.user));
+        dispatch({ type: USER_SIGNIN, payload: data });
+        history.push(
+          {
+            pathname: auditData.length
+              ? `profile/audits`
+              : `/${role}/${data.user.id}`,
+          },
+          { some: true },
+        );
+      }
+    } catch (error) {
+      const { response } = error;
+      dispatch({ type: SIGN_IN_ERROR, payload: response.data });
+    }
   };
 };
 
