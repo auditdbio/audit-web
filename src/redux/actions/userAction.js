@@ -66,10 +66,10 @@ export const signUpGithub = data => {
             },
           },
         );
-        Cookies.set('token', data.token, { expires: 1 });
-        localStorage.setItem('token', JSON.stringify(data.token));
-        localStorage.setItem('user', JSON.stringify(data.user));
-        dispatch({ type: USER_SIGNIN, payload: data });
+        Cookies.set('token', responseData.token, { expires: 1 });
+        localStorage.setItem('token', JSON.stringify(responseData.token));
+        localStorage.setItem('user', JSON.stringify(responseData.user));
+        dispatch({ type: USER_SIGNIN, payload: responseData });
         history.push(
           {
             pathname: auditData.length
