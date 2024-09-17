@@ -75,7 +75,7 @@ export const signUpGithub = data => {
           {
             pathname: auditData.length
               ? `profile/audits`
-              : `/${rolePrefix}/${data.user.id}`,
+              : `/${rolePrefix}/${responseData.user.id}`,
           },
           { some: true },
         );
