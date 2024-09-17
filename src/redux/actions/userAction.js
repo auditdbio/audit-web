@@ -34,6 +34,7 @@ import {
   GET_AUDITS,
 } from './types.js';
 import { getAudits, savePublicReport } from './auditAction.js';
+import { isAuth } from '../../lib/helper.js';
 
 const API_URL = import.meta.env.VITE_API_BASE_URL;
 
@@ -71,6 +72,11 @@ export const signUpGithub = data => {
         Cookies.set('token', responseData.token, { expires: 1 });
         localStorage.setItem('token', JSON.stringify(responseData.token));
         localStorage.setItem('user', JSON.stringify(responseData.user));
+        console.log(
+          auditData.length
+            ? `profile/audits`
+            : `/${rolePrefix}/${responseData.user.id}`,
+        );
         history.push(
           {
             pathname: auditData.length
@@ -79,6 +85,7 @@ export const signUpGithub = data => {
           },
           { some: true },
         );
+        console.log(isAuth());
       }
     } catch (error) {
       const { response } = error;
