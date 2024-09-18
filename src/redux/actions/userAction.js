@@ -77,16 +77,14 @@ export const signUpGithub = data => {
             ? `profile/audits`
             : `/${rolePrefix}/${responseData.user.id}`,
         );
-        if (isAuth()) {
-          history.push(
-            {
-              pathname: auditData.length
-                ? `profile/audits`
-                : `/${rolePrefix}/${responseData.user.id}`,
-            },
-            { some: true },
-          );
-        }
+        history.push(
+          {
+            pathname: auditData.length
+              ? `profile/audits`
+              : `/${rolePrefix}/${responseData.user.id}`,
+          },
+          { some: true },
+        );
         console.log(isAuth());
       }
     } catch (error) {
