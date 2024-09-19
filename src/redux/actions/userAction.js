@@ -9,6 +9,7 @@ import {
   USER_IS_ALREADY_EXIST,
   USER_SIGNIN,
   USER_SIGNUP,
+  USER_REFRESH_TOKEN,
   SELECT_ROLE,
   UPDATE_USER,
   CLEAR_SUCCESS,
@@ -35,14 +36,22 @@ import {
 import { savePublicReport } from './auditAction.js';
 
 const API_URL = import.meta.env.VITE_API_BASE_URL;
+const TOKEN_LIFETIME_MS = 21 * 24 * 60 * 60 * 1000;
+
+const setToken = token => {
+  localStorage.setItem('token', JSON.stringify(token));
+  Cookies.set('token', token, { expires: 21 });
+  Cookies.set('token_expiration', Date.now() + TOKEN_LIFETIME_MS, {
+    expires: 21,
+  });
+};
 
 export const signUpGithub = data => {
   return dispatch => {
     axios
       .post(`${API_URL}/auth/github`, data)
       .then(({ data }) => {
-        Cookies.set('token', data.token, { expires: 1 });
-        localStorage.setItem('token', JSON.stringify(data.token));
+        setToken(data.token);
         localStorage.setItem('user', JSON.stringify(data.user));
         dispatch({ type: USER_SIGNIN, payload: data });
 
@@ -80,8 +89,7 @@ export const signIn = values => {
     axios
       .post(`${API_URL}/auth/login`, values)
       .then(({ data }) => {
-        Cookies.set('token', data.token, { expires: 1 });
-        localStorage.setItem('token', JSON.stringify(data.token));
+        setToken(data.token);
         localStorage.setItem('user', JSON.stringify(data.user));
         dispatch({ type: USER_SIGNIN, payload: data });
 
@@ -103,6 +111,26 @@ export const signIn = values => {
       .catch(({ response }) => {
         dispatch({ type: SIGN_IN_ERROR, payload: response.data });
       });
+  };
+};
+
+export const refreshToken = () => {
+  return dispatch => {
+    const token = Cookies.get('token');
+    const expiration = Cookies.get('token_expiration');
+
+    if (token && expiration) {
+      if (expiration - Date.now() < TOKEN_LIFETIME_MS / 4) {
+        axios
+          .get(`${API_URL}/auth/restore_token`, {
+            headers: { Authorization: `Bearer ${token}` },
+          })
+          .then(({ data }) => {
+            setToken(data.token);
+            dispatch({ type: USER_REFRESH_TOKEN, payload: data });
+          });
+      }
+    }
   };
 };
 
@@ -345,6 +373,7 @@ export const authenticate = () => {
 export const logout = () => {
   history.push('/');
   Cookies.remove('token');
+  Cookies.remove('token_expiration');
   localStorage.removeItem('token');
   localStorage.removeItem('user');
   return { type: LOG_OUT };
