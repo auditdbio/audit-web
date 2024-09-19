@@ -4,6 +4,7 @@ export const IN_PROGRESS = 'InProgress';
 export const VERIFICATION = 'Verification';
 export const FIXED = 'Fixed';
 export const NOT_FIXED = 'NotFixed';
+export const WILL_NOT_FIX = 'WillNotFix';
 
 // Issue Status Change Actions:
 export const BEGIN_ACTION = 'Begin';
