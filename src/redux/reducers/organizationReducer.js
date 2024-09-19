@@ -7,6 +7,8 @@ import {
   DELETE_INVITES,
   ACCEPT_INVITE,
   NOT_FOUND_ORGANIZATION,
+  ADD_MEMBER_IN_ORGANIZATION,
+  CLEAR_MESSAGES,
 } from '../actions/types.js';
 
 const initialState = {
@@ -16,6 +18,7 @@ const initialState = {
   organization: {},
   invites: [],
   notFound: false,
+  successMessage: '',
 };
 
 export const organizationReducer = (state = initialState, action) => {
@@ -27,6 +30,16 @@ export const organizationReducer = (state = initialState, action) => {
         own: action.payload.owner,
         includeMe: action.payload.member,
         invites: action.payload.invites,
+      };
+    case ADD_MEMBER_IN_ORGANIZATION:
+      return {
+        ...state,
+        successMessage: 'User successfully invited',
+      };
+    case CLEAR_MESSAGES:
+      return {
+        ...state,
+        successMessage: '',
       };
     case CREATE_ORGANIZATION:
       return {

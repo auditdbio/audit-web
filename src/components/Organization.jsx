@@ -65,8 +65,8 @@ const Organization = ({ linkId }) => {
   const {
     customer,
     error: customerError,
-    success: customerSuccess,
-  } = useSelector(s => s.customer);
+    successMessage: successMessage,
+  } = useSelector(s => s.organization);
   const {
     auditor,
     error: auditorError,
@@ -163,14 +163,14 @@ const Organization = ({ linkId }) => {
                   !!error ||
                   !!customerError ||
                   !!auditorError ||
-                  !!customerSuccess ||
+                  !!successMessage ||
                   !!auditorSuccess
                 }
                 text={
                   error ||
                   customerError ||
                   auditorError ||
-                  customerSuccess ||
+                  successMessage ||
                   auditorSuccess
                 }
                 severity={

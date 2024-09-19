@@ -97,16 +97,14 @@ export default function AuditorSearchModal({
     const data = [
       {
         user_id: selectedAuditor.user_id,
-        access_level: [
-          rulesOfMember.representative ? 'Representative' : '',
-          rulesOfMember.editor ? 'Editor' : '',
-        ].filter(rule => rule),
+        access_level: rulesOfMember.editor ? 'Editor' : '',
       },
     ];
     dispatch(
       addUserInOrganization(organization.link_id, data, organization.id),
     );
     setMode('search');
+    setQuery('');
     handleClose();
   };
 
@@ -368,18 +366,18 @@ export default function AuditorSearchModal({
                 gap: '20px',
               }}
             >
-              <FormControlLabel
-                value="Representative"
-                control={<Checkbox />}
-                label="Representative"
-                labelPlacement="top"
-                onChange={e => {
-                  setRulesOfMember({
-                    ...rulesOfMember,
-                    representative: e.target.checked,
-                  });
-                }}
-              />
+              {/*<FormControlLabel*/}
+              {/*  value="Representative"*/}
+              {/*  control={<Checkbox />}*/}
+              {/*  label="Representative"*/}
+              {/*  labelPlacement="top"*/}
+              {/*  onChange={e => {*/}
+              {/*    setRulesOfMember({*/}
+              {/*      ...rulesOfMember,*/}
+              {/*      representative: e.target.checked,*/}
+              {/*    });*/}
+              {/*  }}*/}
+              {/*/>*/}
               <FormControlLabel
                 value="Editor"
                 control={<Checkbox />}

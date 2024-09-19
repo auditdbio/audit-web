@@ -134,17 +134,17 @@ export const UserMenu = ({ open, handleClose, anchor, userAvatar, pages }) => {
           My account
         </Button>
       </MenuItem>
-      {!!organizations.length && (
-        <MenuItem onClick={handleClose}>
-          <Button
-            sx={popupLinkSx(reduxUser.current_role)}
-            onClick={handleMyOrganizationClick}
-            {...addTestsLabel('header_my-account')}
-          >
-            My organizations
-          </Button>
-        </MenuItem>
-      )}
+      {/*{!!organizations.length && (*/}
+      <MenuItem onClick={handleClose}>
+        <Button
+          sx={popupLinkSx(reduxUser.current_role)}
+          onClick={handleMyOrganizationClick}
+          {...addTestsLabel('header_my-account')}
+        >
+          My organizations
+        </Button>
+      </MenuItem>
+      {/*)}*/}
       {matchSm &&
         pages?.map(el =>
           el.menuOptions

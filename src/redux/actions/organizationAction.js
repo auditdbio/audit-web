@@ -108,6 +108,7 @@ export const addUserInOrganization = (orgLinkId, data, id) => {
         },
       })
       .then(({ data }) => {
+        dispatch({ type: ADD_MEMBER_IN_ORGANIZATION });
         dispatch(getOrganizationById(orgLinkId));
       });
   };
