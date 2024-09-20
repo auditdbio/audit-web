@@ -146,7 +146,7 @@ export const getAuditors = (values = '', amount = 0) => {
     const token = Cookies.get('token');
     axios
       .get(
-        `${API_URL}/search?query=${values}&sort_by=price&tags=&sort_order=1&page=1&per_page=${amount}&kind=auditor badge`,
+        `${API_URL}/search?query=${values}&sort_by=rating&tags=&sort_order=-1&page=1&per_page=${amount}&kind=auditor badge`,
         isAuth() ? { headers: { Authorization: `Bearer ${token}` } } : {},
       )
       .then(({ data }) => {
