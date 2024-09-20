@@ -28,6 +28,10 @@ import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormControl from '@mui/material/FormControl';
 import FormLabel from '@mui/material/FormLabel';
+import {
+  changeRoleCreateOrganization,
+  changeRolePublicAuditorNoRedirect,
+} from '../../../redux/actions/userAction.js';
 
 const GoBack = ({ role, newLinkId }) => {
   const navigate = useNavigate();
@@ -88,17 +92,37 @@ const CreateEditOrganizationForm = ({
         validationSchema={EditOrganizationSchema}
         validateOnBlur={false}
         validateOnChange={false}
-        onSubmit={values => {
+        onSubmit={(values, { resetForm }) => {
           setIsDirty(false);
           if (!values.id) {
-            dispatch(
-              createOrganization(values, `/${user.current_role[0]}/${user.id}`),
-            );
+            if (
+              organization.organization_type?.toLowerCase() !==
+              user.current_role?.toLowerCase()
+            ) {
+              dispatch(
+                changeRoleCreateOrganization(
+                  user.current_role?.toLowerCase() !== AUDITOR.toLowerCase()
+                    ? AUDITOR
+                    : CUSTOMER,
+                  user.id,
+                  values,
+                  `/${user.current_role[0]}/${user.id}`,
+                ),
+              );
+            } else {
+              dispatch(
+                createOrganization(
+                  values,
+                  `/${user.current_role[0]}/${user.id}`,
+                ),
+              );
+            }
           } else {
             dispatch(
               updateOrganization(values, `/${user.current_role[0]}/${user.id}`),
             );
           }
+          resetForm();
         }}
       >
         {({ handleSubmit, values, setFieldValue, dirty }) => {
@@ -276,7 +300,7 @@ const CreateEditOrganizationForm = ({
                         {user.current_role.slice(0, 1).toUpperCase() +
                           user.current_role.slice(1) !==
                           values.organization_type && (
-                          <Typography>
+                          <Typography sx={alertDescSx}>
                             The role you've assigned to the organization is
                             different from yours. As a result, your role will be
                             changed when the creation process is finished.
@@ -312,6 +336,13 @@ const EditOrganizationSchema = Yup.object().shape({
   //   email: Yup.string().email('Invalid email').required('required'),
   //   telegram: Yup.string(),
   // }),
+});
+
+const alertDescSx = theme => ({
+  fontSize: '16px',
+  [theme.breakpoints.down('md')]: {
+    fontSize: '12px',
+  },
 });
 
 const backBtnSx = theme => ({
