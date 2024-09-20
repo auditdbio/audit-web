@@ -524,8 +524,6 @@ export const changeRoleCreateOrganization = (role, id, value, navigateTo) => {
         localStorage.setItem('user', JSON.stringify(data));
         const token = Cookies.get('token');
         if (data?.name) {
-          console.log(data);
-          console.log(value);
           axios
             .post(`${API_URL}/organization`, value, {
               headers: {
@@ -533,10 +531,7 @@ export const changeRoleCreateOrganization = (role, id, value, navigateTo) => {
               },
             })
             .then(({ data: orgData }) => {
-              console.log(orgData);
               dispatch({ type: CREATE_ORGANIZATION, payload: orgData });
-              console.log(`${data.current_role[0]}/${data.id}`, 'we');
-              console.log(navigateTo);
               if (navigateTo) {
                 history.push(
                   { pathname: `${data.current_role[0]}/${data.id}` },
