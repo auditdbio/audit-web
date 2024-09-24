@@ -40,6 +40,7 @@ import TotalPrice from './forms/TotalPrice/TotalPrice.jsx';
 import { addUserInOrganization } from '../redux/actions/organizationAction.js';
 import { AUDITOR } from '../redux/actions/types.js';
 import { searchCustomers } from '../redux/actions/customerAction.js';
+import Radio from '@mui/material/Radio';
 
 export default function AuditorSearchModal({
   open,
@@ -58,7 +59,7 @@ export default function AuditorSearchModal({
   const customerReducer = useSelector(state => state.customer);
   const [selectedAuditor, setSelectedAuditor] = useState({});
   const organization = useSelector(s => s.organization.organization);
-  const [rulesOfMember, setRulesOfMember] = useState({});
+  const [rulesOfMember, setRulesOfMember] = useState(false);
 
   const [openDrop, setOpenDrop] = useState(false);
   const [mode, setMode] = useState('search');
@@ -97,7 +98,7 @@ export default function AuditorSearchModal({
     const data = [
       {
         user_id: selectedAuditor.user_id,
-        access_level: rulesOfMember.editor ? 'Editor' : '',
+        access_level: rulesOfMember ? 'Editor' : '',
       },
     ];
     dispatch(
@@ -380,15 +381,16 @@ export default function AuditorSearchModal({
               {/*/>*/}
               <FormControlLabel
                 value="Editor"
-                control={<Checkbox />}
+                control={
+                  <Radio
+                    onClick={e => {
+                      setRulesOfMember(!rulesOfMember);
+                    }}
+                    checked={rulesOfMember}
+                  />
+                }
                 label="Editor"
                 labelPlacement="top"
-                onChange={e => {
-                  setRulesOfMember({
-                    ...rulesOfMember,
-                    editor: e.target.checked,
-                  });
-                }}
               />
             </Box>
             <Button
