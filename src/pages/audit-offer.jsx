@@ -56,16 +56,15 @@ import Headings from '../router/Headings.jsx';
 import DescriptionHistory from '../components/DescriptionHistory/index.jsx';
 import EditDescription from '../components/EditDescription/index.jsx';
 import EditIcon from '@mui/icons-material/Edit';
-import EditButton from '../components/EditDescription/EditButton.jsx';
-import TagsField from '../components/forms/tags-field/tags-field.jsx';
-import CloseIcon from '@mui/icons-material/Close.js';
-import SaveIcon from '@mui/icons-material/Save.js';
 import EditTags from '../components/EditDescription/EditTags.jsx';
 import MarkdownEditor from '../components/markdown/Markdown-editor.jsx';
 import ResolveAuditConfirmation from '../components/issuesPage/ResolveAuditConfirmation.jsx';
 import Star from '../components/icons/Star.jsx';
 import AuditFeedbackModal from '../components/modal/AuditFeedbackModal.jsx';
 import EditPrice from '../components/EditDescription/EditPrice.jsx';
+import ExpandLessOutlinedIcon from '@mui/icons-material/ExpandLessOutlined';
+import Grid3x3OutlinedIcon from '@mui/icons-material/Grid3x3Outlined';
+import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 
 const AuditOffer = () => {
   const { auditId } = useParams();
@@ -287,6 +286,7 @@ const AuditOffer = () => {
               sx={{
                 display: 'flex',
                 width: '100%',
+                justifyContent: 'center',
                 position: 'relative',
               }}
             >
@@ -304,17 +304,46 @@ const AuditOffer = () => {
               >
                 <ArrowBackIcon color="secondary" />
               </Button>
-              <Typography
-                variant="h3"
-                sx={{
-                  width: '100%',
-                  textAlign: 'center',
-                  wordBreak: 'break-word',
-                  mt: '15px',
-                }}
-              >
-                {audit?.project_name}
-              </Typography>
+              <Box sx={headerTitleSx}>
+                <Typography
+                  variant="h3"
+                  sx={{
+                    width: '100%',
+                    textAlign: 'center',
+                    wordBreak: 'break-word',
+                  }}
+                >
+                  {audit?.project_name}
+                </Typography>
+                <Button
+                  sx={[
+                    // readAllButton,
+                    {
+                      p: '3px',
+                      minWidth: 'unset',
+                      textTransform: 'unset',
+                      boxShadow: 'unset',
+                      fontWeight: 600,
+                      borderRadius: '8px',
+                    },
+                  ]}
+                  variant={'contained'}
+                  onClick={() => setShowFullHeader(!showFullHeader)}
+                >
+                  <ExpandLessOutlinedIcon
+                    sx={[
+                      showFullHeader ? {} : { transform: 'rotate(180deg)' },
+                      {
+                        transition: '0.2s',
+                        marginRight: '0',
+                        marginLeft: 'auto',
+                        width: '20px',
+                        height: '20px',
+                      },
+                    ]}
+                  />
+                </Button>
+              </Box>
               <Button
                 variant="text"
                 color="secondary"
@@ -328,7 +357,16 @@ const AuditOffer = () => {
             </Box>
 
             <Box sx={{ width: '100%' }}>
-              <Collapse sx={{ mt: '15px' }} in={showFullHeader}>
+              <Box
+                sx={[
+                  {
+                    display: 'flex',
+                    justifyContent: 'center',
+                    mt: '10px',
+                  },
+                ]}
+              ></Box>
+              <Collapse in={showFullHeader}>
                 <Box sx={contentWrapper}>
                   <Box sx={headInfoSx}>
                     <EditTags audit={audit} confirmed={true} />
@@ -407,31 +445,8 @@ const AuditOffer = () => {
                       </Button>
                     </Tooltip>
                   )}
-                  <Divider sx={{ width: '100%' }} />
                 </Box>
               </Collapse>
-              <Button
-                sx={readAllButton}
-                onClick={() => setShowFullHeader(!showFullHeader)}
-              >
-                {!showFullHeader ? 'Show' : 'Hide'}
-                <span
-                  style={{
-                    margin: '0 10px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '7px',
-                  }}
-                >
-                  <EmailIcon sx={{ height: '32px' }} />
-                  <TelegramIcon sx={{ height: '32px' }} />
-                  {!showFullHeader &&
-                    (audit?.price
-                      ? `$${audit?.price} per line`
-                      : `${audit?.total} total cost`)}
-                </span>
-                {!showFullHeader ? '▼' : '▲'}
-              </Button>
               <Box sx={infoWrapper} className={'qwe'}>
                 {/*<Box sx={descriptionSx(showFull)}>*/}
                 {/*  <Box ref={descriptionRef}>*/}
@@ -755,6 +770,7 @@ const AuditOffer = () => {
               WAITING_FOR_AUDITS.toLowerCase() && (
               <Box sx={{ width: '100%', mb: '30px' }}>
                 {issues?.length ? (
+                  //
                   <Box
                     sx={{
                       display: 'flex',
@@ -794,6 +810,27 @@ export default AuditOffer;
 
 const SubmitValidation = Yup.object().shape({
   report: Yup.string().required('File is required'),
+});
+
+const headerTitleSx = theme => ({
+  display: 'flex',
+  alignItems: 'flex-start',
+  mt: '15px',
+  gap: '8px',
+  maxWidth: '960px',
+  [theme.breakpoints.down('md')]: {
+    maxWidth: '700px',
+  },
+  [theme.breakpoints.down('sm')]: {
+    maxWidth: '600px',
+  },
+  [theme.breakpoints.down('xs')]: {
+    maxWidth: '500px',
+  },
+  [theme.breakpoints.down(680)]: {
+    maxWidth: '340px',
+    mt: '22px',
+  },
 });
 
 const descriptionWrapper = (theme, showFull) => ({
@@ -1028,7 +1065,7 @@ const salaryWrapper = {
 };
 
 const infoWrapper = theme => ({
-  marginTop: '30px',
+  marginTop: '15px',
   '& h4': {
     fontWeight: 600,
     fontSize: '24px',
@@ -1047,7 +1084,7 @@ const infoWrapper = theme => ({
     },
   },
 });
-
+//
 const readAllButton = theme => ({
   width: '100%',
   padding: '8px',
