@@ -464,7 +464,15 @@ const AuditOffer = () => {
                 {showReadMoreButton && (
                   <Button
                     onClick={() => setShowFull(!showFull)}
-                    sx={readAllButton}
+                    sx={[
+                      readAllButton,
+                      !showFull
+                        ? {
+                            boxShadow:
+                              '0px -24px 14px -8px rgba(252, 250, 246, 1)',
+                          }
+                        : {},
+                    ]}
                   >
                     {showFull ? 'Hide ▲' : `Read all ▼`}
                   </Button>
@@ -1095,8 +1103,8 @@ const readAllButton = theme => ({
   lineHeight: '25px',
   // background: '#E5E5E5',
   borderRadius: 0,
-  borderBottom: '1px solid #E5E5E5',
-  boxShadow: '0px -24px 14px -8px rgba(252, 250, 246, 1)',
+  border: '1px solid #E5E5E5',
+  borderTop: 'unset',
   ':hover': { background: '#D5D5D5' },
   [theme.breakpoints.down('xs')]: {
     fontSize: '16px',
