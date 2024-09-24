@@ -27,6 +27,7 @@ import {
   RESET_PUBLIC_AUDIT,
   RESOLVED,
   SAVE_PUBLIC_REPORT,
+  SET_AUDIT_FEEDBACK,
   SET_CURRENT_AUDIT_PARTNER,
 } from './types.js';
 import { history } from '../../services/history.js';
@@ -349,16 +350,21 @@ export const editAuditRequestCustomer = (values, goBack) => {
   };
 };
 
-export const resolveAudit = values => {
+export const resolveAudit = audit => {
   return dispatch => {
     const token = Cookies.get('token');
     axios
       .patch(
-        `${API_URL}/audit/${values.id}`,
+        `${API_URL}/audit/${audit.id}`,
         { action: 'resolve' },
         { headers: { Authorization: `Bearer ${token}` } },
       )
       .then(({ data }) => dispatch({ type: RESOLVED, payload: data }))
+      .then(() =>
+        axios.patch(
+          `${API_URL}/rating/recalculate/auditor/${audit.auditor_id}`,
+        ),
+      )
       .catch(() => dispatch({ type: REQUEST_ERROR }));
   };
 };
@@ -440,7 +446,7 @@ export const getPublicAuditReport = () => {
     dispatch({ type: GET_PUBLIC_REPORT, payload: report });
   };
 };
-export const downloadReport = (audit, { generate } = {}) => {
+export const downloadReport = (audit, { generate, isDraft } = {}) => {
   const token = Cookies.get('token');
 
   const downloadResponse = (res, audit) => {
@@ -474,9 +480,11 @@ export const downloadReport = (audit, { generate } = {}) => {
     dispatch({ type: DOWNLOAD_REPORT_START });
     if (generate) {
       axios
-        .post(`${API_URL}/report/${audit.id}`, null, {
-          headers: { Authorization: `Bearer ${token}` },
-        })
+        .post(
+          `${API_URL}/report/${audit.id}`,
+          { is_draft: isDraft },
+          { headers: { Authorization: `Bearer ${token}` } },
+        )
         .then(({ data }) => getReport(audit, data.path, dispatch))
         .catch(() => dispatch({ type: REQUEST_ERROR }));
     } else {
@@ -513,6 +521,42 @@ export const savePublicReport = data => {
 
 export const clearMessage = () => {
   return { type: CLEAR_MESSAGES };
+};
+
+export const getAuditFeedback = (receiverRole, receiverId, auditId) => {
+  const token = Cookies.get('token');
+  return dispatch => {
+    axios
+      .get(
+        `${API_URL}/rating/feedback/${receiverRole}/${receiverId}/${auditId}`,
+        { headers: { Authorization: `Bearer ${token}` } },
+      )
+      .then(({ data }) => {
+        dispatch({
+          type: SET_AUDIT_FEEDBACK,
+          payload: { feedback: data, message: null },
+        });
+      });
+  };
+};
+
+export const sendAuditFeedback = feedback => {
+  const token = Cookies.get('token');
+  return dispatch => {
+    axios
+      .post(`${API_URL}/rating/send_feedback`, feedback, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .then(({ data }) => {
+        dispatch({
+          type: SET_AUDIT_FEEDBACK,
+          payload: { feedback: data, message: 'Feedback sent successfully!' },
+        });
+      })
+      .catch(() => {
+        dispatch({ type: REQUEST_ERROR });
+      });
+  };
 };
 
 export const addCommentAudit = (id, values) => {

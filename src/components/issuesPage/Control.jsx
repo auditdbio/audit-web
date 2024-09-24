@@ -24,7 +24,10 @@ import {
   RESOLVED,
 } from '../../redux/actions/types.js';
 import ResolveAuditConfirmation from './ResolveAuditConfirmation.jsx';
-import { discloseAllIssues } from '../../redux/actions/issueAction.js';
+import {
+  discloseAllIssues,
+  setReadAll,
+} from '../../redux/actions/issueAction.js';
 import { DRAFT, FIXED, NOT_FIXED } from './constants.js';
 import {
   clearMessage,
@@ -87,7 +90,8 @@ const Control = ({
     window.scrollTo(0, 0);
   };
 
-  const handleCloseMenu = () => {
+  const handleReadAllEvents = () => {
+    dispatch(setReadAll(auditId));
     setMenuAnchorEl(null);
   };
 
@@ -360,7 +364,7 @@ const Control = ({
                         buttonSx,
                         (isPublic || saved) && xss ? publicBtnSx : {},
                       ]}
-                      onClick={handleCloseMenu}
+                      onClick={handleReadAllEvents}
                     >
                       Mark all as read
                     </Button>
@@ -395,7 +399,7 @@ const Control = ({
               variant="contained"
               color="secondary"
               sx={[buttonSx, (isPublic || saved) && xss ? publicBtnSx : {}]}
-              onClick={handleCloseMenu}
+              onClick={handleReadAllEvents}
             >
               Mark all as read
             </Button>

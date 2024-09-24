@@ -54,6 +54,7 @@ import Headings from '../router/Headings.jsx';
 import { AUDITOR, CUSTOMER } from '../redux/actions/types.js';
 import UserProjects from '../pages/UserProjects.jsx';
 import PriceCalculationPage from '../pages/PriceCalculationPage.jsx';
+import { refreshToken } from '../redux/actions/userAction.js';
 
 const AppRoutes = () => {
   const { token } = useSelector(s => s.user);
@@ -67,6 +68,7 @@ const AppRoutes = () => {
   useEffect(() => {
     if (isAuth()) {
       dispatch(getUnreadMessages());
+      dispatch(refreshToken());
     }
   }, [isAuth()]);
 
@@ -210,6 +212,14 @@ const AppRoutes = () => {
           }
         />
         <Route
+          path="/audit-info/:auditId/auditor"
+          element={
+            <PrivateRoute auth={{ isAuthenticated: isAuth() }}>
+              <AuditOffer />
+            </PrivateRoute>
+          }
+        />
+        <Route
           path="/audit-builder/edit/:auditId"
           element={
             <PrivateRoute auth={{ isAuthenticated: isAuth() }}>
@@ -230,14 +240,6 @@ const AppRoutes = () => {
           element={
             <PrivateRoute auth={{ isAuthenticated: isAuth() }}>
               <AuditInfoReqPage />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/audit-info/:auditId/auditor"
-          element={
-            <PrivateRoute auth={{ isAuthenticated: isAuth() }}>
-              <AuditOffer />
             </PrivateRoute>
           }
         />

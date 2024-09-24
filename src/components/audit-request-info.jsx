@@ -40,6 +40,8 @@ import EditDescription from './EditDescription/index.jsx';
 import DescriptionHistory from './DescriptionHistory/index.jsx';
 import EditTags from './EditDescription/EditTags.jsx';
 import EditPrice from './EditDescription/EditPrice.jsx';
+import Star from './icons/Star.jsx';
+import Currency from './icons/Currency.jsx';
 
 const AuditRequestInfo = ({
   project,
@@ -65,8 +67,6 @@ const AuditRequestInfo = ({
   const { chatList } = useSelector(s => s.chat);
 
   const dispatch = useDispatch();
-  const { successMessage: auditSuccessMessage, error: auditError } =
-    useSelector(s => s.audits);
 
   const handleOpen = () => {
     if (user.current_role === AUDITOR && isAuth() && auditor?.first_name) {

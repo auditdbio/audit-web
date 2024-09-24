@@ -1,13 +1,13 @@
 import React, { useEffect } from 'react';
 import AuditInfo from './audit-info.jsx';
 import { useDispatch, useSelector } from 'react-redux';
-import { getAudit } from '../redux/actions/auditAction.js';
+import { getAudit, getAuditFeedback } from '../redux/actions/auditAction.js';
 import { useParams } from 'react-router-dom';
 import Layout from '../styles/Layout.jsx';
 import Loader from '../components/Loader.jsx';
 import NotFound from './Not-Found.jsx';
 import { getIssues } from '../redux/actions/issueAction.js';
-import { CLEAR_AUDIT } from '../redux/actions/types.js';
+import { AUDITOR, CLEAR_AUDIT, RESOLVED } from '../redux/actions/types.js';
 import { CustomCard } from '../components/custom/Card.jsx';
 import Headings from '../router/Headings.jsx';
 
@@ -22,6 +22,18 @@ const AuditInfoPage = () => {
     dispatch(getAudit(id));
     return () => dispatch({ type: CLEAR_AUDIT });
   }, [id]);
+
+  useEffect(() => {
+    if (
+      auditConfirm &&
+      !auditConfirm.no_customer &&
+      auditConfirm.status.toLowerCase() === RESOLVED.toLowerCase()
+    ) {
+      dispatch(
+        getAuditFeedback(AUDITOR, auditConfirm.auditor_id, auditConfirm.id),
+      );
+    }
+  }, [auditConfirm?.id]);
 
   useEffect(() => {
     if (issuesAuditId !== auditConfirm?.id && auditConfirm?.status) {

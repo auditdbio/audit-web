@@ -38,9 +38,11 @@ export const getChatMessages = (chatId, userId) => {
       .then(({ data }) => {
         dispatch({ type: CHAT_GET_MESSAGES, payload: data });
         axios
-          .patch(`${API_URL}/chat/${chatId}/unread/0`, null, {
-            headers: { Authorization: `Bearer ${token}` },
-          })
+          .patch(
+            `${API_URL}/chat/${chatId}/unread/0`,
+            {},
+            { headers: { Authorization: `Bearer ${token}` } },
+          )
           .then(() => {
             dispatch({
               type: CHAT_UPDATE_READ,
@@ -69,9 +71,11 @@ export const setCurrentChat = (
 
     if (previousChatId) {
       const token = Cookies.get('token');
-      axios.patch(`${API_URL}/chat/${previousChatId}/unread/0`, null, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      axios.patch(
+        `${API_URL}/chat/${previousChatId}/unread/0`,
+        {},
+        { headers: { Authorization: `Bearer ${token}` } },
+      );
     }
 
     dispatch({ type: CHAT_CLOSE_CURRENT_CHAT });
@@ -235,9 +239,11 @@ export const getUnreadForDifferentRole = () => {
 export const closeCurrentChat = chatId => {
   if (chatId) {
     const token = Cookies.get('token');
-    axios.patch(`${API_URL}/chat/${chatId}/unread/0`, null, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
+    axios.patch(
+      `${API_URL}/chat/${chatId}/unread/0`,
+      {},
+      { headers: { Authorization: `Bearer ${token}` } },
+    );
   }
 
   return { type: CHAT_CLOSE_CURRENT_CHAT };

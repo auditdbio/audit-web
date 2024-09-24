@@ -104,33 +104,35 @@ const EditDescription = ({ audit, auditRequest, hideChange }) => {
                       alignItems: 'center',
                     }}
                   >
-                    {!hideChange && (
-                      <Box>
-                        <IconButton
-                          type="button"
-                          aria-label="add link"
-                          onClick={() => {
-                            setAddLinkField(!addLinkField);
-                          }}
-                          sx={[addLinkButton]}
-                          {...addTestsLabel('add-link-button')}
-                        >
-                          <AddLinkIcon
-                            color={
-                              user.current_role === CUSTOMER
-                                ? 'primary'
-                                : 'secondary'
-                            }
-                          />
-                          <Box
-                            component="span"
-                            sx={editButtonText(theme, user)}
+                    {!hideChange &&
+                      audit?.status.toLowerCase() !==
+                        RESOLVED.toLowerCase() && (
+                        <Box>
+                          <IconButton
+                            type="button"
+                            aria-label="add link"
+                            onClick={() => {
+                              setAddLinkField(!addLinkField);
+                            }}
+                            sx={[addLinkButton]}
+                            {...addTestsLabel('add-link-button')}
                           >
-                            {addLinkField ? 'Close' : 'Add Link'}
-                          </Box>
-                        </IconButton>
-                      </Box>
-                    )}
+                            <AddLinkIcon
+                              color={
+                                user.current_role === CUSTOMER
+                                  ? 'primary'
+                                  : 'secondary'
+                              }
+                            />
+                            <Box
+                              component="span"
+                              sx={editButtonText(theme, user)}
+                            >
+                              {addLinkField ? 'Close' : 'Add Link'}
+                            </Box>
+                          </IconButton>
+                        </Box>
+                      )}
                     {!hideChange &&
                       (!editMode ? (
                         audit?.status?.toLowerCase() !==

@@ -70,10 +70,10 @@ const ProjectCard = ({ type, project }) => {
               <Currency />
               <Typography>{project.price || project.total_cost}</Typography>
             </Box>
-            <Box sx={infoWrapper}>
-              <Star />
-              <Typography>150</Typography>
-            </Box>
+            {/*<Box sx={infoWrapper}>*/}
+            {/*  <Star />*/}
+            {/*  <Typography>150</Typography>*/}
+            {/*</Box>*/}
           </Box>
         ) : (
           <Box sx={priceWrapper}>
