@@ -19,6 +19,8 @@ import {
   InputAdornment,
   Slider,
   Switch,
+  Tabs,
+  Tab,
 } from '@mui/material';
 import theme from '../styles/themes.js';
 import { CustomCard } from '../components/custom/Card.jsx';
@@ -63,8 +65,7 @@ import Star from '../components/icons/Star.jsx';
 import AuditFeedbackModal from '../components/modal/AuditFeedbackModal.jsx';
 import EditPrice from '../components/EditDescription/EditPrice.jsx';
 import ExpandLessOutlinedIcon from '@mui/icons-material/ExpandLessOutlined';
-import Grid3x3OutlinedIcon from '@mui/icons-material/Grid3x3Outlined';
-import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
+import AddLinkIcon from '@mui/icons-material/AddLink.js';
 
 const AuditOffer = () => {
   const { auditId } = useParams();
@@ -83,6 +84,7 @@ const AuditOffer = () => {
   const [showFeedback, setShowFeedback] = useState(false);
   const [editConclusion, setEditConclusion] = useState(false);
   const [mdRef, setMdRef] = useState(null);
+  const [tab, setTab] = useState(0);
 
   const role = useSelector(s => s.user?.user?.current_role);
   const { successMessage, error } = useSelector(s => s.issues);
@@ -191,6 +193,7 @@ const AuditOffer = () => {
       );
       setTimeout(() => setEditConclusion(prev => !prev), 500);
     } else {
+      setTab(1);
       mdRef?.current?.setView({ menu: true, md: true, html: !matchXs });
       setEditConclusion(prev => !prev);
     }
@@ -315,34 +318,6 @@ const AuditOffer = () => {
                 >
                   {audit?.project_name}
                 </Typography>
-                <Button
-                  sx={[
-                    // readAllButton,
-                    {
-                      p: '3px',
-                      minWidth: 'unset',
-                      textTransform: 'unset',
-                      boxShadow: 'unset',
-                      fontWeight: 600,
-                      borderRadius: '8px',
-                    },
-                  ]}
-                  variant={'contained'}
-                  onClick={() => setShowFullHeader(!showFullHeader)}
-                >
-                  <ExpandLessOutlinedIcon
-                    sx={[
-                      showFullHeader ? {} : { transform: 'rotate(180deg)' },
-                      {
-                        transition: '0.2s',
-                        marginRight: '0',
-                        marginLeft: 'auto',
-                        width: '20px',
-                        height: '20px',
-                      },
-                    ]}
-                  />
-                </Button>
               </Box>
               <Button
                 variant="text"
@@ -354,6 +329,44 @@ const AuditOffer = () => {
               >
                 <ChatIcon />
               </Button>
+            </Box>
+
+            <Box sx={{ width: '100%' }}>
+              <Box
+                sx={[
+                  {
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    mt: '10px',
+                  },
+                ]}
+              >
+                <Button
+                  sx={[readAllButton]}
+                  variant={'outlined'}
+                  onClick={() => setShowFullHeader(!showFullHeader)}
+                >
+                  <span>Show</span>
+                  <TelegramIcon sx={{ width: '22px', height: '22px' }} />
+                  <EmailIcon sx={{ width: '22px', height: '22px' }} />
+                  {audit?.price
+                    ? `${audit?.price} per line`
+                    : `${audit?.total_cost} total cost`}
+                  <ExpandLessOutlinedIcon
+                    sx={[
+                      showFullHeader ? {} : { transform: 'rotate(180deg)' },
+                      {
+                        transition: '0.2s',
+                        // marginRight: '0',
+                        // marginLeft: 'auto',
+                        width: '20px',
+                        height: '20px',
+                      },
+                    ]}
+                  />
+                </Button>
+              </Box>
             </Box>
 
             <Box sx={{ width: '100%' }}>
@@ -453,19 +466,113 @@ const AuditOffer = () => {
                 {/*    <Markdown value={audit?.description} />*/}
                 {/*  </Box>*/}
                 {/*</Box>*/}
-                <Collapse in={true} collapsedSize={showFull ? undefined : 150}>
-                  <Box
-                    sx={descriptionWrapper(theme, showFull)}
-                    ref={descriptionRef}
+                {tab === 0 ? (
+                  <Collapse
+                    in={true}
+                    collapsedSize={showFull ? undefined : 150}
                   >
-                    <EditDescription audit={audit} />
-                  </Box>
-                </Collapse>
+                    <Box
+                      sx={descriptionWrapper(theme, showFull)}
+                      ref={descriptionRef}
+                    >
+                      <EditDescription audit={audit} />
+                    </Box>
+                  </Collapse>
+                ) : (
+                  <Collapse
+                    in={true}
+                    collapsedSize={showFull ? undefined : 150}
+                  >
+                    <Box sx={descriptionWrapper(theme, showFull)}>
+                      <Formik
+                        initialValues={{
+                          id: audit?.id,
+                          conclusion: audit?.conclusion || '',
+                        }}
+                        onSubmit={values => {
+                          dispatch(editAuditCustomer(values));
+                        }}
+                      >
+                        {({ handleSubmit, values }) => {
+                          useEffect(() => {
+                            setConclusionState(values?.conclusion);
+                          }, [values?.conclusion]);
+
+                          return (
+                            <Form onSubmit={handleSubmit}>
+                              <Collapse
+                                in={editConclusion || audit?.conclusion}
+                              >
+                                <Box sx={{ position: 'relative', mt: '20px' }}>
+                                  {audit?.conclusion && (
+                                    <Box sx={conclusionTitle}>Conclusion</Box>
+                                  )}
+                                  <MarkdownEditor
+                                    name="conclusion"
+                                    setMdRef={setMdRef}
+                                    fastSave={true}
+                                    mdProps={{
+                                      style: {
+                                        backgroundColor: '#fcfaf6',
+                                        height: editConclusion
+                                          ? '400px'
+                                          : 'auto',
+                                        maxHeight: '400px',
+                                      },
+                                      view: {
+                                        menu: !audit?.conclusion,
+                                        md: !audit?.conclusion,
+                                        html: true,
+                                      },
+                                    }}
+                                  />
+
+                                  {audit?.conclusion &&
+                                    audit?.status?.toLowerCase() !==
+                                      RESOLVED.toLowerCase() && (
+                                      <IconButton
+                                        type="button"
+                                        aria-label="Edit description"
+                                        onClick={() =>
+                                          handleConclusion(handleSubmit)
+                                        }
+                                        sx={editButton}
+                                        {...addTestsLabel(
+                                          'edit-conclusion-button',
+                                        )}
+                                      >
+                                        <EditIcon
+                                          color="secondary"
+                                          fontSize="small"
+                                        />
+                                        <Box
+                                          component="span"
+                                          sx={editButtonText}
+                                        >
+                                          {editConclusion ? 'Save' : 'Edit'}
+                                        </Box>
+                                      </IconButton>
+                                    )}
+                                </Box>
+                              </Collapse>
+                            </Form>
+                          );
+                        }}
+                      </Formik>
+                    </Box>
+                  </Collapse>
+                )}
                 {showReadMoreButton && (
-                  <Button
-                    onClick={() => setShowFull(!showFull)}
+                  <Box
                     sx={[
-                      readAllButton,
+                      {
+                        // border: '1px solid #E5E5E5',
+                        borderTop: '1px solid #E5E5E5',
+                        display: 'flex',
+                        justifyContent: 'center',
+                        position: 'relative',
+                        paddingTop: '8px',
+                      },
                       !showFull
                         ? {
                             boxShadow:
@@ -474,109 +581,90 @@ const AuditOffer = () => {
                         : {},
                     ]}
                   >
-                    {showFull ? 'Hide ▲' : `Read all ▼`}
-                  </Button>
+                    {/*{tab === 0 && (*/}
+                    <Button
+                      onClick={() => setShowFull(!showFull)}
+                      sx={[
+                        readAllButton,
+                        audit?.conclusion
+                          ? {
+                              width: '140px',
+                              height: '32.5px',
+                              borderRadius: '8px 0 0 8px',
+                            }
+                          : {},
+                      ]}
+                      variant={'outlined'}
+                    >
+                      <span>{showFull ? 'Hide' : `Show`}</span>
+                      <AddLinkIcon />
+                      <EditIcon sx={{ width: '20px' }} />
+                      <ExpandLessOutlinedIcon
+                        sx={[
+                          showFull ? {} : { transform: 'rotate(180deg)' },
+                          {
+                            transition: '0.2s',
+                            // marginRight: '0',
+                            // marginLeft: 'auto',
+                            width: '20px',
+                            height: '20px',
+                          },
+                        ]}
+                      />
+                    </Button>
+                    {/*)}*/}
+                    {audit?.conclusion && (
+                      <Tabs
+                        value={tab}
+                        onChange={(e, newValue) => {
+                          setShowFull(false);
+                          setTab(newValue);
+                        }}
+                        textColor={'primary'}
+                        indicatorColor="primary"
+                        aria-label="secondary tabs example"
+                        sx={{
+                          height: '32px',
+                          '& .MuiTabs-scroller': { height: '32.5px!important' },
+                        }}
+                      >
+                        {tab !== 1 && (
+                          <Tab
+                            sx={{
+                              border: '1px solid rgba(255, 153, 0, 0.5)',
+                              textTransform: 'unset',
+                              width: '140px',
+                              minHeight: '32px',
+                              height: '32.5px!important',
+                              color: '#FF9900',
+                              fontWeight: 600,
+                              borderRadius: '0 8px 8px 0',
+                            }}
+                            value={1}
+                            label={'Conclusion'}
+                          />
+                        )}
+                        {tab !== 0 && (
+                          <Tab
+                            sx={{
+                              border: '1px solid rgba(255, 153, 0, 0.5)',
+                              textTransform: 'unset',
+                              width: '140px',
+                              minHeight: '32px',
+                              height: '32.5px!important',
+                              color: '#FF9900',
+                              fontWeight: 600,
+                              borderRadius: '0 8px 8px 0',
+                            }}
+                            value={0}
+                            label={'Description'}
+                          />
+                        )}
+                      </Tabs>
+                    )}
+                  </Box>
                 )}
-
-                {/*<Box sx={linkWrapper}>*/}
-                {/*  {audit?.scope?.map((el, idx) => (*/}
-                {/*    <CustomLink link={el} key={idx} />*/}
-                {/*  ))}*/}
                 {/*</Box>*/}
-
-                {/*<Box sx={{ display: 'flex', justifyContent: 'center' }}>*/}
-                {/*  */}
-                {/*</Box>*/}
-                <Formik
-                  initialValues={{
-                    id: audit?.id,
-                    conclusion: audit?.conclusion || '',
-                  }}
-                  onSubmit={values => {
-                    dispatch(editAuditCustomer(values));
-                  }}
-                >
-                  {({ handleSubmit, values }) => {
-                    useEffect(() => {
-                      setConclusionState(values?.conclusion);
-                    }, [values?.conclusion]);
-
-                    return (
-                      <Form onSubmit={handleSubmit}>
-                        {/*{matchMd &&*/}
-                        {/*  audit?.status?.toLowerCase() !==*/}
-                        {/*    RESOLVED.toLowerCase() && (*/}
-                        {/*    <>*/}
-                        {/*      <Typography variant={'h3'} sx={{ mb: '10px' }}>*/}
-                        {/*        Audit actions*/}
-                        {/*      </Typography>*/}
-                        {/*      <Divider sx={{ mb: '25px' }} />*/}
-                        {/*    </>*/}
-                        {/*  )}*/}
-                        {/*{audit?.status?.toLowerCase() !==*/}
-                        {/*  RESOLVED.toLowerCase() && (*/}
-                        {/*  <Box*/}
-                        {/*    sx={[*/}
-                        {/*      buttonWrapper,*/}
-                        {/*      {*/}
-                        {/*        width: '100%',*/}
-                        {/*        maxWidth: 'unset',*/}
-                        {/*        paddingBottom: 'unset',*/}
-                        {/*      },*/}
-                        {/*      auditActionWrapperSx,*/}
-                        {/*    ]}*/}
-                        {/*  >*/}
-                        {/*   */}
-                        {/*  </Box>*/}
-                        {/*)}*/}
-                        <Collapse in={editConclusion || audit?.conclusion}>
-                          <Box sx={{ position: 'relative', mt: '20px' }}>
-                            {audit?.conclusion && (
-                              <Box sx={conclusionTitle}>Conclusion</Box>
-                            )}
-                            <MarkdownEditor
-                              name="conclusion"
-                              setMdRef={setMdRef}
-                              fastSave={true}
-                              mdProps={{
-                                style: {
-                                  backgroundColor: '#fcfaf6',
-                                  height: editConclusion ? '400px' : 'auto',
-                                  maxHeight: '400px',
-                                },
-                                view: {
-                                  menu: !audit?.conclusion,
-                                  md: !audit?.conclusion,
-                                  html: true,
-                                },
-                              }}
-                            />
-
-                            {audit?.conclusion &&
-                              audit?.status?.toLowerCase() !==
-                                RESOLVED.toLowerCase() && (
-                                <IconButton
-                                  type="button"
-                                  aria-label="Edit description"
-                                  onClick={() => handleConclusion(handleSubmit)}
-                                  sx={editButton}
-                                  {...addTestsLabel('edit-conclusion-button')}
-                                >
-                                  <EditIcon
-                                    color="secondary"
-                                    fontSize="small"
-                                  />
-                                  <Box component="span" sx={editButtonText}>
-                                    {editConclusion ? 'Save' : 'Edit'}
-                                  </Box>
-                                </IconButton>
-                              )}
-                          </Box>
-                        </Collapse>
-                      </Form>
-                    );
-                  }}
-                </Formik>
                 <Box sx={bottomActionSx}>
                   <Box sx={bottomActionInnerWrapper}>
                     <DescriptionHistory
@@ -1094,21 +1182,20 @@ const infoWrapper = theme => ({
 });
 //
 const readAllButton = theme => ({
-  width: '100%',
-  padding: '8px',
+  p: '3px',
+  paddingX: '8px',
+  minWidth: 'unset',
+  textTransform: 'unset',
+  boxShadow: 'unset',
   fontWeight: 600,
-  fontSize: '16px',
-  color: 'black',
-  textTransform: 'none',
-  lineHeight: '25px',
-  // background: '#E5E5E5',
-  borderRadius: 0,
-  border: '1px solid #E5E5E5',
-  borderTop: 'unset',
-  ':hover': { background: '#D5D5D5' },
+  borderRadius: '8px',
+  width: '280px',
+  display: 'flex',
+  alignItems: 'center',
+  gap: '7px',
+  // maxWidth: '300px',
   [theme.breakpoints.down('xs')]: {
     fontSize: '16px',
-    border: 'none',
   },
 });
 
