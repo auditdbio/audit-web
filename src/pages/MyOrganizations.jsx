@@ -101,7 +101,11 @@ const MyOrganization = () => {
                                 <Card
                                   sx={{
                                     padding: '15px',
-                                    border: `1px solid ${theme.palette.primary.main}!important`,
+                                    border: `1px solid ${
+                                      role === CUSTOMER
+                                        ? theme.palette.primary.main
+                                        : theme.palette.secondary.main
+                                    }!important`,
                                   }}
                                 >
                                   {org.avatar ? (
@@ -122,7 +126,9 @@ const MyOrganization = () => {
                                         alignItems: 'center',
                                         justifyContent: 'center',
                                         backgroundColor:
-                                          theme.palette.primary.main,
+                                          role === CUSTOMER
+                                            ? theme.palette.primary.main
+                                            : theme.palette.secondary.main,
                                         borderRadius: '8px',
                                       }}
                                     >
@@ -169,7 +175,11 @@ const MyOrganization = () => {
                                 <Card
                                   sx={{
                                     padding: '15px',
-                                    border: `1px solid ${theme.palette.primary.main}!important`,
+                                    border: `1px solid ${
+                                      role === CUSTOMER
+                                        ? theme.palette.primary.main
+                                        : theme.palette.secondary.main
+                                    }!important`,
                                   }}
                                 >
                                   {org.avatar ? (
@@ -190,7 +200,9 @@ const MyOrganization = () => {
                                         alignItems: 'center',
                                         justifyContent: 'center',
                                         backgroundColor:
-                                          theme.palette.primary.main,
+                                          role === CUSTOMER
+                                            ? theme.palette.primary.main
+                                            : theme.palette.secondary.main,
                                         borderRadius: '8px',
                                       }}
                                     >
@@ -227,6 +239,7 @@ const MyOrganization = () => {
             <Button
               onClick={() => navigate('/create-organization')}
               variant={'contained'}
+              color={role === CUSTOMER ? 'primary' : 'secondary'}
               sx={buttonSx}
             >
               Create organization
