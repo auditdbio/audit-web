@@ -7,6 +7,7 @@ import {
   USER_IS_ALREADY_EXIST,
   USER_SIGNIN,
   USER_SIGNUP,
+  USER_REFRESH_TOKEN,
   SELECT_ROLE,
   UPDATE_USER,
   CLEAR_SUCCESS,
@@ -50,6 +51,12 @@ export const userReducer = (state = initialState, action) => {
         user: action.payload,
         success:
           'An authorization email has been sent to your email address, please check your email',
+      };
+    case USER_REFRESH_TOKEN:
+      return {
+        ...state,
+        token: action.payload.token,
+        isAuth: true,
       };
     case CONNECT_ACCOUNT:
       return {

@@ -25,7 +25,7 @@ const createSearchValues = (values, kind) => {
     `tags=${searchValues.tags?.join(' ')}`,
     `sort_order=${searchValues.sort}`,
     `page=${searchValues.page}`,
-    `sort_by=price`,
+    `sort_by=${values?.sort_by || 'price'}`,
     `per_page=${searchValues.perPage}`,
     `kind=${kind}`,
   ];

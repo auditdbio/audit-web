@@ -1,4 +1,5 @@
 export const USER_SIGNIN = 'USER_SIGNIN';
+export const USER_REFRESH_TOKEN = 'USER_REFRESH_TOKEN';
 export const AUTH_TRUE = 'AUTH_TRUE';
 export const USER_SIGNUP = 'USER_SIGNUP';
 export const USER_IS_ALREADY_EXIST = 'USER_IS_ALREADY_EXIST';

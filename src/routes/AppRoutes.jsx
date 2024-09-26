@@ -54,6 +54,7 @@ import Headings from '../router/Headings.jsx';
 import { AUDITOR, CUSTOMER } from '../redux/actions/types.js';
 import UserProjects from '../pages/UserProjects.jsx';
 import PriceCalculationPage from '../pages/PriceCalculationPage.jsx';
+import { refreshToken } from '../redux/actions/userAction.js';
 
 const AppRoutes = () => {
   const { token } = useSelector(s => s.user);
@@ -67,6 +68,7 @@ const AppRoutes = () => {
   useEffect(() => {
     if (isAuth()) {
       dispatch(getUnreadMessages());
+      dispatch(refreshToken());
     }
   }, [isAuth()]);
 
