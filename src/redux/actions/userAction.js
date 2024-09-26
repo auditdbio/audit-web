@@ -68,27 +68,32 @@ export const signUpGithub = data => {
         history.push({ pathname: `/edit-profile` }, { some: true });
       } else {
         const rolePrefix = responseData.user?.current_role?.[0];
-        const { data: auditData } = await axios.get(
-          `${API_URL}/my_audit/${rolePrefix === 'c' ? 'customer' : 'auditor'}`,
-          {
-            headers: {
-              Authorization: `Bearer ${responseData.token}`,
-            },
-          },
-        );
-        setToken(responseData.token);
-        localStorage.setItem('user', JSON.stringify(responseData.user));
-        dispatch({ type: USER_SIGNIN, payload: responseData });
-        setTimeout(() => {
-          history.push(
+        axios
+          .get(
+            `${API_URL}/my_audit/${
+              rolePrefix === 'c' ? 'customer' : 'auditor'
+            }`,
             {
-              pathname: auditData.length
-                ? `profile/audits`
-                : `/${rolePrefix}/${responseData.user.id}`,
+              headers: {
+                Authorization: `Bearer ${responseData.token}`,
+              },
             },
-            { some: true },
-          );
-        }, 500);
+          )
+          .then(({ data: auditData }) => {
+            setToken(responseData.token);
+            localStorage.setItem('user', JSON.stringify(responseData.user));
+            dispatch({ type: USER_SIGNIN, payload: responseData });
+            setTimeout(() => {
+              history.push(
+                {
+                  pathname: auditData.length
+                    ? `profile/audits`
+                    : `/${rolePrefix}/${responseData.user.id}`,
+                },
+                { some: true },
+              );
+            });
+          });
       }
     } catch (error) {
       const { response } = error;
