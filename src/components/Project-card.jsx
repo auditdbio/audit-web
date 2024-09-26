@@ -1,7 +1,16 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom/dist';
 import { useDispatch, useSelector } from 'react-redux';
-import { Box, Button, Tooltip, Typography, useMediaQuery } from '@mui/material';
+import {
+  Avatar,
+  Box,
+  Button,
+  FormControlLabel,
+  Switch,
+  Tooltip,
+  Typography,
+  useMediaQuery,
+} from '@mui/material';
 import Currency from './icons/Currency.jsx';
 import Star from './icons/Star.jsx';
 import {
@@ -12,13 +21,17 @@ import {
   WAITING_FOR_AUDITS,
 } from '../redux/actions/types.js';
 import { addTestsLabel } from '../lib/helper.js';
-import { startAudit } from '../redux/actions/auditAction.js';
+import {
+  handlePublishAudit,
+  startAudit,
+} from '../redux/actions/auditAction.js';
 import ShareProjectButton from './custom/ShareProjectButton.jsx';
 import theme from '../styles/themes.js';
+import { ASSET_URL } from '../services/urls.js';
 
-const ProjectCard = ({ type, project }) => {
+const ProjectCard = ({ type, project, currentRole, isPublic }) => {
   const navigate = useNavigate();
-  const currentRole = useSelector(s => s.user.user.current_role);
+
   const dispatch = useDispatch();
   const matchSx = useMediaQuery(theme.breakpoints.down('xs'));
 
@@ -64,29 +77,31 @@ const ProjectCard = ({ type, project }) => {
             {project?.tags?.map(el => el).join(', ') ?? ''}
           </Typography>
         </Tooltip>
-        {!project.no_customer ? (
-          <Box sx={priceWrapper}>
-            <Box sx={infoWrapper}>
-              <Currency />
-              <Typography>{project.price || project.total_cost}</Typography>
+        {!isPublic &&
+          //
+          (!project.no_customer ? (
+            <Box sx={priceWrapper}>
+              <Box sx={infoWrapper}>
+                <Currency />
+                <Typography>{project.price || project.total_cost}</Typography>
+              </Box>
+              {/*<Box sx={infoWrapper}>*/}
+              {/*  <Star />*/}
+              {/*  <Typography>150</Typography>*/}
+              {/*</Box>*/}
             </Box>
-            {/*<Box sx={infoWrapper}>*/}
-            {/*  <Star />*/}
-            {/*  <Typography>150</Typography>*/}
-            {/*</Box>*/}
-          </Box>
-        ) : (
-          <Box sx={priceWrapper}>
-            <Typography
-              sx={[
-                matchSx ? { mb: '0!important' } : { mb: '15px' },
-                { fontSize: '18px!important' },
-              ]}
-            >
-              Audit builder
-            </Typography>
-          </Box>
-        )}
+          ) : (
+            <Box sx={priceWrapper}>
+              <Typography
+                sx={[
+                  matchSx ? { mb: '0!important' } : { mb: '15px' },
+                  { fontSize: '18px!important' },
+                ]}
+              >
+                Audit builder
+              </Typography>
+            </Box>
+          ))}
       </Box>
       <Box
         sx={{
@@ -97,94 +112,169 @@ const ProjectCard = ({ type, project }) => {
           marginBottom: 0,
         }}
       >
-        {currentRole === AUDITOR ? (
-          !project.no_customer && (
-            <Box sx={statusWrapper}>
-              {project.status !== SUBMITED && (
-                <>
-                  {project.status.toLowerCase() === RESOLVED.toLowerCase() ? (
-                    <Box sx={{ backgroundColor: '#52176D' }} />
-                  ) : (
-                    project.status.toLowerCase() ===
-                      WAITING_FOR_AUDITS.toLowerCase() && (
-                      <Box sx={{ backgroundColor: '#FF9900' }} />
-                    )
-                  )}
-                  {project.status.toLowerCase() !==
-                    WAITING_FOR_AUDITS.toLowerCase() &&
-                    project.status.toLowerCase() !== RESOLVED.toLowerCase() && (
-                      <Box sx={{ backgroundColor: '#09C010' }} />
+        {!isPublic &&
+          (currentRole === AUDITOR ? (
+            !project.no_customer && (
+              <Box sx={statusWrapper}>
+                {project.status !== SUBMITED && (
+                  <>
+                    {project.status.toLowerCase() === RESOLVED.toLowerCase() ? (
+                      <Box sx={{ backgroundColor: '#52176D' }} />
+                    ) : (
+                      project.status.toLowerCase() ===
+                        WAITING_FOR_AUDITS.toLowerCase() && (
+                        <Box sx={{ backgroundColor: '#FF9900' }} />
+                      )
                     )}
-                </>
+                    {project.status.toLowerCase() !==
+                      WAITING_FOR_AUDITS.toLowerCase() &&
+                      project.status.toLowerCase() !==
+                        RESOLVED.toLowerCase() && (
+                        <Box sx={{ backgroundColor: '#09C010' }} />
+                      )}
+                  </>
+                )}
+                <Typography>{project.status}</Typography>
+              </Box>
+            )
+          ) : (
+            <Box sx={statusWrapper}>
+              {project.status === DONE ? (
+                <Box sx={{ backgroundColor: '#FF4444' }} />
+              ) : project.publish_options.publish ? (
+                <Box sx={{ backgroundColor: '#09C010' }} />
+              ) : (
+                <Box sx={{ backgroundColor: '#FF9900' }} />
               )}
-              <Typography>{project.status}</Typography>
+              <Typography>
+                {project.status === DONE
+                  ? 'Project closed'
+                  : project.publish_options.publish
+                  ? 'Published'
+                  : 'Hidden'}
+              </Typography>
             </Box>
-          )
-        ) : (
-          <Box sx={statusWrapper}>
-            {project.status === DONE ? (
-              <Box sx={{ backgroundColor: '#FF4444' }} />
-            ) : project.publish_options.publish ? (
-              <Box sx={{ backgroundColor: '#09C010' }} />
-            ) : (
-              <Box sx={{ backgroundColor: '#FF9900' }} />
-            )}
-            <Typography>
-              {project.status === DONE
-                ? 'Project closed'
-                : project.publish_options.publish
-                ? 'Published'
-                : 'Hidden'}
-            </Typography>
-          </Box>
+          ))}
+        {isPublic && !!project?.issues.length && (
+          <Typography>Issues {project?.issues.length}</Typography>
         )}
-        <Button
-          variant="contained"
-          sx={[editButton, type === 'auditor' ? editAuditor : {}]}
-          onClick={handleClick}
-          {...addTestsLabel(type === AUDITOR ? 'submit-button' : 'edit-button')}
-        >
-          {type === AUDITOR
-            ? project?.status.toLowerCase() !==
-                WAITING_FOR_AUDITS.toLowerCase() &&
-              project?.status.toLowerCase() !== RESOLVED.toLowerCase()
-              ? 'Proceed'
-              : 'View'
-            : 'Edit'}
-        </Button>
-        {type !== AUDITOR ? (
-          <Box sx={smallButtonsBox}>
-            <Button
-              sx={copyBtn}
-              onClick={handleMakeCopy}
-              {...addTestsLabel('make-copy-button')}
-            >
-              Make a copy
-            </Button>
-            {project.publish_options.publish && (
-              <ShareProjectButton projectId={project.id} />
-            )}
-          </Box>
-        ) : (
-          project?.status.toLowerCase() ===
-            WAITING_FOR_AUDITS.toLowerCase() && (
-            <Button
-              sx={[editButton, { marginTop: '12px' }]}
-              variant="contained"
-              color={'primary'}
-              onClick={handleStartAudit}
-              {...addTestsLabel('make-copy-button')}
-            >
-              Start audit
-            </Button>
-          )
+        {isPublic && (
+          // <Box sx={priceWrapper}>
+          //   <Box sx={infoWrapper}>
+          <Button
+            sx={userButtonSx}
+            variant={'text'}
+            onClick={() => {
+              localStorage.setItem('prev', window.location.pathname);
+              navigate(`/c/${project.customer_id}`);
+            }}
+          >
+            <Avatar
+              src={
+                project?.customer_avatar
+                  ? `${ASSET_URL}/${project?.customer_avatar}`
+                  : ''
+              }
+            />
+            <Typography>{project?.customer_first_name}</Typography>
+          </Button>
+          // </Box>
+          // </Box>
         )}
+        {!isPublic &&
+          project?.status.toLowerCase() === RESOLVED.toLowerCase() && (
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={project.isPublic}
+                  onChange={e =>
+                    dispatch(
+                      handlePublishAudit({
+                        id: project.id,
+                        public: e.target.checked,
+                      }),
+                    )
+                  }
+                  name="Publish"
+                />
+              }
+              sx={{ '& .MuiTypography-root': { fontSize: '14px' }, mb: '5px' }}
+              label="Publish"
+            />
+          )}
+        {isPublic ? (
+          <Button
+            variant="contained"
+            sx={[editButton, type === 'auditor' ? editAuditor : {}]}
+            onClick={() => {
+              localStorage.setItem('prevPath', window.location.pathname);
+              navigate(`/audit-info/${project.id}`);
+            }}
+            {...addTestsLabel(
+              type === AUDITOR ? 'submit-button' : 'edit-button',
+            )}
+          >
+            View
+          </Button>
+        ) : (
+          <Button
+            variant="contained"
+            sx={[editButton, type === 'auditor' ? editAuditor : {}]}
+            onClick={handleClick}
+            {...addTestsLabel(
+              type === AUDITOR ? 'submit-button' : 'edit-button',
+            )}
+          >
+            {type === AUDITOR
+              ? project?.status.toLowerCase() !==
+                  WAITING_FOR_AUDITS.toLowerCase() &&
+                project?.status.toLowerCase() !== RESOLVED.toLowerCase()
+                ? 'Proceed'
+                : 'View'
+              : 'Edit'}
+          </Button>
+        )}
+        {!isPublic &&
+          (type !== AUDITOR ? (
+            <Box sx={smallButtonsBox}>
+              <Button
+                sx={copyBtn}
+                onClick={handleMakeCopy}
+                {...addTestsLabel('make-copy-button')}
+              >
+                Make a copy
+              </Button>
+              {project.publish_options.publish && (
+                <ShareProjectButton projectId={project.id} />
+              )}
+            </Box>
+          ) : (
+            project?.status.toLowerCase() ===
+              WAITING_FOR_AUDITS.toLowerCase() && (
+              <Button
+                sx={[editButton, { marginTop: '12px' }]}
+                variant="contained"
+                color={'primary'}
+                onClick={handleStartAudit}
+                {...addTestsLabel('make-copy-button')}
+              >
+                Start audit
+              </Button>
+            )
+          ))}
       </Box>
     </Box>
   );
 };
 
 export default ProjectCard;
+
+export const userButtonSx = theme => ({
+  textTransform: 'unset',
+  display: 'flex',
+  gap: '8px',
+  marginY: '12px',
+});
 
 const priceWrapper = theme => ({
   display: 'flex',

@@ -21,7 +21,15 @@ import { useDispatch } from 'react-redux';
 import SaveIcon from '@mui/icons-material/Save.js';
 import { addTestsLabel } from '../../lib/helper.js';
 
-const EditPrice = ({ role, audit, user, request, hideIcon, hideChange }) => {
+const EditPrice = ({
+  role,
+  audit,
+  user,
+  request,
+  hideIcon,
+  hideChange,
+  isPublic,
+}) => {
   const [isTotalPrice, setIsTotalPrice] = useState(false);
   const [editPrice, setEditPrice] = useState(false);
   const [showComment, setShowComment] = useState(false);
@@ -266,6 +274,7 @@ const EditPrice = ({ role, audit, user, request, hideIcon, hideChange }) => {
                   </Modal>
                   {!hideChange &&
                     !editPrice &&
+                    !isPublic &&
                     audit?.status.toLowerCase() !== RESOLVED.toLowerCase() && (
                       <Button
                         sx={{ minWidth: 'unset' }}

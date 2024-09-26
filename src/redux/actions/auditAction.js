@@ -18,6 +18,8 @@ import {
   GET_AUDIT_REQUEST,
   GET_AUDIT_REQUEST_HISTORY,
   GET_AUDITS,
+  GET_AUDITS_OF_AUDITOR,
+  GET_PUBLIC_AUDIT,
   GET_PUBLIC_REPORT,
   GET_REQUEST,
   IN_PROGRESS,
@@ -158,6 +160,27 @@ export const getAudits = role => {
   };
 };
 
+export const getPublicAudit = (id, code) => {
+  return dispatch => {
+    const token = Cookies.get('token');
+    let url;
+    if (code) {
+      url = `${API_URL}/audit/${id}?code=${code}`;
+    } else {
+      url = `${API_URL}/audit/${id}`;
+    }
+    axios(url)
+      .then(({ data }) => {
+        if (data.id) {
+          dispatch({ type: GET_PUBLIC_AUDIT, payload: data });
+        } else {
+          dispatch({ type: NOT_FOUND });
+        }
+      })
+      .catch(() => dispatch({ type: NOT_FOUND }));
+  };
+};
+
 export const getAudit = id => {
   return dispatch => {
     const token = Cookies.get('token');
@@ -288,6 +311,19 @@ export const startAudit = (values, goBack) => {
   };
 };
 
+export const handlePublishAudit = values => {
+  const token = Cookies.get('token');
+  return dispatch => {
+    axios
+      .patch(`${API_URL}/audit/${values.id}`, values, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then(({ data }) => dispatch({ type: IN_PROGRESS, payload: data }));
+  };
+};
+
 export const editAuditCustomer = (values, goBack) => {
   return dispatch => {
     const token = Cookies.get('token');
@@ -366,6 +402,21 @@ export const resolveAudit = audit => {
         ),
       )
       .catch(() => dispatch({ type: REQUEST_ERROR }));
+  };
+};
+
+export const getPublicAuditsAuditor = id => {
+  return dispatch => {
+    const token = Cookies.get('token');
+    axios
+      .get(
+        `${API_URL}/public_audits/${id}/auditor`,
+        // { action: 'resolve' },
+        // { headers: { Authorization: `Bearer ${token}` } },
+      )
+      .then(({ data }) => {
+        dispatch({ type: GET_AUDITS_OF_AUDITOR, payload: data });
+      });
   };
 };
 
@@ -489,6 +540,56 @@ export const downloadReport = (audit, { generate, isDraft } = {}) => {
         .catch(() => dispatch({ type: REQUEST_ERROR }));
     } else {
       getReport(audit, audit?.report, dispatch);
+    }
+  };
+};
+
+export const downloadPublicReport = (audit, code, { generate } = {}) => {
+  // const token = Cookies.get('token');
+
+  const downloadResponse = (res, audit) => {
+    const url = window.URL.createObjectURL(new Blob([res.data]));
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute(
+      'download',
+      `${
+        audit?.report_name
+          ? audit?.report_name
+          : audit?.project_name + ' report.pdf'
+      }`,
+    );
+    document.body.appendChild(link);
+    link.click();
+  };
+
+  const getReport = (audit, filepath, dispatch, code) => {
+    axios
+      .get(
+        code
+          ? `${ASSET_URL}/${filepath}?code=${code}`
+          : `${ASSET_URL}/${filepath}`,
+        {
+          responseType: 'blob',
+          withCredentials: true,
+          // headers: { Authorization: `Bearer ${token}` },
+        },
+      )
+      .then(response => downloadResponse(response, audit))
+      .catch(() => dispatch({ type: REQUEST_ERROR }));
+  };
+
+  return dispatch => {
+    dispatch({ type: DOWNLOAD_REPORT_START });
+    if (generate) {
+      axios
+        .post(`${API_URL}/report/${audit.id}`, null, {
+          // headers: { Authorization: `Bearer ${token}` },
+        })
+        .then(({ data }) => getReport(audit, data.path, dispatch))
+        .catch(() => dispatch({ type: REQUEST_ERROR }));
+    } else {
+      getReport(audit, audit?.report, dispatch, code);
     }
   };
 };

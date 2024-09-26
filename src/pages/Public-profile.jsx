@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
   Avatar,
   Button,
+  Divider,
   Link,
   Tooltip,
   Typography,
@@ -45,6 +46,8 @@ import Star from '../components/icons/Star.jsx';
 import RatingDetails from '../components/RatingDetails.jsx';
 import UserFeedbacks from '../components/UserFeedbacks.jsx';
 import WalletConnectIcon from '../components/icons/WalletConnectIcon.jsx';
+import { getPublicAuditsAuditor } from '../redux/actions/auditAction.js';
+import ProjectCardList from '../components/Project-card-list.jsx';
 
 const PublicProfile = ({ notFoundRedirect = true }) => {
   const navigate = useNavigate();
@@ -59,6 +62,7 @@ const PublicProfile = ({ notFoundRedirect = true }) => {
   const { myProjects } = useSelector(s => s.project);
   const { user, publicUser } = useSelector(s => s.user);
   const { chatList } = useSelector(s => s.chat);
+  const { publicAudits } = useSelector(s => s.audits);
 
   const [errorMessage, setErrorMessage] = useState(null);
   const [message, setMessage] = useState(null);
@@ -167,6 +171,12 @@ const PublicProfile = ({ notFoundRedirect = true }) => {
   }, [id, roleParams, linkId]);
 
   useEffect(() => {
+    if (currentAuditor?.user_id) {
+      dispatch(getPublicAuditsAuditor(currentAuditor.user_id));
+    }
+  }, [currentAuditor?.user_id]);
+
+  useEffect(() => {
     const handleBeforeUnload = () => {
       localStorage.removeItem('go-back');
     };
@@ -251,6 +261,22 @@ const PublicProfile = ({ notFoundRedirect = true }) => {
               <ArrowBackIcon />
             </Button>
           )}
+
+          <Button
+            variant="text"
+            color={role.toLowerCase() === AUDITOR ? 'secondary' : 'primary'}
+            sx={goBackSx}
+            onClick={() => {
+              if (localStorage.getItem('prev')) {
+                navigate(localStorage.getItem('prev'));
+                localStorage.removeItem('prev');
+              } else {
+                navigate('/');
+              }
+            }}
+          >
+            <ArrowBackIcon />
+          </Button>
 
           {data.kind === 'badge' && (
             <Typography sx={badgeTitle}>Not in base AuditDB</Typography>
@@ -536,6 +562,16 @@ const PublicProfile = ({ notFoundRedirect = true }) => {
                 </Button>
               )}
           </Box>
+          {role === AUDITOR && (
+            <>
+              <Divider sx={{ mb: '15px' }} />
+              <ProjectCardList
+                projects={publicAudits}
+                role={role}
+                isPublic={true}
+              />
+            </>
+          )}
         </Box>
       </Layout>
     );

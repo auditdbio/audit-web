@@ -19,6 +19,7 @@ import {
   confirmAudit,
   deleteAudit,
   deleteAuditRequest,
+  downloadPublicReport,
   downloadReport,
   sendAuditFeedback,
 } from '../redux/actions/auditAction.js';
@@ -44,6 +45,7 @@ import EditDescription from '../components/EditDescription/index.jsx';
 import DescriptionHistory from '../components/DescriptionHistory/index.jsx';
 import EditTags from '../components/EditDescription/EditTags.jsx';
 import EditPrice from '../components/EditDescription/EditPrice.jsx';
+import IssuesList from '../components/issuesPage/IssuesList.jsx';
 
 const AuditInfo = ({
   audit,
@@ -52,6 +54,8 @@ const AuditInfo = ({
   confirmed,
   handleClose,
   request,
+  code,
+  isPublic,
 }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -135,13 +139,22 @@ const AuditInfo = ({
       <Button
         sx={backButtonSx}
         onClick={() => {
-          if (handleClose) {
-            handleClose();
+          if (!isPublic) {
+            if (handleClose) {
+              handleClose();
+            } else {
+              if (localStorage.getItem('prevPath')) {
+                navigate(localStorage.getItem('prevPath'));
+                localStorage.removeItem('prevPath');
+              } else navigate('/profile/audits');
+            }
           } else {
             if (localStorage.getItem('prevPath')) {
               navigate(localStorage.getItem('prevPath'));
               localStorage.removeItem('prevPath');
-            } else navigate('/profile/audits');
+            } else {
+              navigate(-1);
+            }
           }
         }}
         aria-label="Go back"
@@ -197,14 +210,21 @@ const AuditInfo = ({
             </Typography>
           )}
           <>
-            <EditTags audit={audit} confirmed={confirmed} />
+            <EditTags isPublic={isPublic} audit={audit} confirmed={confirmed} />
           </>
         </Box>
         <Divider sx={{ mt: '15px' }} />
       </Box>
       <Box sx={{ maxWidth: '100%', width: '100%' }}>
-        <Box sx={contentWrapper}>
+        <Box
+          sx={[contentWrapper, isPublic ? { alignItems: 'flex-start' } : {}]}
+        >
           <Box sx={userWrapper}>
+            {isPublic && (
+              <Typography sx={roleTitleSx} align={'center'}>
+                Auditor
+              </Typography>
+            )}
             <Avatar
               src={audit?.avatar ? `${ASSET_URL}/${audit?.avatar}` : ''}
               alt="auditor photo"
@@ -262,30 +282,33 @@ const AuditInfo = ({
                 )}
               </Box>
             </Box>
-            <Box
-              sx={{
-                display: 'flex',
-                color: '#434242',
-                '& p': {
-                  fontSize: '15px!important',
-                  maxWidth: '200px',
-                  fontWeight: 400,
-                },
-              }}
-            >
-              <Box sx={infoWrapper}>
-                <span>Price:</span>
+            {!isPublic && (
+              <Box
+                sx={{
+                  display: 'flex',
+                  color: '#434242',
+                  '& p': {
+                    fontSize: '15px!important',
+                    maxWidth: '200px',
+                    fontWeight: 400,
+                  },
+                }}
+              >
+                <Box sx={infoWrapper}>
+                  <span>Price:</span>
+                </Box>
+                <EditPrice
+                  hideIcon={true}
+                  audit={audit}
+                  user={user}
+                  isPublic={isPublic}
+                  request={request}
+                />
               </Box>
-              <EditPrice
-                hideIcon={true}
-                audit={audit}
-                user={user}
-                request={request}
-              />
-            </Box>
+            )}
           </Box>
 
-          {!!audit?.time?.from && (
+          {!!audit?.time?.from && !isPublic && (
             <Box sx={projectWrapper}>
               <Typography>Time for project:</Typography>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
@@ -300,9 +323,115 @@ const AuditInfo = ({
               <TagsList />
             </Box>
           )}
+          {isPublic && (
+            <Box sx={userWrapper}>
+              <Typography align={'center'} sx={roleTitleSx}>
+                Customer
+              </Typography>
+              <Avatar
+                src={
+                  audit?.customer_avatar
+                    ? `${ASSET_URL}/${audit?.customer_avatar}`
+                    : ''
+                }
+                alt="auditor photo"
+              />
+              <Link
+                to={`/a/${audit.customer_id}`}
+                style={{ display: 'grid', textAlign: 'center' }}
+              >
+                <Tooltip
+                  title={audit?.customer_first_name}
+                  arrow
+                  placement="top"
+                >
+                  <Typography noWrap={true} sx={userNameWrapper}>
+                    {audit?.customer_first_name}
+                  </Typography>
+                </Tooltip>
+                <Tooltip
+                  title={audit?.customer_last_name}
+                  arrow
+                  placement="top"
+                >
+                  <Typography noWrap={true} sx={userNameWrapper}>
+                    {audit?.customer_last_name}
+                  </Typography>
+                </Tooltip>
+              </Link>
+            </Box>
+          )}
+          {isPublic && (
+            <Box sx={userInfoWrapper}>
+              <Box sx={infoWrapper}>
+                <span>E-mail:</span>
+                <Box sx={{ display: 'grid' }}>
+                  {!!audit?.customer_contacts?.email ? (
+                    <Tooltip
+                      title={audit?.customer_contacts?.email}
+                      arrow
+                      placement="top"
+                    >
+                      <Typography noWrap={true}>
+                        {audit?.customer_contacts?.email}
+                      </Typography>
+                    </Tooltip>
+                  ) : (
+                    <Typography noWrap={true}>Not specified</Typography>
+                  )}
+                </Box>
+              </Box>
+              <Box sx={infoWrapper}>
+                <span>Telegram:</span>
+                <Box sx={{ display: 'grid' }}>
+                  {!!audit?.customer_contacts?.telegram ? (
+                    <Tooltip
+                      title={audit?.customer_contacts?.telegram}
+                      arrow
+                      placement="top"
+                    >
+                      <Typography noWrap={true}>
+                        {audit?.customer_contacts?.telegram}
+                      </Typography>
+                    </Tooltip>
+                  ) : (
+                    <Typography noWrap={true}>Not specified</Typography>
+                  )}
+                </Box>
+              </Box>
+              {!isPublic && (
+                <Box
+                  sx={{
+                    display: 'flex',
+                    color: '#434242',
+                    '& p': {
+                      fontSize: '15px!important',
+                      maxWidth: '200px',
+                      fontWeight: 400,
+                    },
+                  }}
+                >
+                  <Box sx={infoWrapper}>
+                    <span>Price:</span>
+                  </Box>
+                  <EditPrice
+                    hideIcon={true}
+                    audit={audit}
+                    user={user}
+                    isPublic={isPublic}
+                    request={request}
+                  />
+                </Box>
+              )}
+            </Box>
+          )}
         </Box>
-        <EditDescription auditRequest={request} audit={audit} />
-        <DescriptionHistory audit={audit} request={request} />
+        <EditDescription
+          isPublic={isPublic}
+          auditRequest={request}
+          audit={audit}
+        />
+        {!isPublic && <DescriptionHistory audit={audit} request={request} />}
       </Box>
 
       {audit?.conclusion && (
@@ -349,7 +478,7 @@ const AuditInfo = ({
               <Button
                 variant={'contained'}
                 color={'secondary'}
-                onClick={() => dispatch(downloadReport(audit))}
+                onClick={() => dispatch(Report(audit))}
                 sx={[buttonSx]}
                 {...addTestsLabel('report-button')}
               >
@@ -373,7 +502,13 @@ const AuditInfo = ({
             <Button
               variant={'contained'}
               color={'secondary'}
-              onClick={() => dispatch(downloadReport(audit))}
+              onClick={() => {
+                if (!isPublic) {
+                  dispatch(downloadReport(audit));
+                } else {
+                  dispatch(downloadPublicReport(audit, code));
+                }
+              }}
               sx={[buttonSx, { marginBottom: '20px' }]}
               {...addTestsLabel('report-button')}
             >
@@ -383,6 +518,7 @@ const AuditInfo = ({
         )}
 
         {audit?.status?.toLowerCase() === RESOLVED.toLowerCase() &&
+          !isPublic &&
           !audit.no_customer && (
             <Box sx={{ display: 'flex', justifyContent: 'center' }}>
               <Button
@@ -410,6 +546,7 @@ const AuditInfo = ({
 
         {audit?.status &&
           !!issues?.length &&
+          !isPublic &&
           audit?.status?.toLowerCase() !== WAITING_FOR_AUDITS.toLowerCase() && (
             <Button
               variant="contained"
@@ -424,6 +561,14 @@ const AuditInfo = ({
           )}
         {/*)}*/}
       </Box>
+      {isPublic && (
+        <IssuesList
+          isPublic={isPublic}
+          hideControl={true}
+          auditId={audit.id}
+          code={code}
+        />
+      )}
 
       <ConfirmModal
         isOpen={isConfirmModalOpen}
@@ -442,6 +587,12 @@ const AuditInfo = ({
 };
 
 export default AuditInfo;
+
+const roleTitleSx = theme => ({
+  fontSize: '20px',
+  margin: 'unset!important',
+  // marginBottom: '15px',
+});
 
 const wrapper = theme => ({
   padding: '30px 60px 60px',
@@ -499,6 +650,9 @@ const contentWrapper = theme => ({
 });
 
 const userWrapper = theme => ({
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '15px',
   '& .MuiAvatar-root': {
     width: '120px',
     height: '120px',

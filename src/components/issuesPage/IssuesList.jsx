@@ -26,6 +26,8 @@ const IssuesList = ({
   setIsOpenReset,
   handleSubmit,
   saved,
+  hideControl,
+  code,
 }) => {
   const dispatch = useDispatch();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -116,17 +118,19 @@ const IssuesList = ({
         onClose={() => dispatch(clearMessage())}
       />
 
-      <Control
-        issues={issues}
-        search={search}
-        saved={saved}
-        setSearch={setSearch}
-        setPage={setPage}
-        setSearchParams={setSearchParams}
-        isPublic={isPublic}
-        setIsOpenReset={setIsOpenReset}
-        handleSubmit={handleSubmit}
-      />
+      {!hideControl && (
+        <Control
+          issues={issues}
+          search={search}
+          saved={saved}
+          setSearch={setSearch}
+          setPage={setPage}
+          setSearchParams={setSearchParams}
+          isPublic={isPublic}
+          setIsOpenReset={setIsOpenReset}
+          handleSubmit={handleSubmit}
+        />
+      )}
 
       <Box
         sx={[
@@ -182,6 +186,8 @@ const IssuesList = ({
               key={issue.id}
               auditId={auditId}
               user={user}
+              code={code}
+              hideControl={hideControl}
               isPublic={isPublic}
             />
           ))}

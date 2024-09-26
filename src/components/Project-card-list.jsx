@@ -2,12 +2,17 @@ import React from 'react';
 import { Grid } from '@mui/material';
 import ProjectCard from './Project-card.jsx';
 
-const ProjectCardList = ({ projects, role }) => {
+const ProjectCardList = ({ projects, role, isPublic }) => {
   return (
     <Grid container spacing={2}>
       {projects?.map(project => (
         <Grid key={project.id} item sx={gridItemStyle}>
-          <ProjectCard project={project} type={role} />
+          <ProjectCard
+            project={project}
+            isPublic={isPublic}
+            type={role}
+            currentRole={role}
+          />
         </Grid>
       ))}
     </Grid>
