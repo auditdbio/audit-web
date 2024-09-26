@@ -47,7 +47,6 @@ const setToken = token => {
     expires: 21,
   });
 };
-
 export const signUpGithub = data => {
   return async dispatch => {
     try {
@@ -62,8 +61,9 @@ export const signUpGithub = data => {
           { is_new: false },
           { headers: { Authorization: `Bearer ${responseData.token}` } },
         );
-        setToken(data.token);
-        dispatch({ type: USER_SIGNIN, payload: data });
+
+        setToken(responseData.token); // Используем правильный токен
+        dispatch({ type: USER_SIGNIN, payload: responseData });
         localStorage.setItem('user', JSON.stringify(responseData.user));
         history.push({ pathname: `/edit-profile` }, { some: true });
       } else {
@@ -76,29 +76,24 @@ export const signUpGithub = data => {
             },
           },
         );
-        console.log(responseData);
-        dispatch({ type: USER_SIGNIN, payload: responseData });
-        Cookies.set('token', responseData.token, { expires: 1 });
-        localStorage.setItem('token', JSON.stringify(responseData.token));
+        setToken(responseData.token);
         localStorage.setItem('user', JSON.stringify(responseData.user));
-        console.log(
-          auditData.length
-            ? `profile/audits`
-            : `/${rolePrefix}/${responseData.user.id}`,
-        );
-        history.push(
-          {
-            pathname: auditData.length
-              ? `profile/audits`
-              : `/${rolePrefix}/${responseData.user.id}`,
-          },
-          { some: true },
-        );
-        console.log(isAuth());
+        dispatch({ type: USER_SIGNIN, payload: responseData });
+        setTimeout(() => {
+          history.push(
+            {
+              pathname: auditData.length
+                ? `profile/audits`
+                : `/${rolePrefix}/${responseData.user.id}`,
+            },
+            { some: true },
+          );
+        }, 500);
       }
     } catch (error) {
       const { response } = error;
       dispatch({ type: SIGN_IN_ERROR, payload: 'Sign In Failed' });
+      console.error('Sign In Error:', response); // Добавляем вывод ошибки для отладки
     }
   };
 };
@@ -128,20 +123,17 @@ export const signIn = values => {
             },
           },
         );
-        Cookies.set('token', data.token, { expires: 1 });
-        localStorage.setItem('token', JSON.stringify(data.token));
+        setToken(data.token);
         localStorage.setItem('user', JSON.stringify(data.user));
         dispatch({ type: USER_SIGNIN, payload: data });
-        if (isAuth()) {
-          history.push(
-            {
-              pathname: auditData.length
-                ? `profile/audits`
-                : `/${role}/${data.user.id}`,
-            },
-            { some: true },
-          );
-        }
+        history.push(
+          {
+            pathname: auditData.length
+              ? `profile/audits`
+              : `/${role}/${data.user.id}`,
+          },
+          { some: true },
+        );
       }
     } catch (error) {
       const { response } = error;
