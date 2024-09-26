@@ -79,16 +79,16 @@ export const signUpGithub = data => {
         setToken(responseData.token);
         localStorage.setItem('user', JSON.stringify(responseData.user));
         dispatch({ type: USER_SIGNIN, payload: responseData });
-        setTimeout(() => {
-          history.push(
-            {
-              pathname: auditData.length
-                ? `profile/audits`
-                : `/${rolePrefix}/${responseData.user.id}`,
-            },
-            { some: true },
-          );
-        }, 500);
+        // setTimeout(() => {
+        //   history.push(
+        //     {
+        //       pathname: auditData.length
+        //         ? `profile/audits`
+        //         : `/${rolePrefix}/${responseData.user.id}`,
+        //     },
+        //     { some: true },
+        //   );
+        // }, 500);
       }
     } catch (error) {
       const { response } = error;
