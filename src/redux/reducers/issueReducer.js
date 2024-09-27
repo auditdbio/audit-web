@@ -5,8 +5,10 @@ import {
   DELETE_PUBLIC_ISSUE,
   DISCLOSE_ALL_ISSUES,
   GET_AUDIT_ISSUES,
+  GET_PUBLIC_AUDIT,
   REQUEST_ERROR,
   RESET_PUBLIC_AUDIT,
+  SET_READ_ALL_CHANGES,
   SET_READ_CHANGES,
   UPDATE_AUDIT_ISSUE,
 } from '../actions/types.js';
@@ -48,6 +50,11 @@ export const issueReducer = (state = initialState, action) => {
         issues: action.payload,
         successMessage: 'All issues disclosed',
       };
+    case GET_PUBLIC_AUDIT:
+      return {
+        ...state,
+        issues: action.payload.issues,
+      };
     case REQUEST_ERROR:
       return { ...state, error: 'Error while processing request' };
     case CLEAR_MESSAGES:
@@ -59,6 +66,14 @@ export const issueReducer = (state = initialState, action) => {
         issues: state.issues?.map(issue =>
           issue.id === issueId ? { ...issue, read: readCount } : issue,
         ),
+      };
+    case SET_READ_ALL_CHANGES:
+      return {
+        ...state,
+        issues: state.issues?.map(issue => ({
+          ...issue,
+          read: issue?.events?.length + 1 || 0,
+        })),
       };
     case DELETE_ISSUE:
       return {

@@ -13,7 +13,15 @@ import {
 } from './constants.js';
 import CustomLink from '../custom/CustomLink.jsx';
 
-const IssueListItem = ({ issue, auditId, user, isPublic, saved }) => {
+const IssueListItem = ({
+  issue,
+  auditId,
+  user,
+  isPublic,
+  saved,
+  hideControl,
+  code,
+}) => {
   const [showTitleTooltip, setShowTitleTooltip] = useState(false);
   const titleBoxRef = useRef();
   const titleTextRef = useRef();
@@ -36,7 +44,7 @@ const IssueListItem = ({ issue, auditId, user, isPublic, saved }) => {
         : {};
     }
   };
-  //
+
   return (
     <Link
       sx={[
@@ -46,7 +54,11 @@ const IssueListItem = ({ issue, auditId, user, isPublic, saved }) => {
       component={RouterLink}
       onClick={() => window.scrollTo({ top: 0 })}
       to={
-        isPublic && !saved
+        hideControl
+          ? code
+            ? `/p-issues/audit-issue/${auditId}/${issue.id}?code=${code}`
+            : `/p-issues/audit-issue/${auditId}/${issue.id}`
+          : isPublic && !saved
           ? `/public-issues/audit-issue/${auditId}/${issue.id}`
           : saved
           ? `/private-issues/audit-issue/${auditId}/${issue.id}`

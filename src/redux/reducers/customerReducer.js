@@ -1,4 +1,5 @@
 import {
+  CLEAR_CURRENT_AUDITOR_CUSTOMER,
   CLEAR_MESSAGES,
   CUSTOMER_SET_ERROR,
   GET_CURRENT_CUSTOMER,
@@ -53,6 +54,11 @@ export const customerReducer = (state = initialState, action) => {
         ...state,
         error: null,
         success: null,
+      };
+    case CLEAR_CURRENT_AUDITOR_CUSTOMER:
+      return {
+        ...state,
+        currentCustomer: null,
       };
     case LOG_OUT:
       return initialState;

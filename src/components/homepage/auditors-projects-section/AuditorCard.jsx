@@ -100,7 +100,9 @@ const AuditorCard = ({ auditor }) => {
           )}
           <Box sx={infoStyle}>
             <Star />
-            <Typography sx={priceSx}>150</Typography>
+            <Typography sx={priceSx}>
+              {Math.trunc(auditor.rating || 0)}
+            </Typography>
           </Box>
         </Box>
         <CustomButton

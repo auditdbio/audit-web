@@ -2,8 +2,10 @@ import Cookies from 'js-cookie';
 import axios from 'axios';
 import {
   AUDITOR_SET_ERROR,
+  CLEAR_CURRENT_AUDITOR_CUSTOMER,
   DELETE_BADGE,
   GET_AUDITOR,
+  GET_AUDITOR_RATING_DETAILS,
   GET_AUDITORS,
   GET_CURRENT_AUDITOR,
   GET_PUBLIC_PROFILE,
@@ -144,7 +146,7 @@ export const getAuditors = (values = '', amount = 0) => {
     const token = Cookies.get('token');
     axios
       .get(
-        `${API_URL}/search?query=${values}&sort_by=price&tags=&sort_order=1&page=1&per_page=${amount}&kind=auditor badge`,
+        `${API_URL}/search?query=${values}&sort_by=rating&tags=&sort_order=-1&page=1&per_page=${amount}&kind=auditor badge`,
         isAuth() ? { headers: { Authorization: `Bearer ${token}` } } : {},
       )
       .then(({ data }) => {
@@ -166,6 +168,18 @@ export const getAuditorById = id => {
       .catch(({ response }) => {
         console.log(response, 'res');
       });
+  };
+};
+
+export const getAuditorRating = (id, getDetails = false) => {
+  return dispatch => {
+    let url = getDetails
+      ? `${API_URL}/rating/auditor/${id}/details`
+      : `${API_URL}/rating/auditor/${id}`;
+
+    axios.get(url).then(({ data }) => {
+      dispatch({ type: GET_AUDITOR_RATING_DETAILS, payload: data });
+    });
   };
 };
 
@@ -242,4 +256,8 @@ export const mergeAccount = (values, secret) => {
         dispatch({ type: SIGN_IN_ERROR, payload: response.data });
       });
   };
+};
+
+export const clearCurrentAuditor = () => {
+  return { type: CLEAR_CURRENT_AUDITOR_CUSTOMER };
 };

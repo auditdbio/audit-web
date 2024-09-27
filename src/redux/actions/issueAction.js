@@ -8,6 +8,7 @@ import {
   GET_AUDIT_ISSUES,
   REQUEST_ERROR,
   SET_READ_CHANGES,
+  SET_READ_ALL_CHANGES,
   UPDATE_AUDIT_ISSUE,
 } from './types.js';
 import { API_URL } from '../../services/urls.js';
@@ -19,6 +20,17 @@ export const getIssues = auditId => {
       .get(`${API_URL}/audit/${auditId}/issue`, {
         headers: { Authorization: `Bearer ${token}` },
       })
+      .then(({ data: issues }) =>
+        dispatch({ type: GET_AUDIT_ISSUES, payload: { auditId, issues } }),
+      );
+  };
+};
+
+export const getPublicIssue = auditId => {
+  return dispatch => {
+    const token = Cookies.get('token');
+    axios
+      .get(`${API_URL}/audit/${auditId}/issue`)
       .then(({ data: issues }) =>
         dispatch({ type: GET_AUDIT_ISSUES, payload: { auditId, issues } }),
       );
@@ -133,5 +145,16 @@ export const setReadChanges = (auditId, issueId, readCount) => {
           payload: { issueId, readCount },
         }),
       );
+  };
+};
+
+export const setReadAll = auditId => {
+  const token = Cookies.get('token');
+  return dispatch => {
+    axios
+      .patch(`${API_URL}/audit/${auditId}/read_all`, null, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .then(() => dispatch({ type: SET_READ_ALL_CHANGES }));
   };
 };

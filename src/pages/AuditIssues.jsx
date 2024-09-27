@@ -12,7 +12,7 @@ import { getIssues } from '../redux/actions/issueAction.js';
 import { CUSTOMER } from '../redux/actions/types.js';
 import Headings from '../router/Headings.jsx';
 
-const AuditIssues = () => {
+const AuditIssues = ({ isPublic }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { auditId } = useParams();
@@ -27,13 +27,22 @@ const AuditIssues = () => {
     if (issuesAuditId !== auditId) {
       dispatch(getIssues(auditId));
     }
+    return () => {
+      if (localStorage.getItem('prev')) {
+        localStorage.removeItem('prev');
+      }
+    };
   }, []);
 
   const handleGoBack = () => {
-    if (user.current_role === CUSTOMER) {
-      navigate(`/audit-info/${auditId}/customer`);
+    if (localStorage.getItem('prev')) {
+      navigate(localStorage.getItem('prev'));
     } else {
-      navigate(`/audit-info/${auditId}/auditor`);
+      if (user.current_role === CUSTOMER) {
+        navigate(`/audit-info/${auditId}/customer`);
+      } else {
+        navigate(`/audit-info/${auditId}/auditor`);
+      }
     }
   };
 
