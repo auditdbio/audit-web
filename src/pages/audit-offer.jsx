@@ -66,6 +66,12 @@ import AuditFeedbackModal from '../components/modal/AuditFeedbackModal.jsx';
 import EditPrice from '../components/EditDescription/EditPrice.jsx';
 import ExpandLessOutlinedIcon from '@mui/icons-material/ExpandLessOutlined';
 import AddLinkIcon from '@mui/icons-material/AddLink.js';
+import SummarizeIcon from '@mui/icons-material/Summarize';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import HistoryIcon from '@mui/icons-material/History';
+import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
+import MarkEmailReadIcon from '@mui/icons-material/MarkEmailRead';
 
 const AuditOffer = () => {
   const { auditId } = useParams();
@@ -762,7 +768,8 @@ const AuditOffer = () => {
                       }
                       onClick={handleGenerateReport}
                     >
-                      Generate report
+                      {/*Generate report*/}
+                      <SummarizeIcon />
                     </Button>
                     <Tooltip
                       arrow
@@ -788,7 +795,8 @@ const AuditOffer = () => {
                           ]}
                           {...addTestsLabel('resolve-button')}
                         >
-                          Resolve audit
+                          <CheckCircleIcon />
+                          {/*Resolve audit*/}
                         </Button>
                       </span>
                     </Tooltip>
@@ -991,34 +999,37 @@ const headInfoSx = theme => ({
 
 const historyWrapperSx = theme => ({
   width: '396px',
-  [theme.breakpoints.down(1400)]: {
-    width: '335px',
+  '& .btn-history,': {
+    width: '50px!important',
+    minWidth: '50px',
   },
-  [theme.breakpoints.down(1124)]: {
-    width: 'unset',
-    '& .btn-history,': {
-      width: '270px!important',
-    },
-  },
-  [theme.breakpoints.down('sm')]: {
-    '& .btn-history,': {
-      width: '240px!important',
-    },
-  },
-  [theme.breakpoints.down(920)]: {
-    '& .btn-history,': {
-      width: '160px!important',
-    },
-  },
-  [theme.breakpoints.down(630)]: {
-    width: '100%',
-    '& .btn-history,': {
-      width: '100%!important',
-    },
-    '& .MuiBadge-root': {
-      width: '100%!important',
-    },
-  },
+  // [theme.breakpoints.down(1400)]: {
+  //   width: '335px',
+  // },
+  // [theme.breakpoints.down(1124)]: {
+  //   width: 'unset',
+  //
+  // },
+  // [theme.breakpoints.down('sm')]: {
+  //   '& .btn-history,': {
+  //     width: '240px!important',
+  //   },
+  // },
+  // [theme.breakpoints.down(920)]: {
+  //   '& .btn-history,': {
+  //     width: '50px!important',
+  //     minWidth: '50px',
+  //   },
+  // },
+  // [theme.breakpoints.down(630)]: {
+  //   width: '100%',
+  //   '& .btn-history,': {
+  //     width: '100%!important',
+  //   },
+  //   '& .MuiBadge-root': {
+  //     width: '100%!important',
+  //   },
+  // },
 });
 
 const historyWrapperSxNoConclusion = theme => ({
@@ -1035,18 +1046,19 @@ const historyWrapperSxNoConclusion = theme => ({
   },
   [theme.breakpoints.down(920)]: {
     '& .btn-history,': {
-      width: '160px!important',
+      width: '50px!important',
+      minWidth: '50px',
     },
   },
-  [theme.breakpoints.down(630)]: {
-    width: '100%',
-    '& .btn-history,': {
-      width: '100%!important',
-    },
-    '& .MuiBadge-root': {
-      width: '100%!important',
-    },
-  },
+  // [theme.breakpoints.down(630)]: {
+  //   width: '100%',
+  //   '& .btn-history,': {
+  //     width: '100%!important',
+  //   },
+  //   '& .MuiBadge-root': {
+  //     width: '100%!important',
+  //   },
+  // },
 });
 
 const bottomActionSx = theme => ({
@@ -1271,31 +1283,32 @@ const buttonSx = theme => ({
   textTransform: 'unset',
   fontWeight: 600,
   mr: '15px',
-  width: '190px',
+  width: '50px!important',
+  minWidth: '50px',
   borderRadius: '10px',
-  [theme.breakpoints.down(1400)]: {
-    width: '160px',
-  },
-  [theme.breakpoints.down(1124)]: {
-    height: '42px!important',
-    width: '270px',
-  },
-  [theme.breakpoints.down('sm')]: {
-    height: '42px!important',
-    width: '240px',
-  },
-  [theme.breakpoints.down(920)]: {
-    width: '160px',
-  },
-  [theme.breakpoints.down('xs')]: {
-    // margin: '0 6px',
-    padding: '12px 0',
-    fontSize: '14px',
-  },
-  [theme.breakpoints.down(630)]: {
-    margin: 'unset',
-    width: '100%',
-  },
+  // [theme.breakpoints.down(1400)]: {
+  //   width: '160px',
+  // },
+  // [theme.breakpoints.down(1124)]: {
+  //   height: '42px!important',
+  //   width: '270px',
+  // },
+  // [theme.breakpoints.down('sm')]: {
+  //   height: '42px!important',
+  //   width: '240px',
+  // },
+  // [theme.breakpoints.down(920)]: {
+  //
+  // },
+  // [theme.breakpoints.down('xs')]: {
+  //   // margin: '0 6px',
+  //   padding: '12px 0',
+  //   fontSize: '14px',
+  // },
+  // [theme.breakpoints.down(630)]: {
+  //   margin: 'unset',
+  //   width: '100%',
+  // },
 });
 
 const sendMessageButton = theme => ({
