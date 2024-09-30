@@ -215,7 +215,6 @@ const HistoryDescription = ({
               (request ? auditRequestHistory : auditHistory)?.length <= 1
             }
           >
-            {/*Show history*/}
             <HistoryIcon />
           </Button>
         </Tooltip>
