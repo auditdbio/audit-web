@@ -1,5 +1,12 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Box, Button, Modal, Typography, useMediaQuery } from '@mui/material';
+import {
+  Box,
+  Button,
+  Modal,
+  Tooltip,
+  Typography,
+  useMediaQuery,
+} from '@mui/material';
 import DescriptionModal from './DescriptionModal.jsx';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import { useDispatch, useSelector } from 'react-redux';
@@ -10,6 +17,7 @@ import {
 import Badge from '@mui/material/Badge';
 import { CUSTOMER } from '../../redux/actions/types.js';
 import CustomSnackbar from '../custom/CustomSnackbar.jsx';
+import HistoryIcon from '@mui/icons-material/History';
 
 const HistoryDescription = ({
   audit,
@@ -172,6 +180,27 @@ const HistoryDescription = ({
             },
           }}
         >
+          <Tooltip arrow placement="top" title={'Show history'}>
+            <Button
+              sx={[
+                { textTransform: 'unset' },
+                buttonSx,
+                buttonStyle ? { ...buttonStyle, marginRight: 'unset' } : {},
+                spaceY ? { marginY: '15px' } : {},
+              ]}
+              className={'btn-history'}
+              variant={'contained'}
+              onClick={() => setIsOpen(true)}
+              disabled={
+                (request ? auditRequestHistory : auditHistory)?.length <= 1
+              }
+            >
+              <HistoryIcon />
+            </Button>
+          </Tooltip>
+        </Badge>
+      ) : (
+        <Tooltip arrow placement="top" title={'Show history'}>
           <Button
             sx={[
               { textTransform: 'unset' },
@@ -186,24 +215,10 @@ const HistoryDescription = ({
               (request ? auditRequestHistory : auditHistory)?.length <= 1
             }
           >
-            Show history
+            {/*Show history*/}
+            <HistoryIcon />
           </Button>
-        </Badge>
-      ) : (
-        <Button
-          sx={[
-            { textTransform: 'unset' },
-            buttonSx,
-            buttonStyle ? { ...buttonStyle, marginRight: 'unset' } : {},
-            spaceY ? { marginY: '15px' } : {},
-          ]}
-          className={'btn-history'}
-          variant={'contained'}
-          onClick={() => setIsOpen(true)}
-          disabled={(request ? auditRequestHistory : auditHistory)?.length <= 1}
-        >
-          Show history
-        </Button>
+        </Tooltip>
       )}
     </Box>
   );

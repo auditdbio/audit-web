@@ -68,6 +68,7 @@ import ExpandLessOutlinedIcon from '@mui/icons-material/ExpandLessOutlined';
 import AddLinkIcon from '@mui/icons-material/AddLink.js';
 import SummarizeIcon from '@mui/icons-material/Summarize';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 import HistoryIcon from '@mui/icons-material/History';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
@@ -707,7 +708,10 @@ const AuditOffer = () => {
                   WAITING_FOR_AUDITS.toLowerCase() ? (
                     <Box>
                       <Button
-                        sx={[buttonSx, { marginX: 0 }]}
+                        sx={[
+                          buttonSx,
+                          { marginX: 0, width: '120px!important' },
+                        ]}
                         variant="contained"
                         color="secondary"
                         type="button"
@@ -751,32 +755,34 @@ const AuditOffer = () => {
                     </Box>
                   )}
                   <Box sx={bottomActionInnerWrapper}>
-                    <Button
-                      variant="contained"
-                      color="secondary"
-                      sx={[
-                        buttonSx,
-                        {
-                          marginRight: '0!important',
-                          marginLeft: '0!important',
-                        },
-                        // publicBtnSx
-                      ]}
-                      disabled={
-                        audit?.status?.toLowerCase() ===
-                        WAITING_FOR_AUDITS.toLowerCase()
-                      }
-                      onClick={handleGenerateReport}
-                    >
-                      {/*Generate report*/}
-                      <SummarizeIcon />
-                    </Button>
+                    <Tooltip arrow placement="top" title={'Generate report'}>
+                      <Button
+                        variant="contained"
+                        color="secondary"
+                        sx={[
+                          buttonSx,
+                          {
+                            marginRight: '0!important',
+                            marginLeft: '0!important',
+                          },
+                          // publicBtnSx
+                        ]}
+                        disabled={
+                          audit?.status?.toLowerCase() ===
+                          WAITING_FOR_AUDITS.toLowerCase()
+                        }
+                        onClick={handleGenerateReport}
+                      >
+                        {/*Generate report*/}
+                        <PictureAsPdfIcon />
+                      </Button>
+                    </Tooltip>
                     <Tooltip
                       arrow
                       placement="top"
                       title={
                         allIssuesClosed
-                          ? ''
+                          ? 'Resolve audit'
                           : "To resolve an audit, it is necessary that the status of all issues be 'Fixed' or 'Not fixed'. Or do not include some issues in the audit."
                       }
                     >
@@ -980,12 +986,12 @@ const descriptionWrapper = (theme, showFull) => ({
 const bottomActionInnerWrapper = {
   display: 'flex',
   gap: '15px',
-  [theme.breakpoints.down(630)]: {
-    display: 'flex',
-    flexDirection: 'column',
-    width: '100%',
-    gap: '15px',
-  },
+  // [theme.breakpoints.down(630)]: {
+  //   display: 'flex',
+  //   flexDirection: 'column',
+  //   width: '100%',
+  //   gap: '15px',
+  // },
 };
 
 const headInfoSx = theme => ({
@@ -998,18 +1004,17 @@ const headInfoSx = theme => ({
 });
 
 const historyWrapperSx = theme => ({
-  width: '396px',
+  width: '115px!important',
   '& .btn-history,': {
-    width: '50px!important',
+    width: '50px',
     minWidth: '50px',
   },
   // [theme.breakpoints.down(1400)]: {
   //   width: '335px',
   // },
-  // [theme.breakpoints.down(1124)]: {
-  //   width: 'unset',
-  //
-  // },
+  [theme.breakpoints.down(1124)]: {
+    width: 'unset!important',
+  },
   // [theme.breakpoints.down('sm')]: {
   //   '& .btn-history,': {
   //     width: '240px!important',
@@ -1072,9 +1077,9 @@ const bottomActionSx = theme => ({
     justifyContent: 'center',
     gap: '15px',
   },
-  [theme.breakpoints.down(630)]: {
-    flexDirection: 'column',
-  },
+  // [theme.breakpoints.down(630)]: {
+  //   flexDirection: 'column',
+  // },
 });
 
 const auditActionSx = theme => ({

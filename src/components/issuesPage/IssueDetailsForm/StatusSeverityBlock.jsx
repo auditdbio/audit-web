@@ -25,6 +25,7 @@ import {
   NOT_FIXED,
   VERIFICATION,
 } from '../constants.js';
+import NoteAddIcon from '@mui/icons-material/NoteAdd.js';
 
 const StatusSeverityBlock = ({
   issue,
@@ -291,7 +292,7 @@ const StatusSeverityBlock = ({
             sx={issueButton}
             {...addTestsLabel('new-issue-button')}
           >
-            Add issue
+            <NoteAddIcon />
           </Button>
         </Box>
       )}
