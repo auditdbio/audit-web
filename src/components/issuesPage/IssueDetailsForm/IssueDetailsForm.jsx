@@ -20,7 +20,7 @@ import DescriptionBlock from './DescriptionBlock.jsx';
 import StatusSeverityBlock from './StatusSeverityBlock.jsx';
 import { DRAFT, NOT_FIXED } from '../constants.js';
 
-const IssueDetailsForm = ({ issue = null, editMode = false }) => {
+const IssueDetailsForm = ({ issue = null, editMode = false, hideControl }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { auditId, issueId } = useParams();
@@ -129,7 +129,8 @@ const IssueDetailsForm = ({ issue = null, editMode = false }) => {
                   InputProps={
                     user.current_role !== CUSTOMER &&
                     audit?.status?.toLowerCase() !== RESOLVED.toLowerCase() &&
-                    editMode
+                    editMode &&
+                    !hideControl
                       ? {
                           endAdornment: (
                             <InputAdornment position="end">
@@ -166,6 +167,7 @@ const IssueDetailsForm = ({ issue = null, editMode = false }) => {
                 audit={audit}
                 isEditFeedback={isEditFeedback}
                 setIsEditFeedback={setIsEditFeedback}
+                hideControl={hideControl}
               />
 
               <StatusSeverityBlock
@@ -176,6 +178,7 @@ const IssueDetailsForm = ({ issue = null, editMode = false }) => {
                 touched={touched}
                 errors={errors}
                 issue={issue}
+                hideControl={hideControl}
                 editMode={editMode}
                 handleSubmit={handleSubmit}
                 audit={audit}

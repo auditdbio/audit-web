@@ -31,6 +31,8 @@ import {
   GET_AUDIT_REQUEST_HISTORY,
   READ_AUDIT_HISTORY,
   READ_AUDIT_REQUEST_HISTORY,
+  GET_AUDITS_OF_AUDITOR,
+  GET_PUBLIC_AUDIT,
 } from '../actions/types.js';
 
 const initialState = {
@@ -42,6 +44,7 @@ const initialState = {
   successMessage: null,
   currentAuditPartner: null,
   publicReport: {},
+  publicAudits: [],
   auditHistory: [],
   approvedHistory: null,
   unreadHistory: null,
@@ -150,6 +153,19 @@ export const auditReducer = (state = initialState, action) => {
         audits: state.audits?.map(audit =>
           audit.id === action.payload.id ? action.payload : audit,
         ),
+      };
+    case GET_PUBLIC_AUDIT:
+      return {
+        ...state,
+        audit: action.payload,
+        audits: state.audits?.map(audit =>
+          audit.id === action.payload.id ? action.payload : audit,
+        ),
+      };
+    case GET_AUDITS_OF_AUDITOR:
+      return {
+        ...state,
+        publicAudits: action.payload,
       };
     case REQUEST_DECLINE:
       return {

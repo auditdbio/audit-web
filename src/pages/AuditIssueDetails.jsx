@@ -10,20 +10,31 @@ import IssueDetailsForm from '../components/issuesPage/IssueDetailsForm/IssueDet
 import EventsList from '../components/issuesPage/EventsList.jsx';
 import AddComment from '../components/issuesPage/AddComment.jsx';
 import Loader from '../components/Loader.jsx';
-import { setCurrentAuditPartner } from '../redux/actions/auditAction.js';
+import {
+  getPublicAudit,
+  setCurrentAuditPartner,
+} from '../redux/actions/auditAction.js';
 import { getIssues } from '../redux/actions/issueAction.js';
 import PublicIssueDetailsForm from './PublicIssueDetailForm.jsx';
 import Headings from '../router/Headings.jsx';
 
-const AuditIssueDetails = ({ isPublic, saved }) => {
+const AuditIssueDetails = ({ isPublic, saved, hideControl }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { auditId, issueId } = useParams();
   const { currentAuditPartner } = useSelector(s => s.audits);
   const { issues, issuesAuditId } = useSelector(s => s.issues);
+  const queryParams = new URLSearchParams(location.search);
+  const code = queryParams.get('code');
   const audit = useSelector(s =>
     s.audits.audits?.find(audit => audit.id === auditId),
   );
+
+  useEffect(() => {
+    if (hideControl) {
+      dispatch(getPublicAudit(auditId, code));
+    }
+  }, []);
 
   const issue = useMemo(() => {
     if (!isPublic || saved) {
@@ -41,7 +52,7 @@ const AuditIssueDetails = ({ isPublic, saved }) => {
   }, [audit?.id]);
 
   useEffect(() => {
-    if (issuesAuditId !== auditId && (!isPublic || saved)) {
+    if (issuesAuditId !== auditId && (!isPublic || saved) && !hideControl) {
       dispatch(getIssues(auditId));
     }
   }, []);
@@ -86,7 +97,11 @@ const AuditIssueDetails = ({ isPublic, saved }) => {
         {isPublic || saved ? (
           <PublicIssueDetailsForm issue={issue} saved={saved} editMode={true} />
         ) : (
-          <IssueDetailsForm issue={issue} editMode={true} />
+          <IssueDetailsForm
+            issue={issue}
+            hideControl={hideControl}
+            editMode={true}
+          />
         )}
         {!!issue.events?.length && !saved && !isPublic && (
           <EventsList
@@ -95,7 +110,7 @@ const AuditIssueDetails = ({ isPublic, saved }) => {
             auditId={auditId}
           />
         )}
-        {!isPublic && !saved && (
+        {!isPublic && !saved && !hideControl && (
           <AddComment auditId={auditId} issueId={issueId} />
         )}
       </CustomCard>

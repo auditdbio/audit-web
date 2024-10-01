@@ -14,7 +14,7 @@ import { TextField } from 'formik-mui';
 import { addTestsLabel } from '../../lib/helper.js';
 import { RESOLVED } from '../../redux/actions/types.js';
 
-const EditTags = ({ audit, confirmed, hideChange }) => {
+const EditTags = ({ audit, confirmed, hideChange, isPublic }) => {
   const [editTags, setEditTags] = useState(false);
   const [showComment, setShowComment] = useState(false);
   const dispatch = useDispatch();

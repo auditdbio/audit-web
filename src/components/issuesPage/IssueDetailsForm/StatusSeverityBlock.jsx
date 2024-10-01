@@ -36,6 +36,7 @@ const StatusSeverityBlock = ({
   handleSubmit,
   errors,
   touched,
+  hideControl,
   dirty,
   user,
   audit,
@@ -104,6 +105,7 @@ const StatusSeverityBlock = ({
 
           {editMode &&
             !isPublic &&
+            !hideControl &&
             audit?.status?.toLowerCase() !== RESOLVED.toLowerCase() && (
               <StatusControl
                 status={issue.status}
@@ -117,7 +119,11 @@ const StatusSeverityBlock = ({
           <Box sx={[severityWrapper, blockSx]}>
             <Typography
               sx={[statusBlockTitle, { cursor: 'pointer' }]}
-              onClick={() => setSeverityListOpen(true)}
+              onClick={() => {
+                if (!hideControl) {
+                  setSeverityListOpen(true);
+                }
+              }}
             >
               <ArrowIcon />
               <span>Severity</span>
@@ -125,7 +131,11 @@ const StatusSeverityBlock = ({
             <Field
               open={severityListOpen}
               onClose={() => setSeverityListOpen(false)}
-              onOpen={() => setSeverityListOpen(true)}
+              onOpen={() => {
+                if (!hideControl) {
+                  setSeverityListOpen(true);
+                }
+              }}
               onChange={e => {
                 setFieldValue('severity', e.target.value);
                 if (editMode) handleSubmit();
@@ -182,6 +192,7 @@ const StatusSeverityBlock = ({
         )}
 
         {(user.current_role === AUDITOR || isPublic) &&
+        !hideControl &&
         audit?.status?.toLowerCase() !== RESOLVED.toLowerCase() ? (
           <Box sx={blockSx}>
             <Typography sx={[statusBlockTitle]}>
@@ -250,37 +261,42 @@ const StatusSeverityBlock = ({
                   <span>Category</span>
                 </Typography>
               )}
-              <Typography sx={statusBlockTitle}>{values.category}</Typography>
+              <Typography sx={statusBlockTitle}>
+                {values.category}qwdqw
+              </Typography>
             </Box>
           )
         )}
 
-        {editMode && user.current_role === AUDITOR && !isPublic && (
-          <Box sx={[statusBlockAlign, includeSx, blockSx]}>
-            <FormControlLabel
-              label={
-                <Typography sx={{ fontSize: '20px', fontWeight: 500 }}>
-                  Include in the report
-                </Typography>
-              }
-              control={
-                <Switch
-                  checked={values.include}
-                  color="secondary"
-                  disabled={
-                    user.current_role === CUSTOMER ||
-                    audit?.status?.toLowerCase() === RESOLVED.toLowerCase()
-                  }
-                  onChange={e => {
-                    setFieldValue('include', e.target.checked);
-                    handleSubmit();
-                  }}
-                  name="include"
-                />
-              }
-            />
-          </Box>
-        )}
+        {editMode &&
+          user.current_role === AUDITOR &&
+          !isPublic &&
+          !hideControl && (
+            <Box sx={[statusBlockAlign, includeSx, blockSx]}>
+              <FormControlLabel
+                label={
+                  <Typography sx={{ fontSize: '20px', fontWeight: 500 }}>
+                    Include in the report
+                  </Typography>
+                }
+                control={
+                  <Switch
+                    checked={values.include}
+                    color="secondary"
+                    disabled={
+                      user.current_role === CUSTOMER ||
+                      audit?.status?.toLowerCase() === RESOLVED.toLowerCase()
+                    }
+                    onChange={e => {
+                      setFieldValue('include', e.target.checked);
+                      handleSubmit();
+                    }}
+                    name="include"
+                  />
+                }
+              />
+            </Box>
+          )}
       </Box>
 
       {(user.current_role !== CUSTOMER || isPublic) && !editMode && (

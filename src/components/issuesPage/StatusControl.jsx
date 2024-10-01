@@ -15,6 +15,7 @@ import {
   REOPEN_ACTION,
   VERIFICATION,
   VERIFIED_ACTION,
+  WILL_NOT_FIX,
 } from './constants.js';
 import QuestionMarkIcon from '@mui/icons-material/QuestionMark';
 
@@ -29,19 +30,31 @@ const StatusControl = ({ status, setFieldValue }) => {
         actions.push({ action: BEGIN_ACTION, text: 'Disclose' });
       }
       if (status === IN_PROGRESS) {
-        actions.push({ action: DISCARD_ACTION, text: 'Not Fixed' });
+        actions.push(
+          { action: DISCARD_ACTION, text: 'Discard' },
+          { action: FIXED_ACTION, text: 'Fixed' },
+        );
       }
       if (status === VERIFICATION) {
         actions.push(
           { action: VERIFIED_ACTION, text: 'Verified' },
           { action: NOT_FIXED_ACTION, text: 'Not Fixed' },
+          { action: DISCARD_ACTION, text: 'Discard' },
         );
       }
       if (status === FIXED) {
-        actions.push({ action: VERIFIED_ACTION, text: 'Not Fixed' });
+        actions.push(
+          { action: REOPEN_ACTION, text: 'Reopen' },
+          { action: DISCARD_ACTION, text: 'Discard' },
+          { action: NOT_FIXED_ACTION, text: 'Verify' },
+        );
       }
-      if (status === NOT_FIXED || status === 'WillNotFix') {
-        actions.push({ action: REOPEN_ACTION, text: 'Reopen' });
+      if (status === NOT_FIXED || status === WILL_NOT_FIX) {
+        actions.push(
+          { action: REOPEN_ACTION, text: 'Reopen' },
+          { action: FIXED_ACTION, text: 'Fixed' },
+          { action: VERIFIED_ACTION, text: 'Verify' },
+        );
       }
     } else if (user?.current_role === CUSTOMER) {
       if (status === IN_PROGRESS) {
@@ -50,11 +63,14 @@ const StatusControl = ({ status, setFieldValue }) => {
           { action: DISCARD_ACTION, text: 'Discard' },
         );
       }
-      if ((status === NOT_FIXED) | (status === 'WillNotFix')) {
+      if (status === NOT_FIXED || status === WILL_NOT_FIX) {
         actions.push({ action: REOPEN_ACTION, text: 'In Progress' });
       }
       if (status === VERIFICATION) {
-        actions.push({ action: FIXED_ACTION, text: 'In Progress' });
+        actions.push(
+          { action: NOT_FIXED_ACTION, text: 'In Progress' },
+          { action: DISCARD_ACTION, text: 'Discard' },
+        );
       }
     }
 

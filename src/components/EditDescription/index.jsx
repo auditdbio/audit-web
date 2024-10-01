@@ -20,7 +20,7 @@ import { addTestsLabel } from '../../lib/helper.js';
 import AddLinkIcon from '@mui/icons-material/AddLink.js';
 import { TextField } from 'formik-mui';
 
-const EditDescription = ({ audit, auditRequest, hideChange }) => {
+const EditDescription = ({ audit, auditRequest, hideChange, isPublic }) => {
   const [editMode, setEditMode] = useState(false);
   const [showFull, setShowFull] = useState(false);
   const [showComment, setShowComment] = useState(false);
@@ -316,7 +316,6 @@ const markdownSx = (matchXs, description, editMode) => ({
   lineHeight: '24px',
 });
 
-// 1px solid #e0e0e0
 const editMarkdownSx = (matchXs, description, editMode) => ({
   height: '550px',
   backgroundColor: '#fcfaf6',

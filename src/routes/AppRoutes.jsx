@@ -54,6 +54,8 @@ import Headings from '../router/Headings.jsx';
 import { AUDITOR, CUSTOMER } from '../redux/actions/types.js';
 import UserProjects from '../pages/UserProjects.jsx';
 import PriceCalculationPage from '../pages/PriceCalculationPage.jsx';
+import { refreshToken } from '../redux/actions/userAction.js';
+import PublicAuditInfo from '../pages/PublicAuditInfo.jsx';
 
 const AppRoutes = () => {
   const { token } = useSelector(s => s.user);
@@ -67,6 +69,7 @@ const AppRoutes = () => {
   useEffect(() => {
     if (isAuth()) {
       dispatch(getUnreadMessages());
+      dispatch(refreshToken());
     }
   }, [isAuth()]);
 
@@ -210,6 +213,10 @@ const AppRoutes = () => {
           }
         />
         <Route
+          path="/audit-info/:id"
+          element={<AuditInfoPage isPublic={true} />}
+        />
+        <Route
           path="/audit-info/:auditId/auditor"
           element={
             <PrivateRoute auth={{ isAuthenticated: isAuth() }}>
@@ -255,6 +262,14 @@ const AppRoutes = () => {
             <PrivateRoute auth={{ isAuthenticated: isAuth() }}>
               <AuditIssueDetails />
             </PrivateRoute>
+          }
+        />
+        <Route
+          path="/p-issues/audit-issue/:auditId/:issueId"
+          element={
+            // <PrivateRoute auth={{ isAuthenticated: isAuth() }}>
+            <AuditIssueDetails hideControl={true} />
+            // </PrivateRoute>
           }
         />
         <Route
@@ -327,6 +342,8 @@ const AppRoutes = () => {
         />
 
         {/*Add new routes here*/}
+
+        {/*<Route path="/audit-info/:auditId" element={<PublicAuditInfo />} />*/}
 
         <Route path="/:role/:linkId" element={<ProfilePage />} />
         <Route path="*" element={<NotFound />} />
