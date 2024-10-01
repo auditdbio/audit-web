@@ -107,12 +107,22 @@ const AuditOffer = () => {
   const { auditor } = useSelector(s => s.auditor);
   const { customer } = useSelector(s => s.customer);
   const [conclusionState, setConclusionState] = useState('');
+  const [showTopInfoButton, setShowTopInfoButton] = useState(false);
+  const infoRef = useRef();
 
   useEffect(() => {
     if (audit?.conclusion) {
       setConclusionState(audit?.conclusion);
     }
   }, [audit]);
+
+  useEffect(() => {
+    setTimeout(() => {
+      if (infoRef?.current?.offsetHeight > 47) {
+        setShowTopInfoButton(true);
+      }
+    }, 100);
+  }, [infoRef?.current]);
 
   useEffect(() => {
     if (
@@ -266,7 +276,7 @@ const AuditOffer = () => {
   if (audit && !notFound) {
     return (
       <Layout
-        sx={{ padding: '10px!important' }}
+        sx={layoutSx}
         containerSx={{
           maxWidth: 'unset!important',
           padding: '0 35px!important',
@@ -341,47 +351,164 @@ const AuditOffer = () => {
               </Button>
             </Box>
 
-            <Box sx={{ width: '100%' }}>
-              <Box
-                sx={[
-                  {
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    mt: '10px',
-                  },
-                ]}
-              >
-                <Button
-                  sx={[readAllButton]}
-                  variant={'outlined'}
-                  onClick={() => setShowFullHeader(!showFullHeader)}
+            {showTopInfoButton && (
+              <Box sx={{ width: '100%' }}>
+                <Box
+                  sx={[
+                    {
+                      display: 'flex',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      mt: '10px',
+                    },
+                  ]}
                 >
-                  <span>Show</span>
-                  <TelegramIcon sx={{ width: '22px', height: '22px' }} />
-                  <EmailIcon sx={{ width: '22px', height: '22px' }} />
-                  {audit?.price
-                    ? `${audit?.price} per line`
-                    : `${audit?.total_cost} total cost`}
-                  <ExpandLessOutlinedIcon
-                    sx={[
-                      showFullHeader ? {} : { transform: 'rotate(180deg)' },
-                      {
-                        transition: '0.2s',
-                        // marginRight: '0',
-                        // marginLeft: 'auto',
-                        width: '20px',
-                        height: '20px',
-                      },
-                    ]}
-                  />
-                </Button>
+                  <Button
+                    sx={[readAllButton]}
+                    variant={'outlined'}
+                    onClick={() => setShowFullHeader(!showFullHeader)}
+                  >
+                    <span>Show</span>
+                    <TelegramIcon sx={{ width: '22px', height: '22px' }} />
+                    <EmailIcon sx={{ width: '22px', height: '22px' }} />
+                    {audit?.price
+                      ? `${audit?.price} per line`
+                      : `${audit?.total_cost} total cost`}
+                    <ExpandLessOutlinedIcon
+                      sx={[
+                        showFullHeader ? {} : { transform: 'rotate(180deg)' },
+                        {
+                          transition: '0.2s',
+                          // marginRight: '0',
+                          // marginLeft: 'auto',
+                          width: '20px',
+                          height: '20px',
+                        },
+                      ]}
+                    />
+                  </Button>
+                </Box>
               </Box>
-            </Box>
+            )}
 
             <Box sx={{ width: '100%' }}>
-              <Collapse in={showFullHeader}>
-                <Box sx={contentWrapper}>
+              {showTopInfoButton ? (
+                <Collapse in={showFullHeader}>
+                  <Box sx={contentWrapper}>
+                    <Box sx={headInfoSx}>
+                      <Box
+                        sx={{
+                          [theme.breakpoints.down('sm')]: {
+                            width: '280px',
+                            display: 'flex',
+                            justifyContent: 'flex-start',
+                          },
+                        }}
+                      >
+                        <EditTags audit={audit} confirmed={true} />
+                      </Box>
+                      <Box
+                        sx={{
+                          [theme.breakpoints.down('sm')]: {
+                            width: '280px',
+                            display: 'flex',
+                            justifyContent: 'flex-start',
+                          },
+                        }}
+                      >
+                        <EditPrice audit={audit} user={user} role={role} />
+                      </Box>
+                      <Box
+                        sx={[
+                          { display: 'flex', gap: '10px' },
+                          contactWrapper,
+                          {
+                            marginTop: 'unset',
+                            flexDirection: 'row!important',
+                          },
+                        ]}
+                      >
+                        {audit?.customer_contacts?.email && (
+                          <Box
+                            sx={{
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: '10px',
+                              [theme.breakpoints.down('sm')]: {
+                                width: '280px',
+                                display: 'flex',
+                                justifyContent: 'flex-start',
+                              },
+                            }}
+                          >
+                            <EmailIcon sx={{ height: '32px' }} />
+                            <Box sx={{ display: 'grid' }}>
+                              <Tooltip
+                                title={audit?.customer_contacts?.email}
+                                arrow
+                                placement="top"
+                              >
+                                <Typography variant="caption" noWrap={true}>
+                                  {audit?.customer_contacts?.email}
+                                </Typography>
+                              </Tooltip>
+                            </Box>
+                          </Box>
+                        )}
+                        {audit?.customer_contacts?.telegram && (
+                          <Box
+                            sx={{
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: '10px',
+                              [theme.breakpoints.down('sm')]: {
+                                width: '280px',
+                                display: 'flex',
+                                justifyContent: 'flex-start',
+                              },
+                            }}
+                          >
+                            <TelegramIcon sx={{ height: '32px' }} />
+                            <Box sx={{ display: 'grid' }}>
+                              <Tooltip
+                                title={audit?.customer_contacts?.telegram}
+                                arrow
+                                placement="top"
+                              >
+                                <Typography variant="caption" noWrap={true}>
+                                  {audit?.customer_contacts?.telegram}
+                                </Typography>
+                              </Tooltip>
+                            </Box>
+                          </Box>
+                        )}
+                      </Box>
+                    </Box>
+                    {audit?.feedback?.rating && (
+                      <Tooltip
+                        title="Feedback from the customer"
+                        arrow
+                        placement="top"
+                      >
+                        <Button
+                          type="button"
+                          onClick={() => setShowFeedback(p => !p)}
+                          sx={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '15px',
+                            color: 'black',
+                          }}
+                        >
+                          <Star size={20} />
+                          {getAverageFeedbackRating(audit?.feedback?.rating)}
+                        </Button>
+                      </Tooltip>
+                    )}
+                  </Box>
+                </Collapse>
+              ) : (
+                <Box sx={contentWrapper} ref={infoRef}>
                   <Box sx={headInfoSx}>
                     <EditTags audit={audit} confirmed={true} />
                     <EditPrice audit={audit} user={user} role={role} />
@@ -460,7 +587,7 @@ const AuditOffer = () => {
                     </Tooltip>
                   )}
                 </Box>
-              </Collapse>
+              )}
               <Box sx={infoWrapper} className={'qwe'}>
                 {/*<Box sx={descriptionSx(showFull)}>*/}
                 {/*  <Box ref={descriptionRef}>*/}
@@ -483,10 +610,18 @@ const AuditOffer = () => {
                   sx={tabsSx}
                 >
                   {/*{tab !== 0 && (*/}
-                  <Tab sx={tabSx} value={0} label={'Description'} />
+                  <Tab
+                    sx={[tabSx, tab === 1 ? { color: '#52176D' } : {}]}
+                    value={0}
+                    label={'Description'}
+                  />
                   {/*)}*/}
                   {audit?.conclusion ? (
-                    <Tab sx={tabSx} value={1} label={'Conclusion'} />
+                    <Tab
+                      sx={[tabSx, tab === 0 ? { color: '#52176D' } : {}]}
+                      value={1}
+                      label={'Conclusion'}
+                    />
                   ) : (
                     audit?.status?.toLowerCase() !== RESOLVED.toLowerCase() && (
                       <Button
@@ -494,7 +629,7 @@ const AuditOffer = () => {
                           textTransform: 'unset',
                           minHeight: '32px',
                           height: '38.5px!important',
-                          // color: '#FF9900',
+                          color: tab === 0 ? '#52176D' : '',
                           fontWeight: 600,
                           borderRadius: '0 8px 8px 0',
                           fontSize: '20px',
@@ -509,7 +644,7 @@ const AuditOffer = () => {
                         }
                         onClick={() => handleEditSaveConclusion()}
                       >
-                        Add conclusion
+                        + conclusion
                       </Button>
                     )
                   )}
@@ -647,7 +782,19 @@ const AuditOffer = () => {
                     {/*{tab === 0 && (*/}
                     <Button
                       onClick={() => setShowFull(!showFull)}
-                      sx={[readAllButton]}
+                      sx={[
+                        readAllButton,
+                        {
+                          position: 'relative',
+                          top: !showFull ? '-25px' : 0,
+                          backgroundColor: '#fcfaf6',
+                          zIndex: '1',
+                          marginBottom: showFull ? '20px' : 0,
+                          '&:hover': {
+                            backgroundColor: '#fcfaf6',
+                          },
+                        },
+                      ]}
                       variant={'outlined'}
                     >
                       <span>{showFull ? 'Hide' : `Show`}</span>
@@ -755,28 +902,60 @@ const AuditOffer = () => {
                     </Box>
                   )}
                   <Box sx={bottomActionInnerWrapper}>
-                    <Tooltip arrow placement="top" title={'Generate report'}>
-                      <Button
-                        variant="contained"
-                        color="secondary"
-                        sx={[
-                          buttonSx,
-                          {
-                            marginRight: '0!important',
-                            marginLeft: '0!important',
-                          },
-                          // publicBtnSx
-                        ]}
-                        disabled={
-                          audit?.status?.toLowerCase() ===
-                          WAITING_FOR_AUDITS.toLowerCase()
-                        }
-                        onClick={handleGenerateReport}
-                      >
-                        {/*Generate report*/}
-                        <PictureAsPdfIcon />
-                      </Button>
-                    </Tooltip>
+                    {audit?.status?.toLowerCase() ===
+                    WAITING_FOR_AUDITS.toLowerCase() ? (
+                      <Tooltip arrow placement="top" title={'Generate report'}>
+                        <Button
+                          variant="contained"
+                          color="secondary"
+                          sx={[
+                            buttonSx,
+                            {
+                              backgroundColor: 'rgba(0, 0, 0, 0.12)',
+                              '&:hover': {
+                                backgroundColor: 'rgba(0, 0, 0, 0.12)',
+                              },
+                            },
+                            {
+                              marginRight: '0!important',
+                              marginLeft: '0!important',
+                            },
+                            // publicBtnSx
+                          ]}
+                          // disabled={
+                          //   audit?.status?.toLowerCase() ===
+                          //   WAITING_FOR_AUDITS.toLowerCase()
+                          // }
+                          // onClick={handleGenerateReport}
+                        >
+                          {/*Generate report*/}
+                          <PictureAsPdfIcon />
+                        </Button>
+                      </Tooltip>
+                    ) : (
+                      <Tooltip arrow placement="top" title={'Generate report'}>
+                        <Button
+                          variant="contained"
+                          color="secondary"
+                          sx={[
+                            buttonSx,
+                            {
+                              marginRight: '0!important',
+                              marginLeft: '0!important',
+                            },
+                            // publicBtnSx
+                          ]}
+                          disabled={
+                            audit?.status?.toLowerCase() ===
+                            WAITING_FOR_AUDITS.toLowerCase()
+                          }
+                          onClick={handleGenerateReport}
+                        >
+                          {/*Generate report*/}
+                          <PictureAsPdfIcon />
+                        </Button>
+                      </Tooltip>
+                    )}
                     <Tooltip
                       arrow
                       placement="top"
@@ -919,6 +1098,13 @@ const SubmitValidation = Yup.object().shape({
   report: Yup.string().required('File is required'),
 });
 
+const layoutSx = theme => ({
+  padding: '10px!important',
+  [theme.breakpoints.down(780)]: {
+    padding: '10px 0!important',
+  },
+});
+
 const tabsSx = theme => ({
   height: '38.5px',
   minHeight: 'unset',
@@ -1001,6 +1187,9 @@ const headInfoSx = theme => ({
   gap: '15px',
   flexWrap: 'wrap',
   justifyContent: 'center',
+  [theme.breakpoints.down('sm')]: {
+    gap: 'unset',
+  },
 });
 
 const historyWrapperSx = theme => ({
@@ -1012,7 +1201,7 @@ const historyWrapperSx = theme => ({
   // [theme.breakpoints.down(1400)]: {
   //   width: '335px',
   // },
-  [theme.breakpoints.down(1124)]: {
+  [theme.breakpoints.down(600)]: {
     width: 'unset!important',
   },
   // [theme.breakpoints.down('sm')]: {
@@ -1071,15 +1260,15 @@ const bottomActionSx = theme => ({
   justifyContent: 'space-between',
   alignItems: 'center',
   gap: '25px',
-  marginTop: '20px',
-  [theme.breakpoints.down(1124)]: {
+  // marginTop: '20px',
+  [theme.breakpoints.down(600)]: {
+    gap: '15px',
+  },
+  [theme.breakpoints.down(505)]: {
     flexWrap: 'wrap',
     justifyContent: 'center',
     gap: '15px',
   },
-  // [theme.breakpoints.down(630)]: {
-  //   flexDirection: 'column',
-  // },
 });
 
 const auditActionSx = theme => ({
@@ -1094,11 +1283,13 @@ const auditActionSx = theme => ({
 });
 
 const uploadSx = theme => ({
-  [theme.breakpoints.down(1124)]: {
-    order: 1,
+  [theme.breakpoints.down(600)]: {
     width: '100%',
     display: 'flex',
     justifyContent: 'center',
+  },
+  [theme.breakpoints.down(505)]: {
+    order: 1,
   },
 });
 //
@@ -1134,6 +1325,9 @@ const wrapper = theme => ({
       fontSize: '20px',
     },
   },
+  [theme.breakpoints.down(780)]: {
+    borderRadius: '0!important',
+  },
 });
 
 const contactWrapper = theme => ({
@@ -1143,11 +1337,18 @@ const contactWrapper = theme => ({
   '& span': {
     fontSize: '16px',
   },
+  [theme.breakpoints.down('sm')]: {
+    margin: '15px 0 0',
+    flexWrap: 'wrap',
+    maxWidth: 'unset',
+    gap: 'unset',
+    width: '100%',
+  },
   [theme.breakpoints.down('xs')]: {
     flexDirection: 'column',
     width: 'unset',
     alignItems: 'center',
-    gap: '10px',
+    // gap: '10px',
   },
 });
 
@@ -1335,14 +1536,14 @@ const sendMessageButton = theme => ({
 });
 
 const workflowToggleBox = theme => ({
-  padding: '3px 1px',
+  padding: '1px 1px',
   display: 'flex',
   justifyContent: 'center',
   border: '1px solid #B2B3B3',
   borderRadius: '30px',
-  height: '55px',
+  height: '41px',
   [theme.breakpoints.down(900)]: {
-    width: '248px',
+    // width: '248px',
     // margin: '0 auto 20px',
   },
   [theme.breakpoints.down('xs')]: {

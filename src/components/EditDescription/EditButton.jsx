@@ -9,7 +9,7 @@ const EditButton = ({ editMode, handleClick }) => {
   const currentRole = useSelector(s => s.user.user.current_role);
   return (
     <Button
-      sx={{ ml: '8px', minWidth: 'unset', maxWidth: 'unset' }}
+      sx={{ ml: '8px', minWidth: 'unset', maxWidth: 'unset', paddingRight: 0 }}
       onClick={handleClick}
     >
       {!editMode ? (

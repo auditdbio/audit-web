@@ -7,6 +7,7 @@ import {
   InputAdornment,
   MenuItem,
   Switch,
+  Tooltip,
   Typography,
 } from '@mui/material';
 import { addSpacesToCamelCase, addTestsLabel } from '../../../lib/helper.js';
@@ -284,16 +285,41 @@ const StatusSeverityBlock = ({
 
       {(user.current_role !== CUSTOMER || isPublic) && !editMode && (
         <Box sx={buttonsBox}>
-          <Button
-            variant="contained"
-            type="submit"
-            color="primary"
-            disabled={!dirty}
-            sx={issueButton}
-            {...addTestsLabel('new-issue-button')}
-          >
-            <NoteAddIcon />
-          </Button>
+          {!dirty ? (
+            <Tooltip arrow placement="top" title={'New issue'}>
+              <Button
+                variant="contained"
+                type="button"
+                color="primary"
+                // disabled={!dirty}
+                sx={[
+                  issueButton,
+                  {
+                    backgroundColor: 'rgba(0, 0, 0, 0.12)',
+                    '&:hover': {
+                      backgroundColor: 'rgba(0, 0, 0, 0.12)',
+                    },
+                  },
+                ]}
+                {...addTestsLabel('new-issue-button')}
+              >
+                <NoteAddIcon />
+              </Button>
+            </Tooltip>
+          ) : (
+            <Tooltip arrow placement="top" title={'New issue'}>
+              <Button
+                variant="contained"
+                type="submit"
+                color="primary"
+                disabled={!dirty}
+                sx={issueButton}
+                {...addTestsLabel('new-issue-button')}
+              >
+                <NoteAddIcon />
+              </Button>
+            </Tooltip>
+          )}
         </Box>
       )}
 

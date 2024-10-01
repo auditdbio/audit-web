@@ -241,7 +241,8 @@ const Control = ({
               sx={[buttonSx, { marginRight: '0!important' }, publicBtnSx]}
               onClick={handleGenerateReport}
             >
-              Generate report
+              {/*Generate report*/}
+              <PictureAsPdfIcon />
             </Button>
           )}
           {!saved && (
@@ -277,7 +278,8 @@ const Control = ({
                 sx={[buttonSx, (isPublic || saved) && xss ? publicBtnSx : {}]}
                 onClick={handleGenerateReport}
               >
-                Generate report
+                {/*Generate report*/}
+                <PictureAsPdfIcon />
               </Button>
             </Box>
           )}
@@ -300,7 +302,8 @@ const Control = ({
               sx={[buttonSx, (isPublic || saved) && xss ? publicBtnSx : {}]}
               onClick={handleGenerateReport}
             >
-              Generate report
+              {/*Generate report*/}
+              <PictureAsPdfIcon />
             </Button>
           )}
 
@@ -331,43 +334,91 @@ const Control = ({
             {audit?.status?.toLowerCase() !== RESOLVED.toLowerCase() ? (
               <>
                 <Box sx={issueActionWrapperSx}>
-                  <Tooltip arrow placement="top" title={'New issue'}>
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      sx={[
-                        buttonSx,
-                        (isPublic || saved) && xss ? publicBtnSx : {},
-                        isPublic || saved ? singleButtonSx : {},
-                      ]}
-                      disabled={
-                        audit?.status?.toLowerCase() === RESOLVED.toLowerCase()
-                      }
-                      onClick={handleNewIssue}
-                      {...addTestsLabel('new-issue-button')}
-                    >
-                      {/*New issue*/}
-                      <NoteAddIcon />
-                    </Button>
-                  </Tooltip>
-                  {user.current_role === AUDITOR && !saved && !isPublic && (
-                    <Tooltip arrow placement="top" title={'Disclose all'}>
+                  {audit?.status?.toLowerCase() === RESOLVED.toLowerCase() ? (
+                    <Tooltip arrow placement="top" title={'New issue'}>
                       <Button
                         variant="contained"
-                        color="secondary"
+                        color="primary"
+                        sx={[
+                          buttonSx,
+                          {
+                            backgroundColor: 'rgba(0, 0, 0, 0.12)',
+                            '&:hover': {
+                              backgroundColor: 'rgba(0, 0, 0, 0.12)',
+                            },
+                          },
+                          (isPublic || saved) && xss ? publicBtnSx : {},
+                          isPublic || saved ? singleButtonSx : {},
+                        ]}
+                        // onClick={handleNewIssue}
+                        {...addTestsLabel('new-issue-button')}
+                      >
+                        {/*New issue*/}
+                        <NoteAddIcon />
+                      </Button>
+                    </Tooltip>
+                  ) : (
+                    <Tooltip arrow placement="top" title={'New issue'}>
+                      <Button
+                        variant="contained"
+                        color="primary"
                         sx={[
                           buttonSx,
                           (isPublic || saved) && xss ? publicBtnSx : {},
+                          isPublic || saved ? singleButtonSx : {},
                         ]}
-                        disabled={checkDraftIssues()}
-                        onClick={handleDiscloseAll}
+                        disabled={
+                          audit?.status?.toLowerCase() ===
+                          RESOLVED.toLowerCase()
+                        }
+                        onClick={handleNewIssue}
+                        {...addTestsLabel('new-issue-button')}
                       >
-                        {/*Disclose all*/}
-                        {/*<UnfoldMoreIcon />*/}
-                        <DiscloseIcon />
+                        {/*New issue*/}
+                        <NoteAddIcon />
                       </Button>
                     </Tooltip>
                   )}
+                  {user.current_role === AUDITOR &&
+                    !saved &&
+                    !isPublic &&
+                    (!checkDraftIssues() ? (
+                      <Tooltip arrow placement="top" title={'Disclose all'}>
+                        <Button
+                          variant="contained"
+                          color="secondary"
+                          sx={[
+                            buttonSx,
+                            (isPublic || saved) && xss ? publicBtnSx : {},
+                          ]}
+                          // disabled={checkDraftIssues()}
+                          // onClick={handleDiscloseAll}
+                        >
+                          <DiscloseIcon />
+                        </Button>
+                      </Tooltip>
+                    ) : (
+                      <Tooltip arrow placement="top" title={'Disclose all'}>
+                        <Button
+                          variant="contained"
+                          color="secondary"
+                          sx={[
+                            {
+                              backgroundColor: 'rgba(0, 0, 0, 0.12)',
+                              '&:hover': {
+                                backgroundColor: 'rgba(0, 0, 0, 0.12)',
+                              },
+                            },
+                            buttonSx,
+                            (isPublic || saved) && xss ? publicBtnSx : {},
+                          ]}
+                        >
+                          {/*Disclose all*/}
+                          {/*<UnfoldMoreIcon />*/}
+                          <DiscloseIcon />
+                        </Button>
+                      </Tooltip>
+                    ))}
                   {!isPublic && !saved && (
                     <Tooltip arrow placement="top" title={'Mark all as read'}>
                       <Button
@@ -402,18 +453,41 @@ const Control = ({
           </Box>
         ) : !isPublic ? (
           <Box className={'customer-button-wrapper'}>
-            <Tooltip arrow placement="top" title={'Download report'}>
-              <Button
-                variant="contained"
-                color="primary"
-                disabled={!audit?.report}
-                onClick={() => dispatch(downloadReport(audit))}
-                sx={buttonSx}
-                {...addTestsLabel('customer-report-button')}
-              >
-                <PictureAsPdfIcon />
-              </Button>
-            </Tooltip>
+            {!audit?.report ? (
+              <Tooltip arrow placement="top" title={'Download report'}>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  // disabled={!audit?.report}
+                  // onClick={() => dispatch(downloadReport(audit))}
+                  sx={[
+                    buttonSx,
+                    {
+                      backgroundColor: 'rgba(0, 0, 0, 0.12)',
+                      '&:hover': {
+                        backgroundColor: 'rgba(0, 0, 0, 0.12)',
+                      },
+                    },
+                  ]}
+                  {...addTestsLabel('customer-report-button')}
+                >
+                  <PictureAsPdfIcon />
+                </Button>
+              </Tooltip>
+            ) : (
+              <Tooltip arrow placement="top" title={'Download report'}>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  disabled={!audit?.report}
+                  onClick={() => dispatch(downloadReport(audit))}
+                  sx={buttonSx}
+                  {...addTestsLabel('customer-report-button')}
+                >
+                  <PictureAsPdfIcon />
+                </Button>
+              </Tooltip>
+            )}
             <Tooltip arrow placement="top" title={'Mark all as read'}>
               <Button
                 variant="contained"
@@ -425,6 +499,27 @@ const Control = ({
               </Button>
             </Tooltip>
           </Box>
+        ) : audit?.status?.toLowerCase() === RESOLVED.toLowerCase() ? (
+          <Tooltip arrow placement="top" title={'New issue'}>
+            <Button
+              variant="contained"
+              color="secondary"
+              sx={[
+                buttonSx,
+                {
+                  backgroundColor: 'rgba(0, 0, 0, 0.12)',
+                  '&:hover': {
+                    backgroundColor: 'rgba(0, 0, 0, 0.12)',
+                  },
+                },
+              ]}
+              // disabled={audit?.status?.toLowerCase() === RESOLVED.toLowerCase()}
+              // onClick={handleNewIssue}
+              {...addTestsLabel('new-issue-button')}
+            >
+              <NoteAddIcon />
+            </Button>
+          </Tooltip>
         ) : (
           <Tooltip arrow placement="top" title={'New issue'}>
             <Button
@@ -448,7 +543,7 @@ const Control = ({
     </>
   );
 };
-
+//
 export default Control;
 
 const generateButtonSx = theme => ({
@@ -514,8 +609,9 @@ const wrapper = theme => ({
   width: '100%',
   mb: '10px',
   gap: '25px',
-  [theme.breakpoints.down('md')]: {
+  [theme.breakpoints.down(600)]: {
     flexDirection: 'column-reverse',
+    gap: '15px',
   },
 });
 
@@ -533,9 +629,9 @@ const searchBlock = theme => ({
   display: 'flex',
   flexGrow: 1,
   alignItems: 'center',
-  [theme.breakpoints.down('xs')]: {
-    mt: '20px',
-  },
+  // [theme.breakpoints.down('xs')]: {
+  //   mt: '20px',
+  // },
 });
 
 const publicSearchBlock = theme => ({
@@ -577,9 +673,9 @@ const menuButton = theme => ({
 const buttonBoxSx = theme => ({
   display: 'flex',
   justifyContent: 'center',
-  [theme.breakpoints.down('md')]: {
-    width: '100%',
-  },
+  // [theme.breakpoints.down('md')]: {
+  //   width: '100%',
+  // },
   [theme.breakpoints.down(630)]: {
     flexDirection: 'column',
     gap: '15px',
