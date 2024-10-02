@@ -89,14 +89,6 @@ const Organization = ({ linkId }) => {
     setShowAddUser(!showAddUser);
   };
 
-  const data = useMemo(() => {
-    if (role === AUDITOR) {
-      return auditor;
-    } else {
-      return customer;
-    }
-  }, [role, customer, auditor]);
-
   const inviteMe = useMemo(() => {
     return !!invites.find(el => el.id === organization.id);
   }, [organization.id, invites]);
@@ -108,7 +100,6 @@ const Organization = ({ linkId }) => {
       organization?.owner.user_id === user.id
     );
   }, [organization]);
-
   if (!organization.id) {
     return (
       <Layout>
@@ -195,12 +186,14 @@ const Organization = ({ linkId }) => {
                     }
                     sx={[
                       avatarStyle,
-                      {
-                        backgroundColor:
-                          role === CUSTOMER
-                            ? theme.palette.primary.main
-                            : theme.palette.secondary.main,
-                      },
+                      !organization.avatar
+                        ? {
+                            backgroundColor:
+                              role === CUSTOMER
+                                ? theme.palette.primary.main
+                                : theme.palette.secondary.main,
+                          }
+                        : {},
                     ]}
                     alt="User photo"
                   >

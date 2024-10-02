@@ -112,9 +112,12 @@ const MyOrganization = () => {
                                     <CardMedia
                                       sx={{ height: 140, borderRadius: '7px' }}
                                       image={
-                                        org.avatar
-                                          ? `${ASSET_URL}/${org.avatar}`
-                                          : ''
+                                        org.avatar &&
+                                        org.avatar.startsWith(
+                                          'data:image/png;base64',
+                                        )
+                                          ? org.avatar
+                                          : `${ASSET_URL}/${org.avatar}`
                                       }
                                       title={org.name}
                                     />
@@ -186,9 +189,12 @@ const MyOrganization = () => {
                                     <CardMedia
                                       sx={{ height: 140, borderRadius: '7px' }}
                                       image={
-                                        org.avatar
-                                          ? `${ASSET_URL}/${org.avatar}`
-                                          : ''
+                                        org.avatar &&
+                                        org.avatar.startsWith(
+                                          'data:image/png;base64',
+                                        )
+                                          ? org.avatar
+                                          : `${ASSET_URL}/${org.avatar}`
                                       }
                                       title={org.name}
                                     />

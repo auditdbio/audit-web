@@ -28,9 +28,9 @@ const CreateEditOrganization = () => {
       dispatch(getOrganizationById(id));
     }
     return () => {
-      if (id) {
-        dispatch(clearOrganization());
-      }
+      // if (id) {
+      dispatch(clearOrganization());
+      // }
     };
   }, [id]);
 
