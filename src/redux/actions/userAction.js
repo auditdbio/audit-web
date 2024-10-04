@@ -63,7 +63,7 @@ export const signUpGithub = data => {
           { headers: { Authorization: `Bearer ${responseData.token}` } },
         );
 
-        setToken(responseData.token); // Используем правильный токен
+        setToken(responseData.token);
         dispatch({ type: USER_SIGNIN, payload: responseData });
         localStorage.setItem('user', JSON.stringify(responseData.user));
         history.push({ pathname: `/edit-profile` }, { some: true });
@@ -99,7 +99,7 @@ export const signUpGithub = data => {
     } catch (error) {
       const { response } = error;
       dispatch({ type: SIGN_IN_ERROR, payload: 'Sign In Failed' });
-      console.error('Sign In Error:', response); // Добавляем вывод ошибки для отладки
+      console.error('Sign In Error:', response);
     }
   };
 };
