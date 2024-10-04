@@ -261,9 +261,7 @@ const StatusSeverityBlock = ({
                   <span>Category</span>
                 </Typography>
               )}
-              <Typography sx={statusBlockTitle}>
-                {values.category}qwdqw
-              </Typography>
+              <Typography sx={statusBlockTitle}>{values.category}</Typography>
             </Box>
           )
         )}
@@ -300,7 +298,19 @@ const StatusSeverityBlock = ({
       </Box>
 
       {(user.current_role !== CUSTOMER || isPublic) && !editMode && (
-        <Box sx={buttonsBox}>
+        <Box
+          sx={[
+            buttonsBox,
+            !isPublic
+              ? {
+                  display: 'none!important',
+                  [theme.breakpoints.down(550)]: {
+                    display: 'flex!important',
+                  },
+                }
+              : {},
+          ]}
+        >
           {!dirty ? (
             <Tooltip arrow placement="top" title={'New issue'}>
               <Button
@@ -505,7 +515,7 @@ const categoryInput = theme => ({
   },
 });
 
-const buttonsBox = {
+const buttonsBox = (theme, isPublic) => ({
   display: 'flex',
   justifyContent: 'flex-end',
   // pt: '20px',
@@ -516,7 +526,7 @@ const buttonsBox = {
     mt: '20px',
     // mb: '20px',
   },
-};
+});
 
 const issueButton = theme => ({
   padding: '11px 10px',

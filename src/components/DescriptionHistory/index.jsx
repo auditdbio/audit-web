@@ -171,15 +171,7 @@ const HistoryDescription = ({
         />
       )}
       {unread && unread[user?.id] > 0 ? (
-        <Badge
-          color={'secondary'}
-          badgeContent="new"
-          sx={{
-            '& .MuiBadge-badge': {
-              top: '16px',
-            },
-          }}
-        >
+        <Badge color={'secondary'} badgeContent="new" sx={badgeSx}>
           <Tooltip arrow placement="top" title={'Show history'}>
             <Button
               sx={[
@@ -224,6 +216,14 @@ const HistoryDescription = ({
 };
 
 export default HistoryDescription;
+
+const badgeSx = theme => ({
+  '& .MuiBadge-badge': {
+    right: '12px',
+    fontSize: '14px',
+    paddingBottom: '3px',
+  },
+});
 
 const buttonSx = theme => ({
   padding: '8.5px 0',

@@ -73,6 +73,7 @@ import HistoryIcon from '@mui/icons-material/History';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import MarkEmailReadIcon from '@mui/icons-material/MarkEmailRead';
+import AddIcon from '@mui/icons-material/Add';
 
 const AuditOffer = () => {
   const { auditId } = useParams();
@@ -368,7 +369,7 @@ const AuditOffer = () => {
                     variant={'outlined'}
                     onClick={() => setShowFullHeader(!showFullHeader)}
                   >
-                    <span>Show</span>
+                    {showFullHeader ? <span>Hide</span> : <span>Show</span>}
                     <TelegramIcon sx={{ width: '22px', height: '22px' }} />
                     <EmailIcon sx={{ width: '22px', height: '22px' }} />
                     {audit?.price
@@ -400,6 +401,7 @@ const AuditOffer = () => {
                         sx={{
                           [theme.breakpoints.down('sm')]: {
                             width: '280px',
+                            paddingRight: '5px',
                             display: 'flex',
                             justifyContent: 'flex-start',
                           },
@@ -411,6 +413,7 @@ const AuditOffer = () => {
                         sx={{
                           [theme.breakpoints.down('sm')]: {
                             width: '280px',
+                            paddingLeft: '5px',
                             display: 'flex',
                             justifyContent: 'flex-start',
                           },
@@ -436,6 +439,7 @@ const AuditOffer = () => {
                               gap: '10px',
                               [theme.breakpoints.down('sm')]: {
                                 width: '280px',
+                                paddingRight: '5px',
                                 display: 'flex',
                                 justifyContent: 'flex-start',
                               },
@@ -463,6 +467,7 @@ const AuditOffer = () => {
                               gap: '10px',
                               [theme.breakpoints.down('sm')]: {
                                 width: '280px',
+                                paddingLeft: '5px',
                                 display: 'flex',
                                 justifyContent: 'flex-start',
                               },
@@ -633,6 +638,9 @@ const AuditOffer = () => {
                           fontWeight: 600,
                           borderRadius: '0 8px 8px 0',
                           fontSize: '20px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '3px',
                           [theme.breakpoints.down('md')]: {
                             height: '34.5px',
                             fontSize: '16px',
@@ -644,7 +652,8 @@ const AuditOffer = () => {
                         }
                         onClick={() => handleEditSaveConclusion()}
                       >
-                        + conclusion
+                        <AddIcon sx={{ width: '18px', height: '18px' }} />
+                        <span>conclusion</span>
                       </Button>
                     )
                   )}
@@ -1346,6 +1355,7 @@ const contactWrapper = theme => ({
   },
   [theme.breakpoints.down('xs')]: {
     flexDirection: 'column',
+    margin: 'unset',
     width: 'unset',
     alignItems: 'center',
     // gap: '10px',
