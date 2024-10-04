@@ -259,9 +259,7 @@ const StatusSeverityBlock = ({
                   <span>Category</span>
                 </Typography>
               )}
-              <Typography sx={statusBlockTitle}>
-                {values.category}qwdqw
-              </Typography>
+              <Typography sx={statusBlockTitle}>{values.category}</Typography>
             </Box>
           )
         )}
