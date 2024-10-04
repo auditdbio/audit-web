@@ -106,7 +106,7 @@ const EditDescription = ({ audit, auditRequest, hideChange, isPublic }) => {
                   >
                     {!hideChange &&
                       !isPublic &&
-                      audit?.status.toLowerCase() !==
+                      audit?.status?.toLowerCase() !==
                         RESOLVED.toLowerCase() && (
                         <Box>
                           <IconButton

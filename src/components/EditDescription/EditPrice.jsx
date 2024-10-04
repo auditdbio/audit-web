@@ -275,7 +275,7 @@ const EditPrice = ({
                   {!hideChange &&
                     !editPrice &&
                     !isPublic &&
-                    audit?.status.toLowerCase() !== RESOLVED.toLowerCase() && (
+                    audit?.status?.toLowerCase() !== RESOLVED.toLowerCase() && (
                       <Button
                         sx={{ minWidth: 'unset' }}
                         onClick={() => setEditPrice(!editPrice)}
