@@ -37,7 +37,7 @@ const UserFeedbacks = ({ feedbacks, setIsDetailsOpen }) => {
                   alt="User photo"
                   sx={avatarStyle}
                   src={
-                    fb.from?.avatar ? `${ASSET_URL}/${fb.from.avatar}` : null
+                    fb.from?.avatar ? `${ASSET_URL}/id/${fb.from.avatar}` : null
                   }
                 />
 

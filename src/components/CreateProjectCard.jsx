@@ -65,6 +65,7 @@ import {
   getSha,
 } from '../redux/actions/githubAction.js';
 import TotalPrice from './forms/TotalPrice/TotalPrice.jsx';
+import { PROJECT_PARENT_ENTITY } from '../services/file_constants.js';
 
 const GoBack = ({ role }) => {
   const location = useLocation();
@@ -417,6 +418,14 @@ const CreateProjectCard = ({ projectInfo }) => {
                       mdProps={{
                         view: { menu: true, md: true, html: !matchXs },
                       }}
+                      parentEntity={
+                        projectInfo?.id
+                          ? {
+                              id: projectInfo.id,
+                              source: PROJECT_PARENT_ENTITY,
+                            }
+                          : {}
+                      }
                     />
                     {touched.description && errors.description && (
                       <Typography

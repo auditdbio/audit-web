@@ -66,6 +66,7 @@ import ResolveAuditConfirmation from '../components/issuesPage/ResolveAuditConfi
 import Star from '../components/icons/Star.jsx';
 import AuditFeedbackModal from '../components/modal/AuditFeedbackModal.jsx';
 import EditPrice from '../components/EditDescription/EditPrice.jsx';
+import { AUDIT_PARENT_ENTITY } from '../services/file_constants.js';
 
 const AuditOffer = () => {
   const { auditId } = useParams();
@@ -411,14 +412,13 @@ const AuditOffer = () => {
                     id: audit?.id,
                     status: 'done',
                     report: audit?.report || '',
-                    report_name: audit?.report_name || '',
                   }}
                   validationSchema={SubmitValidation}
                   onSubmit={values => {
                     dispatch(addReportAudit(values));
                   }}
                 >
-                  {({ handleSubmit, setFieldValue }) => {
+                  {({ handleSubmit }) => {
                     return (
                       <Form onSubmit={handleSubmit} style={{ width: '100%' }}>
                         {audit?.status?.toLowerCase() ===
@@ -482,7 +482,6 @@ const AuditOffer = () => {
                                   auditReportName={audit?.report_name}
                                   customerId={audit?.customer_id}
                                   name="report"
-                                  setFieldValue={setFieldValue}
                                 />
                               </Box>
                             </Box>
@@ -624,6 +623,10 @@ const AuditOffer = () => {
                           md: !audit?.conclusion,
                           html: true,
                         },
+                      }}
+                      parentEntity={{
+                        id: audit?.id,
+                        source: AUDIT_PARENT_ENTITY,
                       }}
                     />
 

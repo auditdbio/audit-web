@@ -2,50 +2,44 @@ import React, { useState } from 'react';
 import Cookies from 'js-cookie';
 import axios from 'axios';
 import { ASSET_URL } from '../../../services/urls.js';
+import { OTHER_ENTITY } from '../../../services/file_constants.js';
 
-const ImageUploadPlugin = ({ editor }) => {
+const ImageUploadPlugin = ({ editor, config }) => {
   const [showMenu, setShowMenu] = useState(false);
   const [error, setError] = useState('');
   const [file, setFile] = useState(null);
   const formData = new FormData();
 
-  const handleClickIcon = () => {
-    setShowMenu(prev => !prev);
-  };
-
   const handleUploadImage = file => {
     const token = Cookies.get('token');
-    const path = +new Date() + file.name;
-
     if (file) {
       formData.append('file', file);
-      formData.append('path', path);
-      formData.append('original_name', file.name);
       formData.append('private', 'false');
+      formData.append('file_entity', OTHER_ENTITY);
+      // if (config && config.id) {
+      //   formData.append('parent_entity_id', config.id);
+      //   formData.append('parent_entity_source', config.source);
+      // }
     }
 
     axios
       .post(ASSET_URL, formData, {
         headers: { Authorization: 'Bearer ' + token },
       })
-      .then(() => {
-        editor.insertText(
-          `![](${ASSET_URL}/${path.replace(/ /g, '%20')} "image")`,
-        );
-        setFile(null);
+      .then(({ data }) => {
+        editor.insertText(`![](${ASSET_URL}/id/${data.id} "image")`);
         setShowMenu(false);
-        formData.delete('file');
-        formData.delete('path');
-        formData.delete('original_name');
-        formData.delete('private');
       })
       .catch(() => {
-        setFile(null);
         setError('Error while uploading file');
+      })
+      .finally(() => {
+        setFile(null);
         formData.delete('file');
-        formData.delete('path');
-        formData.delete('original_name');
         formData.delete('private');
+        formData.delete('file_entity');
+        formData.delete('parent_entity_id');
+        formData.delete('parent_entity_source');
       });
   };
 
@@ -70,9 +64,10 @@ const ImageUploadPlugin = ({ editor }) => {
     setFile(() => null);
     setShowMenu(() => false);
     formData.delete('file');
-    formData.delete('path');
-    formData.delete('original_name');
     formData.delete('private');
+    formData.delete('file_entity');
+    formData.delete('parent_entity_id');
+    formData.delete('parent_entity_source');
   };
 
   const handleDrop = e => {
@@ -92,6 +87,11 @@ const ImageUploadPlugin = ({ editor }) => {
 
   const handleDragOver = e => {
     e.preventDefault();
+  };
+
+  const handleClickIcon = () => {
+    handleCancel();
+    setShowMenu(prev => !prev);
   };
 
   return (

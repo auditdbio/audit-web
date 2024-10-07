@@ -62,7 +62,7 @@ const AuditorCard = ({ auditor }) => {
       />
 
       <Avatar
-        src={auditor.avatar && `${ASSET_URL}/${auditor.avatar}`}
+        src={auditor.avatar && `${ASSET_URL}/id/${auditor.avatar}`}
         alt={`${auditor?.first_name} photo`}
         sx={avatarStyle}
       />

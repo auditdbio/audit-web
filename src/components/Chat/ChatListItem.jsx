@@ -60,7 +60,7 @@ const ChatListItem = ({
     >
       <Box sx={avatarBorder(getRole())}>
         <Avatar
-          src={chat?.avatar ? `${ASSET_URL}/${chat?.avatar}` : null}
+          src={chat?.avatar ? `${ASSET_URL}/id/${chat?.avatar}` : null}
           alt="User photo"
           sx={avatarStyle}
         />

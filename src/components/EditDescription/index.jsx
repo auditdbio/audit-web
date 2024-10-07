@@ -19,6 +19,7 @@ import TagsField from '../forms/tags-field/tags-field.jsx';
 import { addTestsLabel } from '../../lib/helper.js';
 import AddLinkIcon from '@mui/icons-material/AddLink.js';
 import { TextField } from 'formik-mui';
+import { AUDIT_PARENT_ENTITY } from '../../services/file_constants.js';
 
 const EditDescription = ({ audit, auditRequest, hideChange, isPublic }) => {
   const [editMode, setEditMode] = useState(false);
@@ -77,8 +78,10 @@ const EditDescription = ({ audit, auditRequest, hideChange, isPublic }) => {
                           view: { menu: true, md: true, html: !matchXs },
                           style: editMarkdownSx(),
                         }}
-                        sx={{
-                          border: 'unset',
+                        sx={{ border: 'unset' }}
+                        parentEntity={{
+                          id: audit?.id,
+                          source: AUDIT_PARENT_ENTITY,
                         }}
                       />
                     </Box>
@@ -106,7 +109,7 @@ const EditDescription = ({ audit, auditRequest, hideChange, isPublic }) => {
                   >
                     {!hideChange &&
                       !isPublic &&
-                      audit?.status.toLowerCase() !==
+                      audit?.status?.toLowerCase() !==
                         RESOLVED.toLowerCase() && (
                         <Box>
                           <IconButton

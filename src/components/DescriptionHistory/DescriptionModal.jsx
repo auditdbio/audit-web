@@ -140,14 +140,18 @@ const DescriptionModal = ({
             >
               <Avatar
                 src={
-                  item.author.avatar ? `${ASSET_URL}/${item.author.avatar}` : ''
+                  item.author.avatar
+                    ? `${ASSET_URL}/id/${item.author.avatar}`
+                    : ''
                 }
               />
             </Badge>
           ) : (
             <Avatar
               src={
-                item.author.avatar ? `${ASSET_URL}/${item.author.avatar}` : ''
+                item.author.avatar
+                  ? `${ASSET_URL}/id/${item.author.avatar}`
+                  : ''
               }
             />
           )}
@@ -286,7 +290,7 @@ const DescriptionModal = ({
                 <Avatar
                   src={
                     (oldValue || compare).author.avatar
-                      ? `${ASSET_URL}/${(oldValue || compare).author.avatar}`
+                      ? `${ASSET_URL}/id/${(oldValue || compare).author.avatar}`
                       : ''
                   }
                 />
@@ -312,7 +316,7 @@ const DescriptionModal = ({
                   <Avatar
                     src={
                       item.author.avatar
-                        ? `${ASSET_URL}/${item.author.avatar}`
+                        ? `${ASSET_URL}/id/${item.author.avatar}`
                         : ''
                     }
                   />
