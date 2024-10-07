@@ -87,7 +87,7 @@ export const signUpGithub = data => {
               history.push(
                 {
                   pathname: auditData.length
-                    ? `profile/audits`
+                    ? `/profile/audits`
                     : `/${rolePrefix}/${responseData.user.id}`,
                 },
                 { some: true },
@@ -134,7 +134,7 @@ export const signIn = values => {
         history.push(
           {
             pathname: auditData.length
-              ? `profile/audits`
+              ? `/profile/audits`
               : `/${role}/${data.user.id}`,
           },
           { some: true },
@@ -429,7 +429,6 @@ export const changeRole = (role, id) => {
       .then(({ data: user }) => {
         dispatch({ type: SELECT_ROLE, payload: user });
         localStorage.setItem('user', JSON.stringify(user));
-
         if (user.is_new) {
           axios.patch(
             `${API_URL}/user/${user.id}`,
@@ -438,7 +437,25 @@ export const changeRole = (role, id) => {
           );
           history.push({ pathname: `/edit-profile` }, { some: true });
         } else {
-          history.push({ pathname: `/${role[0]}/${user.id}` }, { some: true });
+          axios
+            .get(
+              `${API_URL}/my_audit/${role === 'c' ? 'customer' : 'auditor'}`,
+              {
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                },
+              },
+            )
+            .then(({ data: auditData }) => {
+              history.push(
+                {
+                  pathname: auditData.length
+                    ? `/profile/audits`
+                    : `/${role}/${user.id}`,
+                },
+                { some: true },
+              );
+            });
         }
       });
   };
