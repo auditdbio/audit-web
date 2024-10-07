@@ -88,7 +88,7 @@ const AppRoutes = () => {
   }, [isAuth(), currentRole]);
 
   useEffect(() => {
-    if (organizations.length) {
+    if (organizations?.length) {
       dispatch(getAuditRequests());
     }
   }, [organizations]);

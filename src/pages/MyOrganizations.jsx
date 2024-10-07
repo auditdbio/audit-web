@@ -32,6 +32,7 @@ const MyOrganization = () => {
   const matchXxs = useMediaQuery(theme.breakpoints.down(590));
   const own = useSelector(s => s.organization.own);
   const organizations = useSelector(s => s.organization.includeMe);
+  const loading = useSelector(s => s.organization.loading);
 
   const {
     customer,
@@ -79,7 +80,7 @@ const MyOrganization = () => {
           </Button>
           <Box sx={innerWrapper}>
             <Box sx={contentWrapper}>
-              {!organizations.length || !own.length ? (
+              {loading && !organizations.length && !own.length ? (
                 <Box>
                   <Loader />
                 </Box>

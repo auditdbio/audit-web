@@ -95,6 +95,7 @@ const AvatarForm = ({ role, name, value, size }) => {
 
           const pngDataUrl = canvas.toDataURL('image/png');
           setPngUrl(pngDataUrl);
+          fieldHelper.setValue(pngDataUrl);
           URL.revokeObjectURL(url);
         };
         image.src = url;
@@ -111,10 +112,7 @@ const AvatarForm = ({ role, name, value, size }) => {
           .then(res => res.blob())
           .then(pngBlob => {
             formData.append('file', pngBlob, 'avatar.png');
-            formData.append(
-              'path',
-              user.id + user.current_role + pngUrl.slice(-9),
-            );
+            formData.append('path', user.id + user.current_role + Date.now());
             formData.append('original_name', 'avatar.png');
             formData.append('private', 'false');
             sendAvatar();
@@ -176,7 +174,11 @@ const AvatarForm = ({ role, name, value, size }) => {
     <>
       <Avatar
         sx={avatarSx}
-        src={avatarField.value && `${ASSET_URL}/${avatarField.value}`}
+        src={
+          !generateIcon()
+            ? avatarField.value
+            : avatarField.value && `${ASSET_URL}/${avatarField.value}`
+        }
       />
 
       <CustomSnackbar
@@ -220,7 +222,6 @@ const AvatarForm = ({ role, name, value, size }) => {
       {value && size && !generateIcon() && (
         <Box style={{ display: 'none' }}>
           <Box style={{ display: 'none' }}>
-            {/* Скрытый элемент для рендеринга SVG */}
             <svg
               ref={svgRef}
               width={size}
