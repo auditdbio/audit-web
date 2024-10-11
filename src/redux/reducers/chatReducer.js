@@ -3,6 +3,7 @@ import {
   CHAT_CLOSE_CURRENT_CHAT,
   CHAT_DELETE_MESSAGE,
   CHAT_GET_LIST,
+  CHAT_GET_LIST_ORG,
   CHAT_GET_MESSAGES,
   CHAT_NEW_MESSAGE,
   CHAT_SEND_FIRST_MESSAGE,
@@ -17,6 +18,7 @@ import {
 const initialState = {
   chatList: [],
   chatMessages: [],
+  orgChatList: [],
   currentChat: null,
   unreadMessages: 0,
   differentRoleUnreadMessages: 0,
@@ -37,6 +39,12 @@ export const chatReducer = (state = initialState, action) => {
             ? { ...message, text: JSON.stringify(action.payload) }
             : message,
         ),
+      };
+    }
+    case CHAT_GET_LIST_ORG: {
+      return {
+        ...state,
+        orgChatList: action.payload,
       };
     }
     case AUDIT_REQUEST_CREATE: {

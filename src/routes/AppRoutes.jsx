@@ -135,7 +135,7 @@ const AppRoutes = () => {
       dispatch(getChatList(currentRole));
       dispatch(getUnreadForDifferentRole());
     }
-  }, [currentRole]);
+  }, [currentRole, isAuth()]);
 
   useEffect(() => {
     return () => {

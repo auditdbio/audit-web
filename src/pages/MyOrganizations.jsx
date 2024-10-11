@@ -79,7 +79,7 @@ const MyOrganization = () => {
           </Button>
           <Box sx={innerWrapper}>
             <Box sx={contentWrapper}>
-              {!organizations.length || !own.length ? (
+              {!organizations.length && !own.length ? (
                 <Box>
                   <Loader />
                 </Box>

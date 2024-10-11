@@ -19,6 +19,7 @@ import {
 } from '../../redux/actions/chatActions.js';
 import AttachFileModal from './AttachFileModal.jsx';
 import Headings from '../../router/Headings.jsx';
+import { useSearchParams } from 'react-router-dom/dist';
 
 const CurrentChat = ({
   chatMessages,
@@ -30,7 +31,8 @@ const CurrentChat = ({
   const navigate = useNavigate();
   const { id } = useParams();
   const { user } = useSelector(s => s.user);
-
+  const [searchParams] = useSearchParams();
+  const orgId = searchParams.get('org');
   const [newMessage, setNewMessage] = useState('');
   const [attachModalIsOpen, setAttachModalIsOpen] = useState(false);
   const [displayedMessages, setDisplayedMessages] = useState(20);
@@ -43,6 +45,9 @@ const CurrentChat = ({
   const messageBoxRef = useRef();
   const newMessagesTextRef = useRef();
   const userLinkDataRef = useRef({});
+  const organization = useSelector(s =>
+    s.organization.organizations.find(el => el.id === orgId),
+  );
 
   useEffect(() => {
     if (

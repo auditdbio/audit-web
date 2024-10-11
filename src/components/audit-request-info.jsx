@@ -50,6 +50,7 @@ import Star from './icons/Star.jsx';
 import Currency from './icons/Currency.jsx';
 import { ASSET_URL } from '../services/urls.js';
 import ListItemButton from '@mui/material/ListItemButton';
+import TypeChat from './Chat/TypeChat.jsx';
 
 const AuditRequestInfo = ({
   project,
@@ -570,36 +571,39 @@ const AuditRequestInfo = ({
                 <ListItemText id={user.name} primary={user.name} />
               </ListItemButton>
             </ListItem>
-            {organizations.map(org => (
-              <ListItem
-                key={org.id}
-                disablePadding
-                disabled={
-                  !org.members
-                    .find(member => member.user_id === user.id)
-                    .access_level.some(level => level === 'Editor')
-                }
-                onClick={() => {
-                  if (
-                    org.members
-                      .find(member => member.user_id === user.id)
-                      .access_level.some(level => level === 'Editor')
-                  ) {
-                    handleChose(org);
-                  }
-                }}
-              >
-                <ListItemButton>
-                  <ListItemAvatar>
-                    <Avatar
-                      alt={org.name}
-                      src={org.avatar && `${ASSET_URL}/${org.avatar}`}
-                    />
-                  </ListItemAvatar>
-                  <ListItemText id={org.id} primary={org.name} />
-                </ListItemButton>
-              </ListItem>
-            ))}
+            {organizations.map(org => {
+              const member = org.members.find(
+                member => member.user_id === user.id,
+              );
+              const hasEditorAccess =
+                Array.isArray(member?.access_level) &&
+                member.access_level.some(level => level === 'Editor');
+
+              return (
+                <ListItem
+                  key={org.id}
+                  disablePadding
+                  disabled={!hasEditorAccess}
+                  onClick={() => {
+                    if (hasEditorAccess) {
+                      handleChose(org);
+                    }
+                  }}
+                >
+                  <ListItemButton>
+                    <ListItemAvatar>
+                      <Avatar
+                        alt={org.name}
+                        src={
+                          org.avatar ? `${ASSET_URL}/${org.avatar}` : undefined
+                        }
+                      />
+                    </ListItemAvatar>
+                    <ListItemText id={org.id} primary={org.name} />
+                  </ListItemButton>
+                </ListItem>
+              );
+            })}
           </List>
         </Popover>
         {showAcceptButton &&
@@ -615,15 +619,16 @@ const AuditRequestInfo = ({
               Accept
             </Button>
           )}
-        <Button
-          variant="text"
-          // sx={[buttonSx, messageButton]}
-          onClick={handleSendMessage}
-          disabled={project?.customer_id === user.id}
-          {...addTestsLabel('message-button')}
-        >
-          <ChatIcon />
-        </Button>
+        {/*<Button*/}
+        {/*  variant="text"*/}
+        {/*  // sx={[buttonSx, messageButton]}*/}
+        {/*  onClick={handleSendMessage}*/}
+        {/*  disabled={project?.customer_id === user.id}*/}
+        {/*  {...addTestsLabel('message-button')}*/}
+        {/*>*/}
+        {/*  <ChatIcon />*/}
+        {/*</Button>*/}
+        <TypeChat project={project} />
       </Box>
 
       <Modal

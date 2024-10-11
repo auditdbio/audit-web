@@ -58,6 +58,7 @@ export default function AuditorModal({
   const [mode, setMode] = useState('info');
   const [message, setMessage] = useState('');
   const [scope, setScope] = useState([]);
+  const { organizations, own } = useSelector(s => s.organization);
 
   const handleInvite = () => {
     if (user.current_role === CUSTOMER && isAuth() && myProjects.length) {
@@ -93,7 +94,7 @@ export default function AuditorModal({
 
   const handleSendMessage = () => {
     // TODO add check for pm or org chat
-    if (true) {
+    if (organizations.length || own.length) {
       setIsOpenType(true);
     } else {
       window.scrollTo(0, 0);
@@ -298,16 +299,17 @@ export default function AuditorModal({
                   Invite to project
                 </Button>
                 {!budge && (
-                  <Button
-                    variant="text"
-                    // sx={[findButton, messageButton]}
-                    onClick={handleSendMessage}
-                    disabled={auditor?.user_id === user.id}
-                    {...addTestsLabel('message-button')}
-                  >
-                    <ChatIcon />
-                    {isOpenType && <TypeChat />}
-                  </Button>
+                  // <Button
+                  //   variant="text"
+                  //   // sx={[findButton, messageButton]}
+                  //   onClick={handleSendMessage}
+                  //   disabled={auditor?.user_id === user.id}
+                  //   {...addTestsLabel('message-button')}
+                  // >
+                  //   <ChatIcon />
+                  //   {isOpenType && <TypeChat />}
+                  // </Button>
+                  <TypeChat auditor={auditor} />
                 )}
               </Box>
             </Box>

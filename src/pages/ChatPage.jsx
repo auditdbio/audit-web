@@ -1,19 +1,32 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
-import { Avatar, Box, Button, IconButton, useMediaQuery } from '@mui/material';
+import {
+  Avatar,
+  Box,
+  Button,
+  Divider,
+  IconButton,
+  Tooltip,
+  useMediaQuery,
+} from '@mui/material';
 import Layout from '../styles/Layout.jsx';
 import { CustomCard } from '../components/custom/Card';
 import ChatList from '../components/Chat/ChatList.jsx';
 import CurrentChat from '../components/Chat/CurrentChat.jsx';
-import { chatSetError, setCurrentChat } from '../redux/actions/chatActions.js';
+import {
+  chatSetError,
+  getChatListByOrg,
+  setCurrentChat,
+} from '../redux/actions/chatActions.js';
 import theme from '../styles/themes.js';
 import MenuIcon from '@mui/icons-material/Menu.js';
-import { useNavigate } from 'react-router-dom/dist';
+import { useNavigate, useSearchParams } from 'react-router-dom/dist';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack.js';
 import { AUDITOR, CUSTOMER } from '../redux/actions/types.js';
 import Headings from '../router/Headings.jsx';
 import CustomSnackbar from '../components/custom/CustomSnackbar.jsx';
+import { ASSET_URL } from '../services/urls.js';
 
 const ChatPage = () => {
   const dispatch = useDispatch();
@@ -22,12 +35,13 @@ const ChatPage = () => {
   const { id } = useParams();
   const matchXs = useMediaQuery(theme.breakpoints.down('xs'));
   const [chatListIsOpen, setChatListIsOpen] = useState(matchXs && !id);
-  const { chatList, chatMessages, currentChat, error } = useSelector(
-    s => s.chat,
-  );
+  const { chatList, chatMessages, currentChat, error, orgChatList } =
+    useSelector(s => s.chat);
   const { user } = useSelector(s => s.user);
   const { auditor } = useSelector(s => s.auditor);
   const { customer } = useSelector(s => s.customer);
+  const { organizations } = useSelector(s => s.organization);
+  const [searchParams, setSearchParams] = useSearchParams();
 
   useEffect(() => {
     if (
@@ -45,6 +59,14 @@ const ChatPage = () => {
       navigate(`/${role}/${user.id}`);
     }
   }, [user, auditor, customer]);
+
+  const profile = useMemo(() => {
+    if (user.current_role === AUDITOR) {
+      return auditor;
+    } else {
+      return customer;
+    }
+  }, [user.current_role]);
 
   useEffect(() => {
     if (id && !currentChat?.isNew) {
@@ -74,6 +96,29 @@ const ChatPage = () => {
     }
   };
 
+  const handleChoose = org => {
+    const newSearchParams = new URLSearchParams(searchParams);
+
+    if (org) {
+      newSearchParams.set('org', org.id);
+      navigate('/chat' + `?org=${org.id}`);
+      //
+    } else {
+      newSearchParams.delete('org');
+    }
+
+    if (newSearchParams.get('org') === 'undefined') {
+      newSearchParams.delete('org');
+      setSearchParams(newSearchParams);
+    }
+  };
+
+  useEffect(() => {
+    if (searchParams.get('org')) {
+      dispatch(getChatListByOrg(user.current_role, searchParams.get('org')));
+    }
+  }, [searchParams.get('org')]);
+
   return (
     <Layout sx={layoutSx}>
       <Headings title="Chat" noIndex={true} />
@@ -99,64 +144,67 @@ const ChatPage = () => {
             sx={{
               display: 'flex',
               flexDirection: 'column',
-              gap: '20px',
+              // gap: '10px',
               borderRight: '2px solid #e5e5e5',
-              padding: '10px 0',
+              padding: '13px 0 5px',
             }}
           >
-            <Box sx={{ padding: '8px' }}>
-              <Avatar
-                sx={{
-                  width: '65px',
-                  height: '60px',
-                  backgroundColor: theme.palette.primary.main,
-                }}
-              >
-                PM
-              </Avatar>
-            </Box>
-            <Box
-              sx={{
-                padding: '8px',
-                backgroundColor: 'rgba(255,153,0,0.69)',
-                borderRadius: '8px',
-              }}
-            >
-              <Avatar
-                sx={{
-                  width: '65px',
-                  height: '60px',
-                  backgroundColor: theme.palette.secondary.main,
-                }}
-              >
-                Org1
-              </Avatar>
-            </Box>
-            <Box sx={{ padding: '8px' }}>
-              <Avatar
-                sx={{
-                  width: '65px',
-                  height: '60px',
-                  backgroundColor: theme.palette.secondary.main,
-                }}
-              >
-                Org1
-              </Avatar>
-            </Box>
-            <Box sx={{ padding: '8px' }}>
-              <Avatar
-                sx={{
-                  width: '65px',
-                  height: '60px',
-                  backgroundColor: theme.palette.secondary.main,
-                }}
-              >
-                Org1
-              </Avatar>
-            </Box>
+            <Tooltip title={'Personal'} arrow placement={'top'}>
+              <>
+                <Box
+                  sx={[
+                    { padding: '5px' },
+                    !searchParams.get('org')
+                      ? selectedTab(
+                          theme,
+                          user.current_role.toLowerCase() ===
+                            AUDITOR.toLowerCase(),
+                        )
+                      : {},
+                  ]}
+                  onClick={handleChoose}
+                >
+                  <Avatar
+                    sx={{
+                      width: '65px',
+                      height: '60px',
+                    }}
+                    src={
+                      profile?.avatar ? `${ASSET_URL}/${profile.avatar}` : null
+                    }
+                  />
+                </Box>
+                <Divider />
+              </>
+            </Tooltip>
+            {organizations.map(org => (
+              <Tooltip title={org.name} key={org.id} arrow placement={'top'}>
+                <Box
+                  sx={[
+                    { padding: '5px' },
+                    searchParams.get('org') === org.id
+                      ? selectedTab(
+                          theme,
+                          user.current_role.toLowerCase() ===
+                            AUDITOR.toLowerCase(),
+                        )
+                      : {},
+                  ]}
+                  onClick={() => handleChoose(org)}
+                >
+                  <Avatar
+                    sx={{
+                      width: '65px',
+                      height: '60px',
+                    }}
+                    src={org?.avatar ? `${ASSET_URL}/${org.avatar}` : null}
+                  />
+                </Box>
+              </Tooltip>
+            ))}
           </Box>
           <ChatList
-            chatList={chatList}
+            chatList={!searchParams.get('org') ? chatList : orgChatList}
             chatListIsOpen={chatListIsOpen}
             setChatListIsOpen={setChatListIsOpen}
           />
@@ -198,6 +246,12 @@ const layoutSx = theme => ({
   [theme.breakpoints.down('xs')]: {
     paddingY: '20px !important',
   },
+});
+
+const selectedTab = (theme, primary) => ({
+  backgroundColor: primary
+    ? theme.palette.primary.main
+    : theme.palette.primary.main,
 });
 
 const wrapper = theme => ({
