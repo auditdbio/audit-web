@@ -92,11 +92,13 @@ const CreateEditOrganizationForm = ({
         validationSchema={EditOrganizationSchema}
         validateOnBlur={false}
         validateOnChange={false}
-        onSubmit={(values, { resetForm }) => {
+        enableReinitialize={true}
+        onSubmit={(values, { resetForm, setSubmitting }) => {
+          setSubmitting(true);
           setIsDirty(false);
           if (!values.id) {
             if (
-              organization.organization_type?.toLowerCase() !==
+              values.organization_type?.toLowerCase() !==
               user.current_role?.toLowerCase()
             ) {
               dispatch(
@@ -171,7 +173,12 @@ const CreateEditOrganizationForm = ({
                       flexDirection: 'column',
                     }}
                   >
-                    <AvatarForm name="avatar" role={role} />
+                    <AvatarForm
+                      size={500}
+                      value={values.name}
+                      name="avatar"
+                      role={role}
+                    />
                   </Box>
                   {matchSm && (
                     <Box sx={[fieldWrapper, { width: '100%' }]}>
