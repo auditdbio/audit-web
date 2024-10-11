@@ -653,7 +653,7 @@ const AuditOffer = () => {
                         onClick={() => handleEditSaveConclusion()}
                       >
                         <AddIcon sx={{ width: '18px', height: '18px' }} />
-                        <span>conclusion</span>
+                        <span>Сonclusion</span>
                       </Button>
                     )
                   )}
@@ -1197,7 +1197,7 @@ const headInfoSx = theme => ({
   flexWrap: 'wrap',
   justifyContent: 'center',
   [theme.breakpoints.down('sm')]: {
-    gap: 'unset',
+    gap: '10px',
   },
 });
 
