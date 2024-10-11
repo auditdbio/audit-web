@@ -9,7 +9,14 @@ import InputAdornment from '@mui/material/InputAdornment';
 import SearchIcon from '@mui/icons-material/Search';
 import Autocomplete from '@mui/material/Autocomplete';
 import { useEffect, useState } from 'react';
-import { Paper, Slider, Typography } from '@mui/material';
+import {
+  Avatar,
+  Checkbox,
+  FormControlLabel,
+  Paper,
+  Slider,
+  Typography,
+} from '@mui/material';
 import AuditorSearchListBox from './custom/AuditorSearchListBox.jsx';
 import IconButton from '@mui/material/IconButton';
 import { ArrowBack } from '@mui/icons-material';
@@ -28,7 +35,12 @@ import { useParams } from 'react-router-dom';
 import { addTestsLabel } from '../lib/helper.js';
 import CustomSnackbar from './custom/CustomSnackbar.jsx';
 import PriceCalculation from './PriceCalculation.jsx';
+import { ASSET_URL } from '../services/urls.js';
 import TotalPrice from './forms/TotalPrice/TotalPrice.jsx';
+import { addUserInOrganization } from '../redux/actions/organizationAction.js';
+import { AUDITOR } from '../redux/actions/types.js';
+import { searchCustomers } from '../redux/actions/customerAction.js';
+import Radio from '@mui/material/Radio';
 
 export default function AuditorSearchModal({
   open,
@@ -36,14 +48,18 @@ export default function AuditorSearchModal({
   handleSubmit,
   setState,
   setError,
+  invite,
 }) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { id } = useParams();
   const auditorReducer = useSelector(state => state.auditor.auditors);
+  const customersReducer = useSelector(state => state.customer.customers);
   const projectReducer = useSelector(state => state.project);
   const customerReducer = useSelector(state => state.customer);
   const [selectedAuditor, setSelectedAuditor] = useState({});
+  const organization = useSelector(s => s.organization.organization);
+  const [rulesOfMember, setRulesOfMember] = useState(false);
 
   const [openDrop, setOpenDrop] = useState(false);
   const [mode, setMode] = useState('search');
@@ -52,8 +68,18 @@ export default function AuditorSearchModal({
   const [query, setQuery] = useState('');
 
   useEffect(() => {
-    dispatch(getAuditors(query, 15));
-  }, [query]);
+    if (organization.id) {
+      if (
+        organization.organization_type.toLowerCase() === AUDITOR.toLowerCase()
+      ) {
+        dispatch(getAuditors(query, 15));
+      } else {
+        dispatch(searchCustomers({ search: query, perPage: 15 }));
+      }
+    } else {
+      dispatch(getAuditors(query, 15));
+    }
+  }, [query, organization.id]);
 
   const handleInputChange = event => {
     setQuery(event.target.value);
@@ -61,12 +87,35 @@ export default function AuditorSearchModal({
 
   const handleOptionChange = option => {
     setSelectedAuditor(option);
-    setMode('offer');
+    if (invite) {
+      setMode('invite');
+    } else {
+      setMode('offer');
+    }
+  };
+
+  const handleInviteUser = () => {
+    const data = [
+      {
+        user_id: selectedAuditor.user_id,
+        access_level: rulesOfMember ? 'Editor' : '',
+      },
+    ];
+    dispatch(
+      addUserInOrganization(organization.link_id, data, organization.id),
+    );
+    setMode('search');
+    setQuery('');
+    handleClose();
   };
 
   const handleSearch = async () => {
-    await setState(true);
-    handleSubmit();
+    if (setState) {
+      await setState(true);
+    }
+    if (handleSubmit) {
+      handleSubmit();
+    }
     await navigate(`/auditors?search=${query}&projectIdToInvite=${id}`);
   };
 
@@ -75,7 +124,7 @@ export default function AuditorSearchModal({
       {mode === 'search' && (
         <DialogContent sx={modalWindow}>
           <Box sx={fieldButtonContainer}>
-            {auditorReducer && (
+            {(auditorReducer || customersReducer) && (
               <Autocomplete
                 open={openDrop}
                 onOpen={() => {
@@ -94,7 +143,9 @@ export default function AuditorSearchModal({
                 }}
                 freeSolo
                 onChange={handleOptionChange}
-                options={auditorReducer}
+                options={
+                  !!auditorReducer.length ? auditorReducer : customersReducer
+                }
                 onKeyDown={e => {
                   if (e.key === 'Enter') {
                     handleSearch();
@@ -172,7 +223,9 @@ export default function AuditorSearchModal({
             validateOnBlur={false}
             validateOnChange={false}
             onSubmit={async values => {
-              await handleSubmit();
+              if (handleSubmit) {
+                await handleSubmit();
+              }
               const newValue = {
                 ...values,
                 total_cost: parseInt(values.total_cost),
@@ -186,7 +239,11 @@ export default function AuditorSearchModal({
                 if (values.auditor_id !== values.customer_id) {
                   dispatch(createRequest(newValue));
                 } else {
-                  setError('You cannot create an audit request with yourself');
+                  if (setError) {
+                    setError(
+                      'You cannot create an audit request with yourself',
+                    );
+                  }
                 }
                 handleClose();
               }
@@ -269,6 +326,86 @@ export default function AuditorSearchModal({
               );
             }}
           </Formik>
+        </DialogContent>
+      )}
+      {mode === 'invite' && (
+        <DialogContent sx={offerDialogStyle}>
+          <Box>
+            <IconButton
+              onClick={() => {
+                setMode('search');
+              }}
+              {...addTestsLabel('go-back-button')}
+            >
+              <ArrowBack style={{ color: 'orange' }} />
+            </IconButton>
+          </Box>
+          <Box sx={{ p: '15px' }}>
+            <Typography variant={'h4'} sx={{ fontWeight: 500 }}>
+              Current organization
+            </Typography>
+            <Box
+              sx={{
+                display: 'flex',
+                gap: '10px',
+                alignItems: 'center',
+                marginY: '15px',
+              }}
+            >
+              <Avatar src={`${ASSET_URL}/${organization.avatar}`} />
+              <Typography variant={'h5'}>{organization.name}</Typography>
+            </Box>
+            <Typography variant={'h5'} sx={{ fontWeight: 500 }}>
+              {`Rules for ${selectedAuditor.first_name} in the organization`}
+            </Typography>
+
+            <Box
+              sx={{
+                mt: '10px',
+                display: 'flex',
+                justifyContent: 'center',
+                gap: '20px',
+              }}
+            >
+              {/*<FormControlLabel*/}
+              {/*  value="Representative"*/}
+              {/*  control={<Checkbox />}*/}
+              {/*  label="Representative"*/}
+              {/*  labelPlacement="top"*/}
+              {/*  onChange={e => {*/}
+              {/*    setRulesOfMember({*/}
+              {/*      ...rulesOfMember,*/}
+              {/*      representative: e.target.checked,*/}
+              {/*    });*/}
+              {/*  }}*/}
+              {/*/>*/}
+              <FormControlLabel
+                value="Editor"
+                control={
+                  <Radio
+                    onClick={e => {
+                      setRulesOfMember(!rulesOfMember);
+                    }}
+                    checked={rulesOfMember}
+                  />
+                }
+                label="Editor"
+                labelPlacement="top"
+              />
+            </Box>
+            <Button
+              variant={'contained'}
+              sx={{
+                textTransform: 'unset',
+                display: 'block',
+                marginX: 'auto',
+                marginTop: '20px',
+              }}
+              onClick={handleInviteUser}
+            >
+              Invite
+            </Button>
+          </Box>
         </DialogContent>
       )}
     </Dialog>

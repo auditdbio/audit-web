@@ -33,6 +33,7 @@ import {
   AUDITOR,
   CUSTOMER,
   GET_AUDITS,
+  CREATE_ORGANIZATION,
 } from './types.js';
 import { getAudits, savePublicReport } from './auditAction.js';
 import { isAuth } from '../../lib/helper.js';
@@ -62,7 +63,7 @@ export const signUpGithub = data => {
           { headers: { Authorization: `Bearer ${responseData.token}` } },
         );
 
-        setToken(responseData.token); // Используем правильный токен
+        setToken(responseData.token);
         dispatch({ type: USER_SIGNIN, payload: responseData });
         localStorage.setItem('user', JSON.stringify(responseData.user));
         history.push({ pathname: `/edit-profile` }, { some: true });
@@ -98,7 +99,7 @@ export const signUpGithub = data => {
     } catch (error) {
       const { response } = error;
       dispatch({ type: SIGN_IN_ERROR, payload: 'Sign In Failed' });
-      console.error('Sign In Error:', response); // Добавляем вывод ошибки для отладки
+      console.error('Sign In Error:', response);
     }
   };
 };
@@ -563,6 +564,49 @@ export const changeRolePublicAuditorNoRedirect = (role, id) => {
       .then(({ data }) => {
         dispatch({ type: SELECT_ROLE, payload: data });
         localStorage.setItem('user', JSON.stringify(data));
+      });
+  };
+};
+
+export const changeRoleCreateOrganization = (role, id, value, navigateTo) => {
+  return dispatch => {
+    axios
+      .patch(
+        `${API_URL}/user/${id}`,
+        { current_role: role },
+        {
+          headers: {
+            Authorization: 'Bearer ' + Cookies.get('token'),
+            'Content-Type': 'application/json',
+          },
+        },
+      )
+      .then(({ data }) => {
+        dispatch({ type: SELECT_ROLE, payload: data });
+        localStorage.setItem('user', JSON.stringify(data));
+        const token = Cookies.get('token');
+        if (data?.name) {
+          axios
+            .post(`${API_URL}/organization`, value, {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            })
+            .then(({ data: orgData }) => {
+              dispatch({ type: CREATE_ORGANIZATION, payload: orgData });
+              if (navigateTo) {
+                history.push(
+                  { pathname: `${data.current_role[0]}/${data.id}` },
+                  { some: true },
+                );
+              }
+            })
+            .catch(({ response }) => {
+              console.log(response, 'res');
+            });
+        } else {
+          history.push({ pathname: '/edit-profile' }, { some: true });
+        }
       });
   };
 };

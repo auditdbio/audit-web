@@ -1,9 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  useMemo,
+  useCallback,
+} from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useField } from 'formik';
 import axios from 'axios';
 import Cookies from 'js-cookie';
-import { Avatar, Button, useMediaQuery } from '@mui/material';
+import { Avatar, Box, Button, useMediaQuery } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit.js';
 import ClearIcon from '@mui/icons-material/Clear';
 import { AUDITOR } from '../../../redux/actions/types.js';
@@ -13,14 +19,28 @@ import CustomSnackbar from '../../custom/CustomSnackbar.jsx';
 import { addTestsLabel } from '../../../lib/helper.js';
 import { updateAuditor } from '../../../redux/actions/auditorAction.js';
 import { updateCustomer } from '../../../redux/actions/customerAction.js';
+import * as jdenticon from 'jdenticon';
 
-const AvatarForm = ({ role, name }) => {
+const AvatarForm = ({ role, name, value, size }) => {
   const dispatch = useDispatch();
   const matchXxs = useMediaQuery(theme.breakpoints.down('xxs'));
   const { user } = useSelector(state => state.user);
   const [avatarField, , fieldHelper] = useField(name);
   const formData = new FormData();
   const [error, setError] = useState(null);
+  const svgRef = useRef(null);
+  const [pngUrl, setPngUrl] = useState('');
+  const [deletedAvatar, setDeletedAvatar] = useState(false);
+
+  const generateIcon = useCallback(() => {
+    const value = avatarField.value.toString();
+
+    if (value === '' || value.startsWith('data:image/png;base64')) {
+      return false;
+    }
+
+    return true;
+  }, [avatarField.value]);
 
   const sendAvatar = (withSave = false) => {
     axios
@@ -52,6 +72,60 @@ const AvatarForm = ({ role, name }) => {
         formData.delete('private');
       });
   };
+
+  useEffect(() => {
+    if (!generateIcon() && !deletedAvatar) {
+      if (svgRef.current) {
+        jdenticon.update(svgRef.current);
+
+        const svgString = new XMLSerializer().serializeToString(svgRef.current);
+        const svgBlob = new Blob([svgString], {
+          type: 'image/svg+xml;charset=utf-8',
+        });
+        const url = URL.createObjectURL(svgBlob);
+
+        const image = new Image();
+        image.onload = () => {
+          const canvas = document.createElement('canvas');
+          canvas.width = size;
+          canvas.height = size;
+          const ctx = canvas.getContext('2d');
+
+          ctx.drawImage(image, 0, 0, size, size);
+
+          const pngDataUrl = canvas.toDataURL('image/png');
+          setPngUrl(pngDataUrl);
+          fieldHelper.setValue(pngDataUrl);
+          URL.revokeObjectURL(url);
+        };
+        image.src = url;
+      }
+    } else {
+      setDeletedAvatar(false);
+    }
+  }, [value, size, generateIcon]);
+
+  useEffect(() => {
+    const saveImage = setTimeout(() => {
+      if (pngUrl) {
+        fetch(pngUrl)
+          .then(res => res.blob())
+          .then(pngBlob => {
+            formData.append('file', pngBlob, 'avatar.png');
+            formData.append('path', user.id + user.current_role + Date.now());
+            formData.append('original_name', 'avatar.png');
+            formData.append('private', 'false');
+            sendAvatar();
+          })
+          .catch(err => {
+            console.error('Error converting PNG to Blob:', err);
+            setError('Error uploading avatar image');
+          });
+      }
+    }, 2000);
+
+    return () => clearTimeout(saveImage);
+  }, [pngUrl]);
 
   const handleUpdateAvatar = e => {
     const file = e.target.files[0];
@@ -93,13 +167,18 @@ const AvatarForm = ({ role, name }) => {
 
   const deletePhoto = () => {
     fieldHelper.setValue('');
+    setDeletedAvatar(true);
   };
 
   return (
     <>
       <Avatar
         sx={avatarSx}
-        src={avatarField.value && `${ASSET_URL}/${avatarField.value}`}
+        src={
+          !generateIcon()
+            ? avatarField.value
+            : avatarField.value && `${ASSET_URL}/${avatarField.value}`
+        }
       />
 
       <CustomSnackbar
@@ -140,6 +219,18 @@ const AvatarForm = ({ role, name }) => {
         onChange={handleUpdateAvatar}
         type="file"
       />
+      {value && size && !generateIcon() && (
+        <Box style={{ display: 'none' }}>
+          <Box style={{ display: 'none' }}>
+            <svg
+              ref={svgRef}
+              width={size}
+              height={size}
+              data-jdenticon-value={value}
+            ></svg>
+          </Box>
+        </Box>
+      )}
     </>
   );
 };

@@ -15,6 +15,7 @@ import CustomSnackbar from '../components/custom/CustomSnackbar.jsx';
 import { isAuth } from '../lib/helper.js';
 import PublicProfile from './Public-profile.jsx';
 import NotFound from './Not-Found.jsx';
+import Organization from '../components/Organization.jsx';
 
 const ProfilePage = () => {
   const dispatch = useDispatch();
@@ -31,21 +32,25 @@ const ProfilePage = () => {
   }, [tab]);
 
   if (linkId && role) {
-    if (/^c|a$/i.test(role)) {
-      const userLinkId =
-        user?.current_role === AUDITOR ? auditor?.link_id : customer?.link_id;
-      if (
-        !isAuth() ||
-        (user?.id &&
-          linkId.toLowerCase() !== userLinkId?.toLowerCase() &&
-          linkId.toLowerCase() !== user?.id)
-      ) {
-        return <PublicProfile />;
-      } else if (
-        (user?.current_role === AUDITOR && !/^a$/i.test(role)) ||
-        (user?.current_role === CUSTOMER && !/^c$/i.test(role))
-      ) {
-        return <PublicProfile notFoundRedirect={false} />;
+    if (/^c|a|o$/i.test(role)) {
+      if (role !== 'o') {
+        const userLinkId =
+          user?.current_role === AUDITOR ? auditor?.link_id : customer?.link_id;
+        if (
+          !isAuth() ||
+          (user?.id &&
+            linkId.toLowerCase() !== userLinkId?.toLowerCase() &&
+            linkId.toLowerCase() !== user?.id)
+        ) {
+          return <PublicProfile />;
+        } else if (
+          (user?.current_role === AUDITOR && !/^a$/i.test(role)) ||
+          (user?.current_role === CUSTOMER && !/^c$/i.test(role))
+        ) {
+          return <PublicProfile notFoundRedirect={false} />;
+        }
+      } else {
+        return <Organization linkId={linkId} />;
       }
     } else {
       return <NotFound />;

@@ -1,10 +1,11 @@
 import React from 'react';
 import { Box } from '@mui/material';
 import theme from '../../styles/themes.js';
-
-const InfoCard = ({ children, role = 'customer' }) => {
+const InfoCard = ({ children, role = 'customer', sx }) => {
   return (
-    <Box sx={[cardWrapper, role === 'customer' ? customerStyle : auditorStyle]}>
+    <Box
+      sx={[cardWrapper, role === 'customer' ? customerStyle : auditorStyle, sx]}
+    >
       {children}
     </Box>
   );

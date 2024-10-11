@@ -1,5 +1,5 @@
 import React from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Field, Form, Formik } from 'formik';
 import * as Yup from 'yup';
 import dayjs from 'dayjs';
@@ -29,6 +29,7 @@ const OfferModal = ({
   stayHere,
 }) => {
   const dispatch = useDispatch();
+  const auditorReducer = useSelector(s => s.auditor.auditor);
 
   return (
     <Box sx={modalWrapper}>
@@ -43,8 +44,9 @@ const OfferModal = ({
         validationSchema={MakeOfferSchema}
         validator={() => ({})}
         initialValues={{
-          auditor_id: auditor?.user_id,
-          auditor_contacts: { ...auditor?.contacts },
+          auditor_organization: auditor?.id,
+          auditor_id: auditorReducer?.user_id,
+          auditor_contacts: { ...auditorReducer?.contacts },
           customer_contacts: { ...project?.creator_contacts },
           customer_id: project?.customer_id,
           last_changer: user.current_role,
@@ -66,7 +68,6 @@ const OfferModal = ({
         onSubmit={values => {
           const newValue = {
             ...values,
-            auditor_id: auditor?.user_id,
             auditor_contacts: { ...auditor?.contacts },
             price: parseInt(values.price),
             total_cost: parseInt(values.total_cost),

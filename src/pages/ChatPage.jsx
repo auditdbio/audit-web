@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
-import { Box, Button, IconButton, useMediaQuery } from '@mui/material';
+import { Avatar, Box, Button, IconButton, useMediaQuery } from '@mui/material';
 import Layout from '../styles/Layout.jsx';
 import { CustomCard } from '../components/custom/Card';
 import ChatList from '../components/Chat/ChatList.jsx';
@@ -95,6 +95,66 @@ const ChatPage = () => {
           <ArrowBackIcon />
         </Button>
         <Box sx={chatWrapper}>
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '20px',
+              borderRight: '2px solid #e5e5e5',
+              padding: '10px 0',
+            }}
+          >
+            <Box sx={{ padding: '8px' }}>
+              <Avatar
+                sx={{
+                  width: '65px',
+                  height: '60px',
+                  backgroundColor: theme.palette.primary.main,
+                }}
+              >
+                PM
+              </Avatar>
+            </Box>
+            <Box
+              sx={{
+                padding: '8px',
+                backgroundColor: 'rgba(255,153,0,0.69)',
+                borderRadius: '8px',
+              }}
+            >
+              <Avatar
+                sx={{
+                  width: '65px',
+                  height: '60px',
+                  backgroundColor: theme.palette.secondary.main,
+                }}
+              >
+                Org1
+              </Avatar>
+            </Box>
+            <Box sx={{ padding: '8px' }}>
+              <Avatar
+                sx={{
+                  width: '65px',
+                  height: '60px',
+                  backgroundColor: theme.palette.secondary.main,
+                }}
+              >
+                Org1
+              </Avatar>
+            </Box>
+            <Box sx={{ padding: '8px' }}>
+              <Avatar
+                sx={{
+                  width: '65px',
+                  height: '60px',
+                  backgroundColor: theme.palette.secondary.main,
+                }}
+              >
+                Org1
+              </Avatar>
+            </Box>
+          </Box>
           <ChatList
             chatList={chatList}
             chatListIsOpen={chatListIsOpen}
@@ -145,6 +205,7 @@ const wrapper = theme => ({
   padding: '20px 40px 100px',
   position: 'relative',
   display: 'flex',
+  maxWidth: 'unset',
   flexDirection: 'column',
   alignItems: 'flex-start',
   gap: '15px',
