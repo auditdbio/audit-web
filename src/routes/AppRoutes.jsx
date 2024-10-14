@@ -58,7 +58,6 @@ import { refreshToken } from '../redux/actions/userAction.js';
 import PublicAuditInfo from '../pages/PublicAuditInfo.jsx';
 
 const AppRoutes = () => {
-  const { token } = useSelector(s => s.user);
   const currentRole = useSelector(s => s.user.user.current_role);
   const customer = useSelector(s => s.customer.customer);
   const auditor = useSelector(s => s.auditor.auditor);
@@ -67,10 +66,15 @@ const AppRoutes = () => {
   const [isOpen, setIsOpen] = React.useState(false);
 
   useEffect(() => {
+    const refreshInterval = setInterval(() => {
+      dispatch(refreshToken());
+    }, 10_000_000);
+
     if (isAuth()) {
       dispatch(getUnreadMessages());
       dispatch(refreshToken());
     }
+    return () => clearInterval(refreshInterval);
   }, [isAuth()]);
 
   useEffect(() => {
@@ -81,7 +85,7 @@ const AppRoutes = () => {
         dispatch(getAudits(currentRole));
       }
     }
-  }, [token, currentRole, isAuth()]);
+  }, [currentRole, isAuth()]);
 
   useEffect(() => {
     if (isAuth()) {
