@@ -21,6 +21,7 @@ const initialState = {
   invites: [],
   notFound: false,
   successMessage: '',
+  loading: true,
 };
 
 export const organizationReducer = (state = initialState, action) => {
@@ -32,6 +33,7 @@ export const organizationReducer = (state = initialState, action) => {
         own: action.payload.owner,
         includeMe: action.payload.member,
         invites: action.payload.invites,
+        loading: false,
       };
     case ADD_MEMBER_IN_ORGANIZATION:
       return {

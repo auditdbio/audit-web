@@ -32,6 +32,7 @@ const MyOrganization = () => {
   const matchXxs = useMediaQuery(theme.breakpoints.down(590));
   const own = useSelector(s => s.organization.own);
   const organizations = useSelector(s => s.organization.includeMe);
+  const loading = useSelector(s => s.organization.loading);
 
   const {
     customer,
@@ -112,9 +113,12 @@ const MyOrganization = () => {
                                     <CardMedia
                                       sx={{ height: 140, borderRadius: '7px' }}
                                       image={
-                                        org.avatar
-                                          ? `${ASSET_URL}/${org.avatar}`
-                                          : ''
+                                        org.avatar &&
+                                        org.avatar.startsWith(
+                                          'data:image/png;base64',
+                                        )
+                                          ? org.avatar
+                                          : `${ASSET_URL}/${org.avatar}`
                                       }
                                       title={org.name}
                                     />
@@ -186,9 +190,12 @@ const MyOrganization = () => {
                                     <CardMedia
                                       sx={{ height: 140, borderRadius: '7px' }}
                                       image={
-                                        org.avatar
-                                          ? `${ASSET_URL}/${org.avatar}`
-                                          : ''
+                                        org.avatar &&
+                                        org.avatar.startsWith(
+                                          'data:image/png;base64',
+                                        )
+                                          ? org.avatar
+                                          : `${ASSET_URL}/${org.avatar}`
                                       }
                                       title={org.name}
                                     />
