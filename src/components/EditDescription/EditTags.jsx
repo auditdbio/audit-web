@@ -141,6 +141,7 @@ const EditTags = ({ audit, confirmed, hideChange, isPublic }) => {
                 )}
                 {!hideChange &&
                   !editTags &&
+                  !isPublic &&
                   audit?.status?.toLowerCase() !== RESOLVED.toLowerCase() && (
                     <EditButton
                       handleClick={() => setEditTags(!editTags)}

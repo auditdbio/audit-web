@@ -274,6 +274,7 @@ const EditPrice = ({
                   </Modal>
                   {!hideChange &&
                     !editPrice &&
+                    !isPublic &&
                     audit?.status?.toLowerCase() !== RESOLVED.toLowerCase() && (
                       <Button
                         sx={{ minWidth: 'unset' }}

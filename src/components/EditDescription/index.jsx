@@ -105,6 +105,7 @@ const EditDescription = ({ audit, auditRequest, hideChange, isPublic }) => {
                     }}
                   >
                     {!hideChange &&
+                      !isPublic &&
                       audit?.status?.toLowerCase() !==
                         RESOLVED.toLowerCase() && (
                         <Box>

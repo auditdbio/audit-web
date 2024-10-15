@@ -1016,7 +1016,7 @@ const AuditOffer = () => {
                     return (
                       <Form onSubmit={handleSubmit}>
                         {!auditDBWorkflow &&
-                          audit?.status.toLowerCase() !==
+                          audit?.status?.toLowerCase() !==
                             WAITING_FOR_AUDITS.toLowerCase() && (
                             <Box sx={fileWrapper}>
                               <Typography sx={subTitleSx}>
