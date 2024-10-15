@@ -519,9 +519,12 @@ const AuditOffer = () => {
                     <EditPrice audit={audit} user={user} role={role} />
                     <Box
                       sx={[
-                        { display: 'flex', gap: '10px' },
+                        { display: 'flex', gap: '10px!important' },
                         contactWrapper,
-                        { marginTop: 'unset', flexDirection: 'row!important' },
+                        {
+                          marginTop: 'unset!important',
+                          flexDirection: 'row!important',
+                        },
                       ]}
                     >
                       {audit?.customer_contacts?.email && (
