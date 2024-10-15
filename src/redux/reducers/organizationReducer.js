@@ -9,11 +9,13 @@ import {
   NOT_FOUND_ORGANIZATION,
   ADD_MEMBER_IN_ORGANIZATION,
   CLEAR_MESSAGES,
+  GET_ORGANIZATIONS,
 } from '../actions/types.js';
 
 const initialState = {
   organizations: [],
   own: [],
+  searchOrganizations: [],
   includeMe: [],
   organization: {},
   invites: [],
@@ -36,6 +38,12 @@ export const organizationReducer = (state = initialState, action) => {
         ...state,
         successMessage: 'User successfully invited',
       };
+    case GET_ORGANIZATIONS: {
+      return {
+        ...state,
+        searchOrganizations: action.payload.result,
+      };
+    }
     case CLEAR_MESSAGES:
       return {
         ...state,

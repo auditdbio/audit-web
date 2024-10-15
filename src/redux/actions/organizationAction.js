@@ -6,13 +6,17 @@ import {
   CLEAR_ORGANIZATION,
   CREATE_ORGANIZATION,
   DELETE_INVITES,
+  GET_AUDITORS,
   GET_MY_ORGANIZATION,
   GET_ORGANIZATION_AUDIT_REQUESTS,
   GET_ORGANIZATION_BY_ID,
+  GET_ORGANIZATIONS,
   NOT_FOUND_ORGANIZATION,
   UPDATE_ORGANIZATION,
 } from './types.js';
 import { history } from '../../services/history.js';
+import createSearchValues from '../../lib/createSearchValues.js';
+import { isAuth } from '../../lib/helper.js';
 
 const API_URL = import.meta.env.VITE_API_BASE_URL;
 
@@ -78,6 +82,25 @@ export const getMyOrganizations = () => {
       })
       .catch(({ response }) => {
         console.log(response, 'res');
+      });
+  };
+};
+
+export const searchOrganization = (values, badges = true) => {
+  const queryString = createSearchValues(values, 'Organization');
+
+  return dispatch => {
+    const token = Cookies.get('token');
+    axios
+      .get(
+        `${API_URL}/search?${queryString}`,
+        isAuth() ? { headers: { Authorization: `Bearer ${token}` } } : {},
+      )
+      .then(({ data }) => {
+        dispatch({ type: GET_ORGANIZATIONS, payload: data });
+      })
+      .catch(({ response }) => {
+        console.error(response, 'res');
       });
   };
 };

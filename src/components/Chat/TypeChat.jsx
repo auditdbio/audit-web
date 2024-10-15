@@ -29,7 +29,7 @@ const TypeChat = ({ auditor, project }) => {
   const myCustomer = useSelector(s => s.customer.customer);
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  // console.log(myAuditor, myCustomer);
+
   const handleClose = () => {
     setAnchorEl(null);
   };
@@ -191,7 +191,7 @@ const TypeChat = ({ auditor, project }) => {
           >
             <ListItemAvatar>
               <Avatar
-                src={myUser.avatar ? `${ASSET_URL}/${myUser.avatar}` : ''}
+                src={myUser?.avatar ? `${ASSET_URL}/${myUser?.avatar}` : ''}
               />
             </ListItemAvatar>
             <ListItemText primary={'Personal message'} />

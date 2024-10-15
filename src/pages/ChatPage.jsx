@@ -5,6 +5,7 @@ import {
   Avatar,
   Box,
   Button,
+  Collapse,
   Divider,
   IconButton,
   Tooltip,
@@ -27,6 +28,7 @@ import { AUDITOR, CUSTOMER } from '../redux/actions/types.js';
 import Headings from '../router/Headings.jsx';
 import CustomSnackbar from '../components/custom/CustomSnackbar.jsx';
 import { ASSET_URL } from '../services/urls.js';
+import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrowLeft';
 
 const ChatPage = () => {
   const dispatch = useDispatch();
@@ -42,6 +44,8 @@ const ChatPage = () => {
   const { customer } = useSelector(s => s.customer);
   const { organizations } = useSelector(s => s.organization);
   const [searchParams, setSearchParams] = useSearchParams();
+  const orgId = searchParams.get('org');
+  const [open, setOpen] = useState(false);
 
   useEffect(() => {
     if (
@@ -61,28 +65,43 @@ const ChatPage = () => {
   }, [user, auditor, customer]);
 
   const profile = useMemo(() => {
-    if (user.current_role === AUDITOR) {
+    if (user.current_role.toLowerCase() === AUDITOR.toLowerCase()) {
       return auditor;
     } else {
       return customer;
     }
-  }, [user.current_role]);
+  }, [user.current_role, auditor, customer]);
 
   useEffect(() => {
     if (id && !currentChat?.isNew) {
       const chat = chatList.find(chat => chat.id === id);
+      const chatOrg = orgChatList?.find(chat => chat.id === id);
       const members = chat?.members.map(member => member.id);
+      const orgMembers = chatOrg?.members.map(member => member.id);
       const role = chat?.members.find(member => member.id !== user.id)?.role;
-
-      if (chat) {
-        dispatch(
-          setCurrentChat(chat?.id, {
-            name: chat?.name,
-            avatar: chat?.avatar,
-            role,
-            members,
-          }),
-        );
+      const orgRole = chatOrg?.members.find(
+        member => member.id !== user.id,
+      )?.role;
+      if (chat || chatOrg) {
+        if (orgId) {
+          dispatch(
+            setCurrentChat(chatOrg?.id, {
+              name: chatOrg?.name,
+              avatar: chatOrg?.avatar,
+              orgRole,
+              orgMembers,
+            }),
+          );
+        } else {
+          dispatch(
+            setCurrentChat(chat?.id, {
+              name: chat?.name,
+              avatar: chat?.avatar,
+              role,
+              members,
+            }),
+          );
+        }
       }
     }
   }, [id, chatList.length]);
@@ -115,7 +134,7 @@ const ChatPage = () => {
 
   useEffect(() => {
     if (searchParams.get('org')) {
-      dispatch(getChatListByOrg(user.current_role, searchParams.get('org')));
+      dispatch(getChatListByOrg('Organization', searchParams.get('org')));
     }
   }, [searchParams.get('org')]);
 
@@ -140,74 +159,87 @@ const ChatPage = () => {
           <ArrowBackIcon />
         </Button>
         <Box sx={chatWrapper}>
-          <Box
-            sx={{
-              display: 'flex',
-              flexDirection: 'column',
-              // gap: '10px',
-              borderRight: '2px solid #e5e5e5',
-              padding: '13px 0 5px',
-            }}
-          >
-            <Tooltip title={'Personal'} arrow placement={'top'}>
-              <>
-                <Box
-                  sx={[
-                    { padding: '5px' },
-                    !searchParams.get('org')
-                      ? selectedTab(
-                          theme,
-                          user.current_role.toLowerCase() ===
-                            AUDITOR.toLowerCase(),
-                        )
-                      : {},
-                  ]}
-                  onClick={handleChoose}
-                >
-                  <Avatar
-                    sx={{
-                      width: '65px',
-                      height: '60px',
-                    }}
-                    src={
-                      profile?.avatar ? `${ASSET_URL}/${profile.avatar}` : null
-                    }
-                  />
-                </Box>
-                <Divider />
-              </>
-            </Tooltip>
-            {organizations.map(org => (
-              <Tooltip title={org.name} key={org.id} arrow placement={'top'}>
-                <Box
-                  sx={[
-                    { padding: '5px' },
-                    searchParams.get('org') === org.id
-                      ? selectedTab(
-                          theme,
-                          user.current_role.toLowerCase() ===
-                            AUDITOR.toLowerCase(),
-                        )
-                      : {},
-                  ]}
-                  onClick={() => handleChoose(org)}
-                >
-                  <Avatar
-                    sx={{
-                      width: '65px',
-                      height: '60px',
-                    }}
-                    src={org?.avatar ? `${ASSET_URL}/${org.avatar}` : null}
-                  />
-                </Box>
-              </Tooltip>
-            ))}
+          <Box sx={leftSideSx}>
+            <Button
+              sx={{
+                position: 'absolute',
+                left: '-40px',
+                minWidth: '40px',
+                width: '40px',
+                transform: `rotate(${open ? '0deg' : '180deg'})`,
+              }}
+              onClick={() => setOpen(!open)}
+            >
+              <KeyboardDoubleArrowLeftIcon
+                sx={{ width: '30px', height: '30px' }}
+              />
+            </Button>
+            <Collapse in={open} orientation="horizontal">
+              <Box sx={orgListSx}>
+                <Tooltip title={'Personal'} arrow placement={'top'}>
+                  <>
+                    <Box
+                      sx={[
+                        { padding: '5px' },
+                        !searchParams.get('org')
+                          ? selectedTab(
+                              theme,
+                              user.current_role.toLowerCase() ===
+                                AUDITOR.toLowerCase(),
+                            )
+                          : {},
+                      ]}
+                      onClick={handleChoose}
+                    >
+                      <Avatar
+                        sx={orgAvatarSx}
+                        src={
+                          profile?.avatar
+                            ? `${ASSET_URL}/${profile.avatar}`
+                            : null
+                        }
+                      />
+                    </Box>
+                    {/*<Divider />*/}
+                  </>
+                </Tooltip>
+                {organizations.map(org => (
+                  <Tooltip
+                    title={org.name}
+                    key={org.id}
+                    arrow
+                    placement={'top'}
+                  >
+                    <Box
+                      sx={[
+                        { padding: '5px' },
+                        searchParams.get('org') === org.id
+                          ? selectedTab(
+                              theme,
+                              user.current_role.toLowerCase() ===
+                                AUDITOR.toLowerCase(),
+                            )
+                          : {},
+                      ]}
+                      onClick={() => handleChoose(org)}
+                    >
+                      <Avatar
+                        sx={orgAvatarSx}
+                        src={org?.avatar ? `${ASSET_URL}/${org.avatar}` : null}
+                      />
+                    </Box>
+                  </Tooltip>
+                ))}
+              </Box>
+            </Collapse>
+            <ChatList
+              openOrgList={open}
+              orgId={searchParams.get('org')}
+              chatList={!searchParams.get('org') ? chatList : orgChatList}
+              chatListIsOpen={chatListIsOpen}
+              setChatListIsOpen={setChatListIsOpen}
+            />
           </Box>
-          <ChatList
-            chatList={!searchParams.get('org') ? chatList : orgChatList}
-            chatListIsOpen={chatListIsOpen}
-            setChatListIsOpen={setChatListIsOpen}
-          />
           {id ? (
             <CurrentChat
               chatMessages={chatMessages}
@@ -242,15 +274,51 @@ const ChatPage = () => {
 export default ChatPage;
 
 const layoutSx = theme => ({
-  paddingY: '40px !important',
-  [theme.breakpoints.down('xs')]: {
-    paddingY: '20px !important',
+  padding: '40px !important',
+  [theme.breakpoints.down('md')]: {
+    padding: '20px 0 !important',
   },
+});
+
+const orgListSx = theme => ({
+  display: 'flex',
+  flexDirection: 'column',
+  width: '85px',
+  borderRight: '2px solid #e5e5e5',
+  padding: '0 0 5px',
+  overflowY: 'auto',
+  overflowX: 'hidden',
+  height: '100%',
+  '::-webkit-scrollbar': {
+    width: '0px',
+  },
+  [theme.breakpoints.down('md')]: {
+    width: '73px',
+  },
+});
+
+const leftSideSx = theme => ({
+  width: '30%',
+  display: 'flex',
+  justifyContent: 'end',
+  [theme.breakpoints.down('xs')]: {
+    width: 'unset',
+  },
+});
+
+const orgAvatarSx = theme => ({
+  width: '73px',
+  height: '73px',
+  [theme.breakpoints.down('md')]: {
+    width: '60px',
+    height: '60px',
+  },
+  // backgroundColor: '#fff',
 });
 
 const selectedTab = (theme, primary) => ({
   backgroundColor: primary
-    ? theme.palette.primary.main
+    ? theme.palette.secondary.main
     : theme.palette.primary.main,
 });
 
@@ -264,12 +332,13 @@ const wrapper = theme => ({
   alignItems: 'flex-start',
   gap: '15px',
   [theme.breakpoints.down('sm')]: {
-    padding: '30px 30px 50px',
+    // padding: '30px 30px 50px',
     minHeight: '300px',
   },
   [theme.breakpoints.down('xs')]: {
-    padding: '20px 15px 50px',
+    padding: '20px 40px 50px',
     minHeight: '300px',
+    borderRadius: 'unset',
   },
 });
 
@@ -285,6 +354,9 @@ const chatWrapper = {
 const selectLabelWrapper = {
   position: 'relative',
   width: '70%',
+  // [theme.breakpoints.down(1760)]: {
+  //   width: '65%',
+  // },
   [theme.breakpoints.down('sm')]: {
     width: '100%',
   },

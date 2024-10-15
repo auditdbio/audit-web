@@ -11,7 +11,7 @@ import ImageMessage from './ImageMessage.jsx';
 import AuditRequestInfo from '../audit-request-info.jsx';
 import AuditMessage from './AuditMessage.jsx';
 
-const Message = ({ message, user, currentChat, isRead, type }) => {
+const Message = ({ message, user, currentChat, isRead, type, orgId }) => {
   const { customer } = useSelector(state => state.customer);
   const { auditor } = useSelector(state => state.auditor);
 
@@ -26,8 +26,14 @@ const Message = ({ message, user, currentChat, isRead, type }) => {
   }, [user.current_role, customer?.avatar, auditor?.avatar]);
 
   const getMessageAvatar = () => {
-    if (message?.from?.id === user?.id) {
-      return userAvatar ? `${ASSET_URL}/${userAvatar}` : null;
+    if (orgId) {
+      if (message?.from?.id === orgId) {
+        return userAvatar ? `${ASSET_URL}/${userAvatar}` : null;
+      }
+    } else {
+      if (message?.from?.id === user?.id) {
+        return userAvatar ? `${ASSET_URL}/${userAvatar}` : null;
+      }
     }
     return currentChat?.avatar ? `${ASSET_URL}/${currentChat.avatar}` : null;
   };
@@ -54,7 +60,13 @@ const Message = ({ message, user, currentChat, isRead, type }) => {
   };
 
   return (
-    <Box sx={messageSx({ isOwn: message.from?.id === user.id })}>
+    <Box
+      sx={messageSx({
+        isOwn: orgId
+          ? message.from?.id === orgId
+          : message.from?.id === user.id,
+      })}
+    >
       <Avatar src={getMessageAvatar()} sx={messageAvatarSx} alt="User photo" />
       <Box
         sx={

@@ -151,6 +151,7 @@ export const chatSendMessage = (
         role: fromRole,
         text,
         kind,
+        from_org_id: from_org_id,
       };
     }
 

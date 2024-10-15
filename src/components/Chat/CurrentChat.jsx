@@ -15,6 +15,7 @@ import {
   chatSendMessage,
   closeCurrentChat,
   getChatList,
+  getChatListByOrg,
   getChatMessages,
 } from '../../redux/actions/chatActions.js';
 import AttachFileModal from './AttachFileModal.jsx';
@@ -59,12 +60,17 @@ const CurrentChat = ({
       setChatId(currentChat?.chatId);
       dispatch(getChatMessages(currentChat.chatId, user.id));
     }
-  }, [currentChat, chatId]);
+  }, [currentChat, chatId, orgId]);
 
   useEffect(() => {
     if (currentChat?.chatId && id !== currentChat?.chatId) {
-      navigate(`/chat/${currentChat?.chatId}`);
-      dispatch(getChatList(user.current_role));
+      if (!orgId) {
+        navigate(`/chat/${currentChat?.chatId}`);
+        dispatch(getChatList(user.current_role));
+      } else {
+        navigate(`/chat/${currentChat?.chatId}?org=${orgId}`);
+        dispatch(getChatListByOrg('Organization', orgId));
+      }
     }
   }, [currentChat?.chatId]);
 
@@ -136,12 +142,22 @@ const CurrentChat = ({
   const handleSend = () => {
     if (!newMessage.trim()) return;
 
+    // dispatch(
+    //   chatSendMessage(
+    //     newMessage.trim(),
+    //     { id: currentChat?.chatId, role: currentChat?.role },
+    //     user.current_role,
+    //     currentChat?.isNew,
+    //   ),
+    // );
     dispatch(
       chatSendMessage(
         newMessage.trim(),
         { id: currentChat?.chatId, role: currentChat?.role },
-        user.current_role,
+        orgId ? 'Organization' : user.current_role,
         currentChat?.isNew,
+        'Text',
+        orgId && orgId,
       ),
     );
     setNewMessage('');
@@ -269,6 +285,7 @@ const CurrentChat = ({
                     {unreadLabel && <Box sx={newMessagesSx}>New messages:</Box>}
                     <Message
                       user={user}
+                      orgId={orgId}
                       message={msg}
                       currentChat={currentChat}
                       isRead={isInterlocutorRead}
@@ -335,7 +352,7 @@ const wrapper = theme => ({
   width: '70%',
   display: 'flex',
   flexDirection: 'column',
-  [theme.breakpoints.down('sm')]: {
+  [theme.breakpoints.down('xs')]: {
     width: '100%',
   },
 });

@@ -16,6 +16,7 @@ const ChatListItem = ({
   isNew = false,
   userDataId = false,
   role,
+  orgId,
 }) => {
   const dispatch = useDispatch();
 
@@ -54,7 +55,7 @@ const ChatListItem = ({
     <Link
       sx={wrapper}
       component={RouterLink}
-      to={`/chat/${chat?.id}`}
+      to={orgId ? `/chat/${chat?.id}?org=${orgId}` : `/chat/${chat?.id}`}
       onClick={setChatHandle}
       {...addTestsLabel('chat-link')}
     >

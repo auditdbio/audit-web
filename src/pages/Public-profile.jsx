@@ -48,6 +48,7 @@ import UserFeedbacks from '../components/UserFeedbacks.jsx';
 import WalletConnectIcon from '../components/icons/WalletConnectIcon.jsx';
 import { getPublicAuditsAuditor } from '../redux/actions/auditAction.js';
 import ProjectCardList from '../components/Project-card-list.jsx';
+import TypeChat from '../components/Chat/TypeChat.jsx';
 
 const PublicProfile = ({ notFoundRedirect = true }) => {
   const navigate = useNavigate();
@@ -550,16 +551,17 @@ const PublicProfile = ({ notFoundRedirect = true }) => {
             {data.kind !== 'badge' &&
               isAuth() &&
               data?.user_id !== user?.id && (
-                <Button
-                  variant="text"
-                  color={role === AUDITOR ? 'secondary' : 'primary'}
-                  sx={buttonSx}
-                  disabled={data?.user_id === user?.id}
-                  onClick={() => handleSendMessage(data)}
-                  {...addTestsLabel('message-button')}
-                >
-                  <ChatIcon />
-                </Button>
+                // <Button
+                //   variant="text"
+                //   color={role === AUDITOR ? 'secondary' : 'primary'}
+                //   sx={buttonSx}
+                //   disabled={data?.user_id === user?.id}
+                //   onClick={() => handleSendMessage(data)}
+                //   {...addTestsLabel('message-button')}
+                // >
+                //   <ChatIcon />
+                // </Button>
+                <TypeChat auditor={data} />
               )}
           </Box>
           {role === AUDITOR && (
