@@ -10,6 +10,7 @@ import CustomLink from '../../custom/CustomLink.jsx';
 import theme from '../../../styles/themes.js';
 import TagsField from '../../forms/tags-field/tags-field.jsx';
 import { useFormik, useFormikContext } from 'formik';
+import { AUDIT_PARENT_ENTITY } from '../../../services/file_constants.js';
 
 const DescriptionBlock = ({
   editMode,
@@ -93,6 +94,14 @@ const DescriptionBlock = ({
                 : 'Issue description',
             style: markdownSx(matchXs),
           }}
+          parentEntity={
+            audit?.id
+              ? {
+                  id: audit.id,
+                  source: AUDIT_PARENT_ENTITY,
+                }
+              : null
+          }
         />
       </Box>
 
@@ -194,6 +203,10 @@ const DescriptionBlock = ({
               style: isEditFeedback
                 ? { ...feedbackMarkdownSx, height: '238px' }
                 : feedbackMarkdownSx,
+            }}
+            parentEntity={{
+              id: audit?.id,
+              source: AUDIT_PARENT_ENTITY,
             }}
           />
           {(user.current_role === CUSTOMER || isPublic) && (

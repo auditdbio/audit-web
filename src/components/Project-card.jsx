@@ -172,7 +172,7 @@ const ProjectCard = ({ type, project, currentRole, isPublic }) => {
             <Avatar
               src={
                 project?.customer_avatar
-                  ? `${ASSET_URL}/${project?.customer_avatar}`
+                  ? `${ASSET_URL}/id/${project?.customer_avatar}`
                   : ''
               }
             />

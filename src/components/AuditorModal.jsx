@@ -158,7 +158,7 @@ export default function AuditorModal({
                 }}
               >
                 <Avatar
-                  src={auditor.avatar && `${ASSET_URL}/${auditor.avatar}`}
+                  src={auditor.avatar && `${ASSET_URL}/id/${auditor.avatar}`}
                   sx={avatarStyle}
                   alt={`${auditor.first_name} photo`}
                 />

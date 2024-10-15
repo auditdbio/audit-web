@@ -204,7 +204,7 @@ const CurrentChat = ({
               <Avatar
                 src={
                   currentChat?.avatar
-                    ? `${ASSET_URL}/${currentChat.avatar}`
+                    ? `${ASSET_URL}/id/${currentChat.avatar}`
                     : null
                 }
                 sx={avatarStyle}

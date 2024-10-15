@@ -28,7 +28,6 @@ import {
   getPublicReport,
   startAudit,
 } from '../redux/actions/auditAction.js';
-import AuditUpload from '../components/forms/audit-upload/index.jsx';
 import Loader from '../components/Loader.jsx';
 import {
   AUDITOR,

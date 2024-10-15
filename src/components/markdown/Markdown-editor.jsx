@@ -47,6 +47,7 @@ const MarkdownEditor = ({
   isPublic,
   fastSave,
   sx,
+  parentEntity = {},
 }) => {
   const [markdownField, meta, markdownHelper] = useField(name);
   const [markdown, setMarkdown] = useState('');
@@ -56,9 +57,12 @@ const MarkdownEditor = ({
     MdEditor.use(MarkdownInlineMath);
     MdEditor.use(MarkdownMath);
     MdEditor.use(MarkdownCheckedList);
-    MdEditor.use(ImageUploadPlugin);
+
+    MdEditor.unuse(ImageUploadPlugin);
+    MdEditor.use(ImageUploadPlugin, parentEntity);
+
     plugins.forEach(plugin => MdEditor.use(plugin));
-  }, []);
+  }, [parentEntity]);
 
   useEffect(() => {
     setMarkdown(markdownField.value);

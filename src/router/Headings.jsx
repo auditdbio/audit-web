@@ -4,7 +4,7 @@ import { ASSET_URL, BASE_URL } from '../services/urls.js';
 
 const Headings = ({ title, description, image, noIndex = false }) => {
   const pageTitle = title ? `${title} | AuditDB` : 'AuditDB';
-  const logo = image ? `${ASSET_URL}/${image}` : `${BASE_URL}logo_short.svg`;
+  const logo = image ? `${ASSET_URL}/id/${image}` : `${BASE_URL}logo_short.svg`;
   const pageDescription = description || import.meta.env.VITE_META_DESCRIPTION;
 
   return (

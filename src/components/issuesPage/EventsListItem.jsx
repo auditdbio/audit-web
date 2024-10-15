@@ -30,9 +30,11 @@ const EventsListItem = ({ event, idx, issue, issueRefs, auditPartner }) => {
 
   const getAvatarURL = event => {
     if (user?.id === event.user) {
-      return userAvatar ? `${ASSET_URL}/${userAvatar}` : '';
+      return userAvatar ? `${ASSET_URL}/id/${userAvatar}` : '';
     } else {
-      return auditPartner?.avatar ? `${ASSET_URL}/${auditPartner?.avatar}` : '';
+      return auditPartner?.avatar
+        ? `${ASSET_URL}/id/${auditPartner?.avatar}`
+        : '';
     }
   };
 

@@ -13,6 +13,7 @@ import CustomSnackbar from '../../custom/CustomSnackbar.jsx';
 import { addTestsLabel } from '../../../lib/helper.js';
 import { updateAuditor } from '../../../redux/actions/auditorAction.js';
 import { updateCustomer } from '../../../redux/actions/customerAction.js';
+import { AVATAR_ENTITY } from '../../../services/file_constants.js';
 
 const AvatarForm = ({ role, name }) => {
   const dispatch = useDispatch();
@@ -27,8 +28,8 @@ const AvatarForm = ({ role, name }) => {
       .post(ASSET_URL, formData, {
         headers: { Authorization: 'Bearer ' + Cookies.get('token') },
       })
-      .then(() => {
-        const avatar = formData.get('path');
+      .then(({ data }) => {
+        const avatar = data.id;
         fieldHelper.setValue(avatar);
         if (withSave) {
           if (role === AUDITOR) {
@@ -47,9 +48,11 @@ const AvatarForm = ({ role, name }) => {
       })
       .finally(() => {
         formData.delete('file');
-        formData.delete('path');
-        formData.delete('original_name');
         formData.delete('private');
+        formData.delete('original_name');
+        formData.delete('file_entity');
+        formData.delete('parent_entity_id');
+        formData.delete('parent_entity_source');
       });
   };
 
@@ -61,9 +64,11 @@ const AvatarForm = ({ role, name }) => {
         return setError('File size is too big');
       } else {
         formData.append('file', file);
-        formData.append('path', user.id + user.current_role + file.name);
-        formData.append('original_name', file.name);
         formData.append('private', 'false');
+        formData.append('file_entity', AVATAR_ENTITY);
+        formData.append('parent_entity_id', user.id);
+        formData.append('parent_entity_source', user.current_role);
+
         sendAvatar();
       }
     }
@@ -76,15 +81,13 @@ const AvatarForm = ({ role, name }) => {
 
       if (isThirdPartyImage) {
         axios.get(avatarLink, { responseType: 'blob' }).then(({ data }) => {
-          const filename =
-            user.id +
-            user.current_role +
-            Date.now() +
-            data.type.replace(/image\//, '.');
+          const filename = user.id + data.type.replace(/image\//, '.');
           formData.append('file', data);
-          formData.append('path', filename);
-          formData.append('original_name', filename);
           formData.append('private', 'false');
+          formData.append('original_name', filename);
+          formData.append('file_entity', AVATAR_ENTITY);
+          formData.append('parent_entity_id', user.id);
+          formData.append('parent_entity_source', user.current_role);
           sendAvatar(true);
         });
       }
@@ -93,13 +96,14 @@ const AvatarForm = ({ role, name }) => {
 
   const deletePhoto = () => {
     fieldHelper.setValue('');
+    // TODO: add delete file request
   };
 
   return (
     <>
       <Avatar
         sx={avatarSx}
-        src={avatarField.value && `${ASSET_URL}/${avatarField.value}`}
+        src={avatarField.value && `${ASSET_URL}/id/${avatarField.value}`}
       />
 
       <CustomSnackbar
