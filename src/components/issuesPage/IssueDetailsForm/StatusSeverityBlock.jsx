@@ -50,8 +50,13 @@ const StatusSeverityBlock = ({
 
   return (
     <Box sx={issueStatusBlock}>
-      <Box sx={[issueWrapperSx, !editMode ? { gap: '30px!important' } : {}]}>
-        <Box sx={[issueInnerWrapperSx, blockSx]}>
+      <Box
+        sx={[
+          issueWrapperSx(theme, !!issue),
+          !editMode ? { gap: '30px!important' } : {},
+        ]}
+      >
+        <Box sx={[issueInnerWrapperSx, blockSx(theme, !!issue)]}>
           <Box sx={statusBlockAlign}>
             <Typography
               onClick={() => isPublic && setStatusListOpen(true)}
@@ -116,7 +121,7 @@ const StatusSeverityBlock = ({
 
         {(user.current_role !== CUSTOMER || isPublic) &&
         audit?.status?.toLowerCase() !== RESOLVED.toLowerCase() ? (
-          <Box sx={[severityWrapper, blockSx]}>
+          <Box sx={[severityWrapper, blockSx(theme, !!issue)]}>
             <Typography
               sx={[statusBlockTitle, { cursor: 'pointer' }]}
               onClick={() => {
@@ -183,7 +188,13 @@ const StatusSeverityBlock = ({
             </Field>
           </Box>
         ) : (
-          <Box sx={[statusBlockAlign, { pointerEvents: 'none' }, blockSx]}>
+          <Box
+            sx={[
+              statusBlockAlign,
+              { pointerEvents: 'none' },
+              blockSx(theme, !!issue),
+            ]}
+          >
             <Typography sx={statusBlockTitle}>
               <span>Severity</span>
             </Typography>
@@ -194,7 +205,18 @@ const StatusSeverityBlock = ({
         {(user.current_role === AUDITOR || isPublic) &&
         !hideControl &&
         audit?.status?.toLowerCase() !== RESOLVED.toLowerCase() ? (
-          <Box sx={blockSx}>
+          <Box
+            sx={[
+              blockSx(theme, !!issue),
+              !!issue
+                ? {}
+                : {
+                    [theme.breakpoints.down(751)]: {
+                      width: '40%',
+                    },
+                  },
+            ]}
+          >
             <Typography sx={[statusBlockTitle]}>
               <span>Category</span>
             </Typography>
@@ -255,7 +277,7 @@ const StatusSeverityBlock = ({
           </Box>
         ) : (
           values.category && (
-            <Box sx={[statusBlockAlign, blockSx]}>
+            <Box sx={[statusBlockAlign, blockSx(theme, !!issue)]}>
               {!isPublic && (
                 <Typography sx={statusBlockTitle}>
                   <span>Category</span>
@@ -270,7 +292,7 @@ const StatusSeverityBlock = ({
           user.current_role === AUDITOR &&
           !isPublic &&
           !hideControl && (
-            <Box sx={[statusBlockAlign, includeSx, blockSx]}>
+            <Box sx={[statusBlockAlign, includeSx, blockSx(theme, !!issue)]}>
               <FormControlLabel
                 label={
                   <Typography sx={{ fontSize: '20px', fontWeight: 500 }}>
@@ -388,7 +410,7 @@ const includeSx = theme => ({
   },
 });
 //
-const issueWrapperSx = theme => ({
+const issueWrapperSx = (theme, issue) => ({
   display: 'flex',
   gap: '35px',
   alignItems: 'flex-start',
@@ -404,11 +426,13 @@ const issueWrapperSx = theme => ({
     // alignItems: 'unset',
     // gap: '25px',
   },
-  [theme.breakpoints.down(451)]: {
-    flexDirection: 'column',
-    alignItems: 'center',
-    gap: '25px!important',
-  },
+  ...(issue && {
+    [theme.breakpoints.down(451)]: {
+      flexDirection: 'column',
+      alignItems: 'center',
+      gap: '25px!important',
+    },
+  }),
 });
 
 const issueInnerWrapperSx = theme => ({
@@ -461,19 +485,19 @@ const severityWrapper = {
   },
 };
 
-const blockSx = theme => ({
+const blockSx = (theme, issue) => ({
   width: '200px',
   [theme.breakpoints.down('sm')]: {
     width: '190px',
   },
   [theme.breakpoints.down(751)]: {
-    width: '50%',
+    width: issue ? '50%' : '30%',
     boxSizing: 'border-box',
     padding: '10px',
     alignItems: 'center!important',
   },
   [theme.breakpoints.down(451)]: {
-    width: '100%',
+    width: issue ? '100%' : '50%!important',
     boxSizing: 'unset',
     padding: 'unset',
     alignItems: 'center!important',
