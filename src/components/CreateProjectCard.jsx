@@ -545,6 +545,9 @@ const mainBox = theme => ({
   display: 'flex',
   flexDirection: 'column',
   paddingTop: '40px',
+  '& .editor-container': {
+    borderBottom: 'unset!important',
+  },
   [theme.breakpoints.down('xs')]: {
     paddingTop: '30x',
   },

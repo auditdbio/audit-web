@@ -42,6 +42,11 @@ import {
 } from '../../redux/actions/userAction.js';
 import theme from '../../styles/themes.js';
 import { BASE_URL } from '../../services/urls.js';
+import UnfoldMoreIcon from '@mui/icons-material/UnfoldMore';
+import DraftsIcon from '@mui/icons-material/Drafts';
+import NoteAddIcon from '@mui/icons-material/NoteAdd';
+import DiscloseIcon from '../icons/DiscloseIcon.jsx';
+import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf.js';
 
 const Control = ({
   issues,
@@ -236,7 +241,8 @@ const Control = ({
               sx={[buttonSx, { marginRight: '0!important' }, publicBtnSx]}
               onClick={handleGenerateReport}
             >
-              Generate report
+              {/*Generate report*/}
+              <PictureAsPdfIcon />
             </Button>
           )}
           {!saved && (
@@ -272,7 +278,8 @@ const Control = ({
                 sx={[buttonSx, (isPublic || saved) && xss ? publicBtnSx : {}]}
                 onClick={handleGenerateReport}
               >
-                Generate report
+                {/*Generate report*/}
+                <PictureAsPdfIcon />
               </Button>
             </Box>
           )}
@@ -295,7 +302,8 @@ const Control = ({
               sx={[buttonSx, (isPublic || saved) && xss ? publicBtnSx : {}]}
               onClick={handleGenerateReport}
             >
-              Generate report
+              {/*Generate report*/}
+              <PictureAsPdfIcon />
             </Button>
           )}
 
@@ -326,95 +334,205 @@ const Control = ({
             {audit?.status?.toLowerCase() !== RESOLVED.toLowerCase() ? (
               <>
                 <Box sx={issueActionWrapperSx}>
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    sx={[
-                      buttonSx,
-                      (isPublic || saved) && xss ? publicBtnSx : {},
-                      isPublic || saved ? singleButtonSx : {},
-                    ]}
-                    disabled={
-                      audit?.status?.toLowerCase() === RESOLVED.toLowerCase()
-                    }
-                    onClick={handleNewIssue}
-                    {...addTestsLabel('new-issue-button')}
-                  >
-                    New issue
-                  </Button>
-                  {user.current_role === AUDITOR && !saved && !isPublic && (
-                    <Button
-                      variant="contained"
-                      color="secondary"
-                      sx={[
-                        buttonSx,
-                        (isPublic || saved) && xss ? publicBtnSx : {},
-                      ]}
-                      disabled={checkDraftIssues()}
-                      onClick={handleDiscloseAll}
-                    >
-                      Disclose all
-                    </Button>
+                  {audit?.status?.toLowerCase() === RESOLVED.toLowerCase() ? (
+                    <Tooltip arrow placement="top" title={'New issue'}>
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        sx={[
+                          buttonSx,
+                          {
+                            backgroundColor: 'rgba(0, 0, 0, 0.12)',
+                            '&:hover': {
+                              backgroundColor: 'rgba(0, 0, 0, 0.12)',
+                            },
+                          },
+                          (isPublic || saved) && xss ? publicBtnSx : {},
+                          isPublic || saved ? singleButtonSx : {},
+                        ]}
+                        // onClick={handleNewIssue}
+                        {...addTestsLabel('new-issue-button')}
+                      >
+                        {/*New issue*/}
+                        <NoteAddIcon />
+                      </Button>
+                    </Tooltip>
+                  ) : (
+                    <Tooltip arrow placement="top" title={'New issue'}>
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        sx={[
+                          buttonSx,
+                          (isPublic || saved) && xss ? publicBtnSx : {},
+                          isPublic || saved ? singleButtonSx : {},
+                        ]}
+                        disabled={
+                          audit?.status?.toLowerCase() ===
+                          RESOLVED.toLowerCase()
+                        }
+                        onClick={handleNewIssue}
+                        {...addTestsLabel('new-issue-button')}
+                      >
+                        {/*New issue*/}
+                        <NoteAddIcon />
+                      </Button>
+                    </Tooltip>
                   )}
+                  {user.current_role === AUDITOR &&
+                    !saved &&
+                    !isPublic &&
+                    (!checkDraftIssues() ? (
+                      <Tooltip arrow placement="top" title={'Disclose all'}>
+                        <Button
+                          variant="contained"
+                          color="secondary"
+                          sx={[
+                            buttonSx,
+                            (isPublic || saved) && xss ? publicBtnSx : {},
+                          ]}
+                          // disabled={checkDraftIssues()}
+                          // onClick={handleDiscloseAll}
+                        >
+                          <DiscloseIcon />
+                        </Button>
+                      </Tooltip>
+                    ) : (
+                      <Tooltip arrow placement="top" title={'Disclose all'}>
+                        <Button
+                          variant="contained"
+                          color="secondary"
+                          sx={[
+                            {
+                              backgroundColor: 'rgba(0, 0, 0, 0.12)',
+                              '&:hover': {
+                                backgroundColor: 'rgba(0, 0, 0, 0.12)',
+                              },
+                            },
+                            buttonSx,
+                            (isPublic || saved) && xss ? publicBtnSx : {},
+                          ]}
+                        >
+                          {/*Disclose all*/}
+                          {/*<UnfoldMoreIcon />*/}
+                          <DiscloseIcon />
+                        </Button>
+                      </Tooltip>
+                    ))}
                   {!isPublic && !saved && (
-                    <Button
-                      variant="contained"
-                      color="secondary"
-                      sx={[
-                        buttonSx,
-                        (isPublic || saved) && xss ? publicBtnSx : {},
-                      ]}
-                      onClick={handleReadAllEvents}
-                    >
-                      Mark all as read
-                    </Button>
+                    <Tooltip arrow placement="top" title={'Mark all as read'}>
+                      <Button
+                        variant="contained"
+                        color="secondary"
+                        sx={[
+                          buttonSx,
+                          (isPublic || saved) && xss ? publicBtnSx : {},
+                        ]}
+                        onClick={handleReadAllEvents}
+                      >
+                        {/*Mark all as read*/}
+                        <DraftsIcon />
+                      </Button>
+                    </Tooltip>
                   )}
                 </Box>
               </>
             ) : (
-              <Button
-                variant="contained"
-                color="secondary"
-                sx={[buttonSx, { width: '100%' }, generateButtonSx]}
-                onClick={handleDownloadReport}
-                {...addTestsLabel('auditor-report-button')}
-              >
-                Download report
-              </Button>
+              <Tooltip arrow placement="top" title={'Download report'}>
+                <Button
+                  variant="contained"
+                  color="secondary"
+                  sx={[buttonSx, { width: '100%' }, generateButtonSx]}
+                  onClick={handleDownloadReport}
+                  {...addTestsLabel('auditor-report-button')}
+                >
+                  <PictureAsPdfIcon />
+                </Button>
+              </Tooltip>
             )}
           </Box>
         ) : !isPublic ? (
           <Box className={'customer-button-wrapper'}>
-            <Button
-              variant="contained"
-              color="primary"
-              disabled={!audit?.report}
-              onClick={() => dispatch(downloadReport(audit))}
-              sx={buttonSx}
-              {...addTestsLabel('customer-report-button')}
-            >
-              Download report
-            </Button>
+            {!audit?.report ? (
+              <Tooltip arrow placement="top" title={'Download report'}>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  // disabled={!audit?.report}
+                  // onClick={() => dispatch(downloadReport(audit))}
+                  sx={[
+                    buttonSx,
+                    {
+                      backgroundColor: 'rgba(0, 0, 0, 0.12)',
+                      '&:hover': {
+                        backgroundColor: 'rgba(0, 0, 0, 0.12)',
+                      },
+                    },
+                  ]}
+                  {...addTestsLabel('customer-report-button')}
+                >
+                  <PictureAsPdfIcon />
+                </Button>
+              </Tooltip>
+            ) : (
+              <Tooltip arrow placement="top" title={'Download report'}>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  disabled={!audit?.report}
+                  onClick={() => dispatch(downloadReport(audit))}
+                  sx={buttonSx}
+                  {...addTestsLabel('customer-report-button')}
+                >
+                  <PictureAsPdfIcon />
+                </Button>
+              </Tooltip>
+            )}
+            <Tooltip arrow placement="top" title={'Mark all as read'}>
+              <Button
+                variant="contained"
+                color="secondary"
+                sx={[buttonSx, (isPublic || saved) && xss ? publicBtnSx : {}]}
+                onClick={handleReadAllEvents}
+              >
+                <DraftsIcon />
+              </Button>
+            </Tooltip>
+          </Box>
+        ) : audit?.status?.toLowerCase() === RESOLVED.toLowerCase() ? (
+          <Tooltip arrow placement="top" title={'New issue'}>
             <Button
               variant="contained"
               color="secondary"
-              sx={[buttonSx, (isPublic || saved) && xss ? publicBtnSx : {}]}
-              onClick={handleReadAllEvents}
+              sx={[
+                buttonSx,
+                {
+                  backgroundColor: 'rgba(0, 0, 0, 0.12)',
+                  '&:hover': {
+                    backgroundColor: 'rgba(0, 0, 0, 0.12)',
+                  },
+                },
+              ]}
+              // disabled={audit?.status?.toLowerCase() === RESOLVED.toLowerCase()}
+              // onClick={handleNewIssue}
+              {...addTestsLabel('new-issue-button')}
             >
-              Mark all as read
+              <NoteAddIcon />
             </Button>
-          </Box>
+          </Tooltip>
         ) : (
-          <Button
-            variant="contained"
-            color="secondary"
-            sx={[buttonSx]}
-            disabled={audit?.status?.toLowerCase() === RESOLVED.toLowerCase()}
-            onClick={handleNewIssue}
-            {...addTestsLabel('new-issue-button')}
-          >
-            New issue
-          </Button>
+          <Tooltip arrow placement="top" title={'New issue'}>
+            <Button
+              variant="contained"
+              color="secondary"
+              sx={[buttonSx]}
+              disabled={audit?.status?.toLowerCase() === RESOLVED.toLowerCase()}
+              onClick={handleNewIssue}
+              {...addTestsLabel('new-issue-button')}
+            >
+              <NoteAddIcon />
+            </Button>
+          </Tooltip>
         )}
       </Box>
       <ResolveAuditConfirmation
@@ -425,7 +543,7 @@ const Control = ({
     </>
   );
 };
-
+//
 export default Control;
 
 const generateButtonSx = theme => ({
@@ -491,8 +609,9 @@ const wrapper = theme => ({
   width: '100%',
   mb: '10px',
   gap: '25px',
-  [theme.breakpoints.down('md')]: {
+  [theme.breakpoints.down(600)]: {
     flexDirection: 'column-reverse',
+    gap: '15px',
   },
 });
 
@@ -510,9 +629,9 @@ const searchBlock = theme => ({
   display: 'flex',
   flexGrow: 1,
   alignItems: 'center',
-  [theme.breakpoints.down('xs')]: {
-    mt: '20px',
-  },
+  // [theme.breakpoints.down('xs')]: {
+  //   mt: '20px',
+  // },
 });
 
 const publicSearchBlock = theme => ({
@@ -554,9 +673,9 @@ const menuButton = theme => ({
 const buttonBoxSx = theme => ({
   display: 'flex',
   justifyContent: 'center',
-  [theme.breakpoints.down('md')]: {
-    width: '100%',
-  },
+  // [theme.breakpoints.down('md')]: {
+  //   width: '100%',
+  // },
   [theme.breakpoints.down(630)]: {
     flexDirection: 'column',
     gap: '15px',
@@ -566,43 +685,21 @@ const buttonBoxSx = theme => ({
 const issueActionWrapperSx = theme => ({
   display: 'flex',
   [theme.breakpoints.down(630)]: {
-    flexDirection: 'column',
-    gap: '15px',
-    '& button': {
-      width: '100%',
-      margin: 0,
-      padding: '10px 0',
-      fontSize: '14px',
-    },
+    justifyContent: 'center',
   },
 });
 
 const buttonSx = theme => ({
   padding: '8.5px 0',
-  flexShrink: 0,
-  fontWeight: '600!important',
   fontSize: '16px',
-  lineHeight: '1.75',
-  textTransform: 'none',
+  textTransform: 'unset',
+  fontWeight: 600,
+  '&:not(:last-child)': {
+    mr: '15px',
+  },
+  width: '50px!important',
+  minWidth: '50px',
   borderRadius: '10px',
-  width: '180px',
-  mr: '15px',
-  '&:last-child': { mr: 0 },
-  [theme.breakpoints.down('md')]: {
-    fontWeight: '500!important',
-    width: '270px',
-  },
-  [theme.breakpoints.down('sm')]: {
-    padding: '8.5px 24px',
-    width: '240px',
-  },
-  [theme.breakpoints.down(920)]: {
-    width: '160px',
-    paddingX: '0',
-  },
-  [theme.breakpoints.down('xs')]: {
-    padding: '7px 10px',
-  },
 });
 
 const publicBtnSx = theme => ({

@@ -46,6 +46,7 @@ const MarkdownEditor = ({
   handleBlur,
   isPublic,
   fastSave,
+  borderColor,
   sx,
 }) => {
   const [markdownField, meta, markdownHelper] = useField(name);
@@ -100,6 +101,8 @@ const MarkdownEditor = ({
           border: `1px solid ${
             (handleBlur || isPublic) && meta.touched && !markdownField.value
               ? 'red'
+              : borderColor
+              ? '#e0e0e0'
               : 'transparent'
           }`,
         },
