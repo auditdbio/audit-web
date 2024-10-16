@@ -7,6 +7,7 @@ import {
   IN_PROGRESS,
   NEED_UPDATE,
   REQUEST_DECLINE,
+  UPDATE_AUDIT_ISSUE_WS,
   WEBSOCKET_CONNECT,
   WEBSOCKET_CONNECTED,
   WEBSOCKET_DISCONNECT,
@@ -86,6 +87,11 @@ const websocketMiddleware = () => {
             } else if (message.kind.toLowerCase() === 'versionupdate') {
               store.dispatch({
                 type: NEED_UPDATE,
+              });
+            } else if (message.kind.toLowerCase() === 'issueupdated') {
+              store.dispatch({
+                type: UPDATE_AUDIT_ISSUE_WS,
+                payload: message.payload.IssueUpdate,
               });
             }
           };
