@@ -537,7 +537,7 @@ export const downloadReport = (audit, { generate, isDraft } = {}) => {
           { is_draft: isDraft },
           { headers: { Authorization: `Bearer ${token}` } },
         )
-        .then(({ data }) => getReport(audit, data.path, dispatch))
+        .then(({ data }) => getReport(audit, data.file_id, dispatch))
         .catch(() => dispatch({ type: REQUEST_ERROR }));
     } else {
       getReport(audit, audit?.report, dispatch);
@@ -566,7 +566,7 @@ export const downloadPublicReport = (audit, code, { generate } = {}) => {
     if (generate) {
       axios
         .post(`${API_URL}/report/${audit.id}`, null, {})
-        .then(({ data }) => getReport(audit, data.path, dispatch))
+        .then(({ data }) => getReport(audit, data.file_id, dispatch))
         .catch(() => dispatch({ type: REQUEST_ERROR }));
     } else {
       getReport(audit, audit?.report, dispatch, code);
