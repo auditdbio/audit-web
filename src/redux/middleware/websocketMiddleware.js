@@ -57,20 +57,32 @@ const websocketMiddleware = () => {
                 store.dispatch(receiveAuditorMessage(message));
               }
             } else if (message.kind.toLowerCase() === 'newrequest') {
-              store.dispatch({
-                type: GET_NEW_REQUEST,
-                payload: message.payload.NewRequest,
-              });
+              if (
+                store.getState().user.user.current_role === message.user_role
+              ) {
+                store.dispatch({
+                  type: GET_NEW_REQUEST,
+                  payload: message.payload.NewRequest,
+                });
+              }
             } else if (message.kind.toLowerCase() === 'newaudit') {
-              store.dispatch({
-                type: GET_NEW_AUDIT,
-                payload: message.payload.NewAudit,
-              });
+              if (
+                store.getState().user.user.current_role === message.user_role
+              ) {
+                store.dispatch({
+                  type: GET_NEW_AUDIT,
+                  payload: message.payload.NewAudit,
+                });
+              }
             } else if (message.kind.toLowerCase() === 'auditupdate') {
-              store.dispatch({
-                type: IN_PROGRESS,
-                payload: message.payload.AuditUpdate,
-              });
+              if (
+                store.getState().user.user.current_role === message.user_role
+              ) {
+                store.dispatch({
+                  type: IN_PROGRESS,
+                  payload: message.payload.AuditUpdate,
+                });
+              }
             } else if (message.kind.toLowerCase() === 'chatmessage') {
               store.dispatch(
                 receiveNewChatMessage(message.payload.ChatMessage),
