@@ -445,7 +445,7 @@ export const changeRole = (role, id) => {
                 {
                   pathname: auditData.length
                     ? `/profile/audits`
-                    : `/${role}/${user.id}`,
+                    : `/${role[0]}/${user.id}`,
                 },
                 { some: true },
               );
