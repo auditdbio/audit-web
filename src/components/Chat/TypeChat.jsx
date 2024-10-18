@@ -158,16 +158,6 @@ const TypeChat = ({ auditor, project }) => {
           horizontal: 'left',
         }}
       >
-        {/*<Button variant={'contained'} sx={{ textTransform: 'initial' }}>*/}
-        {/*  Personal chat*/}
-        {/*</Button>*/}
-        {/*<Button*/}
-        {/*  variant={'contained'}*/}
-        {/*  color={'secondary'}*/}
-        {/*  onClick={() => setIsOpen(!isOpen)}*/}
-        {/*  sx={{ textTransform: 'initial', position: 'relative' }}*/}
-        {/*>*/}
-        {/*  Organization chat*/}
         <List
           sx={{
             width: '100%',
@@ -233,7 +223,6 @@ const TypeChat = ({ auditor, project }) => {
             );
           })}
         </List>
-        {/*</Button>*/}
       </Popover>
     </>
   );

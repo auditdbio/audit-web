@@ -158,113 +158,116 @@ const ChatPage = () => {
         >
           <ArrowBackIcon />
         </Button>
-        <Box sx={chatWrapper}>
-          <Box sx={leftSideSx}>
-            <Button
-              sx={{
-                position: 'absolute',
-                left: '-40px',
-                minWidth: '40px',
-                width: '40px',
-                transform: `rotate(${open ? '0deg' : '180deg'})`,
-              }}
-              onClick={() => setOpen(!open)}
-            >
-              <KeyboardDoubleArrowLeftIcon
-                sx={{ width: '30px', height: '30px' }}
-              />
-            </Button>
-            <Collapse in={open} orientation="horizontal">
-              <Box sx={orgListSx}>
-                <Tooltip title={'Personal'} arrow placement={'top'}>
-                  <>
-                    <Box
-                      sx={[
-                        { padding: '5px' },
-                        !searchParams.get('org')
-                          ? selectedTab(
-                              theme,
-                              user.current_role.toLowerCase() ===
-                                AUDITOR.toLowerCase(),
-                            )
-                          : {},
-                      ]}
-                      onClick={handleChoose}
-                    >
-                      <Avatar
-                        sx={orgAvatarSx}
-                        src={
-                          profile?.avatar
-                            ? `${ASSET_URL}/${profile.avatar}`
-                            : null
-                        }
-                      />
-                    </Box>
-                    {/*<Divider />*/}
-                  </>
-                </Tooltip>
-                {organizations.map(org => (
-                  <Tooltip
-                    title={org.name}
-                    key={org.id}
-                    arrow
-                    placement={'top'}
-                  >
-                    <Box
-                      sx={[
-                        { padding: '5px' },
-                        searchParams.get('org') === org.id
-                          ? selectedTab(
-                              theme,
-                              user.current_role.toLowerCase() ===
-                                AUDITOR.toLowerCase(),
-                            )
-                          : {},
-                      ]}
-                      onClick={() => handleChoose(org)}
-                    >
-                      <Avatar
-                        sx={orgAvatarSx}
-                        src={org?.avatar ? `${ASSET_URL}/${org.avatar}` : null}
-                      />
-                    </Box>
-                  </Tooltip>
-                ))}
-              </Box>
-            </Collapse>
-            <ChatList
-              openOrgList={open}
-              orgId={searchParams.get('org')}
-              chatList={!searchParams.get('org') ? chatList : orgChatList}
-              chatListIsOpen={chatListIsOpen}
-              setChatListIsOpen={setChatListIsOpen}
-            />
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'row',
+            width: '100%',
+            height: '70vh',
+            minHeight: '590px',
+          }}
+        >
+          <Box sx={orgListSx}>
+            <Tooltip title={'Personal'} arrow placement={'top'}>
+              <>
+                <Box
+                  sx={[
+                    { padding: '5px', borderRadius: '8px' },
+                    !searchParams.get('org')
+                      ? selectedTab(
+                          theme,
+                          user.current_role.toLowerCase() ===
+                            AUDITOR.toLowerCase(),
+                        )
+                      : {},
+                  ]}
+                  onClick={handleChoose}
+                >
+                  <Avatar
+                    sx={orgAvatarSx}
+                    src={
+                      profile?.avatar ? `${ASSET_URL}/${profile.avatar}` : null
+                    }
+                  />
+                </Box>
+                {/*<Divider />*/}
+              </>
+            </Tooltip>
+            {organizations.map(org => (
+              <Tooltip title={org.name} key={org.id} arrow placement={'top'}>
+                <Box
+                  sx={[
+                    { padding: '5px' },
+                    searchParams.get('org') === org.id
+                      ? selectedTab(
+                          theme,
+                          user.current_role.toLowerCase() ===
+                            AUDITOR.toLowerCase(),
+                        )
+                      : {},
+                  ]}
+                  onClick={() => handleChoose(org)}
+                >
+                  <Avatar
+                    sx={orgAvatarSx}
+                    src={org?.avatar ? `${ASSET_URL}/${org.avatar}` : null}
+                  />
+                </Box>
+              </Tooltip>
+            ))}
           </Box>
-          {id ? (
-            <CurrentChat
-              chatMessages={chatMessages}
-              currentChat={currentChat}
-              chatList={chatList}
-              setChatListIsOpen={setChatListIsOpen}
-            />
-          ) : (
-            <Box sx={selectLabelWrapper}>
-              <IconButton
-                aria-label="Chat list"
-                aria-controls="menu-appbar"
-                aria-haspopup="true"
-                onClick={() => setChatListIsOpen(prev => !prev)}
-                color="inherit"
-                sx={menuButtonSx}
-              >
-                <MenuIcon fontSize="large" />
-              </IconButton>
-
-              <Box sx={selectChatLabel}>
-                Please select a chat to start messaging...
-              </Box>
+          <Box sx={chatWrapper}>
+            <Box sx={leftSideSx}>
+              {/*<Button*/}
+              {/*  sx={{*/}
+              {/*    position: 'absolute',*/}
+              {/*    left: '-40px',*/}
+              {/*    minWidth: '40px',*/}
+              {/*    width: '40px',*/}
+              {/*    transform: `rotate(${open ? '0deg' : '180deg'})`,*/}
+              {/*  }}*/}
+              {/*  onClick={() => setOpen(!open)}*/}
+              {/*>*/}
+              {/*  <KeyboardDoubleArrowLeftIcon*/}
+              {/*    sx={{ width: '30px', height: '30px' }}*/}
+              {/*  />*/}
+              {/*</Button>*/}
+              {/*<Collapse in={open} orientation="horizontal">*/}
+              {/*</Collapse>*/}
+              <ChatList
+                openOrgList={open}
+                orgId={searchParams.get('org')}
+                chatList={!searchParams.get('org') ? chatList : orgChatList}
+                chatListIsOpen={chatListIsOpen}
+                setChatListIsOpen={setChatListIsOpen}
+              />
             </Box>
-          )}
+            {id ? (
+              <CurrentChat
+                chatMessages={chatMessages}
+                currentChat={currentChat}
+                chatList={chatList}
+                setChatListIsOpen={setChatListIsOpen}
+              />
+            ) : (
+              <Box sx={selectLabelWrapper}>
+                <IconButton
+                  aria-label="Chat list"
+                  aria-controls="menu-appbar"
+                  aria-haspopup="true"
+                  onClick={() => setChatListIsOpen(prev => !prev)}
+                  color="inherit"
+                  sx={menuButtonSx}
+                >
+                  <MenuIcon fontSize="large" />
+                </IconButton>
+
+                <Box sx={selectChatLabel}>
+                  Please select a chat to start messaging...
+                </Box>
+              </Box>
+            )}
+          </Box>
         </Box>
       </CustomCard>
     </Layout>
@@ -283,8 +286,9 @@ const layoutSx = theme => ({
 const orgListSx = theme => ({
   display: 'flex',
   flexDirection: 'column',
-  width: '85px',
-  borderRight: '2px solid #e5e5e5',
+  // width: '70px',
+  border: '2px solid #e5e5e5',
+  borderRight: 'unset',
   padding: '0 0 5px',
   overflowY: 'auto',
   overflowX: 'hidden',
@@ -292,9 +296,9 @@ const orgListSx = theme => ({
   '::-webkit-scrollbar': {
     width: '0px',
   },
-  [theme.breakpoints.down('md')]: {
-    width: '73px',
-  },
+  // [theme.breakpoints.down('md')]: {
+  //   width: '73px',
+  // },
 });
 
 const leftSideSx = theme => ({
@@ -307,8 +311,8 @@ const leftSideSx = theme => ({
 });
 
 const orgAvatarSx = theme => ({
-  width: '73px',
-  height: '73px',
+  width: '60px',
+  height: '60px',
   [theme.breakpoints.down('md')]: {
     width: '60px',
     height: '60px',
@@ -324,7 +328,7 @@ const selectedTab = (theme, primary) => ({
 
 const wrapper = theme => ({
   minHeight: '300px',
-  padding: '20px 40px 100px',
+  padding: '10px 20px 60px 5px',
   position: 'relative',
   display: 'flex',
   maxWidth: 'unset',

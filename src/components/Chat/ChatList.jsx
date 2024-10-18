@@ -101,7 +101,7 @@ const ChatList = ({
                 .reverse()
                 .map(chat => {
                   // const org = chat?.members.find(org => org.org_user_id);
-                  // console.log(chat?.members.find(org => org.org_user_id));
+                  //
                   return (
                     <ChatListItem
                       orgId={orgId}
@@ -234,13 +234,14 @@ const wrapper = (theme, openOrgList) => ({
   borderRight: '2px solid #e5e5e5',
   display: 'flex',
   flexDirection: 'column',
-  width: `calc(100% - ${openOrgList ? '85px' : '0px'} )`,
-  [theme.breakpoints.down('md')]: {
-    width: `calc(100% - ${openOrgList ? '73px' : '0px'})`,
-  },
-  [theme.breakpoints.down('xs')]: {
-    display: 'none',
-  },
+  // width: `calc(100% - ${!openOrgList ? '70px' : '0px'} )`,
+  // width: `30%`,
+  // [theme.breakpoints.down('md')]: {
+  //   width: `calc(100% - ${!openOrgList ? '73px' : '0px'})`,
+  // },
+  // [theme.breakpoints.down('xs')]: {
+  //   display: 'none',
+  // },
 });
 
 const mobileChatListOpen = theme => ({
