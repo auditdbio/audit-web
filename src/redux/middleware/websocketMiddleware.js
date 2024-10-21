@@ -58,7 +58,8 @@ const websocketMiddleware = () => {
               }
             } else if (message.kind.toLowerCase() === 'newrequest') {
               if (
-                store.getState().user.user.current_role === message.user_role
+                store.getState().user.user.current_role.toLowerCase() ===
+                message.user_role.toLowerCase()
               ) {
                 store.dispatch({
                   type: GET_NEW_REQUEST,
@@ -67,7 +68,8 @@ const websocketMiddleware = () => {
               }
             } else if (message.kind.toLowerCase() === 'newaudit') {
               if (
-                store.getState().user.user.current_role === message.user_role
+                store.getState().user.user.current_role.toLowerCase() ===
+                message.user_role.toLowerCase()
               ) {
                 store.dispatch({
                   type: GET_NEW_AUDIT,
@@ -76,7 +78,8 @@ const websocketMiddleware = () => {
               }
             } else if (message.kind.toLowerCase() === 'auditupdate') {
               if (
-                store.getState().user.user.current_role === message.user_role
+                store.getState().user.user.current_role.toLowerCase() ===
+                message.user_role.toLowerCase()
               ) {
                 store.dispatch({
                   type: IN_PROGRESS,
