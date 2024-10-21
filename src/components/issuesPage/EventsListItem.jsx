@@ -43,6 +43,11 @@ const EventsListItem = ({ event, idx, issue, issueRefs, auditPartner }) => {
       : {};
   };
 
+  const timestampInMillis =
+    event.timestamp > 1000000000000
+      ? event.timestamp / 1000
+      : event.timestamp * 1000;
+
   return event.kind !== 'Comment' ? (
     <Box sx={[eventSx, checkUnread(false)]} ref={issueRef}>
       <Box sx={iconSx}>
@@ -66,7 +71,7 @@ const EventsListItem = ({ event, idx, issue, issueRefs, auditPartner }) => {
       )}
 
       <Typography variant="span" sx={messageDate}>
-        {dayjs(event.timestamp / 1000).format('MMM DD YYYY HH:mm')}
+        {dayjs(timestampInMillis).format('MMM DD YYYY HH:mm')}
       </Typography>
     </Box>
   ) : (
@@ -87,7 +92,7 @@ const EventsListItem = ({ event, idx, issue, issueRefs, auditPartner }) => {
           </Typography>
         </Box>
         <Typography sx={messageDate} variant="span">
-          {dayjs(event.timestamp / 1000).format('MMM DD YYYY HH:mm')}
+          {dayjs(timestampInMillis).format('MMM DD YYYY HH:mm')}
         </Typography>
       </Box>
       <Box sx={messageTextSx}>
