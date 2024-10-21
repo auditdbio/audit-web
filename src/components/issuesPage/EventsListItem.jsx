@@ -9,6 +9,7 @@ import Markdown from '../markdown/Markdown.jsx';
 import { ASSET_URL } from '../../services/urls.js';
 import { AUDITOR, CUSTOMER } from '../../redux/actions/types.js';
 import theme from '../../styles/themes.js';
+import dayjs from 'dayjs';
 
 const EventsListItem = ({ event, idx, issue, issueRefs, auditPartner }) => {
   const issueRef = useRef(null);
@@ -65,7 +66,7 @@ const EventsListItem = ({ event, idx, issue, issueRefs, auditPartner }) => {
       )}
 
       <Typography variant="span" sx={messageDate}>
-        ({new Date(event.timestamp * 1000).toDateString().replace(/^\w* /, '')})
+        {dayjs(event.timestamp / 1000).format('MMM DD YYYY HH:mm')}
       </Typography>
     </Box>
   ) : (
@@ -86,7 +87,7 @@ const EventsListItem = ({ event, idx, issue, issueRefs, auditPartner }) => {
           </Typography>
         </Box>
         <Typography sx={messageDate} variant="span">
-          {new Date(event.timestamp * 1000).toLocaleString()}
+          {dayjs(event.timestamp / 1000).format('MMM DD YYYY HH:mm')}
         </Typography>
       </Box>
       <Box sx={messageTextSx}>
