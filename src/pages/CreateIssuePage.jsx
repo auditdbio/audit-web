@@ -19,7 +19,7 @@ const CreateIssuePage = ({ isPublic, saved }) => {
 
   return (
     <Layout
-      sx={{ padding: '40px' }}
+      sx={layoutSx}
       containerSx={{
         maxWidth: 'unset!important',
         padding: '0 35px!important',
@@ -47,6 +47,13 @@ const CreateIssuePage = ({ isPublic, saved }) => {
 
 export default CreateIssuePage;
 
+const layoutSx = theme => ({
+  padding: '40px',
+  [theme.breakpoints.down(780)]: {
+    padding: '25px 0',
+  },
+});
+
 const wrapper = theme => ({
   padding: '40px 45px 80px',
   position: 'relative',
@@ -64,6 +71,9 @@ const wrapper = theme => ({
   [theme.breakpoints.down('sm')]: {
     gap: '20px',
     padding: '38px 20px 30px',
+  },
+  [theme.breakpoints.down(780)]: {
+    borderRadius: '0',
   },
 });
 

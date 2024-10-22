@@ -76,7 +76,7 @@ const logoStyle = theme => ({
     width: '140px',
     mr: 0,
   },
-  [theme.breakpoints.down('xxs')]: {
+  [theme.breakpoints.down(450)]: {
     height: '25px',
     width: '100px',
   },

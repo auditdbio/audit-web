@@ -46,6 +46,7 @@ const MarkdownEditor = ({
   handleBlur,
   isPublic,
   fastSave,
+  borderColor,
   sx,
   parentEntity = {},
 }) => {
@@ -104,6 +105,8 @@ const MarkdownEditor = ({
           border: `1px solid ${
             (handleBlur || isPublic) && meta.touched && !markdownField.value
               ? 'red'
+              : borderColor
+              ? '#e0e0e0'
               : 'transparent'
           }`,
         },

@@ -135,6 +135,9 @@ const statusBtn = theme => ({
   [theme.breakpoints.down('md')]: {
     fontSize: '14px!important',
   },
+  [theme.breakpoints.down('sm')]: {
+    width: '70px',
+  },
 });
 
 const wrapper = {
