@@ -7,6 +7,7 @@ import {
   IN_PROGRESS,
   NEED_UPDATE,
   REQUEST_DECLINE,
+  UPDATE_AUDIT_ISSUE_WS,
   WEBSOCKET_CONNECT,
   WEBSOCKET_CONNECTED,
   WEBSOCKET_DISCONNECT,
@@ -56,20 +57,35 @@ const websocketMiddleware = () => {
                 store.dispatch(receiveAuditorMessage(message));
               }
             } else if (message.kind.toLowerCase() === 'newrequest') {
-              store.dispatch({
-                type: GET_NEW_REQUEST,
-                payload: message.payload.NewRequest,
-              });
+              if (
+                store.getState().user.user.current_role.toLowerCase() ===
+                message.user_role.toLowerCase()
+              ) {
+                store.dispatch({
+                  type: GET_NEW_REQUEST,
+                  payload: message.payload.NewRequest,
+                });
+              }
             } else if (message.kind.toLowerCase() === 'newaudit') {
-              store.dispatch({
-                type: GET_NEW_AUDIT,
-                payload: message.payload.NewAudit,
-              });
+              if (
+                store.getState().user.user.current_role.toLowerCase() ===
+                message.user_role.toLowerCase()
+              ) {
+                store.dispatch({
+                  type: GET_NEW_AUDIT,
+                  payload: message.payload.NewAudit,
+                });
+              }
             } else if (message.kind.toLowerCase() === 'auditupdate') {
-              store.dispatch({
-                type: IN_PROGRESS,
-                payload: message.payload.AuditUpdate,
-              });
+              if (
+                store.getState().user.user.current_role.toLowerCase() ===
+                message.user_role.toLowerCase()
+              ) {
+                store.dispatch({
+                  type: IN_PROGRESS,
+                  payload: message.payload.AuditUpdate,
+                });
+              }
             } else if (message.kind.toLowerCase() === 'chatmessage') {
               store.dispatch(
                 receiveNewChatMessage(message.payload.ChatMessage),
@@ -86,6 +102,11 @@ const websocketMiddleware = () => {
             } else if (message.kind.toLowerCase() === 'versionupdate') {
               store.dispatch({
                 type: NEED_UPDATE,
+              });
+            } else if (message.kind.toLowerCase() === 'issueupdated') {
+              store.dispatch({
+                type: UPDATE_AUDIT_ISSUE_WS,
+                payload: message.payload.IssueUpdate,
               });
             }
           };

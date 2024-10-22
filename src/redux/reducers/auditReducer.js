@@ -228,6 +228,7 @@ export const auditReducer = (state = initialState, action) => {
         audits: state.audits?.map(audit =>
           audit.id === action.payload.id ? action.payload : audit,
         ),
+        audit: action.payload,
         successMessage: 'Audit resolved successfully',
       };
     case SUBMIT_AUDIT:

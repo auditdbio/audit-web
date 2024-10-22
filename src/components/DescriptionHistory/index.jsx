@@ -1,5 +1,12 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Box, Button, Modal, Typography, useMediaQuery } from '@mui/material';
+import {
+  Box,
+  Button,
+  Modal,
+  Tooltip,
+  Typography,
+  useMediaQuery,
+} from '@mui/material';
 import DescriptionModal from './DescriptionModal.jsx';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import { useDispatch, useSelector } from 'react-redux';
@@ -10,8 +17,15 @@ import {
 import Badge from '@mui/material/Badge';
 import { CUSTOMER } from '../../redux/actions/types.js';
 import CustomSnackbar from '../custom/CustomSnackbar.jsx';
+import HistoryIcon from '@mui/icons-material/History';
 
-const HistoryDescription = ({ audit, request }) => {
+const HistoryDescription = ({
+  audit,
+  request,
+  spaceY = true,
+  buttonStyle,
+  wrapperStyle = {},
+}) => {
   const [isOpen, setIsOpen] = useState(false);
   const dispatch = useDispatch();
   const auditHistory = useSelector(s => s.audits.auditHistory);
@@ -59,7 +73,7 @@ const HistoryDescription = ({ audit, request }) => {
   }, [request, auditHistory, auditRequestHistory]);
 
   return (
-    <Box>
+    <Box sx={wrapperStyle}>
       <CustomSnackbar
         open={showRecap}
         action={handleOpenRecap}
@@ -157,41 +171,83 @@ const HistoryDescription = ({ audit, request }) => {
         />
       )}
       {unread && unread[user?.id] > 0 ? (
-        <Badge
-          color={'secondary'}
-          badgeContent="new"
-          sx={{
-            '& .MuiBadge-badge': {
-              top: '16px',
-            },
-          }}
-        >
+        <Badge color={'secondary'} badgeContent="new" sx={badgeSx}>
+          <Tooltip arrow placement="top" title={'Show history'}>
+            <Button
+              sx={[
+                { textTransform: 'unset' },
+                buttonSx,
+                buttonStyle ? { ...buttonStyle, marginRight: 'unset' } : {},
+                spaceY ? { marginY: '15px' } : {},
+              ]}
+              className={'btn-history'}
+              variant={'contained'}
+              onClick={() => setIsOpen(true)}
+              disabled={
+                (request ? auditRequestHistory : auditHistory)?.length <= 1
+              }
+            >
+              <HistoryIcon />
+            </Button>
+          </Tooltip>
+        </Badge>
+      ) : (
+        <Tooltip arrow placement="top" title={'Show history'}>
           <Button
-            sx={{ marginY: '15px', textTransform: 'unset' }}
+            sx={[
+              { textTransform: 'unset' },
+              buttonSx,
+              buttonStyle ? { ...buttonStyle, marginRight: 'unset' } : {},
+              spaceY ? { marginY: '15px' } : {},
+            ]}
+            className={'btn-history'}
             variant={'contained'}
             onClick={() => setIsOpen(true)}
             disabled={
               (request ? auditRequestHistory : auditHistory)?.length <= 1
             }
           >
-            Show history
+            <HistoryIcon />
           </Button>
-        </Badge>
-      ) : (
-        <Button
-          sx={{ marginY: '15px', textTransform: 'unset' }}
-          variant={'contained'}
-          onClick={() => setIsOpen(true)}
-          disabled={(request ? auditRequestHistory : auditHistory)?.length <= 1}
-        >
-          Show history
-        </Button>
+        </Tooltip>
       )}
     </Box>
   );
 };
 
 export default HistoryDescription;
+
+const badgeSx = theme => ({
+  '& .MuiBadge-badge': {
+    right: '12px',
+    fontSize: '14px',
+    paddingBottom: '3px',
+  },
+});
+
+const buttonSx = theme => ({
+  padding: '8.5px 0',
+  fontSize: '16px',
+  textTransform: 'unset',
+  fontWeight: 600,
+  width: '190px',
+  borderRadius: '10px',
+  [theme.breakpoints.down(1400)]: {
+    width: '160px',
+  },
+  [theme.breakpoints.down('sm')]: {
+    width: '150px',
+  },
+  [theme.breakpoints.down(920)]: {
+    width: '160px',
+  },
+  [theme.breakpoints.down('xs')]: {
+    // margin: '0 6px',
+    height: '42px',
+    padding: '12px 0',
+    fontSize: '14px',
+  },
+});
 
 const dateTitleSx = theme => ({
   fontSize: '20px',
