@@ -89,6 +89,7 @@ export const organizationReducer = (state = initialState, action) => {
         ...state,
         invites: state.invites.filter(el => el.id !== action.payload.id),
         organizations: [...state.organizations, action.payload],
+        organization: action.payload,
       };
     case CLEAR_ORGANIZATION:
       return {

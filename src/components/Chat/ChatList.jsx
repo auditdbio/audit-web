@@ -17,13 +17,7 @@ import { searchCustomers } from '../../redux/actions/customerAction.js';
 import { searchOrganization } from '../../redux/actions/organizationAction.js';
 import theme from '../../styles/themes.js';
 
-const ChatList = ({
-  chatList,
-  chatListIsOpen,
-  setChatListIsOpen,
-  orgId,
-  openOrgList,
-}) => {
+const ChatList = ({ chatList, chatListIsOpen, setChatListIsOpen, orgId }) => {
   const dispatch = useDispatch();
   const { auditors } = useSelector(s => s.auditor);
   const { customers } = useSelector(s => s.customer);
@@ -49,9 +43,7 @@ const ChatList = ({
 
   return (
     <>
-      <Box
-        sx={[wrapper(theme, openOrgList), chatListIsOpen && mobileChatListOpen]}
-      >
+      <Box sx={[wrapper]}>
         <Box sx={listHeader}>
           <Box sx={{ display: 'flex', alignItems: 'flex-start' }}>
             <TextField
@@ -220,10 +212,10 @@ const ChatList = ({
             ) && <Box sx={emptyListLabel}>No search results</Box>}
         </Box>
       </Box>
-      <Box
-        sx={chatListIsOpen ? mobileChatListOpenBackground : {}}
-        onClick={() => setChatListIsOpen(false)}
-      />
+      {/*<Box*/}
+      {/*  sx={chatListIsOpen ? mobileChatListOpenBackground : {}}*/}
+      {/*  onClick={() => setChatListIsOpen(false)}*/}
+      {/*/>*/}
     </>
   );
 };
@@ -234,6 +226,7 @@ const wrapper = (theme, openOrgList) => ({
   borderRight: '2px solid #e5e5e5',
   display: 'flex',
   flexDirection: 'column',
+  width: '100%',
   // width: `calc(100% - ${!openOrgList ? '70px' : '0px'} )`,
   // width: `30%`,
   // [theme.breakpoints.down('md')]: {

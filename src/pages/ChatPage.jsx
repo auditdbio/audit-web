@@ -45,7 +45,7 @@ const ChatPage = () => {
   const { organizations } = useSelector(s => s.organization);
   const [searchParams, setSearchParams] = useSearchParams();
   const orgId = searchParams.get('org');
-  const [open, setOpen] = useState(false);
+  const xsMatch = useMediaQuery(theme.breakpoints.down('xs'));
 
   useEffect(() => {
     if (
@@ -121,7 +121,9 @@ const ChatPage = () => {
     if (org) {
       newSearchParams.set('org', org.id);
       navigate('/chat' + `?org=${org.id}`);
-      //
+      if (xsMatch) {
+        setChatListIsOpen(true);
+      }
     } else {
       newSearchParams.delete('org');
     }
@@ -172,7 +174,7 @@ const ChatPage = () => {
               <>
                 <Box
                   sx={[
-                    { padding: '5px', borderRadius: '8px' },
+                    orgListItemSx,
                     !searchParams.get('org')
                       ? selectedTab(
                           theme,
@@ -197,7 +199,7 @@ const ChatPage = () => {
               <Tooltip title={org.name} key={org.id} arrow placement={'top'}>
                 <Box
                   sx={[
-                    { padding: '5px' },
+                    orgListItemSx,
                     searchParams.get('org') === org.id
                       ? selectedTab(
                           theme,
@@ -217,31 +219,18 @@ const ChatPage = () => {
             ))}
           </Box>
           <Box sx={chatWrapper}>
-            <Box sx={leftSideSx}>
-              {/*<Button*/}
-              {/*  sx={{*/}
-              {/*    position: 'absolute',*/}
-              {/*    left: '-40px',*/}
-              {/*    minWidth: '40px',*/}
-              {/*    width: '40px',*/}
-              {/*    transform: `rotate(${open ? '0deg' : '180deg'})`,*/}
-              {/*  }}*/}
-              {/*  onClick={() => setOpen(!open)}*/}
-              {/*>*/}
-              {/*  <KeyboardDoubleArrowLeftIcon*/}
-              {/*    sx={{ width: '30px', height: '30px' }}*/}
-              {/*  />*/}
-              {/*</Button>*/}
-              {/*<Collapse in={open} orientation="horizontal">*/}
-              {/*</Collapse>*/}
+            <Box sx={[leftSideSx, chatListIsOpen && mobileChatListOpen]}>
               <ChatList
-                openOrgList={open}
                 orgId={searchParams.get('org')}
                 chatList={!searchParams.get('org') ? chatList : orgChatList}
                 chatListIsOpen={chatListIsOpen}
                 setChatListIsOpen={setChatListIsOpen}
               />
             </Box>
+            <Box
+              sx={chatListIsOpen ? mobileChatListOpenBackground : {}}
+              onClick={() => setChatListIsOpen(false)}
+            />
             {id ? (
               <CurrentChat
                 chatMessages={chatMessages}
@@ -276,10 +265,36 @@ const ChatPage = () => {
 
 export default ChatPage;
 
+const orgListItemSx = theme => ({
+  padding: '5px',
+  borderRadius: '8px',
+  width: '70px',
+  [theme.breakpoints.down('sm')]: {
+    width: '50px',
+  },
+});
+
 const layoutSx = theme => ({
   padding: '40px !important',
   [theme.breakpoints.down('md')]: {
     padding: '20px 0 !important',
+  },
+});
+
+const mobileChatListOpenBackground = theme => ({
+  display: 'none',
+  [theme.breakpoints.down('xs')]: {
+    display: 'block',
+    width: '30%',
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    bottom: '-1px',
+    zIndex: 20,
+    background: 'rgba(0, 0, 0, .1)',
+  },
+  [theme.breakpoints.down(500)]: {
+    display: 'none',
   },
 });
 
@@ -306,16 +321,36 @@ const leftSideSx = theme => ({
   display: 'flex',
   justifyContent: 'end',
   [theme.breakpoints.down('xs')]: {
-    width: 'unset',
+    display: 'none',
+  },
+});
+
+const mobileChatListOpen = theme => ({
+  overflowY: 'auto',
+  '::-webkit-scrollbar': {
+    width: '4px',
+  },
+  [theme.breakpoints.down('xs')]: {
+    background: '#fcfaf6',
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    bottom: 0,
+    zIndex: 20,
+    display: 'block',
+    width: '70%',
+  },
+  [theme.breakpoints.down(500)]: {
+    width: '100%',
   },
 });
 
 const orgAvatarSx = theme => ({
   width: '60px',
   height: '60px',
-  [theme.breakpoints.down('md')]: {
-    width: '60px',
-    height: '60px',
+  [theme.breakpoints.down('sm')]: {
+    width: '40px',
+    height: '40px',
   },
   // backgroundColor: '#fff',
 });
@@ -335,25 +370,32 @@ const wrapper = theme => ({
   flexDirection: 'column',
   alignItems: 'flex-start',
   gap: '15px',
+  [theme.breakpoints.down('md')]: {
+    borderRadius: 'unset',
+  },
   [theme.breakpoints.down('sm')]: {
     // padding: '30px 30px 50px',
     minHeight: '300px',
   },
   [theme.breakpoints.down('xs')]: {
-    padding: '20px 40px 50px',
+    // padding: '20px 40px 50px',
     minHeight: '300px',
-    borderRadius: 'unset',
+    gap: '8px',
+    padding: '10px 10px 30px',
   },
 });
 
-const chatWrapper = {
+const chatWrapper = theme => ({
   height: '70vh',
   minHeight: '590px',
-  width: '100%',
+  width: 'calc(100% - 70px)',
   display: 'flex',
   border: '2px solid #e5e5e5',
   position: 'relative',
-};
+  [theme.breakpoints.down('sm')]: {
+    width: 'calc(100% - 50px)',
+  },
+});
 
 const selectLabelWrapper = {
   position: 'relative',
