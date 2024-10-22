@@ -56,6 +56,13 @@ import UserProjects from '../pages/UserProjects.jsx';
 import PriceCalculationPage from '../pages/PriceCalculationPage.jsx';
 import { refreshToken } from '../redux/actions/userAction.js';
 import PublicAuditInfo from '../pages/PublicAuditInfo.jsx';
+import Organization from '../components/Organization.jsx';
+import CreateEditOrganization from '../pages/CreateEditOrganization.jsx';
+import {
+  getAuditRequests,
+  getMyOrganizations,
+} from '../redux/actions/organizationAction.js';
+import MyOrganization from '../pages/MyOrganizations.jsx';
 
 const AppRoutes = () => {
   const currentRole = useSelector(s => s.user.user.current_role);
@@ -64,6 +71,7 @@ const AppRoutes = () => {
   const dispatch = useDispatch();
   const { reconnect, connected, needUpdate } = useSelector(s => s.websocket);
   const [isOpen, setIsOpen] = React.useState(false);
+  const organizations = useSelector(s => s.organization.organizations);
 
   useEffect(() => {
     const refreshInterval = setInterval(() => {
@@ -76,6 +84,18 @@ const AppRoutes = () => {
     }
     return () => clearInterval(refreshInterval);
   }, [isAuth()]);
+
+  useEffect(() => {
+    if (isAuth()) {
+      dispatch(getMyOrganizations());
+    }
+  }, [isAuth(), currentRole]);
+
+  useEffect(() => {
+    if (organizations?.length) {
+      dispatch(getAuditRequests());
+    }
+  }, [organizations]);
 
   useEffect(() => {
     if (isAuth()) {
@@ -119,7 +139,7 @@ const AppRoutes = () => {
       dispatch(getChatList(currentRole));
       dispatch(getUnreadForDifferentRole());
     }
-  }, [currentRole]);
+  }, [currentRole, isAuth()]);
 
   useEffect(() => {
     return () => {
@@ -341,6 +361,33 @@ const AppRoutes = () => {
           element={
             <PrivateRoute auth={{ isAuthenticated: isAuth() }}>
               <PriceCalculationPage />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/create-organization"
+          element={
+            <PrivateRoute auth={{ isAuthenticated: isAuth() }}>
+              <CreateEditOrganization />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/edit-organization/:id"
+          element={
+            <PrivateRoute auth={{ isAuthenticated: isAuth() }}>
+              <CreateEditOrganization />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/my-organizations"
+          element={
+            <PrivateRoute auth={{ isAuthenticated: isAuth() }}>
+              <MyOrganization />
             </PrivateRoute>
           }
         />

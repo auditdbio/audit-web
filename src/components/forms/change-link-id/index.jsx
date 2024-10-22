@@ -20,8 +20,9 @@ import SimpleField from '../fields/simple-field.jsx';
 import theme from '../../../styles/themes.js';
 import { updateAuditor } from '../../../redux/actions/auditorAction.js';
 import { updateCustomer } from '../../../redux/actions/customerAction.js';
+import { updateOrganization } from '../../../redux/actions/organizationAction.js';
 
-const ChangeLinkId = ({ setNewLinkId }) => {
+const ChangeLinkId = ({ setNewLinkId, org }) => {
   const dispatch = useDispatch();
 
   const matchXs = useMediaQuery(theme.breakpoints.down('xs'));
@@ -84,10 +85,16 @@ const ChangeLinkId = ({ setNewLinkId }) => {
           validationSchema={validationSchema}
           onSubmit={values => {
             setNewLinkId(values.link_id);
-            if (user.current_role === AUDITOR) {
-              dispatch(updateAuditor(values));
-            } else if (user.current_role === CUSTOMER) {
-              dispatch(updateCustomer(values));
+            if (!org) {
+              if (user.current_role === AUDITOR) {
+                dispatch(updateAuditor(values));
+              } else if (user.current_role === CUSTOMER) {
+                dispatch(updateCustomer(values));
+              }
+            } else {
+              dispatch(
+                updateOrganization({ ...values, id: org.id }, values.link_id),
+              );
             }
           }}
         >

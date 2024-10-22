@@ -8,6 +8,9 @@ import Headings from '../router/Headings.jsx';
 
 const AuditRequest = () => {
   const auditRequests = useSelector(s => s.audits.auditRequests);
+  const organizationAuditRequests = useSelector(
+    s => s.audits.organizationAuditRequests,
+  );
   const navigate = useNavigate();
 
   const handleNavigate = () => {
@@ -31,6 +34,11 @@ const AuditRequest = () => {
       </Box>
       <Grid container spacing={2}>
         {auditRequests?.map(request => (
+          <Grid item sx={gridItemStyle} key={request.id}>
+            <AuditRequestCard request={request} />
+          </Grid>
+        ))}
+        {organizationAuditRequests?.map(request => (
           <Grid item sx={gridItemStyle} key={request.id}>
             <AuditRequestCard request={request} />
           </Grid>

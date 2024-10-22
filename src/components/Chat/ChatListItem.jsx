@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link as RouterLink } from 'react-router-dom';
+import { Link as RouterLink, useParams } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { Avatar, Box, Link, Tooltip } from '@mui/material';
 import { ASSET_URL } from '../../services/urls.js';
@@ -16,8 +16,10 @@ const ChatListItem = ({
   isNew = false,
   userDataId = false,
   role,
+  orgId,
 }) => {
   const dispatch = useDispatch();
+  const { id } = useParams();
 
   const getUnreadForUser = chat =>
     chat.unread.find(unread => unread.id === user.id)?.unread || 0;
@@ -52,9 +54,9 @@ const ChatListItem = ({
 
   return (
     <Link
-      sx={wrapper}
+      sx={[wrapper, id === chat?.id ? { backgroundColor: '#e5e5e5' } : {}]}
       component={RouterLink}
-      to={`/chat/${chat?.id}`}
+      to={orgId ? `/chat/${chat?.id}?org=${orgId}` : `/chat/${chat?.id}`}
       onClick={setChatHandle}
       {...addTestsLabel('chat-link')}
     >

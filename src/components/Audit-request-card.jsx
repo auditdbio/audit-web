@@ -54,6 +54,24 @@ const AuditRequestCard = ({ type, request, audit }) => {
           {/*</Box>*/}
         </Box>
       </Box>
+      {request.auditor_organization?.id && (
+        <Box>
+          <Typography
+            variant="h5"
+            sx={{ mb: '7px', fontSize: '14px!important', color: 'grey' }}
+            textAlign="center"
+          >
+            Organization:
+          </Typography>
+          <Typography
+            variant="h5"
+            sx={[projectNameSx, { height: 'unset', maxHeight: '66px' }]}
+            textAlign="center"
+          >
+            {request.auditor_organization.name}
+          </Typography>
+        </Box>
+      )}
       <Box sx={buttonWrapper}>
         <Button
           variant="contained"
@@ -243,6 +261,8 @@ const cardWrapper = theme => ({
   border: '1px solid rgba(67, 66, 66, 0.1)',
   alignItems: 'center',
   gap: '15px',
+  height: '100%',
+  justifyContent: 'space-between',
   '& h5': {
     fontSize: '18px',
     fontWeight: 500,

@@ -8,6 +8,7 @@ import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import { readMessage } from '../../redux/actions/websocketAction.js';
 import { useNavigate } from 'react-router-dom/dist';
 import NotificationMessage from '../NotificationMessage.jsx';
+import { getOrganizationById } from '../../redux/actions/organizationAction.js';
 
 const CustomMessage = ({ message }) => {
   const role = useSelector(s => s.user.user.current_role);
@@ -116,6 +117,11 @@ const CustomMessage = ({ message }) => {
               </Box>
               <Button
                 onClick={() => {
+                  if (message.inner.links[0].includes('/o/')) {
+                    dispatch(
+                      getOrganizationById(message.inner.links[0].split('/')[2]),
+                    );
+                  }
                   navigate(message.inner.links[0]);
                   handleClose(message.id);
                 }}

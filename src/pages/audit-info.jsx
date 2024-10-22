@@ -60,6 +60,7 @@ const AuditInfo = ({
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const { successMessage, error } = useSelector(s => s.audits);
   const { user } = useSelector(s => s.user);
   const { chatList } = useSelector(s => s.chat);
@@ -219,93 +220,187 @@ const AuditInfo = ({
         <Box
           sx={[contentWrapper, isPublic ? { alignItems: 'flex-start' } : {}]}
         >
-          <Box sx={userWrapper}>
-            {isPublic && (
-              <Typography sx={roleTitleSx} align={'center'}>
-                Auditor
-              </Typography>
-            )}
-            <Avatar
-              src={audit?.avatar ? `${ASSET_URL}/${audit?.avatar}` : ''}
-              alt="auditor photo"
-            />
-            <Link
-              to={`/a/${audit.auditor_id}`}
-              style={{ display: 'grid', textAlign: 'center' }}
-            >
-              <Tooltip title={audit?.auditor_first_name} arrow placement="top">
-                <Typography noWrap={true} sx={userNameWrapper}>
-                  {audit?.auditor_first_name}
+          {audit.auditor_organization?.id ? (
+            <Box sx={userWrapper}>
+              <Avatar
+                src={
+                  audit?.auditor_organization.avatar
+                    ? `${ASSET_URL}/${audit?.auditor_organization?.avatar}`
+                    : ''
+                }
+                alt="auditor photo"
+              />
+              <Box sx={{ display: 'grid', textAlign: 'center' }}>
+                <Typography
+                  noWrap={true}
+                  sx={{ fontSize: '14px', color: 'grey!important' }}
+                >
+                  Organization:
                 </Typography>
-              </Tooltip>
-              <Tooltip title={audit?.auditor_last_name} arrow placement="top">
-                <Typography noWrap={true} sx={userNameWrapper}>
-                  {audit?.auditor_last_name}
-                </Typography>
-              </Tooltip>
-            </Link>
-          </Box>
-          <Box sx={userInfoWrapper}>
-            <Box sx={infoWrapper}>
-              <span>E-mail:</span>
-              <Box sx={{ display: 'grid' }}>
-                {!!audit?.auditor_contacts?.email ? (
-                  <Tooltip
-                    title={audit?.auditor_contacts?.email}
-                    arrow
-                    placement="top"
-                  >
-                    <Typography noWrap={true}>
-                      {audit?.auditor_contacts?.email}
-                    </Typography>
-                  </Tooltip>
-                ) : (
-                  <Typography noWrap={true}>Not specified</Typography>
-                )}
+                <Tooltip
+                  title={audit?.auditor_organization.name}
+                  arrow
+                  placement="top"
+                >
+                  <Typography noWrap={true} sx={userNameWrapper}>
+                    {audit?.auditor_organization.name}
+                  </Typography>
+                </Tooltip>
               </Box>
             </Box>
-            <Box sx={infoWrapper}>
-              <span>Telegram:</span>
-              <Box sx={{ display: 'grid' }}>
-                {!!audit?.auditor_contacts?.telegram ? (
-                  <Tooltip
-                    title={audit?.auditor_contacts?.telegram}
-                    arrow
-                    placement="top"
-                  >
-                    <Typography noWrap={true}>
-                      {audit?.auditor_contacts?.telegram}
-                    </Typography>
-                  </Tooltip>
-                ) : (
-                  <Typography noWrap={true}>Not specified</Typography>
-                )}
-              </Box>
-            </Box>
-            {!isPublic && (
-              <Box
-                sx={{
-                  display: 'flex',
-                  color: '#434242',
-                  '& p': {
-                    fontSize: '15px!important',
-                    maxWidth: '200px',
-                    fontWeight: 400,
-                  },
-                }}
+          ) : (
+            <Box sx={userWrapper}>
+              {isPublic && (
+                <Typography sx={roleTitleSx} align={'center'}>
+                  Auditor
+                </Typography>
+              )}
+              <Avatar
+                src={audit?.avatar ? `${ASSET_URL}/${audit?.avatar}` : ''}
+                alt="auditor photo"
+              />
+              <Link
+                to={`/a/${audit.auditor_id}`}
+                style={{ display: 'grid', textAlign: 'center' }}
               >
+                <Tooltip title={audit?.auditor_first_name} arrow placement="top">
+                  <Typography noWrap={true} sx={userNameWrapper}>
+                    {audit?.auditor_first_name}
+                  </Typography>
+                </Tooltip>
+                <Tooltip title={audit?.auditor_last_name} arrow placement="top">
+                  <Typography noWrap={true} sx={userNameWrapper}>
+                    {audit?.auditor_last_name}
+                  </Typography>
+                </Tooltip>
+              </Link>
+            </Box>
+          )}
+          <Box sx={userInfoWrapper}>
+            {audit.auditor_organization?.id ? (
+              <>
                 <Box sx={infoWrapper}>
-                  <span>Price:</span>
+                  <span>E-mail:</span>
+                  <Box sx={{ display: 'grid' }}>
+                    {!!audit?.auditor_organization?.contacts?.email ? (
+                      <Tooltip
+                        title={audit?.auditor_organization?.contacts?.email}
+                        arrow
+                        placement="top"
+                      >
+                        <Typography noWrap={true}>
+                          {audit?.auditor_organization?.contacts?.email}
+                        </Typography>
+                      </Tooltip>
+                    ) : (
+                      <Typography noWrap={true}>Not specified</Typography>
+                    )}
+                  </Box>
                 </Box>
-                <EditPrice
-                  hideIcon={true}
-                  audit={audit}
-                  user={user}
-                  isPublic={isPublic}
-                  request={request}
-                />
-              </Box>
+                <Box sx={infoWrapper}>
+                  <span>Telegram:</span>
+                  <Box sx={{ display: 'grid' }}>
+                    {!!audit?.auditor_organization?.contacts?.telegram ? (
+                      <Tooltip
+                        title={audit?.auditor_organization?.contacts?.telegram}
+                        arrow
+                        placement="top"
+                      >
+                        <Typography noWrap={true}>
+                          {audit?.auditor_organization?.contacts?.telegram}
+                        </Typography>
+                      </Tooltip>
+                    ) : (
+                      <Typography noWrap={true}>Not specified</Typography>
+                    )}
+                  </Box>
+                </Box>
+              </>
+            ) : (
+              <>
+                <Box sx={infoWrapper}>
+                  <span>E-mail:</span>
+                  <Box sx={{ display: 'grid' }}>
+                    {!!audit?.auditor_contacts?.email ? (
+                      <Tooltip
+                        title={audit?.auditor_contacts?.email}
+                        arrow
+                        placement="top"
+                      >
+                        <Typography noWrap={true}>
+                          {audit?.auditor_contacts?.email}
+                        </Typography>
+                      </Tooltip>
+                    ) : (
+                      <Typography noWrap={true}>Not specified</Typography>
+                    )}
+                  </Box>
+                </Box>
+                <Box sx={infoWrapper}>
+                  <span>Telegram:</span>
+                  <Box sx={{ display: 'grid' }}>
+                    {!!audit?.auditor_contacts?.telegram ? (
+                      <Tooltip
+                        title={audit?.auditor_contacts?.telegram}
+                        arrow
+                        placement="top"
+                      >
+                        <Typography noWrap={true}>
+                          {audit?.auditor_contacts?.telegram}
+                        </Typography>
+                      </Tooltip>
+                    ) : (
+                      <Typography noWrap={true}>Not specified</Typography>
+                    )}
+                  </Box>
+                </Box>
+                {!isPublic && (
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      color: '#434242',
+                      '& p': {
+                        fontSize: '15px!important',
+                        maxWidth: '200px',
+                        fontWeight: 400,
+                      },
+                    }}
+                  >
+                    <Box sx={infoWrapper}>
+                      <span>Price:</span>
+                    </Box>
+                    <EditPrice
+                      hideIcon={true}
+                      audit={audit}
+                      user={user}
+                      isPublic={isPublic}
+                      request={request}
+                    />
+                  </Box>
+                )}
+              </>
             )}
+            <Box
+              sx={{
+                display: 'flex',
+                color: '#434242',
+                '& p': {
+                  fontSize: '15px!important',
+                  maxWidth: '200px',
+                  fontWeight: 400,
+                },
+              }}
+            >
+              <Box sx={infoWrapper}>
+                <span>Price:</span>
+              </Box>
+              <EditPrice
+                hideIcon={true}
+                audit={audit}
+                user={user}
+                request={request}
+              />
+            </Box>
           </Box>
 
           {!!audit?.time?.from && !isPublic && (

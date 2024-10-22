@@ -138,13 +138,8 @@ const IdentitySetting = () => {
                 {linkedAccounts
                   ?.filter(el => el.name.toLowerCase() === 'github')
                   ?.map(el => (
-                    <>
-                      <Tooltip
-                        key={el.id}
-                        arrow
-                        placement="top"
-                        title="Show in profile"
-                      >
+                    <Box key={el.id} sx={{ display: 'flex' }}>
+                      <Tooltip arrow placement="top" title="Show in profile">
                         <Checkbox
                           key={el.id}
                           checked={el.is_public}
@@ -159,7 +154,7 @@ const IdentitySetting = () => {
                       >
                         <DeleteForeverIcon color={'error'} />
                       </Button>
-                    </>
+                    </Box>
                   ))}
               </Box>
               <Box
@@ -187,13 +182,8 @@ const IdentitySetting = () => {
                 {linkedAccounts
                   ?.filter(el => el.name.toLowerCase() === 'linkedin')
                   ?.map(el => (
-                    <>
-                      <Tooltip
-                        key={el.id}
-                        arrow
-                        placement="top"
-                        title="Show in profile"
-                      >
+                    <Box key={el.id} sx={{ display: 'flex' }}>
+                      <Tooltip arrow placement="top" title="Show in profile">
                         <Checkbox
                           key={el.id}
                           checked={el.is_public}
@@ -208,7 +198,7 @@ const IdentitySetting = () => {
                       >
                         <DeleteForeverIcon color={'error'} />
                       </Button>
-                    </>
+                    </Box>
                   ))}
               </Box>
               <Box
@@ -337,7 +327,7 @@ const buttonSx = theme => ({
   fontWeight: 600,
   fontSize: '18px',
   // padding: '9px 50px',
-  width: '214px',
+  width: '234px',
   borderRadius: '10px',
   [theme.breakpoints.down('xs')]: {
     padding: '9px 10px',
