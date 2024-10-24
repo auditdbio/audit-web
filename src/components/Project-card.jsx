@@ -155,9 +155,9 @@ const ProjectCard = ({ type, project, currentRole, isPublic }) => {
               </Typography>
             </Box>
           ))}
-        {isPublic && !!project?.issues.length && (
-          <Typography>Issues {project?.issues.length}</Typography>
-        )}
+        {/*{isPublic && !!project?.issues.length && (*/}
+        {/*  <Typography>Issues {project?.issues.length}</Typography>*/}
+        {/*)}*/}
         {isPublic && (
           // <Box sx={priceWrapper}>
           //   <Box sx={infoWrapper}>
@@ -205,7 +205,11 @@ const ProjectCard = ({ type, project, currentRole, isPublic }) => {
         {isPublic ? (
           <Button
             variant="contained"
-            sx={[editButton, type === 'auditor' ? editAuditor : {}]}
+            sx={[
+              editButton,
+              type === 'auditor' ? editAuditor : {},
+              { width: '150px' },
+            ]}
             onClick={() => {
               localStorage.setItem('prevPath', window.location.pathname);
               navigate(`/audit-info/${project.id}`);
@@ -214,7 +218,7 @@ const ProjectCard = ({ type, project, currentRole, isPublic }) => {
               type === AUDITOR ? 'submit-button' : 'edit-button',
             )}
           >
-            View
+            View {` ${project?.issues.length} issues`}
           </Button>
         ) : (
           <Button

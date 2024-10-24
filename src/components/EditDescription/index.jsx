@@ -135,6 +135,7 @@ const EditDescription = ({ audit, auditRequest, hideChange, isPublic }) => {
                         </Box>
                       )}
                     {!hideChange &&
+                      !isPublic &&
                       (!editMode ? (
                         audit?.status?.toLowerCase() !==
                           RESOLVED.toLowerCase() && (
@@ -226,7 +227,7 @@ const EditDescription = ({ audit, auditRequest, hideChange, isPublic }) => {
                   <Box sx={hideChange ? linksList : {}}>
                     {!hideChange &&
                       (audit?.status?.toLowerCase() !==
-                      RESOLVED.toLowerCase() ? (
+                        RESOLVED.toLowerCase() && !isPublic ? (
                         <Box sx={linksList}>
                           <ProjectLinksList
                             name="scope"
