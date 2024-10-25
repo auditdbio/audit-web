@@ -14,8 +14,7 @@ import {
   Typography,
   useMediaQuery,
 } from '@mui/material';
-import MenuIcon from '@mui/icons-material/Menu';
-import IconButton from '@mui/material/IconButton';
+import SaveIcon from '@mui/icons-material/Save';
 import { addTestsLabel, isAuth, reportBuilder } from '../../lib/helper.js';
 import {
   AUDITOR,
@@ -42,7 +41,7 @@ import {
 } from '../../redux/actions/userAction.js';
 import theme from '../../styles/themes.js';
 import { BASE_URL } from '../../services/urls.js';
-import UnfoldMoreIcon from '@mui/icons-material/UnfoldMore';
+import RefreshIcon from '@mui/icons-material/Refresh';
 import DraftsIcon from '@mui/icons-material/Drafts';
 import NoteAddIcon from '@mui/icons-material/NoteAdd';
 import DiscloseIcon from '../icons/DiscloseIcon.jsx';
@@ -253,7 +252,8 @@ const Control = ({
               }}
               variant={'contained'}
             >
-              Save to AuditDB
+              {/*Save to AuditDB*/}
+              <SaveIcon />
             </Button>
           )}
           {!saved && (
@@ -264,7 +264,7 @@ const Control = ({
               onClick={() => setIsOpenReset(true)}
               sx={[buttonSx, { marginRight: '0!important' }, publicBtnSx]}
             >
-              Reset form
+              <RefreshIcon />
             </Button>
           )}
         </Box>

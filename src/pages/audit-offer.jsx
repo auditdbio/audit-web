@@ -69,7 +69,7 @@ import AddLinkIcon from '@mui/icons-material/AddLink.js';
 import SummarizeIcon from '@mui/icons-material/Summarize';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
-import HistoryIcon from '@mui/icons-material/History';
+import SendIcon from '@mui/icons-material/Send';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import MarkEmailReadIcon from '@mui/icons-material/MarkEmailRead';
@@ -1045,15 +1045,21 @@ const AuditOffer = () => {
                               mb: '30px',
                             }}
                           >
-                            <Button
-                              variant="contained"
-                              type="submit"
-                              color="secondary"
-                              sx={[buttonSx, { mb: '15px' }]}
-                              {...addTestsLabel('send-button')}
+                            <Tooltip
+                              title={'Send to customer'}
+                              arrow
+                              placement={'top'}
                             >
-                              Send to customer
-                            </Button>
+                              <Button
+                                variant="contained"
+                                type="submit"
+                                color="secondary"
+                                sx={[buttonSx, { mb: '15px' }]}
+                                {...addTestsLabel('send-button')}
+                              >
+                                <SendIcon />
+                              </Button>
+                            </Tooltip>
                           </Box>
                         )}
                       </Form>
