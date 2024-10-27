@@ -517,15 +517,24 @@ const downloadResponse = (res, audit) => {
 export const downloadReport = (audit, { generate, isDraft } = {}) => {
   const token = Cookies.get('token');
 
-  const getReport = (audit, fileId, dispatch) => {
-    axios
-      .get(`${ASSET_URL}/id/${fileId}`, {
-        responseType: 'blob',
-        withCredentials: true,
-        headers: { Authorization: `Bearer ${token}` },
-      })
-      .then(response => downloadResponse(response, audit))
-      .catch(() => dispatch({ type: REQUEST_ERROR }));
+  const getReport = (audit, fileId, dispatch, isDraft = false) => {
+    const config = {
+      responseType: 'blob',
+      withCredentials: true,
+      headers: { Authorization: `Bearer ${token}` },
+    };
+
+    if (isDraft) {
+      axios
+        .delete(`${ASSET_URL}/id/${fileId}?get_file=true`, config)
+        .then(response => downloadResponse(response, audit))
+        .catch(() => dispatch({ type: REQUEST_ERROR }));
+    } else {
+      axios
+        .get(`${ASSET_URL}/id/${fileId}`, config)
+        .then(response => downloadResponse(response, audit))
+        .catch(() => dispatch({ type: REQUEST_ERROR }));
+    }
   };
 
   return dispatch => {
@@ -537,7 +546,9 @@ export const downloadReport = (audit, { generate, isDraft } = {}) => {
           { is_draft: isDraft },
           { headers: { Authorization: `Bearer ${token}` } },
         )
-        .then(({ data }) => getReport(audit, data.file_id, dispatch))
+        .then(({ data }) =>
+          getReport(audit, data.file_id, dispatch, data.is_draft),
+        )
         .catch(() => dispatch({ type: REQUEST_ERROR }));
     } else {
       getReport(audit, audit?.report, dispatch);

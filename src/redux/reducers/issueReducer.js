@@ -31,7 +31,7 @@ export const issueReducer = (state = initialState, action) => {
     case ADD_AUDIT_ISSUE:
       return {
         ...state,
-        successMessage: 'Audit issue created successfully',
+        successMessage: action.payload.successMessage || null,
         issues: [...state.issues, action.payload.issue],
       };
     case UPDATE_AUDIT_ISSUE:
