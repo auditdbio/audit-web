@@ -28,6 +28,7 @@ import {
 import ShareProjectButton from './custom/ShareProjectButton.jsx';
 import theme from '../styles/themes.js';
 import { ASSET_URL } from '../services/urls.js';
+import dayjs from 'dayjs';
 
 const ProjectCard = ({ type, project, currentRole, isPublic }) => {
   const navigate = useNavigate();
@@ -57,8 +58,28 @@ const ProjectCard = ({ type, project, currentRole, isPublic }) => {
   };
 
   return (
-    <Box sx={cardWrapper}>
-      <Box sx={cardInnerWrapper}>
+    <Box sx={[cardWrapper, isPublic ? publicSxView : {}]}>
+      <Box sx={cardInnerWrapper(theme, isPublic)}>
+        {isPublic && (
+          <Button
+            sx={userButtonSx}
+            variant={'text'}
+            onClick={() => {
+              localStorage.setItem('prev', window.location.pathname);
+              navigate(`/c/${project.customer_id}`);
+            }}
+          >
+            <Avatar
+              sx={{ width: '35px', height: '35px' }}
+              src={
+                project?.customer_avatar
+                  ? `${ASSET_URL}/${project?.customer_avatar}`
+                  : ''
+              }
+            />
+            <Typography>{project?.customer_first_name}</Typography>
+          </Button>
+        )}
         <Tooltip
           title={project.name || project.project_name}
           arrow
@@ -155,31 +176,26 @@ const ProjectCard = ({ type, project, currentRole, isPublic }) => {
               </Typography>
             </Box>
           ))}
-        {/*{isPublic && !!project?.issues.length && (*/}
-        {/*  <Typography>Issues {project?.issues.length}</Typography>*/}
-        {/*)}*/}
         {isPublic && (
-          // <Box sx={priceWrapper}>
-          //   <Box sx={infoWrapper}>
-          <Button
-            sx={userButtonSx}
-            variant={'text'}
-            onClick={() => {
-              localStorage.setItem('prev', window.location.pathname);
-              navigate(`/c/${project.customer_id}`);
+          <Box
+            sx={{
+              mb: '12px',
+              display: 'flex',
+              alignItems: 'center',
+              flexDirection: 'column',
             }}
           >
-            <Avatar
-              src={
-                project?.customer_avatar
-                  ? `${ASSET_URL}/${project?.customer_avatar}`
-                  : ''
-              }
-            />
-            <Typography>{project?.customer_first_name}</Typography>
-          </Button>
-          // </Box>
-          // </Box>
+            <Typography sx={{ mb: '12px', fontSize: '16px' }}>
+              {`${project?.issues.length} issues`}
+            </Typography>
+            <Typography sx={{ fontSize: '16px' }}>
+              {dayjs(
+                project.resolved_at > 1000000000000
+                  ? project.resolved_at / 1000
+                  : project.resolved_at * 1000,
+              ).format('DD.MMM.YYYY')}
+            </Typography>
+          </Box>
         )}
         {!isPublic &&
           project?.status.toLowerCase() === RESOLVED.toLowerCase() && (
@@ -218,7 +234,7 @@ const ProjectCard = ({ type, project, currentRole, isPublic }) => {
               type === AUDITOR ? 'submit-button' : 'edit-button',
             )}
           >
-            View {` ${project?.issues.length} issues`}
+            View
           </Button>
         ) : (
           <Button
@@ -277,7 +293,7 @@ export const userButtonSx = theme => ({
   textTransform: 'unset',
   display: 'flex',
   gap: '8px',
-  marginY: '12px',
+  marginBottom: '12px',
 });
 
 const priceWrapper = theme => ({
@@ -292,6 +308,12 @@ const priceWrapper = theme => ({
   },
 });
 
+const publicSxView = theme => ({
+  [theme.breakpoints.down(580)]: {
+    flexDirection: 'column',
+  },
+});
+
 const projectNameSx = theme => ({
   height: '45px',
   overflow: 'hidden',
@@ -302,12 +324,12 @@ const projectNameSx = theme => ({
   display: '-webkit-box',
 });
 
-const cardInnerWrapper = theme => ({
+const cardInnerWrapper = (theme, isPublic) => ({
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'center',
   [theme.breakpoints.down('xs')]: {
-    alignItems: 'flex-start',
+    alignItems: isPublic ? 'center' : 'flex-start',
   },
 });
 
@@ -458,7 +480,7 @@ const cardWrapper = theme => ({
   [theme.breakpoints.down('xs')]: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    gap: '40px',
+    gap: '20px',
     padding: '15px 20px',
     '& h5': {
       fontSize: '14px',

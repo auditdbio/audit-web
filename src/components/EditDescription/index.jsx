@@ -335,6 +335,7 @@ const linksList = {
 const customerLinksList = {
   display: 'flex',
   flexDirection: 'column',
+  mt: '5px',
   '& p': {
     display: 'flex',
     alignItems: 'center',

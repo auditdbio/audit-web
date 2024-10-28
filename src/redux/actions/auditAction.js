@@ -31,6 +31,7 @@ import {
   SAVE_PUBLIC_REPORT,
   SET_AUDIT_FEEDBACK,
   SET_CURRENT_AUDIT_PARTNER,
+  VERIFY_AUDIT_REPORT,
 } from './types.js';
 import { history } from '../../services/history.js';
 import { ASSET_URL } from '../../services/urls.js';
@@ -541,6 +542,21 @@ export const downloadReport = (audit, { generate, isDraft } = {}) => {
     } else {
       getReport(audit, audit?.report, dispatch);
     }
+  };
+};
+
+export const handleGetHash = (auditId, report) => {
+  const token = Cookies.get('token');
+  return dispatch => {
+    axios
+      .post(`${API_URL}/report/${auditId}/verify`, report, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then(({ data }) => {
+        dispatch({ type: VERIFY_AUDIT_REPORT, payload: data });
+      });
   };
 };
 

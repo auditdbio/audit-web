@@ -33,6 +33,7 @@ import {
   READ_AUDIT_REQUEST_HISTORY,
   GET_AUDITS_OF_AUDITOR,
   GET_PUBLIC_AUDIT,
+  VERIFY_AUDIT_REPORT,
 } from '../actions/types.js';
 
 const initialState = {
@@ -49,6 +50,7 @@ const initialState = {
   approvedHistory: null,
   unreadHistory: null,
   auditRequestHistory: [],
+  verifyAudit: null,
 };
 
 export const auditReducer = (state = initialState, action) => {
@@ -76,6 +78,14 @@ export const auditReducer = (state = initialState, action) => {
           ...state.unreadHistory,
           [action.payload.userId]: action.payload.unread,
         },
+      };
+    case VERIFY_AUDIT_REPORT:
+      return {
+        ...state,
+        verifyAudit: action.payload,
+        ...(action.payload.verified
+          ? { successMessage: 'Audit verified successfully', error: null }
+          : { error: 'Verification code is incorrect', successMessage: null }),
       };
     case DELETE_AUDIT:
       return {
