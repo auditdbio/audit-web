@@ -127,7 +127,7 @@ const PublicAudit = ({
   const goToIssues = () => {
     navigate(`/issues/audit-issue/${audit?.id}`);
   };
-  //
+
   const handleSendFeedback = values => {
     const feedback = { audit_id: audit.id, ...values };
     dispatch(sendAuditFeedback(feedback));

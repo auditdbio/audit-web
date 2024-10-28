@@ -218,7 +218,7 @@ const AppRoutes = () => {
           }
         />
         <Route
-          path="/audit-info/:id"
+          path="/audit/:id"
           element={<PublicAuditInfoPage isPublic={true} />}
         />
         <Route
