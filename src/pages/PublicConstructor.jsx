@@ -10,6 +10,7 @@ import {
   Modal,
   Tab,
   Tabs,
+  Tooltip,
   Typography,
   useMediaQuery,
 } from '@mui/material';
@@ -223,7 +224,7 @@ const PublicConstructor = ({ saved, isPublic }) => {
   if ((saved && audit) || (!audit && !saved)) {
     return (
       <Layout
-        sx={{ padding: '40px' }}
+        sx={layoutSx}
         containerSx={{
           maxWidth: 'unset!important',
           padding: '0 35px!important',
@@ -403,15 +404,15 @@ const PublicConstructor = ({ saved, isPublic }) => {
                           >
                             <Box sx={descriptionWrapper(theme, showFull)}>
                               <Box
-                                sx={{
-                                  position: 'relative',
-                                  '& .rc-md-editor': {
-                                    border: 'unset',
-                                  },
-                                  '& .editor-container': {
-                                    borderBottom: 'unset',
-                                  },
-                                }}
+                              // sx={{
+                              //   position: 'relative',
+                              //   '& .rc-md-editor': {
+                              //     border: 'unset',
+                              //   },
+                              //   '& .editor-container': {
+                              //     borderBottom: 'unset',
+                              //   },
+                              // }}
                               >
                                 <MarkdownEditor
                                   saved={saved}
@@ -553,36 +554,38 @@ const PublicConstructor = ({ saved, isPublic }) => {
                         }
                         onClose={handleCloseSnack}
                       />
-                      <Button
-                        variant="contained"
-                        color="secondary"
-                        sx={[buttonSx, { marginRight: '0!important' }, btnSx]}
-                        onClick={() =>
-                          handleGenerateReport(handleSubmit, values)
-                        }
-                      >
-                        <PictureAsPdfIcon />
-                      </Button>
                       {!saved && (
-                        <Button
-                          sx={[buttonSx, { marginRight: '0!important' }, btnSx]}
-                          onClick={() => {
-                            handleSavePublicAudit(handleSubmit, values);
-                          }}
-                          variant={'contained'}
+                        <Tooltip
+                          title={'Save to AuditDB'}
+                          arrow
+                          placement={'top'}
                         >
-                          <SaveIcon />
-                        </Button>
+                          <Button
+                            sx={[
+                              buttonSx,
+                              { marginRight: '0!important' },
+                              btnSx,
+                            ]}
+                            onClick={() => {
+                              handleSavePublicAudit(handleSubmit, values);
+                            }}
+                            variant={'contained'}
+                          >
+                            <SaveIcon />
+                          </Button>
+                        </Tooltip>
                       )}
-                      <Button
-                        variant={'contained'}
-                        type={'button'}
-                        color={'secondary'}
-                        onClick={() => setIsOpen(true)}
-                        sx={btnSx}
-                      >
-                        <RefreshIcon />
-                      </Button>
+                      <Tooltip arrow title={'Reset form'} placement={'top'}>
+                        <Button
+                          variant={'contained'}
+                          type={'button'}
+                          color={'secondary'}
+                          onClick={() => setIsOpen(true)}
+                          sx={btnSx}
+                        >
+                          <RefreshIcon />
+                        </Button>
+                      </Tooltip>
                     </Box>
                   )}
                   {!!issues?.length && (
@@ -625,6 +628,13 @@ const actionWrapper = theme => ({
   display: 'flex',
   gap: '25px',
   justifyContent: 'center',
+});
+
+const layoutSx = theme => ({
+  padding: '10px!important',
+  [theme.breakpoints.down(780)]: {
+    padding: '10px 0!important',
+  },
 });
 
 const tabSx = theme => ({

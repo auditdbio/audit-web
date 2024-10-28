@@ -234,38 +234,44 @@ const Control = ({
             onClose={handleCloseSnack}
           />
           {!saved && (
-            <Button
-              variant="contained"
-              color="secondary"
-              sx={[buttonSx, { marginRight: '0!important' }, publicBtnSx]}
-              onClick={handleGenerateReport}
-            >
-              {/*Generate report*/}
-              <PictureAsPdfIcon />
-            </Button>
+            <Tooltip title={'Generate report'} arrow placement={'top'}>
+              <Button
+                variant="contained"
+                color="secondary"
+                sx={[buttonSx, { marginRight: '0!important' }, publicBtnSx]}
+                onClick={handleGenerateReport}
+              >
+                {/*Generate report*/}
+                <PictureAsPdfIcon />
+              </Button>
+            </Tooltip>
           )}
           {!saved && (
-            <Button
-              sx={[buttonSx, { marginRight: '0!important' }, publicBtnSx]}
-              onClick={() => {
-                handleSavePublicAudit();
-              }}
-              variant={'contained'}
-            >
-              {/*Save to AuditDB*/}
-              <SaveIcon />
-            </Button>
+            <Tooltip title={'Save to AuditDB'} arrow placement={'top'}>
+              <Button
+                sx={[buttonSx, { marginRight: '0!important' }, publicBtnSx]}
+                onClick={() => {
+                  handleSavePublicAudit();
+                }}
+                variant={'contained'}
+              >
+                {/*Save to AuditDB*/}
+                <SaveIcon />
+              </Button>
+            </Tooltip>
           )}
           {!saved && (
-            <Button
-              variant={'contained'}
-              type={'button'}
-              color={'secondary'}
-              onClick={() => setIsOpenReset(true)}
-              sx={[buttonSx, { marginRight: '0!important' }, publicBtnSx]}
-            >
-              <RefreshIcon />
-            </Button>
+            <Tooltip title={'Reset form'} arrow placement={'top'}>
+              <Button
+                variant={'contained'}
+                type={'button'}
+                color={'secondary'}
+                onClick={() => setIsOpenReset(true)}
+                sx={[buttonSx, { marginRight: '0!important' }, publicBtnSx]}
+              >
+                <RefreshIcon />
+              </Button>
+            </Tooltip>
           )}
         </Box>
       ) : (

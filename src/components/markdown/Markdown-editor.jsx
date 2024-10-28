@@ -111,7 +111,7 @@ const MarkdownEditor = ({
     >
       <MdEditor
         renderHTML={renderHTML}
-        value={markdown}
+        value={markdown ?? ''}
         onChange={handleEditorChange}
         onBlur={handleEditorBlur ? handleEditorBlur : null}
         style={{ height: '400px' }}
