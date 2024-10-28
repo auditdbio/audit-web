@@ -1098,10 +1098,7 @@ const AuditOffer = () => {
                               variant="contained"
                               type="submit"
                               color="secondary"
-                              sx={[
-                                buttonSx,
-                                { mb: '15px', width: '180px!important' },
-                              ]}
+                              sx={[buttonSx, { mb: '15px' }]}
                               {...addTestsLabel('send-button')}
                             >
                               Send to customer
