@@ -15,6 +15,7 @@ import {
   CHAT_UPDATE_DIFFERENT_ROLE_UNREAD,
   CHAT_SET_ERROR,
   CHAT_DELETE_MESSAGE,
+  RECEIVE_NEW_CHAT,
 } from './types.js';
 
 export const getChatList = role => {
@@ -144,6 +145,12 @@ export const chatSendMessage = (text, to, fromRole, isFirst, kind = 'Text') => {
       .catch(() => {
         dispatch({ type: CHAT_SET_ERROR, payload: 'Error sending message' });
       });
+  };
+};
+
+export const receiveNewChat = chat => {
+  return dispatch => {
+    dispatch({ type: RECEIVE_NEW_CHAT, payload: chat });
   };
 };
 

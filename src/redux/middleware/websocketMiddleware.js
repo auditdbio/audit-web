@@ -20,6 +20,7 @@ import {
 } from '../actions/websocketAction.js';
 import {
   deleteChatMessage,
+  receiveNewChat,
   receiveNewChatMessage,
 } from '../actions/chatActions.js';
 
@@ -90,6 +91,8 @@ const websocketMiddleware = () => {
               store.dispatch(
                 receiveNewChatMessage(message.payload.ChatMessage),
               );
+            } else if (message.kind.toLowerCase() === 'newchat') {
+              store.dispatch(receiveNewChat(message.payload.NewChat));
             } else if (message.kind.toLowerCase() === 'chatdeletemessage') {
               store.dispatch(
                 deleteChatMessage(message.payload.ChatDeleteMessage),
