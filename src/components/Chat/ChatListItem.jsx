@@ -24,8 +24,13 @@ const ChatListItem = ({
   const getUnreadForUser = chat =>
     chat.unread.find(unread => unread.id === user.id)?.unread || 0;
 
-  const getRole = () =>
-    role || chat.members.find(member => member.id !== user.id)?.role;
+  const getRole = () => {
+    return (
+      role ||
+      chat.members.find(member => (member.org_user_id ?? member.id) !== user.id)
+        ?.role
+    );
+  };
 
   const setChatHandle = () => {
     setListIsOpen(false);

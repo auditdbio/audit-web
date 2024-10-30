@@ -59,6 +59,12 @@ const Message = ({ message, user, currentChat, isRead, type, orgId }) => {
       });
   };
 
+  const isOwn = () => {
+    return message.from.role.toLowerCase() === 'organization'
+      ? { isOwn: message.from.org_user_id === user.id }
+      : { isOwn: message.from?.id === user.id };
+  };
+
   return (
     <Box
       sx={messageSx({
@@ -71,18 +77,11 @@ const Message = ({ message, user, currentChat, isRead, type, orgId }) => {
       <Box
         sx={
           message.kind === 'Audit'
-            ? requestTextSx(
-                message.from.role.toLowerCase() === 'organization'
-                  ? { isOwn: message.from.org_user_id === user.id }
-                  : { isOwn: message.from?.id === user.id },
-              )
-            : messageTextSx(
-                message.from.role.toLowerCase() === 'organization'
-                  ? { isOwn: message.from.org_user_id === user.id }
-                  : { isOwn: message.from?.id === user.id },
-              )
+            ? requestTextSx(isOwn())
+            : messageTextSx(isOwn())
         }
       >
+        {/*{<Typography>{}</Typography>}*/}
         {message.kind === 'Image' ? (
           <ImageMessage message={message} />
         ) : message.kind === 'Audit' ? (
@@ -157,7 +156,7 @@ const messageAvatarSx = theme => ({
 
 const messageTextSx = ({ isOwn }) => ({
   position: 'relative',
-  minWidth: '150px',
+  minWidth: '200px',
   maxWidth: '400px',
   margin: '0 20px',
   background: '#e5e5e5',
