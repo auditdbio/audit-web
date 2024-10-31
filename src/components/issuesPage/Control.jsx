@@ -105,11 +105,16 @@ const Control = ({
   };
 
   const handleSavePublicAudit = async () => {
+    const filteredReport = Object.fromEntries(
+      Object.entries(report).filter(
+        ([key, value]) => value != null && value !== '' && value.length,
+      ),
+    );
     if (report?.auditor_name && report?.project_name && report?.description) {
       if (isAuth()) {
         if (user.current_role === CUSTOMER) {
           const data = {
-            ...report,
+            ...filteredReport,
             isPublic: true,
             issues: [...issuesArray],
           };
@@ -121,7 +126,7 @@ const Control = ({
             auditor_last_name: auditor.last_name,
             auditor_contacts: auditor.contacts,
             avatar: auditor.avatar,
-            ...report,
+            ...filteredReport,
             isPublic: true,
             issues: [...issuesArray],
             status: 'Started',

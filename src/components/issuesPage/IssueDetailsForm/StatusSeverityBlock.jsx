@@ -25,6 +25,7 @@ import {
   IN_PROGRESS,
   NOT_FIXED,
   VERIFICATION,
+  WILL_NOT_FIX,
 } from '../constants.js';
 import NoteAddIcon from '@mui/icons-material/NoteAdd.js';
 
@@ -85,7 +86,11 @@ const StatusSeverityBlock = ({
                 renderValue={selected => {
                   return (
                     <Box sx={{ textAlign: 'center' }}>
-                      <IssueSeverity text={selected} />
+                      <IssueSeverity
+                        text={
+                          selected === WILL_NOT_FIX ? 'Will not fix' : selected
+                        }
+                      />
                     </Box>
                   );
                 }}
@@ -98,7 +103,7 @@ const StatusSeverityBlock = ({
                   Fixed
                 </MenuItem>
                 <MenuItem
-                  value={NOT_FIXED}
+                  value={WILL_NOT_FIX}
                   sx={severityMenuItem}
                   classes={{ selected: 'selected-severity' }}
                 >

@@ -148,11 +148,16 @@ const PublicConstructor = ({ saved, isPublic }) => {
 
   const handleSavePublicAudit = async (handleSubmit, report) => {
     handleSubmit();
+    const filteredReport = Object.fromEntries(
+      Object.entries(report).filter(
+        ([key, value]) => value != null && value !== '' && value.length,
+      ),
+    );
     if (report?.auditor_name && report?.project_name && report?.description) {
       if (isAuth()) {
         if (user.current_role === CUSTOMER) {
           const data = {
-            ...report,
+            ...filteredReport,
             isPublic: true,
             issues: [...issues],
           };
@@ -164,7 +169,7 @@ const PublicConstructor = ({ saved, isPublic }) => {
             auditor_last_name: auditor.last_name,
             auditor_contacts: auditor.contacts,
             avatar: auditor.avatar,
-            ...report,
+            ...filteredReport,
             isPublic: true,
             issues: [...issues],
             status: 'Started',
@@ -403,17 +408,7 @@ const PublicConstructor = ({ saved, isPublic }) => {
                             collapsedSize={showFull ? undefined : 150}
                           >
                             <Box sx={descriptionWrapper(theme, showFull)}>
-                              <Box
-                              // sx={{
-                              //   position: 'relative',
-                              //   '& .rc-md-editor': {
-                              //     border: 'unset',
-                              //   },
-                              //   '& .editor-container': {
-                              //     borderBottom: 'unset',
-                              //   },
-                              // }}
-                              >
+                              <Box>
                                 <MarkdownEditor
                                   saved={saved}
                                   name="conclusion"
@@ -790,6 +785,9 @@ const btnSx = theme => ({
   lineHeight: '25px',
   textTransform: 'none',
   borderRadius: '10px',
+  width: '50px!important',
+  minWidth: '50px',
+  height: '45px',
   mr: '20px',
   '&:last-child': { mr: 0 },
   [theme.breakpoints.down('lg')]: {

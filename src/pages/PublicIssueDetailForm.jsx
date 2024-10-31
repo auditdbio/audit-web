@@ -18,7 +18,7 @@ import { RESOLVED } from '../redux/actions/types.js';
 import { addTestsLabel } from '../lib/helper.js';
 import DescriptionBlock from '../components/issuesPage/IssueDetailsForm/DescriptionBlock.jsx';
 import StatusSeverityBlock from '../components/issuesPage/IssueDetailsForm/StatusSeverityBlock.jsx';
-import { NOT_FIXED } from '../components/issuesPage/constants.js';
+import { NOT_FIXED, WILL_NOT_FIX } from '../components/issuesPage/constants.js';
 
 const PublicIssueDetailsForm = ({ issue = null, editMode = false, saved }) => {
   const dispatch = useDispatch();
@@ -48,7 +48,7 @@ const PublicIssueDetailsForm = ({ issue = null, editMode = false, saved }) => {
 
   const initialValues = {
     name: issue?.name || '',
-    status: issue?.status || NOT_FIXED,
+    status: issue?.status || WILL_NOT_FIX,
     severity: issue?.severity || 'Medium',
     category: issue?.category || '',
     description: issue?.description || '',
