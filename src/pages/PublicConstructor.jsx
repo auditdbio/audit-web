@@ -329,11 +329,31 @@ const PublicConstructor = ({ saved, isPublic }) => {
                             value={0}
                             label={'Description'}
                           />
-                          <Tab
-                            sx={[tabSx, tab === 0 ? { color: '#52176D' } : {}]}
-                            value={1}
-                            label={'Conclusion'}
-                          />
+                          {values.conclusion ? (
+                            <Tab
+                              sx={[
+                                tabSx,
+                                tab === 0 ? { color: '#52176D' } : {},
+                              ]}
+                              value={1}
+                              label={'Conclusion'}
+                            />
+                          ) : (
+                            <Button
+                              sx={[
+                                tabSx,
+                                tab === 0 ? { color: '#52176D' } : {},
+                              ]}
+                              value={1}
+                              onClick={() => {
+                                setEditConclusion(true);
+                                setShowFull(true);
+                                setTab(1);
+                              }}
+                            >
+                              + Conclusion
+                            </Button>
+                          )}
                         </Tabs>
                         {/*)}*/}
                         {tab === 0 ? (
@@ -635,7 +655,7 @@ const layoutSx = theme => ({
 const tabSx = theme => ({
   // border: '1px solid rgba(255, 153, 0, 0.5)',
   textTransform: 'unset',
-  width: '140px',
+  width: '170px',
   minHeight: '32px',
   height: '38.5px!important',
   // color: '#FF9900',
