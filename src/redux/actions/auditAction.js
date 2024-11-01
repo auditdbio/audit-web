@@ -526,7 +526,7 @@ export const downloadReport = (audit, { generate, isDraft } = {}) => {
 
     if (isDraft) {
       axios
-        .delete(`${ASSET_URL}/id/${fileId}?get_file=true`, config)
+        .post(`${ASSET_URL}/get_and_delete/${fileId}`, null, config)
         .then(response => downloadResponse(response, audit))
         .catch(() => dispatch({ type: REQUEST_ERROR }));
     } else {
