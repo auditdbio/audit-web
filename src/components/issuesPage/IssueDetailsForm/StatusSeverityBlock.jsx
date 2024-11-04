@@ -328,14 +328,14 @@ const StatusSeverityBlock = ({
         <Box
           sx={[
             buttonsBox,
-            !isPublic
-              ? {
-                  display: 'none!important',
-                  [theme.breakpoints.down(550)]: {
-                    display: 'flex!important',
-                  },
-                }
-              : {},
+            // !isPublic
+            //   ? {
+            //       display: 'none!important',
+            //       [theme.breakpoints.down(550)]: {
+            //         display: 'flex!important',
+            //       },
+            //     }
+            //   : {},
           ]}
         >
           {!dirty ? (

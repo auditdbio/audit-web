@@ -790,29 +790,28 @@ const SubmitValidation = Yup.object().shape({
 });
 
 const wrapper = theme => ({
-  padding: '28px 34px 20px',
+  padding: '25px 30px 60px',
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'center',
-  position: 'relative',
   maxWidth: 'unset',
   gap: '20px',
   '& h3': {
-    fontSize: '37px',
+    fontSize: '24px',
     fontWeight: 500,
   },
   [theme.breakpoints.down('md')]: {
-    padding: '18px 44px 20px',
-    '& h3': {
-      fontSize: '30px',
-    },
+    padding: '20px 24px 20px',
   },
   [theme.breakpoints.down('sm')]: {
     gap: '20px',
-    padding: '18px 20px 20px',
+    padding: '30px 20px 20px',
     '& h3': {
-      fontSize: '24px',
+      fontSize: '20px',
     },
+  },
+  [theme.breakpoints.down(780)]: {
+    borderRadius: '0!important',
   },
 });
 

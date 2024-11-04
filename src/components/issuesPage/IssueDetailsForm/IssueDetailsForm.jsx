@@ -163,46 +163,46 @@ const IssueDetailsForm = ({ issue = null, editMode = false, hideControl }) => {
                       : null
                   }
                 />
-                {!matchXss && user.current_role !== CUSTOMER && !editMode && (
-                  //
-                  <Box sx={buttonsBox}>
-                    {!dirty ? (
-                      <Tooltip arrow placement="top" title={'New issue'}>
-                        <Button
-                          variant="contained"
-                          type="button"
-                          color="primary"
-                          // disabled={!dirty}
-                          sx={[
-                            issueButton,
-                            {
-                              backgroundColor: 'rgba(0, 0, 0, 0.12)',
-                              '&:hover': {
-                                backgroundColor: 'rgba(0, 0, 0, 0.12)',
-                              },
-                            },
-                          ]}
-                          {...addTestsLabel('new-issue-button')}
-                        >
-                          <NoteAddIcon />
-                        </Button>
-                      </Tooltip>
-                    ) : (
-                      <Tooltip arrow placement="top" title={'New issue'}>
-                        <Button
-                          variant="contained"
-                          type="submit"
-                          color="primary"
-                          disabled={!dirty}
-                          sx={issueButton}
-                          {...addTestsLabel('new-issue-button')}
-                        >
-                          <NoteAddIcon />
-                        </Button>
-                      </Tooltip>
-                    )}
-                  </Box>
-                )}
+                {/*{!matchXss && user.current_role !== CUSTOMER && !editMode && (*/}
+                {/*  //*/}
+                {/*  <Box sx={buttonsBox}>*/}
+                {/*    {!dirty ? (*/}
+                {/*      <Tooltip arrow placement="top" title={'New issue'}>*/}
+                {/*        <Button*/}
+                {/*          variant="contained"*/}
+                {/*          type="button"*/}
+                {/*          color="primary"*/}
+                {/*          // disabled={!dirty}*/}
+                {/*          sx={[*/}
+                {/*            issueButton,*/}
+                {/*            {*/}
+                {/*              backgroundColor: 'rgba(0, 0, 0, 0.12)',*/}
+                {/*              '&:hover': {*/}
+                {/*                backgroundColor: 'rgba(0, 0, 0, 0.12)',*/}
+                {/*              },*/}
+                {/*            },*/}
+                {/*          ]}*/}
+                {/*          {...addTestsLabel('new-issue-button')}*/}
+                {/*        >*/}
+                {/*          <NoteAddIcon />*/}
+                {/*        </Button>*/}
+                {/*      </Tooltip>*/}
+                {/*    ) : (*/}
+                {/*      <Tooltip arrow placement="top" title={'New issue'}>*/}
+                {/*        <Button*/}
+                {/*          variant="contained"*/}
+                {/*          type="submit"*/}
+                {/*          color="primary"*/}
+                {/*          disabled={!dirty}*/}
+                {/*          sx={issueButton}*/}
+                {/*          {...addTestsLabel('new-issue-button')}*/}
+                {/*        >*/}
+                {/*          <NoteAddIcon />*/}
+                {/*        </Button>*/}
+                {/*      </Tooltip>*/}
+                {/*    )}*/}
+                {/*  </Box>*/}
+                {/*)}*/}
               </Box>
             </Tooltip>
             <Box sx={infoWrapperSx}>
@@ -294,26 +294,19 @@ const nameInputSx = theme => ({
     fontSize: '20px',
     fontWeight: 500,
     lineHeight: '24px',
-    padding: '10px 20px',
+    padding: '20px',
     '&:disabled': {
       backgroundColor: 'transparent',
       color: '#434242',
       '-webkit-text-fill-color': '#434242',
     },
-    [theme.breakpoints.down('md')]: {
-      '& .MuiFormLabel-root': {
-        top: '-3px',
-      },
-    },
-    [theme.breakpoints.down('xs')]: {
+    [theme.breakpoints.down('sm')]: {
       fontSize: '16px',
-      padding: '10.5px 10px',
+      padding: '15px 10px',
     },
   },
   [theme.breakpoints.down('xs')]: {
-    '& .MuiFormLabel-root': {
-      top: '-6px',
-    },
+    mb: '12px',
   },
 });
 

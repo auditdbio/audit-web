@@ -256,7 +256,7 @@ const nameInputSx = theme => ({
       color: '#434242',
       '-webkit-text-fill-color': '#434242',
     },
-    [theme.breakpoints.down('xs')]: {
+    [theme.breakpoints.down('sm')]: {
       fontSize: '16px',
       padding: '15px 10px',
     },
