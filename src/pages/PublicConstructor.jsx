@@ -270,6 +270,11 @@ const PublicConstructor = ({ saved, isPublic }) => {
               values,
               resetForm,
             }) => {
+              useEffect(() => {
+                if (!values.description) {
+                  setShowFull(true);
+                }
+              }, []);
               return (
                 <Form onSubmit={handleSubmit} style={{ width: '100%' }}>
                   <CustomSnackbar
