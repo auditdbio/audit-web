@@ -55,7 +55,7 @@ import { changeRolePublicAuditor } from '../redux/actions/userAction.js';
 import Headings from '../router/Headings.jsx';
 import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf.js';
 import AddIcon from '@mui/icons-material/Add.js';
-import EditDescription from '../components/EditDescription/index.jsx';
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import EditIcon from '@mui/icons-material/Edit.js';
 import ExpandLessOutlinedIcon from '@mui/icons-material/ExpandLessOutlined.js';
 import AddLinkIcon from '@mui/icons-material/AddLink.js';
@@ -149,9 +149,7 @@ const PublicConstructor = ({ saved, isPublic }) => {
   const handleSavePublicAudit = async (handleSubmit, report) => {
     handleSubmit();
     const filteredReport = Object.fromEntries(
-      Object.entries(report).filter(
-        ([key, value]) => value != null && value !== '' && value.length,
-      ),
+      Object.entries(report).filter(([key, value]) => value != null && value),
     );
     if (report?.auditor_name && report?.project_name && report?.description) {
       if (isAuth()) {
@@ -333,6 +331,7 @@ const PublicConstructor = ({ saved, isPublic }) => {
                             <Tab
                               sx={[
                                 tabSx,
+                                { paddingRight: '0', width: '160px' },
                                 tab === 0 ? { color: '#52176D' } : {},
                               ]}
                               value={1}
@@ -352,6 +351,21 @@ const PublicConstructor = ({ saved, isPublic }) => {
                               }}
                             >
                               + Conclusion
+                            </Button>
+                          )}
+                          {values.conclusion && (
+                            <Button
+                              sx={[
+                                tabSx,
+                                { width: '40px', minWidth: '40px' },
+                                tab === 0 ? { color: '#52176D' } : {},
+                              ]}
+                              // value={1}
+                              onClick={() => {
+                                setFieldValue('conclusion', '');
+                              }}
+                            >
+                              <DeleteForeverIcon />
                             </Button>
                           )}
                         </Tabs>

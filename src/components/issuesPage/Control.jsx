@@ -178,7 +178,10 @@ const Control = ({
 
       setMenuAnchorEl(null);
     } else {
-      dispatch(downloadReport(audit, { generate: true }));
+      const report = audit?.conclusion
+        ? audit
+        : (delete audit.conclusion, audit);
+      dispatch(downloadReport(report, { generate: true }));
       setMenuAnchorEl(null);
     }
   };
