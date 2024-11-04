@@ -57,6 +57,7 @@ import PriceCalculationPage from '../pages/PriceCalculationPage.jsx';
 import { refreshToken } from '../redux/actions/userAction.js';
 import PublicAuditInfo from '../pages/PublicAuditInfo.jsx';
 import PublicAuditInfoPage from '../pages/PublicAuditInfo.jsx';
+import Audit from '../pages/Audit.jsx';
 
 const AppRoutes = () => {
   const currentRole = useSelector(s => s.user.user.current_role);
@@ -217,10 +218,11 @@ const AppRoutes = () => {
             </PrivateRoute>
           }
         />
-        <Route
-          path="/audit/:id"
-          element={<PublicAuditInfoPage isPublic={true} />}
-        />
+        {/*<Route*/}
+        {/*  path="/audit/:id"*/}
+        {/*  element={<PublicAuditInfoPage isPublic={true} />}*/}
+        {/*/>*/}
+        <Route path="/audit/:id" element={<Audit />} />
         <Route
           path="/audit-info/:auditId/auditor"
           element={

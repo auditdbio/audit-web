@@ -306,7 +306,7 @@ export const startAudit = (values, goBack) => {
         if (goBack) {
           history.back();
         } else {
-          history.push(`/audit-info/${values.id}/auditor`);
+          history.push(`/audit/${values.id}`);
         }
       });
   };

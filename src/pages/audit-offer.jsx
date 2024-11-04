@@ -76,7 +76,7 @@ import MarkEmailReadIcon from '@mui/icons-material/MarkEmailRead';
 import AddIcon from '@mui/icons-material/Add';
 
 const AuditOffer = () => {
-  const { auditId } = useParams();
+  const { id: auditId } = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
 

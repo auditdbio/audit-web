@@ -39,7 +39,7 @@ const ProjectCard = ({ type, project, currentRole, isPublic }) => {
   const handleClick = () => {
     if (type === AUDITOR) {
       if (!project.no_customer) {
-        navigate(`/audit-info/${project.id}/auditor`);
+        navigate(`/audit/${project.id}`);
       } else {
         navigate(`/audit-builder/edit/${project.id}`);
       }
@@ -228,7 +228,7 @@ const ProjectCard = ({ type, project, currentRole, isPublic }) => {
             ]}
             onClick={() => {
               localStorage.setItem('prevPath', window.location.pathname);
-              navigate(`/audit-info/${project.id}`);
+              navigate(`/audit/${project.id}`);
             }}
             {...addTestsLabel(
               type === AUDITOR ? 'submit-button' : 'edit-button',

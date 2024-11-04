@@ -39,9 +39,9 @@ const AuditIssues = ({ isPublic }) => {
       navigate(localStorage.getItem('prev'));
     } else {
       if (user.current_role === CUSTOMER) {
-        navigate(`/audit-info/${auditId}/customer`);
+        navigate(`/audit/${auditId}`);
       } else {
-        navigate(`/audit-info/${auditId}/auditor`);
+        navigate(`/audit/${auditId}`);
       }
     }
   };

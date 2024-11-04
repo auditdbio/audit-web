@@ -57,12 +57,12 @@ const AuditMessage = ({ message, handleError }) => {
 
   const handleView = () => {
     localStorage.setItem('prevPath', window.location.pathname);
-    navigate(`/audit-info/${data.id}/auditor`);
+    navigate(`/audit/${data.id}`);
   };
 
   const handleViewCustomer = () => {
     localStorage.setItem('prevPath', window.location.pathname);
-    navigate(`/audit-info/${data.id}/customer`);
+    navigate(`/audit/${data.id}`);
   };
 
   const handleOpenModal = () => {
@@ -177,7 +177,7 @@ const AuditMessage = ({ message, handleError }) => {
             variant={'contained'}
             onClick={() => {
               localStorage.setItem('prevPath', window.location.pathname);
-              navigate(`/audit-info/${data.id}/customer`);
+              navigate(`/audit/${data.id}`);
             }}
           >
             View
