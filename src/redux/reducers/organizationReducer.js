@@ -10,6 +10,8 @@ import {
   ADD_MEMBER_IN_ORGANIZATION,
   CLEAR_MESSAGES,
   GET_ORGANIZATIONS,
+  ORGANIZATION_INVITE,
+  CLEAR_SEARCH,
 } from '../actions/types.js';
 
 const initialState = {
@@ -79,10 +81,20 @@ export const organizationReducer = (state = initialState, action) => {
         ...state,
         organization: action.payload,
       };
+    case ORGANIZATION_INVITE:
+      return {
+        ...state,
+        invites: [...state.invites, action.payload],
+      };
     case DELETE_INVITES:
       return {
         ...state,
         invites: state.invites.filter(el => el.id !== action.payload.id),
+      };
+    case CLEAR_SEARCH:
+      return {
+        ...state,
+        searchOrganizations: [],
       };
     case ACCEPT_INVITE:
       return {

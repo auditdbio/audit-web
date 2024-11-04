@@ -106,6 +106,26 @@ export const createCustomer = values => {
   };
 };
 
+export const searchCustomer = (values, badges = true) => {
+  const kind = 'customer';
+  const queryString = createSearchValues(values, kind);
+
+  return dispatch => {
+    const token = Cookies.get('token');
+    axios
+      .get(
+        `${API_URL}/search?${queryString}`,
+        isAuth() ? { headers: { Authorization: `Bearer ${token}` } } : {},
+      )
+      .then(({ data }) => {
+        dispatch({ type: GET_CUSTOMERS, payload: data });
+      })
+      .catch(({ response }) => {
+        console.error(response, 'res');
+      });
+  };
+};
+
 export const updateCustomer = (values, redirect = true) => {
   const token = Cookies.get('token');
   return dispatch => {

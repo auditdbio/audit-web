@@ -6,6 +6,7 @@ import {
   GET_NEW_REQUEST,
   IN_PROGRESS,
   NEED_UPDATE,
+  ORGANIZATION_INVITE,
   REQUEST_DECLINE,
   UPDATE_AUDIT_ISSUE_WS,
   WEBSOCKET_CONNECT,
@@ -107,6 +108,11 @@ const websocketMiddleware = () => {
               store.dispatch({
                 type: UPDATE_AUDIT_ISSUE_WS,
                 payload: message.payload.IssueUpdate,
+              });
+            } else if (message.kind.toLowerCase() === 'organizationinvite') {
+              store.dispatch({
+                type: ORGANIZATION_INVITE,
+                payload: message.payload.OrganizationInvite,
               });
             }
           };

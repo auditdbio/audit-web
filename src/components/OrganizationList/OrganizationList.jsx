@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { Avatar, Box, Tooltip } from '@mui/material';
 import { ASSET_URL } from '../../services/urls.js';
 import { CUSTOMER } from '../../redux/actions/types.js';
@@ -8,12 +8,18 @@ import { useSelector } from 'react-redux';
 
 const OrganizationList = ({ organizations }) => {
   const user = useSelector(s => s.user.user);
+  const location = useLocation();
+
   return (
     <Box sx={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
       {organizations?.map(org => {
         if (org.avatar) {
           return (
-            <Link to={`/o/${org.link_id}`} key={org.id}>
+            <Link
+              to={`/o/${org.link_id}`}
+              state={{ from: location.pathname }}
+              key={org.id}
+            >
               <Tooltip title={org.name} placement="top" arrow>
                 <Avatar
                   src={org.avatar ? `${ASSET_URL}/${org.avatar}` : ''}
@@ -31,7 +37,11 @@ const OrganizationList = ({ organizations }) => {
           );
         } else {
           return (
-            <Link to={`/o/${org.link_id}`} key={org.id}>
+            <Link
+              to={`/o/${org.link_id}`}
+              state={{ from: location.pathname }}
+              key={org.id}
+            >
               <Tooltip title={org.name} placement="top" arrow>
                 <Avatar
                   src={org.avatar ? `${ASSET_URL}/${org.avatar}` : ''}

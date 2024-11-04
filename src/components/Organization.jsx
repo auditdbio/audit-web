@@ -50,6 +50,7 @@ import AuditorSearchModal from './AuditorSearchModal.jsx';
 import ConfirmModal from './modal/ConfirmModal.jsx';
 import EditIcon from '@mui/icons-material/Edit';
 import UserLIstItem from './UserListItem/UserLIstItem.jsx';
+import { useLocation } from 'react-router-dom';
 
 const Organization = ({ linkId }) => {
   const role = useSelector(s => s.user.user.current_role);
@@ -61,6 +62,7 @@ const Organization = ({ linkId }) => {
   const invites = useSelector(s => s.organization.invites);
   const [showAddUser, setShowAddUser] = useState(false);
   const [openConfirm, setIsOpenConfirm] = useState(false);
+  const location = useLocation();
 
   const {
     customer,
@@ -126,7 +128,9 @@ const Organization = ({ linkId }) => {
                 position: 'absolute',
                 minWidth: 'unset',
               }}
-              onClick={() => navigate('/my-organizations')}
+              onClick={() =>
+                navigate(location.state?.from || '/', { replace: true })
+              }
             >
               <ArrowBackIcon
                 color={role === CUSTOMER ? 'primary' : 'secondary'}

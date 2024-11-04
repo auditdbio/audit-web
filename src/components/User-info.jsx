@@ -31,11 +31,11 @@ import { getAuditorRating } from '../redux/actions/auditorAction.js';
 import RatingDetails from './RatingDetails.jsx';
 import UserFeedbacks from './UserFeedbacks.jsx';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack.js';
+import { useLocation } from 'react-router-dom';
 
 const UserInfo = ({ role, linkId }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
   const matchXs = useMediaQuery(theme.breakpoints.down('xs'));
   const matchXxs = useMediaQuery(theme.breakpoints.down(850));
   const organizations = useSelector(s => s.organization.organizations);
@@ -161,7 +161,7 @@ const UserInfo = ({ role, linkId }) => {
                 </Typography>
               </Button>
             )}
-            {!!organizations.length && (
+            {(!!organizations.length || !!invites.length) && (
               <Box
                 sx={{
                   flexDirection: 'column',
@@ -182,10 +182,14 @@ const UserInfo = ({ role, linkId }) => {
                     <OrganizationList organizations={invites} />
                   </>
                 )}
-                <Link to={'/my-organizations'}>
-                  <span>Organization</span>
-                </Link>
-                <OrganizationList organizations={organizations} />
+                {!!organizations.length && (
+                  <>
+                    <Link to={'/my-organizations'}>
+                      <span>Organization</span>
+                    </Link>
+                    <OrganizationList organizations={organizations} />
+                  </>
+                )}
               </Box>
             )}
           </Box>

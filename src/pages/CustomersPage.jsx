@@ -6,24 +6,32 @@ import Filter from '../components/forms/filter/index.jsx';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useSearchParams } from 'react-router-dom/dist';
 import AuditorListCard from '../components/AuditorListCard.jsx';
-import { searchAuditor } from '../redux/actions/auditorAction.js';
 import theme from '../styles/themes.js';
 import CustomPagination from '../components/custom/CustomPagination.jsx';
 import { addTestsLabel } from '../lib/helper.js';
 import Headings from '../router/Headings.jsx';
+import { searchCustomer } from '../redux/actions/customerAction.js';
+import { useLocation } from 'react-router-dom';
+import CustomerListCard from '../components/CustomerListCard.jsx';
+import { getOrganizationById } from '../redux/actions/organizationAction.js';
+import { clearUserMessages } from '../redux/actions/userAction.js';
+import CustomSnackbar from '../components/custom/CustomSnackbar.jsx';
 
-const AuditorsPage = () => {
+const CustomersPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const matchSm = useMediaQuery(theme.breakpoints.down('sm'));
   const matchXs = useMediaQuery(theme.breakpoints.down('xs'));
   const [searchParams, setSearchParams] = useSearchParams();
   const [query, setQuery] = useState(undefined);
-  const auditors = useSelector(s => s.auditor.auditors);
-  const totalAuditors = useSelector(s => s.auditor.searchTotalAuditors);
+  const customers = useSelector(s => s.customer.customers);
+  const totalCustomers = useSelector(s => s.customer.searchTotalCustomers);
   const [projectIdToInvite, setProjectIdToInvite] = useState(() =>
     searchParams.get('projectIdToInvite'),
   );
+  const successMessage = useSelector(s => s.customer.successMessage);
+
+  const location = useLocation();
   const [currentPage, setCurrentPage] = useState(
     +searchParams.get('page') || 1,
   );
@@ -46,7 +54,7 @@ const AuditorsPage = () => {
         readyToWait: filter.readyToWait || '',
       };
     });
-    dispatch(searchAuditor(filter));
+    dispatch(searchCustomer(filter));
   };
 
   const initialFilter = {
@@ -55,24 +63,10 @@ const AuditorsPage = () => {
     tags: searchParams.getAll('tags') || [],
     dateFrom: searchParams.get('dateFrom') || new Date(),
     dateTo: searchParams.get('dateTo') || new Date(),
-    sort: searchParams.get('sort') || '1',
-    sort_by: searchParams.get('sort_by') || 'rating',
-    readyToWait: searchParams.get('readyToWait') || '',
-    price: {
-      from: searchParams.get('from') || 0,
-      to: searchParams.get('to') || 0,
-    },
-  };
-
-  const clearFilter = () => {
-    setQuery(query => {
-      const { ...data } = query || {};
-      return {};
-    });
   };
 
   const getNumberOfPages = () => {
-    return Math.ceil(totalAuditors / 10);
+    return Math.ceil(totalCustomers / 10);
   };
 
   const handleChangePage = (e, page) => {
@@ -82,7 +76,6 @@ const AuditorsPage = () => {
       return { ...data, page };
     });
   };
-  const previousPath = location.state?.from || '/';
 
   useEffect(() => {
     if (query) {
@@ -91,17 +84,28 @@ const AuditorsPage = () => {
   }, [query]);
 
   useEffect(() => {
-    dispatch(searchAuditor(initialFilter));
+    dispatch(searchCustomer(initialFilter));
   }, [searchParams.toString()]);
 
   useEffect(() => {
     setCurrentPage(+searchParams.get('page') || 1);
   }, [searchParams.toString()]);
 
+  useEffect(() => {
+    dispatch(getOrganizationById(searchParams.get('organization')));
+  }, [searchParams.get('organization')]);
+
+  const previousPath = location.state?.from || '/';
+
   return (
     <Layout>
-      <Headings title="Auditors" />
-
+      <Headings title="Customers" />
+      <CustomSnackbar
+        autoHideDuration={5000}
+        open={!!successMessage}
+        text={'success'}
+        onClose={() => dispatch(clearUserMessages())}
+      />
       <Box sx={wrapper}>
         <Box sx={headWrapper}>
           <Button
@@ -120,7 +124,7 @@ const AuditorsPage = () => {
           </Box>
         </Box>
         <CustomPagination
-          show={auditors?.length > 0}
+          show={customers?.length > 0}
           count={getNumberOfPages()}
           sx={{ mb: '20px' }}
           page={currentPage}
@@ -128,25 +132,24 @@ const AuditorsPage = () => {
           showFirstLast={!matchXs}
           size="small"
         />
-        {auditors?.length > 0 && (
+        {customers?.length > 0 && (
           <Box sx={contentWrapper}>
-            {auditors?.map((auditor, idx) => (
-              <Box sx={auditorContainerStyle(idx)} key={auditor.user_id}>
-                <AuditorListCard
-                  budge={auditor.kind === 'badge'}
-                  auditor={auditor}
+            {customers?.map((customer, idx) => (
+              <Box sx={auditorContainerStyle(idx)} key={customer.user_id}>
+                <CustomerListCard
+                  customer={customer}
                   projectIdToInvite={projectIdToInvite}
                 />
               </Box>
             ))}
-            {!matchSm && auditors?.length % 2 === 1 && (
+            {!matchSm && customers?.length % 2 === 1 && (
               <Box sx={fakeContainerStyle} />
             )}
           </Box>
         )}
-        {auditors?.length === 0 && <Box sx={noResults}>No results</Box>}
+        {customers?.length === 0 && <Box sx={noResults}>No results</Box>}
         <CustomPagination
-          show={auditors?.length > 0}
+          show={customers?.length > 0}
           count={getNumberOfPages()}
           sx={{ display: 'flex', justifyContent: 'flex-end' }}
           page={currentPage}
@@ -159,7 +162,7 @@ const AuditorsPage = () => {
   );
 };
 
-export default AuditorsPage;
+export default CustomersPage;
 
 const wrapper = theme => ({
   width: '100%',

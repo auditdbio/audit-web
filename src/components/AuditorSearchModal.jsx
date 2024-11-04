@@ -27,18 +27,18 @@ import dayjs from 'dayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers';
-import { useNavigate } from 'react-router-dom/dist';
+import { useNavigate, useSearchParams } from 'react-router-dom/dist';
 import { Field, Formik, Form } from 'formik';
 import SalarySlider from './forms/salary-slider/salary-slider.jsx';
 import * as Yup from 'yup';
-import { useParams } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
 import { addTestsLabel } from '../lib/helper.js';
 import CustomSnackbar from './custom/CustomSnackbar.jsx';
 import PriceCalculation from './PriceCalculation.jsx';
 import { ASSET_URL } from '../services/urls.js';
 import TotalPrice from './forms/TotalPrice/TotalPrice.jsx';
 import { addUserInOrganization } from '../redux/actions/organizationAction.js';
-import { AUDITOR } from '../redux/actions/types.js';
+import { AUDITOR, CLEAR_SEARCH } from '../redux/actions/types.js';
 import { searchCustomers } from '../redux/actions/customerAction.js';
 import Radio from '@mui/material/Radio';
 
@@ -49,6 +49,8 @@ export default function AuditorSearchModal({
   setState,
   setError,
   invite,
+  modeType,
+  customer,
 }) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -60,25 +62,31 @@ export default function AuditorSearchModal({
   const [selectedAuditor, setSelectedAuditor] = useState({});
   const organization = useSelector(s => s.organization.organization);
   const [rulesOfMember, setRulesOfMember] = useState(false);
-
+  const location = useLocation();
   const [openDrop, setOpenDrop] = useState(false);
-  const [mode, setMode] = useState('search');
-
+  const [mode, setMode] = useState(modeType || 'search');
   const [inputValue, setInputValue] = useState('');
   const [query, setQuery] = useState('');
 
   useEffect(() => {
-    if (organization.id) {
-      if (
-        organization.organization_type.toLowerCase() === AUDITOR.toLowerCase()
-      ) {
-        dispatch(getAuditors(query, 15));
+    if (!modeType) {
+      if (organization.id) {
+        if (
+          organization.organization_type.toLowerCase() === AUDITOR.toLowerCase()
+        ) {
+          dispatch(getAuditors(query, 15));
+        } else {
+          dispatch(searchCustomers({ search: query, perPage: 15 }));
+        }
       } else {
-        dispatch(searchCustomers({ search: query, perPage: 15 }));
+        dispatch(getAuditors(query, 15));
       }
-    } else {
-      dispatch(getAuditors(query, 15));
     }
+    return () => {
+      if (!modeType) {
+        dispatch({ type: CLEAR_SEARCH });
+      }
+    };
   }, [query, organization.id]);
 
   const handleInputChange = event => {
@@ -97,14 +105,14 @@ export default function AuditorSearchModal({
   const handleInviteUser = () => {
     const data = [
       {
-        user_id: selectedAuditor.user_id,
-        access_level: rulesOfMember ? 'Editor' : '',
+        user_id: customer.user_id ? customer.user_id : selectedAuditor.user_id,
+        access_level: rulesOfMember ? 'Editor' : 'Representative',
       },
     ];
     dispatch(
       addUserInOrganization(organization.link_id, data, organization.id),
     );
-    setMode('search');
+    setMode(modeType || 'search');
     setQuery('');
     handleClose();
   };
@@ -116,7 +124,29 @@ export default function AuditorSearchModal({
     if (handleSubmit) {
       handleSubmit();
     }
-    await navigate(`/auditors?search=${query}&projectIdToInvite=${id}`);
+    if (organization.id) {
+      if (
+        organization.organization_type.toLowerCase() === AUDITOR.toLowerCase()
+      ) {
+        await navigate(
+          `/auditors?search=${query}&organization=${organization.link_id}`,
+          {
+            state: { from: location.pathname },
+          },
+        );
+      } else {
+        await navigate(
+          `/customers?search=${query}&organization=${organization.link_id}`,
+          {
+            state: { from: location.pathname },
+          },
+        );
+      }
+    } else {
+      await navigate(`/auditors?search=${query}&projectIdToInvite=${id}`, {
+        state: { from: location.pathname },
+      });
+    }
   };
 
   return (

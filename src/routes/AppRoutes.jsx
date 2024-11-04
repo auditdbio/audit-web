@@ -63,6 +63,7 @@ import {
   getMyOrganizations,
 } from '../redux/actions/organizationAction.js';
 import MyOrganization from '../pages/MyOrganizations.jsx';
+import CustomersPage from '../pages/CustomersPage.jsx';
 
 const AppRoutes = () => {
   const currentRole = useSelector(s => s.user.user.current_role);
@@ -182,6 +183,7 @@ const AppRoutes = () => {
         <Route path="/for-customers" element={<ForCustomer />} />
         <Route path="/for-auditors" element={<ForAuditor />} />
         <Route path="/auditors" element={<AuditorsPage />} />
+        <Route path="/customers" element={<CustomersPage />} />
         <Route path="/audit-db" element={<AuditDb />} />
         <Route path="/FAQ" element={<Faq />} />
         <Route path="/contact-us" element={<ContactUs />} />
