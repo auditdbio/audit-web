@@ -289,6 +289,7 @@ const CurrentChat = ({
                       message={msg}
                       currentChat={currentChat}
                       isRead={isInterlocutorRead}
+                      chatRole={currentChat?.role}
                     />
                   </Box>
                 );

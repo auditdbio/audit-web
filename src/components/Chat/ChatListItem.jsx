@@ -27,8 +27,9 @@ const ChatListItem = ({
   const getRole = () => {
     return (
       role ||
-      chat.members.find(member => (member.org_user_id ?? member.id) !== user.id)
-        ?.role
+      chat.members.find(
+        member => (member?.org_user?.id ?? member.id) !== user.id,
+      )?.role
     );
   };
 

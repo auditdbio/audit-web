@@ -2,7 +2,7 @@ import React, { useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import Cookies from 'js-cookie';
 import axios from 'axios';
-import { Avatar, Box, Button, Modal, Typography } from '@mui/material';
+import { Avatar, Box, Button, Modal, Typography, Link } from '@mui/material';
 import DoneAllIcon from '@mui/icons-material/DoneAll';
 import { ASSET_URL } from '../../services/urls.js';
 import theme from '../../styles/themes.js';
@@ -11,7 +11,15 @@ import ImageMessage from './ImageMessage.jsx';
 import AuditRequestInfo from '../audit-request-info.jsx';
 import AuditMessage from './AuditMessage.jsx';
 
-const Message = ({ message, user, currentChat, isRead, type, orgId }) => {
+const Message = ({
+  message,
+  user,
+  currentChat,
+  isRead,
+  type,
+  orgId,
+  chatRole,
+}) => {
   const { customer } = useSelector(state => state.customer);
   const { auditor } = useSelector(state => state.auditor);
 
@@ -61,7 +69,7 @@ const Message = ({ message, user, currentChat, isRead, type, orgId }) => {
 
   const isOwn = () => {
     return message.from.role.toLowerCase() === 'organization'
-      ? { isOwn: message.from.org_user_id === user.id }
+      ? { isOwn: message.from?.org_user?.id === user.id }
       : { isOwn: message.from?.id === user.id };
   };
 
@@ -81,7 +89,22 @@ const Message = ({ message, user, currentChat, isRead, type, orgId }) => {
             : messageTextSx(isOwn())
         }
       >
-        {/*{<Typography>{}</Typography>}*/}
+        {message.from?.org_user?.id && (
+          <Link
+          // to={`/${message.from?.org_user?.role[0]}/${message.from?.org_user?.id}`}
+          >
+            <Typography
+              sx={orgNameSx(
+                theme,
+                chatRole === AUDITOR
+                  ? theme.palette.secondary.main
+                  : theme.palette.primary.main,
+              )}
+            >
+              {message.from?.org_user.name}
+            </Typography>
+          </Link>
+        )}
         {message.kind === 'Image' ? (
           <ImageMessage message={message} />
         ) : message.kind === 'Audit' ? (
@@ -131,6 +154,15 @@ function makeLinksClickable(text) {
 const messageSx = ({ isOwn }) => ({
   display: 'flex',
   flexDirection: isOwn ? 'row-reverse' : 'row',
+  '& a': {
+    textDecoration: 'unset',
+  },
+});
+
+const orgNameSx = (theme, color) => ({
+  padding: '5px!important',
+  paddingLeft: '18px!important',
+  color: `${color}!important`,
 });
 
 const contentSx = theme => ({
