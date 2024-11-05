@@ -51,7 +51,13 @@ export const updatePublicIssue = data => {
 
 export const addPublicIssue = data => {
   return dispatch => {
-    dispatch({ type: ADD_AUDIT_ISSUE, payload: { issue: data } });
+    dispatch({
+      type: ADD_AUDIT_ISSUE,
+      payload: {
+        issue: data,
+        successMessage: 'Audit issue created successfully',
+      },
+    });
   };
 };
 
@@ -86,8 +92,9 @@ export const addAuditIssue = (auditId, values) => {
         dispatch({
           type: ADD_AUDIT_ISSUE,
           payload: {
-            id: auditId,
+            auditId: auditId,
             issue: data,
+            successMessage: 'Audit issue created successfully',
           },
         }),
       )

@@ -4,10 +4,13 @@ import CreateNewFolderOutlinedIcon from '@mui/icons-material/CreateNewFolderOutl
 import { useField } from 'formik';
 import axios from 'axios';
 import Cookies from 'js-cookie';
-import { useSelector } from 'react-redux';
 import { ASSET_URL } from '../../../services/urls.js';
 import CustomSnackbar from '../../custom/CustomSnackbar.jsx';
 import { addTestsLabel } from '../../../lib/helper.js';
+import {
+  AUDIT_PARENT_ENTITY,
+  REPORT_ENTITY,
+} from '../../../services/file_constants.js';
 
 const AuditUpload = ({
   name,
@@ -16,46 +19,34 @@ const AuditUpload = ({
   auditorId,
   auditReportName,
   customerId,
-  setFieldValue,
 }) => {
-  const [field, meta, fieldHelper] = useField(name);
+  const [_, meta, fieldHelper] = useField(name);
   const [originalFileName, setOriginalFileName] = useState(
     auditReportName || '',
   );
   const formData = new FormData();
-  const user = useSelector(state => state.user.user);
   const [error, setError] = useState(null);
 
   const handleUpdateAudit = e => {
     const file = e.target.files[0];
     const fileSize = file.size;
-    if (fileSize > 10000000) {
+    if (fileSize > 10_000_000) {
       return setError('File size is too large');
     } else {
       formData.append('file', file);
-      formData.append('path', user.id + user.current_role + file.name);
-      formData.append('original_name', file.name);
       formData.append('private', 'true');
-      formData.append('audit', auditId);
       formData.append('auditorId', auditorId);
       formData.append('customerId', customerId);
-      formData.append('report_name', file.name);
+      formData.append('file_entity', REPORT_ENTITY);
+      formData.append('parent_entity_id', auditId);
+      formData.append('parent_entity_source', AUDIT_PARENT_ENTITY);
       axios
         .post(ASSET_URL, formData, {
           headers: { Authorization: 'Bearer ' + Cookies.get('token') },
         })
-        .then(data => {
-          setOriginalFileName(file.name);
-          fieldHelper.setValue(formData.get('path'));
-          setFieldValue('report_name', formData.get('report_name'));
-          formData.delete('file');
-          formData.delete('path');
-          formData.delete('original_name');
-          formData.delete('private');
-          formData.delete('audit');
-          formData.delete('auditorId');
-          formData.delete('customerId');
-          formData.delete('report_name');
+        .then(({ data }) => {
+          setOriginalFileName(`${data.original_name}.${data.extension}`);
+          fieldHelper.setValue(data.id);
         })
         .catch(err => {
           if (err?.code === 'ERR_NETWORK') {
@@ -63,13 +54,15 @@ const AuditUpload = ({
           } else {
             setError('Error while uploading file');
           }
+        })
+        .finally(() => {
           formData.delete('file');
-          formData.delete('path');
-          formData.delete('original_name');
           formData.delete('private');
-          formData.delete('audit');
           formData.delete('auditorId');
           formData.delete('customerId');
+          formData.delete('file_entity');
+          formData.delete('parent_entity_id');
+          formData.delete('parent_entity_source');
         });
     }
   };

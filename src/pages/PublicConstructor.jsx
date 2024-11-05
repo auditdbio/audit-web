@@ -53,6 +53,7 @@ import RefreshIcon from '@mui/icons-material/Refresh';
 import { addTestsLabel, isAuth, reportBuilder } from '../lib/helper.js';
 import { changeRolePublicAuditor } from '../redux/actions/userAction.js';
 import Headings from '../router/Headings.jsx';
+import { AUDIT_PARENT_ENTITY } from '../services/file_constants.js';
 import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf.js';
 import AddIcon from '@mui/icons-material/Add.js';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
@@ -132,7 +133,6 @@ const PublicConstructor = ({ saved, isPublic }) => {
   const handleResetForm = setFieldValue => {
     setFieldValue('project_name', '');
     setFieldValue('report', '');
-    setFieldValue('report_name', '');
     setFieldValue('description', '');
     setFieldValue('conclusion', '');
     setFieldValue('scope', []);
@@ -397,6 +397,14 @@ const PublicConstructor = ({ saved, isPublic }) => {
                                     html: !matchXs,
                                   },
                                 }}
+                                parentEntity={
+                                  audit?.id
+                                    ? {
+                                      id: audit.id,
+                                      source: AUDIT_PARENT_ENTITY,
+                                    }
+                                    : {}
+                                }
                               />
                               <Box
                                 sx={{
@@ -461,6 +469,14 @@ const PublicConstructor = ({ saved, isPublic }) => {
                                       html: !matchXs,
                                     },
                                   }}
+                                  parentEntity={
+                                    audit?.id
+                                      ? {
+                                        id: audit.id,
+                                        source: AUDIT_PARENT_ENTITY,
+                                      }
+                                      : {}
+                                  }
                                 />
                               </Box>
                             </Box>

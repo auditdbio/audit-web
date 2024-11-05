@@ -187,7 +187,7 @@ const Control = ({
   };
 
   const handleDownloadReport = () => {
-    if (audit?.report_name) {
+    if (audit?.report) {
       dispatch(downloadReport(audit));
     } else {
       dispatch(downloadReport(audit, { generate: true }));
@@ -406,7 +406,7 @@ const Control = ({
                             (isPublic || saved) && xss ? publicBtnSx : {},
                           ]}
                           // disabled={checkDraftIssues()}
-                          // onClick={handleDiscloseAll}
+                          onClick={handleDiscloseAll}
                         >
                           <DiscloseIcon />
                         </Button>
@@ -419,6 +419,7 @@ const Control = ({
                           sx={[
                             {
                               backgroundColor: 'rgba(0, 0, 0, 0.12)',
+                              cursor: 'default',
                               '&:hover': {
                                 backgroundColor: 'rgba(0, 0, 0, 0.12)',
                               },
@@ -557,7 +558,7 @@ const Control = ({
     </>
   );
 };
-//
+
 export default Control;
 
 const generateButtonSx = theme => ({

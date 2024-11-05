@@ -8,6 +8,7 @@ import { addTestsLabel } from '../../lib/helper.js';
 import { updateAuditIssue } from '../../redux/actions/issueAction.js';
 import theme from '../../styles/themes.js';
 import * as Yup from 'yup';
+import { AUDIT_PARENT_ENTITY } from '../../services/file_constants.js';
 
 const AddComment = ({ auditId, issueId }) => {
   const dispatch = useDispatch();
@@ -40,6 +41,10 @@ const AddComment = ({ auditId, issueId }) => {
                 mdProps={{
                   placeholder: 'Leave a comment',
                   view: { menu: true, md: true, html: false },
+                }}
+                parentEntity={{
+                  id: auditId,
+                  source: AUDIT_PARENT_ENTITY,
                 }}
               />
             </Box>
