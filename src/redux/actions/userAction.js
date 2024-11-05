@@ -432,14 +432,9 @@ export const changeRole = (role, id) => {
           history.push({ pathname: `/edit-profile` }, { some: true });
         } else {
           axios
-            .get(
-              `${API_URL}/my_audit/${role === 'c' ? 'customer' : 'auditor'}`,
-              {
-                headers: {
-                  Authorization: `Bearer ${token}`,
-                },
-              },
-            )
+            .get(`${API_URL}/my_audit/${role}`, {
+              headers: { Authorization: `Bearer ${token}` },
+            })
             .then(({ data: auditData }) => {
               history.push(
                 {

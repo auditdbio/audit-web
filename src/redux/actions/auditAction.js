@@ -497,34 +497,44 @@ export const getPublicAuditReport = () => {
     dispatch({ type: GET_PUBLIC_REPORT, payload: report });
   };
 };
+
+const downloadResponse = (res, audit) => {
+  const url = window.URL.createObjectURL(new Blob([res.data]));
+  const link = document.createElement('a');
+  link.href = url;
+  link.setAttribute(
+    'download',
+    `${
+      audit?.report_name
+        ? audit?.report_name
+        : audit?.project_name + ' report.pdf'
+    }`,
+  );
+  document.body.appendChild(link);
+  link.click();
+};
+
 export const downloadReport = (audit, { generate, isDraft } = {}) => {
   const token = Cookies.get('token');
 
-  const downloadResponse = (res, audit) => {
-    const url = window.URL.createObjectURL(new Blob([res.data]));
-    const link = document.createElement('a');
-    link.href = url;
-    link.setAttribute(
-      'download',
-      `${
-        audit?.report_name
-          ? audit?.report_name
-          : audit?.project_name + ' report.pdf'
-      }`,
-    );
-    document.body.appendChild(link);
-    link.click();
-  };
+  const getReport = (audit, fileId, dispatch, isDraft = false) => {
+    const config = {
+      responseType: 'blob',
+      withCredentials: true,
+      headers: { Authorization: `Bearer ${token}` },
+    };
 
-  const getReport = (audit, filepath, dispatch) => {
-    axios
-      .get(`${ASSET_URL}/${filepath}`, {
-        responseType: 'blob',
-        withCredentials: true,
-        headers: { Authorization: `Bearer ${token}` },
-      })
-      .then(response => downloadResponse(response, audit))
-      .catch(() => dispatch({ type: REQUEST_ERROR }));
+    if (isDraft) {
+      axios
+        .post(`${ASSET_URL}/get_and_delete/${fileId}`, null, config)
+        .then(response => downloadResponse(response, audit))
+        .catch(() => dispatch({ type: REQUEST_ERROR }));
+    } else {
+      axios
+        .get(`${ASSET_URL}/id/${fileId}`, config)
+        .then(response => downloadResponse(response, audit))
+        .catch(() => dispatch({ type: REQUEST_ERROR }));
+    }
   };
 
   return dispatch => {
@@ -536,7 +546,9 @@ export const downloadReport = (audit, { generate, isDraft } = {}) => {
           { is_draft: isDraft },
           { headers: { Authorization: `Bearer ${token}` } },
         )
-        .then(({ data }) => getReport(audit, data.path, dispatch))
+        .then(({ data }) =>
+          getReport(audit, data.file_id, dispatch, data.is_draft),
+        )
         .catch(() => dispatch({ type: REQUEST_ERROR }));
     } else {
       getReport(audit, audit?.report, dispatch);
@@ -545,34 +557,15 @@ export const downloadReport = (audit, { generate, isDraft } = {}) => {
 };
 
 export const downloadPublicReport = (audit, code, { generate } = {}) => {
-  // const token = Cookies.get('token');
-
-  const downloadResponse = (res, audit) => {
-    const url = window.URL.createObjectURL(new Blob([res.data]));
-    const link = document.createElement('a');
-    link.href = url;
-    link.setAttribute(
-      'download',
-      `${
-        audit?.report_name
-          ? audit?.report_name
-          : audit?.project_name + ' report.pdf'
-      }`,
-    );
-    document.body.appendChild(link);
-    link.click();
-  };
-
-  const getReport = (audit, filepath, dispatch, code) => {
+  const getReport = (audit, fileId, dispatch, code) => {
     axios
       .get(
         code
-          ? `${ASSET_URL}/${filepath}?code=${code}`
-          : `${ASSET_URL}/${filepath}`,
+          ? `${ASSET_URL}/id/${fileId}?code=${code}`
+          : `${ASSET_URL}/id/${fileId}`,
         {
           responseType: 'blob',
           withCredentials: true,
-          // headers: { Authorization: `Bearer ${token}` },
         },
       )
       .then(response => downloadResponse(response, audit))
@@ -583,10 +576,8 @@ export const downloadPublicReport = (audit, code, { generate } = {}) => {
     dispatch({ type: DOWNLOAD_REPORT_START });
     if (generate) {
       axios
-        .post(`${API_URL}/report/${audit.id}`, null, {
-          // headers: { Authorization: `Bearer ${token}` },
-        })
-        .then(({ data }) => getReport(audit, data.path, dispatch))
+        .post(`${API_URL}/report/${audit.id}`, null, {})
+        .then(({ data }) => getReport(audit, data.file_id, dispatch))
         .catch(() => dispatch({ type: REQUEST_ERROR }));
     } else {
       getReport(audit, audit?.report, dispatch, code);

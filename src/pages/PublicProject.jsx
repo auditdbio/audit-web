@@ -181,7 +181,7 @@ const PublicProject = () => {
         <Box sx={customerInfoBlock}>
           <Box sx={avatarBoxSx}>
             <Avatar
-              src={customer?.avatar ? `${ASSET_URL}/${customer.avatar}` : ''}
+              src={customer?.avatar ? `${ASSET_URL}/id/${customer.avatar}` : ''}
               alt="customer photo"
               sx={avatarSx}
             />
