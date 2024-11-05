@@ -190,7 +190,7 @@ const TypeChat = ({ auditor, project }) => {
           {organizations.map(org => {
             console.log(`${ASSET_URL}/${org.avatar}`);
             return (
-              <>
+              <React.Fragment key={org.id}>
                 <ListItem
                   alignItems="flex-start"
                   onClick={() => chatFromOrg(org)}
@@ -219,7 +219,7 @@ const TypeChat = ({ auditor, project }) => {
                   />
                 </ListItem>
                 <Divider variant="inset" component="li" />
-              </>
+              </React.Fragment>
             );
           })}
         </List>

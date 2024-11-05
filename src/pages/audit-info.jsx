@@ -263,7 +263,11 @@ const AuditInfo = ({
                 to={`/a/${audit.auditor_id}`}
                 style={{ display: 'grid', textAlign: 'center' }}
               >
-                <Tooltip title={audit?.auditor_first_name} arrow placement="top">
+                <Tooltip
+                  title={audit?.auditor_first_name}
+                  arrow
+                  placement="top"
+                >
                   <Typography noWrap={true} sx={userNameWrapper}>
                     {audit?.auditor_first_name}
                   </Typography>
@@ -380,27 +384,6 @@ const AuditInfo = ({
                 )}
               </>
             )}
-            <Box
-              sx={{
-                display: 'flex',
-                color: '#434242',
-                '& p': {
-                  fontSize: '15px!important',
-                  maxWidth: '200px',
-                  fontWeight: 400,
-                },
-              }}
-            >
-              <Box sx={infoWrapper}>
-                <span>Price:</span>
-              </Box>
-              <EditPrice
-                hideIcon={true}
-                audit={audit}
-                user={user}
-                request={request}
-              />
-            </Box>
           </Box>
 
           {!!audit?.time?.from && !isPublic && (

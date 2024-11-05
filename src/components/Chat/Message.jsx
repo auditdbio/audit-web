@@ -2,7 +2,7 @@ import React, { useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import Cookies from 'js-cookie';
 import axios from 'axios';
-import { Avatar, Box, Button, Modal, Typography, Link } from '@mui/material';
+import { Avatar, Box, Button, Modal, Typography } from '@mui/material';
 import DoneAllIcon from '@mui/icons-material/DoneAll';
 import { ASSET_URL } from '../../services/urls.js';
 import theme from '../../styles/themes.js';
@@ -10,6 +10,8 @@ import { AUDITOR, CUSTOMER } from '../../redux/actions/types.js';
 import ImageMessage from './ImageMessage.jsx';
 import AuditRequestInfo from '../audit-request-info.jsx';
 import AuditMessage from './AuditMessage.jsx';
+import { Link, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom/dist';
 
 const Message = ({
   message,
@@ -22,7 +24,8 @@ const Message = ({
 }) => {
   const { customer } = useSelector(state => state.customer);
   const { auditor } = useSelector(state => state.auditor);
-
+  const location = useLocation();
+  const navigate = useNavigate();
   const userAvatar = useMemo(() => {
     if (user.current_role === AUDITOR && !!auditor?.avatar) {
       return auditor.avatar;
@@ -73,6 +76,15 @@ const Message = ({
       : { isOwn: message.from?.id === user.id };
   };
 
+  const handleGoProfile = () => {
+    localStorage.setItem('prev', location.pathname);
+    navigate(
+      `/${message.from?.org_user?.role[0].toLowerCase()}/${
+        message.from?.org_user?.id
+      }`,
+    );
+  };
+
   return (
     <Box
       sx={messageSx({
@@ -90,20 +102,17 @@ const Message = ({
         }
       >
         {message.from?.org_user?.id && (
-          <Link
-          // to={`/${message.from?.org_user?.role[0]}/${message.from?.org_user?.id}`}
+          <Typography
+            onClick={handleGoProfile}
+            sx={orgNameSx(
+              theme,
+              message.from?.org_user.role.toLowerCase() === AUDITOR
+                ? theme.palette.secondary.main
+                : theme.palette.primary.main,
+            )}
           >
-            <Typography
-              sx={orgNameSx(
-                theme,
-                chatRole === AUDITOR
-                  ? theme.palette.secondary.main
-                  : theme.palette.primary.main,
-              )}
-            >
-              {message.from?.org_user.name}
-            </Typography>
-          </Link>
+            {message.from?.org_user.name}
+          </Typography>
         )}
         {message.kind === 'Image' ? (
           <ImageMessage message={message} />
@@ -163,6 +172,7 @@ const orgNameSx = (theme, color) => ({
   padding: '5px!important',
   paddingLeft: '18px!important',
   color: `${color}!important`,
+  cursor: 'pointer',
 });
 
 const contentSx = theme => ({
