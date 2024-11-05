@@ -105,7 +105,7 @@ export default function AuditorSearchModal({
   const handleInviteUser = () => {
     const data = [
       {
-        user_id: customer.user_id ? customer.user_id : selectedAuditor.user_id,
+        user_id: customer?.user_id ? customer.user_id : selectedAuditor.user_id,
         access_level: rulesOfMember ? 'Editor' : 'Representative',
       },
     ];
