@@ -400,9 +400,9 @@ const PublicConstructor = ({ saved, isPublic }) => {
                                 parentEntity={
                                   audit?.id
                                     ? {
-                                      id: audit.id,
-                                      source: AUDIT_PARENT_ENTITY,
-                                    }
+                                        id: audit.id,
+                                        source: AUDIT_PARENT_ENTITY,
+                                      }
                                     : {}
                                 }
                               />
@@ -472,9 +472,9 @@ const PublicConstructor = ({ saved, isPublic }) => {
                                   parentEntity={
                                     audit?.id
                                       ? {
-                                        id: audit.id,
-                                        source: AUDIT_PARENT_ENTITY,
-                                      }
+                                          id: audit.id,
+                                          source: AUDIT_PARENT_ENTITY,
+                                        }
                                       : {}
                                   }
                                 />
@@ -714,9 +714,9 @@ const descriptionWrapper = (theme, showFull) => ({
   '& .rc-md-editor .editor-container>.section': {
     borderRight: 'unset',
   },
-  '& .editor-container': {
-    borderBottom: '1px solid #e0e0e0',
-  },
+  // '& .editor-container': {
+  //   borderBottom: '1px solid #e0e0e0',
+  // },
 });
 
 const tabsSx = theme => ({
