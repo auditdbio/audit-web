@@ -238,7 +238,7 @@ const PublicAudit = ({
           maxWidth: '100%',
           width: '100%',
           '& .rc-md-editor': {
-            borderBottom: '1px solid #E5E5E5',
+            borderBottom: '1px solid #E5E5E5!important',
           },
         }}
       >

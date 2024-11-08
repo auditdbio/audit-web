@@ -188,13 +188,15 @@ const ProjectCard = ({ type, project, currentRole, isPublic }) => {
             <Typography sx={{ mb: '12px', fontSize: '16px' }}>
               {`${project?.issues.length} issues`}
             </Typography>
-            <Typography sx={{ fontSize: '16px' }}>
-              {dayjs(
-                project.resolved_at > 1000000000000
-                  ? project.resolved_at / 1000
-                  : project.resolved_at * 1000,
-              ).format('DD.MMM.YYYY')}
-            </Typography>
+            {project.resolved_at && (
+              <Typography sx={{ fontSize: '16px' }}>
+                {dayjs(
+                  project.resolved_at > 1000000000000
+                    ? project.resolved_at / 1000
+                    : project.resolved_at * 1000,
+                ).format('DD.MMM.YYYY')}
+              </Typography>
+            )}
           </Box>
         )}
         {!isPublic &&
@@ -228,7 +230,7 @@ const ProjectCard = ({ type, project, currentRole, isPublic }) => {
             ]}
             onClick={() => {
               localStorage.setItem('prevPath', window.location.pathname);
-              navigate(`/audit-info/${project.id}`);
+              navigate(`/audit/${project.id}`);
             }}
             {...addTestsLabel(
               type === AUDITOR ? 'submit-button' : 'edit-button',
