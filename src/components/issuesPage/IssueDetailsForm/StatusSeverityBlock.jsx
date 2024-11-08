@@ -559,7 +559,9 @@ const buttonsBox = (theme, isPublic) => ({
 
 const issueButton = theme => ({
   padding: '11px 10px',
-  width: '100%',
+  width: '50px',
+  minWidth: 'unset',
+  height: '47px',
   textTransform: 'none',
   fontWeight: 500,
   fontSize: '16px!important',
@@ -577,6 +579,7 @@ const issueButton = theme => ({
 const feedbackButton = theme => ({
   fontWeight: '400!important',
   padding: '6px 15px',
+  width: '140px',
   [theme.breakpoints.down('md')]: {
     padding: '4px 15px',
   },

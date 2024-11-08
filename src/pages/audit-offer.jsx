@@ -951,7 +951,7 @@ const AuditOffer = () => {
                             //   audit?.status?.toLowerCase() ===
                             //   WAITING_FOR_AUDITS.toLowerCase()
                             // }
-                            // onClick={handleGenerateReport}
+                            onClick={handleGenerateReport}
                           >
                             {/*Generate report*/}
                             <PictureAsPdfIcon />
@@ -1558,6 +1558,7 @@ const buttonSx = theme => ({
   mr: '15px',
   width: '50px!important',
   minWidth: '50px',
+  height: '47px',
   borderRadius: '10px',
   // [theme.breakpoints.down(1400)]: {
   //   width: '160px',
@@ -1608,7 +1609,7 @@ const workflowToggleBox = theme => ({
   justifyContent: 'center',
   border: '1px solid #B2B3B3',
   borderRadius: '30px',
-  height: '41px',
+  height: '46px',
   [theme.breakpoints.down(900)]: {
     // width: '248px',
     // margin: '0 auto 20px',

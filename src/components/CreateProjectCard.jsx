@@ -718,6 +718,9 @@ const fieldWrapper = theme => ({
 const descriptionFieldWrapper = error => ({
   width: '100%',
   border: error ? '1px solid red' : '1px solid transparent',
+  // '& .rc-md-editor': {
+  //   borderBottom: '1px solid #e0e0e0!important',
+  // },
 });
 
 const formAllFields = {

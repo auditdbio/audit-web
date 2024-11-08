@@ -134,6 +134,20 @@ const wrapper = {
   display: 'flex',
   gap: '5px',
   flexDirection: 'column',
+  '& section.sec-md': {
+    borderRight: '1px solid #e0e0e0 !important',
+  },
+  '& .sec-html': {
+    borderRight: 'unset!important',
+  },
+  '& textarea': {
+    '::-webkit-scrollbar': {
+      width: '0',
+    },
+    '::-webkit-scrollbar-track': {
+      borderRadius: 'unset',
+    },
+  },
   '& > *': {
     wordWrap: 'break-word',
   },
