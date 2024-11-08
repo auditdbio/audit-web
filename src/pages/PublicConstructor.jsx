@@ -321,14 +321,21 @@ const PublicConstructor = ({ saved, isPublic }) => {
                               setEditConclusion(false);
                             }
                           }}
+                          indicatorColor="none"
                           textColor={'primary'}
-                          indicatorColor="primary"
                           aria-label="secondary tabs example"
                           sx={tabsSx}
                         >
                           {/*{tab !== 0 && (*/}
                           <Tab
-                            sx={[tabSx, tab === 1 ? { color: '#52176D' } : {}]}
+                            sx={[
+                              tabSx,
+                              {
+                                borderRadius: '8px 0 0 0',
+                                border: '1px solid',
+                              },
+                              tab === 0 ? { color: '#52176D' } : selectedTabSx,
+                            ]}
                             value={0}
                             label={'Description'}
                           />
@@ -336,8 +343,16 @@ const PublicConstructor = ({ saved, isPublic }) => {
                             <Tab
                               sx={[
                                 tabSx,
-                                { paddingRight: '0', width: '160px' },
-                                tab === 0 ? { color: '#52176D' } : {},
+                                {
+                                  paddingRight: '0',
+                                  width: '150px',
+                                  borderRadius: '0 0 0 0',
+                                  border: '1px solid',
+                                  borderRight: 'unset',
+                                },
+                                tab === 1
+                                  ? { color: '#52176D' }
+                                  : selectedTabSx,
                               ]}
                               value={1}
                               label={'Conclusion'}
@@ -346,7 +361,9 @@ const PublicConstructor = ({ saved, isPublic }) => {
                             <Button
                               sx={[
                                 tabSx,
-                                tab === 0 ? { color: '#52176D' } : {},
+                                tab === 1
+                                  ? { color: '#52176D' }
+                                  : selectedTabSx,
                               ]}
                               value={1}
                               onClick={() => {
@@ -362,10 +379,19 @@ const PublicConstructor = ({ saved, isPublic }) => {
                             <Button
                               sx={[
                                 tabSx,
-                                { width: '40px', minWidth: '40px' },
-                                tab === 0 ? { color: '#52176D' } : {},
+                                {
+                                  width: '40px',
+                                  minWidth: '40px',
+                                  paddingLeft: 0,
+                                  borderRadius: '0 0 0 0',
+                                  border: '1px solid',
+                                  borderLeft: 'unset',
+                                  color: 'rgba(0, 0, 0, 0.6)',
+                                },
+                                tab === 1
+                                  ? { color: '#FF9900!important' }
+                                  : selectedButtonSx,
                               ]}
-                              // value={1}
                               onClick={() => {
                                 setFieldValue('conclusion', '');
                               }}
@@ -455,30 +481,30 @@ const PublicConstructor = ({ saved, isPublic }) => {
                             collapsedSize={showFull ? undefined : 150}
                           >
                             <Box sx={descriptionWrapper(theme, showFull)}>
-                              <Box>
-                                <MarkdownEditor
-                                  saved={saved}
-                                  name="conclusion"
-                                  handleBlur={handleSubmit}
-                                  setFieldTouched={setFieldTouched}
-                                  mdProps={{
-                                    style: { height: '250px' },
-                                    view: {
-                                      menu: true,
-                                      md: true,
-                                      html: !matchXs,
-                                    },
-                                  }}
-                                  parentEntity={
-                                    audit?.id
-                                      ? {
-                                          id: audit.id,
-                                          source: AUDIT_PARENT_ENTITY,
-                                        }
-                                      : {}
-                                  }
-                                />
-                              </Box>
+                              {/*<Box>*/}
+                              <MarkdownEditor
+                                saved={saved}
+                                name="conclusion"
+                                handleBlur={handleSubmit}
+                                setFieldTouched={setFieldTouched}
+                                mdProps={{
+                                  style: { height: '250px' },
+                                  view: {
+                                    menu: true,
+                                    md: true,
+                                    html: !matchXs,
+                                  },
+                                }}
+                                parentEntity={
+                                  audit?.id
+                                    ? {
+                                        id: audit.id,
+                                        source: AUDIT_PARENT_ENTITY,
+                                      }
+                                    : {}
+                                }
+                              />
+                              {/*</Box>*/}
                             </Box>
                           </Collapse>
                         )}
@@ -487,7 +513,6 @@ const PublicConstructor = ({ saved, isPublic }) => {
                             sx={[
                               {
                                 // border: '1px solid #E5E5E5',
-                                borderTop: '1px solid #E5E5E5',
                                 display: 'flex',
                                 justifyContent: 'center',
                                 position: 'relative',
@@ -495,6 +520,7 @@ const PublicConstructor = ({ saved, isPublic }) => {
                               },
                               !showFull
                                 ? {
+                                    borderTop: '1px solid #E5E5E5',
                                     boxShadow:
                                       '0px -24px 14px -8px rgba(252, 250, 246, 1)',
                                   }
@@ -680,6 +706,18 @@ const actionWrapper = theme => ({
   justifyContent: 'center',
 });
 
+const selectedTabSx = theme => ({
+  background: 'linear-gradient(180deg, #FFFFFF 0%, #E5E5E5 100%)',
+  borderWidth: '0.991146px 0.991146px 0px 0.991146px',
+  borderColor: '#B2B3B3',
+});
+
+const selectedButtonSx = theme => ({
+  background: 'linear-gradient(180deg, #FFFFFF 0%, #E5E5E5 100%)',
+  borderWidth: '0.991146px 0.991146px 0px 0.991146px',
+  borderColor: '#B2B3B3',
+});
+
 const layoutSx = theme => ({
   padding: '10px!important',
   [theme.breakpoints.down(780)]: {
@@ -690,9 +728,9 @@ const layoutSx = theme => ({
 const tabSx = theme => ({
   // border: '1px solid rgba(255, 153, 0, 0.5)',
   textTransform: 'unset',
-  width: '170px',
+  width: '150px',
   minHeight: '32px',
-  height: '38.5px!important',
+  height: '34.5px!important',
   // color: '#FF9900',
   fontWeight: 600,
   borderRadius: '0 8px 8px 0',
