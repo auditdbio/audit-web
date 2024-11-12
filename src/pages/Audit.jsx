@@ -39,87 +39,56 @@ const Audit = () => {
     };
   }, [id]);
 
-  if (!audit?.id && !notFound) {
-    return (
-      <Layout>
-        <Headings title="Audit" />
-        <CustomCard
-          sx={[wrapper, { height: '100%', justifyContent: 'center' }]}
-        >
-          <Loader />
-        </CustomCard>
-      </Layout>
-    );
-  }
+  const renderContent = () => {
+    if (!audit?.id && !notFound) {
+      return <Loader />;
+    }
 
-  if (notFound && !audit?.id) {
-    return <NotFound role={user?.current_role} />;
-  }
+    if (notFound && !audit?.id) {
+      return <NotFound role={user?.current_role} />;
+    }
 
-  if (
-    isAuth() &&
-    user.current_role?.toLowerCase() === CUSTOMER.toLowerCase() &&
-    audit?.customer_id === user.id &&
-    !publicView
-  ) {
-    return (
-      <PrivateRoute auth={{ isAuthenticated: isAuth() }}>
-        <Layout
-          sx={layoutSx}
-          containerSx={{
-            maxWidth: 'unset!important',
-            padding: '0 35px!important',
-          }}
-        >
-          <CustomCard sx={wrapper}>
-            <AuditInfoPage
-              setPublicView={setPublicView}
-              publicView={publicView}
-            />
-          </CustomCard>
-        </Layout>
-      </PrivateRoute>
-    );
-  } else if (
-    isAuth() &&
-    user.current_role?.toLowerCase() === AUDITOR.toLowerCase() &&
-    audit?.auditor_id === user.id &&
-    !publicView
-  ) {
-    return (
-      <PrivateRoute auth={{ isAuthenticated: isAuth() }}>
-        <Layout
-          sx={layoutSx}
-          containerSx={{
-            maxWidth: 'unset!important',
-            padding: '0 35px!important',
-          }}
-        >
-          <CustomCard sx={wrapper}>
-            <AuditOffer setPublicView={setPublicView} publicView={publicView} />
-          </CustomCard>
-        </Layout>
-      </PrivateRoute>
-    );
-  } else {
-    return (
-      <Layout
-        sx={layoutSx}
-        containerSx={{
-          maxWidth: 'unset!important',
-          padding: '0 35px!important',
-        }}
-      >
-        <CustomCard sx={wrapper}>
-          <PublicAuditInfoPage
+    if (isAuth()) {
+      if (
+        user.current_role?.toLowerCase() === CUSTOMER.toLowerCase() &&
+        audit?.customer_id === user.id &&
+        !publicView
+      ) {
+        return (
+          <AuditInfoPage
             setPublicView={setPublicView}
             publicView={publicView}
-            isPublic={true}
           />
-        </CustomCard>
-      </Layout>
+        );
+      }
+      if (
+        user.current_role?.toLowerCase() === AUDITOR.toLowerCase() &&
+        audit?.auditor_id === user.id &&
+        !publicView
+      ) {
+        return (
+          <AuditOffer setPublicView={setPublicView} publicView={publicView} />
+        );
+      }
+    }
+
+    return (
+      <PublicAuditInfoPage
+        setPublicView={setPublicView}
+        publicView={publicView}
+        isPublic={true}
+      />
     );
-  }
+  };
+
+  return (
+    <Layout
+      sx={layoutSx}
+      containerSx={{ maxWidth: 'unset!important', padding: '0 35px!important' }}
+    >
+      <CustomCard sx={wrapper}>{renderContent()}</CustomCard>
+    </Layout>
+  );
 };
 
 export default Audit;

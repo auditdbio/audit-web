@@ -1489,8 +1489,8 @@ const buttonSx = theme => ({
 const sendMessageButton = theme => ({
   width: 'unset!important',
   position: 'absolute',
-  top: '-15px',
-  right: '-15px',
+  top: '-20px',
+  right: '-20px',
   paddingY: 'unset!important',
   marginRight: 'unset',
   minWidth: 'unset',
