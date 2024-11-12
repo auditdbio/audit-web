@@ -44,10 +44,6 @@ const Audit = () => {
       return <Loader />;
     }
 
-    if (notFound && !audit?.id) {
-      return <NotFound role={user?.current_role} />;
-    }
-
     if (isAuth()) {
       if (
         user.current_role?.toLowerCase() === CUSTOMER.toLowerCase() &&
@@ -80,6 +76,10 @@ const Audit = () => {
       />
     );
   };
+
+  if (notFound && !audit?.id) {
+    return <NotFound role={user?.current_role} />;
+  }
 
   return (
     <Layout
