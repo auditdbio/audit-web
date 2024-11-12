@@ -185,16 +185,16 @@ const ProjectCard = ({ type, project, currentRole, isPublic }) => {
               flexDirection: 'column',
             }}
           >
-            <Typography sx={{ mb: '12px', fontSize: '16px' }}>
+            <Typography sx={{ mb: '12px', fontSize: '14px' }}>
               {`${project?.issues.length} issues`}
             </Typography>
             {project.resolved_at && (
-              <Typography sx={{ fontSize: '16px' }}>
+              <Typography sx={{ fontSize: '14px' }}>
                 {dayjs(
                   project.resolved_at > 1000000000000
                     ? project.resolved_at / 1000
                     : project.resolved_at * 1000,
-                ).format('DD.MMM.YYYY')}
+                ).format('DD MMM YYYY')}
               </Typography>
             )}
           </Box>
@@ -226,7 +226,7 @@ const ProjectCard = ({ type, project, currentRole, isPublic }) => {
             sx={[
               editButton,
               type === 'auditor' ? editAuditor : {},
-              { width: '150px' },
+              { width: '100px' },
             ]}
             onClick={() => {
               localStorage.setItem('prevPath', window.location.pathname);
