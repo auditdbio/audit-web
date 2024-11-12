@@ -99,7 +99,6 @@ const ProjectCard = ({ type, project, currentRole, isPublic }) => {
           </Typography>
         </Tooltip>
         {!isPublic &&
-          //
           (!project.no_customer ? (
             <Box sx={priceWrapper}>
               <Box sx={infoWrapper}>

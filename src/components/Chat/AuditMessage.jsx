@@ -27,6 +27,7 @@ import dayjs from 'dayjs';
 import ConfirmModal from '../modal/ConfirmModal.jsx';
 import { useNavigate } from 'react-router-dom/dist';
 import AuditInfo from '../../pages/audit-info.jsx';
+import MessageModalCustomer from '../MessageModalCustomer/MessageModalCustomer.jsx';
 
 const AuditMessage = ({ message, handleError }) => {
   const user = useSelector(state => state.user.user);
@@ -315,7 +316,7 @@ const AuditMessage = ({ message, handleError }) => {
         aria-describedby="modal-modal-description"
       >
         <Box sx={modalSx}>
-          <AuditInfo
+          <MessageModalCustomer
             audit={auditRequest}
             handleClose={handleClose}
             auditRequest={auditRequest}
