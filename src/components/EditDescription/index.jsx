@@ -96,6 +96,10 @@ const EditDescription = ({ audit, auditRequest, hideChange, isPublic }) => {
                       sx={{
                         border: 'unset',
                       }}
+                      parentEntity={{
+                        id: audit?.id,
+                        source: AUDIT_PARENT_ENTITY,
+                      }}
                     />
                   )}
                   <Box

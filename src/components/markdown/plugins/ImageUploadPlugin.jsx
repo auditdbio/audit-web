@@ -16,10 +16,10 @@ const ImageUploadPlugin = ({ editor, config }) => {
       formData.append('file', file);
       formData.append('private', 'false');
       formData.append('file_entity', OTHER_ENTITY);
-      // if (config && config.id) {
-      //   formData.append('parent_entity_id', config.id);
-      //   formData.append('parent_entity_source', config.source);
-      // }
+      if (config && config.source) {
+        formData.append('parent_entity_id', config.id);
+        formData.append('parent_entity_source', config.source);
+      }
     }
 
     axios
