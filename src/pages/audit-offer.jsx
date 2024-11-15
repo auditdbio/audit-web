@@ -283,13 +283,7 @@ const AuditOffer = () => {
 
   if (audit && !notFound) {
     return (
-      <Layout
-        sx={layoutSx}
-        containerSx={{
-          maxWidth: 'unset!important',
-          padding: '0 35px!important',
-        }}
-      >
+      <Layout>
         <Headings title={`${audit?.project_name} | Audit`} />
         <ResolveAuditConfirmation
           isOpen={resolveConfirmation}
@@ -1156,13 +1150,6 @@ export default AuditOffer;
 
 const SubmitValidation = Yup.object().shape({
   report: Yup.string().required('File is required'),
-});
-
-const layoutSx = theme => ({
-  padding: '10px!important',
-  [theme.breakpoints.down(780)]: {
-    padding: '10px 0!important',
-  },
 });
 
 const tabsSx = theme => ({
