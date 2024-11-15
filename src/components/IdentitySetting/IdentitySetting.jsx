@@ -26,6 +26,25 @@ import {
 } from '../../redux/actions/userAction.js';
 import { encodeBase64url } from '../../lib/helper.js';
 import WalletConnect from './WalletConnect.jsx';
+import theme from '../../styles/themes.js';
+
+const socialAccounts = [
+  {
+    name: 'github',
+    label: 'GitHub',
+    icon: <GitHubIcon sx={{ width: '50px', height: '50px', padding: '4px' }} />,
+  },
+  {
+    name: 'linkedin',
+    label: 'LinkedIn',
+    icon: <LinkedinIcon />,
+  },
+  {
+    name: 'x',
+    label: 'Twitter',
+    icon: <XTwitterLogo width="50px" height="50px" padding="4px" />,
+  },
+];
 
 const IdentitySetting = () => {
   const dispatch = useDispatch();
@@ -35,48 +54,42 @@ const IdentitySetting = () => {
   const role = useSelector(state => state.user.user.current_role);
   const linkedAccounts = useSelector(state => state.user.user.linked_accounts);
 
-  const handleConnectGithub = () => {
-    if (!linkedAccounts?.find(el => el.name.toLowerCase() === 'github')) {
-      const state = encodeBase64url(
-        JSON.stringify({
-          service: 'GitHub',
-          role,
-        }),
-      );
-      window.open(
-        `https://github.com/login/oauth/authorize?client_id=${GITHUB_CLIENT_ID}&redirect_uri=${BASE_URL}oauth/callback&scope=read:user,user:email&state=${state}`,
-        '_self',
-      );
-    }
-  };
-
-  const handleConnectLinkedin = () => {
-    if (!linkedAccounts?.find(el => el.name.toLowerCase() === 'linkedin')) {
-      const state = encodeBase64url(
-        JSON.stringify({
-          service: 'LinkedIn',
-          role,
-        }),
-      );
-      window.open(
-        `https://linkedin.com/oauth/v2/authorization?response_type=code&client_id=${LINKEDIN_CLIENT_ID}&redirect_uri=${BASE_URL}oauth/callback&scope=profile%20email%20openid&state=${state}`,
-        '_self',
-      );
-    }
-  };
-
-  const handleConnectTwitter = () => {
-    if (!linkedAccounts?.find(el => el.name.toLowerCase() === 'x')) {
-      const state = encodeBase64url(
-        JSON.stringify({
-          service: 'X',
-          role,
-        }),
-      );
-      window.open(
-        `https://twitter.com/i/oauth2/authorize?response_type=code&client_id=${TWITTER_CLIENT_ID}&redirect_uri=${BASE_URL}oauth/callback&scope=tweet.read%20users.read%20follows.read%20offline.access&code_challenge=challenge&code_challenge_method=plain&state=${state}`,
-        '_self',
-      );
+  const handleConnect = (accountName, isConnected) => {
+    if (!isConnected) {
+      if (accountName === 'github') {
+        const state = encodeBase64url(
+          JSON.stringify({
+            service: 'GitHub',
+            role,
+          }),
+        );
+        window.open(
+          `https://github.com/login/oauth/authorize?client_id=${GITHUB_CLIENT_ID}&redirect_uri=${BASE_URL}oauth/callback&scope=read:user,user:email&state=${state}`,
+          '_self',
+        );
+      } else if (accountName === 'linkedin') {
+        const state = encodeBase64url(
+          JSON.stringify({
+            service: 'LinkedIn',
+            role,
+          }),
+        );
+        window.open(
+          `https://linkedin.com/oauth/v2/authorization?response_type=code&client_id=${LINKEDIN_CLIENT_ID}&redirect_uri=${BASE_URL}oauth/callback&scope=profile%20email%20openid&state=${state}`,
+          '_self',
+        );
+      } else if (accountName === 'x') {
+        const state = encodeBase64url(
+          JSON.stringify({
+            service: 'X',
+            role,
+          }),
+        );
+        window.open(
+          `https://twitter.com/i/oauth2/authorize?response_type=code&client_id=${TWITTER_CLIENT_ID}&redirect_uri=${BASE_URL}oauth/callback&scope=tweet.read%20users.read%20follows.read%20offline.access&code_challenge=challenge&code_challenge_method=plain&state=${state}`,
+          '_self',
+        );
+      }
     }
   };
 
@@ -84,11 +97,11 @@ const IdentitySetting = () => {
     setOpen(false);
   };
 
-  const handleCheckboxChange = (e, data) => {
+  const handleCheckboxChange = (e, account) => {
     const value = {
       is_public: e.target.checked,
     };
-    dispatch(changeAccountVisibility(user.id, value, data.id));
+    dispatch(changeAccountVisibility(user.id, value, account.id));
   };
 
   const handleDelete = id => {
@@ -113,154 +126,45 @@ const IdentitySetting = () => {
                 height: '100%',
               }}
             >
-              <Box
-                sx={[
-                  cardSx,
-                  linkedAccounts?.find(el => el.name.toLowerCase() === 'github')
-                    ? { border: '1px solid green' }
-                    : {},
-                ]}
-                onClick={handleConnectGithub}
-              >
-                <Box
-                  sx={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '7px',
-                    width: '100%',
-                  }}
-                >
-                  <GitHubIcon
-                    sx={{ width: '50px', height: '50px', padding: '4px' }}
-                  />
-                  <Typography>Github</Typography>
-                </Box>
-                {linkedAccounts
-                  ?.filter(el => el.name.toLowerCase() === 'github')
-                  ?.map(el => (
-                    <>
-                      <Tooltip
-                        key={el.id}
-                        arrow
-                        placement="top"
-                        title="Show in profile"
-                      >
-                        <Checkbox
-                          key={el.id}
-                          checked={el.is_public}
-                          onChange={e => handleCheckboxChange(e, el)}
-                          icon={<VisibilityOffIcon />}
-                          checkedIcon={<RemoveRedEyeIcon />}
-                        />
-                      </Tooltip>
-                      <Button
-                        onClick={() => handleDelete(el.id)}
-                        sx={{ minWidth: '30px' }}
-                      >
-                        <DeleteForeverIcon color={'error'} />
-                      </Button>
-                    </>
-                  ))}
-              </Box>
-              <Box
-                sx={[
-                  cardSx,
-                  linkedAccounts?.find(
-                    el => el.name.toLowerCase() === 'linkedin',
-                  )
-                    ? { border: '1px solid green' }
-                    : {},
-                ]}
-                onClick={handleConnectLinkedin}
-              >
-                <Box
-                  sx={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '7px',
-                    width: '100%',
-                  }}
-                >
-                  <LinkedinIcon />
-                  <Typography>Linkedin</Typography>
-                </Box>
-                {linkedAccounts
-                  ?.filter(el => el.name.toLowerCase() === 'linkedin')
-                  ?.map(el => (
-                    <>
-                      <Tooltip
-                        key={el.id}
-                        arrow
-                        placement="top"
-                        title="Show in profile"
-                      >
-                        <Checkbox
-                          key={el.id}
-                          checked={el.is_public}
-                          onChange={e => handleCheckboxChange(e, el)}
-                          icon={<VisibilityOffIcon />}
-                          checkedIcon={<RemoveRedEyeIcon />}
-                        />
-                      </Tooltip>
-                      <Button
-                        onClick={() => handleDelete(el.id)}
-                        sx={{ minWidth: '30px' }}
-                      >
-                        <DeleteForeverIcon color={'error'} />
-                      </Button>
-                    </>
-                  ))}
-              </Box>
-              <Box
-                sx={[
-                  cardSx,
-                  linkedAccounts?.find(el => el.name.toLowerCase() === 'x')
-                    ? { border: '1px solid green' }
-                    : {},
-                ]}
-              >
-                <Box
-                  onClick={handleConnectTwitter}
-                  sx={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '7px',
-                    width: '100%',
-                    '& svg': {
-                      padding: '4px',
-                    },
-                  }}
-                >
-                  <XTwitterLogo width={'50px'} height={'50px'} space />
-                  <Typography>Twitter</Typography>
-                </Box>
-                {linkedAccounts
-                  ?.filter(el => el.name.toLowerCase() === 'x')
-                  ?.map(el => (
-                    <>
-                      <Tooltip
-                        key={el.id}
-                        arrow
-                        placement="top"
-                        title="Show in profile"
-                      >
-                        <Checkbox
-                          key={el.id}
-                          checked={el.is_public}
-                          onChange={e => handleCheckboxChange(e, el)}
-                          icon={<VisibilityOffIcon />}
-                          checkedIcon={<RemoveRedEyeIcon />}
-                        />
-                      </Tooltip>
-                      <Button
-                        onClick={() => handleDelete(el.id)}
-                        sx={{ minWidth: '30px' }}
-                      >
-                        <DeleteForeverIcon color={'error'} />
-                      </Button>
-                    </>
-                  ))}
-              </Box>
+              {socialAccounts.map(account => {
+                const linkedAccount = linkedAccounts?.find(
+                  el => el.name.toLowerCase() === account.name,
+                );
+
+                return (
+                  <Box
+                    key={account.name}
+                    sx={cardSx(theme, linkedAccount)}
+                    onClick={() => handleConnect(account.name, !!linkedAccount)}
+                  >
+                    <Box sx={cardTitleSx}>
+                      {account.icon}
+                      <Typography>{account.label}</Typography>
+                    </Box>
+
+                    {linkedAccount && (
+                      <Box sx={{ display: 'flex' }}>
+                        <Tooltip arrow placement="top" title="Show in profile">
+                          <Checkbox
+                            checked={linkedAccount.is_public}
+                            onChange={e =>
+                              handleCheckboxChange(e, linkedAccount)
+                            }
+                            icon={<VisibilityOffIcon />}
+                            checkedIcon={<RemoveRedEyeIcon />}
+                          />
+                        </Tooltip>
+                        <Button
+                          onClick={() => handleDelete(linkedAccount.id)}
+                          sx={{ minWidth: '30px' }}
+                        >
+                          <DeleteForeverIcon color="error" />
+                        </Button>
+                      </Box>
+                    )}
+                  </Box>
+                );
+              })}
 
               <WalletConnect sx={cardSx} linkedAccounts={linkedAccounts} />
 
@@ -270,7 +174,7 @@ const IdentitySetting = () => {
                     buttonSx,
                     { width: '100%', paddingY: '10px', marginTop: '15px' },
                   ]}
-                  variant={'contained'}
+                  variant="contained"
                   onClick={() => setOpen(false)}
                 >
                   Close
@@ -280,7 +184,8 @@ const IdentitySetting = () => {
           </Box>
         </Box>
       </Modal>
-      <Button sx={buttonSx} variant={'contained'} onClick={() => setOpen(true)}>
+
+      <Button sx={buttonSx} variant="contained" onClick={() => setOpen(true)}>
         Connect identity
       </Button>
     </>
@@ -289,7 +194,7 @@ const IdentitySetting = () => {
 
 export default IdentitySetting;
 
-const cardSx = theme => ({
+const cardSx = (theme, isConnected) => ({
   display: 'flex',
   justifyContent: 'space-between',
   alignItems: 'center',
@@ -297,7 +202,7 @@ const cardSx = theme => ({
   cursor: 'pointer',
   gap: '10px',
   borderRadius: '10px',
-  border: '1px solid transparent',
+  border: isConnected ? '1px solid green' : '1px solid transparent',
   '& p': {
     fontWeight: 600,
   },
@@ -309,6 +214,13 @@ const cardSx = theme => ({
     padding: '10px 10px',
   },
 });
+
+const cardTitleSx = {
+  display: 'flex',
+  alignItems: 'center',
+  gap: '7px',
+  width: '100%',
+};
 
 const modalSx = theme => ({
   position: 'absolute',
@@ -336,7 +248,6 @@ const buttonSx = theme => ({
   textTransform: 'capitalize',
   fontWeight: 600,
   fontSize: '18px',
-  // padding: '9px 50px',
   width: '214px',
   borderRadius: '10px',
   [theme.breakpoints.down('xs')]: {
