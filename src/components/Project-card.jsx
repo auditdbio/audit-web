@@ -184,11 +184,11 @@ const ProjectCard = ({ type, project, currentRole, isPublic }) => {
               flexDirection: 'column',
             }}
           >
-            <Typography sx={{ mb: '12px', fontSize: '14px' }}>
+            <Typography sx={{ mb: '12px', fontSize: '14px!important' }}>
               {`${project?.issues.length} issues`}
             </Typography>
             {project.resolved_at && (
-              <Typography sx={{ fontSize: '14px' }}>
+              <Typography sx={{ fontSize: '14px!important' }}>
                 {dayjs(
                   project.resolved_at > 1000000000000
                     ? project.resolved_at / 1000

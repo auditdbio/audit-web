@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 
 const AuditUserCard = ({ avatar, role, name, email, telegram, id }) => {
   return (
-    <Box>
+    <Box sx={{ width: '100%' }}>
       <Typography sx={roleTitleSx} align={'center'}>
         {role}
       </Typography>
@@ -22,7 +22,11 @@ const AuditUserCard = ({ avatar, role, name, email, telegram, id }) => {
             <Box sx={{ display: 'grid' }}>
               <Link
                 to={`/a/${id}`}
-                style={{ display: 'grid', textAlign: 'center' }}
+                style={{
+                  display: 'grid',
+                  textAlign: 'center',
+                  color: '#434242',
+                }}
               >
                 <Tooltip title={name} arrow placement="top">
                   <Typography noWrap={true} sx={userNameWrapper}>
@@ -160,5 +164,10 @@ const infoWrapper = theme => ({
   },
   [theme.breakpoints.down('xs')]: {
     fontSize: '12px',
+  },
+  [theme.breakpoints.down(600)]: {
+    '& span': {
+      width: '50px',
+    },
   },
 });
