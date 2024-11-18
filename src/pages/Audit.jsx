@@ -3,7 +3,12 @@ import { isAuth } from '../lib/helper.js';
 import { PrivateRoute } from '../router/PrivateRoute.jsx';
 import PublicAuditInfoPage from './PublicAuditInfo.jsx';
 import { getAudit, getPublicAudit } from '../redux/actions/auditAction.js';
-import { AUDITOR, CLEAR_AUDIT, CUSTOMER } from '../redux/actions/types.js';
+import {
+  AUDITOR,
+  CLEAR_AUDIT,
+  CUSTOMER,
+  RESOLVED,
+} from '../redux/actions/types.js';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import AuditOffer from './audit-offer.jsx';
@@ -48,7 +53,8 @@ const Audit = () => {
       if (
         user.current_role?.toLowerCase() === CUSTOMER.toLowerCase() &&
         audit?.customer_id === user.id &&
-        !publicView
+        !publicView &&
+        audit.status.toLowerCase() !== RESOLVED.toLowerCase()
       ) {
         return (
           <AuditInfoPage

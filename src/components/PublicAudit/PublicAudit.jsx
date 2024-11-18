@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, Link } from 'react-router-dom/dist';
 import dayjs from 'dayjs';
@@ -47,7 +47,7 @@ import {
   WAITING_FOR_AUDITS,
 } from '../../redux/actions/types.js';
 import { setCurrentChat } from '../../redux/actions/chatActions.js';
-import { addTestsLabel } from '../../lib/helper.js';
+import { addTestsLabel, isAuth } from '../../lib/helper.js';
 import { ASSET_URL } from '../../services/urls.js';
 import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 import TaskAltIcon from '@mui/icons-material/TaskAlt';
@@ -56,6 +56,7 @@ import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import theme from '../../styles/themes.js';
 import EditIcon from '@mui/icons-material/Edit.js';
 import ExpandLessOutlinedIcon from '@mui/icons-material/ExpandLessOutlined.js';
+import AuditUserCard from '../AuditUserCard/AuditUserCard.jsx';
 
 const PublicAudit = ({
   audit,
@@ -171,6 +172,7 @@ const PublicAudit = ({
           <ArrowBackIcon color="secondary" />
         </Button>
         {audit?.status?.toLowerCase() === RESOLVED.toLowerCase() &&
+          user?.current_role?.toLowerCase() === AUDITOR.toLowerCase() &&
           (audit?.customer_id === user.id || audit?.auditor_id === user.id) && (
             <FormControlLabel
               control={
@@ -183,8 +185,9 @@ const PublicAudit = ({
                 '& .MuiTypography-root': { fontSize: '14px' },
                 top: '-20px',
                 position: 'absolute',
+                right: '30px',
               }}
-              label="Public view"
+              label="Public preview"
             />
           )}
         <Button
@@ -259,162 +262,35 @@ const PublicAudit = ({
           },
         }}
       >
-        <Collapse in={true} collapsedSize={showFull ? undefined : 80}>
+        <Collapse in={true} collapsedSize={showFull ? undefined : 200}>
           <Box sx={descriptionWrapper(theme, showFull)}>
             <Box sx={contentWrapper}>
-              <Box>
-                <Typography sx={roleTitleSx} align={'center'}>
-                  Auditor
-                </Typography>
-                <Box sx={useContentSx}>
-                  <Box sx={userWrapper}>
-                    <Avatar
-                      src={audit?.avatar ? `${ASSET_URL}/${audit?.avatar}` : ''}
-                      alt="auditor photo"
-                    />
-                    <Link
-                      to={`/a/${audit.auditor_id}`}
-                      style={{ display: 'grid', textAlign: 'center' }}
-                    >
-                      <Tooltip
-                        title={audit?.auditor_first_name}
-                        arrow
-                        placement="top"
-                      >
-                        <Typography noWrap={true} sx={userNameWrapper}>
-                          {audit?.auditor_first_name}
-                        </Typography>
-                      </Tooltip>
-                      <Tooltip
-                        title={audit?.auditor_last_name}
-                        arrow
-                        placement="top"
-                      >
-                        <Typography noWrap={true} sx={userNameWrapper}>
-                          {audit?.auditor_last_name}
-                        </Typography>
-                      </Tooltip>
-                    </Link>
-                  </Box>
-                  <Box sx={userInfoWrapper}>
-                    <Box sx={infoWrapper}>
-                      <span>E-mail:</span>
-                      <Box sx={{ display: 'grid' }}>
-                        {!!audit?.auditor_contacts?.email ? (
-                          <Tooltip
-                            title={audit?.auditor_contacts?.email}
-                            arrow
-                            placement="top"
-                          >
-                            <Typography noWrap={true}>
-                              {audit?.auditor_contacts?.email}
-                            </Typography>
-                          </Tooltip>
-                        ) : (
-                          <Typography noWrap={true}>Not specified</Typography>
-                        )}
-                      </Box>
-                    </Box>
-                    <Box sx={infoWrapper}>
-                      <span>Telegram:</span>
-                      <Box sx={{ display: 'grid' }}>
-                        {!!audit?.auditor_contacts?.telegram ? (
-                          <Tooltip
-                            title={audit?.auditor_contacts?.telegram}
-                            arrow
-                            placement="top"
-                          >
-                            <Typography noWrap={true}>
-                              {audit?.auditor_contacts?.telegram}
-                            </Typography>
-                          </Tooltip>
-                        ) : (
-                          <Typography noWrap={true}>Not specified</Typography>
-                        )}
-                      </Box>
-                    </Box>
-                  </Box>
-                </Box>
-              </Box>
-              <Box>
-                <Typography align={'center'} sx={roleTitleSx}>
-                  Customer
-                </Typography>
-                <Box sx={useContentSx}>
-                  <Box sx={userWrapper}>
-                    <Avatar
-                      src={
-                        audit?.customer_avatar
-                          ? `${ASSET_URL}/${audit?.customer_avatar}`
-                          : ''
-                      }
-                      alt="auditor photo"
-                    />
-                    <Link
-                      to={`/a/${audit.customer_id}`}
-                      style={{ display: 'grid', textAlign: 'center' }}
-                    >
-                      <Tooltip
-                        title={audit?.customer_first_name}
-                        arrow
-                        placement="top"
-                      >
-                        <Typography noWrap={true} sx={userNameWrapper}>
-                          {audit?.customer_first_name}
-                        </Typography>
-                      </Tooltip>
-                      <Tooltip
-                        title={audit?.customer_last_name}
-                        arrow
-                        placement="top"
-                      >
-                        <Typography noWrap={true} sx={userNameWrapper}>
-                          {audit?.customer_last_name}
-                        </Typography>
-                      </Tooltip>
-                    </Link>
-                  </Box>
-                  <Box sx={userInfoWrapper}>
-                    <Box sx={infoWrapper}>
-                      <span>E-mail:</span>
-                      <Box sx={{ display: 'grid' }}>
-                        {!!audit?.customer_contacts?.email ? (
-                          <Tooltip
-                            title={audit?.customer_contacts?.email}
-                            arrow
-                            placement="top"
-                          >
-                            <Typography noWrap={true}>
-                              {audit?.customer_contacts?.email}
-                            </Typography>
-                          </Tooltip>
-                        ) : (
-                          <Typography noWrap={true}>Not specified</Typography>
-                        )}
-                      </Box>
-                    </Box>
-                    <Box sx={infoWrapper}>
-                      <span>Telegram:</span>
-                      <Box sx={{ display: 'grid' }}>
-                        {!!audit?.customer_contacts?.telegram ? (
-                          <Tooltip
-                            title={audit?.customer_contacts?.telegram}
-                            arrow
-                            placement="top"
-                          >
-                            <Typography noWrap={true}>
-                              {audit?.customer_contacts?.telegram}
-                            </Typography>
-                          </Tooltip>
-                        ) : (
-                          <Typography noWrap={true}>Not specified</Typography>
-                        )}
-                      </Box>
-                    </Box>
-                  </Box>
-                </Box>
-              </Box>
+              <AuditUserCard
+                avatar={audit?.avatar}
+                name={
+                  audit?.auditor_first_name + ' ' + audit?.auditor_last_name
+                }
+                email={audit?.auditor_contacts?.email}
+                telegram={audit?.auditor_contacts?.telegram}
+                role={'Auditor'}
+                id={audit.auditor_id}
+              />
+              <AuditUserCard
+                avatar={audit?.customer_avatar}
+                name={
+                  audit?.customer_first_name + ' ' + audit?.customer_last_name
+                }
+                email={audit?.customer_contacts?.email}
+                telegram={audit?.customer_contacts?.telegram}
+                role={'Customer'}
+                id={audit.customer_id}
+              />
             </Box>
+            <EditDescription
+              isPublic={isPublic}
+              auditRequest={request}
+              audit={audit}
+            />
           </Box>
         </Collapse>
         <Box
@@ -460,11 +336,6 @@ const PublicAudit = ({
             />
           </Button>
         </Box>
-        <EditDescription
-          isPublic={isPublic}
-          auditRequest={request}
-          audit={audit}
-        />
       </Box>
 
       {audit?.conclusion && (
@@ -562,7 +433,7 @@ const reportActionWrapperSx = theme => ({
 });
 
 const descriptionWrapper = (theme, showFull) => ({
-  maxHeight: showFull ? 'none' : 80,
+  maxHeight: showFull ? 'none' : 200,
   overflow: 'hidden',
 });
 
@@ -575,6 +446,7 @@ const useContentSx = theme => ({
   display: 'flex',
   alignItems: 'flex-start',
   gap: '20px',
+  paddingTop: '10px',
 });
 
 const sendMessageButton = theme => ({
@@ -582,7 +454,7 @@ const sendMessageButton = theme => ({
   position: 'absolute',
   top: '-20px',
   right: '-20px',
-  paddingY: 'unset!important',
+  padding: 'unset!important',
   marginRight: 'unset',
   minWidth: 'unset',
   '& svg': {
@@ -597,6 +469,7 @@ const sendMessageButton = theme => ({
 
 const userNameWrapper = theme => ({
   maxWidth: '190px',
+  textAlign: 'start',
   [theme.breakpoints.down('sm')]: {
     maxWidth: 'unset',
   },
@@ -615,7 +488,7 @@ const backButtonSx = theme => ({
 const contentWrapper = theme => ({
   display: 'flex',
   gap: '70px',
-  alignItems: 'center',
+  alignItems: 'flex-start',
   mb: '30px',
   justifyContent: 'space-evenly',
   [theme.breakpoints.down('md')]: {
@@ -673,7 +546,7 @@ const userInfoWrapper = theme => ({
   display: 'flex',
   flexDirection: 'column',
   gap: '20px',
-  marginTop: '20px',
+  // marginTop: '20px',
   [theme.breakpoints.down('sm')]: {
     gap: '16px',
   },

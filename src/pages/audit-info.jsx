@@ -200,23 +200,6 @@ const AuditInfo = ({
         >
           {!handleClose ? <ArrowBackIcon /> : <CloseIcon />}
         </Button>
-        {audit?.status?.toLowerCase() === RESOLVED.toLowerCase() &&
-          audit?.customer_id === user.id && (
-            <FormControlLabel
-              control={
-                <Switch
-                  checked={publicView}
-                  onChange={e => setPublicView(e.target.checked)}
-                />
-              }
-              sx={{
-                '& .MuiTypography-root': { fontSize: '14px' },
-                top: '-20px',
-                position: 'absolute',
-              }}
-              label="Public view"
-            />
-          )}
       </Box>
       <Box
         sx={{

@@ -36,7 +36,7 @@ const IssuesList = ({
   const { successMessage, error } = useSelector(s => s.audits);
   const [search, setSearch] = useState(searchParams.get('search') || '');
   const [page, setPage] = useState(+searchParams.get('page') || 1);
-  const [queryAvailable, setQueryAvailable] = useState(!isPublic);
+  const [queryAvailable, setQueryAvailable] = useState(false);
   const [sortType, setSortType] = useState(
     searchParams.get('sort') || STATUS_DESCENDING.toLowerCase(),
   );

@@ -31,7 +31,7 @@ const AuditIssueDetails = ({ isPublic, saved, hideControl }) => {
   );
 
   useEffect(() => {
-    if (hideControl) {
+    if (hideControl && !audit) {
       dispatch(getPublicAudit(auditId, code));
     }
   }, []);

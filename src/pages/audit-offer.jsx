@@ -310,8 +310,9 @@ const AuditOffer = ({ publicView, setPublicView }) => {
                   '& .MuiTypography-root': { fontSize: '14px' },
                   top: '-20px',
                   position: 'absolute',
+                  right: '30px',
                 }}
-                label="Public view"
+                label="Public preview"
               />
             )}
           <Box sx={headerTitleSx}>
