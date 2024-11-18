@@ -14,7 +14,7 @@ import Headings from '../router/Headings.jsx';
 import { useSearchParams } from 'react-router-dom/dist';
 import PublicAudit from '../components/PublicAudit/PublicAudit.jsx';
 
-const PublicAuditInfoPage = ({ isPublic }) => {
+const PublicAuditInfoPage = ({ isPublic, publicView, setPublicView }) => {
   const { id } = useParams();
   const dispatch = useDispatch();
   const notFound = useSelector(s => s.notFound.error);
@@ -22,15 +22,6 @@ const PublicAuditInfoPage = ({ isPublic }) => {
   const { issues, issuesAuditId } = useSelector(s => s.issues);
   const queryParams = new URLSearchParams(location.search);
   const code = queryParams.get('code');
-
-  useEffect(() => {
-    if (isPublic) {
-      dispatch(getPublicAudit(id, code));
-    } else {
-      dispatch(getAudit(id));
-    }
-    return () => dispatch({ type: CLEAR_AUDIT });
-  }, [id]);
 
   useEffect(() => {
     if (
@@ -54,35 +45,20 @@ const PublicAuditInfoPage = ({ isPublic }) => {
       dispatch(getIssues(auditConfirm?.id));
     }
   }, [auditConfirm?.status, issuesAuditId]);
-  //
-  if (!auditConfirm && !notFound) {
-    return (
-      <Layout>
-        <Headings title="Audit Info" />
 
-        <CustomCard sx={[wrapperCustom, { justifyContent: 'center' }]}>
-          <Loader />
-        </CustomCard>
-      </Layout>
-    );
-  }
-
-  if (notFound && !auditConfirm?.id) {
-    return <NotFound />;
-  }
-  if (auditConfirm?.id && !notFound) {
-    return (
-      <Layout>
-        <PublicAudit
-          isPublic={isPublic}
-          audit={auditConfirm}
-          confirmed={true}
-          code={code}
-          issues={auditConfirm.issues}
-        />
-      </Layout>
-    );
-  }
+  return (
+    // <Layout>
+    <PublicAudit
+      isPublic={isPublic}
+      audit={auditConfirm}
+      confirmed={true}
+      code={code}
+      issues={auditConfirm.issues}
+      publicView={publicView}
+      setPublicView={setPublicView}
+    />
+    // </Layout>
+  );
 };
 
 export default PublicAuditInfoPage;

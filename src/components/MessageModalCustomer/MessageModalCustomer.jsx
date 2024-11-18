@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, Link } from 'react-router-dom/dist';
 import dayjs from 'dayjs';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import { CustomCard } from '../components/custom/Card.jsx';
 import {
   Avatar,
   Box,
@@ -11,10 +10,21 @@ import {
   Typography,
   Tooltip,
   Divider,
-  FormControlLabel,
-  Switch,
 } from '@mui/material';
-import TagsList from '../components/tagsList.jsx';
+import Headings from '../../router/Headings.jsx';
+import CustomSnackbar from '../custom/CustomSnackbar.jsx';
+import { CustomCard } from '../custom/Card.jsx';
+import CloseIcon from '@mui/icons-material/Close';
+import EditTags from '../EditDescription/EditTags.jsx';
+import EditPrice from '../EditDescription/EditPrice.jsx';
+import TagsList from '../tagsList.jsx';
+import EditDescription from '../EditDescription/index.jsx';
+import DescriptionHistory from '../DescriptionHistory/index.jsx';
+import Markdown from '../markdown/Markdown.jsx';
+import ChatIcon from '../icons/ChatIcon.jsx';
+import IssuesList from '../issuesPage/IssuesList.jsx';
+import ConfirmModal from '../modal/ConfirmModal.jsx';
+import AuditFeedbackModal from '../modal/AuditFeedbackModal.jsx';
 import {
   acceptAudit,
   clearMessage,
@@ -24,7 +34,7 @@ import {
   downloadPublicReport,
   downloadReport,
   sendAuditFeedback,
-} from '../redux/actions/auditAction.js';
+} from '../../redux/actions/auditAction.js';
 import {
   AUDITOR,
   CUSTOMER,
@@ -32,24 +42,12 @@ import {
   RESOLVED,
   SUBMITED,
   WAITING_FOR_AUDITS,
-} from '../redux/actions/types.js';
-import Markdown from '../components/markdown/Markdown.jsx';
-import { ASSET_URL } from '../services/urls.js';
-import { addTestsLabel } from '../lib/helper.js';
-import CustomSnackbar from '../components/custom/CustomSnackbar.jsx';
-import CloseIcon from '@mui/icons-material/Close';
-import { setCurrentChat } from '../redux/actions/chatActions.js';
-import ChatIcon from '../components/icons/ChatIcon.jsx';
-import ConfirmModal from '../components/modal/ConfirmModal.jsx';
-import Headings from '../router/Headings.jsx';
-import AuditFeedbackModal from '../components/modal/AuditFeedbackModal.jsx';
-import EditDescription from '../components/EditDescription/index.jsx';
-import DescriptionHistory from '../components/DescriptionHistory/index.jsx';
-import EditTags from '../components/EditDescription/EditTags.jsx';
-import EditPrice from '../components/EditDescription/EditPrice.jsx';
-import IssuesList from '../components/issuesPage/IssuesList.jsx';
+} from '../../redux/actions/types.js';
+import { setCurrentChat } from '../../redux/actions/chatActions.js';
+import { addTestsLabel } from '../../lib/helper.js';
+import { ASSET_URL } from '../../services/urls.js';
 
-const AuditInfo = ({
+const MessageModalCustomer = ({
   audit,
   auditRequest,
   issues,
@@ -58,8 +56,6 @@ const AuditInfo = ({
   request,
   code,
   isPublic,
-  publicView,
-  setPublicView,
 }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -130,7 +126,7 @@ const AuditInfo = ({
   };
 
   return (
-    <>
+    <CustomCard sx={wrapper} className={'audit-info-wrapper'}>
       <Headings title={audit?.project_name || 'Audit Info'} />
       <CustomSnackbar
         autoHideDuration={5000}
@@ -140,84 +136,32 @@ const AuditInfo = ({
         onClose={() => dispatch(clearMessage())}
       />
 
-      {/*<Button*/}
-      {/*  sx={backButtonSx}*/}
-      {/*  onClick={() => {*/}
-      {/*    if (!isPublic) {*/}
-      {/*      if (handleClose) {*/}
-      {/*        handleClose();*/}
-      {/*      } else {*/}
-      {/*        if (localStorage.getItem('prevPath')) {*/}
-      {/*          navigate(localStorage.getItem('prevPath'));*/}
-      {/*          localStorage.removeItem('prevPath');*/}
-      {/*        } else navigate('/profile/audits');*/}
-      {/*      }*/}
-      {/*    } else {*/}
-      {/*      if (localStorage.getItem('prevPath')) {*/}
-      {/*        navigate(localStorage.getItem('prevPath'));*/}
-      {/*        localStorage.removeItem('prevPath');*/}
-      {/*      } else {*/}
-      {/*        navigate(-1);*/}
-      {/*      }*/}
-      {/*    }*/}
-      {/*  }}*/}
-      {/*  aria-label="Go back"*/}
-      {/*  {...addTestsLabel('go-back-button')}*/}
-      {/*>*/}
-      {/*  {!handleClose ? <ArrowBackIcon /> : <CloseIcon />}*/}
-      {/*</Button>*/}
-      <Box
-        sx={{
-          display: 'flex',
-          width: '100%',
-          justifyContent: 'center',
-          position: 'relative',
-        }}
-      >
-        <Button
-          sx={backButtonSx}
-          onClick={() => {
-            if (!isPublic) {
-              if (handleClose) {
-                handleClose();
-              } else {
-                if (localStorage.getItem('prevPath')) {
-                  navigate(localStorage.getItem('prevPath'));
-                  localStorage.removeItem('prevPath');
-                } else navigate('/profile/audits');
-              }
+      <Button
+        sx={backButtonSx}
+        onClick={() => {
+          if (!isPublic) {
+            if (handleClose) {
+              handleClose();
             } else {
               if (localStorage.getItem('prevPath')) {
                 navigate(localStorage.getItem('prevPath'));
                 localStorage.removeItem('prevPath');
-              } else {
-                navigate(-1);
-              }
+              } else navigate('/profile/audits');
             }
-          }}
-          aria-label="Go back"
-          {...addTestsLabel('go-back-button')}
-        >
-          {!handleClose ? <ArrowBackIcon /> : <CloseIcon />}
-        </Button>
-        {audit?.status?.toLowerCase() === RESOLVED.toLowerCase() &&
-          audit?.customer_id === user.id && (
-            <FormControlLabel
-              control={
-                <Switch
-                  checked={publicView}
-                  onChange={e => setPublicView(e.target.checked)}
-                />
-              }
-              sx={{
-                '& .MuiTypography-root': { fontSize: '14px' },
-                top: '-20px',
-                position: 'absolute',
-              }}
-              label="Public view"
-            />
-          )}
-      </Box>
+          } else {
+            if (localStorage.getItem('prevPath')) {
+              navigate(localStorage.getItem('prevPath'));
+              localStorage.removeItem('prevPath');
+            } else {
+              navigate(-1);
+            }
+          }
+        }}
+        aria-label="Go back"
+        {...addTestsLabel('go-back-button')}
+      >
+        {!handleClose ? <ArrowBackIcon /> : <CloseIcon />}
+      </Button>
       <Box
         sx={{
           display: 'flex',
@@ -638,11 +582,11 @@ const AuditInfo = ({
         handleSend={handleSendFeedback}
         feedback={audit.feedback}
       />
-    </>
+    </CustomCard>
   );
 };
 
-export default AuditInfo;
+export default MessageModalCustomer;
 
 const roleTitleSx = theme => ({
   fontSize: '20px',
@@ -679,11 +623,11 @@ const userNameWrapper = theme => ({
 
 const backButtonSx = theme => ({
   position: 'absolute',
-  left: '-38px',
-  top: '-20px',
-  [theme.breakpoints.down('sm')]: {
-    top: '-30px',
-    left: '-20px',
+  left: 0,
+  top: '10px',
+  [theme.breakpoints.down('md')]: {
+    minWidth: 'unset',
+    top: 0,
   },
 });
 

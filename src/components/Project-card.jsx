@@ -39,7 +39,7 @@ const ProjectCard = ({ type, project, currentRole, isPublic }) => {
   const handleClick = () => {
     if (type === AUDITOR) {
       if (!project.no_customer) {
-        navigate(`/audit-info/${project.id}/auditor`);
+        navigate(`/audit/${project.id}`);
       } else {
         navigate(`/audit-builder/edit/${project.id}`);
       }
@@ -99,7 +99,6 @@ const ProjectCard = ({ type, project, currentRole, isPublic }) => {
           </Typography>
         </Tooltip>
         {!isPublic &&
-          //
           (!project.no_customer ? (
             <Box sx={priceWrapper}>
               <Box sx={infoWrapper}>

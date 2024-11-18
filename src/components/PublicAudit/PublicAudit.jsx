@@ -22,6 +22,8 @@ import {
   Button,
   Collapse,
   Divider,
+  FormControlLabel,
+  Switch,
   Tooltip,
   Typography,
 } from '@mui/material';
@@ -64,6 +66,8 @@ const PublicAudit = ({
   request,
   code,
   isPublic,
+  publicView,
+  setPublicView,
 }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -135,7 +139,7 @@ const PublicAudit = ({
   };
 
   return (
-    <CustomCard sx={wrapper} className={'audit-info-wrapper'}>
+    <>
       <Headings title={audit?.project_name || 'Audit Info'} />
       <CustomSnackbar
         autoHideDuration={5000}
@@ -144,33 +148,55 @@ const PublicAudit = ({
         text={error || successMessage}
         onClose={() => dispatch(clearMessage())}
       />
-
-      <Button
-        sx={backButtonSx}
-        onClick={() => {
-          if (!isPublic) {
-            if (handleClose) {
-              handleClose();
-            } else {
-              if (localStorage.getItem('prevPath')) {
-                navigate(localStorage.getItem('prevPath'));
-                localStorage.removeItem('prevPath');
-              } else navigate('/profile/audits');
-            }
-          } else {
+      <Box
+        sx={{
+          display: 'flex',
+          width: '100%',
+          justifyContent: 'center',
+          position: 'relative',
+        }}
+      >
+        <Button
+          sx={backButtonSx}
+          onClick={() => {
             if (localStorage.getItem('prevPath')) {
               navigate(localStorage.getItem('prevPath'));
               localStorage.removeItem('prevPath');
             } else {
-              navigate(-1);
+              navigate('/profile/audits');
             }
-          }
-        }}
-        aria-label="Go back"
-        {...addTestsLabel('go-back-button')}
-      >
-        {!handleClose ? <ArrowBackIcon /> : <CloseIcon />}
-      </Button>
+          }}
+          {...addTestsLabel('go-back-button')}
+        >
+          <ArrowBackIcon color="secondary" />
+        </Button>
+        {audit?.status?.toLowerCase() === RESOLVED.toLowerCase() &&
+          (audit?.customer_id === user.id || audit?.auditor_id === user.id) && (
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={publicView}
+                  onChange={e => setPublicView(e.target.checked)}
+                />
+              }
+              sx={{
+                '& .MuiTypography-root': { fontSize: '14px' },
+                top: '-20px',
+                position: 'absolute',
+              }}
+              label="Public view"
+            />
+          )}
+        <Button
+          variant="text"
+          onClick={handleSendMessage}
+          sx={sendMessageButton}
+          disabled={audit?.auditor_id === user.id}
+          {...addTestsLabel('message-button')}
+        >
+          <ChatIcon />
+        </Button>
+      </Box>
       <Box
         sx={{
           display: 'flex',
@@ -224,15 +250,6 @@ const PublicAudit = ({
         </Box>
         <Divider sx={{ mt: '15px' }} />
       </Box>
-      <Button
-        variant="text"
-        onClick={handleSendMessage}
-        sx={{ position: 'absolute', top: '0', right: '0' }}
-        disabled={audit?.auditor_id === user.id}
-        {...addTestsLabel('message-button')}
-      >
-        <ChatIcon />
-      </Button>
       <Box
         sx={{
           maxWidth: '100%',
@@ -528,7 +545,7 @@ const PublicAudit = ({
         handleSend={handleSendFeedback}
         feedback={audit.feedback}
       />
-    </CustomCard>
+    </>
   );
 };
 
@@ -560,24 +577,21 @@ const useContentSx = theme => ({
   gap: '20px',
 });
 
-const wrapper = theme => ({
-  padding: '30px 40px 60px',
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'center',
-  gap: '25px',
-  maxWidth: '1480px',
-  position: 'relative',
-  '& h3': {
-    fontSize: '24px',
-    fontWeight: 500,
+const sendMessageButton = theme => ({
+  width: 'unset!important',
+  position: 'absolute',
+  top: '-20px',
+  right: '-20px',
+  paddingY: 'unset!important',
+  marginRight: 'unset',
+  minWidth: 'unset',
+  '& svg': {
+    width: '45px',
+    height: '45px',
   },
   [theme.breakpoints.down('sm')]: {
-    gap: '40px',
-    padding: '25px 20px 30px',
-    '& h3': {
-      fontSize: '20px',
-    },
+    top: '-20px',
+    right: '-10px',
   },
 });
 
@@ -590,11 +604,11 @@ const userNameWrapper = theme => ({
 
 const backButtonSx = theme => ({
   position: 'absolute',
-  left: 0,
-  top: '10px',
-  [theme.breakpoints.down('md')]: {
-    minWidth: 'unset',
-    top: 0,
+  left: '-38px',
+  top: '-20px',
+  [theme.breakpoints.down('sm')]: {
+    top: '-30px',
+    left: '-20px',
   },
 });
 
