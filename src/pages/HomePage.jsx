@@ -21,6 +21,7 @@ const layout = {
   flexDirection: 'column',
   padding: '0',
   paddingTop: '30px',
+  paddingX: '0!important',
   [theme.breakpoints.down('md')]: {
     padding: 0,
   },

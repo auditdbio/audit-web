@@ -88,7 +88,7 @@ const wrapper = {
   paddingTop: '1.5rem',
   width: '100%',
   marginBottom: '1.5rem',
-  maxWidth: '1512px',
+  // maxWidth: '1512px',
 };
 
 const carouselTextStyle = theme => ({

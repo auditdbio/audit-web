@@ -149,7 +149,7 @@ const actionButton = theme => ({
   fontSize: '14px',
   fontWeight: 600,
   lineHeight: '20px',
-  width: '100px',
+  width: '50%',
   textTransform: 'none',
   borderRadius: '10px',
   gap: '40px',
@@ -160,6 +160,7 @@ const actionButton = theme => ({
   },
   [theme.breakpoints.down('xs')]: {
     fontSize: '11px',
+    width: '100px',
   },
 });
 

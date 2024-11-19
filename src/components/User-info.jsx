@@ -432,7 +432,7 @@ const avatarStyle = theme => ({
 const contentWrapper = theme => ({
   display: 'flex',
   gap: '70px',
-  justifyContent: 'space-between',
+  justifyContent: 'center',
   [theme.breakpoints.down('md')]: {
     gap: '50px',
   },

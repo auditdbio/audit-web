@@ -26,6 +26,6 @@ export default CreateProject;
 const wrapper = theme => ({
   display: 'flex',
   flexDirection: 'column',
-  maxWidth: '1300px',
+  // maxWidth: '1300px',
   width: '100%',
 });

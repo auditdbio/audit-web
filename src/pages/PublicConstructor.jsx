@@ -205,7 +205,7 @@ const PublicConstructor = ({ saved, isPublic }) => {
         sx={{ padding: '40px' }}
         containerSx={{
           maxWidth: 'unset!important',
-          padding: '0 35px!important',
+          // padding: '0 35px!important',
         }}
       >
         <Headings title="Audit Builder" />
