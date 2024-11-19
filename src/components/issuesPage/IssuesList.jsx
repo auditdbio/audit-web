@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useSearchParams } from 'react-router-dom';
-import { Box, Button } from '@mui/material';
+import { useSearchParams } from 'react-router-dom/dist';
+import { Box, Button, useMediaQuery } from '@mui/material';
 import Control from './Control.jsx';
 import CustomPagination from '../custom/CustomPagination.jsx';
 import ArrowIcon from '../icons/ArrowIcon.jsx';
@@ -19,6 +19,7 @@ import ArrowUpIcon from '../icons/ArrowUpIcon.jsx';
 import IssueListItem from './IssueListItem.jsx';
 import { clearMessage } from '../../redux/actions/auditAction.js';
 import CustomSnackbar from '../custom/CustomSnackbar.jsx';
+import theme from '../../styles/themes.js';
 
 const IssuesList = ({
   auditId,
@@ -30,10 +31,13 @@ const IssuesList = ({
   code,
 }) => {
   const dispatch = useDispatch();
+  const matchXs = useMediaQuery(theme.breakpoints.down('xs'));
   const [searchParams, setSearchParams] = useSearchParams();
+
   const { issues } = useSelector(s => s.issues);
   const { user } = useSelector(s => s.user);
   const { successMessage, error } = useSelector(s => s.audits);
+
   const [search, setSearch] = useState(searchParams.get('search') || '');
   const [page, setPage] = useState(+searchParams.get('page') || 1);
   const [sortType, setSortType] = useState(
@@ -132,40 +136,39 @@ const IssuesList = ({
         />
       )}
 
-      <Box
-        sx={[
-          { display: 'flex', width: '100%', justifyContent: 'space-between' },
-          isPublic || saved ? { paddingRight: '15px' } : {},
-        ]}
-      >
+      <Box sx={wrapper}>
         <Box sx={issueTitleSx}>
           <Button sx={[columnText, columnTitle]} onClick={handleNameSort}>
             <span>Issue</span>
             <span>
-              {sortType === NAME_ASCENDING ? <ArrowUpIcon /> : <ArrowIcon />}
+              {sortType === NAME_ASCENDING ? (
+                <ArrowUpIcon size={matchXs ? 'small' : 'medium'} />
+              ) : (
+                <ArrowIcon size={matchXs ? 'small' : 'medium'} />
+              )}
             </span>
           </Button>
         </Box>
         <Box sx={columnsTitleBlock}>
-          <Button
-            sx={[columnText, columnTitle, columnTitleHidden]}
-            onClick={handleStatusSort}
-          >
-            <span>Status</span>
-            <span>
-              {sortType === STATUS_ASCENDING ? <ArrowUpIcon /> : <ArrowIcon />}
-            </span>
-          </Button>
-          <Button
-            sx={[isPublic || saved ? columnPublic : columnText, columnTitle]}
-            onClick={handleSeveritySort}
-          >
+          <Box sx={columnStatus}>
+            <Button sx={[columnText, columnTitle]} onClick={handleStatusSort}>
+              <span>Status</span>
+              <span>
+                {sortType === STATUS_ASCENDING ? (
+                  <ArrowUpIcon size={matchXs ? 'small' : 'medium'} />
+                ) : (
+                  <ArrowIcon size={matchXs ? 'small' : 'medium'} />
+                )}
+              </span>
+            </Button>
+          </Box>
+          <Button sx={[columnText, columnTitle]} onClick={handleSeveritySort}>
             <span>Severity</span>
             <span>
               {sortType === SEVERITY_ASCENDING ? (
-                <ArrowUpIcon />
+                <ArrowUpIcon size={matchXs ? 'small' : 'medium'} />
               ) : (
-                <ArrowIcon />
+                <ArrowIcon size={matchXs ? 'small' : 'medium'} />
               )}
             </span>
           </Button>
@@ -212,49 +215,45 @@ const IssuesList = ({
 
 export default IssuesList;
 
-const columnPublic = theme => ({
-  color: '#434242',
-  fontSize: '20px',
-  fontWeight: 500,
-  lineHeight: '25px',
-  padding: '0 25px 0 0',
-  [theme.breakpoints.down('lg')]: {
-    fontSize: '18px',
-  },
-  [theme.breakpoints.down('sm')]: {
-    fontSize: '16px',
-  },
+const wrapper = theme => ({
+  display: 'flex',
+  width: '100%',
+  justifyContent: 'space-between',
+  px: '30px',
   [theme.breakpoints.down('xs')]: {
-    padding: '0 15px',
+    px: '20px',
   },
 });
 
-const issueTitleSx = theme => ({
-  ml: '30px',
-  [theme.breakpoints.down('xs')]: {
-    ml: '15px',
+const issueTitleSx = {
+  display: 'flex',
+  '& button': {
+    justifyContent: 'flex-start',
   },
-});
+};
 
 const columnsTitleBlock = theme => ({
   display: 'flex',
-  width: '30%',
-  [theme.breakpoints.down('xs')]: {
-    pr: '15px',
-    justifyContent: 'flex-end',
+  justifyContent: 'flex-end',
+  width: '25%',
+  [theme.breakpoints.down(915)]: {
+    width: '30%',
   },
 });
 
 const columnTitle = {
-  width: '50%',
   whiteSpace: 'nowrap',
   textTransform: 'none',
+  letterSpacing: '-0.1mm',
   display: 'flex',
   justifyContent: 'center',
-  columnGap: '10px',
+  columnGap: '8px',
 };
 
-const columnTitleHidden = theme => ({
+const columnStatus = theme => ({
+  display: 'flex',
+  justifyContent: 'center',
+  flexGrow: 1,
   [theme.breakpoints.down('xs')]: {
     display: 'none',
   },
@@ -265,9 +264,11 @@ const columnText = theme => ({
   fontSize: '16px',
   fontWeight: 500,
   lineHeight: '25px',
-  padding: '0 25px',
+  padding: '0',
   [theme.breakpoints.down('xs')]: {
-    padding: '0 15px',
+    fontSize: '14px',
+  },
+  [theme.breakpoints.down('xxs')]: {
     fontSize: '12px',
   },
 });
