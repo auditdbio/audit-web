@@ -5,8 +5,8 @@ import { useSelector } from 'react-redux';
 import Headings from '../router/Headings.jsx';
 
 const Audits = () => {
-  const auditRequests = useSelector(s => s.audits.auditRequests);
-  const audits = useSelector(s => s.audits.audits);
+  const { auditRequests } = useSelector(s => s.audits);
+  const { audits } = useSelector(s => s.audits);
 
   return (
     <Box sx={wrapper}>

@@ -18,7 +18,7 @@ const AuditInfoPage = ({ isPublic, publicView, setPublicView }) => {
   const dispatch = useDispatch();
   const notFound = useSelector(s => s.notFound.error);
   const auditConfirm = useSelector(s => s.audits?.audit);
-  const { issues, issuesAuditId } = useSelector(s => s.issues);
+  const { issuesAuditId } = useSelector(s => s.issues);
   const queryParams = new URLSearchParams(location.search);
   const code = queryParams.get('code');
 

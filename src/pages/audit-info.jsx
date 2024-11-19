@@ -265,7 +265,7 @@ const AuditInfo = ({
               </Typography>
             )}
             <Avatar
-              src={audit?.avatar ? `${ASSET_URL}/${audit?.avatar}` : ''}
+              src={audit?.avatar ? `${ASSET_URL}/id/${audit?.avatar}` : ''}
               alt="auditor photo"
             />
             <Link
@@ -370,7 +370,7 @@ const AuditInfo = ({
               <Avatar
                 src={
                   audit?.customer_avatar
-                    ? `${ASSET_URL}/${audit?.customer_avatar}`
+                    ? `${ASSET_URL}/id/${audit?.customer_avatar}`
                     : ''
                 }
                 alt="auditor photo"
@@ -517,7 +517,7 @@ const AuditInfo = ({
               <Button
                 variant={'contained'}
                 color={'secondary'}
-                onClick={() => dispatch(Report(audit))}
+                onClick={() => dispatch(downloadReport(audit))}
                 sx={[buttonSx]}
                 {...addTestsLabel('report-button')}
               >

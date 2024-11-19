@@ -39,6 +39,7 @@ import TagsList from '../components/tagsList.jsx';
 import { isAuth, reportBuilder } from '../lib/helper.js';
 import { changeRolePublicAuditor } from '../redux/actions/userAction.js';
 import Headings from '../router/Headings.jsx';
+import { AUDIT_PARENT_ENTITY } from '../services/file_constants.js';
 
 const PublicConstructor = ({ saved, isPublic }) => {
   const matchXs = useMediaQuery(theme.breakpoints.down('xs'));
@@ -110,7 +111,6 @@ const PublicConstructor = ({ saved, isPublic }) => {
   const handleResetForm = setFieldValue => {
     setFieldValue('project_name', '');
     setFieldValue('report', '');
-    setFieldValue('report_name', '');
     setFieldValue('description', '');
     setFieldValue('conclusion', '');
     setFieldValue('scope', []);
@@ -205,7 +205,7 @@ const PublicConstructor = ({ saved, isPublic }) => {
         sx={{ padding: '40px' }}
         containerSx={{
           maxWidth: 'unset!important',
-          padding: '0 35px!important',
+          // padding: '0 35px!important',
         }}
       >
         <Headings title="Audit Builder" />
@@ -296,6 +296,14 @@ const PublicConstructor = ({ saved, isPublic }) => {
                               mdProps={{
                                 view: { menu: true, md: true, html: !matchXs },
                               }}
+                              parentEntity={
+                                audit?.id
+                                  ? {
+                                      id: audit.id,
+                                      source: AUDIT_PARENT_ENTITY,
+                                    }
+                                  : {}
+                              }
                             />
                           </Box>
                           <Box
@@ -349,6 +357,14 @@ const PublicConstructor = ({ saved, isPublic }) => {
                                 style: { height: '250px' },
                                 view: { menu: true, md: true, html: !matchXs },
                               }}
+                              parentEntity={
+                                audit?.id
+                                  ? {
+                                      id: audit.id,
+                                      source: AUDIT_PARENT_ENTITY,
+                                    }
+                                  : {}
+                              }
                             />
                           </Box>
                         </Box>

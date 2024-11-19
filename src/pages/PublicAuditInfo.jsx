@@ -5,6 +5,14 @@ import { getAudit, getAuditFeedback } from '../redux/actions/auditAction.js';
 import { getPublicAudit } from '../redux/actions/auditAction.js';
 import { useParams } from 'react-router-dom';
 import Layout from '../styles/Layout.jsx';
+import {
+  addReportAudit,
+  clearMessage,
+  downloadReport,
+  getAudit,
+  getPublicReport,
+  startAudit,
+} from '../redux/actions/auditAction.js';
 import Loader from '../components/Loader.jsx';
 import NotFound from './Not-Found.jsx';
 import { getIssues } from '../redux/actions/issueAction.js';

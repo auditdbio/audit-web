@@ -180,7 +180,7 @@ const Control = ({
   };
 
   const handleDownloadReport = () => {
-    if (audit?.report_name) {
+    if (audit?.report) {
       dispatch(downloadReport(audit));
     } else {
       dispatch(downloadReport(audit, { generate: true }));
@@ -392,7 +392,7 @@ const Control = ({
                             (isPublic || saved) && xss ? publicBtnSx : {},
                           ]}
                           // disabled={checkDraftIssues()}
-                          // onClick={handleDiscloseAll}
+                          onClick={handleDiscloseAll}
                         >
                           <DiscloseIcon />
                         </Button>
@@ -405,6 +405,7 @@ const Control = ({
                           sx={[
                             {
                               backgroundColor: 'rgba(0, 0, 0, 0.12)',
+                              cursor: 'default',
                               '&:hover': {
                                 backgroundColor: 'rgba(0, 0, 0, 0.12)',
                               },
@@ -458,8 +459,6 @@ const Control = ({
                 <Button
                   variant="contained"
                   color="primary"
-                  // disabled={!audit?.report}
-                  // onClick={() => dispatch(downloadReport(audit))}
                   sx={[
                     buttonSx,
                     {
@@ -543,7 +542,7 @@ const Control = ({
     </>
   );
 };
-//
+
 export default Control;
 
 const generateButtonSx = theme => ({
@@ -579,12 +578,11 @@ const customerViewSx = theme => ({
       display: 'flex',
     },
   },
-  [theme.breakpoints.down(700)]: {
-    flexDirection: 'column',
-    gap: '15px',
+  [theme.breakpoints.down(600)]: {
+    flexDirection: 'column-reverse',
     '& .customer-button-wrapper': {
+      justifyContent: 'center',
       gap: '15px',
-      flexDirection: 'column',
     },
     '& .MuiButtonBase-root': {
       width: '100%',

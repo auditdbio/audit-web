@@ -33,6 +33,7 @@ import {
   READ_AUDIT_REQUEST_HISTORY,
   GET_AUDITS_OF_AUDITOR,
   GET_PUBLIC_AUDIT,
+  ADD_AUDIT_ISSUE,
   VERIFY_AUDIT_REPORT,
 } from '../actions/types.js';
 
@@ -102,6 +103,17 @@ export const auditReducer = (state = initialState, action) => {
         ),
         audit: action.payload,
         successMessage: 'Saved successfully',
+      };
+    case ADD_AUDIT_ISSUE:
+      return {
+        ...state,
+        audit:
+          action.payload.auditId && state.audit?.id === action.payload.auditId
+            ? {
+                ...state.audit,
+                issues: [...state.audit.issues, action.payload.issue],
+              }
+            : state.audit,
       };
     case EDIT_AUDIT_REQUEST_CUSTOMER:
       return {

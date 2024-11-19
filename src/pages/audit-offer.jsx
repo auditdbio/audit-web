@@ -53,7 +53,11 @@ import IssuesList from '../components/issuesPage/IssuesList.jsx';
 import CustomSnackbar from '../components/custom/CustomSnackbar.jsx';
 import { getIssues } from '../redux/actions/issueAction.js';
 import NotFound from './Not-Found.jsx';
-import { FIXED, NOT_FIXED } from '../components/issuesPage/constants.js';
+import {
+  FIXED,
+  NOT_FIXED,
+  WILL_NOT_FIX,
+} from '../components/issuesPage/constants.js';
 import { setCurrentChat } from '../redux/actions/chatActions.js';
 import ChatIcon from '../components/icons/ChatIcon.jsx';
 import Headings from '../router/Headings.jsx';
@@ -76,6 +80,8 @@ import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import MarkEmailReadIcon from '@mui/icons-material/MarkEmailRead';
 import AddIcon from '@mui/icons-material/Add';
+import { AUDIT_PARENT_ENTITY } from '../services/file_constants.js';
+import DraftReportIcon from '../components/icons/DraftReportIcon.jsx';
 
 const AuditOffer = ({ publicView, setPublicView }) => {
   const { id: auditId } = useParams();
@@ -83,7 +89,7 @@ const AuditOffer = ({ publicView, setPublicView }) => {
   const dispatch = useDispatch();
 
   const matchXs = useMediaQuery(theme.breakpoints.down('xs'));
-  const matchMd = useMediaQuery(theme.breakpoints.down('md'));
+  const matchXxs = useMediaQuery(theme.breakpoints.down(540));
   const descriptionRef = useRef();
   const {
     audit,
@@ -225,7 +231,7 @@ const AuditOffer = ({ publicView, setPublicView }) => {
     setAllIssuesClosed(allClosed);
   }, [issues]);
 
-  const handleGenerateReport = () => {
+  const handleGenerateReport = (isDraft = false) => {
     // if (isPublic) {
     //   if (report?.auditor_name && report?.project_name && report?.description) {
     //     if (isAuth()) {
@@ -250,7 +256,7 @@ const AuditOffer = ({ publicView, setPublicView }) => {
     //
     //   setMenuAnchorEl(null);
     // } else {
-    dispatch(downloadReport(audit, { generate: true }));
+    dispatch(downloadReport(audit, { generate: true, isDraft }));
     // setMenuAnchorEl(null);
     // }
   };
@@ -675,41 +681,49 @@ const AuditOffer = ({ publicView, setPublicView }) => {
                         setConclusionState(values?.conclusion);
                       }, [values?.conclusion]);
 
-                      return (
-                        <Form onSubmit={handleSubmit}>
-                          <Collapse in={editConclusion || audit?.conclusion}>
-                            <Box
-                              sx={{
-                                position: 'relative',
-                                '& .rc-md-editor': {
-                                  border: 'unset',
-                                },
-                                '& .editor-container': {
-                                  borderBottom: 'unset',
-                                },
-                              }}
-                            >
-                              {/*{audit?.conclusion && (*/}
-                              {/*  <Box sx={conclusionTitle}>Conclusion</Box>*/}
-                              {/*)}*/}
-                              <MarkdownEditor
-                                name="conclusion"
-                                setMdRef={setMdRef}
-                                fastSave={true}
-                                borderColor={'#e0e0e0'}
-                                mdProps={{
-                                  style: {
-                                    backgroundColor: '#fcfaf6',
-                                    height: editConclusion ? '400px' : 'auto',
-                                    maxHeight: '400px',
-                                  },
-                                  view: {
-                                    menu: !audit?.conclusion,
-                                    md: !audit?.conclusion,
-                                    html: true,
-                                  },
-                                }}
-                              />
+                          return (
+                            <Form onSubmit={handleSubmit}>
+                              <Collapse
+                                in={editConclusion || audit?.conclusion}
+                              >
+                                <Box
+                                  sx={{
+                                    position: 'relative',
+                                    '& .rc-md-editor': {
+                                      border: 'unset',
+                                    },
+                                    '& .editor-container': {
+                                      borderBottom: 'unset',
+                                    },
+                                  }}
+                                >
+                                  {/*{audit?.conclusion && (*/}
+                                  {/*  <Box sx={conclusionTitle}>Conclusion</Box>*/}
+                                  {/*)}*/}
+                                  <MarkdownEditor
+                                    name="conclusion"
+                                    setMdRef={setMdRef}
+                                    fastSave={true}
+                                    borderColor={'#e0e0e0'}
+                                    mdProps={{
+                                      style: {
+                                        backgroundColor: '#fcfaf6',
+                                        height: editConclusion
+                                          ? '400px'
+                                          : 'auto',
+                                        maxHeight: '400px',
+                                      },
+                                      view: {
+                                        menu: !audit?.conclusion,
+                                        md: !audit?.conclusion,
+                                        html: true,
+                                      },
+                                    }}
+                                    parentEntity={{
+                                      id: audit?.id,
+                                      source: AUDIT_PARENT_ENTITY,
+                                    }}
+                                  />
 
                               {(audit?.conclusion ||
                                 (!audit?.conclusion &&
@@ -830,16 +844,18 @@ const AuditOffer = ({ publicView, setPublicView }) => {
                 {/*  </Button>*/}
                 {/*)}*/}
               </Box>
-              {/*<Box sx={auditActionSx}>*/}
               {audit?.status?.toLowerCase() ===
               WAITING_FOR_AUDITS.toLowerCase() ? (
                 <Box>
                   <Button
-                    sx={[buttonSx, { marginX: 0, width: '120px!important' }]}
+                    sx={[
+                      buttonSx,
+                      { marginX: 0, width: '120px!important' },
+                    ]}
                     variant="contained"
                     color="secondary"
                     type="button"
-                    onClick={() => dispatch(startAudit(audit, true))}
+                    onClick={() => dispatch(startAudit(audit, false))}
                   >
                     Start audit
                   </Button>
@@ -868,6 +884,7 @@ const AuditOffer = ({ publicView, setPublicView }) => {
                           issue =>
                             issue.status === FIXED ||
                             issue.status === NOT_FIXED ||
+                            issue.status === WILL_NOT_FIX ||
                             !issue.include,
                         )
                       }
@@ -878,92 +895,134 @@ const AuditOffer = ({ publicView, setPublicView }) => {
                   </Box>
                 </Box>
               )}
-              <Box sx={bottomActionInnerWrapper}>
-                {audit?.status?.toLowerCase() ===
-                WAITING_FOR_AUDITS.toLowerCase() ? (
-                  <Tooltip arrow placement="top" title={'Generate report'}>
-                    <Button
-                      variant="contained"
-                      color="secondary"
-                      sx={[
-                        buttonSx,
-                        {
-                          backgroundColor: 'rgba(0, 0, 0, 0.12)',
-                          '&:hover': {
+              {audit?.status?.toLowerCase() !== RESOLVED.toLowerCase() ? (
+                <Box sx={bottomActionInnerWrapper}>
+                  {audit?.status?.toLowerCase() ===
+                  WAITING_FOR_AUDITS.toLowerCase() ? (
+                    <Tooltip
+                      arrow
+                      placement="top"
+                      title={'Generate report'}
+                    >
+                      <Button
+                        variant="contained"
+                        color="secondary"
+                        sx={[
+                          buttonSx,
+                          {
                             backgroundColor: 'rgba(0, 0, 0, 0.12)',
+                            '&:hover': {
+                              backgroundColor: 'rgba(0, 0, 0, 0.12)',
+                            },
                           },
-                        },
-                        {
-                          marginRight: '0!important',
-                          marginLeft: '0!important',
-                        },
-                        // publicBtnSx
-                      ]}
-                      // disabled={
-                      //   audit?.status?.toLowerCase() ===
-                      //   WAITING_FOR_AUDITS.toLowerCase()
-                      // }
-                      // onClick={handleGenerateReport}
-                    >
-                      {/*Generate report*/}
-                      <PictureAsPdfIcon />
-                    </Button>
+                          {
+                            marginRight: '0!important',
+                            marginLeft: '0!important',
+                          },
+                          // publicBtnSx
+                        ]}
+                        // disabled={
+                        //   audit?.status?.toLowerCase() ===
+                        //   WAITING_FOR_AUDITS.toLowerCase()
+                        // }
+                        // onClick={handleGenerateReport}
+                      >
+                        {/*Generate report*/}
+                        <PictureAsPdfIcon />
+                      </Button>
+                    </Tooltip>
+                  ) : (
+                    <>
+                      <Tooltip
+                        arrow
+                        placement="top"
+                        title="Generate draft report (Available only to you)"
+                      >
+                        <Button
+                          variant="contained"
+                          color="secondary"
+                          sx={[
+                            buttonSx,
+                            {
+                              marginRight: '0!important',
+                              marginLeft: '0!important',
+                            },
+                          ]}
+                          disabled={
+                            audit?.status?.toLowerCase() ===
+                            WAITING_FOR_AUDITS.toLowerCase()
+                          }
+                          onClick={() => handleGenerateReport(true)}
+                        >
+                          {/*Generate draft*/}
+                          <DraftReportIcon />
+                        </Button>
+                      </Tooltip>
+                      <Tooltip
+                        arrow
+                        placement="top"
+                        title="Generate report (Will be available to the customer)"
+                      >
+                        <Button
+                          variant="contained"
+                          color="secondary"
+                          sx={[
+                            buttonSx,
+                            {
+                              marginRight: '0!important',
+                              marginLeft: '0!important',
+                            },
+                          ]}
+                          disabled={
+                            audit?.status?.toLowerCase() ===
+                            WAITING_FOR_AUDITS.toLowerCase()
+                          }
+                          onClick={() => handleGenerateReport()}
+                        >
+                          {/*Generate report*/}
+                          <PictureAsPdfIcon />
+                        </Button>
+                      </Tooltip>
+                    </>
+                  )}
+                  <Tooltip
+                    arrow
+                    placement="top"
+                    title={
+                      allIssuesClosed
+                        ? 'Resolve audit'
+                        : "To resolve an audit, it is necessary that the status of all issues be 'Fixed' or 'Will not fix'. Or do not include some issues in the audit."
+                    }
+                  >
+                        <span>
+                          <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={() => setResolveConfirmation(true)}
+                            disabled={!allIssuesClosed || !issues?.length}
+                            sx={[
+                              buttonSx,
+                              {
+                                marginRight: '0!important',
+                                // ml: '15px',
+                              },
+                            ]}
+                            {...addTestsLabel('resolve-button')}
+                          >
+                            <CheckCircleIcon />
+                            {/*Resolve audit*/}
+                          </Button>
+                        </span>
                   </Tooltip>
-                ) : (
-                  <Tooltip arrow placement="top" title={'Generate report'}>
-                    <Button
-                      variant="contained"
-                      color="secondary"
-                      sx={[
-                        buttonSx,
-                        {
-                          marginRight: '0!important',
-                          marginLeft: '0!important',
-                        },
-                        // publicBtnSx
-                      ]}
-                      disabled={
-                        audit?.status?.toLowerCase() ===
-                        WAITING_FOR_AUDITS.toLowerCase()
-                      }
-                      onClick={handleGenerateReport}
-                    >
-                      {/*Generate report*/}
-                      <PictureAsPdfIcon />
-                    </Button>
-                  </Tooltip>
-                )}
-                <Tooltip
-                  arrow
-                  placement="top"
-                  title={
-                    allIssuesClosed
-                      ? 'Resolve audit'
-                      : "To resolve an audit, it is necessary that the status of all issues be 'Fixed' or 'Not fixed'. Or do not include some issues in the audit."
-                  }
-                >
-                  <span>
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      onClick={() => setResolveConfirmation(true)}
-                      disabled={!allIssuesClosed || !issues?.length}
-                      sx={[
-                        buttonSx,
-                        {
-                          marginRight: '0!important',
-                          // ml: '15px',
-                        },
-                      ]}
-                      {...addTestsLabel('resolve-button')}
-                    >
-                      <CheckCircleIcon />
-                      {/*Resolve audit*/}
-                    </Button>
-                  </span>
-                </Tooltip>
-              </Box>
-              {/*</Box>*/}
+                </Box>
+              ) : (
+                <Box
+                  sx={[
+                    historyWrapperSx,
+                    matchXxs ? { display: 'none' } : {},
+                  ]}
+                />
+              )}
             </Box>
             <Formik
               initialValues={{
@@ -984,7 +1043,9 @@ const AuditOffer = ({ publicView, setPublicView }) => {
                       audit?.status?.toLowerCase() !==
                         WAITING_FOR_AUDITS.toLowerCase() && (
                         <Box sx={fileWrapper}>
-                          <Typography sx={subTitleSx}>Upload audit</Typography>
+                          <Typography sx={subTitleSx}>
+                            Upload audit
+                          </Typography>
                           <Box sx={{ display: 'flex' }}>
                             <AuditUpload
                               disabled={audit?.status === SUBMITED}
@@ -999,57 +1060,57 @@ const AuditOffer = ({ publicView, setPublicView }) => {
                         </Box>
                       )}
 
-                    {!auditDBWorkflow && (
-                      <Box
-                        sx={{
-                          display: 'flex',
-                          flexDirection: 'column',
-                          alignItems: 'center',
-                          mb: '30px',
-                        }}
-                      >
-                        <Button
-                          variant="contained"
-                          type="submit"
-                          color="secondary"
-                          sx={[buttonSx, { mb: '15px' }]}
-                          {...addTestsLabel('send-button')}
-                        >
-                          Send to customer
-                        </Button>
-                      </Box>
-                    )}
-                  </Form>
-                );
-              }}
-            </Formik>
-          </Box>
-        </Box>
-      </Box>
-      {auditDBWorkflow &&
-        audit?.status?.toLowerCase() !== WAITING_FOR_AUDITS.toLowerCase() && (
-          <Box sx={{ width: '100%', mb: '30px' }}>
-            {issues?.length ? (
-              //
-              <Box
-                sx={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  gap: '20px',
-                  [theme.breakpoints.down('xs')]: {
-                    gap: '10px',
-                  },
-                }}
-              >
-                <IssuesList auditId={auditId} />
+                        {!auditDBWorkflow && (
+                          <Box
+                            sx={{
+                              display: 'flex',
+                              flexDirection: 'column',
+                              alignItems: 'center',
+                              mb: '30px',
+                            }}
+                          >
+                            <Button
+                              variant="contained"
+                              type="submit"
+                              color="secondary"
+                              sx={[buttonSx, { mb: '15px' }]}
+                              {...addTestsLabel('send-button')}
+                            >
+                              Send to customer
+                            </Button>
+                          </Box>
+                        )}
+                      </Form>
+                    );
+                  }}
+                </Formik>
               </Box>
-            ) : audit?.status?.toLowerCase() !== RESOLVED.toLowerCase() ? (
-              <IssueDetailsForm />
-            ) : null}
+            </Box>
           </Box>
-        )}
-      {/*</CustomCard>*/}
+          {auditDBWorkflow &&
+            audit?.status?.toLowerCase() !==
+              WAITING_FOR_AUDITS.toLowerCase() && (
+              <Box sx={{ width: '100%', mb: '30px' }}>
+                {issues?.length ? (
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      gap: '20px',
+                      [theme.breakpoints.down('xs')]: {
+                        gap: '10px',
+                      },
+                    }}
+                  >
+                    <IssuesList auditId={auditId} />
+                  </Box>
+                ) : audit?.status?.toLowerCase() !== RESOLVED.toLowerCase() ? (
+                  <IssueDetailsForm />
+                ) : null}
+              </Box>
+            )}
+        {/*</CustomCard>*/}
 
       <AuditFeedbackModal
         feedback={audit?.feedback}
@@ -1065,13 +1126,6 @@ export default AuditOffer;
 
 const SubmitValidation = Yup.object().shape({
   report: Yup.string().required('File is required'),
-});
-
-const layoutSx = theme => ({
-  padding: '10px!important',
-  [theme.breakpoints.down(780)]: {
-    padding: '10px 0!important',
-  },
 });
 
 const tabsSx = theme => ({
@@ -1162,7 +1216,8 @@ const headInfoSx = theme => ({
 });
 
 const historyWrapperSx = theme => ({
-  width: '115px!important',
+  width: '180px!important',
+  // width: '115px!important',
   '& .btn-history,': {
     width: '50px',
     minWidth: '50px',
@@ -1170,7 +1225,7 @@ const historyWrapperSx = theme => ({
   // [theme.breakpoints.down(1400)]: {
   //   width: '335px',
   // },
-  [theme.breakpoints.down(600)]: {
+  [theme.breakpoints.down(696)]: {
     width: 'unset!important',
   },
   // [theme.breakpoints.down('sm')]: {
@@ -1233,7 +1288,7 @@ const bottomActionSx = theme => ({
   [theme.breakpoints.down(600)]: {
     gap: '15px',
   },
-  [theme.breakpoints.down(505)]: {
+  [theme.breakpoints.down(540)]: {
     flexWrap: 'wrap',
     justifyContent: 'center',
     gap: '15px',
@@ -1257,11 +1312,11 @@ const uploadSx = theme => ({
     display: 'flex',
     justifyContent: 'center',
   },
-  [theme.breakpoints.down(505)]: {
+  [theme.breakpoints.down(540)]: {
     order: 1,
   },
 });
-//
+
 const auditActionWrapperSx = {
   [theme.breakpoints.down(630)]: {
     flexDirection: 'column',
@@ -1393,7 +1448,7 @@ const infoWrapper = theme => ({
     },
   },
 });
-//
+
 const readAllButton = theme => ({
   p: '3px',
   paddingX: '8px',
@@ -1535,7 +1590,7 @@ const workflowButton = useWorkflow => ({
   '& span': {
     display: 'none',
   },
-  [theme.breakpoints.down('xs')]: {
+  [theme.breakpoints.down(800)]: {
     width: '120px',
     padding: '10px 0',
     fontSize: '14px',

@@ -203,7 +203,7 @@ const backButtonSx = theme => ({
 const wrapper = theme => ({
   display: 'flex',
   flexDirection: 'column',
-  maxWidth: '1300px',
+  // maxWidth: '1300px',
   minHeight: '560px!important',
   width: '100%',
   '& ul': {
