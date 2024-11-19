@@ -240,7 +240,7 @@ const PublicConstructor = ({ saved, isPublic }) => {
             onClick={() =>
               !saved ? navigate('/') : navigate('/profile/audits')
             }
-            sx={{ position: 'absolute', top: '10px', left: '10px' }}
+            sx={backBtnSx}
           >
             <ArrowBackIcon color={'secondary'} />
           </Button>
@@ -332,7 +332,8 @@ const PublicConstructor = ({ saved, isPublic }) => {
                               tabSx,
                               {
                                 borderRadius: '8px 0 0 0',
-                                border: '1px solid',
+                                marginRight: '15px',
+                                // border: '1px solid',
                               },
                               tab === 0 ? { color: '#52176D' } : selectedTabSx,
                             ]}
@@ -347,9 +348,10 @@ const PublicConstructor = ({ saved, isPublic }) => {
                                   paddingRight: '0',
                                   width: '150px',
                                   borderRadius: '0 0 0 0',
-                                  border: '1px solid',
+                                  // border: '1px solid',
                                   borderRight: 'unset',
                                 },
+                                conclusionSx,
                                 tab === 1
                                   ? { color: '#52176D' }
                                   : selectedTabSx,
@@ -361,8 +363,12 @@ const PublicConstructor = ({ saved, isPublic }) => {
                             <Button
                               sx={[
                                 tabSx,
-                                tab === 1
-                                  ? { color: '#52176D' }
+                                {
+                                  // borderRadius: '8px 0 0 0',
+                                  // border: '1px solid',
+                                },
+                                tab === 0
+                                  ? { color: 'rgba(0, 0, 0, 0.6)' }
                                   : selectedTabSx,
                               ]}
                               value={1}
@@ -380,12 +386,9 @@ const PublicConstructor = ({ saved, isPublic }) => {
                               sx={[
                                 tabSx,
                                 {
-                                  width: '40px',
-                                  minWidth: '40px',
+                                  width: '32px',
+                                  minWidth: '32px',
                                   paddingLeft: 0,
-                                  borderRadius: '0 0 0 0',
-                                  border: '1px solid',
-                                  borderLeft: 'unset',
                                   color: 'rgba(0, 0, 0, 0.6)',
                                 },
                                 tab === 1
@@ -706,20 +709,31 @@ const actionWrapper = theme => ({
   justifyContent: 'center',
 });
 
+const backBtnSx = theme => ({
+  position: 'absolute',
+  top: '10px',
+  left: '15px',
+  minWidth: '40px',
+  [theme.breakpoints.down('xs')]: {
+    left: '5px',
+  },
+});
+
 const selectedTabSx = theme => ({
-  background: 'linear-gradient(180deg, #FFFFFF 0%, #E5E5E5 100%)',
+  // background: 'linear-gradient(180deg, #FFFFFF 0%, #E5E5E5 100%)',
   borderWidth: '0.991146px 0.991146px 0px 0.991146px',
   borderColor: '#B2B3B3',
 });
 
 const selectedButtonSx = theme => ({
-  background: 'linear-gradient(180deg, #FFFFFF 0%, #E5E5E5 100%)',
+  // background: 'linear-gradient(180deg, #FFFFFF 0%, #E5E5E5 100%)',
   borderWidth: '0.991146px 0.991146px 0px 0.991146px',
   borderColor: '#B2B3B3',
 });
 
 const layoutSx = theme => ({
   padding: '10px!important',
+  position: 'relative',
   [theme.breakpoints.down(780)]: {
     padding: '10px 0!important',
   },
@@ -727,6 +741,7 @@ const layoutSx = theme => ({
 
 const tabSx = theme => ({
   // border: '1px solid rgba(255, 153, 0, 0.5)',
+  // background: 'linear-gradient(180deg, #FFFFFF 0%, #E5E5E5 100%)',
   textTransform: 'unset',
   width: '150px',
   minHeight: '32px',
@@ -741,11 +756,21 @@ const tabSx = theme => ({
   },
 });
 
+const conclusionSx = theme => ({
+  width: '150px',
+  [theme.breakpoints.down('md')]: {
+    width: '120px',
+  },
+});
+
 const descriptionWrapper = (theme, showFull) => ({
   maxHeight: showFull ? 'none' : '150px',
   '& .rc-md-editor': {
     height: '100%!important',
     minHeight: '340px',
+  },
+  '& .md-editor-wrapper': {
+    margin: '-0.7px',
   },
   overflow: 'hidden',
   transition: 'max-height 0.3s ease',
