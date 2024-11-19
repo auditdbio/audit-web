@@ -184,17 +184,9 @@ const ProjectCard = ({ type, project, currentRole, isPublic }) => {
               flexDirection: 'column',
             }}
           >
-            <Avatar
-              src={
-                project?.customer_avatar
-                  ? `${ASSET_URL}/id/${project?.customer_avatar}`
-                  : ''
-              }
-            />
-            <Typography>{project?.customer_first_name}</Typography>
-          {/*</Button>*/}
-          {/*// </Box>*/}
-          {/*// </Box>*/}
+            {/*</Button>*/}
+            {/*// </Box>*/}
+            {/*// </Box>*/}
             <Typography sx={{ mb: '12px', fontSize: '14px!important' }}>
               {issuesCounter(project?.issues)}
             </Typography>

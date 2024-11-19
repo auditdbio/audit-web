@@ -9,7 +9,6 @@ import {
   addReportAudit,
   clearMessage,
   downloadReport,
-  getAudit,
   getPublicReport,
   startAudit,
 } from '../redux/actions/auditAction.js';

@@ -139,7 +139,6 @@ const AuditInfo = ({
         text={error || successMessage}
         onClose={() => dispatch(clearMessage())}
       />
-
       {/*<Button*/}
       {/*  sx={backButtonSx}*/}
       {/*  onClick={() => {*/}
@@ -472,14 +471,12 @@ const AuditInfo = ({
         />
         {!isPublic && <DescriptionHistory audit={audit} request={request} />}
       </Box>
-
       {audit?.conclusion && (
         <Box sx={{ border: '2px solid #E5E5E5', width: '100%' }}>
           <Box sx={conclusionTitle}>Conclusion</Box>
           <Markdown value={audit.conclusion} />
         </Box>
       )}
-
       <Box>
         <Box
           sx={{
@@ -600,21 +597,18 @@ const AuditInfo = ({
           )}
         {/*)}*/}
       </Box>
-      {isPublic && (
-        <IssuesList
-          isPublic={isPublic}
-          hideControl={true}
-          auditId={audit.id}
-          code={code}
-        />
-      )}
-
+      {/*{isPublic && (*/}
+      {/*  <IssuesList*/}
+      {/*    isPublic={isPublic}*/}
+      {/*    hideControl={true}*/}
+      {/*    auditId={audit.id}*/}
+      {/*    code={code}*/}
+      {/*  />*/}
       <ConfirmModal
         isOpen={isConfirmModalOpen}
         handleAgree={handleDecline}
         handleDisagree={() => setIsConfirmModalOpen(false)}
       />
-
       <AuditFeedbackModal
         isOpen={isFeedbackModalOpen}
         handleClose={() => setIsFeedbackModalOpen(false)}

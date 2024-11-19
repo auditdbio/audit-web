@@ -54,7 +54,7 @@ const Audit = () => {
         user.current_role?.toLowerCase() === CUSTOMER.toLowerCase() &&
         audit?.customer_id === user.id &&
         !publicView &&
-        audit.status.toLowerCase() !== RESOLVED.toLowerCase()
+        !audit.isPublic
       ) {
         return (
           <AuditInfoPage
@@ -89,8 +89,8 @@ const Audit = () => {
 
   return (
     <Layout
-      sx={layoutSx}
-      containerSx={{ maxWidth: 'unset!important', padding: '0 35px!important' }}
+    // sx={layoutSx}
+    // containerSx={{ maxWidth: 'unset!important', padding: '0 35px!important' }}
     >
       <CustomCard sx={wrapper}>{renderContent()}</CustomCard>
     </Layout>

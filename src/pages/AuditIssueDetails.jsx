@@ -75,11 +75,11 @@ const AuditIssueDetails = ({ isPublic, saved, hideControl }) => {
 
   return (
     <Layout
-      sx={layoutSx}
-      containerSx={{
-        maxWidth: 'unset!important',
-        padding: '0 35px!important',
-      }}
+    // sx={layoutSx}
+    // containerSx={{
+    //   maxWidth: 'unset!important',
+    //   padding: '0 35px!important',
+    // }}
     >
       <Headings
         title={`${issue?.name} | ${audit?.project_name || 'Issues'}`}

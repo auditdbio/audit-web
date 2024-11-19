@@ -84,7 +84,7 @@ const AuditIssues = ({ isPublic }) => {
 export default AuditIssues;
 
 const wrapper = theme => ({
-  padding: '48px 45px 80px',
+  padding: '50px 30px 80px',
   position: 'relative',
   display: 'flex',
   flexDirection: 'column',
@@ -104,6 +104,6 @@ const wrapper = theme => ({
 
 const backButtonSx = {
   position: 'absolute',
-  left: '0',
+  left: '-10px',
   top: '5px',
 };
