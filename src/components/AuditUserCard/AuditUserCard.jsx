@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 
 const AuditUserCard = ({ avatar, role, name, email, telegram, id }) => {
   return (
-    <Box sx={{ width: '100%' }}>
+    <Box sx={wrapper}>
       <Typography sx={roleTitleSx} align={'center'}>
         {role}
       </Typography>
@@ -68,11 +68,22 @@ const AuditUserCard = ({ avatar, role, name, email, telegram, id }) => {
 
 export default AuditUserCard;
 
+const wrapper = theme => ({
+  maxWidth: '700px',
+  width: '100%',
+  [theme.breakpoints.down('sm')]: {
+    maxWidth: '420px',
+  },
+});
+
 const useContentSx = theme => ({
   display: 'flex',
   alignItems: 'flex-start',
   gap: '20px',
   paddingTop: '10px',
+  [theme.breakpoints.down('sm')]: {
+    gap: '10px',
+  },
 });
 
 const userNameWrapper = theme => ({
@@ -88,8 +99,8 @@ const userWrapper = theme => ({
   flexDirection: 'column',
   gap: '15px',
   '& .MuiAvatar-root': {
-    width: '120px',
-    height: '120px',
+    width: '60px',
+    height: '60px',
   },
   '& p': {
     color: '#434242',
@@ -99,17 +110,9 @@ const userWrapper = theme => ({
       margin: '0 0 5px',
     },
   },
-  [theme.breakpoints.down('md')]: {
-    '& .MuiAvatar-root': {
-      width: '90px',
-      height: '90px',
-    },
-  },
   [theme.breakpoints.down('sm')]: {
     display: 'flex',
-    gap: '20px',
     alignItems: 'center',
-    marginBottom: '20px',
     '& p': {
       color: '#434242',
       fontSize: '15px',
@@ -117,6 +120,10 @@ const userWrapper = theme => ({
       '&:nth-of-type(1)': {
         margin: '0 0 18px',
       },
+    },
+    '& .MuiAvatar-root': {
+      width: '40px',
+      height: '40px',
     },
   },
 });
@@ -132,7 +139,7 @@ const userInfoWrapper = theme => ({
   gap: '20px',
   // marginTop: '20px',
   [theme.breakpoints.down('sm')]: {
-    gap: '16px',
+    gap: '10px',
   },
 });
 
@@ -153,7 +160,6 @@ const infoWrapper = theme => ({
   fontSize: '15px',
   [theme.breakpoints.down('md')]: {
     '& span': {
-      width: '90px',
       marginRight: '20px',
     },
   },
@@ -164,10 +170,9 @@ const infoWrapper = theme => ({
   },
   [theme.breakpoints.down('xs')]: {
     fontSize: '12px',
-  },
-  [theme.breakpoints.down(600)]: {
     '& span': {
       width: '50px',
+      marginRight: '20px',
     },
   },
 });

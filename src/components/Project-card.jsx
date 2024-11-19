@@ -20,7 +20,7 @@ import {
   SUBMITED,
   WAITING_FOR_AUDITS,
 } from '../redux/actions/types.js';
-import { addTestsLabel } from '../lib/helper.js';
+import { addTestsLabel, issuesCounter } from '../lib/helper.js';
 import {
   handlePublishAudit,
   startAudit,
@@ -185,17 +185,17 @@ const ProjectCard = ({ type, project, currentRole, isPublic }) => {
             }}
           >
             <Typography sx={{ mb: '12px', fontSize: '14px!important' }}>
-              {`${project?.issues.length} issues`}
+              {issuesCounter(project?.issues)}
             </Typography>
-            {project.resolved_at && (
-              <Typography sx={{ fontSize: '14px!important' }}>
-                {dayjs(
+
+            <Typography sx={{ fontSize: '14px!important', height: '21px' }}>
+              {project.resolved_at &&
+                dayjs(
                   project.resolved_at > 1000000000000
                     ? project.resolved_at / 1000
                     : project.resolved_at * 1000,
                 ).format('DD MMM YYYY')}
-              </Typography>
-            )}
+            </Typography>
           </Box>
         )}
         {!isPublic &&

@@ -435,18 +435,9 @@ const reportActionWrapperSx = theme => ({
 const descriptionWrapper = (theme, showFull) => ({
   maxHeight: showFull ? 'none' : 200,
   overflow: 'hidden',
-});
-
-const roleTitleSx = theme => ({
-  fontSize: '20px',
-  margin: 'unset!important',
-});
-
-const useContentSx = theme => ({
-  display: 'flex',
-  alignItems: 'flex-start',
-  gap: '20px',
-  paddingTop: '10px',
+  '& .rc-md-editor': {
+    height: 'unset!important',
+  },
 });
 
 const sendMessageButton = theme => ({
@@ -464,14 +455,6 @@ const sendMessageButton = theme => ({
   [theme.breakpoints.down('sm')]: {
     top: '-20px',
     right: '-10px',
-  },
-});
-
-const userNameWrapper = theme => ({
-  maxWidth: '190px',
-  textAlign: 'start',
-  [theme.breakpoints.down('sm')]: {
-    maxWidth: 'unset',
   },
 });
 
@@ -496,59 +479,14 @@ const contentWrapper = theme => ({
     mb: '20px',
   },
   [theme.breakpoints.down('sm')]: {
+    gap: '15px',
+    mb: '20px',
+  },
+  [theme.breakpoints.down(650)]: {
     flexDirection: 'column',
     alignItems: 'flex-start',
-    gap: '16px',
     maxWidth: '400px',
     marginX: 'auto',
-  },
-});
-//
-const userWrapper = theme => ({
-  display: 'flex',
-  flexDirection: 'column',
-  gap: '15px',
-  '& .MuiAvatar-root': {
-    width: '120px',
-    height: '120px',
-  },
-  '& p': {
-    color: '#434242',
-    fontSize: '15px',
-    fontWeight: 500,
-    '&:nth-of-type(1)': {
-      margin: '0 0 5px',
-    },
-  },
-  [theme.breakpoints.down('md')]: {
-    '& .MuiAvatar-root': {
-      width: '90px',
-      height: '90px',
-    },
-  },
-  [theme.breakpoints.down('sm')]: {
-    display: 'flex',
-    gap: '20px',
-    alignItems: 'center',
-    marginBottom: '20px',
-    '& p': {
-      color: '#434242',
-      fontSize: '15px',
-      fontWeight: 500,
-      '&:nth-of-type(1)': {
-        margin: '0 0 18px',
-      },
-    },
-  },
-});
-
-const userInfoWrapper = theme => ({
-  display: 'flex',
-  flexDirection: 'column',
-  gap: '20px',
-  // marginTop: '20px',
-  [theme.breakpoints.down('sm')]: {
-    gap: '16px',
   },
 });
 
@@ -569,73 +507,6 @@ const buttonSx = theme => ({
   // [theme.breakpoints.down('xs')]: {
   //   width: '100px',
   // },
-});
-
-const dateWrapper = theme => ({
-  border: '1.5px solid #E5E5E5',
-  width: '120px',
-  padding: '18px 0',
-  textAlign: 'center',
-  [theme.breakpoints.down('md')]: {
-    width: '110px',
-  },
-  [theme.breakpoints.down('sm')]: {
-    paddingY: '10px',
-  },
-});
-
-const projectWrapper = theme => ({
-  display: 'flex',
-  textAlign: 'center',
-  flexDirection: 'column',
-  gap: '25px',
-  '& p': {
-    color: '#B2B3B3',
-    fontSize: '15px',
-    fontWeight: 500,
-  },
-  [theme.breakpoints.down('sm')]: {
-    gap: '16px',
-    textAlign: 'left',
-  },
-  [theme.breakpoints.down('xs')]: {
-    fontSize: '12px',
-    gap: '5px',
-    '& p': {
-      fontSize: '12px',
-    },
-  },
-});
-
-const infoWrapper = theme => ({
-  display: 'flex',
-  alignItems: 'center',
-  fontWeight: 500,
-  color: '#434242',
-  '& p': {
-    fontSize: 'inherit',
-    maxWidth: '200px',
-  },
-  '& span': {
-    width: '85px',
-    marginRight: '30px',
-    color: '#B2B3B3',
-  },
-  fontSize: '15px',
-  [theme.breakpoints.down('md')]: {
-    '& span': {
-      width: '90px',
-      marginRight: '20px',
-    },
-  },
-  [theme.breakpoints.down('sm')]: {
-    '& p': {
-      maxWidth: '300px',
-    },
-  },
-  [theme.breakpoints.down('xs')]: {
-    fontSize: '12px',
-  },
 });
 
 const conclusionTitle = theme => ({

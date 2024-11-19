@@ -35,7 +35,7 @@ const PublicAuditInfoPage = ({ isPublic, publicView, setPublicView }) => {
       );
     }
   }, [auditConfirm?.id]);
-  //
+
   useEffect(() => {
     if (
       issuesAuditId !== auditConfirm?.id &&
