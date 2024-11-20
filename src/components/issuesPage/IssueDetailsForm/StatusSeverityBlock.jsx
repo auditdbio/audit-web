@@ -372,6 +372,7 @@ const StatusSeverityBlock = ({
       )}
 
       {!isPublic &&
+        !hideControl &&
         user.current_role === CUSTOMER &&
         !isEditFeedback &&
         !issue?.feedback && (

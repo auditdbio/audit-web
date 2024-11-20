@@ -71,12 +71,6 @@ const PublicIssueDetailsForm = ({ issue = null, editMode = false, saved }) => {
         return prev[key] === values[key] ? acc : { ...acc, [key]: values[key] };
       }, {});
 
-      // const updatedValuesWithEvent = createIssueEvent(
-      //   updatedValues,
-      //   prev.links?.length,
-      //   issue?.status || DRAFT,
-      //   issue?.feedback,
-      // );
       setIsEditName(false);
       setIssuePrevValues({ ...values, status: '' });
       const newValues = {

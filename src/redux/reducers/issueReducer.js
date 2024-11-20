@@ -12,6 +12,7 @@ import {
   SET_READ_CHANGES,
   UPDATE_AUDIT_ISSUE,
   UPDATE_AUDIT_ISSUE_WS,
+  GET_AUDIT,
 } from '../actions/types.js';
 
 const initialState = {
@@ -42,6 +43,11 @@ export const issueReducer = (state = initialState, action) => {
         issues: state.issues?.map(issue =>
           issue.id === action.payload.issue.id ? action.payload.issue : issue,
         ),
+      };
+    case GET_AUDIT:
+      return {
+        ...state,
+        issues: action.payload.issues,
       };
     case UPDATE_AUDIT_ISSUE_WS:
       return {

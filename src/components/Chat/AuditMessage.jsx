@@ -27,6 +27,7 @@ import dayjs from 'dayjs';
 import ConfirmModal from '../modal/ConfirmModal.jsx';
 import { useNavigate } from 'react-router-dom/dist';
 import AuditInfo from '../../pages/audit-info.jsx';
+import MessageModalCustomer from '../MessageModalCustomer/MessageModalCustomer.jsx';
 
 const AuditMessage = ({ message, handleError }) => {
   const user = useSelector(state => state.user.user);
@@ -57,12 +58,12 @@ const AuditMessage = ({ message, handleError }) => {
 
   const handleView = () => {
     localStorage.setItem('prevPath', window.location.pathname);
-    navigate(`/audit-info/${data.id}/auditor`);
+    navigate(`/audit/${data.id}`);
   };
 
   const handleViewCustomer = () => {
     localStorage.setItem('prevPath', window.location.pathname);
-    navigate(`/audit-info/${data.id}/customer`);
+    navigate(`/audit/${data.id}`);
   };
 
   const handleOpenModal = () => {
@@ -177,7 +178,7 @@ const AuditMessage = ({ message, handleError }) => {
             variant={'contained'}
             onClick={() => {
               localStorage.setItem('prevPath', window.location.pathname);
-              navigate(`/audit-info/${data.id}/customer`);
+              navigate(`/audit/${data.id}`);
             }}
           >
             View
@@ -315,7 +316,7 @@ const AuditMessage = ({ message, handleError }) => {
         aria-describedby="modal-modal-description"
       >
         <Box sx={modalSx}>
-          <AuditInfo
+          <MessageModalCustomer
             audit={auditRequest}
             handleClose={handleClose}
             auditRequest={auditRequest}
