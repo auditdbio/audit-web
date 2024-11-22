@@ -12,7 +12,7 @@ const AuditUserCard = ({ avatar, role, name, email, telegram, id }) => {
       <Box sx={useContentSx}>
         <Box sx={userWrapper}>
           <Avatar
-            src={avatar ? `${ASSET_URL}/${avatar}` : ''}
+            src={avatar ? `${ASSET_URL}/id/${avatar}` : ''}
             alt="auditor photo"
           />
         </Box>
