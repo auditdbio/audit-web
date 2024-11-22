@@ -40,8 +40,9 @@ const IssuesList = ({
 
   const [search, setSearch] = useState(searchParams.get('search') || '');
   const [page, setPage] = useState(+searchParams.get('page') || 1);
+  const [queryAvailable, setQueryAvailable] = useState(false);
   const [sortType, setSortType] = useState(
-    searchParams.get('sort') || STATUS_DESCENDING,
+    searchParams.get('sort') || STATUS_DESCENDING.toLowerCase(),
   );
 
   const getNumberOfPages = () => Math.ceil(getSearchResultsLength() / 10);
@@ -55,19 +56,22 @@ const IssuesList = ({
   const handlePageChange = (e, page) => {
     setPage(page);
     setSearchParams(prev => ({ ...Object.fromEntries(prev.entries()), page }));
+    if (!queryAvailable) {
+      setQueryAvailable(true);
+    }
   };
 
   const sortFunc = (a, b) => {
     switch (sortType) {
-      case STATUS_DESCENDING:
+      case STATUS_DESCENDING.toLowerCase():
         return statusOrder[a.status] - statusOrder[b.status] || 0;
-      case STATUS_ASCENDING:
+      case STATUS_ASCENDING.toLowerCase():
         return statusOrder[b.status] - statusOrder[a.status] || 0;
-      case SEVERITY_DESCENDING:
+      case SEVERITY_DESCENDING.toLowerCase():
         return severityOrder[a.severity] - severityOrder[b.severity] || 0;
-      case SEVERITY_ASCENDING:
+      case SEVERITY_ASCENDING.toLowerCase():
         return severityOrder[b.severity] - severityOrder[a.severity] || 0;
-      case NAME_DESCENDING:
+      case NAME_DESCENDING.toLowerCase():
         return b.name.localeCompare(a.name);
       case NAME_ASCENDING:
         return a.name.localeCompare(b.name);
@@ -77,38 +81,49 @@ const IssuesList = ({
   };
 
   const handleSeveritySort = () => {
+    if (!queryAvailable) {
+      setQueryAvailable(true);
+    }
     setPage(1);
-    if (sortType === SEVERITY_DESCENDING) {
-      setSortType(SEVERITY_ASCENDING);
+    if (sortType === SEVERITY_DESCENDING.toLowerCase()) {
+      setSortType(SEVERITY_ASCENDING.toLowerCase());
     } else {
-      setSortType(SEVERITY_DESCENDING);
+      setSortType(SEVERITY_DESCENDING.toLowerCase());
     }
   };
 
   const handleStatusSort = () => {
+    if (!queryAvailable) {
+      setQueryAvailable(true);
+    }
     setPage(1);
-    if (sortType === STATUS_DESCENDING) {
-      setSortType(STATUS_ASCENDING);
+    if (sortType === STATUS_DESCENDING.toLowerCase()) {
+      setSortType(STATUS_ASCENDING.toLowerCase());
     } else {
-      setSortType(STATUS_DESCENDING);
+      setSortType(STATUS_DESCENDING.toLowerCase());
     }
   };
 
   const handleNameSort = () => {
+    if (!queryAvailable) {
+      setQueryAvailable(true);
+    }
     setPage(1);
-    if (sortType === NAME_ASCENDING) {
-      setSortType(NAME_DESCENDING);
+    if (sortType === NAME_ASCENDING.toLowerCase()) {
+      setSortType(NAME_DESCENDING.toLowerCase());
     } else {
-      setSortType(NAME_ASCENDING);
+      setSortType(NAME_ASCENDING.toLowerCase());
     }
   };
 
   useEffect(() => {
-    setSearchParams(prev => ({
-      ...Object.fromEntries(prev.entries()),
-      page,
-      sort: sortType,
-    }));
+    if (queryAvailable) {
+      setSearchParams(prev => ({
+        ...Object.fromEntries(prev.entries()),
+        page,
+        sort: sortType,
+      }));
+    }
     return () => dispatch(clearMessage());
   }, [sortType]);
 
@@ -141,7 +156,7 @@ const IssuesList = ({
           <Button sx={[columnText, columnTitle]} onClick={handleNameSort}>
             <span>Issue</span>
             <span>
-              {sortType === NAME_ASCENDING ? (
+              {sortType === NAME_ASCENDING.toLowerCase() ? (
                 <ArrowUpIcon size={matchXs ? 'small' : 'medium'} />
               ) : (
                 <ArrowIcon size={matchXs ? 'small' : 'medium'} />
@@ -165,7 +180,7 @@ const IssuesList = ({
           <Button sx={[columnText, columnTitle]} onClick={handleSeveritySort}>
             <span>Severity</span>
             <span>
-              {sortType === SEVERITY_ASCENDING ? (
+              {sortType === SEVERITY_ASCENDING.toLowerCase() ? (
                 <ArrowUpIcon size={matchXs ? 'small' : 'medium'} />
               ) : (
                 <ArrowIcon size={matchXs ? 'small' : 'medium'} />

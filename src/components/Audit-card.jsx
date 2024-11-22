@@ -108,7 +108,7 @@ const AuditCard = ({ audit, request }) => {
         onClick={() =>
           request
             ? navigate(`/audit-request/${audit.id}/customer`)
-            : navigate(`/audit-info/${audit.id}/customer`)
+            : navigate(`/audit/${audit.id}`)
         }
         {...addTestsLabel('audits_view-button')}
       >

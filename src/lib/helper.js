@@ -46,6 +46,14 @@ export const getAverageFeedbackRating = rating => {
   return 0;
 };
 
+export const issuesCounter = issues => {
+  if (issues.length > 1) {
+    return `${issues.length} issues`;
+  } else {
+    return `${issues.length} issue`;
+  }
+};
+
 export const reportBuilder = (report, issuesArray) => {
   const getSummarySubsections = () => {
     const subsections = [

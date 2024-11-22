@@ -84,7 +84,7 @@ const IssueDetailsForm = ({ issue = null, editMode = false, hideControl }) => {
       dispatch(updateAuditIssue(auditId, issueId, updatedValues));
     } else {
       dispatch(addAuditIssue(auditId, values));
-      navigate(`/audit-info/${auditId}/auditor`);
+      navigate(`/audit/${auditId}`);
     }
   };
 
