@@ -9,6 +9,7 @@ import {
   InputLabel,
   Select,
   Switch,
+  Collapse,
 } from '@mui/material';
 import theme, { radiusOfComponents } from '../styles/themes.js';
 import { useNavigate } from 'react-router-dom/dist';
@@ -66,6 +67,7 @@ import {
 } from '../redux/actions/githubAction.js';
 import TotalPrice from './forms/TotalPrice/TotalPrice.jsx';
 import { PROJECT_PARENT_ENTITY } from '../services/file_constants.js';
+import ExpandLessOutlinedIcon from '@mui/icons-material/ExpandLessOutlined.js';
 
 const GoBack = ({ role }) => {
   const location = useLocation();
@@ -100,7 +102,7 @@ const CreateProjectCard = ({ projectInfo }) => {
     projectInfo?.status === DONE || false,
   );
   const { successMessage, errorMessage } = useSelector(s => s.audits);
-  const [closeConfirmIsOpen, setCloseConfirmIsOpen] = useState(false);
+  const [showFull, setShowFull] = useState(false);
   const [state, setState] = useState(false);
   const [isDirty, setIsDirty] = useState(false);
   const [changeStatus, setChangeStatus] = useState(false);
@@ -405,39 +407,64 @@ const CreateProjectCard = ({ projectInfo }) => {
                     {/*  <AuditRequestsArray requests={auditRequests ?? []} />*/}
                     {/*</Box>*/}
                   </Box>
-                  <Box
-                    className="description-box"
-                    sx={descriptionFieldWrapper(
-                      touched.description && errors.description,
-                    )}
+                  <Collapse
+                    in={true}
+                    collapsedSize={showFull ? undefined : 150}
                   >
-                    <MarkdownEditor
-                      name="description"
-                      setFieldTouched={setFieldTouched}
-                      fastSave
-                      mdProps={{
-                        view: { menu: true, md: true, html: !matchXs },
-                      }}
-                      parentEntity={
-                        projectInfo?.id
-                          ? {
-                              id: projectInfo.id,
-                              source: PROJECT_PARENT_ENTITY,
-                            }
-                          : {}
-                      }
-                    />
-                    {touched.description && errors.description && (
-                      <Typography
-                        sx={{
-                          color: `${theme.palette.error.main}!important`,
-                          fontSize: '14px',
+                    <Box
+                      className="description-box"
+                      sx={descriptionFieldWrapper(
+                        touched.description && errors.description,
+                        showFull,
+                      )}
+                    >
+                      <MarkdownEditor
+                        name="description"
+                        setFieldTouched={setFieldTouched}
+                        fastSave
+                        mdProps={{
+                          view: { menu: true, md: true, html: !matchXs },
                         }}
-                      >
-                        {errors.description}
-                      </Typography>
-                    )}
-                  </Box>
+                        parentEntity={
+                          projectInfo?.id
+                            ? {
+                                id: projectInfo.id,
+                                source: PROJECT_PARENT_ENTITY,
+                              }
+                            : {}
+                        }
+                      />
+                      {touched.description && errors.description && (
+                        <Typography
+                          sx={{
+                            color: `${theme.palette.error.main}!important`,
+                            fontSize: '14px',
+                          }}
+                        >
+                          {errors.description}
+                        </Typography>
+                      )}
+                    </Box>
+                  </Collapse>
+                  <Button
+                    sx={[readAllButton(theme, showFull)]}
+                    variant={'outlined'}
+                    onClick={() => setShowFull(!showFull)}
+                  >
+                    {showFull ? 'Hide' : 'Show'}
+                    <ExpandLessOutlinedIcon
+                      sx={[
+                        showFull ? {} : { transform: 'rotate(180deg)' },
+                        {
+                          transition: '0.2s',
+                          // marginRight: '0',
+                          // marginLeft: 'auto',
+                          width: '20px',
+                          height: '20px',
+                        },
+                      ]}
+                    />
+                  </Button>
                   <Box sx={buttonGroup}>
                     <Button
                       variant="contained"
@@ -449,10 +476,27 @@ const CreateProjectCard = ({ projectInfo }) => {
                     >
                       Invite auditor
                     </Button>
-                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                    <Button
+                      type="submit"
+                      variant="contained"
+                      // sx={submitButton}
+                      sx={[inviteButton]}
+                      {...addTestsLabel(
+                        `${editMode ? 'save' : 'create'}-button`,
+                      )}
+                    >
+                      {editMode ? 'Save changes' : 'Create'}
+                    </Button>
+                    <Box
+                      sx={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        height: '36px',
+                      }}
+                    >
                       <Button
                         variant="outlined"
-                        sx={[publishButton, { width: '100%' }]}
+                        sx={[publishButton]}
                         type="button"
                         color={'secondary'}
                         onClick={() => {
@@ -513,15 +557,6 @@ const CreateProjectCard = ({ projectInfo }) => {
                     {/*  <MenuRoundedIcon sx={menuButtonIconSx} />*/}
                     {/*</Button>*/}
                   </Box>
-                  <Button
-                    type="submit"
-                    variant="contained"
-                    // sx={submitButton}
-                    sx={[inviteButton]}
-                    {...addTestsLabel(`${editMode ? 'save' : 'create'}-button`)}
-                  >
-                    {editMode ? 'Save changes' : 'Create'}
-                  </Button>
                 </Box>
               </Form>
             </Box>
@@ -583,37 +618,60 @@ const wrapper = theme => ({
   },
 });
 
+const readAllButton = (theme, showFull) => ({
+  p: '3px',
+  paddingX: '8px',
+  minWidth: 'unset',
+  textTransform: 'unset',
+  boxShadow: 'unset',
+  fontWeight: 600,
+  marginX: 'auto',
+  fontSize: '16px',
+  borderRadius: '4px',
+  width: '180px',
+  marginTop: !showFull ? '-22px' : 0,
+  display: 'flex',
+  alignItems: 'center',
+  gap: '7px',
+  height: '36px',
+  // maxWidth: '300px',
+  [theme.breakpoints.down('xs')]: {
+    fontSize: '16px',
+  },
+});
+
 const buttonGroup = {
   // width: "100%",
-  width: '220px',
+  // width: '220px',
   display: 'flex',
   alignSelf: 'center',
   gap: '20px',
-  flexDirection: 'column',
+  [theme.breakpoints.down('xs')]: {
+    flexDirection: 'column',
+  },
 };
 
 const inviteButton = {
   backgroundColor: theme.palette.primary.main,
   textTransform: 'none',
   boxShadow: '0',
-  maxHeight: '30px',
+  maxHeight: '36px',
   padding: '8px 42px',
   whiteSpace: 'nowrap',
   color: '#FCFAF6',
   fontWeight: '600',
   borderRadius: '4px',
-  width: '220px',
+  width: '180px',
   margin: '0 auto',
-  height: '30px',
+  height: '36px',
   // width: '100%',
-  fontSize: '14px',
+  fontSize: '16px',
   // paddingY: "11px",
   ':hover': {
     boxShadow: '0',
   },
   [theme.breakpoints.down('sm')]: {
     padding: '3px 15px',
-    fontSize: '10px',
   },
 };
 
@@ -621,26 +679,19 @@ const publishButton = {
   // backgroundColor: theme.palette.secondary.main,
   textTransform: 'none',
   boxShadow: '0',
-  maxHeight: '30px',
+  maxHeight: '36px',
+  width: '180px',
   // padding: '8px 42px',
   // whiteSpace: 'nowrap',
   // color: '#FCFAF6',
-  height: '30px',
+  height: '36px',
   fontWeight: '600',
   borderRadius: '4px',
   // maxWidth: '180px',
   // margin: '0 auto',
-  fontSize: '14px',
+  fontSize: '16px',
   '& svg': {
     marginRight: '7px',
-  },
-  // paddingY: "11px",
-  // ':hover': {
-  //   boxShadow: '0',
-  // },
-  [theme.breakpoints.down('sm')]: {
-    // padding: '3px 15px',
-    fontSize: '10px',
   },
 };
 
@@ -712,9 +763,16 @@ const fieldWrapper = theme => ({
     width: '100%',
   },
 });
-const descriptionFieldWrapper = error => ({
+const descriptionFieldWrapper = (error, showFull) => ({
   width: '100%',
+  maxHeight: showFull ? 'none' : 150,
+  overflow: 'hidden',
+  transition: 'max-height 0.3s ease',
   border: error ? '1px solid red' : '1px solid transparent',
+  '& .rc-md-editor': {
+    height: '100%!important',
+    minHeight: '300px',
+  },
 });
 
 const formAllFields = {
