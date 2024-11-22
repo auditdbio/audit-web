@@ -553,38 +553,33 @@ const mainBox = theme => ({
   position: 'relative',
   display: 'flex',
   flexDirection: 'column',
-  paddingTop: '40px',
   '& .editor-container': {
     borderBottom: 'unset!important',
-  },
-  [theme.breakpoints.down('xs')]: {
-    paddingTop: '30x',
   },
 });
 
 const backButtonSx = theme => ({
   position: 'absolute',
-  left: '30px',
-  top: '40px',
+  left: '-5px',
+  top: '5px',
   [theme.breakpoints.down('sm')]: {
-    top: '5px',
+    top: '0px',
     left: 0,
+    minWidth: 'unset',
   },
 });
 
 const wrapper = theme => ({
-  padding: '30px 90px 70px',
+  padding: '50px 30px 60px',
   display: 'flex',
   flexDirection: 'column',
-  [theme.breakpoints.down('sm')]: {
-    padding: '30px 20px',
-  },
   [theme.breakpoints.down('xs')]: {
     '& form': {
       width: '100%',
     },
     width: '100%',
     alignItems: 'center',
+    padding: '50px 10px',
   },
 });
 
@@ -609,6 +604,7 @@ const inviteButton = {
   borderRadius: '4px',
   width: '220px',
   margin: '0 auto',
+  height: '30px',
   // width: '100%',
   fontSize: '14px',
   // paddingY: "11px",
@@ -626,9 +622,10 @@ const publishButton = {
   textTransform: 'none',
   boxShadow: '0',
   maxHeight: '30px',
-  padding: '8px 42px',
+  // padding: '8px 42px',
   // whiteSpace: 'nowrap',
   // color: '#FCFAF6',
+  height: '30px',
   fontWeight: '600',
   borderRadius: '4px',
   // maxWidth: '180px',
@@ -642,7 +639,7 @@ const publishButton = {
   //   boxShadow: '0',
   // },
   [theme.breakpoints.down('sm')]: {
-    padding: '3px 15px',
+    // padding: '3px 15px',
     fontSize: '10px',
   },
 };
@@ -658,11 +655,11 @@ const formWrapper = theme => ({
   display: 'flex',
   height: '100%',
   width: '100%',
-
-  justifyContent: 'space-between',
+  gap: '16px',
+  // justifyContent: 'space-between',
   // gap: "175px",
   [theme.breakpoints.down('xs')]: {
-    gap: '16px',
+    // gap: '16px',
     flexDirection: 'column',
   },
 });
@@ -695,7 +692,7 @@ const fieldWrapper = theme => ({
   flexDirection: 'column',
   // justifyContent: "space-between",
   // maxWidth: "450px",
-  width: '48%',
+  width: '50%',
   gap: '20px',
   [theme.breakpoints.down('md')]: {
     '& .MuiInputBase-root': {
