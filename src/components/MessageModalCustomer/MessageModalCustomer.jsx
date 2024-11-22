@@ -226,7 +226,7 @@ const MessageModalCustomer = ({
               </Typography>
             )}
             <Avatar
-              src={audit?.avatar ? `${ASSET_URL}/${audit?.avatar}` : ''}
+              src={audit?.avatar ? `${ASSET_URL}/id/${audit?.avatar}` : ''}
               alt="auditor photo"
             />
             <Link
@@ -331,7 +331,7 @@ const MessageModalCustomer = ({
               <Avatar
                 src={
                   audit?.customer_avatar
-                    ? `${ASSET_URL}/${audit?.customer_avatar}`
+                    ? `${ASSET_URL}/id/${audit?.customer_avatar}`
                     : ''
                 }
                 alt="auditor photo"

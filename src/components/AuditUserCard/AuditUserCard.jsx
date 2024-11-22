@@ -2,7 +2,7 @@ import React from 'react';
 import { Avatar, Box, Tooltip, Typography } from '@mui/material';
 import { ASSET_URL } from '../../services/urls.js';
 import { Link } from 'react-router-dom';
-
+//
 const AuditUserCard = ({ avatar, role, name, email, telegram, id }) => {
   return (
     <Box sx={wrapper}>
