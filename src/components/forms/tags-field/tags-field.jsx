@@ -238,6 +238,15 @@ const formLabelSx = theme => ({
 const fieldSx = theme => ({
   '& input': {
     paddingLeft: '35px',
+    paddingY: '11.5px',
+  },
+  '& .MuiFormLabel-root': {
+    top: '-5px',
+  },
+  [theme.breakpoints.down('md')]: {
+    '& .MuiFormLabel-root': {
+      top: '0px',
+    },
   },
   [theme.breakpoints.up('sm')]: {
     '& input': {

@@ -20,7 +20,6 @@ import { ProjectLinksList } from './custom/ProjectLinksList.jsx';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack.js';
 import CreateNewFolderIcon from '@mui/icons-material/CreateNewFolder';
 import PersonAddAlt1Icon from '@mui/icons-material/PersonAddAlt1';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import AuditorSearchModal from './AuditorSearchModal.jsx';
 import TagsField from './forms/tags-field/tags-field.jsx';
@@ -554,10 +553,13 @@ const linkFieldWrapper = theme => ({
     width: '100%',
   },
   [theme.breakpoints.down(500)]: {
-    flexDirection: 'column',
+    // flexDirection: 'column',
+    '& .github-wrapper': {
+      width: 'unset',
+    },
     gap: '10px',
     '& .field-wrapper': {
-      width: '100%',
+      // width: '100%',
     },
   },
 });
