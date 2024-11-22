@@ -73,7 +73,7 @@ const ProjectCard = ({ type, project, currentRole, isPublic }) => {
               sx={{ width: '35px', height: '35px' }}
               src={
                 project?.customer_avatar
-                  ? `${ASSET_URL}/${project?.customer_avatar}`
+                  ? `${ASSET_URL}/id/${project?.customer_avatar}`
                   : ''
               }
             />
