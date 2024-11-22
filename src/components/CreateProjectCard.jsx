@@ -18,8 +18,8 @@ import { Form, Formik } from 'formik';
 import SimpleField from './forms/fields/simple-field.jsx';
 import { ProjectLinksList } from './custom/ProjectLinksList.jsx';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack.js';
-import MenuRoundedIcon from '@mui/icons-material/MenuRounded';
-import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
+import CreateNewFolderIcon from '@mui/icons-material/CreateNewFolder';
+import PersonAddAlt1Icon from '@mui/icons-material/PersonAddAlt1';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import AuditorSearchModal from './AuditorSearchModal.jsx';
@@ -41,7 +41,7 @@ import {
   clearMessage,
   getAuditsRequest,
 } from '../redux/actions/auditAction.js';
-import { AuditRequestsArray } from './custom/AuditRequestsArray.jsx';
+import SaveIcon from '@mui/icons-material/Save';
 import MarkdownEditor from './markdown/Markdown-editor.jsx';
 import SalarySlider from './forms/salary-slider/salary-slider.jsx';
 import CloseProjectModal from './CloseProjectModal.jsx';
@@ -466,37 +466,47 @@ const CreateProjectCard = ({ projectInfo }) => {
                     />
                   </Button>
                   <Box sx={buttonGroup}>
-                    <Button
-                      variant="contained"
-                      sx={inviteButton}
-                      onClick={() => {
-                        handleInviteModal(handleSubmit);
-                      }}
-                      {...addTestsLabel('invite-button')}
+                    <Tooltip
+                      title={'Invite auditor'}
+                      arrow={true}
+                      placement="top"
                     >
-                      Invite auditor
-                    </Button>
-                    <Button
-                      type="submit"
-                      variant="contained"
-                      // sx={submitButton}
-                      sx={[inviteButton]}
-                      {...addTestsLabel(
-                        `${editMode ? 'save' : 'create'}-button`,
-                      )}
+                      <Button
+                        variant="contained"
+                        sx={[buttonSx]}
+                        onClick={() => {
+                          handleInviteModal(handleSubmit);
+                        }}
+                        {...addTestsLabel('invite-button')}
+                      >
+                        <PersonAddAlt1Icon />
+                        {/*Invite auditor*/}
+                      </Button>
+                    </Tooltip>
+                    <Tooltip
+                      title={editMode ? 'Save changes' : 'Create project'}
+                      arrow={true}
+                      placement="top"
                     >
-                      {editMode ? 'Save changes' : 'Create'}
-                    </Button>
-                    <Box
-                      sx={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        height: '36px',
-                      }}
+                      <Button
+                        type="submit"
+                        variant="contained"
+                        sx={[buttonSx]}
+                        {...addTestsLabel(
+                          `${editMode ? 'save' : 'create'}-button`,
+                        )}
+                      >
+                        {editMode ? <SaveIcon /> : <CreateNewFolderIcon />}
+                      </Button>
+                    </Tooltip>
+                    <Tooltip
+                      title="Projects are hidden by default, you can change the visibility."
+                      arrow={true}
+                      placement="top"
                     >
                       <Button
                         variant="outlined"
-                        sx={[publishButton]}
+                        sx={[buttonSx]}
                         type="button"
                         color={'secondary'}
                         onClick={() => {
@@ -522,40 +532,8 @@ const CreateProjectCard = ({ projectInfo }) => {
                         ) : (
                           <VisibilityOffIcon fontSize={'small'} />
                         )}
-                        project
                       </Button>
-                      <Button
-                        color={'secondary'}
-                        sx={{
-                          minWidth: '15px',
-                          marginLeft: '7px',
-                          paddingY: '3px',
-                          marginRight: '-45px',
-                        }}
-                      >
-                        <Tooltip
-                          title="Projects are hidden by default, you can change the visibility."
-                          arrow={true}
-                          placement="top"
-                        >
-                          <QuestionMarkIcon fontSize={'small'} />
-                        </Tooltip>
-                      </Button>
-                    </Box>
-                    {/*<Button*/}
-                    {/*  variant={'contained'}*/}
-                    {/*  sx={publishButton}*/}
-                    {/*  disabled={*/}
-                    {/*    isClosed || !projectInfo || !!getSearchParam.get('copy')*/}
-                    {/*  }*/}
-                    {/*  onClick={() => setCloseConfirmIsOpen(true)}*/}
-                    {/*  {...addTestsLabel('close-project-button')}*/}
-                    {/*>*/}
-                    {/*  {isClosed ? 'Project closed' : 'Close the project'}*/}
-                    {/*</Button>*/}
-                    {/*<Button sx={menuButtonSx}>*/}
-                    {/*  <MenuRoundedIcon sx={menuButtonIconSx} />*/}
-                    {/*</Button>*/}
+                    </Tooltip>
                   </Box>
                 </Box>
               </Form>
@@ -618,6 +596,16 @@ const wrapper = theme => ({
   },
 });
 
+const buttonSx = theme => ({
+  padding: '8.5px 0',
+  fontSize: '16px',
+  textTransform: 'unset',
+  fontWeight: 600,
+  width: '50px!important',
+  minWidth: '50px',
+  borderRadius: '10px',
+});
+
 const readAllButton = (theme, showFull) => ({
   p: '3px',
   paddingX: '8px',
@@ -625,15 +613,13 @@ const readAllButton = (theme, showFull) => ({
   textTransform: 'unset',
   boxShadow: 'unset',
   fontWeight: 600,
-  marginX: 'auto',
-  fontSize: '16px',
-  borderRadius: '4px',
-  width: '180px',
+  borderRadius: '8px',
   marginTop: !showFull ? '-22px' : 0,
+  width: '280px',
+  marginX: 'auto',
   display: 'flex',
   alignItems: 'center',
   gap: '7px',
-  height: '36px',
   // maxWidth: '300px',
   [theme.breakpoints.down('xs')]: {
     fontSize: '16px',
@@ -646,9 +632,6 @@ const buttonGroup = {
   display: 'flex',
   alignSelf: 'center',
   gap: '20px',
-  [theme.breakpoints.down('xs')]: {
-    flexDirection: 'column',
-  },
 };
 
 const inviteButton = {
