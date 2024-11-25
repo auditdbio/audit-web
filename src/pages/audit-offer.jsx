@@ -851,13 +851,10 @@ const AuditOffer = ({ publicView, setPublicView }) => {
                     <Button
                       onClick={() => setAuditDBWorkflow(false)}
                       type="button"
-                      disabled={issues?.every(
-                        issue =>
-                          issue.status === FIXED ||
-                          issue.status === NOT_FIXED ||
-                          issue.status === WILL_NOT_FIX ||
-                          !issue.include,
-                      )}
+                      disabled={
+                        issues?.length ||
+                        audit?.status?.toLowerCase() === RESOLVED.toLowerCase()
+                      }
                       sx={workflowButton(!auditDBWorkflow)}
                     >
                       Upload audit
