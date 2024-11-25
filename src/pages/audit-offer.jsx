@@ -24,8 +24,7 @@ import {
   FormControlLabel,
 } from '@mui/material';
 import theme from '../styles/themes.js';
-import { CustomCard } from '../components/custom/Card.jsx';
-import Layout from '../styles/Layout.jsx';
+import SendIcon from '@mui/icons-material/Send';
 import {
   addReportAudit,
   clearMessage,
@@ -308,8 +307,16 @@ const AuditOffer = ({ publicView, setPublicView }) => {
               <FormControlLabel
                 control={
                   <Switch
-                    checked={publicView}
-                    onChange={e => setPublicView(e.target.checked)}
+                    checked={audit?.isPublic}
+                    onChange={e =>
+                      dispatch(
+                        handlePublishAudit({
+                          id: audit.id,
+                          public: e.target.checked,
+                        }),
+                      )
+                    }
+                    color="secondary"
                   />
                 }
                 sx={{
@@ -318,7 +325,26 @@ const AuditOffer = ({ publicView, setPublicView }) => {
                   position: 'absolute',
                   right: '30px',
                 }}
-                label="Public preview"
+                label="Publish"
+              />
+            )}
+          {audit?.isPublic &&
+            audit?.status?.toLowerCase() === RESOLVED.toLowerCase() &&
+            audit?.auditor_id === user.id && (
+              <FormControlLabel
+                control={
+                  <Switch
+                    checked={publicView}
+                    onChange={e => setPublicView(e.target.checked)}
+                  />
+                }
+                sx={{
+                  '& .MuiTypography-root': { fontSize: '14px' },
+                  top: '-20px',
+                  position: 'absolute',
+                  right: '150px',
+                }}
+                label="Preview"
               />
             )}
           <Box sx={headerTitleSx}>
@@ -999,45 +1025,47 @@ const AuditOffer = ({ publicView, setPublicView }) => {
               {({ handleSubmit, setFieldValue }) => {
                 return (
                   <Form onSubmit={handleSubmit}>
-                    {!auditDBWorkflow &&
-                      audit?.status?.toLowerCase() !==
-                        WAITING_FOR_AUDITS.toLowerCase() && (
-                        <Box sx={fileWrapper}>
-                          <Typography sx={subTitleSx}>Upload audit</Typography>
-                          <Box sx={{ display: 'flex' }}>
-                            <AuditUpload
-                              disabled={audit?.status === SUBMITED}
-                              auditId={audit?.id}
-                              auditorId={audit?.auditor_id}
-                              auditReportName={audit?.report_name}
-                              customerId={audit?.customer_id}
-                              name="report"
-                              setFieldValue={setFieldValue}
-                            />
+                    <Box sx={fileWrapper}>
+                      {!auditDBWorkflow &&
+                        audit?.status?.toLowerCase() !==
+                          WAITING_FOR_AUDITS.toLowerCase() && (
+                          <Box>
+                            <Typography sx={subTitleSx}>
+                              Upload audit
+                            </Typography>
+                            <Box sx={{ display: 'flex' }}>
+                              <AuditUpload
+                                disabled={audit?.status === SUBMITED}
+                                auditId={audit?.id}
+                                auditorId={audit?.auditor_id}
+                                auditReportName={audit?.report_name}
+                                customerId={audit?.customer_id}
+                                name="report"
+                                setFieldValue={setFieldValue}
+                              />
+                            </Box>
                           </Box>
-                        </Box>
-                      )}
+                        )}
 
-                    {!auditDBWorkflow && (
-                      <Box
-                        sx={{
-                          display: 'flex',
-                          flexDirection: 'column',
-                          alignItems: 'center',
-                          mb: '30px',
-                        }}
-                      >
-                        <Button
-                          variant="contained"
-                          type="submit"
-                          color="secondary"
-                          sx={[buttonSx, { mb: '15px' }]}
-                          {...addTestsLabel('send-button')}
+                      {!auditDBWorkflow && (
+                        <Tooltip
+                          arrow
+                          placement="top"
+                          title={'Send to customer'}
                         >
-                          Send to customer
-                        </Button>
-                      </Box>
-                    )}
+                          <Button
+                            variant="contained"
+                            type="submit"
+                            color="secondary"
+                            sx={[buttonSx, { mr: 'unset' }]}
+                            {...addTestsLabel('send-button')}
+                          >
+                            {/*Send to customer*/}
+                            <SendIcon />
+                          </Button>
+                        </Tooltip>
+                      )}
+                    </Box>
                   </Form>
                 );
               }}
@@ -1369,12 +1397,12 @@ const contentWrapper = {
 const fileWrapper = theme => ({
   margin: '22px 0',
   display: 'flex',
-  alignItems: 'center',
-  gap: '30px',
+  alignItems: 'flex-end',
+  gap: '15px',
   justifyContent: 'center',
   [theme.breakpoints.down('sm')]: {
-    flexDirection: 'column',
-    gap: '10px',
+    // flexDirection: 'column',
+    // gap: '10px',
   },
 });
 

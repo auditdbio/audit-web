@@ -11,6 +11,7 @@ import {
   deleteAuditRequest,
   downloadPublicReport,
   downloadReport,
+  handlePublishAudit,
   sendAuditFeedback,
 } from '../../redux/actions/auditAction.js';
 import { CustomCard } from '../custom/Card.jsx';
@@ -171,7 +172,8 @@ const PublicAudit = ({
         >
           <ArrowBackIcon color="secondary" />
         </Button>
-        {audit?.status?.toLowerCase() === RESOLVED.toLowerCase() &&
+        {audit?.isPublic &&
+          audit?.status?.toLowerCase() === RESOLVED.toLowerCase() &&
           user?.current_role?.toLowerCase() === AUDITOR.toLowerCase() &&
           (audit?.customer_id === user.id || audit?.auditor_id === user.id) && (
             <FormControlLabel
@@ -185,9 +187,37 @@ const PublicAudit = ({
                 '& .MuiTypography-root': { fontSize: '14px' },
                 top: '-20px',
                 position: 'absolute',
+                right: '150px',
+              }}
+              label="Preview"
+            />
+          )}
+        {audit?.status?.toLowerCase() === RESOLVED.toLowerCase() &&
+          user?.current_role?.toLowerCase() === AUDITOR.toLowerCase() &&
+          (audit?.customer_id === user.id || audit?.auditor_id === user.id) && (
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={audit?.isPublic}
+                  onChange={e => {
+                    dispatch(
+                      handlePublishAudit({
+                        id: audit.id,
+                        public: e.target.checked,
+                      }),
+                    );
+                    if (publicView) setPublicView(false);
+                  }}
+                  color="secondary"
+                />
+              }
+              sx={{
+                '& .MuiTypography-root': { fontSize: '14px' },
+                top: '-20px',
+                position: 'absolute',
                 right: '30px',
               }}
-              label="Public preview"
+              label="Publish"
             />
           )}
         <Button
@@ -351,7 +381,12 @@ const PublicAudit = ({
             variant={'contained'}
             color={'secondary'}
             onClick={() => {
-              if (!isPublic) {
+              if (
+                !isPublic ||
+                !audit.isPublic ||
+                audit?.auditor_id === user?.id ||
+                audit?.customer_id === user?.id
+              ) {
                 dispatch(downloadReport(audit));
               } else {
                 dispatch(downloadPublicReport(audit, code));

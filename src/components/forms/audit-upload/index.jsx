@@ -79,9 +79,23 @@ const AuditUpload = ({
         text={error}
       />
 
-      <Button disabled={disabled} {...addTestsLabel('upload-audit-button')}>
-        <label htmlFor="audit-upload">
-          <CreateNewFolderOutlinedIcon fontSize="large" color="disabled" />
+      <Button
+        sx={btnSx}
+        disabled={disabled}
+        variant={'contained'}
+        {...addTestsLabel('upload-audit-button')}
+      >
+        <label
+          style={{
+            height: '100%',
+            width: '100%',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+          htmlFor="audit-upload"
+        >
+          <CreateNewFolderOutlinedIcon />
         </label>
       </Button>
       <input
@@ -96,6 +110,22 @@ const AuditUpload = ({
 };
 
 export default AuditUpload;
+
+const btnSx = theme => ({
+  height: '50px',
+  width: '50px',
+  minWidth: 'unset',
+  borderRadius: '10px',
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  [theme.breakpoints.down('lg')]: {
+    height: '47px',
+  },
+  [theme.breakpoints.down('md')]: {
+    height: '45px',
+  },
+});
 
 const inputWrapper = theme => ({
   border: '1.43062px solid #E5E5E5',
