@@ -66,9 +66,7 @@ const Control = ({
   const [allIssuesClosed, setAllIssuesClosed] = useState(false);
   const [menuAnchorEl, setMenuAnchorEl] = useState(null);
   const { user } = useSelector(s => s.user);
-  const audit = useSelector(s =>
-    s.audits.audits?.find(audit => audit.id === auditId),
-  );
+  const audit = useSelector(s => s.audits.audit);
   const matchMd = useMediaQuery(theme.breakpoints.down('md'));
   const { auditor } = useSelector(s => s.auditor);
   const { customer } = useSelector(s => s.customer);
@@ -291,7 +289,10 @@ const Control = ({
             ? customerViewSx
             : isPublic || saved
             ? wrapperPublic
-            : wrapper,
+            : wrapper(
+                theme,
+                audit?.status?.toLowerCase() === RESOLVED.toLowerCase(),
+              ),
         ]}
       >
         <Box sx={[isPublic || saved ? publicSearchBlock : searchBlock]}>
@@ -602,13 +603,13 @@ const publicBtnWrapper = theme => ({
   },
 });
 
-const wrapper = theme => ({
+const wrapper = (theme, resolved) => ({
   display: 'flex',
   width: '100%',
   mb: '10px',
   gap: '25px',
   [theme.breakpoints.down(600)]: {
-    flexDirection: 'column-reverse',
+    flexDirection: resolved ? 'row' : 'column-reverse',
     gap: '15px',
   },
 });
@@ -644,9 +645,12 @@ const publicSearchBlock = theme => ({
 
 const textFieldSx = theme => ({
   width: '100%',
-  [theme.breakpoints.down('lg')]: {
+  '& .MuiInputBase-root': {
+    paddingY: '2.1px',
+  },
+  [theme.breakpoints.down('xs')]: {
     '& .MuiInputBase-root': {
-      paddingY: '3.5px',
+      paddingY: '2.5px',
     },
   },
 });
@@ -695,9 +699,16 @@ const buttonSx = theme => ({
   '&:not(:last-child)': {
     mr: '15px',
   },
+  height: '50px',
   width: '50px!important',
   minWidth: '50px',
   borderRadius: '10px',
+  [theme.breakpoints.down('lg')]: {
+    height: '47px',
+  },
+  [theme.breakpoints.down('md')]: {
+    height: '45px',
+  },
 });
 
 const publicBtnSx = theme => ({

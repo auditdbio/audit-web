@@ -11,6 +11,7 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack.js';
 import { getIssues } from '../redux/actions/issueAction.js';
 import { CUSTOMER } from '../redux/actions/types.js';
 import Headings from '../router/Headings.jsx';
+import { getAudit } from '../redux/actions/auditAction.js';
 
 const AuditIssues = ({ isPublic }) => {
   const dispatch = useDispatch();
@@ -27,6 +28,7 @@ const AuditIssues = ({ isPublic }) => {
     if (issuesAuditId !== auditId) {
       dispatch(getIssues(auditId));
     }
+    dispatch(getAudit(auditId));
     return () => {
       if (localStorage.getItem('prev')) {
         localStorage.removeItem('prev');
