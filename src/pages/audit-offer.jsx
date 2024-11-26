@@ -328,25 +328,25 @@ const AuditOffer = ({ publicView, setPublicView }) => {
                 label="Publish"
               />
             )}
-          {audit?.isPublic &&
-            audit?.status?.toLowerCase() === RESOLVED.toLowerCase() &&
-            audit?.auditor_id === user.id && (
-              <FormControlLabel
-                control={
-                  <Switch
-                    checked={publicView}
-                    onChange={e => setPublicView(e.target.checked)}
-                  />
-                }
-                sx={{
-                  '& .MuiTypography-root': { fontSize: '14px' },
-                  top: '-20px',
-                  position: 'absolute',
-                  right: '150px',
-                }}
-                label="Preview"
-              />
-            )}
+          {/*{audit?.isPublic &&*/}
+          {/*  audit?.status?.toLowerCase() === RESOLVED.toLowerCase() &&*/}
+          {/*  audit?.auditor_id === user.id && (*/}
+          {/*    <FormControlLabel*/}
+          {/*      control={*/}
+          {/*        <Switch*/}
+          {/*          checked={publicView}*/}
+          {/*          onChange={e => setPublicView(e.target.checked)}*/}
+          {/*        />*/}
+          {/*      }*/}
+          {/*      sx={{*/}
+          {/*        '& .MuiTypography-root': { fontSize: '14px' },*/}
+          {/*        top: '-20px',*/}
+          {/*        position: 'absolute',*/}
+          {/*        right: '150px',*/}
+          {/*      }}*/}
+          {/*      label="Preview"*/}
+          {/*    />*/}
+          {/*  )}*/}
           <Box sx={headerTitleSx}>
             <Typography
               variant="h3"
