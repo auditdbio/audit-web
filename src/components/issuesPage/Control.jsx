@@ -473,8 +473,6 @@ const Control = ({
                 <Button
                   variant="contained"
                   color="primary"
-                  // disabled={!audit?.report}
-                  // onClick={() => dispatch(downloadReport(audit))}
                   sx={[
                     buttonSx,
                     {
@@ -594,12 +592,11 @@ const customerViewSx = theme => ({
       display: 'flex',
     },
   },
-  [theme.breakpoints.down(700)]: {
-    flexDirection: 'column',
-    gap: '15px',
+  [theme.breakpoints.down(600)]: {
+    flexDirection: 'column-reverse',
     '& .customer-button-wrapper': {
+      justifyContent: 'center',
       gap: '15px',
-      flexDirection: 'column',
     },
     '& .MuiButtonBase-root': {
       width: '100%',

@@ -37,7 +37,8 @@ const Header = ({ containerSx }) => {
 };
 
 const container = {
-  maxWidth: '1512px',
+  maxWidth: 'unset!important',
+  padding: '0 15px!important',
 };
 
 const wrapper = theme => ({

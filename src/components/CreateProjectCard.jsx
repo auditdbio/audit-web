@@ -9,6 +9,7 @@ import {
   InputLabel,
   Select,
   Switch,
+  Collapse,
 } from '@mui/material';
 import theme, { radiusOfComponents } from '../styles/themes.js';
 import { useNavigate } from 'react-router-dom/dist';
@@ -17,9 +18,8 @@ import { Form, Formik } from 'formik';
 import SimpleField from './forms/fields/simple-field.jsx';
 import { ProjectLinksList } from './custom/ProjectLinksList.jsx';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack.js';
-import MenuRoundedIcon from '@mui/icons-material/MenuRounded';
-import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import CreateNewFolderIcon from '@mui/icons-material/CreateNewFolder';
+import PersonAddAlt1Icon from '@mui/icons-material/PersonAddAlt1';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import AuditorSearchModal from './AuditorSearchModal.jsx';
 import TagsField from './forms/tags-field/tags-field.jsx';
@@ -40,7 +40,7 @@ import {
   clearMessage,
   getAuditsRequest,
 } from '../redux/actions/auditAction.js';
-import { AuditRequestsArray } from './custom/AuditRequestsArray.jsx';
+import SaveIcon from '@mui/icons-material/Save';
 import MarkdownEditor from './markdown/Markdown-editor.jsx';
 import SalarySlider from './forms/salary-slider/salary-slider.jsx';
 import CloseProjectModal from './CloseProjectModal.jsx';
@@ -66,6 +66,7 @@ import {
 } from '../redux/actions/githubAction.js';
 import TotalPrice from './forms/TotalPrice/TotalPrice.jsx';
 import { PROJECT_PARENT_ENTITY } from '../services/file_constants.js';
+import ExpandLessOutlinedIcon from '@mui/icons-material/ExpandLessOutlined.js';
 
 const GoBack = ({ role }) => {
   const location = useLocation();
@@ -100,7 +101,7 @@ const CreateProjectCard = ({ projectInfo }) => {
     projectInfo?.status === DONE || false,
   );
   const { successMessage, errorMessage } = useSelector(s => s.audits);
-  const [closeConfirmIsOpen, setCloseConfirmIsOpen] = useState(false);
+  const [showFull, setShowFull] = useState(false);
   const [state, setState] = useState(false);
   const [isDirty, setIsDirty] = useState(false);
   const [changeStatus, setChangeStatus] = useState(false);
@@ -405,54 +406,106 @@ const CreateProjectCard = ({ projectInfo }) => {
                     {/*  <AuditRequestsArray requests={auditRequests ?? []} />*/}
                     {/*</Box>*/}
                   </Box>
-                  <Box
-                    className="description-box"
-                    sx={descriptionFieldWrapper(
-                      touched.description && errors.description,
-                    )}
+                  <Collapse
+                    in={true}
+                    collapsedSize={showFull ? undefined : 150}
                   >
-                    <MarkdownEditor
-                      name="description"
-                      setFieldTouched={setFieldTouched}
-                      fastSave
-                      mdProps={{
-                        view: { menu: true, md: true, html: !matchXs },
-                      }}
-                      parentEntity={
-                        projectInfo?.id
-                          ? {
-                              id: projectInfo.id,
-                              source: PROJECT_PARENT_ENTITY,
-                            }
-                          : {}
-                      }
-                    />
-                    {touched.description && errors.description && (
-                      <Typography
-                        sx={{
-                          color: `${theme.palette.error.main}!important`,
-                          fontSize: '14px',
-                        }}
-                      >
-                        {errors.description}
-                      </Typography>
-                    )}
-                  </Box>
-                  <Box sx={buttonGroup}>
-                    <Button
-                      variant="contained"
-                      sx={inviteButton}
-                      onClick={() => {
-                        handleInviteModal(handleSubmit);
-                      }}
-                      {...addTestsLabel('invite-button')}
+                    <Box
+                      className="description-box"
+                      sx={descriptionFieldWrapper(
+                        touched.description && errors.description,
+                        showFull,
+                      )}
                     >
-                      Invite auditor
-                    </Button>
-                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                      <MarkdownEditor
+                        name="description"
+                        setFieldTouched={setFieldTouched}
+                        fastSave
+                        mdProps={{
+                          view: { menu: true, md: true, html: !matchXs },
+                        }}
+                        parentEntity={
+                          projectInfo?.id
+                            ? {
+                                id: projectInfo.id,
+                                source: PROJECT_PARENT_ENTITY,
+                              }
+                            : {}
+                        }
+                      />
+                      {touched.description && errors.description && (
+                        <Typography
+                          sx={{
+                            color: `${theme.palette.error.main}!important`,
+                            fontSize: '14px',
+                          }}
+                        >
+                          {errors.description}
+                        </Typography>
+                      )}
+                    </Box>
+                  </Collapse>
+                  <Button
+                    sx={[readAllButton(theme, showFull)]}
+                    variant={'outlined'}
+                    onClick={() => setShowFull(!showFull)}
+                  >
+                    {showFull ? 'Hide' : 'Show'}
+                    <ExpandLessOutlinedIcon
+                      sx={[
+                        showFull ? {} : { transform: 'rotate(180deg)' },
+                        {
+                          transition: '0.2s',
+                          // marginRight: '0',
+                          // marginLeft: 'auto',
+                          width: '20px',
+                          height: '20px',
+                        },
+                      ]}
+                    />
+                  </Button>
+                  <Box sx={buttonGroup}>
+                    <Tooltip
+                      title={'Invite auditor'}
+                      arrow={true}
+                      placement="top"
+                    >
+                      <Button
+                        variant="contained"
+                        sx={[buttonSx]}
+                        onClick={() => {
+                          handleInviteModal(handleSubmit);
+                        }}
+                        {...addTestsLabel('invite-button')}
+                      >
+                        <PersonAddAlt1Icon />
+                        {/*Invite auditor*/}
+                      </Button>
+                    </Tooltip>
+                    <Tooltip
+                      title={editMode ? 'Save changes' : 'Create project'}
+                      arrow={true}
+                      placement="top"
+                    >
+                      <Button
+                        type="submit"
+                        variant="contained"
+                        sx={[buttonSx]}
+                        {...addTestsLabel(
+                          `${editMode ? 'save' : 'create'}-button`,
+                        )}
+                      >
+                        {editMode ? <SaveIcon /> : <CreateNewFolderIcon />}
+                      </Button>
+                    </Tooltip>
+                    <Tooltip
+                      title="Projects are hidden by default, you can change the visibility."
+                      arrow={true}
+                      placement="top"
+                    >
                       <Button
                         variant="outlined"
-                        sx={[publishButton, { width: '100%' }]}
+                        sx={[buttonSx]}
                         type="button"
                         color={'secondary'}
                         onClick={() => {
@@ -478,50 +531,9 @@ const CreateProjectCard = ({ projectInfo }) => {
                         ) : (
                           <VisibilityOffIcon fontSize={'small'} />
                         )}
-                        project
                       </Button>
-                      <Button
-                        color={'secondary'}
-                        sx={{
-                          minWidth: '15px',
-                          marginLeft: '7px',
-                          paddingY: '3px',
-                          marginRight: '-45px',
-                        }}
-                      >
-                        <Tooltip
-                          title="Projects are hidden by default, you can change the visibility."
-                          arrow={true}
-                          placement="top"
-                        >
-                          <QuestionMarkIcon fontSize={'small'} />
-                        </Tooltip>
-                      </Button>
-                    </Box>
-                    {/*<Button*/}
-                    {/*  variant={'contained'}*/}
-                    {/*  sx={publishButton}*/}
-                    {/*  disabled={*/}
-                    {/*    isClosed || !projectInfo || !!getSearchParam.get('copy')*/}
-                    {/*  }*/}
-                    {/*  onClick={() => setCloseConfirmIsOpen(true)}*/}
-                    {/*  {...addTestsLabel('close-project-button')}*/}
-                    {/*>*/}
-                    {/*  {isClosed ? 'Project closed' : 'Close the project'}*/}
-                    {/*</Button>*/}
-                    {/*<Button sx={menuButtonSx}>*/}
-                    {/*  <MenuRoundedIcon sx={menuButtonIconSx} />*/}
-                    {/*</Button>*/}
+                    </Tooltip>
                   </Box>
-                  <Button
-                    type="submit"
-                    variant="contained"
-                    // sx={submitButton}
-                    sx={[inviteButton]}
-                    {...addTestsLabel(`${editMode ? 'save' : 'create'}-button`)}
-                  >
-                    {editMode ? 'Save changes' : 'Create'}
-                  </Button>
                 </Box>
               </Form>
             </Box>
@@ -541,10 +553,13 @@ const linkFieldWrapper = theme => ({
     width: '100%',
   },
   [theme.breakpoints.down(500)]: {
-    flexDirection: 'column',
+    // flexDirection: 'column',
+    '& .github-wrapper': {
+      width: 'unset',
+    },
     gap: '10px',
     '& .field-wrapper': {
-      width: '100%',
+      // width: '100%',
     },
   },
 });
@@ -553,71 +568,96 @@ const mainBox = theme => ({
   position: 'relative',
   display: 'flex',
   flexDirection: 'column',
-  paddingTop: '40px',
   '& .editor-container': {
     borderBottom: 'unset!important',
-  },
-  [theme.breakpoints.down('xs')]: {
-    paddingTop: '30x',
   },
 });
 
 const backButtonSx = theme => ({
   position: 'absolute',
-  left: '30px',
-  top: '40px',
+  left: '-5px',
+  top: '5px',
   [theme.breakpoints.down('sm')]: {
-    top: '5px',
+    top: '0px',
     left: 0,
+    minWidth: 'unset',
   },
 });
 
 const wrapper = theme => ({
-  padding: '30px 90px 70px',
+  padding: '50px 30px 60px',
   display: 'flex',
   flexDirection: 'column',
-  [theme.breakpoints.down('sm')]: {
-    padding: '30px 20px',
-  },
   [theme.breakpoints.down('xs')]: {
     '& form': {
       width: '100%',
     },
     width: '100%',
     alignItems: 'center',
+    padding: '50px 10px',
+  },
+});
+
+const buttonSx = theme => ({
+  padding: '8.5px 0',
+  fontSize: '16px',
+  textTransform: 'unset',
+  fontWeight: 600,
+  width: '50px!important',
+  minWidth: '50px',
+  borderRadius: '10px',
+  height: '44px',
+});
+
+const readAllButton = (theme, showFull) => ({
+  p: '3px',
+  paddingX: '8px',
+  minWidth: 'unset',
+  textTransform: 'unset',
+  boxShadow: 'unset',
+  fontWeight: 600,
+  borderRadius: '8px',
+  marginTop: !showFull ? '-22px' : 0,
+  width: '280px',
+  marginX: 'auto',
+  display: 'flex',
+  alignItems: 'center',
+  gap: '7px',
+  // maxWidth: '300px',
+  [theme.breakpoints.down('xs')]: {
+    fontSize: '16px',
   },
 });
 
 const buttonGroup = {
   // width: "100%",
-  width: '220px',
+  // width: '220px',
   display: 'flex',
   alignSelf: 'center',
   gap: '20px',
-  flexDirection: 'column',
 };
 
 const inviteButton = {
   backgroundColor: theme.palette.primary.main,
   textTransform: 'none',
   boxShadow: '0',
-  maxHeight: '30px',
+  maxHeight: '36px',
   padding: '8px 42px',
   whiteSpace: 'nowrap',
   color: '#FCFAF6',
   fontWeight: '600',
   borderRadius: '4px',
-  width: '220px',
+  width: '180px',
   margin: '0 auto',
+  height: '36px',
   // width: '100%',
-  fontSize: '14px',
+  fontSize: '16px',
   // paddingY: "11px",
   ':hover': {
     boxShadow: '0',
   },
   [theme.breakpoints.down('sm')]: {
     padding: '3px 15px',
-    fontSize: '10px',
   },
 };
 
@@ -625,25 +665,19 @@ const publishButton = {
   // backgroundColor: theme.palette.secondary.main,
   textTransform: 'none',
   boxShadow: '0',
-  maxHeight: '30px',
-  padding: '8px 42px',
+  maxHeight: '36px',
+  width: '180px',
+  // padding: '8px 42px',
   // whiteSpace: 'nowrap',
   // color: '#FCFAF6',
+  height: '36px',
   fontWeight: '600',
   borderRadius: '4px',
   // maxWidth: '180px',
   // margin: '0 auto',
-  fontSize: '14px',
+  fontSize: '16px',
   '& svg': {
     marginRight: '7px',
-  },
-  // paddingY: "11px",
-  // ':hover': {
-  //   boxShadow: '0',
-  // },
-  [theme.breakpoints.down('sm')]: {
-    padding: '3px 15px',
-    fontSize: '10px',
   },
 };
 
@@ -658,11 +692,11 @@ const formWrapper = theme => ({
   display: 'flex',
   height: '100%',
   width: '100%',
-
-  justifyContent: 'space-between',
+  gap: '16px',
+  // justifyContent: 'space-between',
   // gap: "175px",
   [theme.breakpoints.down('xs')]: {
-    gap: '16px',
+    // gap: '16px',
     flexDirection: 'column',
   },
 });
@@ -695,7 +729,7 @@ const fieldWrapper = theme => ({
   flexDirection: 'column',
   // justifyContent: "space-between",
   // maxWidth: "450px",
-  width: '48%',
+  width: '50%',
   gap: '20px',
   [theme.breakpoints.down('md')]: {
     '& .MuiInputBase-root': {
@@ -715,12 +749,16 @@ const fieldWrapper = theme => ({
     width: '100%',
   },
 });
-const descriptionFieldWrapper = error => ({
+const descriptionFieldWrapper = (error, showFull) => ({
   width: '100%',
+  maxHeight: showFull ? 'none' : 150,
+  overflow: 'hidden',
+  transition: 'max-height 0.3s ease',
   border: error ? '1px solid red' : '1px solid transparent',
-  // '& .rc-md-editor': {
-  //   borderBottom: '1px solid #e0e0e0!important',
-  // },
+  '& .rc-md-editor': {
+    height: '100%!important',
+    minHeight: '300px',
+  },
 });
 
 const formAllFields = {

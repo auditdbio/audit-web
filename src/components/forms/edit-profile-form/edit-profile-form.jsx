@@ -2,6 +2,8 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Field, Form, Formik } from 'formik';
 import * as Yup from 'yup';
+import axios from 'axios';
+import Cookies from 'js-cookie';
 import {
   Box,
   Button,
@@ -29,6 +31,8 @@ import {
 import { useNavigate } from 'react-router-dom/dist';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { history } from '../../../services/history.js';
+import { ASSET_URL } from '../../../services/urls.js';
+import CustomSnackbar from '../../custom/CustomSnackbar.jsx';
 
 const GoBack = ({ role, newLinkId }) => {
   const navigate = useNavigate();
@@ -50,11 +54,17 @@ const EditProfileForm = ({ role, newLinkId }) => {
   const matchSm = useMediaQuery(theme.breakpoints.down('sm'));
   const matchXs = useMediaQuery(theme.breakpoints.down('xs'));
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   const { user } = useSelector(s => s.user);
   const { customer } = useSelector(s => s.customer);
   const { auditor } = useSelector(s => s.auditor);
-  const navigate = useNavigate();
+
+  const formData = new FormData();
+
+  const [error, setError] = useState(null);
   const [isDirty, setIsDirty] = useState(false);
+  const [deletedAvatar, setDeletedAvatar] = useState(null);
 
   const data = useMemo(() => {
     if (role === AUDITOR) {
@@ -69,6 +79,68 @@ const EditProfileForm = ({ role, newLinkId }) => {
     return user.is_new && usernameParts?.length > 1
       ? usernameParts[usernameParts.length - 1]
       : '';
+  };
+
+  const sendAvatar = async (withSave = false) => {
+    if (formData.get('file')) {
+      try {
+        const { data } = await axios.post(ASSET_URL, formData, {
+          headers: { Authorization: 'Bearer ' + Cookies.get('token') },
+        });
+        const avatar = data.id;
+        if (withSave) {
+          if (role === AUDITOR) {
+            dispatch(updateAuditor({ avatar }, false));
+          } else {
+            dispatch(updateCustomer({ avatar }, false));
+          }
+        }
+
+        return avatar;
+      } catch (err) {
+        setError('Error while uploading file');
+        console.error(err);
+      } finally {
+        formData.delete('file');
+        formData.delete('private');
+        formData.delete('original_name');
+        formData.delete('file_entity');
+        formData.delete('parent_entity_id');
+        formData.delete('parent_entity_source');
+      }
+    }
+    return null;
+  };
+
+  const submitChanges = async values => {
+    const avatar = await sendAvatar();
+
+    setIsDirty(false);
+    if (deletedAvatar) {
+      try {
+        await axios.delete(`${ASSET_URL}/id/${deletedAvatar}`, {
+          headers: { Authorization: 'Bearer ' + Cookies.get('token') },
+        });
+      } catch (e) {}
+    }
+
+    if (avatar) {
+      values.avatar = avatar;
+    }
+
+    if (role !== AUDITOR) {
+      if (!data.first_name && !data.last_name) {
+        dispatch(createCustomer(values));
+      } else {
+        dispatch(updateCustomer(values));
+      }
+    } else {
+      if (!data.first_name && !data.last_name) {
+        dispatch(createAuditor(values));
+      } else {
+        dispatch(updateAuditor(values));
+      }
+    }
   };
 
   if (!data) {
@@ -98,22 +170,7 @@ const EditProfileForm = ({ role, newLinkId }) => {
         validationSchema={EditProfileSchema}
         validateOnBlur={false}
         validateOnChange={false}
-        onSubmit={values => {
-          setIsDirty(false);
-          if (role !== AUDITOR) {
-            if (!data.first_name && !data.last_name) {
-              dispatch(createCustomer(values));
-            } else {
-              dispatch(updateCustomer(values));
-            }
-          } else {
-            if (!data.first_name && !data.last_name) {
-              dispatch(createAuditor(values));
-            } else {
-              dispatch(updateAuditor(values));
-            }
-          }
-        }}
+        onSubmit={submitChanges}
       >
         {({ handleSubmit, values, setFieldValue, dirty }) => {
           useEffect(() => {
@@ -152,6 +209,13 @@ const EditProfileForm = ({ role, newLinkId }) => {
             <Form onSubmit={handleSubmit}>
               <Box sx={wrapper}>
                 <GoBack role={role} newLinkId={newLinkId} />
+                <CustomSnackbar
+                  autoHideDuration={10000}
+                  open={!!error}
+                  onClose={() => setError(null)}
+                  severity="error"
+                  text={error}
+                />
                 <Box sx={avatarWrapper}>
                   <Box
                     sx={{
@@ -160,7 +224,14 @@ const EditProfileForm = ({ role, newLinkId }) => {
                       flexDirection: 'column',
                     }}
                   >
-                    <AvatarForm name="avatar" role={role} />
+                    <AvatarForm
+                      name="avatar"
+                      role={role}
+                      formData={formData}
+                      setDeletedAvatar={setDeletedAvatar}
+                      setError={setError}
+                      sendAvatar={sendAvatar}
+                    />
                   </Box>
                   {matchSm && (
                     <Box sx={[fieldWrapper, { width: '100%' }]}>

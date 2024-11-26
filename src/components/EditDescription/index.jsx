@@ -96,6 +96,10 @@ const EditDescription = ({ audit, auditRequest, hideChange, isPublic }) => {
                       sx={{
                         border: 'unset',
                       }}
+                      parentEntity={{
+                        id: audit?.id,
+                        source: AUDIT_PARENT_ENTITY,
+                      }}
                     />
                   )}
                   <Box
@@ -138,6 +142,7 @@ const EditDescription = ({ audit, auditRequest, hideChange, isPublic }) => {
                         </Box>
                       )}
                     {!hideChange &&
+                      !isPublic &&
                       (!editMode ? (
                         audit?.status?.toLowerCase() !==
                           RESOLVED.toLowerCase() && (
@@ -229,7 +234,7 @@ const EditDescription = ({ audit, auditRequest, hideChange, isPublic }) => {
                   <Box sx={hideChange ? linksList : {}}>
                     {!hideChange &&
                       (audit?.status?.toLowerCase() !==
-                      RESOLVED.toLowerCase() ? (
+                        RESOLVED.toLowerCase() && !isPublic ? (
                         <Box sx={linksList}>
                           <ProjectLinksList
                             name="scope"
@@ -338,6 +343,7 @@ const linksList = {
 const customerLinksList = {
   display: 'flex',
   flexDirection: 'column',
+  mt: '5px',
   '& p': {
     display: 'flex',
     alignItems: 'center',

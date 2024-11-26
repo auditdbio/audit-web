@@ -21,6 +21,7 @@ import {
   Switch,
   Tabs,
   Tab,
+  FormControlLabel,
 } from '@mui/material';
 import theme from '../styles/themes.js';
 import { CustomCard } from '../components/custom/Card.jsx';
@@ -32,6 +33,7 @@ import {
   editAuditCustomer,
   getAudit,
   getAuditFeedback,
+  handlePublishAudit,
   startAudit,
 } from '../redux/actions/auditAction.js';
 import AuditUpload from '../components/forms/audit-upload/index.jsx';
@@ -81,15 +83,19 @@ import AddIcon from '@mui/icons-material/Add';
 import { AUDIT_PARENT_ENTITY } from '../services/file_constants.js';
 import DraftReportIcon from '../components/icons/DraftReportIcon.jsx';
 
-const AuditOffer = () => {
-  const { auditId } = useParams();
+const AuditOffer = ({ publicView, setPublicView }) => {
+  const { id: auditId } = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const matchXs = useMediaQuery(theme.breakpoints.down('xs'));
   const matchXxs = useMediaQuery(theme.breakpoints.down(540));
   const descriptionRef = useRef();
-
+  const {
+    audit,
+    successMessage: auditSuccessMessage,
+    error: auditError,
+  } = useSelector(s => s.audits);
   const [resolveConfirmation, setResolveConfirmation] = useState(false);
   const [allIssuesClosed, setAllIssuesClosed] = useState(false);
   const [auditDBWorkflow, setAuditDBWorkflow] = useState(true);
@@ -104,14 +110,8 @@ const AuditOffer = () => {
   const role = useSelector(s => s.user?.user?.current_role);
   const { successMessage, error } = useSelector(s => s.issues);
   const { issues, issuesAuditId } = useSelector(s => s.issues);
-  const {
-    audit,
-    successMessage: auditSuccessMessage,
-    error: auditError,
-  } = useSelector(s => s.audits);
   const { user } = useSelector(s => s.user);
   const { chatList } = useSelector(s => s.chat);
-  const notFound = useSelector(s => s.notFound.error);
   const { auditor } = useSelector(s => s.auditor);
   const { customer } = useSelector(s => s.customer);
   const [conclusionState, setConclusionState] = useState('');
@@ -143,13 +143,6 @@ const AuditOffer = () => {
   }, [audit?.id]);
 
   useEffect(() => {
-    dispatch(getAudit(auditId));
-    return () => {
-      dispatch({ type: CLEAR_AUDIT });
-    };
-  }, [auditId]);
-
-  useEffect(() => {
     setTimeout(() => {
       if (
         descriptionRef?.current?.children[0]?.children[0]?.offsetHeight > 150
@@ -168,7 +161,7 @@ const AuditOffer = () => {
   useEffect(() => {
     if (
       audit?.status?.toLowerCase() === RESOLVED.toLowerCase() &&
-      !issues?.length
+      !audit?.issues?.length
     ) {
       setAuditDBWorkflow(false);
     }
@@ -268,144 +261,175 @@ const AuditOffer = () => {
     // }
   };
 
-  if (!audit?.id && !notFound) {
-    return (
-      <Layout>
-        <Headings title="Audit" />
-        <CustomCard
-          sx={[wrapper, { height: '100%', justifyContent: 'center' }]}
-        >
-          <Loader />
-        </CustomCard>
-      </Layout>
-    );
-  }
-
-  if (audit && !notFound) {
-    return (
-      <Layout
-        sx={layoutSx}
-        containerSx={{
-          maxWidth: 'unset!important',
-          padding: '0 35px!important',
-        }}
-      >
-        <Headings title={`${audit?.project_name} | Audit`} />
-        <ResolveAuditConfirmation
-          isOpen={resolveConfirmation}
-          setIsOpen={setResolveConfirmation}
-          audit={audit}
+  return (
+    <>
+      <Headings title={`${audit?.project_name}` || 'Audit Info'} />
+      <ResolveAuditConfirmation
+        isOpen={resolveConfirmation}
+        setIsOpen={setResolveConfirmation}
+        audit={audit}
+      />
+      {/*<CustomCard sx={wrapper}>*/}
+      <Box sx={{ width: '100%' }}>
+        <CustomSnackbar
+          autoHideDuration={5000}
+          severity={error || auditError ? 'error' : 'success'}
+          onClose={() => dispatch(clearMessage())}
+          text={error || successMessage || auditSuccessMessage || auditError}
+          open={
+            !!error || !!successMessage || !!auditSuccessMessage || !!auditError
+          }
         />
-        <CustomCard sx={wrapper}>
-          <Box sx={{ width: '100%' }}>
-            <CustomSnackbar
-              autoHideDuration={5000}
-              severity={error || auditError ? 'error' : 'success'}
-              onClose={() => dispatch(clearMessage())}
-              text={
-                error || successMessage || auditSuccessMessage || auditError
-              }
-              open={
-                !!error ||
-                !!successMessage ||
-                !!auditSuccessMessage ||
-                !!auditError
-              }
-            />
 
-            <Box
+        <Box
+          sx={{
+            display: 'flex',
+            width: '100%',
+            justifyContent: 'center',
+            position: 'relative',
+          }}
+        >
+          <Button
+            sx={backButtonSx}
+            onClick={() => {
+              if (localStorage.getItem('prevPath')) {
+                navigate(localStorage.getItem('prevPath'));
+                localStorage.removeItem('prevPath');
+              } else {
+                navigate('/profile/audits');
+              }
+            }}
+            {...addTestsLabel('go-back-button')}
+          >
+            <ArrowBackIcon color="secondary" />
+          </Button>
+          {audit?.status?.toLowerCase() === RESOLVED.toLowerCase() &&
+            audit?.auditor_id === user.id && (
+              <FormControlLabel
+                control={
+                  <Switch
+                    checked={publicView}
+                    onChange={e => setPublicView(e.target.checked)}
+                  />
+                }
+                sx={{
+                  '& .MuiTypography-root': { fontSize: '14px' },
+                  top: '-20px',
+                  position: 'absolute',
+                  right: '30px',
+                }}
+                label="Public preview"
+              />
+            )}
+          <Box sx={headerTitleSx}>
+            <Typography
+              variant="h3"
               sx={{
-                display: 'flex',
                 width: '100%',
-                justifyContent: 'center',
-                position: 'relative',
+                textAlign: 'center',
+                wordBreak: 'break-word',
               }}
             >
-              <Button
-                sx={backButtonSx}
-                onClick={() => {
-                  if (localStorage.getItem('prevPath')) {
-                    navigate(localStorage.getItem('prevPath'));
-                    localStorage.removeItem('prevPath');
-                  } else {
-                    navigate('/profile/audits');
-                  }
-                }}
-                {...addTestsLabel('go-back-button')}
-              >
-                <ArrowBackIcon color="secondary" />
-              </Button>
-              <Box sx={headerTitleSx}>
-                <Typography
-                  variant="h3"
-                  sx={{
-                    width: '100%',
-                    textAlign: 'center',
-                    wordBreak: 'break-word',
-                  }}
-                >
-                  {audit?.project_name}
-                </Typography>
-              </Box>
-              <Button
-                variant="text"
-                color="secondary"
-                sx={[buttonSx, sendMessageButton]}
-                onClick={handleSendMessage}
-                disabled={audit?.customer_id === user.id}
-                {...addTestsLabel('message-button')}
-              >
-                <ChatIcon />
-              </Button>
-            </Box>
+              {audit?.project_name}
+            </Typography>
+          </Box>
+          <Button
+            variant="text"
+            color="secondary"
+            sx={[buttonSx, sendMessageButton]}
+            onClick={handleSendMessage}
+            disabled={audit?.customer_id === user.id}
+            {...addTestsLabel('message-button')}
+          >
+            <ChatIcon />
+          </Button>
+        </Box>
 
-            {showTopInfoButton && (
-              <Box sx={{ width: '100%' }}>
-                <Box
+        {showTopInfoButton && (
+          <Box sx={{ width: '100%' }}>
+            <Box
+              sx={[
+                {
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  mt: '10px',
+                },
+              ]}
+            >
+              <Button
+                sx={[readAllButton]}
+                variant={'outlined'}
+                onClick={() => setShowFullHeader(!showFullHeader)}
+              >
+                {showFullHeader ? <span>Hide</span> : <span>Show</span>}
+                <TelegramIcon sx={{ width: '22px', height: '22px' }} />
+                <EmailIcon sx={{ width: '22px', height: '22px' }} />
+                {audit?.price
+                  ? `${audit?.price} per line`
+                  : `${audit?.total_cost} total cost`}
+                <ExpandLessOutlinedIcon
                   sx={[
+                    showFullHeader ? {} : { transform: 'rotate(180deg)' },
                     {
-                      display: 'flex',
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                      mt: '10px',
+                      transition: '0.2s',
+                      // marginRight: '0',
+                      // marginLeft: 'auto',
+                      width: '20px',
+                      height: '20px',
                     },
                   ]}
-                >
-                  <Button
-                    sx={[readAllButton]}
-                    variant={'outlined'}
-                    onClick={() => setShowFullHeader(!showFullHeader)}
-                  >
-                    {showFullHeader ? <span>Hide</span> : <span>Show</span>}
-                    <TelegramIcon sx={{ width: '22px', height: '22px' }} />
-                    <EmailIcon sx={{ width: '22px', height: '22px' }} />
-                    {audit?.price
-                      ? `${audit?.price} per line`
-                      : `${audit?.total_cost} total cost`}
-                    <ExpandLessOutlinedIcon
-                      sx={[
-                        showFullHeader ? {} : { transform: 'rotate(180deg)' },
-                        {
-                          transition: '0.2s',
-                          // marginRight: '0',
-                          // marginLeft: 'auto',
-                          width: '20px',
-                          height: '20px',
-                        },
-                      ]}
-                    />
-                  </Button>
-                </Box>
-              </Box>
-            )}
+                />
+              </Button>
+            </Box>
+          </Box>
+        )}
 
-            <Box sx={{ width: '100%' }}>
-              {showTopInfoButton ? (
-                <Collapse in={showFullHeader}>
-                  <Box sx={contentWrapper}>
-                    <Box sx={headInfoSx}>
+        <Box sx={{ width: '100%' }}>
+          {showTopInfoButton ? (
+            <Collapse in={showFullHeader}>
+              <Box sx={contentWrapper}>
+                <Box sx={headInfoSx}>
+                  <Box
+                    sx={{
+                      [theme.breakpoints.down('sm')]: {
+                        width: '280px',
+                        paddingRight: '5px',
+                        display: 'flex',
+                        justifyContent: 'flex-start',
+                      },
+                    }}
+                  >
+                    <EditTags audit={audit} confirmed={true} />
+                  </Box>
+                  <Box
+                    sx={{
+                      [theme.breakpoints.down('sm')]: {
+                        width: '280px',
+                        paddingLeft: '5px',
+                        display: 'flex',
+                        justifyContent: 'flex-start',
+                      },
+                    }}
+                  >
+                    <EditPrice audit={audit} user={user} role={role} />
+                  </Box>
+                  <Box
+                    sx={[
+                      { display: 'flex', gap: '10px' },
+                      contactWrapper,
+                      {
+                        marginTop: 'unset',
+                        flexDirection: 'row!important',
+                      },
+                    ]}
+                  >
+                    {audit?.customer_contacts?.email && (
                       <Box
                         sx={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '10px',
                           [theme.breakpoints.down('sm')]: {
                             width: '280px',
                             paddingRight: '5px',
@@ -414,10 +438,26 @@ const AuditOffer = () => {
                           },
                         }}
                       >
-                        <EditTags audit={audit} confirmed={true} />
+                        <EmailIcon sx={{ height: '32px' }} />
+                        <Box sx={{ display: 'grid' }}>
+                          <Tooltip
+                            title={audit?.customer_contacts?.email}
+                            arrow
+                            placement="top"
+                          >
+                            <Typography variant="caption" noWrap={true}>
+                              {audit?.customer_contacts?.email}
+                            </Typography>
+                          </Tooltip>
+                        </Box>
                       </Box>
+                    )}
+                    {audit?.customer_contacts?.telegram && (
                       <Box
                         sx={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '10px',
                           [theme.breakpoints.down('sm')]: {
                             width: '280px',
                             paddingLeft: '5px',
@@ -426,280 +466,220 @@ const AuditOffer = () => {
                           },
                         }}
                       >
-                        <EditPrice audit={audit} user={user} role={role} />
-                      </Box>
-                      <Box
-                        sx={[
-                          { display: 'flex', gap: '10px' },
-                          contactWrapper,
-                          {
-                            marginTop: 'unset',
-                            flexDirection: 'row!important',
-                          },
-                        ]}
-                      >
-                        {audit?.customer_contacts?.email && (
-                          <Box
-                            sx={{
-                              display: 'flex',
-                              alignItems: 'center',
-                              gap: '10px',
-                              [theme.breakpoints.down('sm')]: {
-                                width: '280px',
-                                paddingRight: '5px',
-                                display: 'flex',
-                                justifyContent: 'flex-start',
-                              },
-                            }}
+                        <TelegramIcon sx={{ height: '32px' }} />
+                        <Box sx={{ display: 'grid' }}>
+                          <Tooltip
+                            title={audit?.customer_contacts?.telegram}
+                            arrow
+                            placement="top"
                           >
-                            <EmailIcon sx={{ height: '32px' }} />
-                            <Box sx={{ display: 'grid' }}>
-                              <Tooltip
-                                title={audit?.customer_contacts?.email}
-                                arrow
-                                placement="top"
-                              >
-                                <Typography variant="caption" noWrap={true}>
-                                  {audit?.customer_contacts?.email}
-                                </Typography>
-                              </Tooltip>
-                            </Box>
-                          </Box>
-                        )}
-                        {audit?.customer_contacts?.telegram && (
-                          <Box
-                            sx={{
-                              display: 'flex',
-                              alignItems: 'center',
-                              gap: '10px',
-                              [theme.breakpoints.down('sm')]: {
-                                width: '280px',
-                                paddingLeft: '5px',
-                                display: 'flex',
-                                justifyContent: 'flex-start',
-                              },
-                            }}
-                          >
-                            <TelegramIcon sx={{ height: '32px' }} />
-                            <Box sx={{ display: 'grid' }}>
-                              <Tooltip
-                                title={audit?.customer_contacts?.telegram}
-                                arrow
-                                placement="top"
-                              >
-                                <Typography variant="caption" noWrap={true}>
-                                  {audit?.customer_contacts?.telegram}
-                                </Typography>
-                              </Tooltip>
-                            </Box>
-                          </Box>
-                        )}
+                            <Typography variant="caption" noWrap={true}>
+                              {audit?.customer_contacts?.telegram}
+                            </Typography>
+                          </Tooltip>
+                        </Box>
                       </Box>
-                    </Box>
-                    {audit?.feedback?.rating && (
-                      <Tooltip
-                        title="Feedback from the customer"
-                        arrow
-                        placement="top"
-                      >
-                        <Button
-                          type="button"
-                          onClick={() => setShowFeedback(p => !p)}
-                          sx={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '15px',
-                            color: 'black',
-                          }}
-                        >
-                          <Star size={20} />
-                          {getAverageFeedbackRating(audit?.feedback?.rating)}
-                        </Button>
-                      </Tooltip>
                     )}
                   </Box>
-                </Collapse>
-              ) : (
-                <Box sx={contentWrapper} ref={infoRef}>
-                  <Box sx={headInfoSx}>
-                    <EditTags audit={audit} confirmed={true} />
-                    <EditPrice audit={audit} user={user} role={role} />
+                </Box>
+                {audit?.feedback?.rating && (
+                  <Tooltip
+                    title="Feedback from the customer"
+                    arrow
+                    placement="top"
+                  >
+                    <Button
+                      type="button"
+                      onClick={() => setShowFeedback(p => !p)}
+                      sx={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '15px',
+                        color: 'black',
+                      }}
+                    >
+                      <Star size={20} />
+                      {getAverageFeedbackRating(audit?.feedback?.rating)}
+                    </Button>
+                  </Tooltip>
+                )}
+              </Box>
+            </Collapse>
+          ) : (
+            <Box sx={contentWrapper} ref={infoRef}>
+              <Box sx={headInfoSx}>
+                <EditTags audit={audit} confirmed={true} />
+                <EditPrice audit={audit} user={user} role={role} />
+                <Box
+                  sx={[
+                    { display: 'flex', gap: '10px!important' },
+                    contactWrapper,
+                    {
+                      marginTop: 'unset!important',
+                      flexDirection: 'row!important',
+                    },
+                  ]}
+                >
+                  {audit?.customer_contacts?.email && (
                     <Box
-                      sx={[
-                        { display: 'flex', gap: '10px!important' },
-                        contactWrapper,
-                        {
-                          marginTop: 'unset!important',
-                          flexDirection: 'row!important',
-                        },
-                      ]}
+                      sx={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '10px',
+                      }}
                     >
-                      {audit?.customer_contacts?.email && (
-                        <Box
-                          sx={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '10px',
-                          }}
+                      <EmailIcon sx={{ height: '32px' }} />
+                      <Box sx={{ display: 'grid' }}>
+                        <Tooltip
+                          title={audit?.customer_contacts?.email}
+                          arrow
+                          placement="top"
                         >
-                          <EmailIcon sx={{ height: '32px' }} />
-                          <Box sx={{ display: 'grid' }}>
-                            <Tooltip
-                              title={audit?.customer_contacts?.email}
-                              arrow
-                              placement="top"
-                            >
-                              <Typography variant="caption" noWrap={true}>
-                                {audit?.customer_contacts?.email}
-                              </Typography>
-                            </Tooltip>
-                          </Box>
-                        </Box>
-                      )}
-                      {audit?.customer_contacts?.telegram && (
-                        <Box
-                          sx={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '10px',
-                          }}
-                        >
-                          <TelegramIcon sx={{ height: '32px' }} />
-                          <Box sx={{ display: 'grid' }}>
-                            <Tooltip
-                              title={audit?.customer_contacts?.telegram}
-                              arrow
-                              placement="top"
-                            >
-                              <Typography variant="caption" noWrap={true}>
-                                {audit?.customer_contacts?.telegram}
-                              </Typography>
-                            </Tooltip>
-                          </Box>
-                        </Box>
-                      )}
+                          <Typography variant="caption" noWrap={true}>
+                            {audit?.customer_contacts?.email}
+                          </Typography>
+                        </Tooltip>
+                      </Box>
                     </Box>
-                  </Box>
-                  {audit?.feedback?.rating && (
-                    <Tooltip
-                      title="Feedback from the customer"
-                      arrow
-                      placement="top"
+                  )}
+                  {audit?.customer_contacts?.telegram && (
+                    <Box
+                      sx={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '10px',
+                      }}
                     >
-                      <Button
-                        type="button"
-                        onClick={() => setShowFeedback(p => !p)}
-                        sx={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: '15px',
-                          color: 'black',
-                        }}
-                      >
-                        <Star size={20} />
-                        {getAverageFeedbackRating(audit?.feedback?.rating)}
-                      </Button>
-                    </Tooltip>
+                      <TelegramIcon sx={{ height: '32px' }} />
+                      <Box sx={{ display: 'grid' }}>
+                        <Tooltip
+                          title={audit?.customer_contacts?.telegram}
+                          arrow
+                          placement="top"
+                        >
+                          <Typography variant="caption" noWrap={true}>
+                            {audit?.customer_contacts?.telegram}
+                          </Typography>
+                        </Tooltip>
+                      </Box>
+                    </Box>
                   )}
                 </Box>
-              )}
-              <Box sx={infoWrapper} className={'qwe'}>
-                {/*<Box sx={descriptionSx(showFull)}>*/}
-                {/*  <Box ref={descriptionRef}>*/}
-                {/*    <Markdown value={audit?.description} />*/}
-                {/*  </Box>*/}
-                {/*</Box>*/}
-                {/*{audit?.conclusion && (*/}
-                <Tabs
-                  value={tab}
-                  onChange={(e, newValue) => {
-                    setShowFull(false);
-                    setTab(newValue);
-                    if (editConclusion) {
-                      setEditConclusion(false);
-                    }
-                  }}
-                  textColor={'primary'}
-                  indicatorColor="primary"
-                  aria-label="secondary tabs example"
-                  sx={tabsSx}
+              </Box>
+              {audit?.feedback?.rating && (
+                <Tooltip
+                  title="Feedback from the customer"
+                  arrow
+                  placement="top"
                 >
-                  {/*{tab !== 0 && (*/}
-                  <Tab
-                    sx={[tabSx, tab === 1 ? { color: '#52176D' } : {}]}
-                    value={0}
-                    label={'Description'}
-                  />
-                  {/*)}*/}
-                  {audit?.conclusion ? (
-                    <Tab
-                      sx={[tabSx, tab === 0 ? { color: '#52176D' } : {}]}
-                      value={1}
-                      label={'Conclusion'}
-                    />
-                  ) : (
-                    audit?.status?.toLowerCase() !== RESOLVED.toLowerCase() && (
-                      <Button
-                        sx={{
-                          textTransform: 'unset',
-                          minHeight: '32px',
-                          height: '38.5px!important',
-                          color: tab === 0 ? '#52176D' : '',
-                          fontWeight: 600,
-                          borderRadius: '0 8px 8px 0',
-                          fontSize: '20px',
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: '3px',
-                          [theme.breakpoints.down('md')]: {
-                            height: '34.5px',
-                            fontSize: '16px',
-                          },
-                        }}
-                        disabled={
-                          audit?.status?.toLowerCase() ===
-                          WAITING_FOR_AUDITS.toLowerCase()
-                        }
-                        onClick={() => handleEditSaveConclusion()}
-                      >
-                        <AddIcon sx={{ width: '18px', height: '18px' }} />
-                        <span>Сonclusion</span>
-                      </Button>
-                    )
-                  )}
-                </Tabs>
-                {/*)}*/}
-                {tab === 0 ? (
-                  <Collapse
-                    in={true}
-                    collapsedSize={showFull ? undefined : 150}
+                  <Button
+                    type="button"
+                    onClick={() => setShowFeedback(p => !p)}
+                    sx={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '15px',
+                      color: 'black',
+                    }}
                   >
-                    <Box
-                      sx={descriptionWrapper(theme, showFull)}
-                      ref={descriptionRef}
-                    >
-                      <EditDescription audit={audit} />
-                    </Box>
-                  </Collapse>
-                ) : (
-                  <Collapse
-                    in={true}
-                    collapsedSize={showFull ? undefined : 150}
+                    <Star size={20} />
+                    {getAverageFeedbackRating(audit?.feedback?.rating)}
+                  </Button>
+                </Tooltip>
+              )}
+            </Box>
+          )}
+          <Box sx={infoWrapper} className={'qwe'}>
+            {/*<Box sx={descriptionSx(showFull)}>*/}
+            {/*  <Box ref={descriptionRef}>*/}
+            {/*    <Markdown value={audit?.description} />*/}
+            {/*  </Box>*/}
+            {/*</Box>*/}
+            {/*{audit?.conclusion && (*/}
+            <Tabs
+              value={tab}
+              onChange={(e, newValue) => {
+                setShowFull(false);
+                setTab(newValue);
+                if (editConclusion) {
+                  setEditConclusion(false);
+                }
+              }}
+              textColor={'primary'}
+              indicatorColor="primary"
+              aria-label="secondary tabs example"
+              sx={tabsSx}
+            >
+              {/*{tab !== 0 && (*/}
+              <Tab
+                sx={[tabSx, tab === 1 ? { color: '#52176D' } : {}]}
+                value={0}
+                label={'Description'}
+              />
+              {/*)}*/}
+              {audit?.conclusion ? (
+                <Tab
+                  sx={[tabSx, tab === 0 ? { color: '#52176D' } : {}]}
+                  value={1}
+                  label={'Conclusion'}
+                />
+              ) : (
+                audit?.status?.toLowerCase() !== RESOLVED.toLowerCase() && (
+                  <Button
+                    sx={{
+                      textTransform: 'unset',
+                      minHeight: '32px',
+                      height: '38.5px!important',
+                      color: tab === 0 ? '#52176D' : '',
+                      fontWeight: 600,
+                      borderRadius: '0 8px 8px 0',
+                      fontSize: '20px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '3px',
+                      [theme.breakpoints.down('md')]: {
+                        height: '34.5px',
+                        fontSize: '16px',
+                      },
+                    }}
+                    disabled={
+                      audit?.status?.toLowerCase() ===
+                      WAITING_FOR_AUDITS.toLowerCase()
+                    }
+                    onClick={() => handleEditSaveConclusion()}
                   >
-                    <Box sx={descriptionWrapper(theme, showFull)}>
-                      <Formik
-                        initialValues={{
-                          id: audit?.id,
-                          conclusion: audit?.conclusion || '',
-                        }}
-                        onSubmit={values => {
-                          dispatch(editAuditCustomer(values));
-                        }}
-                      >
-                        {({ handleSubmit, values }) => {
-                          useEffect(() => {
-                            setConclusionState(values?.conclusion);
-                          }, [values?.conclusion]);
+                    <AddIcon sx={{ width: '18px', height: '18px' }} />
+                    <span>Сonclusion</span>
+                  </Button>
+                )
+              )}
+            </Tabs>
+            {/*)}*/}
+            {tab === 0 ? (
+              <Collapse in={true} collapsedSize={showFull ? undefined : 150}>
+                <Box
+                  sx={descriptionWrapper(theme, showFull)}
+                  ref={descriptionRef}
+                >
+                  <EditDescription audit={audit} />
+                </Box>
+              </Collapse>
+            ) : (
+              <Collapse in={true} collapsedSize={showFull ? undefined : 150}>
+                <Box sx={descriptionWrapper(theme, showFull)}>
+                  <Formik
+                    initialValues={{
+                      id: audit?.id,
+                      conclusion: audit?.conclusion || '',
+                    }}
+                    onSubmit={values => {
+                      dispatch(editAuditCustomer(values));
+                    }}
+                  >
+                    {({ handleSubmit, values }) => {
+                      useEffect(() => {
+                        setConclusionState(values?.conclusion);
+                      }, [values?.conclusion]);
 
                           return (
                             <Form onSubmit={handleSubmit}>
@@ -1039,51 +1019,52 @@ const AuditOffer = () => {
                             {/*Resolve audit*/}
                           </Button>
                         </span>
-                      </Tooltip>
-                    </Box>
-                  ) : (
-                    <Box
-                      sx={[
-                        historyWrapperSx,
-                        matchXxs ? { display: 'none' } : {},
-                      ]}
-                    />
-                  )}
+                  </Tooltip>
                 </Box>
-                <Formik
-                  initialValues={{
-                    id: audit?.id,
-                    status: 'done',
-                    report: audit?.report || '',
-                    report_name: audit?.report_name || '',
-                  }}
-                  validationSchema={SubmitValidation}
-                  onSubmit={values => {
-                    dispatch(addReportAudit(values));
-                  }}
-                >
-                  {({ handleSubmit }) => {
-                    return (
-                      <Form onSubmit={handleSubmit}>
-                        {!auditDBWorkflow &&
-                          audit?.status?.toLowerCase() !==
-                            WAITING_FOR_AUDITS.toLowerCase() && (
-                            <Box sx={fileWrapper}>
-                              <Typography sx={subTitleSx}>
-                                Upload audit
-                              </Typography>
-                              <Box sx={{ display: 'flex' }}>
-                                <AuditUpload
-                                  disabled={audit?.status === SUBMITED}
-                                  auditId={audit?.id}
-                                  auditorId={audit?.auditor_id}
-                                  auditReportName={audit?.report_name}
-                                  customerId={audit?.customer_id}
-                                  name="report"
-                                />
-                              </Box>
-                            </Box>
-                          )}
+              ) : (
+                <Box
+                  sx={[
+                    historyWrapperSx,
+                    matchXxs ? { display: 'none' } : {},
+                  ]}
+                />
+              )}
+            </Box>
+            <Formik
+              initialValues={{
+                id: audit?.id,
+                status: 'done',
+                report: audit?.report || '',
+                report_name: audit?.report_name || '',
+              }}
+              validationSchema={SubmitValidation}
+              onSubmit={values => {
+                dispatch(addReportAudit(values));
+              }}
+            >
+              {({ handleSubmit, setFieldValue }) => {
+                return (
+                  <Form onSubmit={handleSubmit}>
+                    {!auditDBWorkflow &&
+                      audit?.status?.toLowerCase() !==
+                        WAITING_FOR_AUDITS.toLowerCase() && (
+                        <Box sx={fileWrapper}>
+                          <Typography sx={subTitleSx}>
+                            Upload audit
+                          </Typography>
+                          <Box sx={{ display: 'flex' }}>
+                            <AuditUpload
+                              disabled={audit?.status === SUBMITED}
+                              auditId={audit?.id}
+                              auditorId={audit?.auditor_id}
+                              auditReportName={audit?.report_name}
+                              customerId={audit?.customer_id}
+                              name="report"
+                              setFieldValue={setFieldValue}
+                            />
+                          </Box>
+                        </Box>
+                      )}
 
                         {!auditDBWorkflow && (
                           <Box
@@ -1141,34 +1122,22 @@ const AuditOffer = () => {
                 ) : null}
               </Box>
             )}
-        </CustomCard>
+        {/*</CustomCard>*/}
 
-        <AuditFeedbackModal
-          feedback={audit?.feedback}
-          isOpen={showFeedback}
-          handleClose={() => setShowFeedback(false)}
-          readOnly
-        />
-      </Layout>
-    );
-  }
-
-  if (notFound && !audit?.id) {
-    return <NotFound role={role} />;
-  }
+      <AuditFeedbackModal
+        feedback={audit?.feedback}
+        isOpen={showFeedback}
+        handleClose={() => setShowFeedback(false)}
+        readOnly
+      />
+    </>
+  );
 };
 
 export default AuditOffer;
 
 const SubmitValidation = Yup.object().shape({
   report: Yup.string().required('File is required'),
-});
-
-const layoutSx = theme => ({
-  padding: '10px!important',
-  [theme.breakpoints.down(780)]: {
-    padding: '10px 0!important',
-  },
 });
 
 const tabsSx = theme => ({
@@ -1260,6 +1229,7 @@ const headInfoSx = theme => ({
 
 const historyWrapperSx = theme => ({
   width: '180px!important',
+  // width: '115px!important',
   '& .btn-history,': {
     width: '50px',
     minWidth: '50px',
@@ -1588,8 +1558,8 @@ const buttonSx = theme => ({
 const sendMessageButton = theme => ({
   width: 'unset!important',
   position: 'absolute',
-  top: '-15px',
-  right: '-15px',
+  top: '-20px',
+  right: '-20px',
   paddingY: 'unset!important',
   marginRight: 'unset',
   minWidth: 'unset',
