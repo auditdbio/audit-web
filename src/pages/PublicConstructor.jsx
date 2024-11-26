@@ -139,7 +139,7 @@ const PublicConstructor = ({ saved, isPublic }) => {
     setFieldValue('tags', []);
     setFieldValue('issues', []);
     setFieldValue('isCreated', false);
-    setFieldValue('auditor_name', '');
+    !isAuth() ? setFieldValue('auditor_name', '') : null;
     setFieldValue('auditId', Date.now());
     dispatch(handleResetPublicAudit());
     localStorage.removeItem('report');
@@ -433,7 +433,7 @@ const PublicConstructor = ({ saved, isPublic }) => {
                               <Box sx={tagsWrapperSx}>
                                 <Box sx={{ width: '100%' }}>
                                   <TagsField
-                                    size={matchMd ? 'small' : 'medium'}
+                                    size={'small'}
                                     name="tags"
                                     label="Tags"
                                     setFieldTouched={setFieldTouched}
@@ -453,7 +453,7 @@ const PublicConstructor = ({ saved, isPublic }) => {
                                   }}
                                 >
                                   <TagsField
-                                    size={matchMd ? 'small' : 'medium'}
+                                    size={'small'}
                                     name="scope"
                                     label="Project links"
                                     setFieldTouched={setFieldTouched}
@@ -703,14 +703,26 @@ const tagsWrapperSx = theme => ({
   gap: '10px',
   my: '20px',
   '& input': {
-    paddingY: '11px',
+    fontSize: '22px!important',
+    paddingY: '8px!important',
   },
   '& label': {
-    top: '-5px',
+    top: '0px!important',
+    fontSize: '20px!important',
+  },
+  [theme.breakpoints.down('lg')]: {
+    '& label': {
+      fontSize: '18px!important',
+      top: '3px!important',
+    },
+    // '& input': {
+    //   paddingY: '1px',
+    // },
   },
   [theme.breakpoints.down('md')]: {
     '& label': {
-      top: '2px',
+      fontSize: '16px!important',
+      // top: '3px!important',
     },
     // '& input': {
     //   paddingY: '1px',
@@ -851,6 +863,16 @@ const fieldsWrapperSx = theme => ({
   display: 'flex',
   gap: '20px',
   justifyContent: 'center',
+  [theme.breakpoints.down('lg')]: {
+    '& label': {
+      top: '3px!important',
+    },
+  },
+  [theme.breakpoints.down('md')]: {
+    '& label': {
+      top: '3px!important',
+    },
+  },
   [theme.breakpoints.down('sm')]: {
     flexWrap: 'wrap',
   },

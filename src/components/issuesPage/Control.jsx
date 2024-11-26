@@ -361,8 +361,6 @@ const Control = ({
                               backgroundColor: 'rgba(0, 0, 0, 0.12)',
                             },
                           },
-                          (isPublic || saved) && xss ? publicBtnSx : {},
-                          isPublic || saved ? singleButtonSx : {},
                         ]}
                         // onClick={handleNewIssue}
                         {...addTestsLabel('new-issue-button')}
@@ -376,11 +374,7 @@ const Control = ({
                       <Button
                         variant="contained"
                         color="primary"
-                        sx={[
-                          buttonSx,
-                          (isPublic || saved) && xss ? publicBtnSx : {},
-                          isPublic || saved ? singleButtonSx : {},
-                        ]}
+                        sx={[buttonSx]}
                         disabled={
                           audit?.status?.toLowerCase() ===
                           RESOLVED.toLowerCase()
@@ -611,9 +605,6 @@ const publicBtnWrapper = theme => ({
   mb: '10px',
   justifyContent: 'center',
   gap: '15px',
-  [theme.breakpoints.down(690)]: {
-    flexDirection: 'column-reverse',
-  },
 });
 
 const wrapper = theme => ({
@@ -632,9 +623,6 @@ const wrapperPublic = theme => ({
   width: '100%',
   mb: '10px',
   gap: '15px',
-  [theme.breakpoints.down(555)]: {
-    flexDirection: 'column-reverse',
-  },
 });
 
 const searchBlock = theme => ({
