@@ -60,7 +60,7 @@ const formLabelSx = theme => ({
 const fieldSx = theme => ({
   '& input': {
     paddingLeft: '35px',
-    paddingY: '11.5px',
+    paddingY: '10px',
   },
   '& .MuiFormLabel-root': {
     top: '-5px',

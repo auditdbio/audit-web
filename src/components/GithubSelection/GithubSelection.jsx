@@ -394,6 +394,7 @@ const githubBtnSx = theme => ({
   width: '50px!important',
   minWidth: '50px',
   borderRadius: '10px',
+  height: '44px',
   [theme.breakpoints.down('md')]: {
     padding: '10px 0',
   },
