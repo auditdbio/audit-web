@@ -310,7 +310,7 @@ const PublicConstructor = ({ saved, isPublic }) => {
                         <Tabs
                           value={tab}
                           onChange={(e, newValue) => {
-                            setShowFull(false);
+                            // setShowFull(false);
                             setTab(newValue);
                             if (editConclusion) {
                               setEditConclusion(false);
@@ -369,7 +369,7 @@ const PublicConstructor = ({ saved, isPublic }) => {
                               value={1}
                               onClick={() => {
                                 setEditConclusion(true);
-                                setShowFull(true);
+                                // setShowFull(true);
                                 setTab(1);
                               }}
                             >
@@ -759,6 +759,7 @@ const tabSx = theme => ({
   minHeight: '32px',
   height: '34.5px!important',
   // color: '#FF9900',
+  margin: '0 1px',
   fontWeight: 600,
   borderRadius: '0 8px 8px 0',
   fontSize: '20px',
@@ -781,9 +782,9 @@ const descriptionWrapper = (theme, showFull) => ({
     height: '100%!important',
     minHeight: '340px',
   },
-  '& .md-editor-wrapper': {
-    margin: '-0.7px',
-  },
+  // '& .md-editor-wrapper': {
+  //   margin: '-0.7px',
+  // },
   overflow: 'hidden',
   transition: 'max-height 0.3s ease',
   '& .rc-md-editor .editor-container>.section': {
