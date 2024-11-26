@@ -42,7 +42,7 @@ const EditProject = () => {
             <Loader />
           </Box>
         ) : (
-          <CustomCard>
+          <CustomCard sx={cardSx}>
             <Headings
               title={`${myProject?.name || ''} | Edit Project`}
               noIndex={true}
@@ -56,6 +56,12 @@ const EditProject = () => {
 };
 
 export default EditProject;
+
+const cardSx = theme => ({
+  [theme.breakpoints.down('xs')]: {
+    borderRadius: 'unset',
+  },
+});
 
 const tabs = [
   {
