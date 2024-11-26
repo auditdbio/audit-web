@@ -270,11 +270,6 @@ const PublicConstructor = ({ saved, isPublic }) => {
               values,
               resetForm,
             }) => {
-              useEffect(() => {
-                if (!values.description) {
-                  setShowFull(true);
-                }
-              }, []);
               return (
                 <Form onSubmit={handleSubmit} style={{ width: '100%' }}>
                   <CustomSnackbar
@@ -435,13 +430,7 @@ const PublicConstructor = ({ saved, isPublic }) => {
                                     : {}
                                 }
                               />
-                              <Box
-                                sx={{
-                                  display: 'flex',
-                                  gap: '10px',
-                                  my: '20px',
-                                }}
-                              >
+                              <Box sx={tagsWrapperSx}>
                                 <Box sx={{ width: '100%' }}>
                                   <TagsField
                                     size={matchMd ? 'small' : 'medium'}
@@ -709,6 +698,29 @@ const actionWrapper = theme => ({
   justifyContent: 'center',
 });
 
+const tagsWrapperSx = theme => ({
+  display: 'flex',
+  gap: '10px',
+  my: '20px',
+  '& input': {
+    paddingY: '11px',
+  },
+  '& label': {
+    top: '-5px',
+  },
+  [theme.breakpoints.down('md')]: {
+    '& label': {
+      top: '2px',
+    },
+    // '& input': {
+    //   paddingY: '1px',
+    // },
+  },
+  [theme.breakpoints.down(700)]: {
+    flexDirection: 'column',
+  },
+});
+
 const backBtnSx = theme => ({
   position: 'absolute',
   top: '10px',
@@ -904,7 +916,7 @@ const btnSx = theme => ({
   borderRadius: '10px',
   width: '50px!important',
   minWidth: '50px',
-  height: '45px',
+  height: '47px',
   mr: '20px',
   '&:last-child': { mr: 0 },
   [theme.breakpoints.down('lg')]: {

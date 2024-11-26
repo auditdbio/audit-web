@@ -9,6 +9,7 @@ import {
   Switch,
   Tooltip,
   Typography,
+  useMediaQuery,
 } from '@mui/material';
 import { addSpacesToCamelCase, addTestsLabel } from '../../../lib/helper.js';
 import StatusControl from '../StatusControl.jsx';
@@ -48,7 +49,7 @@ const StatusSeverityBlock = ({
   const [severityListOpen, setSeverityListOpen] = useState(false);
   const [statusListOpen, setStatusListOpen] = useState(false);
   const [categoryPrevVal, setCategoryPrevVal] = useState(issue?.category || '');
-
+  const matchXs = useMediaQuery(theme => theme.breakpoints.down('xs'));
   return (
     <Box sx={issueStatusBlock}>
       <Box
@@ -338,41 +339,42 @@ const StatusSeverityBlock = ({
             //   : {},
           ]}
         >
-          {!dirty ? (
-            <Tooltip arrow placement="top" title={'New issue'}>
-              <Button
-                variant="contained"
-                type="button"
-                color="primary"
-                // disabled={!dirty}
-                sx={[
-                  issueButton,
-                  {
-                    backgroundColor: 'rgba(0, 0, 0, 0.12)',
-                    '&:hover': {
+          {matchXs &&
+            (!dirty ? (
+              <Tooltip arrow placement="top" title={'New issue'}>
+                <Button
+                  variant="contained"
+                  type="button"
+                  color="primary"
+                  // disabled={!dirty}
+                  sx={[
+                    issueButton,
+                    {
                       backgroundColor: 'rgba(0, 0, 0, 0.12)',
+                      '&:hover': {
+                        backgroundColor: 'rgba(0, 0, 0, 0.12)',
+                      },
                     },
-                  },
-                ]}
-                {...addTestsLabel('new-issue-button')}
-              >
-                <NoteAddIcon />
-              </Button>
-            </Tooltip>
-          ) : (
-            <Tooltip arrow placement="top" title={'New issue'}>
-              <Button
-                variant="contained"
-                type="submit"
-                color="primary"
-                disabled={!dirty}
-                sx={issueButton}
-                {...addTestsLabel('new-issue-button')}
-              >
-                <NoteAddIcon />
-              </Button>
-            </Tooltip>
-          )}
+                  ]}
+                  {...addTestsLabel('new-issue-button')}
+                >
+                  <NoteAddIcon />
+                </Button>
+              </Tooltip>
+            ) : (
+              <Tooltip arrow placement="top" title={'New issue'}>
+                <Button
+                  variant="contained"
+                  type="submit"
+                  color="primary"
+                  disabled={!dirty}
+                  sx={issueButton}
+                  {...addTestsLabel('new-issue-button')}
+                >
+                  <NoteAddIcon />
+                </Button>
+              </Tooltip>
+            ))}
         </Box>
       )}
 
@@ -572,7 +574,7 @@ const issueButton = theme => ({
     letterSpacing: '-0.5px',
   },
   [theme.breakpoints.down('xs')]: {
-    padding: '10px 30px',
+    // padding: '10px 30px',
   },
 });
 
