@@ -140,16 +140,16 @@ const AuditOffer = ({ publicView, setPublicView }) => {
       dispatch(getAuditFeedback(AUDITOR, audit.auditor_id, audit.id));
     }
   }, [audit?.id]);
-
-  useEffect(() => {
-    setTimeout(() => {
-      if (
-        descriptionRef?.current?.children[0]?.children[0]?.offsetHeight > 150
-      ) {
-        setShowReadMoreButton(true);
-      }
-    }, 500);
-  }, [descriptionRef?.current]);
+  //
+  //   useEffect(() => {
+  //     setTimeout(() => {
+  //       if (
+  //         descriptionRef?.current?.children[0]?.children[0]?.offsetHeight > 150
+  //       ) {
+  //         setShowReadMoreButton(true);
+  //       }
+  //     }, 500);
+  //   }, [descriptionRef?.current]);
 
   useEffect(() => {
     if (issuesAuditId !== auditId) {
@@ -780,61 +780,59 @@ const AuditOffer = ({ publicView, setPublicView }) => {
                 </Box>
               </Collapse>
             )}
-            {showReadMoreButton && (
-              <Box
+            <Box
+              sx={[
+                {
+                  // border: '1px solid #E5E5E5',
+                  borderTop: '1px solid #E5E5E5',
+                  display: 'flex',
+                  justifyContent: 'center',
+                  position: 'relative',
+                  paddingTop: '8px',
+                },
+                !showFull
+                  ? {
+                      boxShadow: '0px -24px 14px -8px rgba(252, 250, 246, 1)',
+                    }
+                  : {},
+              ]}
+            >
+              {/*{tab === 0 && (*/}
+              <Button
+                onClick={() => setShowFull(!showFull)}
                 sx={[
+                  readAllButton,
                   {
-                    // border: '1px solid #E5E5E5',
-                    borderTop: '1px solid #E5E5E5',
-                    display: 'flex',
-                    justifyContent: 'center',
                     position: 'relative',
-                    paddingTop: '8px',
-                  },
-                  !showFull
-                    ? {
-                        boxShadow: '0px -24px 14px -8px rgba(252, 250, 246, 1)',
-                      }
-                    : {},
-                ]}
-              >
-                {/*{tab === 0 && (*/}
-                <Button
-                  onClick={() => setShowFull(!showFull)}
-                  sx={[
-                    readAllButton,
-                    {
-                      position: 'relative',
-                      top: !showFull ? '-25px' : 0,
+                    top: !showFull ? '-25px' : 0,
+                    backgroundColor: '#fcfaf6',
+                    zIndex: '1',
+                    marginBottom: showFull ? '20px' : 0,
+                    '&:hover': {
                       backgroundColor: '#fcfaf6',
-                      zIndex: '1',
-                      marginBottom: showFull ? '20px' : 0,
-                      '&:hover': {
-                        backgroundColor: '#fcfaf6',
-                      },
+                    },
+                  },
+                ]}
+                variant={'outlined'}
+              >
+                <span>{showFull ? 'Hide' : `Show`}</span>
+                {tab === 0 && <AddLinkIcon />}
+                <EditIcon sx={{ width: '20px' }} />
+                <ExpandLessOutlinedIcon
+                  sx={[
+                    showFull ? {} : { transform: 'rotate(180deg)' },
+                    {
+                      transition: '0.2s',
+                      // marginRight: '0',
+                      // marginLeft: 'auto',
+                      width: '20px',
+                      height: '20px',
                     },
                   ]}
-                  variant={'outlined'}
-                >
-                  <span>{showFull ? 'Hide' : `Show`}</span>
-                  {tab === 0 && <AddLinkIcon />}
-                  <EditIcon sx={{ width: '20px' }} />
-                  <ExpandLessOutlinedIcon
-                    sx={[
-                      showFull ? {} : { transform: 'rotate(180deg)' },
-                      {
-                        transition: '0.2s',
-                        // marginRight: '0',
-                        // marginLeft: 'auto',
-                        width: '20px',
-                        height: '20px',
-                      },
-                    ]}
-                  />
-                </Button>
-                {/*)}*/}
-              </Box>
-            )}
+                />
+              </Button>
+              {/*)}*/}
+            </Box>
             {/*</Box>*/}
             <Box sx={bottomActionSx}>
               <Box sx={bottomActionInnerWrapper}>
