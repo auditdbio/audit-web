@@ -24,7 +24,6 @@ import {
   FormControlLabel,
 } from '@mui/material';
 import theme from '../styles/themes.js';
-import SendIcon from '@mui/icons-material/Send';
 import {
   addReportAudit,
   clearMessage,
@@ -747,300 +746,287 @@ const AuditOffer = ({ publicView, setPublicView }) => {
                                 }}
                               />
 
-                                  {(audit?.conclusion ||
-                                    (!audit?.conclusion &&
-                                      tab === 1 &&
-                                      editConclusion)) &&
-                                    audit?.status?.toLowerCase() !==
-                                      RESOLVED.toLowerCase() && (
-                                      <IconButton
-                                        type="button"
-                                        aria-label="Edit description"
-                                        onClick={() =>
-                                          handleConclusion(handleSubmit)
-                                        }
-                                        sx={editButton}
-                                        {...addTestsLabel(
-                                          'edit-conclusion-button',
-                                        )}
-                                      >
-                                        <EditIcon
-                                          color="secondary"
-                                          fontSize="small"
-                                        />
-                                        <Box
-                                          component="span"
-                                          sx={editButtonText}
-                                        >
-                                          {editConclusion ? 'Save' : 'Edit'}
-                                        </Box>
-                                      </IconButton>
-                                    )}
-                                </Box>
-                              </Collapse>
-                            </Form>
-                          );
-                        }}
-                      </Formik>
-                    </Box>
-                  </Collapse>
-                )}
-                {showReadMoreButton && (
-                  <Box
-                    sx={[
-                      {
-                        // border: '1px solid #E5E5E5',
-                        borderTop: '1px solid #E5E5E5',
-                        display: 'flex',
-                        justifyContent: 'center',
-                        position: 'relative',
-                        paddingTop: '8px',
+                              {(audit?.conclusion ||
+                                (!audit?.conclusion &&
+                                  tab === 1 &&
+                                  editConclusion)) &&
+                                audit?.status?.toLowerCase() !==
+                                  RESOLVED.toLowerCase() && (
+                                  <IconButton
+                                    type="button"
+                                    aria-label="Edit description"
+                                    onClick={() =>
+                                      handleConclusion(handleSubmit)
+                                    }
+                                    sx={editButton}
+                                    {...addTestsLabel('edit-conclusion-button')}
+                                  >
+                                    <EditIcon
+                                      color="secondary"
+                                      fontSize="small"
+                                    />
+                                    <Box component="span" sx={editButtonText}>
+                                      {editConclusion ? 'Save' : 'Edit'}
+                                    </Box>
+                                  </IconButton>
+                                )}
+                            </Box>
+                          </Collapse>
+                        </Form>
+                      );
+                    }}
+                  </Formik>
+                </Box>
+              </Collapse>
+            )}
+            {showReadMoreButton && (
+              <Box
+                sx={[
+                  {
+                    // border: '1px solid #E5E5E5',
+                    borderTop: '1px solid #E5E5E5',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    position: 'relative',
+                    paddingTop: '8px',
+                  },
+                  !showFull
+                    ? {
+                        boxShadow: '0px -24px 14px -8px rgba(252, 250, 246, 1)',
+                      }
+                    : {},
+                ]}
+              >
+                {/*{tab === 0 && (*/}
+                <Button
+                  onClick={() => setShowFull(!showFull)}
+                  sx={[
+                    readAllButton,
+                    {
+                      position: 'relative',
+                      top: !showFull ? '-25px' : 0,
+                      backgroundColor: '#fcfaf6',
+                      zIndex: '1',
+                      marginBottom: showFull ? '20px' : 0,
+                      '&:hover': {
+                        backgroundColor: '#fcfaf6',
                       },
-                      !showFull
-                        ? {
-                            boxShadow:
-                              '0px -24px 14px -8px rgba(252, 250, 246, 1)',
-                          }
-                        : {},
+                    },
+                  ]}
+                  variant={'outlined'}
+                >
+                  <span>{showFull ? 'Hide' : `Show`}</span>
+                  {tab === 0 && <AddLinkIcon />}
+                  <EditIcon sx={{ width: '20px' }} />
+                  <ExpandLessOutlinedIcon
+                    sx={[
+                      showFull ? {} : { transform: 'rotate(180deg)' },
+                      {
+                        transition: '0.2s',
+                        // marginRight: '0',
+                        // marginLeft: 'auto',
+                        width: '20px',
+                        height: '20px',
+                      },
                     ]}
+                  />
+                </Button>
+                {/*)}*/}
+              </Box>
+            )}
+            {/*</Box>*/}
+            <Box sx={bottomActionSx}>
+              <Box sx={bottomActionInnerWrapper}>
+                <DescriptionHistory
+                  buttonStyle={buttonSx}
+                  audit={audit}
+                  spaceY={false}
+                  wrapperStyle={historyWrapperSx}
+                />
+                {/*{!audit?.conclusion && (*/}
+                {/*  <Button*/}
+                {/*    sx={[*/}
+                {/*      buttonSx,*/}
+                {/*      {*/}
+                {/*        marginX: '0!important',*/}
+                {/*        // marginTop: '20px',*/}
+                {/*      },*/}
+                {/*    ]}*/}
+                {/*    type="button"*/}
+                {/*    variant="contained"*/}
+                {/*    color="secondary"*/}
+                {/*    disabled={*/}
+                {/*      audit?.status?.toLowerCase() ===*/}
+                {/*      WAITING_FOR_AUDITS.toLowerCase()*/}
+                {/*    }*/}
+                {/*    onClick={() => handleEditSaveConclusion()}*/}
+                {/*  >*/}
+                {/*    {editConclusion ? 'Save conclusion' : 'Add conclusion'}*/}
+                {/*  </Button>*/}
+                {/*)}*/}
+              </Box>
+              {audit?.status?.toLowerCase() ===
+              WAITING_FOR_AUDITS.toLowerCase() ? (
+                <Box>
+                  <Button
+                    sx={[buttonSx, { marginX: 0, width: '120px!important' }]}
+                    variant="contained"
+                    color="secondary"
+                    type="button"
+                    onClick={() => dispatch(startAudit(audit, false))}
                   >
-                    {/*{tab === 0 && (*/}
+                    Start audit
+                  </Button>
+                </Box>
+              ) : (
+                <Box sx={uploadSx}>
+                  <Box sx={workflowToggleBox}>
                     <Button
-                      onClick={() => setShowFull(!showFull)}
-                      sx={[
-                        readAllButton,
-                        {
-                          position: 'relative',
-                          top: !showFull ? '-25px' : 0,
-                          backgroundColor: '#fcfaf6',
-                          zIndex: '1',
-                          marginBottom: showFull ? '20px' : 0,
-                          '&:hover': {
-                            backgroundColor: '#fcfaf6',
-                          },
-                        },
-                      ]}
-                      variant={'outlined'}
+                      onClick={() => setAuditDBWorkflow(true)}
+                      sx={workflowButton(auditDBWorkflow)}
+                      type="button"
+                      disabled={
+                        audit?.status?.toLowerCase() ===
+                          RESOLVED.toLowerCase() && !issues?.length
+                      }
                     >
-                      <span>{showFull ? 'Hide' : `Show`}</span>
-                      {tab === 0 && <AddLinkIcon />}
-                      <EditIcon sx={{ width: '20px' }} />
-                      <ExpandLessOutlinedIcon
-                        sx={[
-                          showFull ? {} : { transform: 'rotate(180deg)' },
-                          {
-                            transition: '0.2s',
-                            // marginRight: '0',
-                            // marginLeft: 'auto',
-                            width: '20px',
-                            height: '20px',
-                          },
-                        ]}
-                      />
+                      {issues?.length
+                        ? `Issues (${issues.length})`
+                        : 'New issue'}
                     </Button>
-                    {/*)}*/}
+                    <Button
+                      onClick={() => setAuditDBWorkflow(false)}
+                      type="button"
+                      disabled={
+                        !issues?.every(
+                          issue =>
+                            issue.status === FIXED ||
+                            issue.status === NOT_FIXED ||
+                            issue.status === WILL_NOT_FIX ||
+                            !issue.include,
+                        )
+                      }
+                      sx={workflowButton(!auditDBWorkflow)}
+                    >
+                      Upload audit
+                    </Button>
                   </Box>
-                )}
-                {/*</Box>*/}
-                <Box sx={bottomActionSx}>
-                  <Box sx={bottomActionInnerWrapper}>
-                    <DescriptionHistory
-                      buttonStyle={buttonSx}
-                      audit={audit}
-                      spaceY={false}
-                      wrapperStyle={historyWrapperSx}
-                    />
-                    {/*{!audit?.conclusion && (*/}
-                    {/*  <Button*/}
-                    {/*    sx={[*/}
-                    {/*      buttonSx,*/}
-                    {/*      {*/}
-                    {/*        marginX: '0!important',*/}
-                    {/*        // marginTop: '20px',*/}
-                    {/*      },*/}
-                    {/*    ]}*/}
-                    {/*    type="button"*/}
-                    {/*    variant="contained"*/}
-                    {/*    color="secondary"*/}
-                    {/*    disabled={*/}
-                    {/*      audit?.status?.toLowerCase() ===*/}
-                    {/*      WAITING_FOR_AUDITS.toLowerCase()*/}
-                    {/*    }*/}
-                    {/*    onClick={() => handleEditSaveConclusion()}*/}
-                    {/*  >*/}
-                    {/*    {editConclusion ? 'Save conclusion' : 'Add conclusion'}*/}
-                    {/*  </Button>*/}
-                    {/*)}*/}
-                  </Box>
+                </Box>
+              )}
+              {audit?.status?.toLowerCase() !== RESOLVED.toLowerCase() ? (
+                <Box sx={bottomActionInnerWrapper}>
                   {audit?.status?.toLowerCase() ===
                   WAITING_FOR_AUDITS.toLowerCase() ? (
-                    <Box>
+                    <Tooltip arrow placement="top" title={'Generate report'}>
                       <Button
-                        sx={[
-                          buttonSx,
-                          { marginX: 0, width: '120px!important' },
-                        ]}
                         variant="contained"
                         color="secondary"
-                        type="button"
-                        onClick={() => dispatch(startAudit(audit, false))}
+                        sx={[
+                          buttonSx,
+                          {
+                            backgroundColor: 'rgba(0, 0, 0, 0.12)',
+                            '&:hover': {
+                              backgroundColor: 'rgba(0, 0, 0, 0.12)',
+                            },
+                          },
+                          {
+                            marginRight: '0!important',
+                            marginLeft: '0!important',
+                          },
+                          // publicBtnSx
+                        ]}
+                        // disabled={
+                        //   audit?.status?.toLowerCase() ===
+                        //   WAITING_FOR_AUDITS.toLowerCase()
+                        // }
+                        onClick={handleGenerateReport}
                       >
-                        Start audit
+                        {/*Generate report*/}
+                        <PictureAsPdfIcon />
                       </Button>
-                    </Box>
+                    </Tooltip>
                   ) : (
-                    <Box sx={uploadSx}>
-                      <Box sx={workflowToggleBox}>
-                        <Button
-                          onClick={() => setAuditDBWorkflow(true)}
-                          sx={workflowButton(auditDBWorkflow)}
-                          type="button"
-                          disabled={
-                            audit?.status?.toLowerCase() ===
-                              RESOLVED.toLowerCase() && !issues?.length
-                          }
-                        >
-                          {issues?.length
-                            ? `Issues (${issues.length})`
-                            : 'New issue'}
-                        </Button>
-                        <Button
-                          onClick={() => setAuditDBWorkflow(false)}
-                          type="button"
-                          disabled={
-                            !issues?.every(
-                              issue =>
-                                issue.status === FIXED ||
-                                issue.status === NOT_FIXED ||
-                                issue.status === WILL_NOT_FIX ||
-                                !issue.include,
-                            )
-                          }
-                          sx={workflowButton(!auditDBWorkflow)}
-                        >
-                          Upload audit
-                        </Button>
-                      </Box>
-                    </Box>
-                  )}
-                  {audit?.status?.toLowerCase() !== RESOLVED.toLowerCase() ? (
-                    <Box sx={bottomActionInnerWrapper}>
-                      {audit?.status?.toLowerCase() ===
-                      WAITING_FOR_AUDITS.toLowerCase() ? (
-                        <Tooltip
-                          arrow
-                          placement="top"
-                          title={'Generate report'}
-                        >
-                          <Button
-                            variant="contained"
-                            color="secondary"
-                            sx={[
-                              buttonSx,
-                              {
-                                backgroundColor: 'rgba(0, 0, 0, 0.12)',
-                                '&:hover': {
-                                  backgroundColor: 'rgba(0, 0, 0, 0.12)',
-                                },
-                              },
-                              {
-                                marginRight: '0!important',
-                                marginLeft: '0!important',
-                              },
-                              // publicBtnSx
-                            ]}
-                            // disabled={
-                            //   audit?.status?.toLowerCase() ===
-                            //   WAITING_FOR_AUDITS.toLowerCase()
-                            // }
-                            onClick={handleGenerateReport}
-                          >
-                            {/*Generate report*/}
-                            <PictureAsPdfIcon />
-                          </Button>
-                        </Tooltip>
-                      ) : (
-                        <>
-                          <Tooltip
-                            arrow
-                            placement="top"
-                            title="Generate draft report (Available only to you)"
-                          >
-                            <Button
-                              variant="contained"
-                              color="secondary"
-                              sx={[
-                                buttonSx,
-                                {
-                                  marginRight: '0!important',
-                                  marginLeft: '0!important',
-                                },
-                              ]}
-                              disabled={
-                                audit?.status?.toLowerCase() ===
-                                WAITING_FOR_AUDITS.toLowerCase()
-                              }
-                              onClick={() => handleGenerateReport(true)}
-                            >
-                              {/*Generate draft*/}
-                              <DraftReportIcon />
-                            </Button>
-                          </Tooltip>
-                          <Tooltip
-                            arrow
-                            placement="top"
-                            title="Generate report (Will be available to the customer)"
-                          >
-                            <Button
-                              variant="contained"
-                              color="secondary"
-                              sx={[
-                                buttonSx,
-                                {
-                                  marginRight: '0!important',
-                                  marginLeft: '0!important',
-                                },
-                              ]}
-                              disabled={
-                                audit?.status?.toLowerCase() ===
-                                WAITING_FOR_AUDITS.toLowerCase()
-                              }
-                              onClick={() => handleGenerateReport()}
-                            >
-                              {/*Generate report*/}
-                              <PictureAsPdfIcon />
-                            </Button>
-                          </Tooltip>
-                        </>
-                      )}
+                    <>
                       <Tooltip
                         arrow
                         placement="top"
-                        title={
-                          allIssuesClosed
-                            ? 'Resolve audit'
-                            : "To resolve an audit, it is necessary that the status of all issues be 'Fixed' or 'Will not fix'. Or do not include some issues in the audit."
-                        }
+                        title="Generate draft report (Available only to you)"
                       >
-                        <span>
-                          <Button
-                            variant="contained"
-                            color="primary"
-                            onClick={() => setResolveConfirmation(true)}
-                            disabled={!allIssuesClosed || !issues?.length}
-                            sx={[
-                              buttonSx,
-                              {
-                                marginRight: '0!important',
-                                // ml: '15px',
-                              },
-                            ]}
-                            {...addTestsLabel('resolve-button')}
-                          >
-                            <CheckCircleIcon />
-                            {/*Resolve audit*/}
-                          </Button>
-                        </span>
+                        <Button
+                          variant="contained"
+                          color="secondary"
+                          sx={[
+                            buttonSx,
+                            {
+                              marginRight: '0!important',
+                              marginLeft: '0!important',
+                            },
+                          ]}
+                          disabled={
+                            audit?.status?.toLowerCase() ===
+                            WAITING_FOR_AUDITS.toLowerCase()
+                          }
+                          onClick={() => handleGenerateReport(true)}
+                        >
+                          {/*Generate draft*/}
+                          <DraftReportIcon />
+                        </Button>
+                      </Tooltip>
+                      <Tooltip
+                        arrow
+                        placement="top"
+                        title="Generate report (Will be available to the customer)"
+                      >
+                        <Button
+                          variant="contained"
+                          color="secondary"
+                          sx={[
+                            buttonSx,
+                            {
+                              marginRight: '0!important',
+                              marginLeft: '0!important',
+                            },
+                          ]}
+                          disabled={
+                            audit?.status?.toLowerCase() ===
+                            WAITING_FOR_AUDITS.toLowerCase()
+                          }
+                          onClick={() => handleGenerateReport()}
+                        >
+                          {/*Generate report*/}
+                          <PictureAsPdfIcon />
+                        </Button>
+                      </Tooltip>
+                    </>
+                  )}
+                  <Tooltip
+                    arrow
+                    placement="top"
+                    title={
+                      allIssuesClosed
+                        ? 'Resolve audit'
+                        : "To resolve an audit, it is necessary that the status of all issues be 'Fixed' or 'Will not fix'. Or do not include some issues in the audit."
+                    }
+                  >
+                    <span>
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={() => setResolveConfirmation(true)}
+                        disabled={!allIssuesClosed || !issues?.length}
+                        sx={[
+                          buttonSx,
+                          {
+                            marginRight: '0!important',
+                            // ml: '15px',
+                          },
+                        ]}
+                        {...addTestsLabel('resolve-button')}
+                      >
+                        <CheckCircleIcon />
+                        {/*Resolve audit*/}
+                      </Button>
+                    </span>
                   </Tooltip>
                 </Box>
               ) : (
