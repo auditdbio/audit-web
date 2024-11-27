@@ -335,6 +335,7 @@ const editMarkdownSx = (matchXs, description, editMode) => ({
 
 const linksList = {
   border: '1px solid #dfe0df',
+  borderBottom: 'none',
   borderTop: 'none',
   padding: '0 15px 15px',
 };

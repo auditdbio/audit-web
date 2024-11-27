@@ -622,7 +622,8 @@ export const savePublicReport = data => {
         localStorage.removeItem('report');
         localStorage.removeItem('publicIssues');
         return () => clearTimeout(handleRedirect);
-      });
+      })
+      .catch(() => dispatch({ type: REQUEST_ERROR }));
   };
   // .catch(() => dispatch({ type: REQUEST_ERROR }));
 };
