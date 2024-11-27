@@ -5,7 +5,14 @@ import { Field, Form, Formik } from 'formik';
 import { TextField } from 'formik-mui';
 import * as Yup from 'yup';
 import EditIcon from '@mui/icons-material/Edit';
-import { Box, IconButton, InputAdornment, Tooltip } from '@mui/material';
+import {
+  Box,
+  Button,
+  IconButton,
+  InputAdornment,
+  Tooltip,
+  useMediaQuery,
+} from '@mui/material';
 import {
   addAuditIssue,
   addPublicIssue,
@@ -18,14 +25,15 @@ import { RESOLVED } from '../redux/actions/types.js';
 import { addTestsLabel } from '../lib/helper.js';
 import DescriptionBlock from '../components/issuesPage/IssueDetailsForm/DescriptionBlock.jsx';
 import StatusSeverityBlock from '../components/issuesPage/IssueDetailsForm/StatusSeverityBlock.jsx';
-import { NOT_FIXED } from '../components/issuesPage/constants.js';
+import { NOT_FIXED, WILL_NOT_FIX } from '../components/issuesPage/constants.js';
+import NoteAddIcon from '@mui/icons-material/NoteAdd';
 
 const PublicIssueDetailsForm = ({ issue = null, editMode = false, saved }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { auditId, issueId } = useParams();
   const publicIssues = JSON.parse(localStorage.getItem('publicIssues') || '[]');
-
+  const matchXs = useMediaQuery(theme => theme.breakpoints.down('xs'));
   const user = useSelector(s => s.user.user);
   const { successMessage, error } = useSelector(s => s.issues);
   const audit = useSelector(s =>
@@ -48,7 +56,7 @@ const PublicIssueDetailsForm = ({ issue = null, editMode = false, saved }) => {
 
   const initialValues = {
     name: issue?.name || '',
-    status: issue?.status || NOT_FIXED,
+    status: issue?.status || WILL_NOT_FIX,
     severity: issue?.severity || 'Medium',
     category: issue?.category || '',
     description: issue?.description || '',
@@ -145,7 +153,7 @@ const PublicIssueDetailsForm = ({ issue = null, editMode = false, saved }) => {
               enterDelay={500}
               leaveDelay={0}
             >
-              <Box>
+              <Box sx={{ display: 'flex', gap: '15px' }}>
                 <Field
                   component={TextField}
                   name="name"
@@ -183,6 +191,42 @@ const PublicIssueDetailsForm = ({ issue = null, editMode = false, saved }) => {
                       : null
                   }
                 />
+                {!matchXs &&
+                  (!dirty ? (
+                    <Tooltip arrow placement="top" title={'New issue'}>
+                      <Button
+                        variant="contained"
+                        type="button"
+                        color="primary"
+                        // disabled={!dirty}
+                        sx={[
+                          issueButton,
+                          {
+                            backgroundColor: 'rgba(0, 0, 0, 0.12)',
+                            '&:hover': {
+                              backgroundColor: 'rgba(0, 0, 0, 0.12)',
+                            },
+                          },
+                        ]}
+                        {...addTestsLabel('new-issue-button')}
+                      >
+                        <NoteAddIcon />
+                      </Button>
+                    </Tooltip>
+                  ) : (
+                    <Tooltip arrow placement="top" title={'New issue'}>
+                      <Button
+                        variant="contained"
+                        type="submit"
+                        color="primary"
+                        disabled={!dirty}
+                        sx={issueButton}
+                        {...addTestsLabel('new-issue-button')}
+                      >
+                        <NoteAddIcon />
+                      </Button>
+                    </Tooltip>
+                  ))}
               </Box>
             </Tooltip>
 
@@ -236,27 +280,32 @@ const issueValidationSchema = Yup.object().shape({
   feedback: Yup.string(),
 });
 
-const nameInputSx = theme => ({
-  '& > div': { borderRadius: 0 },
-  '& fieldset': { borderColor: '#b9b9b9 !important' },
-  '& input': {
-    backgroundColor: 'white',
-    fontSize: '20px',
-    fontWeight: 500,
-    lineHeight: '24px',
-    padding: '20px',
-    '&:disabled': {
-      backgroundColor: 'transparent',
-      color: '#434242',
-      '-webkit-text-fill-color': '#434242',
-    },
-    [theme.breakpoints.down('xs')]: {
-      fontSize: '16px',
-      padding: '15px 10px',
-    },
+const issueButton = theme => ({
+  padding: '11px 10px',
+  width: '50px',
+  minWidth: 'unset',
+  height: '47px',
+  textTransform: 'none',
+  fontWeight: 500,
+  fontSize: '16px!important',
+  lineHeight: '25px',
+  [theme.breakpoints.down('md')]: {
+    fontSize: '14px!important',
+    padding: '12px 6px',
+    letterSpacing: '-0.5px',
   },
   [theme.breakpoints.down('xs')]: {
-    mb: '12px',
+    padding: '10px 30px',
+  },
+});
+
+const nameInputSx = theme => ({
+  '& input': {
+    fontSize: '22px',
+    paddingY: '8px',
+  },
+  '& label': {
+    top: '-6px',
   },
 });
 

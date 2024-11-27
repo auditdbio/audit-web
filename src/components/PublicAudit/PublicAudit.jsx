@@ -340,6 +340,18 @@ const PublicAudit = ({
             sx={[
               readAllButton,
               {
+                p: '3px',
+                paddingX: '8px',
+                minWidth: 'unset',
+                textTransform: 'unset',
+                boxShadow: 'unset',
+                fontWeight: 600,
+                borderRadius: '8px',
+                width: '280px',
+                marginX: 'auto',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '7px',
                 position: 'relative',
                 top: !showFull ? '-25px' : 0,
                 backgroundColor: '#fcfaf6',

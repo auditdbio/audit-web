@@ -14,8 +14,7 @@ import {
   Typography,
   useMediaQuery,
 } from '@mui/material';
-import MenuIcon from '@mui/icons-material/Menu';
-import IconButton from '@mui/material/IconButton';
+import SaveIcon from '@mui/icons-material/Save';
 import { addTestsLabel, isAuth, reportBuilder } from '../../lib/helper.js';
 import {
   AUDITOR,
@@ -42,7 +41,7 @@ import {
 } from '../../redux/actions/userAction.js';
 import theme from '../../styles/themes.js';
 import { BASE_URL } from '../../services/urls.js';
-import UnfoldMoreIcon from '@mui/icons-material/UnfoldMore';
+import RefreshIcon from '@mui/icons-material/Refresh';
 import DraftsIcon from '@mui/icons-material/Drafts';
 import NoteAddIcon from '@mui/icons-material/NoteAdd';
 import DiscloseIcon from '../icons/DiscloseIcon.jsx';
@@ -104,11 +103,16 @@ const Control = ({
   };
 
   const handleSavePublicAudit = async () => {
+    const filteredReport = Object.fromEntries(
+      Object.entries(report).filter(
+        ([key, value]) => value != null && value !== '' && value.length,
+      ),
+    );
     if (report?.auditor_name && report?.project_name && report?.description) {
       if (isAuth()) {
         if (user.current_role === CUSTOMER) {
           const data = {
-            ...report,
+            ...filteredReport,
             isPublic: true,
             issues: [...issuesArray],
           };
@@ -120,7 +124,7 @@ const Control = ({
             auditor_last_name: auditor.last_name,
             auditor_contacts: auditor.contacts,
             avatar: auditor.avatar,
-            ...report,
+            ...filteredReport,
             isPublic: true,
             issues: [...issuesArray],
             status: 'Started',
@@ -172,7 +176,10 @@ const Control = ({
 
       setMenuAnchorEl(null);
     } else {
-      dispatch(downloadReport(audit, { generate: true }));
+      const report = audit?.conclusion
+        ? audit
+        : (delete audit.conclusion, audit);
+      dispatch(downloadReport(report, { generate: true }));
       setMenuAnchorEl(null);
     }
   };
@@ -233,37 +240,44 @@ const Control = ({
             onClose={handleCloseSnack}
           />
           {!saved && (
-            <Button
-              variant="contained"
-              color="secondary"
-              sx={[buttonSx, { marginRight: '0!important' }, publicBtnSx]}
-              onClick={handleGenerateReport}
-            >
-              {/*Generate report*/}
-              <PictureAsPdfIcon />
-            </Button>
+            <Tooltip title={'Generate report'} arrow placement={'top'}>
+              <Button
+                variant="contained"
+                color="secondary"
+                sx={[buttonSx, { marginRight: '0!important' }, publicBtnSx]}
+                onClick={handleGenerateReport}
+              >
+                {/*Generate report*/}
+                <PictureAsPdfIcon />
+              </Button>
+            </Tooltip>
           )}
           {!saved && (
-            <Button
-              sx={[buttonSx, { marginRight: '0!important' }, publicBtnSx]}
-              onClick={() => {
-                handleSavePublicAudit();
-              }}
-              variant={'contained'}
-            >
-              Save to AuditDB
-            </Button>
+            <Tooltip title={'Save to AuditDB'} arrow placement={'top'}>
+              <Button
+                sx={[buttonSx, { marginRight: '0!important' }, publicBtnSx]}
+                onClick={() => {
+                  handleSavePublicAudit();
+                }}
+                variant={'contained'}
+              >
+                {/*Save to AuditDB*/}
+                <SaveIcon />
+              </Button>
+            </Tooltip>
           )}
           {!saved && (
-            <Button
-              variant={'contained'}
-              type={'button'}
-              color={'secondary'}
-              onClick={() => setIsOpenReset(true)}
-              sx={[buttonSx, { marginRight: '0!important' }, publicBtnSx]}
-            >
-              Reset form
-            </Button>
+            <Tooltip title={'Reset form'} arrow placement={'top'}>
+              <Button
+                variant={'contained'}
+                type={'button'}
+                color={'secondary'}
+                onClick={() => setIsOpenReset(true)}
+                sx={[buttonSx, { marginRight: '0!important' }, publicBtnSx]}
+              >
+                <RefreshIcon />
+              </Button>
+            </Tooltip>
           )}
         </Box>
       ) : (
@@ -348,8 +362,6 @@ const Control = ({
                               backgroundColor: 'rgba(0, 0, 0, 0.12)',
                             },
                           },
-                          (isPublic || saved) && xss ? publicBtnSx : {},
-                          isPublic || saved ? singleButtonSx : {},
                         ]}
                         // onClick={handleNewIssue}
                         {...addTestsLabel('new-issue-button')}
@@ -363,11 +375,7 @@ const Control = ({
                       <Button
                         variant="contained"
                         color="primary"
-                        sx={[
-                          buttonSx,
-                          (isPublic || saved) && xss ? publicBtnSx : {},
-                          isPublic || saved ? singleButtonSx : {},
-                        ]}
+                        sx={[buttonSx]}
                         disabled={
                           audit?.status?.toLowerCase() ===
                           RESOLVED.toLowerCase()
@@ -598,9 +606,6 @@ const publicBtnWrapper = theme => ({
   mb: '10px',
   justifyContent: 'center',
   gap: '15px',
-  [theme.breakpoints.down(690)]: {
-    flexDirection: 'column-reverse',
-  },
 });
 
 const wrapper = (theme, resolved) => ({
@@ -619,9 +624,6 @@ const wrapperPublic = theme => ({
   width: '100%',
   mb: '10px',
   gap: '15px',
-  [theme.breakpoints.down(555)]: {
-    flexDirection: 'column-reverse',
-  },
 });
 
 const searchBlock = theme => ({
@@ -638,7 +640,7 @@ const publicSearchBlock = theme => ({
   flexGrow: 1,
   alignItems: 'center',
   [theme.breakpoints.down(555)]: {
-    mt: '20px',
+    // mt: '20px',
     mr: 0,
   },
 });
@@ -694,6 +696,7 @@ const issueActionWrapperSx = theme => ({
 const buttonSx = theme => ({
   padding: '8.5px 0',
   fontSize: '16px',
+  height: '47px',
   textTransform: 'unset',
   fontWeight: 600,
   '&:not(:last-child)': {

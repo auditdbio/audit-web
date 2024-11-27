@@ -249,7 +249,7 @@ const eventLine = height => ({
 });
 
 const descriptionBlock = theme => ({
-  borderTop: '1px solid #e0e0e0',
+  // borderTop: '1px solid #e0e0e0',
   // width: '80%',
   // [theme.breakpoints.down('sm')]: {
   //   width: '70%',
@@ -272,8 +272,9 @@ const descriptionButtonsSx = {
   padding: '0 10px',
   display: 'flex',
   justifyContent: 'space-between',
-  borderLeft: '1px solid #b9b9b9',
-  borderRight: '1px solid #b9b9b9',
+  borderLeft: '1px solid #e0e0e0',
+  borderRight: '1px solid #e0e0e0',
+  marginX: '1px',
 };
 
 const editButton = {
@@ -287,9 +288,10 @@ const addLinkButton = {
 };
 
 const linksList = {
-  border: '1px solid #b9b9b9',
+  border: '1px solid #e0e0e0',
   borderTop: 'none',
   padding: '0 15px 15px',
+  marginX: '1px',
 };
 
 const linkFieldSx = {
@@ -319,18 +321,23 @@ const linkSx = theme => ({
 const markdownWrapper = {
   position: 'relative',
   '& .rc-md-editor': {
-    borderBottom: 'none',
+    // borderBottom: 'none',
+    borderRight: '1px solid #e0e0e0!important',
   },
-  '& .rc-md-navigation.visible': {
-    borderRight: '1px solid #b9b9b9',
-    borderBottom: '1px solid #b9b9b9',
+  '& .sec-html': {
+    borderRight: 'unset!important',
   },
-  '& .section': {
-    borderRightColor: '#b9b9b9 !important',
+  '& .sec-md': {
+    borderRight: '1px solid #e0e0e0!important',
+    // borderRight: '1px solid #b9b9b9',
+    // borderBottom: '1px solid #b9b9b9',
   },
-  '& .sec-md.visible': {
-    borderBottom: '1px solid #b9b9b9',
-  },
+  // '& .section': {
+  //   borderRightColor: '#b9b9b9 !important',
+  // },
+  // '& .sec-md.visible': {
+  //   borderBottom: '1px solid #b9b9b9',
+  // },
 };
 
 const markdownSx = matchXs => ({
@@ -339,7 +346,7 @@ const markdownSx = matchXs => ({
   fontWeight: 500,
   fontSize: '20px !important',
   lineHeight: '24px',
-  borderLeft: '1px solid #b9b9b9',
+  // borderLeft: '1px solid #b9b9b9',
   // borderTop: matchXs ? '1px solid #b9b9b9' : 'none',
   borderRight: 'none',
 });
@@ -348,28 +355,35 @@ const feedbackWrapper = {
   position: 'relative',
   mt: '20px',
   '& .rc-md-navigation.visible': {
-    borderRight: '1px solid #b9b9b9',
-    borderBottom: '1px solid #b9b9b9',
+    borderRight: '1px solid #e0e0e0',
+    // borderBottom: '1px solid #b9b9b9',
+  },
+  '& .sec-html': {
+    borderRight: '1px solid #e0e0e0!important',
   },
   '& .section': {
-    borderRightColor: '#b9b9b9 !important',
+    borderColor: '#e0e0e0 !important',
   },
   '&::before': eventLine(20),
 };
 
 const feedbackHeader = {
-  border: '1px solid #b9b9b9',
+  border: '1px solid #e0e0e0',
   borderBottom: 'none',
   background: '#F5F5F5',
   padding: '9px 15px',
   fontWeight: 500,
+  marginX: '1px',
 };
 
 const feedbackMarkdownSx = {
   height: '200px',
-  border: '1px solid #b9b9b9',
+  border: '1px solid #e0e0e0',
   borderRight: 'none',
   backgroundColor: '#fcfaf6',
+  '& .rc-md-editor': {
+    borderRight: '1px solid #e0e0e0',
+  },
 };
 
 const editFeedbackButtonWrapper = {
