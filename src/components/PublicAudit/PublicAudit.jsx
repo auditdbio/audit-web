@@ -11,6 +11,7 @@ import {
   deleteAuditRequest,
   downloadPublicReport,
   downloadReport,
+  handlePublishAudit,
   sendAuditFeedback,
 } from '../../redux/actions/auditAction.js';
 import { CustomCard } from '../custom/Card.jsx';
@@ -171,14 +172,43 @@ const PublicAudit = ({
         >
           <ArrowBackIcon color="secondary" />
         </Button>
+        {/*{audit?.isPublic &&*/}
+        {/*  audit?.status?.toLowerCase() === RESOLVED.toLowerCase() &&*/}
+        {/*  user?.current_role?.toLowerCase() === AUDITOR.toLowerCase() &&*/}
+        {/*  (audit?.customer_id === user.id || audit?.auditor_id === user.id) && (*/}
+        {/*    <FormControlLabel*/}
+        {/*      control={*/}
+        {/*        <Switch*/}
+        {/*          checked={publicView}*/}
+        {/*          onChange={e => setPublicView(e.target.checked)}*/}
+        {/*        />*/}
+        {/*      }*/}
+        {/*      sx={{*/}
+        {/*        '& .MuiTypography-root': { fontSize: '14px' },*/}
+        {/*        top: '-20px',*/}
+        {/*        position: 'absolute',*/}
+        {/*        right: '150px',*/}
+        {/*      }}*/}
+        {/*      label="Preview"*/}
+        {/*    />*/}
+        {/*  )}*/}
         {audit?.status?.toLowerCase() === RESOLVED.toLowerCase() &&
           user?.current_role?.toLowerCase() === AUDITOR.toLowerCase() &&
           (audit?.customer_id === user.id || audit?.auditor_id === user.id) && (
             <FormControlLabel
               control={
                 <Switch
-                  checked={publicView}
-                  onChange={e => setPublicView(e.target.checked)}
+                  checked={audit?.isPublic}
+                  onChange={e => {
+                    dispatch(
+                      handlePublishAudit({
+                        id: audit.id,
+                        public: e.target.checked,
+                      }),
+                    );
+                    if (publicView) setPublicView(false);
+                  }}
+                  color="secondary"
                 />
               }
               sx={{
@@ -187,7 +217,7 @@ const PublicAudit = ({
                 position: 'absolute',
                 right: '30px',
               }}
-              label="Public preview"
+              label="Publish"
             />
           )}
         <Button
@@ -308,6 +338,7 @@ const PublicAudit = ({
           <Button
             onClick={() => setShowFull(!showFull)}
             sx={[
+              readAllButton,
               {
                 p: '3px',
                 paddingX: '8px',
@@ -329,6 +360,7 @@ const PublicAudit = ({
                 '&:hover': {
                   backgroundColor: '#fcfaf6',
                 },
+                textTransform: 'unset',
               },
             ]}
             variant={'outlined'}
@@ -363,7 +395,12 @@ const PublicAudit = ({
             variant={'contained'}
             color={'secondary'}
             onClick={() => {
-              if (!isPublic) {
+              if (
+                !isPublic ||
+                !audit.isPublic ||
+                audit?.auditor_id === user?.id ||
+                audit?.customer_id === user?.id
+              ) {
                 dispatch(downloadReport(audit));
               } else {
                 dispatch(downloadPublicReport(audit, code));
@@ -433,6 +470,24 @@ const PublicAudit = ({
 };
 
 export default PublicAudit;
+
+const readAllButton = theme => ({
+  p: '3px',
+  paddingX: '8px',
+  minWidth: 'unset',
+  textTransform: 'unset',
+  boxShadow: 'unset',
+  fontWeight: 600,
+  borderRadius: '8px',
+  width: '280px',
+  display: 'flex',
+  alignItems: 'center',
+  gap: '7px',
+  // maxWidth: '300px',
+  [theme.breakpoints.down('xs')]: {
+    fontSize: '16px',
+  },
+});
 
 const reportActionWrapperSx = theme => ({
   display: 'flex',
@@ -508,6 +563,7 @@ const buttonSx = theme => ({
   textTransform: 'unset',
   fontWeight: 600,
   width: '50px',
+  minWidth: 'unset',
   borderRadius: '10px',
   ':last-child': { mr: 0 },
   // [theme.breakpoints.down('md')]: {

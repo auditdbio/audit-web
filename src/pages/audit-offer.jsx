@@ -24,8 +24,7 @@ import {
   FormControlLabel,
 } from '@mui/material';
 import theme from '../styles/themes.js';
-import { CustomCard } from '../components/custom/Card.jsx';
-import Layout from '../styles/Layout.jsx';
+import SendIcon from '@mui/icons-material/Send';
 import {
   addReportAudit,
   clearMessage,
@@ -141,16 +140,16 @@ const AuditOffer = ({ publicView, setPublicView }) => {
       dispatch(getAuditFeedback(AUDITOR, audit.auditor_id, audit.id));
     }
   }, [audit?.id]);
-
-  useEffect(() => {
-    setTimeout(() => {
-      if (
-        descriptionRef?.current?.children[0]?.children[0]?.offsetHeight > 150
-      ) {
-        setShowReadMoreButton(true);
-      }
-    }, 500);
-  }, [descriptionRef?.current]);
+  //
+  //   useEffect(() => {
+  //     setTimeout(() => {
+  //       if (
+  //         descriptionRef?.current?.children[0]?.children[0]?.offsetHeight > 150
+  //       ) {
+  //         setShowReadMoreButton(true);
+  //       }
+  //     }, 500);
+  //   }, [descriptionRef?.current]);
 
   useEffect(() => {
     if (issuesAuditId !== auditId) {
@@ -308,8 +307,16 @@ const AuditOffer = ({ publicView, setPublicView }) => {
               <FormControlLabel
                 control={
                   <Switch
-                    checked={publicView}
-                    onChange={e => setPublicView(e.target.checked)}
+                    checked={audit?.isPublic}
+                    onChange={e =>
+                      dispatch(
+                        handlePublishAudit({
+                          id: audit.id,
+                          public: e.target.checked,
+                        }),
+                      )
+                    }
+                    color="secondary"
                   />
                 }
                 sx={{
@@ -318,9 +325,28 @@ const AuditOffer = ({ publicView, setPublicView }) => {
                   position: 'absolute',
                   right: '30px',
                 }}
-                label="Public preview"
+                label="Publish"
               />
             )}
+          {/*{audit?.isPublic &&*/}
+          {/*  audit?.status?.toLowerCase() === RESOLVED.toLowerCase() &&*/}
+          {/*  audit?.auditor_id === user.id && (*/}
+          {/*    <FormControlLabel*/}
+          {/*      control={*/}
+          {/*        <Switch*/}
+          {/*          checked={publicView}*/}
+          {/*          onChange={e => setPublicView(e.target.checked)}*/}
+          {/*        />*/}
+          {/*      }*/}
+          {/*      sx={{*/}
+          {/*        '& .MuiTypography-root': { fontSize: '14px' },*/}
+          {/*        top: '-20px',*/}
+          {/*        position: 'absolute',*/}
+          {/*        right: '150px',*/}
+          {/*      }}*/}
+          {/*      label="Preview"*/}
+          {/*    />*/}
+          {/*  )}*/}
           <Box sx={headerTitleSx}>
             <Typography
               variant="h3"
@@ -681,49 +707,45 @@ const AuditOffer = ({ publicView, setPublicView }) => {
                         setConclusionState(values?.conclusion);
                       }, [values?.conclusion]);
 
-                          return (
-                            <Form onSubmit={handleSubmit}>
-                              <Collapse
-                                in={editConclusion || audit?.conclusion}
-                              >
-                                <Box
-                                  sx={{
-                                    position: 'relative',
-                                    '& .rc-md-editor': {
-                                      border: 'unset',
-                                    },
-                                    '& .editor-container': {
-                                      borderBottom: 'unset',
-                                    },
-                                  }}
-                                >
-                                  {/*{audit?.conclusion && (*/}
-                                  {/*  <Box sx={conclusionTitle}>Conclusion</Box>*/}
-                                  {/*)}*/}
-                                  <MarkdownEditor
-                                    name="conclusion"
-                                    setMdRef={setMdRef}
-                                    fastSave={true}
-                                    borderColor={'#e0e0e0'}
-                                    mdProps={{
-                                      style: {
-                                        backgroundColor: '#fcfaf6',
-                                        height: editConclusion
-                                          ? '400px'
-                                          : 'auto',
-                                        maxHeight: '400px',
-                                      },
-                                      view: {
-                                        menu: !audit?.conclusion,
-                                        md: !audit?.conclusion,
-                                        html: true,
-                                      },
-                                    }}
-                                    parentEntity={{
-                                      id: audit?.id,
-                                      source: AUDIT_PARENT_ENTITY,
-                                    }}
-                                  />
+                      return (
+                        <Form onSubmit={handleSubmit}>
+                          <Collapse in={editConclusion || audit?.conclusion}>
+                            <Box
+                              sx={{
+                                position: 'relative',
+                                '& .rc-md-editor': {
+                                  border: 'unset',
+                                },
+                                '& .editor-container': {
+                                  borderBottom: 'unset',
+                                },
+                              }}
+                            >
+                              {/*{audit?.conclusion && (*/}
+                              {/*  <Box sx={conclusionTitle}>Conclusion</Box>*/}
+                              {/*)}*/}
+                              <MarkdownEditor
+                                name="conclusion"
+                                setMdRef={setMdRef}
+                                fastSave={true}
+                                borderColor={'#e0e0e0'}
+                                mdProps={{
+                                  style: {
+                                    backgroundColor: '#fcfaf6',
+                                    height: editConclusion ? '400px' : 'auto',
+                                    maxHeight: '400px',
+                                  },
+                                  view: {
+                                    menu: !audit?.conclusion,
+                                    md: !audit?.conclusion,
+                                    html: true,
+                                  },
+                                }}
+                                parentEntity={{
+                                  id: audit?.id,
+                                  source: AUDIT_PARENT_ENTITY,
+                                }}
+                              />
 
                                   {(audit?.conclusion ||
                                     (!audit?.conclusion &&
@@ -1023,10 +1045,7 @@ const AuditOffer = ({ publicView, setPublicView }) => {
                 </Box>
               ) : (
                 <Box
-                  sx={[
-                    historyWrapperSx,
-                    matchXxs ? { display: 'none' } : {},
-                  ]}
+                  sx={[historyWrapperSx, matchXxs ? { display: 'none' } : {}]}
                 />
               )}
             </Box>
@@ -1045,84 +1064,77 @@ const AuditOffer = ({ publicView, setPublicView }) => {
               {({ handleSubmit, setFieldValue }) => {
                 return (
                   <Form onSubmit={handleSubmit}>
-                    {!auditDBWorkflow &&
-                      audit?.status?.toLowerCase() !==
-                        WAITING_FOR_AUDITS.toLowerCase() && (
-                        <Box sx={fileWrapper}>
-                          <Typography sx={subTitleSx}>
-                            Upload audit
-                          </Typography>
-                          <Box sx={{ display: 'flex' }}>
-                            <AuditUpload
-                              disabled={audit?.status === SUBMITED}
-                              auditId={audit?.id}
-                              auditorId={audit?.auditor_id}
-                              auditReportName={audit?.report_name}
-                              customerId={audit?.customer_id}
-                              name="report"
-                              setFieldValue={setFieldValue}
-                            />
-                          </Box>
-                        </Box>
-                      )}
-
-                        {!auditDBWorkflow && (
-                          <Box
-                            sx={{
-                              display: 'flex',
-                              flexDirection: 'column',
-                              alignItems: 'center',
-                              mb: '30px',
-                            }}
-                          >
-                            <Tooltip
-                              title={'Send to customer'}
-                              arrow
-                              placement={'top'}
-                            >
-                              <Button
-                                variant="contained"
-                                type="submit"
-                                color="secondary"
-                                sx={[buttonSx, { mb: '15px' }]}
-                                {...addTestsLabel('send-button')}
-                              >
-                                <SendIcon />
-                              </Button>
-                            </Tooltip>
+                    <Box sx={fileWrapper}>
+                      {!auditDBWorkflow &&
+                        audit?.status?.toLowerCase() !==
+                          WAITING_FOR_AUDITS.toLowerCase() && (
+                          <Box>
+                            <Typography sx={subTitleSx}>
+                              Upload audit
+                            </Typography>
+                            <Box sx={{ display: 'flex' }}>
+                              <AuditUpload
+                                disabled={audit?.status === SUBMITED}
+                                auditId={audit?.id}
+                                auditorId={audit?.auditor_id}
+                                auditReportName={audit?.report_name}
+                                customerId={audit?.customer_id}
+                                name="report"
+                                setFieldValue={setFieldValue}
+                              />
+                            </Box>
                           </Box>
                         )}
-                      </Form>
-                    );
-                  }}
-                </Formik>
-              </Box>
-            </Box>
+
+                      {!auditDBWorkflow && (
+                        <Tooltip
+                          arrow
+                          placement="top"
+                          title={'Send to customer'}
+                        >
+                          <Button
+                            variant="contained"
+                            type="submit"
+                            color="secondary"
+                            sx={[buttonSx, { mr: 'unset' }]}
+                            {...addTestsLabel('send-button')}
+                          >
+                            {/*Send to customer*/}
+                            <SendIcon />
+                          </Button>
+                        </Tooltip>
+                      )}
+                    </Box>
+                  </Form>
+                );
+              }}
+            </Formik>
           </Box>
-          {auditDBWorkflow &&
-            audit?.status?.toLowerCase() !==
-              WAITING_FOR_AUDITS.toLowerCase() && (
-              <Box sx={{ width: '100%', mb: '30px' }}>
-                {issues?.length ? (
-                  <Box
-                    sx={{
-                      display: 'flex',
-                      flexDirection: 'column',
-                      alignItems: 'center',
-                      gap: '20px',
-                      [theme.breakpoints.down('xs')]: {
-                        gap: '10px',
-                      },
-                    }}
-                  >
-                    <IssuesList auditId={auditId} />
-                  </Box>
-                ) : audit?.status?.toLowerCase() !== RESOLVED.toLowerCase() ? (
-                  <IssueDetailsForm />
-                ) : null}
+        </Box>
+      </Box>
+      {auditDBWorkflow &&
+        audit?.status?.toLowerCase() !== WAITING_FOR_AUDITS.toLowerCase() && (
+          <Box sx={{ width: '100%', mb: '30px' }}>
+            {issues?.length ? (
+              <Box
+                sx={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  gap: '20px',
+                  [theme.breakpoints.down('xs')]: {
+                    gap: '10px',
+                  },
+                }}
+              >
+                <IssuesList auditId={auditId} />
               </Box>
-            )}
-        {/*</CustomCard>*/}
+            ) : audit?.status?.toLowerCase() !== RESOLVED.toLowerCase() ? (
+              <IssueDetailsForm />
+            ) : null}
+          </Box>
+        )}
+      {/*</CustomCard>*/}
 
       <AuditFeedbackModal
         feedback={audit?.feedback}
@@ -1204,16 +1216,23 @@ const descriptionWrapper = (theme, showFull) => ({
   },
 });
 
-const bottomActionInnerWrapper = {
+const bottomActionInnerWrapper = theme => ({
   display: 'flex',
   gap: '15px',
-  // [theme.breakpoints.down(630)]: {
-  //   display: 'flex',
-  //   flexDirection: 'column',
-  //   width: '100%',
-  //   gap: '15px',
-  // },
-};
+  '& .btn-history': {
+    height: '50px',
+  },
+  [theme.breakpoints.down('lg')]: {
+    '& .btn-history': {
+      height: '47px',
+    },
+  },
+  [theme.breakpoints.down('md')]: {
+    '& .btn-history': {
+      height: '45px',
+    },
+  },
+});
 
 const headInfoSx = theme => ({
   display: 'flex',
@@ -1417,12 +1436,12 @@ const contentWrapper = {
 const fileWrapper = theme => ({
   margin: '22px 0',
   display: 'flex',
-  alignItems: 'center',
-  gap: '30px',
+  alignItems: 'flex-end',
+  gap: '15px',
   justifyContent: 'center',
   [theme.breakpoints.down('sm')]: {
-    flexDirection: 'column',
-    gap: '10px',
+    // flexDirection: 'column',
+    // gap: '10px',
   },
 });
 
@@ -1526,13 +1545,16 @@ const buttonSx = theme => ({
   textTransform: 'unset',
   fontWeight: 600,
   mr: '15px',
+  height: '50px',
   width: '50px!important',
   minWidth: '50px',
-  height: '47px',
   borderRadius: '10px',
-  // [theme.breakpoints.down(1400)]: {
-  //   width: '160px',
-  // },
+  [theme.breakpoints.down('lg')]: {
+    height: '47px',
+  },
+  [theme.breakpoints.down('md')]: {
+    height: '45px',
+  },
   // [theme.breakpoints.down(1124)]: {
   //   height: '42px!important',
   //   width: '270px',
@@ -1579,10 +1601,12 @@ const workflowToggleBox = theme => ({
   justifyContent: 'center',
   border: '1px solid #B2B3B3',
   borderRadius: '30px',
-  height: '46px',
-  [theme.breakpoints.down(900)]: {
-    // width: '248px',
-    // margin: '0 auto 20px',
+  height: '50px',
+  [theme.breakpoints.down('lg')]: {
+    height: '47px',
+  },
+  [theme.breakpoints.down('md')]: {
+    height: '45px',
   },
   [theme.breakpoints.down('xs')]: {
     // width: '248px',
