@@ -360,7 +360,6 @@ const PublicAudit = ({
                 '&:hover': {
                   backgroundColor: '#fcfaf6',
                 },
-                textTransform: 'unset',
               },
             ]}
             variant={'outlined'}
