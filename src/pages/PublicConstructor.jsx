@@ -80,6 +80,7 @@ const PublicConstructor = ({ saved, isPublic }) => {
   const [editConclusion, setEditConclusion] = useState(false);
   const [showReadMoreButton, setShowReadMoreButton] = useState(true);
   const auditMessage = useSelector(s => s.audits.successMessage);
+  const error = useSelector(s => s.audits.error);
   const [tab, setTab] = useState(0);
 
   useEffect(() => {
@@ -274,9 +275,9 @@ const PublicConstructor = ({ saved, isPublic }) => {
                 <Form onSubmit={handleSubmit} style={{ width: '100%' }}>
                   <CustomSnackbar
                     autoHideDuration={5000}
-                    open={!!successMessage}
+                    open={!!successMessage || !!error}
                     severity={'success'}
-                    text={successMessage}
+                    text={successMessage || error}
                     onClose={() => dispatch(clearMessage())}
                   />
                   <Typography sx={titleSx} variant={'h4'}>
