@@ -639,7 +639,7 @@ const publicSearchBlock = theme => ({
   flexGrow: 1,
   alignItems: 'center',
   [theme.breakpoints.down(555)]: {
-    mt: '20px',
+    // mt: '20px',
     mr: 0,
   },
 });
