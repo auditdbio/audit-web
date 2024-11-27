@@ -97,7 +97,7 @@ const AuditOffer = ({ publicView, setPublicView }) => {
   const [resolveConfirmation, setResolveConfirmation] = useState(false);
   const [allIssuesClosed, setAllIssuesClosed] = useState(false);
   const [auditDBWorkflow, setAuditDBWorkflow] = useState(true);
-  const [showReadMoreButton, setShowReadMoreButton] = useState(false);
+  const [showReadMoreButton, setShowReadMoreButton] = useState(true);
   const [showFull, setShowFull] = useState(false);
   const [showFullHeader, setShowFullHeader] = useState(false);
   const [showFeedback, setShowFeedback] = useState(false);
