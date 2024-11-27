@@ -142,25 +142,31 @@ const linkFieldWrapper = theme => ({
   gap: '7px',
   alignItems: 'center',
   marginBottom: '15px',
-  '& .github-btn': {
-    padding: '16px 5px',
-  },
+  // '& .github-btn': {
+  //   // height: '47px',
+  // },
   '& .field-wrapper': {
     width: '100%',
   },
-  '& .tag-input-field .MuiOutlinedInput-root': {
-    height: '57px!important',
+  // '& .tag-input-field .MuiOutlinedInput-root': {
+  //   height: '57px!important',
+  // },
+  [theme.breakpoints.down('md')]: {
+    '& label': {
+      top: '-6px!important',
+    },
   },
   [theme.breakpoints.down('sm')]: {
-    '& .tag-input-field .MuiOutlinedInput-root': {
-      height: '44px!important',
-    },
-    '& .github-btn': {
-      padding: '10px 5px',
+    '& label': {
+      top: '0px!important',
     },
   },
   [theme.breakpoints.down(500)]: {
-    flexDirection: 'column',
+    // flexDirection: 'column',
+    '& .github-wrapper': {
+      width: 'unset',
+    },
+    width: '100%',
     gap: '10px',
     '& .field-wrapper': {
       width: '100%',
@@ -213,5 +219,8 @@ const wrapper = theme => ({
       marginLeft: '15px',
       marginTop: '7px',
     },
+  },
+  [theme.breakpoints.down(780)]: {
+    borderRadius: 'unset',
   },
 });
