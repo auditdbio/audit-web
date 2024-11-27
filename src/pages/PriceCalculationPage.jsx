@@ -52,6 +52,17 @@ const PriceCalculationPage = () => {
           >
             Price calculation
           </Typography>
+          <ul>
+            <p style={{ fontWeight: 500 }}>Tool scope description:</p>
+            <li>Processing links to retrieve file contents.</li>
+            <li>
+              Requiring files to be publicly accessible and downloadable without
+              authorization.
+            </li>
+            <li>
+              Supporting both github.com and raw.githubusercontent.com URLs.
+            </li>
+          </ul>
           <Formik
             initialValues={{
               scope: [],
@@ -66,20 +77,6 @@ const PriceCalculationPage = () => {
                 <Form onSubmit={handleSubmit}>
                   <Box sx={fieldWrapper}>
                     <Box sx={blockSx}>
-                      <ul>
-                        <p style={{ fontWeight: 500 }}>
-                          Tool scope description:
-                        </p>
-                        <li>Processing links to retrieve file contents.</li>
-                        <li>
-                          Requiring files to be publicly accessible and
-                          downloadable without authorization.
-                        </li>
-                        <li>
-                          Supporting both github.com and
-                          raw.githubusercontent.com URLs.
-                        </li>
-                      </ul>
                       <Box sx={linkFieldWrapper}>
                         <TagsField
                           size={matchSm ? 'small' : 'medium'}
