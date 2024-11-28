@@ -38,7 +38,7 @@ const IssueDetailsForm = ({ issue = null, editMode = false, hideControl }) => {
   const audit = useSelector(s =>
     s.audits.audits?.find(audit => audit.id === auditId),
   );
-  const matchXss = useMediaQuery(theme.breakpoints.down(550));
+  const matchXs = useMediaQuery(theme.breakpoints.down('xs'));
 
   const [isEditName, setIsEditName] = useState(!editMode);
   const [issuePrevValues, setIssuePrevValues] = useState(null);
@@ -163,6 +163,43 @@ const IssueDetailsForm = ({ issue = null, editMode = false, hideControl }) => {
                       : null
                   }
                 />
+                {!matchXs &&
+                  !editMode &&
+                  (!dirty ? (
+                    <Tooltip arrow placement="top" title={'New issue'}>
+                      <Button
+                        variant="contained"
+                        type="button"
+                        color="primary"
+                        // disabled={!dirty}
+                        sx={[
+                          issueButton,
+                          {
+                            backgroundColor: 'rgba(0, 0, 0, 0.12)',
+                            '&:hover': {
+                              backgroundColor: 'rgba(0, 0, 0, 0.12)',
+                            },
+                          },
+                        ]}
+                        {...addTestsLabel('new-issue-button')}
+                      >
+                        <NoteAddIcon />
+                      </Button>
+                    </Tooltip>
+                  ) : (
+                    <Tooltip arrow placement="top" title={'New issue'}>
+                      <Button
+                        variant="contained"
+                        type="submit"
+                        color="primary"
+                        disabled={!dirty}
+                        sx={issueButton}
+                        {...addTestsLabel('new-issue-button')}
+                      >
+                        <NoteAddIcon />
+                      </Button>
+                    </Tooltip>
+                  ))}
                 {/*{!matchXss && user.current_role !== CUSTOMER && !editMode && (*/}
                 {/*  //*/}
                 {/*  <Box sx={buttonsBox}>*/}
@@ -287,26 +324,12 @@ const issueButton = theme => ({
 });
 
 const nameInputSx = theme => ({
-  '& > div': { borderRadius: 0 },
-  '& fieldset': { borderColor: '#b9b9b9 !important' },
   '& input': {
-    backgroundColor: 'white',
-    fontSize: '20px',
-    fontWeight: 500,
-    lineHeight: '24px',
-    padding: '20px',
-    '&:disabled': {
-      backgroundColor: 'transparent',
-      color: '#434242',
-      '-webkit-text-fill-color': '#434242',
-    },
-    [theme.breakpoints.down('sm')]: {
-      fontSize: '16px',
-      padding: '15px 10px',
-    },
+    fontSize: '22px',
+    paddingY: '8px',
   },
-  [theme.breakpoints.down('xs')]: {
-    mb: '12px',
+  '& label': {
+    top: '-6px',
   },
 });
 
