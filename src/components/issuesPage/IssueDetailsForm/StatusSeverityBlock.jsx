@@ -29,6 +29,7 @@ import {
   WILL_NOT_FIX,
 } from '../constants.js';
 import NoteAddIcon from '@mui/icons-material/NoteAdd.js';
+import FeedbackIcon from '@mui/icons-material/Feedback';
 
 const StatusSeverityBlock = ({
   issue,
@@ -384,15 +385,17 @@ const StatusSeverityBlock = ({
         !isEditFeedback &&
         !issue?.feedback && (
           <Box sx={buttonsBox}>
-            <Button
-              variant="contained"
-              color="primary"
-              sx={[issueButton, feedbackButton]}
-              onClick={() => setIsEditFeedback(prev => !prev)}
-              {...addTestsLabel('feedback-button')}
-            >
-              Send feedback
-            </Button>
+            <Tooltip arrow placement={'top'} title={'Send feedback'}>
+              <Button
+                variant="contained"
+                color="primary"
+                sx={[issueButton]}
+                onClick={() => setIsEditFeedback(prev => !prev)}
+                {...addTestsLabel('feedback-button')}
+              >
+                <FeedbackIcon />
+              </Button>
+            </Tooltip>
           </Box>
         )}
     </Box>
