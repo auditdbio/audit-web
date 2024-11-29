@@ -22,7 +22,7 @@ import NotFound from './Not-Found.jsx';
 
 const Audit = () => {
   const dispatch = useDispatch();
-  const { id } = useParams();
+  const { auditId } = useParams();
   const { code } = useParams();
   const [publicView, setPublicView] = useState(false);
   const user = useSelector(s => s.user.user);
@@ -35,14 +35,14 @@ const Audit = () => {
 
   useEffect(() => {
     if (isAuth()) {
-      dispatch(getAudit(id));
+      dispatch(getAudit(auditId));
     } else {
-      dispatch(getPublicAudit(id, code));
+      dispatch(getPublicAudit(auditId, code));
     }
     return () => {
       dispatch({ type: CLEAR_AUDIT });
     };
-  }, [id]);
+  }, [auditId]);
 
   const renderContent = () => {
     if (!audit?.id && !notFound) {
