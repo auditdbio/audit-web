@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import { Box, Button, Tooltip } from '@mui/material';
 import { addTestsLabel } from '../../lib/helper.js';
 import { AUDITOR, CUSTOMER } from '../../redux/actions/types.js';
+import theme from '../../styles/themes.js';
 import {
   BEGIN_ACTION,
   DISCARD_ACTION,
@@ -100,7 +101,7 @@ const StatusControl = ({ status, setFieldValue }) => {
               status !== 'Draft'
                 ? { textTransform: 'none' }
                 : { textTransform: 'none' },
-              statusBtn,
+              statusBtn(theme, user.current_role === CUSTOMER),
             ]}
             onClick={() => handleChangeStatus(action.action)}
             {...addTestsLabel('change-status-button')}
@@ -128,7 +129,7 @@ const StatusControl = ({ status, setFieldValue }) => {
 
 export default StatusControl;
 
-const statusBtn = theme => ({
+const statusBtn = (theme, isCustomer) => ({
   width: '100px',
   padding: '6px 0!important',
   fontSize: '16px',
@@ -136,7 +137,7 @@ const statusBtn = theme => ({
     fontSize: '14px!important',
   },
   [theme.breakpoints.down('sm')]: {
-    width: '70px',
+    width: isCustomer ? '100px' : '70px',
   },
 });
 

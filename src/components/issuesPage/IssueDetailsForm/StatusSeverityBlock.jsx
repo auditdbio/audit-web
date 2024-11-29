@@ -59,7 +59,15 @@ const StatusSeverityBlock = ({
           !editMode ? { gap: '30px!important' } : {},
         ]}
       >
-        <Box sx={[issueInnerWrapperSx, blockSx(theme, !!issue)]}>
+        <Box
+          sx={[
+            issueInnerWrapperSx(
+              theme,
+              user.current_role.toLowerCase() === CUSTOMER.toLowerCase(),
+            ),
+            blockSx(theme, !!issue),
+          ]}
+        >
           <Box sx={statusBlockAlign}>
             <Typography
               onClick={() => isPublic && setStatusListOpen(true)}
@@ -409,6 +417,11 @@ const includeSx = theme => ({
   '& p': {
     width: '210px',
   },
+  [theme.breakpoints.down('md')]: {
+    '& p': {
+      width: '170px',
+    },
+  },
   [theme.breakpoints.down('sm')]: {
     '& label': {
       flexDirection: 'column-reverse',
@@ -433,6 +446,7 @@ const issueWrapperSx = (theme, issue) => ({
   [theme.breakpoints.down(751)]: {
     flexWrap: 'wrap',
     gap: 'unset!important',
+    justifyContent: 'center',
     // flexDirection: 'column',
     // alignItems: 'unset',
     // gap: '25px',
@@ -446,11 +460,15 @@ const issueWrapperSx = (theme, issue) => ({
   }),
 });
 
-const issueInnerWrapperSx = theme => ({
-  flexDirection: 'column',
-  gap: '10px',
+const issueInnerWrapperSx = (theme, isCustomer) => ({
+  // flexDirection: 'column',
+  gap: '15px',
   display: 'flex',
-  alignItems: 'flex-start',
+  alignItems: 'flex-end',
+  [theme.breakpoints.down(1135)]: {
+    flexDirection: isCustomer ? 'row' : 'column',
+    alignItems: isCustomer ? 'flex-end' : 'flex-start',
+  },
 });
 
 const issueStatusBlock = theme => ({
@@ -474,6 +492,7 @@ const statusBlockAlign = theme => ({
   textAlign: 'left',
   [theme.breakpoints.down('xs')]: {
     textAlign: 'center',
+    width: '112px',
   },
 });
 
@@ -497,18 +516,18 @@ const severityWrapper = {
 };
 
 const blockSx = (theme, issue) => ({
-  width: '200px',
-  [theme.breakpoints.down('sm')]: {
-    width: '190px',
-  },
+  // width: '200px',
+  // [theme.breakpoints.down('sm')]: {
+  //   width: '190px',
+  // },
   [theme.breakpoints.down(751)]: {
-    width: issue ? '50%' : '30%',
+    // width: issue ? '50%' : '30%',
     boxSizing: 'border-box',
     padding: '10px',
     alignItems: 'center!important',
   },
   [theme.breakpoints.down(451)]: {
-    width: issue ? '100%' : '50%!important',
+    // width: issue ? '100%' : '50%!important',
     boxSizing: 'unset',
     padding: 'unset',
     alignItems: 'center!important',
