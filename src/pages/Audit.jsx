@@ -19,11 +19,13 @@ import { CustomCard } from '../components/custom/Card.jsx';
 import Layout from '../styles/Layout.jsx';
 import Loader from '../components/Loader.jsx';
 import NotFound from './Not-Found.jsx';
+import { useSearchParams } from 'react-router-dom/dist';
 
 const Audit = () => {
   const dispatch = useDispatch();
-  const { id } = useParams();
-  const { code } = useParams();
+  const { auditId } = useParams();
+  const [searchParams] = useSearchParams();
+  const code = searchParams.get('code');
   const [publicView, setPublicView] = useState(false);
   const user = useSelector(s => s.user.user);
   const {
@@ -35,14 +37,18 @@ const Audit = () => {
 
   useEffect(() => {
     if (isAuth()) {
-      dispatch(getAudit(id));
+      if (code) {
+        dispatch(getPublicAudit(auditId, code));
+      } else {
+        dispatch(getAudit(auditId));
+      }
     } else {
-      dispatch(getPublicAudit(id, code));
+      dispatch(getPublicAudit(auditId, code));
     }
     return () => {
       dispatch({ type: CLEAR_AUDIT });
     };
-  }, [id]);
+  }, [auditId]);
 
   const renderContent = () => {
     if (!audit?.id && !notFound) {
