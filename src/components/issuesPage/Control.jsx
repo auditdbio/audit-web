@@ -60,7 +60,7 @@ const Control = ({
 }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { auditId } = useParams();
+  const { id: auditId } = useParams();
   const [resolveConfirmation, setResolveConfirmation] = useState(false);
   const [allIssuesClosed, setAllIssuesClosed] = useState(false);
   const [menuAnchorEl, setMenuAnchorEl] = useState(null);
@@ -696,7 +696,6 @@ const issueActionWrapperSx = theme => ({
 const buttonSx = theme => ({
   padding: '8.5px 0',
   fontSize: '16px',
-  height: '47px',
   textTransform: 'unset',
   fontWeight: 600,
   '&:not(:last-child)': {

@@ -64,8 +64,9 @@ const StatusSeverityBlock = ({
             issueInnerWrapperSx(
               theme,
               user.current_role.toLowerCase() === CUSTOMER.toLowerCase(),
+              editMode,
             ),
-            blockSx(theme, !!issue),
+            // blockSx(theme, !!issue),
           ]}
         >
           <Box sx={statusBlockAlign}>
@@ -226,7 +227,7 @@ const StatusSeverityBlock = ({
               !!issue
                 ? {}
                 : {
-                    [theme.breakpoints.down(751)]: {
+                    [theme.breakpoints.down(800)]: {
                       width: '40%',
                     },
                   },
@@ -307,7 +308,7 @@ const StatusSeverityBlock = ({
           user.current_role === AUDITOR &&
           !isPublic &&
           !hideControl && (
-            <Box sx={[statusBlockAlign, includeSx, blockSx(theme, !!issue)]}>
+            <Box sx={[includeSx]}>
               <FormControlLabel
                 label={
                   <Typography sx={{ fontSize: '20px', fontWeight: 500 }}>
@@ -332,60 +333,60 @@ const StatusSeverityBlock = ({
               />
             </Box>
           )}
-      </Box>
-
-      {(user.current_role !== CUSTOMER || isPublic) && !editMode && (
-        <Box
-          sx={[
-            buttonsBox,
-            // !isPublic
-            //   ? {
-            //       display: 'none!important',
-            //       [theme.breakpoints.down(550)]: {
-            //         display: 'flex!important',
-            //       },
-            //     }
-            //   : {},
-          ]}
-        >
-          {matchXs &&
-            (!dirty ? (
-              <Tooltip arrow placement="top" title={'New issue'}>
-                <Button
-                  variant="contained"
-                  type="button"
-                  color="primary"
-                  // disabled={!dirty}
-                  sx={[
-                    issueButton,
-                    {
-                      backgroundColor: 'rgba(0, 0, 0, 0.12)',
-                      '&:hover': {
+        {(user.current_role !== CUSTOMER || isPublic) && !editMode && (
+          <Box
+            sx={[
+              buttonsBox,
+              blockSx(theme, !!issue),
+              // !isPublic
+              //   ? {
+              //       display: 'none!important',
+              //       [theme.breakpoints.down(550)]: {
+              //         display: 'flex!important',
+              //       },
+              //     }
+              //   : {},
+            ]}
+          >
+            {matchXs &&
+              (!dirty ? (
+                <Tooltip arrow placement="top" title={'New issue'}>
+                  <Button
+                    variant="contained"
+                    type="button"
+                    color="primary"
+                    // disabled={!dirty}
+                    sx={[
+                      issueButton,
+                      {
                         backgroundColor: 'rgba(0, 0, 0, 0.12)',
+                        '&:hover': {
+                          backgroundColor: 'rgba(0, 0, 0, 0.12)',
+                        },
                       },
-                    },
-                  ]}
-                  {...addTestsLabel('new-issue-button')}
-                >
-                  <NoteAddIcon />
-                </Button>
-              </Tooltip>
-            ) : (
-              <Tooltip arrow placement="top" title={'New issue'}>
-                <Button
-                  variant="contained"
-                  type="submit"
-                  color="primary"
-                  disabled={!dirty}
-                  sx={issueButton}
-                  {...addTestsLabel('new-issue-button')}
-                >
-                  <NoteAddIcon />
-                </Button>
-              </Tooltip>
-            ))}
-        </Box>
-      )}
+                    ]}
+                    {...addTestsLabel('new-issue-button')}
+                  >
+                    <NoteAddIcon />
+                  </Button>
+                </Tooltip>
+              ) : (
+                <Tooltip arrow placement="top" title={'New issue'}>
+                  <Button
+                    variant="contained"
+                    type="submit"
+                    color="primary"
+                    disabled={!dirty}
+                    sx={issueButton}
+                    {...addTestsLabel('new-issue-button')}
+                  >
+                    <NoteAddIcon />
+                  </Button>
+                </Tooltip>
+              ))}
+          </Box>
+        )}
+      </Box>
 
       {!isPublic &&
         !hideControl &&
@@ -413,25 +414,28 @@ const StatusSeverityBlock = ({
 export default StatusSeverityBlock;
 
 const includeSx = theme => ({
-  marginTop: '-5px',
-  '& p': {
-    width: '210px',
-  },
-  [theme.breakpoints.down('md')]: {
-    '& p': {
-      width: '170px',
-    },
-  },
-  [theme.breakpoints.down('sm')]: {
-    '& label': {
-      flexDirection: 'column-reverse',
-      marginRight: 'unset',
-    },
-    marginTop: '0',
-    // '& p': {
-    //   width: '170px',
-    // },
-  },
+  position: 'absolute',
+  top: 4,
+  right: 0,
+  // marginTop: '-5px',
+  // '& p': {
+  //   width: '210px',
+  // },
+  // [theme.breakpoints.down('md')]: {
+  //   '& p': {
+  //     width: '170px',
+  //   },
+  // },
+  // [theme.breakpoints.down('sm')]: {
+  //   '& label': {
+  //     flexDirection: 'column-reverse',
+  //     marginRight: 'unset',
+  //   },
+  //   marginTop: '0',
+  //   // '& p': {
+  //   //   width: '170px',
+  //   // },
+  // },
 });
 //
 const issueWrapperSx = (theme, issue) => ({
@@ -443,31 +447,33 @@ const issueWrapperSx = (theme, issue) => ({
     width: '100%',
     // justifyContent: 'space-evenly',
   },
-  [theme.breakpoints.down(751)]: {
+  [theme.breakpoints.down('xs')]: {
     flexWrap: 'wrap',
-    gap: 'unset!important',
+    // gap: 'unset!important',
     justifyContent: 'center',
     // flexDirection: 'column',
     // alignItems: 'unset',
     // gap: '25px',
   },
-  ...(issue && {
-    [theme.breakpoints.down(451)]: {
-      flexDirection: 'column',
-      alignItems: 'center',
-      gap: '25px!important',
-    },
-  }),
+  // ...(issue && {
+  [theme.breakpoints.down(500)]: {
+    // flexDirection: 'column',
+    // alignItems: 'center',
+    columnGap: '0px!important',
+    rowGap: '5px',
+  },
+  // }),
 });
 
-const issueInnerWrapperSx = (theme, isCustomer) => ({
-  // flexDirection: 'column',
+const issueInnerWrapperSx = (theme, isCustomer, editMode) => ({
   gap: '15px',
   display: 'flex',
   alignItems: 'flex-end',
-  [theme.breakpoints.down(1135)]: {
-    flexDirection: isCustomer ? 'row' : 'column',
-    alignItems: isCustomer ? 'flex-end' : 'flex-start',
+  [theme.breakpoints.down('xs')]: {
+    justifyContent: 'center',
+  },
+  [theme.breakpoints.down(500)]: {
+    width: editMode ? '100%' : '48%',
   },
 });
 
@@ -520,14 +526,18 @@ const blockSx = (theme, issue) => ({
   // [theme.breakpoints.down('sm')]: {
   //   width: '190px',
   // },
-  [theme.breakpoints.down(751)]: {
-    // width: issue ? '50%' : '30%',
-    boxSizing: 'border-box',
-    padding: '10px',
-    alignItems: 'center!important',
+  height: '65px',
+  [theme.breakpoints.down('lg')]: {
+    height: '62px',
   },
-  [theme.breakpoints.down(451)]: {
-    // width: issue ? '100%' : '50%!important',
+  // [theme.breakpoints.down(800)]: {
+  //   width: issue ? '50%' : '30%',
+  //   boxSizing: 'border-box',
+  //   padding: '10px',
+  //   alignItems: 'center!important',
+  // },
+  [theme.breakpoints.down(500)]: {
+    width: '48%!important',
     boxSizing: 'unset',
     padding: 'unset',
     alignItems: 'center!important',
@@ -577,7 +587,7 @@ const buttonsBox = (theme, isPublic) => ({
   [theme.breakpoints.down('xs')]: {
     justifyContent: 'center',
     pt: 0,
-    mt: '20px',
+    // mt: '20px',
     // mb: '20px',
   },
 });

@@ -135,6 +135,7 @@ const statusBtn = (theme, isCustomer) => ({
   fontSize: '16px',
   [theme.breakpoints.down('md')]: {
     fontSize: '14px!important',
+    width: isCustomer ? '100px' : '70px',
   },
   [theme.breakpoints.down('sm')]: {
     width: isCustomer ? '100px' : '70px',
