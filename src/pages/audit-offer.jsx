@@ -46,12 +46,10 @@ import {
   WAITING_FOR_AUDITS,
 } from '../redux/actions/types.js';
 import { addTestsLabel, getAverageFeedbackRating } from '../lib/helper.js';
-import CustomLink from '../components/custom/CustomLink.jsx';
 import IssueDetailsForm from '../components/issuesPage/IssueDetailsForm/IssueDetailsForm.jsx';
 import IssuesList from '../components/issuesPage/IssuesList.jsx';
 import CustomSnackbar from '../components/custom/CustomSnackbar.jsx';
 import { getIssues } from '../redux/actions/issueAction.js';
-import NotFound from './Not-Found.jsx';
 import {
   FIXED,
   NOT_FIXED,
@@ -1541,26 +1539,6 @@ const buttonSx = theme => ({
   [theme.breakpoints.down('md')]: {
     height: '45px',
   },
-  // [theme.breakpoints.down(1124)]: {
-  //   height: '42px!important',
-  //   width: '270px',
-  // },
-  // [theme.breakpoints.down('sm')]: {
-  //   height: '42px!important',
-  //   width: '240px',
-  // },
-  // [theme.breakpoints.down(920)]: {
-  //
-  // },
-  // [theme.breakpoints.down('xs')]: {
-  //   // margin: '0 6px',
-  //   padding: '12px 0',
-  //   fontSize: '14px',
-  // },
-  // [theme.breakpoints.down(630)]: {
-  //   margin: 'unset',
-  //   width: '100%',
-  // },
 });
 
 const sendMessageButton = theme => ({
@@ -1595,7 +1573,7 @@ const workflowToggleBox = theme => ({
     height: '45px',
   },
   [theme.breakpoints.down('xs')]: {
-    // width: '248px',
+    //
     // margin: '0 auto 20px',
   },
 });

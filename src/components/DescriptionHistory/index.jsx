@@ -178,7 +178,6 @@ const HistoryDescription = ({
                 { textTransform: 'unset' },
                 buttonSx,
                 buttonStyle ? { ...buttonStyle, marginRight: 'unset' } : {},
-                spaceY ? { marginY: '15px' } : {},
               ]}
               className={'btn-history'}
               variant={'contained'}
@@ -198,7 +197,6 @@ const HistoryDescription = ({
               { textTransform: 'unset' },
               buttonSx,
               buttonStyle ? { ...buttonStyle, marginRight: 'unset' } : {},
-              spaceY ? { marginY: '15px' } : {},
             ]}
             className={'btn-history'}
             variant={'contained'}
@@ -230,22 +228,15 @@ const buttonSx = theme => ({
   fontSize: '16px',
   textTransform: 'unset',
   fontWeight: 600,
-  width: '190px',
+  height: '50px',
+  width: '50px!important',
+  minWidth: '50px',
   borderRadius: '10px',
-  [theme.breakpoints.down(1400)]: {
-    width: '160px',
+  [theme.breakpoints.down('lg')]: {
+    height: '47px',
   },
-  [theme.breakpoints.down('sm')]: {
-    width: '150px',
-  },
-  [theme.breakpoints.down(920)]: {
-    width: '160px',
-  },
-  [theme.breakpoints.down('xs')]: {
-    // margin: '0 6px',
-    height: '42px',
-    padding: '12px 0',
-    fontSize: '14px',
+  [theme.breakpoints.down('md')]: {
+    height: '45px',
   },
 });
 
