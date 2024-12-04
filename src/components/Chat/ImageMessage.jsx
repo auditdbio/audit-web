@@ -45,7 +45,12 @@ const ImageMessage = ({ message }) => {
               src={imgSrc}
               alt="chat-img"
               sx={imageMessage}
-              onClick={() => setImageModalIsOpen(true)}
+              onClick={e => {
+                if (e.button === 0) {
+                  e.preventDefault();
+                  setImageModalIsOpen(true);
+                }
+              }}
             />
           </Link>
         )}

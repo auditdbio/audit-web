@@ -14,7 +14,16 @@ const Message = ({ message, user, currentChat, isRead }) => {
   const { customer } = useSelector(state => state.customer);
   const { auditor } = useSelector(state => state.auditor);
 
-  const fileMessage = message?.kind === 'File' ? JSON.parse(message.text) : {};
+  let fileMessage;
+  if (message?.kind === 'File') {
+    try {
+      fileMessage = JSON.parse(message.text);
+    } catch (e) {
+      fileMessage = {};
+    }
+  } else {
+    fileMessage = {};
+  }
 
   const userAvatar = useMemo(() => {
     if (user.current_role === AUDITOR && !!auditor?.avatar) {
