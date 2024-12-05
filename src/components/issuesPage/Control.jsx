@@ -697,7 +697,6 @@ const issueActionWrapperSx = theme => ({
 const buttonSx = theme => ({
   padding: '8.5px 0',
   fontSize: '16px',
-  height: '47px',
   textTransform: 'unset',
   fontWeight: 600,
   '&:not(:last-child)': {

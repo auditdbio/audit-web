@@ -222,7 +222,7 @@ const AppRoutes = () => {
         {/*  path="/audit/:id"*/}
         {/*  element={<PublicAuditInfoPage isPublic={true} />}*/}
         {/*/>*/}
-        <Route path="/audit/:id" element={<Audit />} />
+        <Route path="/audit/:auditId" element={<Audit />} />
         {/*<Route*/}
         {/*  path="/audit-info/:auditId/auditor"*/}
         {/*  element={*/}

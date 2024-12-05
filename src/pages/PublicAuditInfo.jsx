@@ -22,7 +22,7 @@ import { useSearchParams } from 'react-router-dom/dist';
 import PublicAudit from '../components/PublicAudit/PublicAudit.jsx';
 
 const PublicAuditInfoPage = ({ isPublic, publicView, setPublicView }) => {
-  const { id } = useParams();
+  const { auditId } = useParams();
   const dispatch = useDispatch();
   const notFound = useSelector(s => s.notFound.error);
   const auditConfirm = useSelector(s => s.audits?.audit);

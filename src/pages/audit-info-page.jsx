@@ -14,7 +14,7 @@ import Headings from '../router/Headings.jsx';
 import { useSearchParams } from 'react-router-dom/dist';
 
 const AuditInfoPage = ({ isPublic, publicView, setPublicView }) => {
-  const { id } = useParams();
+  const { auditId } = useParams();
   const dispatch = useDispatch();
   const notFound = useSelector(s => s.notFound.error);
   const auditConfirm = useSelector(s => s.audits?.audit);
