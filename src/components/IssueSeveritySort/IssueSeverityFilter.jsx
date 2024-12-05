@@ -9,10 +9,10 @@ const IssueSeveritySort = ({ issues }) => {
     acc.medium = acc.medium || 0;
     acc.minor = acc.minor || 0;
 
-    if (issue.severity === 'critical') acc.critical += 1;
-    if (issue.severity === 'major') acc.major += 1;
-    if (issue.severity === 'Medium') acc.medium += 1;
-    if (issue.severity === 'minor') acc.minor += 1;
+    if (issue.severity.toLowerCase() === 'critical') acc.critical += 1;
+    if (issue.severity.toLowerCase() === 'major') acc.major += 1;
+    if (issue.severity.toLowerCase() === 'medium') acc.medium += 1;
+    if (issue.severity.toLowerCase() === 'minor') acc.minor += 1;
 
     return acc;
   }, {});
