@@ -70,4 +70,7 @@ const blockSx = theme => ({
   justifyContent: 'center',
   gap: '10px',
   alignItems: 'center',
+  '& p': {
+    width: '30px',
+  },
 });
