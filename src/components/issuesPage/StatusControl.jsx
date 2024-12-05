@@ -39,7 +39,7 @@ const StatusControl = ({ status, setFieldValue }) => {
       if (status === VERIFICATION) {
         actions.push(
           { action: VERIFIED_ACTION, text: 'Verified' },
-          { action: NOT_FIXED_ACTION, text: 'Not Fixed' },
+          { action: NOT_FIXED_ACTION, text: 'Reopen' },
           { action: DISCARD_ACTION, text: 'Discard' },
         );
       }
@@ -106,7 +106,7 @@ const StatusControl = ({ status, setFieldValue }) => {
             onClick={() => handleChangeStatus(action.action)}
             {...addTestsLabel('change-status-button')}
           >
-            {action.text === 'Not Fixed' ? 'Will not fix' : action.text}
+            {action.text}
           </Button>
         );
       })}
@@ -131,19 +131,18 @@ export default StatusControl;
 
 const statusBtn = (theme, isCustomer) => ({
   width: '100px',
-  padding: '6px 0!important',
-  fontSize: '16px',
+  padding: '2px 0!important',
+  fontSize: '14px',
   [theme.breakpoints.down('md')]: {
     fontSize: '14px!important',
-    width: isCustomer ? '100px' : '70px',
+    width: isCustomer ? '100px' : '80px',
   },
-  [theme.breakpoints.down('sm')]: {
-    width: isCustomer ? '100px' : '70px',
+  [theme.breakpoints.down(650)]: {
+    fontSize: '12px!important',
   },
 });
 
 const wrapper = {
   display: 'flex',
-  // flexDirection: 'column',
   gap: '10px',
 };

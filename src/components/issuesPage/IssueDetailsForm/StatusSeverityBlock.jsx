@@ -37,8 +37,8 @@ const StatusSeverityBlock = ({
   values,
   setFieldValue,
   handleSubmit,
-  errors,
-  touched,
+  // errors,
+  // touched,
   hideControl,
   dirty,
   user,
@@ -49,16 +49,59 @@ const StatusSeverityBlock = ({
 }) => {
   const [severityListOpen, setSeverityListOpen] = useState(false);
   const [statusListOpen, setStatusListOpen] = useState(false);
-  const [categoryPrevVal, setCategoryPrevVal] = useState(issue?.category || '');
+  // const [categoryPrevVal, setCategoryPrevVal] = useState(issue?.category || '');
   const matchXs = useMediaQuery(theme => theme.breakpoints.down('xs'));
+  const matchXxs = useMediaQuery(theme => theme.breakpoints.down('xxs'));
+
   return (
     <Box sx={issueStatusBlock}>
       <Box
         sx={[
-          issueWrapperSx(theme, !!issue),
+          issueWrapperSx(theme, isPublic),
           !editMode ? { gap: '30px!important' } : {},
         ]}
       >
+        {(user.current_role !== CUSTOMER || isPublic) &&
+          !editMode &&
+          matchXxs && (
+            <Box sx={[buttonsBox, blockSx]}>
+              {!dirty ? (
+                <Tooltip arrow placement="top" title={'New issue'}>
+                  <Button
+                    variant="contained"
+                    type="button"
+                    color="primary"
+                    sx={[
+                      issueButton,
+                      {
+                        backgroundColor: 'rgba(0, 0, 0, 0.12)',
+                        '&:hover': {
+                          backgroundColor: 'rgba(0, 0, 0, 0.12)',
+                        },
+                      },
+                    ]}
+                    {...addTestsLabel('new-issue-button')}
+                  >
+                    <NoteAddIcon />
+                  </Button>
+                </Tooltip>
+              ) : (
+                <Tooltip arrow placement="top" title={'New issue'}>
+                  <Button
+                    variant="contained"
+                    type="submit"
+                    color="primary"
+                    disabled={!dirty}
+                    sx={issueButton}
+                    {...addTestsLabel('new-issue-button')}
+                  >
+                    <NoteAddIcon />
+                  </Button>
+                </Tooltip>
+              )}
+            </Box>
+          )}
+
         <Box
           sx={[
             issueInnerWrapperSx(
@@ -66,19 +109,23 @@ const StatusSeverityBlock = ({
               user.current_role.toLowerCase() === CUSTOMER.toLowerCase(),
               editMode,
             ),
-            // blockSx(theme, !!issue),
           ]}
         >
           <Box sx={statusBlockAlign}>
             <Typography
               onClick={() => isPublic && setStatusListOpen(true)}
-              sx={statusBlockTitle}
+              sx={[
+                statusBlockTitle,
+                { cursor: isPublic ? 'pointer' : 'default' },
+              ]}
             >
               {isPublic && <ArrowIcon />}
-              <span>Status</span>
+              <span>Status:</span>
             </Typography>
             {!isPublic ? (
-              <Typography sx={statusValueSx(issue?.status || values.status)}>
+              <Typography
+                sx={statusValueSx(theme, issue?.status || values.status)}
+              >
                 {addSpacesToCamelCase(issue?.status || values.status)}
               </Typography>
             ) : (
@@ -137,7 +184,7 @@ const StatusSeverityBlock = ({
 
         {(user.current_role !== CUSTOMER || isPublic) &&
         audit?.status?.toLowerCase() !== RESOLVED.toLowerCase() ? (
-          <Box sx={[severityWrapper, blockSx(theme, !!issue)]}>
+          <Box sx={[severityWrapper, blockSx]}>
             <Typography
               sx={[statusBlockTitle, { cursor: 'pointer' }]}
               onClick={() => {
@@ -218,105 +265,106 @@ const StatusSeverityBlock = ({
           </Box>
         )}
 
-        {(user.current_role === AUDITOR || isPublic) &&
-        !hideControl &&
-        audit?.status?.toLowerCase() !== RESOLVED.toLowerCase() ? (
-          <Box
-            sx={[
-              blockSx(theme, !!issue),
-              !!issue
-                ? {}
-                : {
-                    [theme.breakpoints.down(800)]: {
-                      width: '40%',
-                    },
-                  },
-            ]}
-          >
-            <Typography sx={[statusBlockTitle]}>
-              <span>Category</span>
-            </Typography>
-            <Field
-              component={TextField}
-              name="category"
-              placeholder="Enter a category"
-              disabled={false}
-              fullWidth={true}
-              sx={categoryInput}
-              onBlur={e => {
-                if (isPublic) {
-                  setCategoryPrevVal(values.category);
-                  if (editMode) {
-                    handleSubmit();
-                  }
-                }
-              }}
-              inputProps={{
-                sx: [
-                  { padding: '4px 2px', fontSize: '18px' },
-                  touched.category && errors.category
-                    ? { border: '1px solid red', borderRadius: '6px' }
-                    : {},
-                ],
-                ...addTestsLabel('issue-category-input'),
-              }}
-              InputProps={
-                user.current_role === AUDITOR &&
-                !isPublic &&
-                editMode &&
-                categoryPrevVal !== values.category
-                  ? {
-                      endAdornment: (
-                        <InputAdornment position="end">
-                          <IconButton
-                            edge="end"
-                            type="button"
-                            aria-label="Save"
-                            onClick={() => {
-                              setCategoryPrevVal(values.category);
-                              handleSubmit();
-                            }}
-                            sx={{
-                              display: 'flex',
-                              alignItems: 'flex-end',
-                            }}
-                            {...addTestsLabel('save-category-button')}
-                          >
-                            <SaveIcon color="secondary" fontSize="small" />
-                          </IconButton>
-                        </InputAdornment>
-                      ),
-                    }
-                  : null
-              }
-            />
-          </Box>
-        ) : (
-          values.category && (
-            <Box sx={[statusBlockAlign, blockSx(theme, !!issue)]}>
-              {!isPublic && (
-                <Typography sx={statusBlockTitle}>
-                  <span>Category</span>
-                </Typography>
-              )}
-              <Typography sx={statusBlockTitle}>{values.category}</Typography>
-            </Box>
-          )
-        )}
+        {/*{(user.current_role === AUDITOR || isPublic) &&*/}
+        {/*!hideControl &&*/}
+        {/*audit?.status?.toLowerCase() !== RESOLVED.toLowerCase() ? (*/}
+        {/*  <Box*/}
+        {/*    sx={[*/}
+        {/*      blockSx(theme, !!issue),*/}
+        {/*      !!issue*/}
+        {/*        ? {}*/}
+        {/*        : {*/}
+        {/*            [theme.breakpoints.down(800)]: {*/}
+        {/*              width: '40%',*/}
+        {/*            },*/}
+        {/*          },*/}
+        {/*    ]}*/}
+        {/*  >*/}
+        {/*    <Typography sx={[statusBlockTitle]}>*/}
+        {/*      <span>Category</span>*/}
+        {/*    </Typography>*/}
+        {/*    <Field*/}
+        {/*      component={TextField}*/}
+        {/*      name="category"*/}
+        {/*      placeholder="Enter a category"*/}
+        {/*      disabled={false}*/}
+        {/*      fullWidth={true}*/}
+        {/*      sx={categoryInput}*/}
+        {/*      onBlur={e => {*/}
+        {/*        if (isPublic) {*/}
+        {/*          setCategoryPrevVal(values.category);*/}
+        {/*          if (editMode) {*/}
+        {/*            handleSubmit();*/}
+        {/*          }*/}
+        {/*        }*/}
+        {/*      }}*/}
+        {/*      inputProps={{*/}
+        {/*        sx: [*/}
+        {/*          { padding: '4px 2px', fontSize: '18px' },*/}
+        {/*          touched.category && errors.category*/}
+        {/*            ? { border: '1px solid red', borderRadius: '6px' }*/}
+        {/*            : {},*/}
+        {/*        ],*/}
+        {/*        ...addTestsLabel('issue-category-input'),*/}
+        {/*      }}*/}
+        {/*      InputProps={*/}
+        {/*        user.current_role === AUDITOR &&*/}
+        {/*        !isPublic &&*/}
+        {/*        editMode &&*/}
+        {/*        categoryPrevVal !== values.category*/}
+        {/*          ? {*/}
+        {/*              endAdornment: (*/}
+        {/*                <InputAdornment position="end">*/}
+        {/*                  <IconButton*/}
+        {/*                    edge="end"*/}
+        {/*                    type="button"*/}
+        {/*                    aria-label="Save"*/}
+        {/*                    onClick={() => {*/}
+        {/*                      setCategoryPrevVal(values.category);*/}
+        {/*                      handleSubmit();*/}
+        {/*                    }}*/}
+        {/*                    sx={{*/}
+        {/*                      display: 'flex',*/}
+        {/*                      alignItems: 'flex-end',*/}
+        {/*                    }}*/}
+        {/*                    {...addTestsLabel('save-category-button')}*/}
+        {/*                  >*/}
+        {/*                    <SaveIcon color="secondary" fontSize="small" />*/}
+        {/*                  </IconButton>*/}
+        {/*                </InputAdornment>*/}
+        {/*              ),*/}
+        {/*            }*/}
+        {/*          : null*/}
+        {/*      }*/}
+        {/*    />*/}
+        {/*  </Box>*/}
+        {/*) : (*/}
+        {/*  values.category && (*/}
+        {/*    <Box sx={[statusBlockAlign, blockSx(theme, !!issue)]}>*/}
+        {/*      {!isPublic && (*/}
+        {/*        <Typography sx={statusBlockTitle}>*/}
+        {/*          <span>Category</span>*/}
+        {/*        </Typography>*/}
+        {/*      )}*/}
+        {/*      <Typography sx={statusBlockTitle}>{values.category}</Typography>*/}
+        {/*    </Box>*/}
+        {/*  )*/}
+        {/*)}*/}
 
         {editMode &&
           user.current_role === AUDITOR &&
           !isPublic &&
           !hideControl && (
-            <Box sx={[includeSx]}>
+            <Box sx={includeSx}>
               <FormControlLabel
                 label={
-                  <Typography sx={{ fontSize: '20px', fontWeight: 500 }}>
+                  <Typography sx={includeSxTitle}>
                     Include in the report
                   </Typography>
                 }
                 control={
                   <Switch
+                    size={matchXs ? 'small' : 'medium'}
                     checked={values.include}
                     color="secondary"
                     disabled={
@@ -333,59 +381,6 @@ const StatusSeverityBlock = ({
               />
             </Box>
           )}
-        {(user.current_role !== CUSTOMER || isPublic) && !editMode && (
-          <Box
-            sx={[
-              buttonsBox,
-              blockSx(theme, !!issue),
-              // !isPublic
-              //   ? {
-              //       display: 'none!important',
-              //       [theme.breakpoints.down(550)]: {
-              //         display: 'flex!important',
-              //       },
-              //     }
-              //   : {},
-            ]}
-          >
-            {matchXs &&
-              (!dirty ? (
-                <Tooltip arrow placement="top" title={'New issue'}>
-                  <Button
-                    variant="contained"
-                    type="button"
-                    color="primary"
-                    // disabled={!dirty}
-                    sx={[
-                      issueButton,
-                      {
-                        backgroundColor: 'rgba(0, 0, 0, 0.12)',
-                        '&:hover': {
-                          backgroundColor: 'rgba(0, 0, 0, 0.12)',
-                        },
-                      },
-                    ]}
-                    {...addTestsLabel('new-issue-button')}
-                  >
-                    <NoteAddIcon />
-                  </Button>
-                </Tooltip>
-              ) : (
-                <Tooltip arrow placement="top" title={'New issue'}>
-                  <Button
-                    variant="contained"
-                    type="submit"
-                    color="primary"
-                    disabled={!dirty}
-                    sx={issueButton}
-                    {...addTestsLabel('new-issue-button')}
-                  >
-                    <NoteAddIcon />
-                  </Button>
-                </Tooltip>
-              ))}
-          </Box>
-        )}
       </Box>
 
       {!isPublic &&
@@ -417,88 +412,77 @@ const includeSx = theme => ({
   position: 'absolute',
   top: 4,
   right: 0,
-  // marginTop: '-5px',
-  // '& p': {
-  //   width: '210px',
-  // },
-  // [theme.breakpoints.down('md')]: {
-  //   '& p': {
-  //     width: '170px',
-  //   },
-  // },
-  // [theme.breakpoints.down('sm')]: {
-  //   '& label': {
-  //     flexDirection: 'column-reverse',
-  //     marginRight: 'unset',
-  //   },
-  //   marginTop: '0',
-  //   // '& p': {
-  //   //   width: '170px',
-  //   // },
-  // },
+  [theme.breakpoints.down('xs')]: {
+    top: 10,
+  },
 });
-//
-const issueWrapperSx = (theme, issue) => ({
+
+const includeSxTitle = theme => ({
+  fontSize: '16px!important',
+  fontWeight: 500,
+  [theme.breakpoints.down('xs')]: {
+    fontSize: '14px!important',
+  },
+});
+
+const issueWrapperSx = (theme, isPublic) => ({
   display: 'flex',
+  flexGrow: 1,
   gap: '35px',
-  alignItems: 'flex-start',
+  alignItems: 'center',
+  justifyContent: 'space-between',
   [theme.breakpoints.down('sm')]: {
     gap: '25px!important',
     width: '100%',
-    // justifyContent: 'space-evenly',
   },
   [theme.breakpoints.down('xs')]: {
     flexWrap: 'wrap',
-    // gap: 'unset!important',
-    justifyContent: 'center',
-    // flexDirection: 'column',
-    // alignItems: 'unset',
-    // gap: '25px',
   },
-  // ...(issue && {
-  [theme.breakpoints.down(500)]: {
-    // flexDirection: 'column',
-    // alignItems: 'center',
+  [theme.breakpoints.down(640)]: {
+    justifyContent: isPublic ? 'space-around' : 'center',
+    flexDirection: isPublic ? 'row' : 'column',
     columnGap: '0px!important',
-    rowGap: '5px',
+    rowGap: '15px!important',
   },
-  // }),
 });
 
 const issueInnerWrapperSx = (theme, isCustomer, editMode) => ({
   gap: '15px',
   display: 'flex',
-  alignItems: 'flex-end',
+  alignItems: 'center',
   [theme.breakpoints.down('xs')]: {
     justifyContent: 'center',
   },
   [theme.breakpoints.down(500)]: {
     width: editMode ? '100%' : '48%',
   },
+  [theme.breakpoints.down(430)]: {
+    flexDirection: 'column',
+  },
 });
 
 const issueStatusBlock = theme => ({
   display: 'flex',
-  // flexDirection: 'column',
   justifyContent: 'space-between',
   margin: '20px 0',
   alignItems: 'flex-start',
-  // width: '20%',
-  // padding: '40px 10px 0px 25px',
   [theme.breakpoints.down('xs')]: {
     flexDirection: 'column',
     padding: '10px 0px',
     alignItems: 'center',
     margin: '0',
-    // width: '80%',
   },
 });
 
 const statusBlockAlign = theme => ({
-  textAlign: 'left',
-  [theme.breakpoints.down('xs')]: {
-    textAlign: 'center',
-    width: '112px',
+  display: 'flex',
+  flexDirection: 'row',
+  alignItems: 'center',
+  '& > p': {
+    mr: '10px',
+    [theme.breakpoints.down('xs')]: {
+      mr: '6px',
+    },
   },
 });
 
@@ -506,38 +490,33 @@ const statusBlockTitle = theme => ({
   display: 'flex',
   alignItems: 'center',
   columnGap: '10px',
-  fontSize: '20px',
+  fontSize: '16px!important',
   fontWeight: 500,
-  mb: '5px',
   [theme.breakpoints.down('xs')]: {
     justifyContent: 'center',
   },
+  [theme.breakpoints.down(650)]: {
+    fontSize: '14px!important',
+  },
 });
 
-const severityWrapper = {
-  // mb: '30px',
+const severityWrapper = theme => ({
+  display: 'flex',
+  alignItems: 'center',
   '& div.MuiFormControl-root': {
     width: '100%',
   },
-};
-
-const blockSx = (theme, issue) => ({
-  // width: '200px',
-  // [theme.breakpoints.down('sm')]: {
-  //   width: '190px',
-  // },
-  height: '65px',
-  [theme.breakpoints.down('lg')]: {
-    height: '62px',
+  '& > p': {
+    mr: '15px',
+    [theme.breakpoints.down('xs')]: {
+      mr: '10px',
+    },
   },
-  // [theme.breakpoints.down(800)]: {
-  //   width: issue ? '50%' : '30%',
-  //   boxSizing: 'border-box',
-  //   padding: '10px',
-  //   alignItems: 'center!important',
-  // },
+});
+
+const blockSx = theme => ({
   [theme.breakpoints.down(500)]: {
-    width: '48%!important',
+    // width: '48%!important',
     boxSizing: 'unset',
     padding: 'unset',
     alignItems: 'center!important',
@@ -561,34 +540,39 @@ const selectFieldSx = theme => ({
       justifyContent: 'center',
     },
   },
-});
-
-const statusValueSx = status => {
-  let color = '#434242';
-  if (status === DRAFT) color = '#52176D';
-  if (status === VERIFICATION || status === IN_PROGRESS) color = '#5b97bb';
-  if (status === FIXED || status === NOT_FIXED) color = '#09C010';
-
-  return { fontSize: '20px', fontWeight: 500, color };
-};
-
-const categoryInput = theme => ({
-  '& fieldset': { borderWidth: 0 },
-  '& input': {
-    [theme.breakpoints.down('xs')]: { textAlign: 'center' },
+  '& #mui-component-select-severity': {
+    justifyContent: 'center',
+  },
+  '& #mui-component-select-status': {
+    justifyContent: 'center',
   },
 });
 
-const buttonsBox = (theme, isPublic) => ({
+const statusValueSx = (theme, status) => {
+  let color = '#434242';
+  if (status === DRAFT) color = '#52176D';
+  if (status === VERIFICATION || status === IN_PROGRESS) color = '#5b97bb';
+  if (status === FIXED || status === NOT_FIXED || status === WILL_NOT_FIX)
+    color = '#09C010';
+
+  return {
+    fontSize: '16px!important',
+    fontWeight: 500,
+    color,
+    mr: '0!important',
+    [theme.breakpoints.down('xs')]: {
+      fontSize: '14px!important',
+    },
+  };
+};
+
+const buttonsBox = theme => ({
   display: 'flex',
   justifyContent: 'flex-end',
-  // pt: '20px',
   position: 'relative',
   [theme.breakpoints.down('xs')]: {
     justifyContent: 'center',
     pt: 0,
-    // mt: '20px',
-    // mb: '20px',
   },
 });
 
@@ -606,16 +590,11 @@ const issueButton = theme => ({
     padding: '12px 6px',
     letterSpacing: '-0.5px',
   },
-  [theme.breakpoints.down('xs')]: {
-    // padding: '10px 30px',
-  },
 });
 
-const feedbackButton = theme => ({
-  fontWeight: '400!important',
-  padding: '6px 15px',
-  width: '140px',
-  [theme.breakpoints.down('md')]: {
-    padding: '4px 15px',
-  },
-});
+// const categoryInput = theme => ({
+//   '& fieldset': { borderWidth: 0 },
+//   '& input': {
+//     [theme.breakpoints.down('xs')]: { textAlign: 'center' },
+//   },
+// });
