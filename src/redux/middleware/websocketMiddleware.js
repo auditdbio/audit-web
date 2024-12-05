@@ -100,7 +100,7 @@ const websocketMiddleware = () => {
               let current_request = store.getState().audits?.auditRequest;
               let request_id = message.payload.RequestAccept;
               if (current_request?.id === request_id) {
-                history.push(`/audit-info/${request_id}/customer`);
+                history.push(`/audit/${request_id}`);
               }
             } else if (message.kind.toLowerCase() === 'requestdecline') {
               store.dispatch({

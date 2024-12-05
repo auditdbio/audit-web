@@ -146,13 +146,7 @@ const AuditRequestInfo = ({
       req => req.id === auditRequest.id,
     );
     if (isRequestFound) {
-      dispatch(
-        confirmAudit(
-          auditRequest,
-          true,
-          `/audit-info/${auditRequest.id}/auditor`,
-        ),
-      );
+      dispatch(confirmAudit(auditRequest, true, `/audit/${auditRequest.id}`));
     }
   };
 
