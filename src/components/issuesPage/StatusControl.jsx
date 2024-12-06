@@ -83,13 +83,7 @@ const StatusControl = ({ status, setFieldValue }) => {
   };
 
   return (
-    <Box
-      sx={
-        status !== 'Draft'
-          ? wrapper
-          : { display: 'flex', alignItems: 'center', gap: '7px' }
-      }
-    >
+    <Box sx={wrapper}>
       {statusActions.map(action => {
         return (
           <Button
@@ -115,11 +109,8 @@ const StatusControl = ({ status, setFieldValue }) => {
           title="The project creator will be able to see the issue"
           placement="top"
         >
-          <Button
-            color={'secondary'}
-            sx={{ minWidth: '20px', textTransform: 'none', mb: '10px' }}
-          >
-            <QuestionMarkIcon />
+          <Button color="secondary" sx={helpButtonSx}>
+            <QuestionMarkIcon sx={{ fontSize: '22px' }} />
           </Button>
         </Tooltip>
       )}
@@ -144,5 +135,15 @@ const statusBtn = (theme, isCustomer) => ({
 
 const wrapper = {
   display: 'flex',
-  gap: '10px',
+  gap: '8px',
+  alignItems: 'center',
 };
+
+const helpButtonSx = theme => ({
+  minWidth: '20px',
+  textTransform: 'none',
+  padding: '4px 6px',
+  [theme.breakpoints.down(600)]: {
+    padding: 0,
+  },
+});
