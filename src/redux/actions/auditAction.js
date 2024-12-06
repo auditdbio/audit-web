@@ -31,6 +31,7 @@ import {
   SAVE_PUBLIC_REPORT,
   SET_AUDIT_FEEDBACK,
   SET_CURRENT_AUDIT_PARTNER,
+  UPDATE_AUDIT,
   VERIFY_AUDIT_REPORT,
 } from './types.js';
 import { history } from '../../services/history.js';
@@ -248,7 +249,7 @@ export const addReportAudit = (values, noRedirect) => {
         if (!noRedirect) {
           history.back();
         }
-        dispatch(getAudits(AUDITOR));
+        dispatch({ type: UPDATE_AUDIT, payload: data });
       });
   };
 };
