@@ -60,7 +60,7 @@ const Control = ({
 }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { auditId } = useParams();
+  const { id: auditId } = useParams();
   const [resolveConfirmation, setResolveConfirmation] = useState(false);
   const [allIssuesClosed, setAllIssuesClosed] = useState(false);
   const [menuAnchorEl, setMenuAnchorEl] = useState(null);
@@ -463,39 +463,40 @@ const Control = ({
           </Box>
         ) : !isPublic ? (
           <Box className={'customer-button-wrapper'}>
-            {!audit?.report ? (
-              <Tooltip arrow placement="top" title={'Download report'}>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  sx={[
-                    buttonSx,
-                    {
-                      backgroundColor: 'rgba(0, 0, 0, 0.12)',
-                      '&:hover': {
+            {user.current_role.toLowerCase() !== CUSTOMER.toLowerCase() &&
+              (!audit?.report ? (
+                <Tooltip arrow placement="top" title={'Download report'}>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    sx={[
+                      buttonSx,
+                      {
                         backgroundColor: 'rgba(0, 0, 0, 0.12)',
+                        '&:hover': {
+                          backgroundColor: 'rgba(0, 0, 0, 0.12)',
+                        },
                       },
-                    },
-                  ]}
-                  {...addTestsLabel('customer-report-button')}
-                >
-                  <PictureAsPdfIcon />
-                </Button>
-              </Tooltip>
-            ) : (
-              <Tooltip arrow placement="top" title={'Download report'}>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  disabled={!audit?.report}
-                  onClick={() => dispatch(downloadReport(audit))}
-                  sx={buttonSx}
-                  {...addTestsLabel('customer-report-button')}
-                >
-                  <PictureAsPdfIcon />
-                </Button>
-              </Tooltip>
-            )}
+                    ]}
+                    {...addTestsLabel('customer-report-button')}
+                  >
+                    <PictureAsPdfIcon />
+                  </Button>
+                </Tooltip>
+              ) : (
+                <Tooltip arrow placement="top" title={'Download report'}>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    disabled={!audit?.report}
+                    onClick={() => dispatch(downloadReport(audit))}
+                    sx={buttonSx}
+                    {...addTestsLabel('customer-report-button')}
+                  >
+                    <PictureAsPdfIcon />
+                  </Button>
+                </Tooltip>
+              ))}
             <Tooltip arrow placement="top" title={'Mark all as read'}>
               <Button
                 variant="contained"
@@ -588,7 +589,7 @@ const customerViewSx = theme => ({
     },
   },
   [theme.breakpoints.down(600)]: {
-    flexDirection: 'column-reverse',
+    // flexDirection: 'column-reverse',
     '& .customer-button-wrapper': {
       justifyContent: 'center',
       gap: '15px',
