@@ -210,27 +210,7 @@ const AppRoutes = () => {
             </PrivateRoute>
           }
         />
-        {/*<Route*/}
-        {/*  path="/audit-info/:id/customer"*/}
-        {/*  element={*/}
-        {/*    <PrivateRoute auth={{ isAuthenticated: isAuth() }}>*/}
-        {/*      <AuditInfoPage />*/}
-        {/*    </PrivateRoute>*/}
-        {/*  }*/}
-        {/*/>*/}
-        {/*<Route*/}
-        {/*  path="/audit/:id"*/}
-        {/*  element={<PublicAuditInfoPage isPublic={true} />}*/}
-        {/*/>*/}
         <Route path="/audit/:auditId" element={<Audit />} />
-        {/*<Route*/}
-        {/*  path="/audit-info/:auditId/auditor"*/}
-        {/*  element={*/}
-        {/*    <PrivateRoute auth={{ isAuthenticated: isAuth() }}>*/}
-        {/*      <AuditOffer />*/}
-        {/*    </PrivateRoute>*/}
-        {/*  }*/}
-        {/*/>*/}
         <Route
           path="/audit-builder/edit/:auditId"
           element={

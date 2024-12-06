@@ -130,7 +130,7 @@ const btnSx = theme => ({
 const inputWrapper = theme => ({
   border: '1.43062px solid #E5E5E5',
   width: '400px',
-  padding: '15px',
+  padding: '12px',
   marginRight: '10px',
   overflow: 'hidden',
   textOverflow: 'ellipsis',
