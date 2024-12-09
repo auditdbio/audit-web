@@ -19,6 +19,7 @@ import {
   WILL_NOT_FIX,
 } from './constants.js';
 import QuestionMarkIcon from '@mui/icons-material/QuestionMark';
+import HelpOutlineIcon from '@mui/icons-material/HelpOutline.js';
 
 const StatusControl = ({ status, setFieldValue }) => {
   const { user } = useSelector(s => s.user);
@@ -108,9 +109,11 @@ const StatusControl = ({ status, setFieldValue }) => {
         <Tooltip
           title="The project creator will be able to see the issue"
           placement="top"
+          enterTouchDelay={0}
+          leaveTouchDelay={4000}
         >
           <Button color="secondary" sx={helpButtonSx}>
-            <QuestionMarkIcon sx={{ fontSize: '22px' }} />
+            <HelpOutlineIcon sx={{ fontSize: '18px' }} cursor="pointer" />
           </Button>
         </Tooltip>
       )}
