@@ -38,12 +38,15 @@ const IssueDetailsForm = ({ issue = null, editMode = false, hideControl }) => {
   const audit = useSelector(s =>
     s.audits.audits?.find(audit => audit.id === auditId),
   );
-  const matchXs = useMediaQuery(theme.breakpoints.down('xs'));
+  const matchXxs = useMediaQuery(theme.breakpoints.down('xxs'));
 
   const [isEditName, setIsEditName] = useState(!editMode);
+  const [isEditCategory, setIsEditCategory] = useState(!editMode);
   const [issuePrevValues, setIssuePrevValues] = useState(null);
   const [isEditFeedback, setIsEditFeedback] = useState(false);
+
   const nameInputRef = useRef();
+  const categoryInputRef = useRef();
 
   const handleNameEdit = handleSubmit => {
     if (isEditName) {
@@ -51,6 +54,14 @@ const IssueDetailsForm = ({ issue = null, editMode = false, hideControl }) => {
     }
     setIsEditName(prev => !prev);
     setTimeout(() => nameInputRef.current?.focus(), 100);
+  };
+
+  const handleCategoryEdit = handleSubmit => {
+    if (isEditCategory) {
+      handleSubmit();
+    }
+    setIsEditCategory(prev => !prev);
+    setTimeout(() => categoryInputRef.current?.focus(), 100);
   };
 
   const initialValues = {
@@ -123,7 +134,7 @@ const IssueDetailsForm = ({ issue = null, editMode = false, hideControl }) => {
               enterDelay={500}
               leaveDelay={0}
             >
-              <Box sx={{ display: 'flex', gap: '20px', alignItems: 'center' }}>
+              <Box sx={nameInputWrapper}>
                 <Field
                   component={TextField}
                   name="name"
@@ -133,7 +144,7 @@ const IssueDetailsForm = ({ issue = null, editMode = false, hideControl }) => {
                     !isEditName ||
                     audit?.status?.toLowerCase() === RESOLVED.toLowerCase()
                   }
-                  sx={nameInputSx}
+                  sx={nameInputSx(theme, values.name)}
                   inputRef={nameInputRef}
                   inputProps={{ ...addTestsLabel('issue-name-input') }}
                   InputProps={
@@ -163,7 +174,7 @@ const IssueDetailsForm = ({ issue = null, editMode = false, hideControl }) => {
                       : null
                   }
                 />
-                {!matchXs &&
+                {!matchXxs &&
                   !editMode &&
                   (!dirty ? (
                     <Tooltip arrow placement="top" title={'New issue'}>
@@ -257,6 +268,46 @@ const IssueDetailsForm = ({ issue = null, editMode = false, hideControl }) => {
                 hideControl={hideControl}
               />
 
+              <Field
+                component={TextField}
+                name="category"
+                label="Category"
+                fullWidth={true}
+                disabled={
+                  !isEditCategory ||
+                  audit?.status?.toLowerCase() === RESOLVED.toLowerCase()
+                }
+                sx={categoryInputSx(theme, !!values.category)}
+                inputRef={categoryInputRef}
+                inputProps={{ ...addTestsLabel('issue-category-input') }}
+                InputProps={
+                  user.current_role !== CUSTOMER &&
+                  audit?.status?.toLowerCase() !== RESOLVED.toLowerCase() &&
+                  editMode &&
+                  !hideControl
+                    ? {
+                        endAdornment: (
+                          <InputAdornment position="end">
+                            <IconButton
+                              edge="start"
+                              type="button"
+                              aria-label="Edit category"
+                              onClick={() => handleCategoryEdit(handleSubmit)}
+                              sx={{ display: 'flex', alignItems: 'flex-end' }}
+                              {...addTestsLabel('edit-category-button')}
+                            >
+                              <EditIcon color="secondary" fontSize="small" />
+                              <Box component="span" sx={editButtonText}>
+                                {isEditCategory ? 'Save' : 'Edit'}
+                              </Box>
+                            </IconButton>
+                          </InputAdornment>
+                        ),
+                      }
+                    : null
+                }
+              />
+
               <StatusSeverityBlock
                 user={user}
                 dirty={dirty}
@@ -323,13 +374,43 @@ const issueButton = theme => ({
   },
 });
 
-const nameInputSx = theme => ({
+const nameInputWrapper = theme => ({
+  display: 'flex',
+  gap: '20px',
+  alignItems: 'center',
+  [theme.breakpoints.down('xs')]: {
+    gap: '8px',
+  },
+});
+
+const nameInputSx = (theme, isEmpty) => ({
   '& input': {
     fontSize: '22px',
     paddingY: '8px',
   },
   '& label': {
-    top: '-6px',
+    top: !isEmpty ? '-6px' : '0px',
+  },
+});
+
+const categoryInputSx = (theme, isEmpty) => ({
+  mb: '5px',
+  px: '1px',
+  '& input': {
+    fontSize: '16px',
+    paddingY: '8px',
+    [theme.breakpoints.down(650)]: {
+      fontSize: '14px!important',
+    },
+  },
+  '& > div': { borderRadius: 0 },
+  '& > div > fieldset': { borderColor: '#e0e0e0 !important' },
+  '& label': {
+    fontSize: '16px',
+    top: !isEmpty ? '-8px' : '0px',
+    [theme.breakpoints.down(650)]: {
+      fontSize: '14px!important',
+    },
   },
 });
 
