@@ -29,25 +29,25 @@ const IssueSeveritySort = ({ issues }) => {
       <Tooltip arrow placement={'top'} title={'Critical'}>
         <Box sx={[blockSx]}>
           <Box sx={[severityBox, { backgroundColor: '#FF0000' }]} />
-          <Typography>{issueSort.critical}</Typography>
+          <Typography>{issueSort.critical || 0}</Typography>
         </Box>
       </Tooltip>
       <Tooltip arrow placement={'top'} title={'Major'}>
         <Box sx={[blockSx]}>
           <Box sx={[severityBox, { backgroundColor: '#FF9900' }]} />
-          <Typography>{issueSort.major}</Typography>
+          <Typography>{issueSort.major || 0}</Typography>
         </Box>
       </Tooltip>
       <Tooltip arrow placement={'top'} title={'Medium'}>
         <Box sx={blockSx}>
           <Box sx={[severityBox, { backgroundColor: '#5b97bb' }]} />
-          <Typography>{issueSort.medium}</Typography>
+          <Typography>{issueSort.medium || 0}</Typography>
         </Box>
       </Tooltip>
       <Tooltip arrow placement={'top'} title={'Minor'}>
         <Box sx={blockSx}>
           <Box sx={[severityBox, { backgroundColor: '#09C010' }]} />
-          <Typography>{issueSort.minor}</Typography>
+          <Typography>{issueSort.minor || 0}</Typography>
         </Box>
       </Tooltip>
     </Box>

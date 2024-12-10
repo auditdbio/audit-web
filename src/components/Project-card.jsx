@@ -197,7 +197,9 @@ const ProjectCard = ({ type, project, currentRole, isPublic }) => {
             {/*    </Typography>*/}
             {/*  }*/}
             {/*</Box>*/}
-            <IssueSeveritySort issues={project?.issues} />
+            {project?.report_type?.toLowerCase() !== 'custom' && (
+              <IssueSeveritySort issues={project?.issues} />
+            )}
             <Typography sx={{ fontSize: '14px!important', height: '21px' }}>
               {project.resolved_at &&
                 dayjs(
