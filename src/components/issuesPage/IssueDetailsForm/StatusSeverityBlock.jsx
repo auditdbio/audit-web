@@ -323,7 +323,13 @@ export default StatusSeverityBlock;
 const includeSx = theme => ({
   position: 'absolute',
   top: 4,
-  right: 0,
+  right: '30px',
+  [theme.breakpoints.down('md')]: {
+    right: '20px',
+  },
+  [theme.breakpoints.down('sm')]: {
+    right: '10px',
+  },
   [theme.breakpoints.down('xs')]: {
     top: 10,
   },

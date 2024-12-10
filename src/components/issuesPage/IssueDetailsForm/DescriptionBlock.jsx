@@ -92,7 +92,7 @@ const DescriptionBlock = ({
     <Box>
       <Collapse
         in={true}
-        collapsedSize={editMode ? (showFull ? undefined : 70) : '100%'}
+        collapsedSize={editMode ? (showFull ? undefined : 140) : '100%'}
       >
         <Box sx={descriptionWrapper(theme, editMode ? showFull : true)}>
           <Box sx={markdownWrapper}>
@@ -324,7 +324,7 @@ const eventLine = (height, top) => ({
 });
 
 const descriptionWrapper = (theme, showFull) => ({
-  maxHeight: showFull ? 'none' : 70,
+  maxHeight: showFull ? 'none' : 140,
   '& .rc-md-editor': {
     height: '100%!important',
     minHeight: '300px',
