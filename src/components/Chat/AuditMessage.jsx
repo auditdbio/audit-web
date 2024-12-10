@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Button, Modal, Typography } from '@mui/material';
+import { Box, Button, Modal, Popover, Typography } from '@mui/material';
 import AuditRequestInfo from '../audit-request-info.jsx';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -295,20 +295,46 @@ const AuditMessage = ({ message, handleError }) => {
             </Box>
           </Box>
         )}
-      <Modal
+      <Popover
+        anchorEl={null}
         open={isOpen && auditRequest?.id && user.current_role === AUDITOR}
         onClose={handleClose}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
+        sx={{
+          '& .MuiPopover-paper': {
+            position: 'absolute',
+            backgroundColor: '#FCFAF6',
+            top: '50%!important',
+            left: '50%!important',
+            transform: 'translate(-50%, -50%)!important',
+            width: '100%',
+            maxHeight: '90vh',
+            overflowY: 'hidden',
+            borderRadius: '14px',
+            '& .rc-md-editor': {
+              height: '100%!important',
+            },
+            '& .audit-request-wrapper': {
+              paddingBottom: '10px',
+              minHeight: 'unset',
+            },
+            '& .request-content-sx': {
+              maxHeight: 'calc(100vh - 233px)',
+              overflowY: 'auto',
+            },
+            '& .audit-request-button-wrapper': {
+              marginTop: '0',
+            },
+          },
+        }}
       >
-        <Box sx={modalSx}>
+        <Box>
           <AuditRequestInfo
             project={auditRequest}
             onClose={() => setIsOpen(false)}
             stayHere={true}
           />
         </Box>
-      </Modal>
+      </Popover>
       <Modal
         open={isOpen && auditRequest?.id && user.current_role === CUSTOMER}
         onClose={handleClose}

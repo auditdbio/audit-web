@@ -48,6 +48,7 @@ const ShareProjectButton = ({
       sx={[buttonSx, sx]}
       onClick={handleShare}
       ref={buttonRef}
+      className={'share-button'}
       {...addTestsLabel('share-button')}
     >
       {showIcon && !hideIcon && (
