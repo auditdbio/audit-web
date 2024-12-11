@@ -68,13 +68,13 @@ import TotalPrice from './forms/TotalPrice/TotalPrice.jsx';
 import { PROJECT_PARENT_ENTITY } from '../services/file_constants.js';
 import ExpandLessOutlinedIcon from '@mui/icons-material/ExpandLessOutlined.js';
 
-const GoBack = ({ role }) => {
+const GoBack = ({ role, path }) => {
   const location = useLocation();
   const navigate = useNavigate();
   return (
     <Button
       sx={backButtonSx}
-      onClick={() => navigate(-1)}
+      onClick={() => navigate(path)}
       aria-label="Ga back"
       {...addTestsLabel('go-back-button')}
     >
@@ -97,6 +97,7 @@ const CreateProjectCard = ({ projectInfo }) => {
   const [isPublished, setIsPublished] = useState(
     projectInfo?.publish_options?.publish || false,
   );
+  const project = useSelector(s => s.project?.recentProject);
   const [isClosed, setIsClosed] = useState(
     projectInfo?.status === DONE || false,
   );
@@ -140,7 +141,7 @@ const CreateProjectCard = ({ projectInfo }) => {
     };
   }, []);
 
-  let editMode = !!projectInfo;
+  let editMode = !!projectInfo || !!project?.id;
 
   const validationSchema = Yup.object().shape({
     tags: Yup.array().min(1, 'Please enter at least one tag'),
@@ -150,7 +151,7 @@ const CreateProjectCard = ({ projectInfo }) => {
   });
 
   const initialValues = {
-    id: projectInfo ? projectInfo.id : '',
+    id: projectInfo ? projectInfo.id || project.id : '',
     publish_options: {
       publish: projectInfo ? projectInfo?.publish_options?.publish : false,
       ready_to_wait: projectInfo
@@ -312,7 +313,7 @@ const CreateProjectCard = ({ projectInfo }) => {
         }, [history, isDirty]);
         return (
           <Box sx={mainBox}>
-            <GoBack />
+            <GoBack path={projectInfo?.id ? '/profile/projects' : -1} />
 
             <CustomSnackbar
               autoHideDuration={3000}
@@ -332,6 +333,7 @@ const CreateProjectCard = ({ projectInfo }) => {
               handleSubmit={handleSubmit}
               setState={setState}
               setError={setError}
+              projectInfo={project}
             />
             <CustomSnackbar
               autoHideDuration={5000}
