@@ -128,7 +128,7 @@ const layoutSx = theme => ({
 });
 
 const wrapper = theme => ({
-  padding: '50px 30px 80px',
+  padding: '45px 30px 60px',
   position: 'relative',
   display: 'flex',
   flexDirection: 'column',
@@ -139,6 +139,9 @@ const wrapper = theme => ({
   },
   [theme.breakpoints.down('sm')]: {
     padding: '50px 10px 30px',
+  },
+  [theme.breakpoints.down(780)]: {
+    borderRadius: 'unset',
   },
 });
 

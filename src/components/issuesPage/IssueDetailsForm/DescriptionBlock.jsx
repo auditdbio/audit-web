@@ -1,5 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { Box, IconButton, Typography, useMediaQuery } from '@mui/material';
+import {
+  Box,
+  Button,
+  Collapse,
+  IconButton,
+  Typography,
+  useMediaQuery,
+} from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit.js';
 import AddLinkIcon from '@mui/icons-material/AddLink.js';
 import MarkdownEditor from '../../markdown/Markdown-editor.jsx';
@@ -11,6 +18,7 @@ import theme from '../../../styles/themes.js';
 import TagsField from '../../forms/tags-field/tags-field.jsx';
 import { useFormik, useFormikContext } from 'formik';
 import { AUDIT_PARENT_ENTITY } from '../../../services/file_constants.js';
+import ExpandLessOutlinedIcon from '@mui/icons-material/ExpandLessOutlined.js';
 
 const DescriptionBlock = ({
   editMode,
@@ -32,6 +40,8 @@ const DescriptionBlock = ({
   const [mdRef, setMdRef] = useState(null);
   const [feedbackRef, setFeedbackRef] = useState(null);
   const [isEditDescription, setIsEditDescription] = useState(!editMode);
+  const [showFull, setShowFull] = useState(false);
+
   useEffect(() => {
     setTimeout(() => feedbackRef?.current?.nodeMdText?.current?.focus(), 100);
   }, [feedbackRef]);
@@ -79,116 +89,183 @@ const DescriptionBlock = ({
   };
 
   return (
-    <Box sx={descriptionBlock}>
-      <Box sx={markdownWrapper}>
-        <MarkdownEditor
-          name="description"
-          setMdRef={setMdRef}
-          setFieldTouched={setFieldTouched}
-          isPublic={isPublic}
-          mdProps={{
-            view: getMarkdownInitialView(),
-            placeholder:
-              touched.description && (errors.description || !values.description)
-                ? 'Description is required'
-                : 'Issue description',
-            style: markdownSx(matchXs),
-          }}
-          parentEntity={
-            audit?.id
-              ? {
-                  id: audit.id,
-                  source: AUDIT_PARENT_ENTITY,
-                }
-              : null
-          }
-        />
-      </Box>
-
-      {(user.current_role !== CUSTOMER || isPublic) &&
-        !hideControl &&
-        audit?.status?.toLowerCase() !== RESOLVED.toLowerCase() && (
-          <Box
-            sx={[
-              descriptionButtonsSx,
-              addLinkField && { justifyContent: 'flex-end' },
-            ]}
-          >
-            {!addLinkField && (
-              <IconButton
-                type="button"
-                aria-label="add link"
-                onClick={() => setAddLinkField(true)}
-                sx={[addLinkButton]}
-                {...addTestsLabel('add-link-button')}
-              >
-                <AddLinkIcon color="secondary" />
-                <Box component="span" sx={editButtonText}>
-                  Add link
-                </Box>
-              </IconButton>
-            )}
-            {editMode && (
-              <IconButton
-                type="button"
-                aria-label="Edit description"
-                onClick={() => handleDescriptionEdit(handleSubmit, values)}
-                sx={editButton}
-                {...addTestsLabel('edit-description-button')}
-              >
-                <EditIcon color="secondary" fontSize="small" />
-                <Box component="span" sx={editButtonText}>
-                  {isEditDescription ? 'Save' : 'Edit'}
-                </Box>
-              </IconButton>
-            )}
-          </Box>
-        )}
-
-      <Box sx={linksList}>
-        {user.current_role !== CUSTOMER &&
-        !hideControl &&
-        audit?.status?.toLowerCase() !== RESOLVED.toLowerCase() ? (
-          <ProjectLinksList
-            hideControl={hideControl}
-            name="links"
-            handleSubmit={handleSubmit}
-          />
-        ) : (
-          <Box sx={customerLinksList}>
-            {values.links?.map((link, idx) => (
-              <CustomLink link={link} key={idx} sx={linkSx} />
-            ))}
-          </Box>
-        )}
-      </Box>
-
-      {touched.description && errors.description && (
-        <Typography
-          sx={{
-            color: `${theme.palette.error.main}!important`,
-            fontSize: '14px',
-          }}
-        >
-          {errors.description}
-        </Typography>
-      )}
-
-      {addLinkField && (
-        <Box sx={{ mt: '10px' }}>
-          {user.current_role !== CUSTOMER && (
-            <TagsField
-              size="small"
-              name="links"
-              label="Links"
-              handleSubmit={editMode ? handleSubmit : null}
-              sx={linkFieldSx}
+    <Box>
+      <Collapse
+        in={true}
+        collapsedSize={editMode ? (showFull ? undefined : 140) : '100%'}
+      >
+        <Box sx={descriptionWrapper(theme, editMode ? showFull : true)}>
+          <Box sx={markdownWrapper}>
+            <MarkdownEditor
+              name="description"
+              setMdRef={setMdRef}
+              setFieldTouched={setFieldTouched}
+              isPublic={isPublic}
+              mdProps={{
+                view: getMarkdownInitialView(),
+                placeholder:
+                  touched.description &&
+                  (errors.description || !values.description)
+                    ? 'Description is required'
+                    : 'Issue description',
+                style: markdownSx(matchXs),
+              }}
+              parentEntity={
+                audit?.id
+                  ? {
+                      id: audit.id,
+                      source: AUDIT_PARENT_ENTITY,
+                    }
+                  : null
+              }
             />
+          </Box>
+
+          {(user.current_role !== CUSTOMER || isPublic) &&
+            !hideControl &&
+            audit?.status?.toLowerCase() !== RESOLVED.toLowerCase() && (
+              <Box
+                sx={[
+                  descriptionButtonsSx,
+                  addLinkField && { justifyContent: 'flex-end' },
+                ]}
+              >
+                {!addLinkField && (
+                  <IconButton
+                    type="button"
+                    aria-label="add link"
+                    onClick={() => setAddLinkField(true)}
+                    sx={[addLinkButton]}
+                    {...addTestsLabel('add-link-button')}
+                  >
+                    <AddLinkIcon color="secondary" />
+                    <Box component="span" sx={editButtonText}>
+                      Add link
+                    </Box>
+                  </IconButton>
+                )}
+                {editMode && (
+                  <IconButton
+                    type="button"
+                    aria-label="Edit description"
+                    onClick={() => handleDescriptionEdit(handleSubmit, values)}
+                    sx={editButton}
+                    {...addTestsLabel('edit-description-button')}
+                  >
+                    <EditIcon color="secondary" fontSize="small" />
+                    <Box component="span" sx={editButtonText}>
+                      {isEditDescription ? 'Save' : 'Edit'}
+                    </Box>
+                  </IconButton>
+                )}
+              </Box>
+            )}
+
+          <Box sx={linksList}>
+            {user.current_role !== CUSTOMER &&
+            !hideControl &&
+            audit?.status?.toLowerCase() !== RESOLVED.toLowerCase() ? (
+              <ProjectLinksList
+                hideControl={hideControl}
+                name="links"
+                handleSubmit={handleSubmit}
+              />
+            ) : (
+              <Box sx={customerLinksList}>
+                {values.links?.map((link, idx) => (
+                  <CustomLink link={link} key={idx} sx={linkSx} />
+                ))}
+              </Box>
+            )}
+          </Box>
+
+          {touched.description && errors.description && (
+            <Typography
+              sx={{
+                color: `${theme.palette.error.main}!important`,
+                fontSize: '14px',
+              }}
+            >
+              {errors.description}
+            </Typography>
           )}
+
+          {addLinkField && (
+            <Box sx={{ mt: '10px' }}>
+              {user.current_role !== CUSTOMER && (
+                <TagsField
+                  size="small"
+                  name="links"
+                  label="Links"
+                  handleSubmit={editMode ? handleSubmit : null}
+                  sx={linkFieldSx}
+                />
+              )}
+            </Box>
+          )}
+        </Box>
+      </Collapse>
+      {editMode && (
+        <Box
+          sx={[
+            {
+              display: 'flex',
+              justifyContent: 'center',
+              position: 'relative',
+              paddingTop: '5px',
+              marginX: '1px',
+              '&::before': eventLine(
+                values.feedback || isEditFeedback || editMode || showFull
+                  ? 37
+                  : 19,
+                1,
+                35,
+              ),
+            },
+            !showFull
+              ? {
+                  borderTop: '1px solid #e0e0e0',
+                }
+              : {},
+          ]}
+        >
+          <Button
+            onClick={() => setShowFull(!showFull)}
+            color={'secondary'}
+            sx={[
+              readAllButton,
+              {
+                // position: 'relative',
+                top: !showFull ? '-22px' : 0,
+                backgroundColor: '#fcfaf6',
+                zIndex: '1',
+                // marginBottom: showFull ? '20px' : 0,
+                '&:hover': {
+                  backgroundColor: '#fcfaf6',
+                },
+              },
+            ]}
+            variant={'outlined'}
+          >
+            <span>{showFull ? 'Hide' : `Show`}</span>
+            <EditIcon sx={{ width: '20px' }} />
+            <ExpandLessOutlinedIcon
+              sx={[
+                showFull ? {} : { transform: 'rotate(180deg)' },
+                {
+                  transition: '0.2s',
+                  // marginRight: '0',
+                  // marginLeft: 'auto',
+                  width: '20px',
+                  height: '20px',
+                },
+              ]}
+            />
+          </Button>
         </Box>
       )}
       {(values.feedback || isEditFeedback || (isPublic && editMode)) && (
-        <Box sx={feedbackWrapper}>
+        <Box sx={[feedbackWrapper, editMode && !showFull ? { mt: 0 } : {}]}>
           {!isEditFeedback && (
             <Box sx={feedbackHeader}>
               {isPublic ? 'Customer feedback' : 'Feedback'}
@@ -234,12 +311,12 @@ const DescriptionBlock = ({
 
 export default DescriptionBlock;
 
-const eventLine = height => ({
+const eventLine = (height, top, left) => ({
   content: '""',
   display: 'block',
   position: 'absolute',
-  top: `-${height}px`,
-  left: '36px',
+  top: `-${top || height}px`,
+  left: `${left || 36}px`,
   width: '1px',
   height: `${height + 1}px`,
   backgroundColor: '#b9b9b9',
@@ -248,15 +325,35 @@ const eventLine = height => ({
   },
 });
 
-const descriptionBlock = theme => ({
-  // borderTop: '1px solid #e0e0e0',
-  // width: '80%',
-  // [theme.breakpoints.down('sm')]: {
-  //   width: '70%',
-  // },
-  // [theme.breakpoints.down('xs')]: {
-  //   width: '100%',
-  // },
+const descriptionWrapper = (theme, showFull) => ({
+  maxHeight: showFull ? 'none' : 140,
+  '& .rc-md-editor': {
+    height: '100%!important',
+    minHeight: '300px',
+  },
+  overflow: 'hidden',
+  transition: 'max-height 0.3s ease',
+  '& .rc-md-editor .editor-container>.section': {
+    borderRight: 'unset',
+  },
+});
+
+const readAllButton = theme => ({
+  p: '3px',
+  paddingX: '8px',
+  minWidth: 'unset',
+  textTransform: 'unset',
+  boxShadow: 'unset',
+  fontWeight: 600,
+  borderRadius: '8px',
+  width: '280px',
+  display: 'flex',
+  alignItems: 'center',
+  gap: '7px',
+  // maxWidth: '300px',
+  [theme.breakpoints.down('xs')]: {
+    fontSize: '16px',
+  },
 });
 
 const editButtonText = theme => ({
@@ -357,6 +454,9 @@ const feedbackWrapper = {
   '& .rc-md-navigation.visible': {
     borderRight: '1px solid #e0e0e0',
     // borderBottom: '1px solid #b9b9b9',
+  },
+  '& .rc-md-editor': {
+    height: '100%!important',
   },
   '& .sec-html': {
     borderRight: '1px solid #e0e0e0!important',
