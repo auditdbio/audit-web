@@ -213,16 +213,18 @@ const DescriptionBlock = ({
               justifyContent: 'center',
               position: 'relative',
               paddingTop: '5px',
+              marginX: '1px',
               '&::before': eventLine(
                 values.feedback || isEditFeedback || editMode || showFull
-                  ? 38
+                  ? 37
                   : 19,
                 1,
+                35,
               ),
             },
             !showFull
               ? {
-                  boxShadow: '0px -24px 14px -8px rgba(252, 250, 246, 1)',
+                  borderTop: '1px solid #e0e0e0',
                 }
               : {},
           ]}
@@ -309,12 +311,12 @@ const DescriptionBlock = ({
 
 export default DescriptionBlock;
 
-const eventLine = (height, top) => ({
+const eventLine = (height, top, left) => ({
   content: '""',
   display: 'block',
   position: 'absolute',
   top: `-${top || height}px`,
-  left: '36px',
+  left: `${left || 36}px`,
   width: '1px',
   height: `${height + 1}px`,
   backgroundColor: '#b9b9b9',
