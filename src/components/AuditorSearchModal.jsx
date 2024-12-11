@@ -41,7 +41,9 @@ export default function AuditorSearchModal({
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { id } = useParams();
-  const auditorReducer = useSelector(state => state.auditor.auditors);
+  const { auditors: auditorReducer, searchTotalAuditors } = useSelector(
+    state => state.auditor,
+  );
   const projectReducer = useSelector(state => state.project);
   const customerReducer = useSelector(state => state.customer);
   const [selectedAuditor, setSelectedAuditor] = useState({});
@@ -51,10 +53,13 @@ export default function AuditorSearchModal({
 
   const [inputValue, setInputValue] = useState('');
   const [query, setQuery] = useState('');
+  const [page, setPage] = useState(1);
+  const [loading, setLoading] = useState(false);
+  const [auditors, setAuditors] = useState([]);
 
-  useEffect(() => {
-    dispatch(getAuditors(query, 15));
-  }, [query]);
+  // useEffect(() => {
+  //   dispatch(getAuditors(query, 15));
+  // }, [query]);
 
   const handleInputChange = event => {
     setQuery(event.target.value);
@@ -69,6 +74,34 @@ export default function AuditorSearchModal({
     await setState(true);
     handleSubmit();
     await navigate(`/auditors?search=${query}&projectIdToInvite=${id}`);
+  };
+
+  useEffect(() => {
+    const fetchAuditors = async () => {
+      if (loading) return;
+      setLoading(true);
+      dispatch(getAuditors(query, 15, page));
+      setAuditors(prevAuditors => [...prevAuditors, ...auditorReducer]);
+      setLoading(false);
+    };
+
+    if (query) {
+      fetchAuditors();
+    }
+  }, [query, page]);
+
+  const handleScroll = (e, arr) => {
+    const last =
+      arr[arr.length - 1].key === auditors[auditors.length - 1].user_id;
+    if (
+      last &&
+      !loading &&
+      Math.ceil(searchTotalAuditors / 15) > 0 &&
+      Math.ceil(searchTotalAuditors / 15) > page
+    ) {
+      console.log(122);
+      setPage(prevPage => prevPage + 1); // Переход к следующей странице при достижении низа
+    }
   };
 
   return (
@@ -95,7 +128,7 @@ export default function AuditorSearchModal({
                 }}
                 freeSolo
                 onChange={handleOptionChange}
-                options={auditorReducer}
+                options={auditors} // Используем обновленные данные
                 onKeyDown={e => {
                   if (e.key === 'Enter') {
                     handleSearch();
@@ -132,6 +165,15 @@ export default function AuditorSearchModal({
                     }}
                   />
                 )}
+                ListboxComponent={props => {
+                  return (
+                    <Box
+                      {...props}
+                      sx={{ overflowY: 'auto' }}
+                      onScroll={e => handleScroll(e, props.children)}
+                    />
+                  );
+                }}
               />
             )}
             <Button
