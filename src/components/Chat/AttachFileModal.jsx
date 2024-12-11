@@ -15,6 +15,10 @@ import { addTestsLabel } from '../../lib/helper.js';
 import { ASSET_URL } from '../../services/urls.js';
 import CustomSnackbar from '../custom/CustomSnackbar.jsx';
 import { chatSendMessage } from '../../redux/actions/chatActions.js';
+import {
+  CHAT_ATTACHMENT_ENTITY,
+  CHAT_PARENT_ENTITY,
+} from '../../services/file_constants.js';
 
 const AttachFileModal = ({ isOpen, setIsOpen, currentChat, user }) => {
   const dispatch = useDispatch();
@@ -33,9 +37,11 @@ const AttachFileModal = ({ isOpen, setIsOpen, currentChat, user }) => {
 
   const clearForm = () => {
     formData.delete('file');
-    formData.delete('path');
-    formData.delete('original_name');
     formData.delete('private');
+    formData.delete('full_access');
+    formData.delete('file_entity');
+    formData.delete('parent_entity_id');
+    formData.delete('parent_entity_source');
     setFile(null);
   };
 
@@ -49,25 +55,23 @@ const AttachFileModal = ({ isOpen, setIsOpen, currentChat, user }) => {
     if (!file) return;
 
     const token = Cookies.get('token');
-    const path = +new Date() + '_' + file.name;
-
     formData.append('file', file);
-    formData.append('path', path);
-    formData.append('original_name', file.name);
     formData.append('private', 'true');
     formData.append('full_access', currentChat?.members.join(' '));
+    formData.append('file_entity', CHAT_ATTACHMENT_ENTITY);
+    formData.append('parent_entity_id', currentChat?.chatId);
+    formData.append('parent_entity_source', CHAT_PARENT_ENTITY);
 
     axios
       .post(ASSET_URL, formData, {
         headers: { Authorization: 'Bearer ' + token },
       })
-      .then(() => {
-        const fileUrl = encodeURIComponent(path);
+      .then(({ data }) => {
         const fileType = file.type.startsWith('image') ? 'Image' : 'File';
 
         dispatch(
           chatSendMessage(
-            fileUrl,
+            data.id,
             { id: currentChat?.chatId, role: currentChat?.role },
             user.current_role,
             currentChat?.isNew,

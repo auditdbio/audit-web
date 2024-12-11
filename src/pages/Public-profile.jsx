@@ -300,7 +300,7 @@ const PublicProfile = ({ notFoundRedirect = true }) => {
               }}
             >
               <Avatar
-                src={data.avatar && `${ASSET_URL}/${data.avatar}`}
+                src={data.avatar && `${ASSET_URL}/id/${data.avatar}`}
                 sx={avatarStyle}
                 alt="User photo"
               />

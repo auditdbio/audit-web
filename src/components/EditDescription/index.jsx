@@ -19,6 +19,7 @@ import TagsField from '../forms/tags-field/tags-field.jsx';
 import { addTestsLabel } from '../../lib/helper.js';
 import AddLinkIcon from '@mui/icons-material/AddLink.js';
 import { TextField } from 'formik-mui';
+import { AUDIT_PARENT_ENTITY } from '../../services/file_constants.js';
 
 const EditDescription = ({ audit, auditRequest, hideChange, isPublic }) => {
   const [editMode, setEditMode] = useState(false);
@@ -77,8 +78,10 @@ const EditDescription = ({ audit, auditRequest, hideChange, isPublic }) => {
                           view: { menu: true, md: true, html: !matchXs },
                           style: editMarkdownSx(),
                         }}
-                        sx={{
-                          border: 'unset',
+                        sx={{ border: 'unset' }}
+                        parentEntity={{
+                          id: audit?.id,
+                          source: AUDIT_PARENT_ENTITY,
                         }}
                       />
                     </Box>
@@ -92,6 +95,10 @@ const EditDescription = ({ audit, auditRequest, hideChange, isPublic }) => {
                       }}
                       sx={{
                         border: 'unset',
+                      }}
+                      parentEntity={{
+                        id: audit?.id,
+                        source: AUDIT_PARENT_ENTITY,
                       }}
                     />
                   )}
@@ -135,6 +142,7 @@ const EditDescription = ({ audit, auditRequest, hideChange, isPublic }) => {
                         </Box>
                       )}
                     {!hideChange &&
+                      !isPublic &&
                       (!editMode ? (
                         audit?.status?.toLowerCase() !==
                           RESOLVED.toLowerCase() && (
@@ -226,7 +234,7 @@ const EditDescription = ({ audit, auditRequest, hideChange, isPublic }) => {
                   <Box sx={hideChange ? linksList : {}}>
                     {!hideChange &&
                       (audit?.status?.toLowerCase() !==
-                      RESOLVED.toLowerCase() ? (
+                        RESOLVED.toLowerCase() && !isPublic ? (
                         <Box sx={linksList}>
                           <ProjectLinksList
                             name="scope"
@@ -327,6 +335,7 @@ const editMarkdownSx = (matchXs, description, editMode) => ({
 
 const linksList = {
   border: '1px solid #dfe0df',
+  borderBottom: 'none',
   borderTop: 'none',
   padding: '0 15px 15px',
 };
@@ -334,6 +343,7 @@ const linksList = {
 const customerLinksList = {
   display: 'flex',
   flexDirection: 'column',
+  mt: '5px',
   '& p': {
     display: 'flex',
     alignItems: 'center',

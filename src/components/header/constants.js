@@ -81,19 +81,19 @@ export const authorizedPages = [
         link: `/audit-builder/${auditId}`,
       },
       {
-        id: 3312,
+        id: 332,
         role: CUSTOMER,
         itemName: 'Audit builder',
         link: `/audit-builder/${auditId}`,
       },
       {
-        id: 331,
+        id: 333,
         role: AUDITOR,
         itemName: 'Price calculator',
         link: `/price-calculation`,
       },
       {
-        id: 3312,
+        id: 334,
         role: CUSTOMER,
         itemName: 'Price calculator',
         link: `/price-calculation`,

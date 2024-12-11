@@ -24,6 +24,7 @@ import { clearMessage } from '../redux/actions/auditAction.js';
 import { setCurrentChat } from '../redux/actions/chatActions.js';
 import ChatIcon from '../components/icons/ChatIcon.jsx';
 import Headings from '../router/Headings.jsx';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 const PublicProject = () => {
   const dispatch = useDispatch();
@@ -173,7 +174,12 @@ const PublicProject = () => {
             redirect={true}
           />
         </Modal>
-
+        <Button
+          onClick={() => navigate(-1)}
+          sx={{ position: 'absolute', top: '0', minWidth: 'unset', left: '0' }}
+        >
+          <ArrowBackIcon />
+        </Button>
         <Box>
           <Typography sx={projectNameSx}>{project?.name}</Typography>
         </Box>
@@ -181,7 +187,7 @@ const PublicProject = () => {
         <Box sx={customerInfoBlock}>
           <Box sx={avatarBoxSx}>
             <Avatar
-              src={customer?.avatar ? `${ASSET_URL}/${customer.avatar}` : ''}
+              src={customer?.avatar ? `${ASSET_URL}/id/${customer.avatar}` : ''}
               alt="customer photo"
               sx={avatarSx}
             />
@@ -317,6 +323,7 @@ const wrapper = role => {
   return {
     width: '100%',
     minHeight: '520px',
+    position: 'relative',
     display: 'flex',
     flexDirection: 'column',
     padding: '30px 60px 60px',

@@ -34,5 +34,6 @@ export const statusOrder = {
   [IN_PROGRESS]: 1,
   [VERIFICATION]: 2,
   [NOT_FIXED]: 3,
-  [FIXED]: 4,
+  [WILL_NOT_FIX]: 4,
+  [FIXED]: 5,
 };

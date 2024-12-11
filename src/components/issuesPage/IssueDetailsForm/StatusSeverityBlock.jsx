@@ -9,6 +9,7 @@ import {
   Switch,
   Tooltip,
   Typography,
+  useMediaQuery,
 } from '@mui/material';
 import { addSpacesToCamelCase, addTestsLabel } from '../../../lib/helper.js';
 import StatusControl from '../StatusControl.jsx';
@@ -25,6 +26,7 @@ import {
   IN_PROGRESS,
   NOT_FIXED,
   VERIFICATION,
+  WILL_NOT_FIX,
 } from '../constants.js';
 import NoteAddIcon from '@mui/icons-material/NoteAdd.js';
 
@@ -47,7 +49,7 @@ const StatusSeverityBlock = ({
   const [severityListOpen, setSeverityListOpen] = useState(false);
   const [statusListOpen, setStatusListOpen] = useState(false);
   const [categoryPrevVal, setCategoryPrevVal] = useState(issue?.category || '');
-
+  const matchXs = useMediaQuery(theme => theme.breakpoints.down('xs'));
   return (
     <Box sx={issueStatusBlock}>
       <Box
@@ -85,7 +87,11 @@ const StatusSeverityBlock = ({
                 renderValue={selected => {
                   return (
                     <Box sx={{ textAlign: 'center' }}>
-                      <IssueSeverity text={selected} />
+                      <IssueSeverity
+                        text={
+                          selected === WILL_NOT_FIX ? 'Will not fix' : selected
+                        }
+                      />
                     </Box>
                   );
                 }}
@@ -98,7 +104,7 @@ const StatusSeverityBlock = ({
                   Fixed
                 </MenuItem>
                 <MenuItem
-                  value={NOT_FIXED}
+                  value={WILL_NOT_FIX}
                   sx={severityMenuItem}
                   classes={{ selected: 'selected-severity' }}
                 >
@@ -323,55 +329,57 @@ const StatusSeverityBlock = ({
         <Box
           sx={[
             buttonsBox,
-            !isPublic
-              ? {
-                  display: 'none!important',
-                  [theme.breakpoints.down(550)]: {
-                    display: 'flex!important',
-                  },
-                }
-              : {},
+            // !isPublic
+            //   ? {
+            //       display: 'none!important',
+            //       [theme.breakpoints.down(550)]: {
+            //         display: 'flex!important',
+            //       },
+            //     }
+            //   : {},
           ]}
         >
-          {!dirty ? (
-            <Tooltip arrow placement="top" title={'New issue'}>
-              <Button
-                variant="contained"
-                type="button"
-                color="primary"
-                // disabled={!dirty}
-                sx={[
-                  issueButton,
-                  {
-                    backgroundColor: 'rgba(0, 0, 0, 0.12)',
-                    '&:hover': {
+          {matchXs &&
+            (!dirty ? (
+              <Tooltip arrow placement="top" title={'New issue'}>
+                <Button
+                  variant="contained"
+                  type="button"
+                  color="primary"
+                  // disabled={!dirty}
+                  sx={[
+                    issueButton,
+                    {
                       backgroundColor: 'rgba(0, 0, 0, 0.12)',
+                      '&:hover': {
+                        backgroundColor: 'rgba(0, 0, 0, 0.12)',
+                      },
                     },
-                  },
-                ]}
-                {...addTestsLabel('new-issue-button')}
-              >
-                <NoteAddIcon />
-              </Button>
-            </Tooltip>
-          ) : (
-            <Tooltip arrow placement="top" title={'New issue'}>
-              <Button
-                variant="contained"
-                type="submit"
-                color="primary"
-                disabled={!dirty}
-                sx={issueButton}
-                {...addTestsLabel('new-issue-button')}
-              >
-                <NoteAddIcon />
-              </Button>
-            </Tooltip>
-          )}
+                  ]}
+                  {...addTestsLabel('new-issue-button')}
+                >
+                  <NoteAddIcon />
+                </Button>
+              </Tooltip>
+            ) : (
+              <Tooltip arrow placement="top" title={'New issue'}>
+                <Button
+                  variant="contained"
+                  type="submit"
+                  color="primary"
+                  disabled={!dirty}
+                  sx={issueButton}
+                  {...addTestsLabel('new-issue-button')}
+                >
+                  <NoteAddIcon />
+                </Button>
+              </Tooltip>
+            ))}
         </Box>
       )}
 
       {!isPublic &&
+        !hideControl &&
         user.current_role === CUSTOMER &&
         !isEditFeedback &&
         !issue?.feedback && (
@@ -554,7 +562,9 @@ const buttonsBox = (theme, isPublic) => ({
 
 const issueButton = theme => ({
   padding: '11px 10px',
-  width: '100%',
+  width: '50px',
+  minWidth: 'unset',
+  height: '47px',
   textTransform: 'none',
   fontWeight: 500,
   fontSize: '16px!important',
@@ -565,13 +575,14 @@ const issueButton = theme => ({
     letterSpacing: '-0.5px',
   },
   [theme.breakpoints.down('xs')]: {
-    padding: '10px 30px',
+    // padding: '10px 30px',
   },
 });
 
 const feedbackButton = theme => ({
   fontWeight: '400!important',
   padding: '6px 15px',
+  width: '140px',
   [theme.breakpoints.down('md')]: {
     padding: '4px 15px',
   },

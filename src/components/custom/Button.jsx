@@ -9,6 +9,6 @@ export const CustomButton = styled(Button)({
   fontWeight: 600,
   textTransform: 'none',
   [theme.breakpoints.down('xl')]: {
-    fontSize: '16px',
+    fontSize: '18px',
   },
 });

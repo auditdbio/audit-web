@@ -28,7 +28,8 @@ const wrapperStyle = {
 
 const AuditorsProjectsSectionStyle = theme => ({
   width: '100%',
-  maxWidth: '1512px',
+  // maxWidth: '1512px',
+  paddingX: '35px',
   backgroundColor: theme.palette.secondary.main,
   display: 'flex',
   flexDirection: 'column',
@@ -37,7 +38,7 @@ const AuditorsProjectsSectionStyle = theme => ({
   color: 'white',
   marginX: 'auto',
   [theme.breakpoints.down('lg')]: {
-    paddingX: '5%',
+    paddingX: '4%',
     gap: '1rem',
   },
 });

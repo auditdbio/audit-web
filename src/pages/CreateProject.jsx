@@ -13,7 +13,7 @@ const CreateProject = () => {
       <Headings title="New Project" noIndex={true} />
 
       <Box sx={wrapper}>
-        <CustomCard>
+        <CustomCard sx={cardSx}>
           <CreateProjectCard />
         </CustomCard>
       </Box>
@@ -23,9 +23,15 @@ const CreateProject = () => {
 
 export default CreateProject;
 
+const cardSx = theme => ({
+  [theme.breakpoints.down('xs')]: {
+    borderRadius: 'unset',
+  },
+});
+
 const wrapper = theme => ({
   display: 'flex',
   flexDirection: 'column',
-  maxWidth: '1300px',
+  // maxWidth: '1300px',
   width: '100%',
 });

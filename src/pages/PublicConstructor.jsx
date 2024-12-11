@@ -2,7 +2,18 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Form, Formik } from 'formik';
 import { CustomCard } from '../components/custom/Card.jsx';
 import Layout from '../styles/Layout.jsx';
-import { Box, Button, Modal, Typography, useMediaQuery } from '@mui/material';
+import {
+  Box,
+  Button,
+  Collapse,
+  IconButton,
+  Modal,
+  Tab,
+  Tabs,
+  Tooltip,
+  Typography,
+  useMediaQuery,
+} from '@mui/material';
 import theme from '../styles/themes.js';
 import FieldEditor from '../components/editor/FieldEditor.jsx';
 import MarkdownEditor from '../components/markdown/Markdown-editor.jsx';
@@ -17,6 +28,7 @@ import {
   addReportAudit,
   clearMessage,
   downloadReport,
+  editAuditCustomer,
   getAudit,
   getPublicReport,
   handleResetPublicAudit,
@@ -30,15 +42,24 @@ import {
   CHANGE_ROLE_DONT_HAVE_PROFILE_AUDITOR,
   CLEAR_AUDIT,
   CUSTOMER,
+  RESOLVED,
+  WAITING_FOR_AUDITS,
 } from '../redux/actions/types.js';
 import { useParams } from 'react-router-dom';
 import Loader from '../components/Loader.jsx';
 import CustomSnackbar from '../components/custom/CustomSnackbar.jsx';
-import Markdown from '../components/markdown/Markdown.jsx';
-import TagsList from '../components/tagsList.jsx';
-import { isAuth, reportBuilder } from '../lib/helper.js';
+import SaveIcon from '@mui/icons-material/Save';
+import RefreshIcon from '@mui/icons-material/Refresh';
+import { addTestsLabel, isAuth, reportBuilder } from '../lib/helper.js';
 import { changeRolePublicAuditor } from '../redux/actions/userAction.js';
 import Headings from '../router/Headings.jsx';
+import { AUDIT_PARENT_ENTITY } from '../services/file_constants.js';
+import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf.js';
+import AddIcon from '@mui/icons-material/Add.js';
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
+import EditIcon from '@mui/icons-material/Edit.js';
+import ExpandLessOutlinedIcon from '@mui/icons-material/ExpandLessOutlined.js';
+import AddLinkIcon from '@mui/icons-material/AddLink.js';
 
 const PublicConstructor = ({ saved, isPublic }) => {
   const matchXs = useMediaQuery(theme.breakpoints.down('xs'));
@@ -56,8 +77,11 @@ const PublicConstructor = ({ saved, isPublic }) => {
   const descriptionRef = useRef();
   const [showFull, setShowFull] = useState(false);
   const { user } = useSelector(s => s.user);
-  const [menuAnchorEl, setMenuAnchorEl] = useState(null);
+  const [editConclusion, setEditConclusion] = useState(false);
+  const [showReadMoreButton, setShowReadMoreButton] = useState(true);
   const auditMessage = useSelector(s => s.audits.successMessage);
+  const error = useSelector(s => s.audits.error);
+  const [tab, setTab] = useState(0);
 
   useEffect(() => {
     if (saved) {
@@ -110,14 +134,13 @@ const PublicConstructor = ({ saved, isPublic }) => {
   const handleResetForm = setFieldValue => {
     setFieldValue('project_name', '');
     setFieldValue('report', '');
-    setFieldValue('report_name', '');
     setFieldValue('description', '');
     setFieldValue('conclusion', '');
     setFieldValue('scope', []);
     setFieldValue('tags', []);
     setFieldValue('issues', []);
     setFieldValue('isCreated', false);
-    setFieldValue('auditor_name', '');
+    !isAuth() ? setFieldValue('auditor_name', '') : null;
     setFieldValue('auditId', Date.now());
     dispatch(handleResetPublicAudit());
     localStorage.removeItem('report');
@@ -126,11 +149,14 @@ const PublicConstructor = ({ saved, isPublic }) => {
 
   const handleSavePublicAudit = async (handleSubmit, report) => {
     handleSubmit();
+    const filteredReport = Object.fromEntries(
+      Object.entries(report).filter(([key, value]) => value != null && value),
+    );
     if (report?.auditor_name && report?.project_name && report?.description) {
       if (isAuth()) {
         if (user.current_role === CUSTOMER) {
           const data = {
-            ...report,
+            ...filteredReport,
             isPublic: true,
             issues: [...issues],
           };
@@ -142,7 +168,7 @@ const PublicConstructor = ({ saved, isPublic }) => {
             auditor_last_name: auditor.last_name,
             auditor_contacts: auditor.contacts,
             avatar: auditor.avatar,
-            ...report,
+            ...filteredReport,
             isPublic: true,
             issues: [...issues],
             status: 'Started',
@@ -202,10 +228,10 @@ const PublicConstructor = ({ saved, isPublic }) => {
   if ((saved && audit) || (!audit && !saved)) {
     return (
       <Layout
-        sx={{ padding: '40px' }}
+        sx={layoutSx}
         containerSx={{
           maxWidth: 'unset!important',
-          padding: '0 35px!important',
+          // padding: '0 35px!important',
         }}
       >
         <Headings title="Audit Builder" />
@@ -215,7 +241,7 @@ const PublicConstructor = ({ saved, isPublic }) => {
             onClick={() =>
               !saved ? navigate('/') : navigate('/profile/audits')
             }
-            sx={{ position: 'absolute', top: '10px', left: '10px' }}
+            sx={backBtnSx}
           >
             <ArrowBackIcon color={'secondary'} />
           </Button>
@@ -249,9 +275,9 @@ const PublicConstructor = ({ saved, isPublic }) => {
                 <Form onSubmit={handleSubmit} style={{ width: '100%' }}>
                   <CustomSnackbar
                     autoHideDuration={5000}
-                    open={!!successMessage}
+                    open={!!successMessage || !!error}
                     severity={'success'}
-                    text={successMessage}
+                    text={successMessage || error}
                     onClose={() => dispatch(clearMessage())}
                   />
                   <Typography sx={titleSx} variant={'h4'}>
@@ -277,87 +303,262 @@ const PublicConstructor = ({ saved, isPublic }) => {
                       display: 'flex',
                       flexDirection: 'column',
                       gap: '35px',
-                      mt: '20px',
+                      mt: '25px',
                     }}
                   >
                     <Box>
-                      <Typography sx={descriptionTitleSx} variant={'h6'}>
-                        Project description
-                      </Typography>
                       <Box sx={{ width: '100%' }}>
-                        <Box sx={descriptionSx(showFull)}>
-                          <Box ref={descriptionRef}>
-                            <MarkdownEditor
-                              saved={saved}
-                              name="description"
-                              handleBlur={handleSubmit}
-                              fastSave={true}
-                              setFieldTouched={setFieldTouched}
-                              mdProps={{
-                                view: { menu: true, md: true, html: !matchXs },
-                              }}
+                        <Tabs
+                          value={tab}
+                          onChange={(e, newValue) => {
+                            // setShowFull(false);
+                            setTab(newValue);
+                            if (editConclusion) {
+                              setEditConclusion(false);
+                            }
+                          }}
+                          indicatorColor="none"
+                          textColor={'primary'}
+                          aria-label="secondary tabs example"
+                          sx={tabsSx}
+                        >
+                          {/*{tab !== 0 && (*/}
+                          <Tab
+                            sx={[
+                              tabSx,
+                              {
+                                borderRadius: '8px 0 0 0',
+                                marginRight: '15px',
+                                // border: '1px solid',
+                              },
+                              tab === 0 ? { color: '#52176D' } : selectedTabSx,
+                            ]}
+                            value={0}
+                            label={'Description'}
+                          />
+                          {values.conclusion ? (
+                            <Tab
+                              sx={[
+                                tabSx,
+                                {
+                                  paddingRight: '0',
+                                  width: '150px',
+                                  borderRadius: '0 0 0 0',
+                                  // border: '1px solid',
+                                  borderRight: 'unset',
+                                },
+                                conclusionSx,
+                                tab === 1
+                                  ? { color: '#52176D' }
+                                  : selectedTabSx,
+                              ]}
+                              value={1}
+                              label={'Conclusion'}
                             />
-                          </Box>
-                          <Box
-                            sx={{ display: 'flex', gap: '10px', my: '20px' }}
-                          >
-                            <Box sx={{ width: '100%' }}>
-                              <TagsField
-                                size={matchMd ? 'small' : 'medium'}
-                                name="tags"
-                                label="Tags"
-                                setFieldTouched={setFieldTouched}
-                                onBlur={handleSubmit}
-                              />
-                              <TagsArray
-                                handleSubmit={handleSubmit}
-                                name="tags"
-                              />
-                            </Box>
-                            <Box
-                              sx={{
-                                display: 'flex',
-                                flexDirection: 'column',
-                                gap: '10px',
-                                width: '100%',
+                          ) : (
+                            <Button
+                              sx={[
+                                tabSx,
+                                {
+                                  // borderRadius: '8px 0 0 0',
+                                  // border: '1px solid',
+                                },
+                                tab === 0
+                                  ? { color: 'rgba(0, 0, 0, 0.6)' }
+                                  : selectedTabSx,
+                              ]}
+                              value={1}
+                              onClick={() => {
+                                setEditConclusion(true);
+                                // setShowFull(true);
+                                setTab(1);
                               }}
                             >
-                              <TagsField
-                                size={matchMd ? 'small' : 'medium'}
-                                name="scope"
-                                label="Project links"
-                                setFieldTouched={setFieldTouched}
-                                onBlur={handleSubmit}
-                              />
-                              <ProjectLinksList
-                                handleSubmit={handleSubmit}
-                                name="scope"
-                              />
-                            </Box>
-                          </Box>
-
-                          <Box sx={conclusionWrapper}>
-                            <Typography sx={descriptionTitleSx} variant={'h6'}>
-                              Conclusion
-                            </Typography>
-                            <MarkdownEditor
-                              saved={saved}
-                              name="conclusion"
-                              handleBlur={handleSubmit}
-                              setFieldTouched={setFieldTouched}
-                              mdProps={{
-                                style: { height: '250px' },
-                                view: { menu: true, md: true, html: !matchXs },
+                              + Conclusion
+                            </Button>
+                          )}
+                          {values.conclusion && (
+                            <Button
+                              sx={[
+                                tabSx,
+                                {
+                                  width: '32px',
+                                  minWidth: '32px',
+                                  paddingLeft: 0,
+                                  color: 'rgba(0, 0, 0, 0.6)',
+                                },
+                                tab === 1
+                                  ? { color: '#FF9900!important' }
+                                  : selectedButtonSx,
+                              ]}
+                              onClick={() => {
+                                setFieldValue('conclusion', '');
                               }}
-                            />
+                            >
+                              <DeleteForeverIcon />
+                            </Button>
+                          )}
+                        </Tabs>
+                        {/*)}*/}
+                        {tab === 0 ? (
+                          <Collapse
+                            in={true}
+                            collapsedSize={showFull ? undefined : 150}
+                          >
+                            <Box
+                              sx={descriptionWrapper(theme, showFull)}
+                              ref={descriptionRef}
+                            >
+                              <MarkdownEditor
+                                saved={saved}
+                                name="description"
+                                handleBlur={handleSubmit}
+                                fastSave={true}
+                                setFieldTouched={setFieldTouched}
+                                mdProps={{
+                                  view: {
+                                    menu: true,
+                                    md: true,
+                                    html: !matchXs,
+                                  },
+                                }}
+                                parentEntity={
+                                  audit?.id
+                                    ? {
+                                        id: audit.id,
+                                        source: AUDIT_PARENT_ENTITY,
+                                      }
+                                    : {}
+                                }
+                              />
+                              <Box sx={tagsWrapperSx}>
+                                <Box sx={{ width: '100%' }}>
+                                  <TagsField
+                                    size={'small'}
+                                    name="tags"
+                                    label="Tags"
+                                    setFieldTouched={setFieldTouched}
+                                    onBlur={handleSubmit}
+                                  />
+                                  <TagsArray
+                                    handleSubmit={handleSubmit}
+                                    name="tags"
+                                  />
+                                </Box>
+                                <Box
+                                  sx={{
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    gap: '10px',
+                                    width: '100%',
+                                  }}
+                                >
+                                  <TagsField
+                                    size={'small'}
+                                    name="scope"
+                                    label="Project links"
+                                    setFieldTouched={setFieldTouched}
+                                    onBlur={handleSubmit}
+                                  />
+                                  <ProjectLinksList
+                                    handleSubmit={handleSubmit}
+                                    name="scope"
+                                  />
+                                </Box>
+                              </Box>
+                            </Box>
+                          </Collapse>
+                        ) : (
+                          <Collapse
+                            in={true}
+                            collapsedSize={showFull ? undefined : 150}
+                          >
+                            <Box sx={descriptionWrapper(theme, showFull)}>
+                              {/*<Box>*/}
+                              <MarkdownEditor
+                                saved={saved}
+                                name="conclusion"
+                                handleBlur={handleSubmit}
+                                setFieldTouched={setFieldTouched}
+                                mdProps={{
+                                  style: { height: '250px' },
+                                  view: {
+                                    menu: true,
+                                    md: true,
+                                    html: !matchXs,
+                                  },
+                                }}
+                                parentEntity={
+                                  audit?.id
+                                    ? {
+                                        id: audit.id,
+                                        source: AUDIT_PARENT_ENTITY,
+                                      }
+                                    : {}
+                                }
+                              />
+                              {/*</Box>*/}
+                            </Box>
+                          </Collapse>
+                        )}
+                        {showReadMoreButton && (
+                          <Box
+                            sx={[
+                              {
+                                // border: '1px solid #E5E5E5',
+                                display: 'flex',
+                                justifyContent: 'center',
+                                position: 'relative',
+                                paddingTop: '8px',
+                              },
+                              !showFull
+                                ? {
+                                    borderTop: '1px solid #E5E5E5',
+                                    boxShadow:
+                                      '0px -24px 14px -8px rgba(252, 250, 246, 1)',
+                                  }
+                                : {},
+                            ]}
+                          >
+                            {/*{tab === 0 && (*/}
+                            <Button
+                              onClick={() => setShowFull(!showFull)}
+                              sx={[
+                                readAllButton,
+                                {
+                                  position: 'relative',
+                                  top: !showFull ? '-25px' : 0,
+                                  backgroundColor: '#fcfaf6',
+                                  zIndex: '1',
+                                  marginBottom: showFull ? '20px' : 0,
+                                  '&:hover': {
+                                    backgroundColor: '#fcfaf6',
+                                  },
+                                },
+                              ]}
+                              variant={'outlined'}
+                            >
+                              <span>{showFull ? 'Hide' : `Show`}</span>
+                              {tab === 0 && <AddLinkIcon />}
+                              <EditIcon sx={{ width: '20px' }} />
+                              <ExpandLessOutlinedIcon
+                                sx={[
+                                  showFull
+                                    ? {}
+                                    : { transform: 'rotate(180deg)' },
+                                  {
+                                    transition: '0.2s',
+                                    // marginRight: '0',
+                                    // marginLeft: 'auto',
+                                    width: '20px',
+                                    height: '20px',
+                                  },
+                                ]}
+                              />
+                            </Button>
+                            {/*)}*/}
                           </Box>
-                        </Box>
-                        <Button
-                          onClick={() => setShowFull(!showFull)}
-                          sx={readAllButton}
-                        >
-                          {showFull ? 'Hide ▲' : `Expand ▼`}
-                        </Button>
+                        )}
                       </Box>
                     </Box>
                   </Box>
@@ -422,44 +623,38 @@ const PublicConstructor = ({ saved, isPublic }) => {
                         }
                         onClose={handleCloseSnack}
                       />
-                      <Button
-                        variant="contained"
-                        color="secondary"
-                        sx={[
-                          buttonSx,
-                          { marginRight: '0!important' },
-                          publicBtnSx,
-                        ]}
-                        onClick={() =>
-                          handleGenerateReport(handleSubmit, values)
-                        }
-                      >
-                        Generate report
-                      </Button>
                       {!saved && (
-                        <Button
-                          sx={[
-                            buttonSx,
-                            { marginRight: '0!important' },
-                            publicBtnSx,
-                          ]}
-                          onClick={() => {
-                            handleSavePublicAudit(handleSubmit, values);
-                          }}
-                          variant={'contained'}
+                        <Tooltip
+                          title={'Save to AuditDB'}
+                          arrow
+                          placement={'top'}
                         >
-                          Save to AuditDB
-                        </Button>
+                          <Button
+                            sx={[
+                              buttonSx,
+                              { marginRight: '0!important' },
+                              btnSx,
+                            ]}
+                            onClick={() => {
+                              handleSavePublicAudit(handleSubmit, values);
+                            }}
+                            variant={'contained'}
+                          >
+                            <SaveIcon />
+                          </Button>
+                        </Tooltip>
                       )}
-                      <Button
-                        variant={'contained'}
-                        type={'button'}
-                        color={'secondary'}
-                        onClick={() => setIsOpen(true)}
-                        sx={btnSx}
-                      >
-                        Reset form
-                      </Button>
+                      <Tooltip arrow title={'Reset form'} placement={'top'}>
+                        <Button
+                          variant={'contained'}
+                          type={'button'}
+                          color={'secondary'}
+                          onClick={() => setIsOpen(true)}
+                          sx={btnSx}
+                        >
+                          <RefreshIcon />
+                        </Button>
+                      </Tooltip>
                     </Box>
                   )}
                   {!!issues?.length && (
@@ -501,30 +696,128 @@ export default PublicConstructor;
 const actionWrapper = theme => ({
   display: 'flex',
   gap: '25px',
-  mt: '25px',
   justifyContent: 'center',
-  [theme.breakpoints.down(690)]: {
-    flexDirection: 'column',
-    gap: '15px',
+});
+
+const tagsWrapperSx = theme => ({
+  display: 'flex',
+  gap: '10px',
+  my: '20px',
+  '& input': {
+    fontSize: '22px!important',
+    paddingY: '8px!important',
   },
+  '& label': {
+    top: '0px!important',
+    fontSize: '20px!important',
+  },
+  [theme.breakpoints.down('lg')]: {
+    '& label': {
+      fontSize: '18px!important',
+      top: '3px!important',
+    },
+    // '& input': {
+    //   paddingY: '1px',
+    // },
+  },
+  [theme.breakpoints.down('md')]: {
+    '& label': {
+      fontSize: '16px!important',
+      // top: '3px!important',
+    },
+    // '& input': {
+    //   paddingY: '1px',
+    // },
+  },
+  [theme.breakpoints.down(700)]: {
+    flexDirection: 'column',
+  },
+});
+
+const backBtnSx = theme => ({
+  position: 'absolute',
+  top: '10px',
+  left: '15px',
+  minWidth: '40px',
+  [theme.breakpoints.down('xs')]: {
+    left: '5px',
+  },
+});
+
+const selectedTabSx = theme => ({
+  // background: 'linear-gradient(180deg, #FFFFFF 0%, #E5E5E5 100%)',
+  borderWidth: '0.991146px 0.991146px 0px 0.991146px',
+  borderColor: '#B2B3B3',
+});
+
+const selectedButtonSx = theme => ({
+  // background: 'linear-gradient(180deg, #FFFFFF 0%, #E5E5E5 100%)',
+  borderWidth: '0.991146px 0.991146px 0px 0.991146px',
+  borderColor: '#B2B3B3',
 });
 
 const layoutSx = theme => ({
-  paddingY: '10px',
-  [theme.breakpoints.down('md')]: {
-    padding: '10px 20px',
-  },
-  [theme.breakpoints.down('sm')]: {
-    padding: '10px 20px',
-  },
-  [theme.breakpoints.down('xs')]: {
-    padding: '20px 30px',
+  padding: '10px!important',
+  position: 'relative',
+  [theme.breakpoints.down(780)]: {
+    padding: '10px 0!important',
   },
 });
 
-const descriptionTitleSx = theme => ({
-  mb: '10px',
-  fontSize: '16px',
+const tabSx = theme => ({
+  // border: '1px solid rgba(255, 153, 0, 0.5)',
+  // background: 'linear-gradient(180deg, #FFFFFF 0%, #E5E5E5 100%)',
+  textTransform: 'unset',
+  width: '150px',
+  minHeight: '32px',
+  height: '34.5px!important',
+  // color: '#FF9900',
+  margin: '0 1px',
+  fontWeight: 600,
+  borderRadius: '0 8px 8px 0',
+  fontSize: '20px',
+  [theme.breakpoints.down('md')]: {
+    height: '34.5px',
+    fontSize: '16px',
+  },
+});
+
+const conclusionSx = theme => ({
+  width: '150px',
+  [theme.breakpoints.down('md')]: {
+    width: '120px',
+  },
+});
+
+const descriptionWrapper = (theme, showFull) => ({
+  maxHeight: showFull ? 'none' : '150px',
+  '& .rc-md-editor': {
+    height: '100%!important',
+    minHeight: '340px',
+  },
+  // '& .md-editor-wrapper': {
+  //   margin: '-0.7px',
+  // },
+  overflow: 'hidden',
+  transition: 'max-height 0.3s ease',
+  '& .rc-md-editor .editor-container>.section': {
+    borderRight: 'unset',
+  },
+  // '& .editor-container': {
+  //   borderBottom: '1px solid #e0e0e0',
+  // },
+});
+
+const tabsSx = theme => ({
+  height: '38.5px',
+  minHeight: 'unset',
+  backgroundColor: '#f0f0f0',
+  borderRadius: '8px 8px 0 0 ',
+  '& .MuiTabs-scroller': { height: '38.5px!important' },
+  [theme.breakpoints.down('md')]: {
+    height: '34.5px',
+    '& .MuiTabs-scroller': { height: '34.5px!important' },
+  },
 });
 
 const buttonSx = theme => ({
@@ -548,45 +841,21 @@ const buttonSx = theme => ({
   },
 });
 
-const publicBtnSx = theme => ({
-  width: '213px',
-  [theme.breakpoints.down('sm')]: {
-    width: '185px',
-  },
-  [theme.breakpoints.down(690)]: {
-    width: '100%',
-    mr: 0,
-  },
-});
-
 const readAllButton = theme => ({
-  width: '100%',
-  padding: '8px',
+  p: '3px',
+  paddingX: '8px',
+  minWidth: 'unset',
+  textTransform: 'unset',
+  boxShadow: 'unset',
   fontWeight: 600,
-  fontSize: '21px',
-  color: 'black',
-  textTransform: 'none',
-  lineHeight: '25px',
-  background: '#E5E5E5',
-  borderRadius: 0,
-  boxShadow: '0px -24px 14px -8px rgba(252, 250, 246, 1)',
-  ':hover': { background: '#D5D5D5' },
+  borderRadius: '8px',
+  width: '280px',
+  display: 'flex',
+  alignItems: 'center',
+  gap: '7px',
+  // maxWidth: '300px',
   [theme.breakpoints.down('xs')]: {
-    fontSize: '14px',
-    border: 'none',
-  },
-});
-const descriptionSx = full => ({
-  maxHeight: full ? 'unset' : '110px',
-  overflow: 'hidden',
-  transition: 'max-height 1s',
-  scrollBehavior: 'smooth',
-});
-
-const conclusionWrapper = () => ({
-  mb: '20px',
-  '& .md-editor-wrapper': {
-    border: 'none',
+    fontSize: '16px',
   },
 });
 
@@ -595,6 +864,16 @@ const fieldsWrapperSx = theme => ({
   display: 'flex',
   gap: '20px',
   justifyContent: 'center',
+  [theme.breakpoints.down('lg')]: {
+    '& label': {
+      top: '3px!important',
+    },
+  },
+  [theme.breakpoints.down('md')]: {
+    '& label': {
+      top: '3px!important',
+    },
+  },
   [theme.breakpoints.down('sm')]: {
     flexWrap: 'wrap',
   },
@@ -626,29 +905,28 @@ const SubmitValidation = Yup.object().shape({
 });
 
 const wrapper = theme => ({
-  padding: '28px 34px 20px',
+  padding: '25px 30px 60px',
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'center',
-  position: 'relative',
   maxWidth: 'unset',
   gap: '20px',
   '& h3': {
-    fontSize: '37px',
+    fontSize: '24px',
     fontWeight: 500,
   },
   [theme.breakpoints.down('md')]: {
-    padding: '18px 44px 20px',
-    '& h3': {
-      fontSize: '30px',
-    },
+    padding: '20px 24px 20px',
   },
   [theme.breakpoints.down('sm')]: {
     gap: '20px',
-    padding: '18px 20px 20px',
+    padding: '30px 20px 20px',
     '& h3': {
-      fontSize: '24px',
+      fontSize: '20px',
     },
+  },
+  [theme.breakpoints.down(780)]: {
+    borderRadius: '0!important',
   },
 });
 
@@ -660,6 +938,9 @@ const btnSx = theme => ({
   lineHeight: '25px',
   textTransform: 'none',
   borderRadius: '10px',
+  width: '50px!important',
+  minWidth: '50px',
+  height: '47px',
   mr: '20px',
   '&:last-child': { mr: 0 },
   [theme.breakpoints.down('lg')]: {
