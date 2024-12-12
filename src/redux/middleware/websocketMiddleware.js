@@ -94,7 +94,12 @@ const websocketMiddleware = () => {
                 receiveNewChatMessage(message.payload.ChatMessage),
               );
             } else if (message.kind.toLowerCase() === 'newchat') {
-              store.dispatch(receiveNewChat(message.payload.NewChat));
+              if (
+                store.getState().user.user.current_role.toLowerCase() ===
+                message.user_role.toLowerCase()
+              ) {
+                store.dispatch(receiveNewChat(message.payload.NewChat));
+              }
             } else if (message.kind.toLowerCase() === 'chatdeletemessage') {
               store.dispatch(
                 deleteChatMessage(message.payload.ChatDeleteMessage),
