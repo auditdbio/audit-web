@@ -238,7 +238,7 @@ export default function AuditorSearchModal({
                             inputFormat="DD.MM.YYYY"
                             onChange={e => setFieldValue('time.from', e)}
                             disablePast
-                            minDate={new Date()}
+                            minDate={dayjs()}
                           />
                           <Typography variant={'caption'}>-</Typography>
                           <Field
