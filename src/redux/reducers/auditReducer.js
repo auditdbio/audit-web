@@ -35,6 +35,7 @@ import {
   GET_PUBLIC_AUDIT,
   ADD_AUDIT_ISSUE,
   VERIFY_AUDIT_REPORT,
+  UPDATE_AUDIT,
 } from '../actions/types.js';
 
 const initialState = {
@@ -233,6 +234,15 @@ export const auditReducer = (state = initialState, action) => {
           audit.id === action.payload.id ? action.payload : audit,
         ),
         audit: action.payload,
+      };
+    case UPDATE_AUDIT:
+      return {
+        ...state,
+        audits: state.audits?.map(audit =>
+          audit.id === action.payload.id ? action.payload : audit,
+        ),
+        audit: action.payload,
+        successMessage: 'Audit updated successfully',
       };
     case RESOLVED:
       return {

@@ -94,7 +94,9 @@ const AuditOffer = ({ publicView, setPublicView }) => {
   } = useSelector(s => s.audits);
   const [resolveConfirmation, setResolveConfirmation] = useState(false);
   const [allIssuesClosed, setAllIssuesClosed] = useState(false);
-  const [auditDBWorkflow, setAuditDBWorkflow] = useState(true);
+  const [auditDBWorkflow, setAuditDBWorkflow] = useState(
+    false || audit?.report_type?.toLowerCase() === 'custom',
+  );
   const [showReadMoreButton, setShowReadMoreButton] = useState(true);
   const [showFull, setShowFull] = useState(false);
   const [showFullHeader, setShowFullHeader] = useState(false);
@@ -159,7 +161,7 @@ const AuditOffer = ({ publicView, setPublicView }) => {
       audit?.status?.toLowerCase() === RESOLVED.toLowerCase() &&
       !audit?.issues?.length
     ) {
-      setAuditDBWorkflow(false);
+      setAuditDBWorkflow(true);
     }
   }, [audit, issues]);
 
@@ -880,8 +882,8 @@ const AuditOffer = ({ publicView, setPublicView }) => {
                 <Box sx={uploadSx}>
                   <Box sx={workflowToggleBox}>
                     <Button
-                      onClick={() => setAuditDBWorkflow(true)}
-                      sx={workflowButton(auditDBWorkflow)}
+                      onClick={() => setAuditDBWorkflow(false)}
+                      sx={workflowButton(!auditDBWorkflow)}
                       type="button"
                       disabled={
                         audit?.status?.toLowerCase() ===
@@ -893,7 +895,7 @@ const AuditOffer = ({ publicView, setPublicView }) => {
                         : 'New issue'}
                     </Button>
                     <Button
-                      onClick={() => setAuditDBWorkflow(false)}
+                      onClick={() => setAuditDBWorkflow(true)}
                       type="button"
                       disabled={
                         !issues?.every(
@@ -904,7 +906,7 @@ const AuditOffer = ({ publicView, setPublicView }) => {
                             !issue.include,
                         )
                       }
-                      sx={workflowButton(!auditDBWorkflow)}
+                      sx={workflowButton(auditDBWorkflow)}
                     >
                       Upload audit
                     </Button>
@@ -1011,7 +1013,11 @@ const AuditOffer = ({ publicView, setPublicView }) => {
                         variant="contained"
                         color="primary"
                         onClick={() => setResolveConfirmation(true)}
-                        disabled={!allIssuesClosed || !issues?.length}
+                        disabled={
+                          !allIssuesClosed ||
+                          (!issues?.length &&
+                            audit?.report_type?.toLowerCase() !== 'custom')
+                        }
                         sx={[
                           buttonSx,
                           {
@@ -1042,14 +1048,14 @@ const AuditOffer = ({ publicView, setPublicView }) => {
               }}
               validationSchema={SubmitValidation}
               onSubmit={values => {
-                dispatch(addReportAudit(values));
+                dispatch(addReportAudit(values, true));
               }}
             >
               {({ handleSubmit, setFieldValue }) => {
                 return (
                   <Form onSubmit={handleSubmit}>
                     <Box sx={fileWrapper}>
-                      {!auditDBWorkflow &&
+                      {auditDBWorkflow &&
                         audit?.status?.toLowerCase() !==
                           WAITING_FOR_AUDITS.toLowerCase() && (
                           <Box>
@@ -1070,7 +1076,7 @@ const AuditOffer = ({ publicView, setPublicView }) => {
                           </Box>
                         )}
 
-                      {!auditDBWorkflow && (
+                      {auditDBWorkflow && (
                         <Tooltip
                           arrow
                           placement="top"
@@ -1096,7 +1102,7 @@ const AuditOffer = ({ publicView, setPublicView }) => {
           </Box>
         </Box>
       </Box>
-      {auditDBWorkflow &&
+      {!auditDBWorkflow &&
         audit?.status?.toLowerCase() !== WAITING_FOR_AUDITS.toLowerCase() && (
           <Box sx={{ width: '100%', mb: '30px' }}>
             {issues?.length ? (

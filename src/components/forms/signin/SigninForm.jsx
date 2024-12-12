@@ -122,7 +122,7 @@ const SigninForm = () => {
                 <Button
                   type="button"
                   variant="text"
-                  sx={{ textTransform: 'unset', mt: '25px', fontSize: '12px' }}
+                  sx={forgotBtnSx}
                   onClick={() => setOpen(true)}
                   disabled={isAuth()}
                   {...addTestsLabel('forgot-password-button')}
@@ -143,6 +143,15 @@ export default SigninForm;
 const SigninSchema = Yup.object().shape({
   password: Yup.string().min(2, 'Too Short!').required('required'),
   email: Yup.string().email('Invalid email').required('required'),
+});
+
+const forgotBtnSx = theme => ({
+  textTransform: 'unset',
+  mt: '25px',
+  fontSize: '14px',
+  [theme.breakpoints.down('md')]: {
+    fontSize: '12px',
+  },
 });
 
 const modalWrapper = theme => ({
@@ -174,14 +183,16 @@ const formWrapper = theme => ({
 const submitButton = theme => ({
   padding: '11px 0',
   color: '#FCFAF6',
-  fontSize: '14px',
   fontWeight: 600,
-  lineHeight: 1.2,
   borderRadius: radiusOfComponents,
-  maxWidth: '402px',
-  margin: '0 auto',
-  paddingY: '11px',
+  maxWidth: '262px',
+  fontSize: '20px',
+  paddingY: '9px',
   width: '100%',
+  textTransform: 'unset',
+  [theme.breakpoints.down('xl')]: {
+    fontSize: '18px',
+  },
   [theme.breakpoints.down('sm')]: {
     width: '225px',
     padding: '8px 0',
@@ -191,10 +202,47 @@ const submitButton = theme => ({
 
 const fieldWrapper = theme => ({
   display: 'flex',
+  gap: '28px',
   flexDirection: 'column',
-  width: '100%',
-  gap: '20px',
+  '& .password-wrapper, .field-wrapper': {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 0,
+    '& p': {
+      width: '130px',
+    },
+  },
+  '& .field-wrapper label': {
+    fontSize: '20px',
+  },
+  '& .field-wrapper input': {
+    paddingY: '12px',
+    fontSize: '20px',
+  },
+  '& .password-wrapper input': {
+    paddingY: '12px',
+    fontSize: '20px',
+  },
+  '& .password-wrapper label': {
+    fontSize: '20px',
+  },
+  [theme.breakpoints.down('xl')]: {
+    '& .field-wrapper label': {
+      fontSize: '18px',
+    },
+    '& .password-wrapper label': {
+      fontSize: '18px',
+    },
+  },
   [theme.breakpoints.down('md')]: {
+    '& .field-wrapper input': {
+      paddingY: '10px',
+      fontSize: '18px',
+    },
+    '& .password-wrapper input': {
+      paddingY: '10px',
+      fontSize: '18px',
+    },
     '& .password-wrapper,.field-wrapper': {
       '& label': {
         fontSize: '18px',
@@ -202,12 +250,36 @@ const fieldWrapper = theme => ({
     },
   },
   [theme.breakpoints.down('sm')]: {
+    '& .field-wrapper input': {
+      paddingY: '10px',
+      fontSize: '14px',
+    },
+    '& .password-wrapper input': {
+      paddingY: '10px',
+      fontSize: '14px',
+    },
+    '& .field-wrapper label': {
+      fontSize: '14px',
+    },
+    '& .password-wrapper label': {
+      fontSize: '14px',
+    },
     gap: '16px',
     '& .password-wrapper, .field-wrapper': {
+      flexDirection: 'column',
+      alignItems: 'flex-start',
       gap: '16px',
+      '& p': {
+        width: 'unset',
+      },
       '& label': {
         fontSize: '15px',
       },
+    },
+  },
+  [theme.breakpoints.down('xs')]: {
+    '& p': {
+      fontSize: '12px',
     },
   },
 });
