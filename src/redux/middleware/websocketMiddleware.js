@@ -90,8 +90,11 @@ const websocketMiddleware = () => {
                 });
               }
             } else if (message.kind.toLowerCase() === 'chatmessage') {
+              const sameRole =
+                store.getState().user.user.current_role.toLowerCase() ===
+                message.user_role.toLowerCase();
               store.dispatch(
-                receiveNewChatMessage(message.payload.ChatMessage),
+                receiveNewChatMessage(message.payload.ChatMessage, sameRole),
               );
             } else if (message.kind.toLowerCase() === 'newchat') {
               if (

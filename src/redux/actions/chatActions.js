@@ -154,7 +154,7 @@ export const receiveNewChat = chat => {
   };
 };
 
-export const receiveNewChatMessage = message => {
+export const receiveNewChatMessage = (message, sameRole) => {
   return (dispatch, getState) => {
     const { chat: chatState, user } = getState();
     if (chatState.currentChat?.chatId === message.chat) {
@@ -194,10 +194,12 @@ export const receiveNewChatMessage = message => {
           },
         });
       } else {
-        dispatch({
-          type: CHAT_UPDATE_DIFFERENT_ROLE_UNREAD,
-          payload: chatState.differentRoleUnreadMessages + 1,
-        });
+        if (!sameRole) {
+          dispatch({
+            type: CHAT_UPDATE_DIFFERENT_ROLE_UNREAD,
+            payload: chatState.differentRoleUnreadMessages + 1,
+          });
+        }
       }
     }
   };
