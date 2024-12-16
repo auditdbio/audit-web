@@ -44,7 +44,7 @@ import SaveIcon from '@mui/icons-material/Save';
 import MarkdownEditor from './markdown/Markdown-editor.jsx';
 import SalarySlider from './forms/salary-slider/salary-slider.jsx';
 import CloseProjectModal from './CloseProjectModal.jsx';
-import { AUDITOR, DONE } from '../redux/actions/types.js';
+import { AUDITOR, CLEAR_PROJECT, DONE } from '../redux/actions/types.js';
 import CustomSnackbar from './custom/CustomSnackbar.jsx';
 import { addTestsLabel } from '../lib/helper.js';
 import { history } from '../services/history.js';
@@ -97,7 +97,8 @@ const CreateProjectCard = ({ projectInfo }) => {
   const [isPublished, setIsPublished] = useState(
     projectInfo?.publish_options?.publish || false,
   );
-  const project = useSelector(s => s.project?.recentProject);
+  const [copy, setCopy] = useState(false);
+  const project = useSelector(s => s.project?.currentProject);
   const [isClosed, setIsClosed] = useState(
     projectInfo?.status === DONE || false,
   );
@@ -151,7 +152,7 @@ const CreateProjectCard = ({ projectInfo }) => {
   });
 
   const initialValues = {
-    id: projectInfo ? projectInfo.id || project.id : '',
+    id: projectInfo ? projectInfo?.id || project?.id : '',
     publish_options: {
       publish: projectInfo ? projectInfo?.publish_options?.publish : false,
       ready_to_wait: projectInfo
@@ -172,6 +173,7 @@ const CreateProjectCard = ({ projectInfo }) => {
 
   const handleInviteModal = onSubmit => {
     setState(true);
+    setCopy(getSearchParam.get('copy'));
     onSubmit();
 
     setOpenInvite(true);
@@ -188,10 +190,12 @@ const CreateProjectCard = ({ projectInfo }) => {
       publish_options: { ...values.publish_options, publish: !isPublished },
       status: isClosed ? DONE : '',
     };
-    if (values.id && projectInfo.id) {
+    const projectData = projectInfo || project;
+    if ((values.id && projectData.id) || projectData?.id) {
       setChangeStatus(true);
       setState(true);
-      handleSubmit(newValue);
+      setCopy(getSearchParam.get('copy'));
+      handleSubmit({ id: projectData?.id, ...newValue });
     } else {
       handleSubmit(values);
     }
@@ -219,6 +223,9 @@ const CreateProjectCard = ({ projectInfo }) => {
       dispatch(getSha(sha));
       dispatch(getRepoOwner(githubRepo));
     }
+    return () => {
+      dispatch({ type: CLEAR_PROJECT });
+    };
   }, []);
 
   return (
@@ -239,29 +246,40 @@ const CreateProjectCard = ({ projectInfo }) => {
           delete newValue.price;
         }
         setIsDirty(false);
-        //
-        if (editMode && projectInfo.id) {
+
+        if (
+          editMode &&
+          (projectInfo?.id ?? project?.id) &&
+          !getSearchParam.get('copy')
+        ) {
           if (!state) {
             dispatch(
               editProject({
                 ...newValue,
-                id: projectInfo.id,
+                id: projectInfo.id || project?.id,
                 status: projectInfo?.status === DONE ? DONE : '',
               }),
             );
           } else {
             if (!changeStatus) {
               dispatch(
-                editProjectNoRedirect({ ...newValue, id: projectInfo.id }),
+                editProjectNoRedirect({
+                  ...newValue,
+                  id: projectInfo?.id || project?.id,
+                }),
               );
             } else {
               dispatch(
-                changeStatusProject({ ...newValue, id: projectInfo.id }),
+                changeStatusProject({
+                  ...newValue,
+                  id: projectInfo?.id || project?.id,
+                }),
               );
             }
+            setChangeStatus(false);
           }
         } else {
-          if (!state) {
+          if ((!state || project?.id) && !copy) {
             dispatch(createProject(newValue));
           } else {
             dispatch(createProjectNoRedirect(newValue));
@@ -339,7 +357,7 @@ const CreateProjectCard = ({ projectInfo }) => {
               autoHideDuration={5000}
               open={!!errorMessage || !!successMessage}
               severity={errorMessage ? 'error' : 'success'}
-              text={errorMessage || successMessage}
+              text={!!errorMessage || !!successMessage}
               onClose={() => dispatch(clearMessage())}
             />
 
