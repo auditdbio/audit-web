@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import Layout from '../styles/Layout.jsx';
 import { Box } from '@mui/material';
 import Projects from '../components/Projects.jsx';
@@ -6,17 +6,28 @@ import Audits from '../components/Audits.jsx';
 import CreateProjectCard from '../components/CreateProjectCard.jsx';
 import { CustomCard } from '../components/custom/Card.jsx';
 import { useParams } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import Loader from '../components/Loader.jsx';
 import { useSearchParams } from 'react-router-dom/dist';
 import Headings from '../router/Headings.jsx';
+import {
+  getMyProjectById,
+  getProjectById,
+} from '../redux/actions/projectAction.js';
+import { CLEAR_NOT_FOUND, CLEAR_PROJECT } from '../redux/actions/types.js';
 
 const EditProject = () => {
   const projectId = useParams();
+  const dispatch = useDispatch();
   const [getSearchParam] = useSearchParams();
-  const project = useSelector(s =>
-    s.project?.myProjects?.find(p => p.id === projectId.id),
-  );
+  const project = useSelector(s => s.project?.currentProject);
+  useEffect(() => {
+    dispatch(getMyProjectById(projectId.id));
+    return () => {
+      dispatch({ type: CLEAR_NOT_FOUND });
+      dispatch({ type: CLEAR_PROJECT });
+    };
+  }, []);
   const myProject = useMemo(() => {
     if (!!getSearchParam.get('copy')) {
       return { ...project, id: null, status: '' };
