@@ -396,7 +396,7 @@ export default function AuditorModal({
                               }}
                               disablePast
                               inputFormat="DD.MM.YYYY"
-                              minDate={new Date()}
+                              minDate={dayjs()}
                             />
                             <Typography variant={'caption'}>-</Typography>
                             <Field

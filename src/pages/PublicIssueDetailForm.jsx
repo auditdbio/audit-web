@@ -192,6 +192,7 @@ const PublicIssueDetailsForm = ({ issue = null, editMode = false, saved }) => {
                   }
                 />
                 {!matchXs &&
+                  !editMode &&
                   (!dirty ? (
                     <Tooltip arrow placement="top" title={'New issue'}>
                       <Button
