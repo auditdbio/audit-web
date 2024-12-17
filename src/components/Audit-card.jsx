@@ -14,7 +14,7 @@ import {
   WAITING_FOR_AUDITS,
 } from '../redux/actions/types.js';
 import dayjs from 'dayjs';
-import { addTestsLabel } from '../lib/helper.js';
+import { addTestsLabel, dateConverter } from '../lib/helper.js';
 
 const AuditCard = ({ audit, request }) => {
   const navigate = useNavigate();
@@ -49,15 +49,25 @@ const AuditCard = ({ audit, request }) => {
           ${audit?.total_cost} total cost
         </Typography>
       )}
-      <Box sx={dateWrapper}>
-        <Typography sx={dateStyle}>
-          {dayjs(audit?.time?.from).format('DD.MM.YYYY')}
-        </Typography>
-        <Typography variant="caption">-</Typography>
-        <Typography sx={dateStyle}>
-          {dayjs(audit?.time?.to).format('DD.MM.YYYY')}
-        </Typography>
-      </Box>
+      {audit?.status?.toLowerCase() !== RESOLVED.toLowerCase() ? (
+        <Box sx={dateWrapper}>
+          <Typography sx={dateStyle}>
+            {dayjs(audit?.time?.from).format('DD.MM.YYYY')}
+          </Typography>
+          <Typography variant="caption">-</Typography>
+          <Typography sx={dateStyle}>
+            {dayjs(audit?.time?.to).format('DD.MM.YYYY')}
+          </Typography>
+        </Box>
+      ) : (
+        audit?.resolved_at && (
+          <Box sx={dateWrapper}>
+            <Typography sx={[dateStyle, { border: 'unset' }]}>
+              {dayjs(dateConverter(audit?.resolved_at)).format('DD.MM.YYYY')}
+            </Typography>
+          </Box>
+        )
+      )}
 
       {!request ? (
         <Box sx={statusWrapper}>

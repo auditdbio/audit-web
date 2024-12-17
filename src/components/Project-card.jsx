@@ -20,7 +20,7 @@ import {
   SUBMITED,
   WAITING_FOR_AUDITS,
 } from '../redux/actions/types.js';
-import { addTestsLabel, issuesCounter } from '../lib/helper.js';
+import { addTestsLabel, dateConverter, issuesCounter } from '../lib/helper.js';
 import {
   handlePublishAudit,
   startAudit,
@@ -120,7 +120,7 @@ const ProjectCard = ({ type, project, currentRole, isPublic }) => {
           project?.resolved_at && (
             <Box sx={dateWrapper}>
               <Typography sx={[dateStyle, { border: 'unset' }]}>
-                {dayjs(project?.resolved_at / 1000).format('DD.MM.YYYY')}
+                {dayjs(dateConverter(project.resolved_at)).format('DD.MM.YYYY')}
               </Typography>
             </Box>
           )}
