@@ -294,17 +294,6 @@ const AuditOffer = ({ publicView, setPublicView }) => {
           >
             <ArrowBackIcon color="secondary" />
           </Button>
-          {audit?.status?.toLowerCase() !== RESOLVED.toLowerCase() && (
-            <Box sx={dateBlock}>
-              <Box sx={dateWrapper}>
-                {dayjs(audit?.time?.from).format('DD.MM.YYYY')}
-              </Box>
-              -
-              <Box sx={dateWrapper}>
-                {dayjs(audit?.time?.to).format('DD.MM.YYYY')}
-              </Box>
-            </Box>
-          )}
           {audit?.status?.toLowerCase() === RESOLVED.toLowerCase() &&
             audit?.auditor_id === user.id && (
               <FormControlLabel
@@ -382,6 +371,17 @@ const AuditOffer = ({ publicView, setPublicView }) => {
             </Typography>
           </Box>
         </Box>
+        {audit?.status?.toLowerCase() !== RESOLVED.toLowerCase() && (
+          <Box sx={dateBlock}>
+            <Box sx={dateWrapper}>
+              {dayjs(audit?.time?.from).format('DD.MM.YYYY')}
+            </Box>
+            -
+            <Box sx={dateWrapper}>
+              {dayjs(audit?.time?.to).format('DD.MM.YYYY')}
+            </Box>
+          </Box>
+        )}
 
         {showTopInfoButton && (
           <Box sx={{ width: '100%' }}>
@@ -628,12 +628,6 @@ const AuditOffer = ({ publicView, setPublicView }) => {
             </Box>
           )}
           <Box sx={infoWrapper} className={'qwe'}>
-            {/*<Box sx={descriptionSx(showFull)}>*/}
-            {/*  <Box ref={descriptionRef}>*/}
-            {/*    <Markdown value={audit?.description} />*/}
-            {/*  </Box>*/}
-            {/*</Box>*/}
-            {/*{audit?.conclusion && (*/}
             <Tabs
               value={tab}
               onChange={(e, newValue) => {
@@ -1169,7 +1163,7 @@ const tabsSx = theme => ({
 
 const dateWrapper = theme => ({
   fontSize: '20px',
-  color: 'rgba(0, 0, 0, 0.26)',
+  color: 'rgba(0,0,0,0.88)',
   [theme.breakpoints.down('md')]: {
     fontSize: '14px',
   },
@@ -1179,13 +1173,8 @@ const dateBlock = theme => ({
   display: 'flex',
   alignItems: 'center',
   gap: '10px',
+  marginY: '15px',
   justifyContent: 'center',
-  position: 'absolute',
-  top: '-5px',
-  left: '50%',
-  right: '50%',
-  transform: 'translate(-50%, -50%)',
-
   [theme.breakpoints.down('sm')]: {
     top: '-10px',
   },
@@ -1263,7 +1252,7 @@ const bottomActionInnerWrapper = theme => ({
 const headInfoSx = theme => ({
   display: 'flex',
   alignItems: 'flex-start',
-  mt: '15px',
+  // mt: '15px',
   gap: '15px',
   flexWrap: 'wrap',
   justifyContent: 'center',
