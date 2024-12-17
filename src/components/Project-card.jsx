@@ -212,26 +212,12 @@ const ProjectCard = ({ type, project, currentRole, isPublic }) => {
               width: '100%',
             }}
           >
-            {/*</Button>*/}
-            {/*// </Box>*/}
-            {/*// </Box>*/}
-            {/*<Box>*/}
-            {/*  {*/}
-            {/*    <Typography sx={{ mb: '12px', fontSize: '14px!important' }}>*/}
-            {/*      {issuesCounter(project?.issues)}*/}
-            {/*    </Typography>*/}
-            {/*  }*/}
-            {/*</Box>*/}
             {project?.report_type?.toLowerCase() !== 'custom' && (
               <IssueSeveritySort issues={project?.issues} />
             )}
-            <Typography sx={{ fontSize: '14px!important', height: '21px' }}>
+            <Typography sx={{ fontSize: '11px!important', height: '21px' }}>
               {project.resolved_at &&
-                dayjs(
-                  project.resolved_at > 1000000000000
-                    ? project.resolved_at / 1000
-                    : project.resolved_at * 1000,
-                ).format('DD MMM YYYY')}
+                dayjs(dateConverter(project.resolved_at)).format('DD.MM.YYYY')}
             </Typography>
           </Box>
         )}
