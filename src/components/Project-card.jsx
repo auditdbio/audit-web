@@ -100,6 +100,19 @@ const ProjectCard = ({ type, project, currentRole, isPublic }) => {
           </Typography>
         </Tooltip>
         {!isPublic &&
+          currentRole === AUDITOR &&
+          project.status.toLowerCase() !== RESOLVED.toLowerCase() && (
+            <Box sx={dateWrapper}>
+              <Typography sx={dateStyle}>
+                {dayjs(project?.time?.from).format('DD.MM.YYYY')}
+              </Typography>
+              <Typography variant="caption">-</Typography>
+              <Typography sx={dateStyle}>
+                {dayjs(project?.time?.to).format('DD.MM.YYYY')}
+              </Typography>
+            </Box>
+          )}
+        {!isPublic &&
           (!project.no_customer ? (
             <Box sx={priceWrapper}>
               <Box sx={infoWrapper}>
@@ -341,6 +354,7 @@ const cardInnerWrapper = (theme, isPublic) => ({
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'center',
+  width: '100%',
   [theme.breakpoints.down('xs')]: {
     alignItems: isPublic ? 'center' : 'flex-start',
   },
@@ -367,6 +381,46 @@ const copyBtn = theme => ({
     padding: '4px 6px',
   },
 });
+
+const dateWrapper = {
+  display: 'flex',
+  flexDirection: 'row',
+  gap: '0.5rem',
+  alignItems: 'center',
+  width: '100%',
+  [theme.breakpoints.down('sm')]: {
+    gap: '5px',
+    '& span': {
+      fontSize: '8px',
+    },
+  },
+  [theme.breakpoints.down('xxs')]: {
+    gap: '1px',
+  },
+};
+
+const dateStyle = {
+  fontSize: '11px!important',
+  fontWeight: 500,
+  color: '#434242',
+  border: '1.8px #E5E5E5 solid',
+  padding: '12px',
+  width: '100%',
+  textAlign: 'center',
+  [theme.breakpoints.down('md')]: {
+    fontSize: '9px!important',
+    padding: '10px',
+  },
+  [theme.breakpoints.down('xs')]: {
+    padding: '8px',
+    width: '70px',
+    fontSize: '8px!important',
+  },
+  [theme.breakpoints.down('xxs')]: {
+    padding: '5px 2px',
+    width: '50px',
+  },
+};
 
 const statusWrapper = theme => ({
   display: 'flex',
