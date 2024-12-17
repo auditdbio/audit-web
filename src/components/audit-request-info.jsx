@@ -180,7 +180,7 @@ const AuditRequestInfo = ({
           )}
         </Button>
         <ShareProjectButton
-          projectId={project?.project_id}
+          projectId={project?.project_id || project?.id}
           sx={{ position: 'absolute', top: '-20px', right: '40px' }}
           showIcon
           isModal
