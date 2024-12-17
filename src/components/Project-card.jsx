@@ -101,6 +101,7 @@ const ProjectCard = ({ type, project, currentRole, isPublic }) => {
         </Tooltip>
         {!isPublic &&
           currentRole === AUDITOR &&
+          !project?.no_customer &&
           project.status.toLowerCase() !== RESOLVED.toLowerCase() && (
             <Box sx={dateWrapper}>
               <Typography sx={dateStyle}>
@@ -109,6 +110,17 @@ const ProjectCard = ({ type, project, currentRole, isPublic }) => {
               <Typography variant="caption">-</Typography>
               <Typography sx={dateStyle}>
                 {dayjs(project?.time?.to).format('DD.MM.YYYY')}
+              </Typography>
+            </Box>
+          )}
+        {!isPublic &&
+          currentRole === AUDITOR &&
+          !project?.no_customer &&
+          project.status.toLowerCase() === RESOLVED.toLowerCase() &&
+          project?.resolved_at && (
+            <Box sx={dateWrapper}>
+              <Typography sx={[dateStyle, { border: 'unset' }]}>
+                {dayjs(project?.resolved_at / 1000).format('DD.MM.YYYY')}
               </Typography>
             </Box>
           )}
