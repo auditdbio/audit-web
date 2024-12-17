@@ -82,7 +82,12 @@ const DescriptionBlock = ({
   };
 
   const getFeedbackView = () => {
-    if ((user.current_role === CUSTOMER || isPublic) && isEditFeedback) {
+    if (
+      (user.current_role.toLowerCase() === CUSTOMER.toLowerCase() ||
+        user.current_role.toLowerCase() === AUDITOR.toLowerCase() ||
+        isPublic) &&
+      isEditFeedback
+    ) {
       return { menu: true, md: true, html: false };
     }
     return { menu: false, md: false, html: true };
@@ -286,7 +291,9 @@ const DescriptionBlock = ({
               source: AUDIT_PARENT_ENTITY,
             }}
           />
-          {(user.current_role === CUSTOMER || isPublic) && (
+          {(user.current_role.toLowerCase() === CUSTOMER.toLowerCase() ||
+            user.current_role.toLowerCase() === AUDITOR.toLowerCase() ||
+            isPublic) && (
             <Box sx={editFeedbackButtonWrapper}>
               <IconButton
                 type="button"

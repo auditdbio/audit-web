@@ -297,7 +297,9 @@ const StatusSeverityBlock = ({
 
       {!isPublic &&
         !hideControl &&
-        user.current_role === CUSTOMER &&
+        audit?.status?.toLowerCase() !== RESOLVED.toLowerCase() &&
+        (user.current_role.toLowerCase() === CUSTOMER.toLowerCase() ||
+          user.current_role.toLowerCase() === AUDITOR.toLowerCase()) &&
         !isEditFeedback &&
         !issue?.feedback && (
           <Box sx={buttonsBox}>
