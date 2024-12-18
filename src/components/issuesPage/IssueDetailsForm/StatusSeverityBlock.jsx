@@ -27,6 +27,7 @@ import {
 } from '../constants.js';
 import NoteAddIcon from '@mui/icons-material/NoteAdd.js';
 import FeedbackIcon from '@mui/icons-material/Feedback';
+import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 
 const StatusSeverityBlock = ({
   issue,
@@ -297,6 +298,7 @@ const StatusSeverityBlock = ({
 
       {!isPublic &&
         !hideControl &&
+        editMode &&
         audit?.status?.toLowerCase() !== RESOLVED.toLowerCase() &&
         (user.current_role.toLowerCase() === CUSTOMER.toLowerCase() ||
           user.current_role.toLowerCase() === AUDITOR.toLowerCase()) &&
@@ -312,6 +314,24 @@ const StatusSeverityBlock = ({
                 {...addTestsLabel('feedback-button')}
               >
                 <FeedbackIcon />
+              </Button>
+            </Tooltip>
+            <Tooltip
+              title={'Customer feedback will be included in the report.'}
+              arrow
+              placement="top"
+            >
+              <Button
+                sx={{
+                  minWidth: '20px',
+                  textTransform: 'none',
+                  padding: '4px 6px',
+                  [theme.breakpoints.down(600)]: {
+                    padding: 0,
+                  },
+                }}
+              >
+                <HelpOutlineIcon sx={{ width: '20px', height: '20px' }} />
               </Button>
             </Tooltip>
           </Box>
@@ -513,6 +533,8 @@ const statusValueSx = (theme, status) => {
 const buttonsBox = theme => ({
   display: 'flex',
   justifyContent: 'flex-end',
+  alignItems: 'center',
+  gap: '10px',
   position: 'relative',
   [theme.breakpoints.down('xs')]: {
     justifyContent: 'center',
