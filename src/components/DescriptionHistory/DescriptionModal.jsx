@@ -354,7 +354,7 @@ const DescriptionModal = ({
                 />
               </>
             )}
-            {data.total_cost && (
+            {!!data.total_cost && (
               <>
                 <Typography variant={'h6'} sx={{ fontWeight: 500 }}>
                   Total cost
@@ -427,16 +427,19 @@ const DescriptionModal = ({
                   Comments
                 </Typography>
                 <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-                  <ReactDiffViewer
-                    oldValue={JSON.stringify(
-                      oldValue.comment || compare?.comment || '',
-                      null,
-                      2,
-                    )}
-                    newValue={JSON.stringify(item.comment || '', null, 2)}
-                    splitView={!mediaSx}
-                    compareMethod={DiffMethod.WORDS}
-                  />
+                  <Typography>
+                    {JSON.stringify(item.comment || '', null, 2)}
+                  </Typography>
+                  {/*<ReactDiffViewer*/}
+                  {/*  oldValue={JSON.stringify(*/}
+                  {/*    oldValue.comment || compare?.comment || '',*/}
+                  {/*    null,*/}
+                  {/*    2,*/}
+                  {/*  )}*/}
+                  {/*  newValue={JSON.stringify(item.comment || '', null, 2)}*/}
+                  {/*  splitView={!mediaSx}*/}
+                  {/*  compareMethod={DiffMethod.WORDS}*/}
+                  {/*/>*/}
                 </Box>
               </>
             )}
