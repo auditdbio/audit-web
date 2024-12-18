@@ -128,7 +128,7 @@ const DescriptionModal = ({
       }
     }
   };
-
+  console.log(item.comment);
   return (
     <Box sx={{ margin: '8px 0', paddingLeft: '12px' }}>
       <Box sx={itemWrapperSx}>
@@ -424,12 +424,10 @@ const DescriptionModal = ({
               <>
                 <Divider sx={{ mt: '20px' }} />
                 <Typography variant={'h6'} sx={{ fontWeight: 500 }}>
-                  Comments
+                  Comment
                 </Typography>
                 <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-                  <Typography>
-                    {JSON.stringify(item.comment || '', null, 2)}
-                  </Typography>
+                  <Typography>{item.comment}</Typography>
                   {/*<ReactDiffViewer*/}
                   {/*  oldValue={JSON.stringify(*/}
                   {/*    oldValue.comment || compare?.comment || '',*/}
