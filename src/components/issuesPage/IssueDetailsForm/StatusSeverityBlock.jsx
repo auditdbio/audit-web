@@ -305,7 +305,15 @@ const StatusSeverityBlock = ({
         !isEditFeedback &&
         !issue?.feedback && (
           <Box sx={buttonsBox}>
-            <Tooltip arrow placement="top" title="Send feedback">
+            <Tooltip
+              arrow
+              placement="top"
+              title={
+                user.current_role.toLowerCase() !== AUDITOR.toLowerCase()
+                  ? 'Send feedback'
+                  : 'Customer feedback will be included in the report.'
+              }
+            >
               <Button
                 variant="contained"
                 color="primary"
@@ -314,24 +322,6 @@ const StatusSeverityBlock = ({
                 {...addTestsLabel('feedback-button')}
               >
                 <FeedbackIcon />
-              </Button>
-            </Tooltip>
-            <Tooltip
-              title={'Customer feedback will be included in the report.'}
-              arrow
-              placement="top"
-            >
-              <Button
-                sx={{
-                  minWidth: '20px',
-                  textTransform: 'none',
-                  padding: '4px 6px',
-                  [theme.breakpoints.down(600)]: {
-                    padding: 0,
-                  },
-                }}
-              >
-                <HelpOutlineIcon sx={{ width: '20px', height: '20px' }} />
               </Button>
             </Tooltip>
           </Box>
