@@ -389,7 +389,13 @@ const AuditRequestInfo = ({
               >
                 {/*{tab === 0 && (*/}
                 <Button
-                  onClick={() => setShowFull(!showFull)}
+                  onClick={() => {
+                    if (isModal) {
+                      navigate(`/project/${project.id}`);
+                    } else {
+                      setShowFull(!showFull);
+                    }
+                  }}
                   sx={[
                     readAllButton,
                     {

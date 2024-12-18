@@ -89,7 +89,7 @@ const PublicProjectCard = ({ project }) => {
                   top: '50%!important',
                   left: '50%!important',
                   transform: 'translate(-50%, -50%)!important',
-                  width: '100%',
+                  width: '90%',
                   maxHeight: '90vh',
                   overflowY: 'hidden',
                   borderRadius: '14px',
@@ -100,10 +100,12 @@ const PublicProjectCard = ({ project }) => {
                     paddingBottom: '10px',
                     minHeight: 'unset',
                   },
-                  '& .request-content-sx': {
-                    maxHeight: 'calc(100vh - 233px)',
-                    overflowY: 'auto',
-                  },
+                  // '& .request-content-sx': {
+                  //   maxHeight: '700px',
+                  //   height: '100%',
+                  //   overflow: 'hidden',
+                  //   // overflowY: 'auto',
+                  // },
                   '& .audit-request-button-wrapper': {
                     marginTop: '0',
                   },

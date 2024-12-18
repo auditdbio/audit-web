@@ -306,7 +306,7 @@ const AuditMessage = ({ message, handleError }) => {
             top: '50%!important',
             left: '50%!important',
             transform: 'translate(-50%, -50%)!important',
-            width: '100%',
+            width: '90%',
             maxHeight: '90vh',
             overflowY: 'hidden',
             borderRadius: '14px',
@@ -317,10 +317,10 @@ const AuditMessage = ({ message, handleError }) => {
               paddingBottom: '10px',
               minHeight: 'unset',
             },
-            '& .request-content-sx': {
-              maxHeight: 'calc(100vh - 233px)',
-              overflowY: 'auto',
-            },
+            // '& .request-content-sx': {
+            //   maxHeight: 'calc(100vh - 233px)',
+            //   overflowY: 'auto',
+            // },
             '& .audit-request-button-wrapper': {
               marginTop: '0',
             },
@@ -332,6 +332,7 @@ const AuditMessage = ({ message, handleError }) => {
             project={auditRequest}
             onClose={() => setIsOpen(false)}
             stayHere={true}
+            isModal={true}
           />
         </Box>
       </Popover>
