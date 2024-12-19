@@ -49,7 +49,7 @@ import ExpandLessOutlinedIcon from '@mui/icons-material/ExpandLessOutlined.js';
 import EditIcon from '@mui/icons-material/Edit.js';
 
 const AuditRequestInfo = ({
-  project,
+  project = null,
   onClose,
   handleError,
   redirect,
@@ -351,8 +351,11 @@ const AuditRequestInfo = ({
         </Box>
         <Box sx={{ width: '100%' }} className="audit-content">
           <>
-            <Collapse in={true} collapsedSize={showFull ? undefined : 150}>
-              <Box sx={descriptionWrapper(theme, showFull)}>
+            <Collapse
+              in={true}
+              collapsedSize={showFull ? undefined : isModal ? 150 : 250}
+            >
+              <Box sx={descriptionWrapper(theme, showFull, isModal)}>
                 <Box sx={infoWrapper} className="audit-request-info">
                   {/*<Markdown value={project?.description} />*/}
                   <EditDescription
@@ -415,8 +418,12 @@ const AuditRequestInfo = ({
                 ]}
                 variant={'outlined'}
               >
-                <span>{showFull ? 'Hide' : `Show`}</span>
-                <EditIcon sx={{ width: '20px' }} />
+                {!navigateTo ? (
+                  <span>{showFull ? 'Hide' : `Show`}</span>
+                ) : (
+                  <span>{showFull ? 'Hide' : `Show full`}</span>
+                )}
+                {!isModal && <EditIcon sx={{ width: '20px' }} />}
                 <ExpandLessOutlinedIcon
                   sx={[
                     showFull ? {} : { transform: 'rotate(180deg)' },
@@ -427,6 +434,7 @@ const AuditRequestInfo = ({
                       width: '20px',
                       height: '20px',
                     },
+                    isModal ? { transform: 'rotate(90deg)' } : {},
                   ]}
                 />
               </Button>
@@ -528,8 +536,8 @@ const contactStyle = theme => ({
   // gap: '10px'
 });
 
-const descriptionWrapper = (theme, showFull) => ({
-  maxHeight: showFull ? 'none' : 150,
+const descriptionWrapper = (theme, showFull, isModal) => ({
+  maxHeight: showFull ? 'none' : isModal ? 150 : 250,
   '& .rc-md-editor': {
     height: '100%!important',
   },

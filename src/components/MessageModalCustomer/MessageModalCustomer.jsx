@@ -319,8 +319,12 @@ const MessageModalCustomer = ({
             ]}
             variant={'outlined'}
           >
-            <span>{showFull ? 'Hide' : `Show`}</span>
-            <EditIcon sx={{ width: '20px' }} />
+            {!navigateTo ? (
+              <span>{showFull ? 'Hide' : `Show`}</span>
+            ) : (
+              <span>{showFull ? 'Hide' : `Show full`}</span>
+            )}
+            {!isModal && <EditIcon sx={{ width: '20px' }} />}
             <ExpandLessOutlinedIcon
               sx={[
                 showFull ? {} : { transform: 'rotate(180deg)' },
@@ -329,6 +333,7 @@ const MessageModalCustomer = ({
                   width: '20px',
                   height: '20px',
                 },
+                isModal ? { transform: 'rotate(90deg)' } : {},
               ]}
             />
           </Button>
