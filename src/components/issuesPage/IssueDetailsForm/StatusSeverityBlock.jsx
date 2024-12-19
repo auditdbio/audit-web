@@ -27,6 +27,7 @@ import {
 } from '../constants.js';
 import NoteAddIcon from '@mui/icons-material/NoteAdd.js';
 import FeedbackIcon from '@mui/icons-material/Feedback';
+import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 
 const StatusSeverityBlock = ({
   issue,
@@ -297,11 +298,22 @@ const StatusSeverityBlock = ({
 
       {!isPublic &&
         !hideControl &&
-        user.current_role === CUSTOMER &&
+        editMode &&
+        audit?.status?.toLowerCase() !== RESOLVED.toLowerCase() &&
+        (user.current_role.toLowerCase() === CUSTOMER.toLowerCase() ||
+          user.current_role.toLowerCase() === AUDITOR.toLowerCase()) &&
         !isEditFeedback &&
         !issue?.feedback && (
           <Box sx={buttonsBox}>
-            <Tooltip arrow placement="top" title="Send feedback">
+            <Tooltip
+              arrow
+              placement="top"
+              title={
+                user.current_role.toLowerCase() === AUDITOR.toLowerCase()
+                  ? 'Customer feedback will be included in the report. Do not edit this field without a reasonable cause.'
+                  : 'Customer feedback will be included in the report'
+              }
+            >
               <Button
                 variant="contained"
                 color="primary"
@@ -511,6 +523,8 @@ const statusValueSx = (theme, status) => {
 const buttonsBox = theme => ({
   display: 'flex',
   justifyContent: 'flex-end',
+  alignItems: 'center',
+  gap: '10px',
   position: 'relative',
   [theme.breakpoints.down('xs')]: {
     justifyContent: 'center',
