@@ -29,6 +29,7 @@ const DescriptionBlock = ({
   values,
   user,
   audit,
+  issue = null,
   isEditFeedback,
   setIsEditFeedback,
   isPublic,
@@ -214,13 +215,17 @@ const DescriptionBlock = ({
               position: 'relative',
               paddingTop: '5px',
               marginX: '1px',
-              '&::before': eventLine(
-                values.feedback || isEditFeedback || editMode || showFull
-                  ? 37
-                  : 19,
-                1,
-                35,
-              ),
+              ...(issue?.events?.length
+                ? {
+                    '&::before': eventLine(
+                      values.feedback || isEditFeedback || editMode || showFull
+                        ? 37
+                        : 19,
+                      1,
+                      35,
+                    ),
+                  }
+                : {}),
             },
             !showFull
               ? {
