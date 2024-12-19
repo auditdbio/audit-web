@@ -10,6 +10,7 @@ import {
   Typography,
   Tooltip,
   Divider,
+  Collapse,
 } from '@mui/material';
 import Headings from '../../router/Headings.jsx';
 import CustomSnackbar from '../custom/CustomSnackbar.jsx';
@@ -46,6 +47,11 @@ import {
 import { setCurrentChat } from '../../redux/actions/chatActions.js';
 import { addTestsLabel } from '../../lib/helper.js';
 import { ASSET_URL } from '../../services/urls.js';
+import theme from '../../styles/themes.js';
+import AuditUserCard from '../AuditUserCard/AuditUserCard.jsx';
+import EditIcon from '@mui/icons-material/Edit';
+import ExpandLessOutlinedIcon from '@mui/icons-material/ExpandLessOutlined';
+import { useLocation } from 'react-router-dom';
 
 const MessageModalCustomer = ({
   audit,
@@ -56,6 +62,8 @@ const MessageModalCustomer = ({
   request,
   code,
   isPublic,
+  navigateTo,
+  isModal,
 }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -63,9 +71,9 @@ const MessageModalCustomer = ({
   const { successMessage, error } = useSelector(s => s.audits);
   const { user } = useSelector(s => s.user);
   const { chatList } = useSelector(s => s.chat);
-
+  const [showFull, setShowFull] = useState(false);
   const [isFeedbackModalOpen, setIsFeedbackModalOpen] = useState(false);
-
+  const location = useLocation();
   const handleConfirm = () => {
     dispatch(confirmAudit(audit, true));
   };
@@ -162,278 +170,171 @@ const MessageModalCustomer = ({
       >
         {!handleClose ? <ArrowBackIcon /> : <CloseIcon />}
       </Button>
-      <Box
-        sx={{
-          display: 'flex',
-          width: '100%',
-          justifyContent: 'center',
-          flexDirection: 'column',
-        }}
-      >
-        <Box
-          sx={{
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'center',
-            alignItems: 'center',
-            width: '100%',
-          }}
+      <Box sx={{ width: '100%' }}>
+        <Collapse
+          sx={{ width: '100%' }}
+          in={true}
+          collapsedSize={showFull ? undefined : 250}
         >
-          {confirmed ? (
-            <Typography
-              variant="h3"
+          <Box sx={descriptionWrapper(theme, showFull)}>
+            <Box
               sx={{
+                display: 'flex',
                 width: '100%',
-                textAlign: 'center',
-                wordBreak: 'break-word',
+                justifyContent: 'center',
+                flexDirection: 'column',
               }}
             >
-              <Link
-                style={{ color: '#000' }}
-                to={`/projects/${audit.project_id}`}
-              >
-                {audit?.project_name}
-              </Link>
-            </Typography>
-          ) : (
-            <Typography sx={{ width: '100%', textAlign: 'center' }}>
-              You have offer to audit for&nbsp;
-              <span style={{ fontWeight: 500, wordBreak: 'break-word' }}>
-                <Link
-                  style={{ color: '#000' }}
-                  to={`/projects/${audit.project_id}`}
-                >
-                  {audit?.project_name}
-                </Link>
-              </span>
-              &nbsp;project!
-            </Typography>
-          )}
-          <>
-            <EditTags isPublic={isPublic} audit={audit} confirmed={confirmed} />
-          </>
-        </Box>
-        <Divider sx={{ mt: '15px' }} />
-      </Box>
-      <Box sx={{ maxWidth: '100%', width: '100%' }}>
-        <Box
-          sx={[contentWrapper, isPublic ? { alignItems: 'flex-start' } : {}]}
-        >
-          <Box sx={userWrapper}>
-            {isPublic && (
-              <Typography sx={roleTitleSx} align={'center'}>
-                Auditor
-              </Typography>
-            )}
-            <Avatar
-              src={audit?.avatar ? `${ASSET_URL}/id/${audit?.avatar}` : ''}
-              alt="auditor photo"
-            />
-            <Link
-              to={`/a/${audit.auditor_id}`}
-              style={{ display: 'grid', textAlign: 'center' }}
-            >
-              <Tooltip title={audit?.auditor_first_name} arrow placement="top">
-                <Typography noWrap={true} sx={userNameWrapper}>
-                  {audit?.auditor_first_name}
-                </Typography>
-              </Tooltip>
-              <Tooltip title={audit?.auditor_last_name} arrow placement="top">
-                <Typography noWrap={true} sx={userNameWrapper}>
-                  {audit?.auditor_last_name}
-                </Typography>
-              </Tooltip>
-            </Link>
-          </Box>
-          <Box sx={userInfoWrapper}>
-            <Box sx={infoWrapper}>
-              <span>E-mail:</span>
-              <Box sx={{ display: 'grid' }}>
-                {!!audit?.auditor_contacts?.email ? (
-                  <Tooltip
-                    title={audit?.auditor_contacts?.email}
-                    arrow
-                    placement="top"
-                  >
-                    <Typography noWrap={true}>
-                      {audit?.auditor_contacts?.email}
-                    </Typography>
-                  </Tooltip>
-                ) : (
-                  <Typography noWrap={true}>Not specified</Typography>
-                )}
-              </Box>
-            </Box>
-            <Box sx={infoWrapper}>
-              <span>Telegram:</span>
-              <Box sx={{ display: 'grid' }}>
-                {!!audit?.auditor_contacts?.telegram ? (
-                  <Tooltip
-                    title={audit?.auditor_contacts?.telegram}
-                    arrow
-                    placement="top"
-                  >
-                    <Typography noWrap={true}>
-                      {audit?.auditor_contacts?.telegram}
-                    </Typography>
-                  </Tooltip>
-                ) : (
-                  <Typography noWrap={true}>Not specified</Typography>
-                )}
-              </Box>
-            </Box>
-            {!isPublic && (
               <Box
                 sx={{
                   display: 'flex',
-                  color: '#434242',
-                  '& p': {
-                    fontSize: '15px!important',
-                    maxWidth: '200px',
-                    fontWeight: 400,
-                  },
+                  flexDirection: 'column',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  width: '100%',
                 }}
               >
-                <Box sx={infoWrapper}>
-                  <span>Price:</span>
-                </Box>
-                <EditPrice
-                  hideIcon={true}
-                  audit={audit}
-                  user={user}
-                  isPublic={isPublic}
-                  request={request}
-                />
-              </Box>
-            )}
-          </Box>
-
-          {!!audit?.time?.from && !isPublic && (
-            <Box sx={projectWrapper}>
-              <Typography>Time for project:</Typography>
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                <Box sx={dateWrapper}>
-                  {dayjs(audit?.time?.from).format('DD.MM.YYYY')}
-                </Box>
-                -
-                <Box sx={dateWrapper}>
-                  {dayjs(audit?.time?.to).format('DD.MM.YYYY')}
-                </Box>
-              </Box>
-              <TagsList />
-            </Box>
-          )}
-          {isPublic && (
-            <Box sx={userWrapper}>
-              <Typography align={'center'} sx={roleTitleSx}>
-                Customer
-              </Typography>
-              <Avatar
-                src={
-                  audit?.customer_avatar
-                    ? `${ASSET_URL}/id/${audit?.customer_avatar}`
-                    : ''
-                }
-                alt="auditor photo"
-              />
-              <Link
-                to={`/a/${audit.customer_id}`}
-                style={{ display: 'grid', textAlign: 'center' }}
-              >
-                <Tooltip
-                  title={audit?.customer_first_name}
-                  arrow
-                  placement="top"
-                >
-                  <Typography noWrap={true} sx={userNameWrapper}>
-                    {audit?.customer_first_name}
-                  </Typography>
-                </Tooltip>
-                <Tooltip
-                  title={audit?.customer_last_name}
-                  arrow
-                  placement="top"
-                >
-                  <Typography noWrap={true} sx={userNameWrapper}>
-                    {audit?.customer_last_name}
-                  </Typography>
-                </Tooltip>
-              </Link>
-            </Box>
-          )}
-          {isPublic && (
-            <Box sx={userInfoWrapper}>
-              <Box sx={infoWrapper}>
-                <span>E-mail:</span>
-                <Box sx={{ display: 'grid' }}>
-                  {!!audit?.customer_contacts?.email ? (
-                    <Tooltip
-                      title={audit?.customer_contacts?.email}
-                      arrow
-                      placement="top"
+                {confirmed ? (
+                  <Typography
+                    variant="h3"
+                    sx={{
+                      width: '100%',
+                      textAlign: 'center',
+                      wordBreak: 'break-word',
+                    }}
+                  >
+                    <Link
+                      style={{ color: '#000' }}
+                      to={`/projects/${audit?.project_id}`}
                     >
-                      <Typography noWrap={true}>
-                        {audit?.customer_contacts?.email}
-                      </Typography>
-                    </Tooltip>
-                  ) : (
-                    <Typography noWrap={true}>Not specified</Typography>
-                  )}
-                </Box>
-              </Box>
-              <Box sx={infoWrapper}>
-                <span>Telegram:</span>
-                <Box sx={{ display: 'grid' }}>
-                  {!!audit?.customer_contacts?.telegram ? (
-                    <Tooltip
-                      title={audit?.customer_contacts?.telegram}
-                      arrow
-                      placement="top"
-                    >
-                      <Typography noWrap={true}>
-                        {audit?.customer_contacts?.telegram}
-                      </Typography>
-                    </Tooltip>
-                  ) : (
-                    <Typography noWrap={true}>Not specified</Typography>
-                  )}
-                </Box>
-              </Box>
-              {!isPublic && (
-                <Box
-                  sx={{
-                    display: 'flex',
-                    color: '#434242',
-                    '& p': {
-                      fontSize: '15px!important',
-                      maxWidth: '200px',
-                      fontWeight: 400,
-                    },
-                  }}
-                >
-                  <Box sx={infoWrapper}>
-                    <span>Price:</span>
-                  </Box>
-                  <EditPrice
-                    hideIcon={true}
-                    audit={audit}
-                    user={user}
+                      {audit?.project_name}
+                    </Link>
+                  </Typography>
+                ) : (
+                  <Typography sx={{ width: '100%', textAlign: 'center' }}>
+                    You have offer to audit for&nbsp;
+                    <span style={{ fontWeight: 500, wordBreak: 'break-word' }}>
+                      <Link
+                        style={{ color: '#000' }}
+                        to={`/projects/${audit?.project_id}`}
+                      >
+                        {audit?.project_name}
+                      </Link>
+                    </span>
+                    &nbsp;project!
+                  </Typography>
+                )}
+                <>
+                  <EditTags
                     isPublic={isPublic}
-                    request={request}
+                    audit={audit}
+                    confirmed={confirmed}
                   />
+                </>
+              </Box>
+              <Divider sx={{ mt: '15px' }} />
+            </Box>
+            <Box
+              sx={[
+                contentWrapper,
+                isPublic ? { alignItems: 'flex-start' } : {},
+              ]}
+            >
+              <AuditUserCard
+                avatar={audit?.avatar}
+                name={
+                  audit?.auditor_first_name + ' ' + audit?.auditor_last_name
+                }
+                email={audit?.auditor_contacts?.email}
+                telegram={audit?.auditor_contacts?.telegram}
+              />
+              {!!audit?.time?.from && !isPublic && (
+                <Box sx={projectWrapper}>
+                  <Typography>Time for project:</Typography>
+                  <Box
+                    sx={{ display: 'flex', alignItems: 'center', gap: '10px' }}
+                  >
+                    <Box sx={dateWrapper}>
+                      {dayjs(audit?.time?.from).format('DD.MM.YYYY')}
+                    </Box>
+                    -
+                    <Box sx={dateWrapper}>
+                      {dayjs(audit?.time?.to).format('DD.MM.YYYY')}
+                    </Box>
+                  </Box>
+                  <TagsList />
                 </Box>
               )}
             </Box>
-          )}
+            <EditDescription
+              isPublic={isPublic}
+              auditRequest={request}
+              audit={audit}
+            />
+          </Box>
+        </Collapse>
+        <Box
+          sx={[
+            {
+              // border: '1px solid #E5E5E5',
+              borderTop: '1px solid #E5E5E5',
+              display: 'flex',
+              width: '100%',
+              justifyContent: 'center',
+              position: 'relative',
+              paddingTop: '8px',
+            },
+            !showFull
+              ? {
+                  boxShadow: '0px -24px 14px -8px rgba(252, 250, 246, 1)',
+                }
+              : {},
+          ]}
+        >
+          <Button
+            onClick={() => {
+              if (isModal) {
+                if (navigateTo) {
+                  localStorage.setItem('prevPath', location.pathname);
+                  navigate(navigateTo);
+                } else {
+                  navigate(`/project/${project.id}`);
+                }
+              } else {
+                setShowFull(!showFull);
+              }
+            }}
+            sx={[
+              readAllButton,
+              {
+                position: 'relative',
+                top: !showFull ? '-25px' : 0,
+                backgroundColor: '#fcfaf6',
+                zIndex: '1',
+                marginBottom: showFull ? '20px' : 0,
+                '&:hover': {
+                  backgroundColor: '#fcfaf6',
+                },
+              },
+            ]}
+            variant={'outlined'}
+          >
+            <span>{showFull ? 'Hide' : `Show`}</span>
+            <EditIcon sx={{ width: '20px' }} />
+            <ExpandLessOutlinedIcon
+              sx={[
+                showFull ? {} : { transform: 'rotate(180deg)' },
+                {
+                  transition: '0.2s',
+                  width: '20px',
+                  height: '20px',
+                },
+              ]}
+            />
+          </Button>
+          {/*)}*/}
         </Box>
-        <EditDescription
-          isPublic={isPublic}
-          auditRequest={request}
-          audit={audit}
-        />
-        {!isPublic && <DescriptionHistory audit={audit} request={request} />}
       </Box>
-
       {audit?.conclusion && (
         <Box sx={{ border: '2px solid #E5E5E5', width: '100%' }}>
           <Box sx={conclusionTitle}>Conclusion</Box>
@@ -447,7 +348,6 @@ const MessageModalCustomer = ({
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
-            mt: '20px',
             gap: '15px',
           }}
         >
@@ -489,7 +389,6 @@ const MessageModalCustomer = ({
           <Button
             variant="text"
             onClick={handleSendMessage}
-            sx={{ mb: '15px' }}
             disabled={audit?.auditor_id === user.id}
             {...addTestsLabel('message-button')}
           >
@@ -553,7 +452,7 @@ const MessageModalCustomer = ({
               color="primary"
               type="button"
               onClick={goToIssues}
-              sx={[buttonSx, { marginBottom: '20px' }]}
+              sx={[buttonSx]}
               {...addTestsLabel('issues-button')}
             >
               Issues ({issues?.length})
@@ -565,7 +464,7 @@ const MessageModalCustomer = ({
         <IssuesList
           isPublic={isPublic}
           hideControl={true}
-          auditId={audit.id}
+          auditId={audit?.id}
           code={code}
         />
       )}
@@ -580,7 +479,7 @@ const MessageModalCustomer = ({
         isOpen={isFeedbackModalOpen}
         handleClose={() => setIsFeedbackModalOpen(false)}
         handleSend={handleSendFeedback}
-        feedback={audit.feedback}
+        feedback={audit?.feedback}
       />
     </CustomCard>
   );
@@ -588,10 +487,39 @@ const MessageModalCustomer = ({
 
 export default MessageModalCustomer;
 
-const roleTitleSx = theme => ({
-  fontSize: '20px',
-  margin: 'unset!important',
-  // marginBottom: '15px',
+const readAllButton = theme => ({
+  p: '3px',
+  paddingX: '8px',
+  minWidth: 'unset',
+  textTransform: 'unset',
+  boxShadow: 'unset',
+  fontWeight: 600,
+  borderRadius: '8px',
+  width: '280px',
+  display: 'flex',
+  alignItems: 'center',
+  gap: '7px',
+  // maxWidth: '300px',
+  [theme.breakpoints.down('xs')]: {
+    fontSize: '16px',
+  },
+});
+
+const descriptionWrapper = (theme, showFull) => ({
+  maxHeight: showFull ? 'none' : 250,
+  '& .rc-md-editor': {
+    height: '100%!important',
+  },
+  overflow: 'hidden',
+  transition: 'max-height 0.3s ease',
+  '& .rc-md-editor .editor-container>.section': {
+    borderRight: 'unset',
+  },
+  '& .editor-container': {
+    borderBottom: '1px solid #e0e0e0',
+  },
+  maxWidth: '100%',
+  width: '100%',
 });
 
 const wrapper = theme => ({

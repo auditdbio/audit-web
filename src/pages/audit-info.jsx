@@ -64,8 +64,6 @@ const AuditInfo = ({
   request,
   code,
   isPublic,
-  publicView,
-  setPublicView,
 }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -244,97 +242,104 @@ const AuditInfo = ({
         </Box>
         <Divider sx={{ mt: '15px' }} />
       </Box>
-      <Collapse
-        sx={{ width: '100%' }}
-        in={true}
-        collapsedSize={showFull ? undefined : 250}
-      >
-        <Box sx={descriptionWrapper(theme, showFull)}>
-          <Box
-            sx={[contentWrapper, isPublic ? { alignItems: 'flex-start' } : {}]}
-          >
-            <AuditUserCard
-              avatar={audit?.avatar}
-              name={audit?.auditor_first_name + ' ' + audit?.auditor_last_name}
-              email={audit?.auditor_contacts?.email}
-              telegram={audit?.auditor_contacts?.telegram}
-            />
-            {!!audit?.time?.from && !isPublic && (
-              <Box sx={projectWrapper}>
-                <Typography>Time for project:</Typography>
-                <Box
-                  sx={{ display: 'flex', alignItems: 'center', gap: '10px' }}
-                >
-                  <Box sx={dateWrapper}>
-                    {dayjs(audit?.time?.from).format('DD.MM.YYYY')}
-                  </Box>
-                  -
-                  <Box sx={dateWrapper}>
-                    {dayjs(audit?.time?.to).format('DD.MM.YYYY')}
-                  </Box>
-                </Box>
-                <TagsList />
-              </Box>
-            )}
-          </Box>
-          <EditDescription
-            isPublic={isPublic}
-            auditRequest={request}
-            audit={audit}
-          />
-        </Box>
-      </Collapse>
-      <Box
-        sx={[
-          {
-            // border: '1px solid #E5E5E5',
-            borderTop: '1px solid #E5E5E5',
-            display: 'flex',
-            width: '100%',
-            justifyContent: 'center',
-            position: 'relative',
-            paddingTop: '8px',
-          },
-          !showFull
-            ? {
-                boxShadow: '0px -24px 14px -8px rgba(252, 250, 246, 1)',
-              }
-            : {},
-        ]}
-      >
-        <Button
-          onClick={() => setShowFull(!showFull)}
-          sx={[
-            readAllButton,
-            {
-              position: 'relative',
-              top: !showFull ? '-25px' : 0,
-              backgroundColor: '#fcfaf6',
-              zIndex: '1',
-              marginBottom: showFull ? '20px' : 0,
-              '&:hover': {
-                backgroundColor: '#fcfaf6',
-              },
-            },
-          ]}
-          variant={'outlined'}
+      <Box sx={{ width: '100%' }}>
+        <Collapse
+          sx={{ width: '100%' }}
+          in={true}
+          collapsedSize={showFull ? undefined : 250}
         >
-          <span>{showFull ? 'Hide' : `Show`}</span>
-          <EditIcon sx={{ width: '20px' }} />
-          <ExpandLessOutlinedIcon
+          <Box sx={descriptionWrapper(theme, showFull)}>
+            <Box
+              sx={[
+                contentWrapper,
+                isPublic ? { alignItems: 'flex-start' } : {},
+              ]}
+            >
+              <AuditUserCard
+                avatar={audit?.avatar}
+                name={
+                  audit?.auditor_first_name + ' ' + audit?.auditor_last_name
+                }
+                email={audit?.auditor_contacts?.email}
+                telegram={audit?.auditor_contacts?.telegram}
+              />
+              {!!audit?.time?.from && !isPublic && (
+                <Box sx={projectWrapper}>
+                  <Typography>Time for project:</Typography>
+                  <Box
+                    sx={{ display: 'flex', alignItems: 'center', gap: '10px' }}
+                  >
+                    <Box sx={dateWrapper}>
+                      {dayjs(audit?.time?.from).format('DD.MM.YYYY')}
+                    </Box>
+                    -
+                    <Box sx={dateWrapper}>
+                      {dayjs(audit?.time?.to).format('DD.MM.YYYY')}
+                    </Box>
+                  </Box>
+                  <TagsList />
+                </Box>
+              )}
+            </Box>
+            <EditDescription
+              isPublic={isPublic}
+              auditRequest={request}
+              audit={audit}
+            />
+          </Box>
+        </Collapse>
+        <Box
+          sx={[
+            {
+              // border: '1px solid #E5E5E5',
+              borderTop: '1px solid #E5E5E5',
+              display: 'flex',
+              width: '100%',
+              justifyContent: 'center',
+              position: 'relative',
+              paddingTop: '8px',
+            },
+            !showFull
+              ? {
+                  boxShadow: '0px -24px 14px -8px rgba(252, 250, 246, 1)',
+                }
+              : {},
+          ]}
+        >
+          <Button
+            onClick={() => setShowFull(!showFull)}
             sx={[
-              showFull ? {} : { transform: 'rotate(180deg)' },
+              readAllButton,
               {
-                transition: '0.2s',
-                // marginRight: '0',
-                // marginLeft: 'auto',
-                width: '20px',
-                height: '20px',
+                position: 'relative',
+                top: !showFull ? '-25px' : 0,
+                backgroundColor: '#fcfaf6',
+                zIndex: '1',
+                marginBottom: showFull ? '20px' : 0,
+                '&:hover': {
+                  backgroundColor: '#fcfaf6',
+                },
               },
             ]}
-          />
-        </Button>
-        {/*)}*/}
+            variant={'outlined'}
+          >
+            <span>{showFull ? 'Hide' : `Show`}</span>
+            <EditIcon sx={{ width: '20px' }} />
+            <ExpandLessOutlinedIcon
+              sx={[
+                showFull ? {} : { transform: 'rotate(180deg)' },
+                {
+                  transition: '0.2s',
+                  // marginRight: '0',
+                  // marginLeft: 'auto',
+                  width: '20px',
+                  height: '20px',
+                },
+              ]}
+            />
+          </Button>
+          {/*)}*/}
+        </Box>
       </Box>
       {audit?.conclusion && (
         <Box sx={{ border: '2px solid #E5E5E5', width: '100%' }}>

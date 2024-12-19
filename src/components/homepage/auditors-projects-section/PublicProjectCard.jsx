@@ -83,6 +83,9 @@ const PublicProjectCard = ({ project }) => {
               open={openModal}
               onClose={handleCloseModal}
               sx={{
+                '& .MuiBackdrop-root': {
+                  backgroundColor: '#3535357a',
+                },
                 '& .MuiPopover-paper': {
                   position: 'absolute',
                   backgroundColor: '#FCFAF6',
@@ -100,12 +103,6 @@ const PublicProjectCard = ({ project }) => {
                     paddingBottom: '10px',
                     minHeight: 'unset',
                   },
-                  // '& .request-content-sx': {
-                  //   maxHeight: '700px',
-                  //   height: '100%',
-                  //   overflow: 'hidden',
-                  //   // overflowY: 'auto',
-                  // },
                   '& .audit-request-button-wrapper': {
                     marginTop: '0',
                   },

@@ -16,7 +16,7 @@ const ShareProjectButton = ({
   const buttonRef = useRef(null);
 
   const handleShare = () => {
-    const buffer = `${BASE_URL}projects/${projectId}`;
+    const buffer = `${BASE_URL}project/${projectId}`;
     const options = {
       text: () => buffer,
     };

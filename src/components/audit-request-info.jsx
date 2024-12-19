@@ -57,6 +57,7 @@ const AuditRequestInfo = ({
   setError,
   stayHere,
   hideChange,
+  navigateTo,
 }) => {
   const navigate = useNavigate();
   const matchXs = useMediaQuery(theme.breakpoints.down('xs'));
@@ -349,95 +350,89 @@ const AuditRequestInfo = ({
           </Collapse>
         </Box>
         <Box sx={{ width: '100%' }} className="audit-content">
-          {!isModal ? (
-            <>
-              <Collapse in={true} collapsedSize={showFull ? undefined : 150}>
-                <Box sx={descriptionWrapper(theme, showFull)}>
-                  <Box sx={infoWrapper} className="audit-request-info">
-                    {/*<Markdown value={project?.description} />*/}
-                    <EditDescription
-                      hideChange={hideChange}
-                      audit={project}
-                      auditRequest={true}
-                    />
-                    {/*<Box sx={linkWrapper} className="audit-request-links">*/}
-                    {/*  {(project?.project_scope || project?.scope)?.map(*/}
-                    {/*    (link, idx) => (*/}
-                    {/*      <CustomLink link={link} key={idx} />*/}
-                    {/*    ),*/}
-                    {/*  )}*/}
-                    {/*</Box>*/}
-                  </Box>
+          <>
+            <Collapse in={true} collapsedSize={showFull ? undefined : 150}>
+              <Box sx={descriptionWrapper(theme, showFull)}>
+                <Box sx={infoWrapper} className="audit-request-info">
+                  {/*<Markdown value={project?.description} />*/}
+                  <EditDescription
+                    hideChange={hideChange}
+                    audit={project}
+                    auditRequest={true}
+                  />
+                  {/*<Box sx={linkWrapper} className="audit-request-links">*/}
+                  {/*  {(project?.project_scope || project?.scope)?.map(*/}
+                  {/*    (link, idx) => (*/}
+                  {/*      <CustomLink link={link} key={idx} />*/}
+                  {/*    ),*/}
+                  {/*  )}*/}
+                  {/*</Box>*/}
                 </Box>
-              </Collapse>
-              <Box
-                sx={[
-                  {
-                    // border: '1px solid #E5E5E5',
-                    borderTop: '1px solid #E5E5E5',
-                    display: 'flex',
-                    justifyContent: 'center',
-                    position: 'relative',
-                    paddingTop: '8px',
-                  },
-                  !showFull
-                    ? {
-                        boxShadow: '0px -24px 14px -8px rgba(252, 250, 246, 1)',
-                      }
-                    : {},
-                ]}
-              >
-                {/*{tab === 0 && (*/}
-                <Button
-                  onClick={() => {
-                    if (isModal) {
-                      navigate(`/project/${project.id}`);
-                    } else {
-                      setShowFull(!showFull);
+              </Box>
+            </Collapse>
+            <Box
+              sx={[
+                {
+                  // border: '1px solid #E5E5E5',
+                  borderTop: '1px solid #E5E5E5',
+                  display: 'flex',
+                  justifyContent: 'center',
+                  position: 'relative',
+                  paddingTop: '8px',
+                },
+                !showFull
+                  ? {
+                      boxShadow: '0px -24px 14px -8px rgba(252, 250, 246, 1)',
                     }
-                  }}
-                  sx={[
-                    readAllButton,
-                    {
-                      position: 'relative',
-                      top: !showFull ? '-25px' : 0,
+                  : {},
+              ]}
+            >
+              {/*{tab === 0 && (*/}
+              <Button
+                onClick={() => {
+                  if (isModal) {
+                    if (navigateTo) {
+                      navigate(navigateTo);
+                    } else {
+                      navigate(`/project/${project.id}`);
+                    }
+                  } else {
+                    setShowFull(!showFull);
+                  }
+                }}
+                sx={[
+                  readAllButton,
+                  {
+                    position: 'relative',
+                    top: !showFull ? '-25px' : 0,
+                    backgroundColor: '#fcfaf6',
+                    zIndex: '1',
+                    marginBottom: showFull ? '20px' : 0,
+                    '&:hover': {
                       backgroundColor: '#fcfaf6',
-                      zIndex: '1',
-                      marginBottom: showFull ? '20px' : 0,
-                      '&:hover': {
-                        backgroundColor: '#fcfaf6',
-                      },
+                    },
+                  },
+                ]}
+                variant={'outlined'}
+              >
+                <span>{showFull ? 'Hide' : `Show`}</span>
+                <EditIcon sx={{ width: '20px' }} />
+                <ExpandLessOutlinedIcon
+                  sx={[
+                    showFull ? {} : { transform: 'rotate(180deg)' },
+                    {
+                      transition: '0.2s',
+                      // marginRight: '0',
+                      // marginLeft: 'auto',
+                      width: '20px',
+                      height: '20px',
                     },
                   ]}
-                  variant={'outlined'}
-                >
-                  <span>{showFull ? 'Hide' : `Show`}</span>
-                  <EditIcon sx={{ width: '20px' }} />
-                  <ExpandLessOutlinedIcon
-                    sx={[
-                      showFull ? {} : { transform: 'rotate(180deg)' },
-                      {
-                        transition: '0.2s',
-                        // marginRight: '0',
-                        // marginLeft: 'auto',
-                        width: '20px',
-                        height: '20px',
-                      },
-                    ]}
-                  />
-                </Button>
-                {/*)}*/}
-              </Box>
-            </>
-          ) : (
-            <Box sx={infoWrapper} className="audit-request-info">
-              <EditDescription
-                hideChange={hideChange}
-                audit={project}
-                auditRequest={true}
-              />
+                />
+              </Button>
+              {/*)}*/}
             </Box>
-          )}
+          </>
         </Box>
         {!hideChange && <DescriptionHistory audit={project} request={true} />}
 
