@@ -309,9 +309,9 @@ const StatusSeverityBlock = ({
               arrow
               placement="top"
               title={
-                user.current_role.toLowerCase() !== AUDITOR.toLowerCase()
-                  ? 'Send feedback'
-                  : 'Customer feedback will be included in the report.'
+                user.current_role.toLowerCase() === AUDITOR.toLowerCase()
+                  ? 'Customer feedback will be included in the report. Do not edit this field without a reasonable cause.'
+                  : 'Customer feedback will be included in the report'
               }
             >
               <Button
