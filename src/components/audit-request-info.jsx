@@ -353,7 +353,7 @@ const AuditRequestInfo = ({
           <>
             <Collapse
               in={true}
-              collapsedSize={showFull ? undefined : isModal ? 150 : 250}
+              collapsedSize={showFull ? undefined : isModal ? 150 : 300}
             >
               <Box sx={descriptionWrapper(theme, showFull, isModal)}>
                 <Box sx={infoWrapper} className="audit-request-info">
@@ -537,7 +537,7 @@ const contactStyle = theme => ({
 });
 
 const descriptionWrapper = (theme, showFull, isModal) => ({
-  maxHeight: showFull ? 'none' : isModal ? 150 : 250,
+  maxHeight: showFull ? 'none' : isModal ? 150 : 300,
   '& .rc-md-editor': {
     height: '100%!important',
   },

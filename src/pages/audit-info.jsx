@@ -246,7 +246,7 @@ const AuditInfo = ({
         <Collapse
           sx={{ width: '100%' }}
           in={true}
-          collapsedSize={showFull ? undefined : 250}
+          collapsedSize={showFull ? undefined : 300}
         >
           <Box sx={descriptionWrapper(theme, showFull)}>
             <Box
@@ -522,7 +522,7 @@ const readAllButton = theme => ({
 });
 
 const descriptionWrapper = (theme, showFull) => ({
-  maxHeight: showFull ? 'none' : 250,
+  maxHeight: showFull ? 'none' : 300,
   '& .rc-md-editor': {
     height: '100%!important',
   },
