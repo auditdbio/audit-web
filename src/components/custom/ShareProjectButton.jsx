@@ -16,7 +16,7 @@ const ShareProjectButton = ({
   const buttonRef = useRef(null);
 
   const handleShare = () => {
-    const buffer = `${BASE_URL}projects/${projectId}`;
+    const buffer = `${BASE_URL}project/${projectId}`;
     const options = {
       text: () => buffer,
     };
@@ -48,12 +48,13 @@ const ShareProjectButton = ({
       sx={[buttonSx, sx]}
       onClick={handleShare}
       ref={buttonRef}
+      className={'share-button'}
       {...addTestsLabel('share-button')}
     >
       {showIcon && !hideIcon && (
-        <LaunchRoundedIcon size="small" sx={{ marginRight: '5px' }} />
+        <LaunchRoundedIcon sx={{ marginRight: '5px' }} />
       )}
-      {text}
+      {/*{text}*/}
     </Button>
   );
 };
@@ -63,7 +64,13 @@ export default ShareProjectButton;
 const buttonSx = theme => ({
   textTransform: 'none',
   fontSize: '10px',
-  [theme.breakpoints.down('xs')]: {
-    padding: '4px 6px',
+  padding: 'unset',
+  minWidth: 'unset',
+  '& svg': {
+    width: '40px',
+    height: '40px',
   },
+  // [theme.breakpoints.down('xs')]: {
+  //   padding: '4px 6px',
+  // },
 });

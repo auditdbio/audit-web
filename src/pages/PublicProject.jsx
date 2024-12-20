@@ -1,7 +1,15 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom/dist';
-import { Avatar, Box, Button, Modal, Tooltip, Typography } from '@mui/material';
+import {
+  Avatar,
+  Box,
+  Button,
+  Collapse,
+  Modal,
+  Tooltip,
+  Typography,
+} from '@mui/material';
 import Layout from '../styles/Layout.jsx';
 import { getProjectById } from '../redux/actions/projectAction.js';
 import Markdown from '../components/markdown/Markdown.jsx';
@@ -25,6 +33,8 @@ import { setCurrentChat } from '../redux/actions/chatActions.js';
 import ChatIcon from '../components/icons/ChatIcon.jsx';
 import Headings from '../router/Headings.jsx';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import EditIcon from '@mui/icons-material/Edit';
+import ExpandLessOutlinedIcon from '@mui/icons-material/ExpandLessOutlined';
 
 const PublicProject = () => {
   const dispatch = useDispatch();
@@ -258,16 +268,69 @@ const PublicProject = () => {
         </Box>
 
         <Box sx={{ width: '100%' }}>
-          <Box sx={descriptionSx(showFull)}>
-            <Box ref={descriptionRef}>
-              <Markdown value={project?.description} />
+          <Collapse in={true} collapsedSize={showFull ? undefined : 250}>
+            <Box sx={descriptionWrapper(theme, showFull)}>
+              {/*<Box sx={descriptionSx(showFull)}>*/}
+              <Box ref={descriptionRef}>
+                <Markdown value={project?.description} />
+              </Box>
+              {/*</Box>*/}
             </Box>
+          </Collapse>
+          <Box
+            sx={[
+              {
+                // border: '1px solid #E5E5E5',
+                borderTop: '1px solid #E5E5E5',
+                display: 'flex',
+                justifyContent: 'center',
+                position: 'relative',
+                paddingTop: '8px',
+              },
+              !showFull
+                ? {
+                    boxShadow: '0px -24px 14px -8px rgba(252, 250, 246, 1)',
+                  }
+                : {},
+            ]}
+          >
+            {/*{tab === 0 && (*/}
+            {showReadMoreButton && (
+              <Button
+                onClick={() => setShowFull(!showFull)}
+                sx={[
+                  readAllButton,
+                  {
+                    position: 'relative',
+                    top: !showFull ? '-25px' : 0,
+                    backgroundColor: '#fcfaf6',
+                    zIndex: '1',
+                    marginBottom: showFull ? '20px' : 0,
+                    '&:hover': {
+                      backgroundColor: '#fcfaf6',
+                    },
+                  },
+                ]}
+                variant={'outlined'}
+              >
+                <span>{showFull ? 'Hide' : `Show`}</span>
+                <EditIcon sx={{ width: '20px' }} />
+                <ExpandLessOutlinedIcon
+                  sx={[
+                    showFull ? {} : { transform: 'rotate(180deg)' },
+                    {
+                      transition: '0.2s',
+                      // marginRight: '0',
+                      // marginLeft: 'auto',
+                      width: '20px',
+                      height: '20px',
+                    },
+                  ]}
+                />
+              </Button>
+            )}
+            {/*)}*/}
           </Box>
-          {showReadMoreButton && (
-            <Button onClick={() => setShowFull(!showFull)} sx={readAllButton}>
-              {showFull ? 'Hide ▲' : `Read all ▼`}
-            </Button>
-          )}
           <Box sx={tagsSx}>
             <TagsList data={project?.tags} />
           </Box>
@@ -314,6 +377,39 @@ const PublicProject = () => {
 };
 
 export default PublicProject;
+
+const descriptionWrapper = (theme, showFull) => ({
+  maxHeight: showFull ? 'none' : 250,
+  '& .rc-md-editor': {
+    height: '100%!important',
+  },
+  overflow: 'hidden',
+  transition: 'max-height 0.3s ease',
+  '& .rc-md-editor .editor-container>.section': {
+    borderRight: 'unset',
+  },
+  '& .editor-container': {
+    borderBottom: '1px solid #e0e0e0',
+  },
+});
+
+const readAllButton = theme => ({
+  p: '3px',
+  paddingX: '8px',
+  minWidth: 'unset',
+  textTransform: 'unset',
+  boxShadow: 'unset',
+  fontWeight: 600,
+  borderRadius: '8px',
+  width: '280px',
+  display: 'flex',
+  alignItems: 'center',
+  gap: '7px',
+  // maxWidth: '300px',
+  [theme.breakpoints.down('xs')]: {
+    fontSize: '16px',
+  },
+});
 
 const wrapper = role => {
   const borderColor =
@@ -438,24 +534,6 @@ const descriptionSx = full => ({
   maxHeight: full ? 'unset' : '400px',
   overflow: 'hidden',
   border: '2px solid #E5E5E5',
-});
-
-const readAllButton = theme => ({
-  width: '100%',
-  padding: '8px',
-  fontWeight: 600,
-  fontSize: '16px',
-  color: 'black',
-  textTransform: 'none',
-  lineHeight: '25px',
-  background: '#E5E5E5',
-  borderRadius: 0,
-  boxShadow: '0px -24px 14px -8px rgba(252, 250, 246, 1)',
-  ':hover': { background: '#D5D5D5' },
-  [theme.breakpoints.down('xs')]: {
-    fontSize: '14px',
-    border: 'none',
-  },
 });
 
 const tagsSx = {

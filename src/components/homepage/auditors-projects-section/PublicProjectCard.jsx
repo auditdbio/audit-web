@@ -1,4 +1,12 @@
-import { Box, Card, Modal, Tooltip, Typography } from '@mui/material';
+import {
+  Box,
+  Card,
+  ClickAwayListener,
+  Modal,
+  Popover,
+  Tooltip,
+  Typography,
+} from '@mui/material';
 import theme from '../../../styles/themes';
 import { CustomButton } from '../../custom/Button';
 import { useNavigate } from 'react-router-dom';
@@ -13,7 +21,7 @@ const PublicProjectCard = ({ project }) => {
   const [message, setMessage] = useState(null);
   const [openModal, setOpenModal] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
-  const handleView = () => {
+  const handleView = e => {
     setOpenModal(true);
   };
 
@@ -27,24 +35,6 @@ const PublicProjectCard = ({ project }) => {
 
   return (
     <Card sx={cardWrapper}>
-      <Modal
-        open={openModal}
-        onClose={handleCloseModal}
-        aria-labelledby="parent-modal-title"
-        aria-describedby="parent-modal-description"
-      >
-        <Box sx={modalWrapper}>
-          <AuditRequestInfo
-            onClose={handleCloseModal}
-            project={project}
-            handleError={handleError}
-            isModal={true}
-            redirect={true}
-            setError={setErrorMessage}
-            hideChange={true}
-          />
-        </Box>
-      </Modal>
       <Tooltip title={project.name} arrow placement="top">
         <Typography sx={auditNameStyle}>{project.name}</Typography>
       </Tooltip>
@@ -85,69 +75,77 @@ const PublicProjectCard = ({ project }) => {
         </Typography>
       </Box>
       {/*<CustomButton sx={acceptButtonStyle}>Accept</CustomButton>*/}
-      <CustomButton
-        sx={viewButtonStyle}
-        // onClick={() => navigate(`/audit-request/${project.id}`)}
-        onClick={handleView}
-        {...addTestsLabel('project_view-button')}
-      >
-        View
-      </CustomButton>
+      <ClickAwayListener onClickAway={handleCloseModal}>
+        <>
+          {openModal ? (
+            <Popover
+              anchorEl={null}
+              open={openModal}
+              onClose={handleCloseModal}
+              sx={{
+                '& .MuiBackdrop-root': {
+                  backgroundColor: '#3535357a',
+                },
+                '& .MuiPopover-paper': {
+                  position: 'absolute',
+                  backgroundColor: '#FCFAF6',
+                  top: '50%!important',
+                  left: '50%!important',
+                  transform: 'translate(-50%, -50%)!important',
+                  width: '90%',
+                  maxHeight: '90vh',
+                  overflowY: 'hidden',
+                  borderRadius: '14px',
+                  '& .rc-md-editor': {
+                    height: '100%!important',
+                  },
+                  '& .audit-request-wrapper': {
+                    paddingBottom: '10px',
+                    minHeight: 'unset',
+                  },
+                  '& .audit-request-button-wrapper': {
+                    marginTop: '0',
+                  },
+                  '& .chat-btn svg': {
+                    width: '40px',
+                    height: '40px',
+                  },
+                },
+              }}
+            >
+              <Box>
+                <AuditRequestInfo
+                  onClose={handleCloseModal}
+                  project={project}
+                  handleError={handleError}
+                  isModal={true}
+                  redirect={true}
+                  setError={setErrorMessage}
+                  hideChange={true}
+                />
+              </Box>
+            </Popover>
+          ) : null}
+          <CustomButton
+            sx={viewButtonStyle}
+            // onClick={() => navigate(`/audit-request/${project.id}`)}
+            onClick={handleView}
+            {...addTestsLabel('project_view-button')}
+          >
+            View
+          </CustomButton>
+        </>
+      </ClickAwayListener>
     </Card>
   );
 };
-
-const modalWrapper = theme => ({
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  width: 700,
-  // maxHeight: '90%',
-  borderRadius: '14px',
-  // height: '100%',
-  '& .audit-content': {
-    maxHeight: '30vw',
-    overflowY: 'auto',
-  },
-  '& .audit-request-button-wrapper': {
-    marginTop: '20px',
-  },
-  '& .audit-request-wrapper': {
-    gap: '5px',
-    paddingBottom: '40px',
-    paddingX: '35px',
-    paddingRight: '15px',
-  },
-  [theme.breakpoints.down('md')]: {
-    '& .audit-request-wrapper': {
-      paddingX: '20px',
-      minHeight: 'unset',
-    },
-  },
-  [theme.breakpoints.down('sm')]: {
-    '& .audit-content': {
-      maxHeight: '35vw',
-    },
-  },
-  [theme.breakpoints.down('xs')]: {
-    width: 340,
-    '& .audit-content': {
-      maxHeight: '50vw',
-    },
-  },
-  [theme.breakpoints.down(500)]: {
-    '& .audit-content': {
-      maxHeight: '100vw',
-    },
-  },
-});
 
 const cardWrapper = theme => ({
   display: 'flex',
   flexDirection: 'column',
   justifyContent: 'space-between',
   alignItems: 'center',
+  position: 'relative',
   background: '#FFFFFF',
   width: '100%',
   height: '100%',

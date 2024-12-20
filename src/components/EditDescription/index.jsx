@@ -52,7 +52,7 @@ const EditDescription = ({ audit, auditRequest, hideChange, isPublic }) => {
             initialValues={{
               description: audit?.description,
               id: audit?.id,
-              scope: audit?.scope,
+              scope: audit?.project_scope || audit?.scope,
               comment: '',
             }}
             onSubmit={values => {
@@ -232,9 +232,9 @@ const EditDescription = ({ audit, auditRequest, hideChange, isPublic }) => {
                       ))}
                   </Box>
                   <Box sx={hideChange ? linksList : {}}>
-                    {!hideChange &&
-                      (audit?.status?.toLowerCase() !==
-                        RESOLVED.toLowerCase() && !isPublic ? (
+                    {!hideChange ? (
+                      audit?.status?.toLowerCase() !== RESOLVED.toLowerCase() &&
+                      !isPublic ? (
                         <Box sx={linksList}>
                           <ProjectLinksList
                             name="scope"
@@ -247,7 +247,14 @@ const EditDescription = ({ audit, auditRequest, hideChange, isPublic }) => {
                             <CustomLink link={link} key={idx} />
                           ))}
                         </Box>
-                      ))}
+                      )
+                    ) : (
+                      <Box sx={customerLinksList}>
+                        {values.scope?.map((link, idx) => (
+                          <CustomLink link={link} key={idx} />
+                        ))}
+                      </Box>
+                    )}
                   </Box>
                   {addLinkField && (
                     <Box sx={{ mt: '10px' }}>
