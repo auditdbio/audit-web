@@ -108,6 +108,8 @@ const PriceCalculation = ({
           placement="bottom"
           enterDelay={200}
           leaveDelay={100}
+          enterTouchDelay={0}
+          leaveTouchDelay={4000}
         >
           <HelpOutlineIcon fontSize="small" cursor="pointer" />
         </Tooltip>

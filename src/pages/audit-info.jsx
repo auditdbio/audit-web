@@ -71,7 +71,7 @@ const AuditInfo = ({
   const { successMessage, error } = useSelector(s => s.audits);
   const { user } = useSelector(s => s.user);
   const { chatList } = useSelector(s => s.chat);
-  const { id } = useParams();
+  const { auditId } = useParams();
   const [showFull, setShowFull] = useState(false);
 
   const [isFeedbackModalOpen, setIsFeedbackModalOpen] = useState(false);
@@ -154,7 +154,12 @@ const AuditInfo = ({
         }}
       >
         <Button
-          sx={backButtonSx}
+          sx={[
+            backButtonSx,
+            auditRequest
+              ? { top: '-20px!important', left: '-30px!important' }
+              : {},
+          ]}
           onClick={() => {
             if (!isPublic) {
               if (handleClose) {
@@ -190,12 +195,22 @@ const AuditInfo = ({
         </Button>
       </Box>
       <Box
-        sx={{
-          display: 'flex',
-          width: '100%',
-          justifyContent: 'center',
-          flexDirection: 'column',
-        }}
+        sx={[
+          {
+            display: 'flex',
+            width: '100%',
+            justifyContent: 'center',
+            flexDirection: 'column',
+          },
+          auditRequest
+            ? {
+                marginTop: '-20px',
+                [theme.breakpoints.down(600)]: {
+                  marginTop: '0',
+                },
+              }
+            : {},
+        ]}
       >
         <Box
           sx={{
@@ -371,7 +386,7 @@ const AuditInfo = ({
               Accept
             </Button>
           )}
-          {!audit?.status && (
+          {auditRequest && (
             <Button
               variant="contained"
               color="secondary"
@@ -461,23 +476,6 @@ const AuditInfo = ({
             Confirm
           </Button>
         )}
-
-        {/*{audit?.status &&*/}
-        {/*  !!issues?.length &&*/}
-        {/*  !isPublic &&*/}
-        {/*  audit?.status?.toLowerCase() !== WAITING_FOR_AUDITS.toLowerCase() && (*/}
-        {/*    <Button*/}
-        {/*      variant="contained"*/}
-        {/*      color="primary"*/}
-        {/*      type="button"*/}
-        {/*      onClick={goToIssues}*/}
-        {/*      sx={[buttonSx, { marginBottom: '20px' }]}*/}
-        {/*      {...addTestsLabel('issues-button')}*/}
-        {/*    >*/}
-        {/*      Issues ({issues?.length})*/}
-        {/*    </Button>*/}
-        {/*  )}*/}
-        {/*/!*)}*!/*/}
       </Box>
       <ConfirmModal
         isOpen={isConfirmModalOpen}
@@ -490,7 +488,7 @@ const AuditInfo = ({
         handleSend={handleSendFeedback}
         feedback={audit.feedback}
       />
-      {!!audit?.issues?.length && <IssuesList auditId={id} />}
+      {!!audit?.issues?.length && <IssuesList auditId={auditId} />}
     </>
   );
 };

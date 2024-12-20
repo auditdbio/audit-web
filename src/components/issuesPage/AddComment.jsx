@@ -33,7 +33,7 @@ const AddComment = ({ auditId, issueId }) => {
             onSubmit={handleSubmit}
             style={{ width: '100%', paddingTop: '30px' }}
           >
-            <Box sx={{ width: '100%' }}>
+            <Box sx={editorWrapper}>
               <MarkdownEditor
                 name="message"
                 setFieldTouched={setFieldTouched}
@@ -81,6 +81,13 @@ export default AddComment;
 
 const validationSchema = Yup.object().shape({
   message: Yup.string().required('Comment cannot be empty'),
+});
+
+const editorWrapper = theme => ({
+  width: '100%',
+  '& .rc-md-editor': {
+    height: '200px!important',
+  },
 });
 
 const buttonBlock = {

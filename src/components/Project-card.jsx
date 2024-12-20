@@ -29,6 +29,7 @@ import ShareProjectButton from './custom/ShareProjectButton.jsx';
 import theme from '../styles/themes.js';
 import { ASSET_URL } from '../services/urls.js';
 import dayjs from 'dayjs';
+import IssueSeveritySort from './IssueSeveritySort/IssueSeverityFilter.jsx';
 
 const ProjectCard = ({ type, project, currentRole, isPublic }) => {
   const navigate = useNavigate();
@@ -130,6 +131,7 @@ const ProjectCard = ({ type, project, currentRole, isPublic }) => {
           alignItems: 'center',
           marginTop: 'auto',
           marginBottom: 0,
+          width: '100%',
         }}
       >
         {!isPublic &&
@@ -182,15 +184,22 @@ const ProjectCard = ({ type, project, currentRole, isPublic }) => {
               display: 'flex',
               alignItems: 'center',
               flexDirection: 'column',
+              width: '100%',
             }}
           >
             {/*</Button>*/}
             {/*// </Box>*/}
             {/*// </Box>*/}
-            <Typography sx={{ mb: '12px', fontSize: '14px!important' }}>
-              {issuesCounter(project?.issues)}
-            </Typography>
-
+            {/*<Box>*/}
+            {/*  {*/}
+            {/*    <Typography sx={{ mb: '12px', fontSize: '14px!important' }}>*/}
+            {/*      {issuesCounter(project?.issues)}*/}
+            {/*    </Typography>*/}
+            {/*  }*/}
+            {/*</Box>*/}
+            {project?.report_type?.toLowerCase() !== 'custom' && (
+              <IssueSeveritySort issues={project?.issues} />
+            )}
             <Typography sx={{ fontSize: '14px!important', height: '21px' }}>
               {project.resolved_at &&
                 dayjs(

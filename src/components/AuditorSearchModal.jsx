@@ -29,6 +29,7 @@ import { addTestsLabel } from '../lib/helper.js';
 import CustomSnackbar from './custom/CustomSnackbar.jsx';
 import PriceCalculation from './PriceCalculation.jsx';
 import TotalPrice from './forms/TotalPrice/TotalPrice.jsx';
+import { CLEAR_SEARCHED_AUDITOR } from '../redux/actions/types.js';
 
 export default function AuditorSearchModal({
   open,
@@ -36,6 +37,7 @@ export default function AuditorSearchModal({
   handleSubmit,
   setState,
   setError,
+  projectInfo,
 }) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -67,7 +69,10 @@ export default function AuditorSearchModal({
   const handleSearch = async () => {
     await setState(true);
     handleSubmit();
-    await navigate(`/auditors?search=${query}&projectIdToInvite=${id}`);
+    localStorage.setItem('prev-path', '/edit-project/' + projectInfo.id);
+    await navigate(
+      `/auditors?search=${query}&projectIdToInvite=${id || projectInfo.id}`,
+    );
   };
 
   return (
@@ -188,6 +193,9 @@ export default function AuditorSearchModal({
                 } else {
                   setError('You cannot create an audit request with yourself');
                 }
+                setMode('search');
+                setInputValue('');
+                dispatch({ type: CLEAR_SEARCHED_AUDITOR });
                 handleClose();
               }
             }}
@@ -238,7 +246,7 @@ export default function AuditorSearchModal({
                             inputFormat="DD.MM.YYYY"
                             onChange={e => setFieldValue('time.from', e)}
                             disablePast
-                            minDate={new Date()}
+                            minDate={dayjs()}
                           />
                           <Typography variant={'caption'}>-</Typography>
                           <Field
@@ -347,7 +355,15 @@ const searchField = {
     fontSize: '14px !important',
     width: '465px',
     [theme.breakpoints.down('sm')]: {
-      width: '120px',
+      width: '320px',
+      height: '30px',
+      fontSize: '11px',
+    },
+    [theme.breakpoints.down('xs')]: {
+      width: '220px',
+    },
+    [theme.breakpoints.down(400)]: {
+      width: '150px',
       height: '30px',
       fontSize: '11px',
     },
