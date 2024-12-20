@@ -41,6 +41,7 @@ export default function AuditorSearchModal({
   handleSubmit,
   setState,
   setError,
+  projectInfo,
 }) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -78,7 +79,10 @@ export default function AuditorSearchModal({
   const handleSearch = async () => {
     await setState(true);
     handleSubmit();
-    await navigate(`/auditors?search=${query}&projectIdToInvite=${id}`);
+    localStorage.setItem('prev-path', '/edit-project/' + projectInfo.id);
+    await navigate(
+      `/auditors?search=${query}&projectIdToInvite=${id || projectInfo.id}`,
+    );
   };
 
   useEffect(() => {
@@ -306,7 +310,7 @@ export default function AuditorSearchModal({
                             inputFormat="DD.MM.YYYY"
                             onChange={e => setFieldValue('time.from', e)}
                             disablePast
-                            minDate={new Date()}
+                            minDate={dayjs()}
                           />
                           <Typography variant={'caption'}>-</Typography>
                           <Field

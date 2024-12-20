@@ -609,8 +609,8 @@ const wrapper = (theme, color) => ({
 
 const goBackSx = {
   position: 'absolute',
-  top: '20px',
-  left: '30px',
+  top: '0px',
+  left: '-10px',
 };
 
 const badgeTitle = {

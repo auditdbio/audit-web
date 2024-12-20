@@ -283,16 +283,16 @@ const titleSx = theme => ({
 });
 
 const modalStyle = theme => ({
-  width: '95%',
-  p: 2,
-
-  height: '80%',
-  display: 'flex',
-  justifyContent: 'center',
-  alignItems: 'center',
-  [theme.breakpoints.down('sm')]: {
-    height: '95%',
-  },
+  // width: '95%',
+  // p: 2,
+  //
+  // height: '80%',
+  // display: 'flex',
+  // justifyContent: 'center',
+  // alignItems: 'center',
+  // [theme.breakpoints.down('sm')]: {
+  //   height: '95%',
+  // },
 });
 
 const modalSx = theme => ({

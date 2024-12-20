@@ -110,7 +110,10 @@ const AuditMessage = ({ message, handleError }) => {
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-      <Typography align={'center'}>Audit request</Typography>
+      <Typography align={'center'}>
+        {' '}
+        {data.status.toLowerCase() === 'request' ? 'Audit request' : 'Audit'}
+      </Typography>
       <Typography align={'center'}>{data.project_name}</Typography>
       {data.status === 'Declined' ? (
         <Box sx={statusWrapper}>
@@ -317,9 +320,9 @@ const AuditMessage = ({ message, handleError }) => {
       >
         <Box sx={modalSx}>
           <MessageModalCustomer
-            audit={auditRequest}
+            audit={data}
             handleClose={handleClose}
-            auditRequest={auditRequest}
+            auditRequest={data?.status?.toLowerCase() === 'request'}
           />
         </Box>
       </Modal>
