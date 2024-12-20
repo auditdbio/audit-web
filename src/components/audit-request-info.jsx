@@ -418,7 +418,7 @@ const AuditRequestInfo = ({
                 ]}
                 variant={'outlined'}
               >
-                {!navigateTo ? (
+                {!isModal ? (
                   <span>{showFull ? 'Hide' : `Show`}</span>
                 ) : (
                   <span>{showFull ? 'Hide' : `Show full`}</span>

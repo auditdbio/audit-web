@@ -52,9 +52,9 @@ const ShareProjectButton = ({
       {...addTestsLabel('share-button')}
     >
       {showIcon && !hideIcon && (
-        <LaunchRoundedIcon size="small" sx={{ marginRight: '5px' }} />
+        <LaunchRoundedIcon sx={{ marginRight: '5px' }} />
       )}
-      {text}
+      {/*{text}*/}
     </Button>
   );
 };
@@ -64,7 +64,13 @@ export default ShareProjectButton;
 const buttonSx = theme => ({
   textTransform: 'none',
   fontSize: '10px',
-  [theme.breakpoints.down('xs')]: {
-    padding: '4px 6px',
+  padding: 'unset',
+  minWidth: 'unset',
+  '& svg': {
+    width: '40px',
+    height: '40px',
   },
+  // [theme.breakpoints.down('xs')]: {
+  //   padding: '4px 6px',
+  // },
 });

@@ -106,6 +106,10 @@ const PublicProjectCard = ({ project }) => {
                   '& .audit-request-button-wrapper': {
                     marginTop: '0',
                   },
+                  '& .chat-btn svg': {
+                    width: '40px',
+                    height: '40px',
+                  },
                 },
               }}
             >
