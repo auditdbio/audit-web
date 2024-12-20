@@ -73,7 +73,7 @@ const AuditInfo = ({
   const { successMessage, error } = useSelector(s => s.audits);
   const { user } = useSelector(s => s.user);
   const { chatList } = useSelector(s => s.chat);
-  const { id } = useParams();
+  const { auditId } = useParams();
   const [showFull, setShowFull] = useState(false);
 
   const [isFeedbackModalOpen, setIsFeedbackModalOpen] = useState(false);
@@ -490,7 +490,7 @@ const AuditInfo = ({
         handleSend={handleSendFeedback}
         feedback={audit.feedback}
       />
-      {!!audit?.issues?.length && <IssuesList auditId={id} />}
+      {!!audit?.issues?.length && <IssuesList auditId={auditId} />}
     </>
   );
 };

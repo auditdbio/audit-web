@@ -262,6 +262,7 @@ const IssueDetailsForm = ({ issue = null, editMode = false, hideControl }) => {
                 setFieldTouched={setFieldTouched}
                 values={values}
                 user={user}
+                issue={issue}
                 audit={audit}
                 isEditFeedback={isEditFeedback}
                 setIsEditFeedback={setIsEditFeedback}

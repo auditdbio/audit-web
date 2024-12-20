@@ -59,11 +59,11 @@ export const getProjectsByUserId = id => {
   };
 };
 
-export const createProjectNoRedirect = values => {
+export const createProjectNoRedirect = (values, copy) => {
   return async dispatch => {
     const token = Cookies.get('token');
     await axios
-      .post(`${API_URL}/project`, values, {
+      .post(`${API_URL}/project${copy ? '?copy=true' : ''}`, values, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -78,7 +78,7 @@ export const createProjectNoRedirect = values => {
   };
 };
 
-export const editProject = values => {
+export const editProject = (values, noRedirect) => {
   return async dispatch => {
     const token = Cookies.get('token');
     await axios
@@ -89,9 +89,11 @@ export const editProject = values => {
       })
       .then(({ data }) => {
         dispatch({ type: PROJECT_UPDATE, payload: data });
-        history.push('/profile/projects', {
-          some: true,
-        });
+        if (!noRedirect) {
+          history.push('/profile/projects', {
+            some: true,
+          });
+        }
       })
       .catch(({ response }) => {
         console.log(response, 'res');
@@ -203,6 +205,24 @@ export const getProjectById = id => {
   return dispatch => {
     axios
       .get(`${API_URL}/project/${id}`)
+      .then(({ data }) =>
+        dispatch({ type: GET_CURRENT_PROJECT, payload: data }),
+      )
+      .catch(({ response }) => {
+        if (response?.status === 403) dispatch({ type: NOT_FOUND });
+      });
+  };
+};
+
+export const getMyProjectById = id => {
+  const token = Cookies.get('token');
+  return dispatch => {
+    axios
+      .get(`${API_URL}/project/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
       .then(({ data }) =>
         dispatch({ type: GET_CURRENT_PROJECT, payload: data }),
       )
