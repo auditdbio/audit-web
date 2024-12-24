@@ -9,6 +9,7 @@ const ShareProjectButton = ({
   projectId,
   showIcon = false,
   sx = {},
+  showText = false,
   isModal = false,
 }) => {
   const [text, setText] = useState('Share the Project');
@@ -54,7 +55,7 @@ const ShareProjectButton = ({
       {showIcon && !hideIcon && (
         <LaunchRoundedIcon sx={{ marginRight: '5px' }} />
       )}
-      {/*{text}*/}
+      {showText && text}
     </Button>
   );
 };

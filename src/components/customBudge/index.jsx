@@ -3,7 +3,7 @@ import Box from '@mui/material/Box';
 import { Button, ClickAwayListener, Typography } from '@mui/material';
 import { CustomBadge } from '../custom/Badge.jsx';
 import NotificationsIcon from '@mui/icons-material/Notifications.js';
-import IconButton from '@mui/material/IconButton';
+import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
 import { useDispatch, useSelector } from 'react-redux';
 import { AUDITOR } from '../../redux/actions/types.js';
 import theme from '../../styles/themes.js';
@@ -45,15 +45,25 @@ const CustomBudge = () => {
           </CustomBadge>
         </Button>
         {isOpen && (
-          <Box sx={modalWrapper(currentRole, theme)}>
-            {messages.length ? (
-              messages.map(message => (
-                <CustomMessage key={message.id} message={message} />
-              ))
-            ) : (
-              <Typography sx={titleStyle}>Nothing new to report</Typography>
-            )}
-          </Box>
+          <>
+            <ArrowDropUpIcon
+              sx={{
+                position: 'absolute',
+                bottom: '-19px',
+                left: '6px',
+              }}
+              color={currentRole === AUDITOR ? 'secondary' : 'primary'}
+            />
+            <Box sx={modalWrapper(currentRole, theme)}>
+              {messages.length ? (
+                messages.map(message => (
+                  <CustomMessage key={message.id} message={message} />
+                ))
+              ) : (
+                <Typography sx={titleStyle}>Nothing new to report</Typography>
+              )}
+            </Box>
+          </>
         )}
       </Box>
     </ClickAwayListener>
@@ -98,8 +108,12 @@ const modalWrapper = (role, theme) => ({
     role === AUDITOR
       ? theme.palette.secondary?.main
       : theme.palette.primary.main,
-  [theme.breakpoints.down('sm')]: {
+  [theme.breakpoints.down('md')]: {
     left: 'auto',
     right: 'calc(50% - 110px)',
+  },
+  [theme.breakpoints.down(400)]: {
+    left: 'auto',
+    right: 'calc(50% - 60px)',
   },
 });

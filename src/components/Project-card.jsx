@@ -20,7 +20,7 @@ import {
   SUBMITED,
   WAITING_FOR_AUDITS,
 } from '../redux/actions/types.js';
-import { addTestsLabel, issuesCounter } from '../lib/helper.js';
+import { addTestsLabel, dateConverter, issuesCounter } from '../lib/helper.js';
 import {
   handlePublishAudit,
   startAudit,
@@ -100,12 +100,81 @@ const ProjectCard = ({ type, project, currentRole, isPublic }) => {
           </Typography>
         </Tooltip>
         {!isPublic &&
+          currentRole === AUDITOR &&
+          !project?.no_customer &&
+          project.status.toLowerCase() !== RESOLVED.toLowerCase() && (
+            <Box sx={dateWrapper}>
+              <Typography sx={dateStyle}>
+                {dayjs(project?.time?.from).format('DD.MM.YYYY')}
+              </Typography>
+              <Typography variant="caption">-</Typography>
+              <Typography sx={dateStyle}>
+                {dayjs(project?.time?.to).format('DD.MM.YYYY')}
+              </Typography>
+            </Box>
+          )}
+        {!isPublic &&
+          currentRole === AUDITOR &&
+          !project?.no_customer &&
+          project.status.toLowerCase() === RESOLVED.toLowerCase() &&
+          project?.resolved_at && (
+            <Box sx={dateWrapper}>
+              <Typography sx={[dateStyle, { border: 'unset' }]}>
+                {dayjs(dateConverter(project.resolved_at)).format('DD.MM.YYYY')}
+              </Typography>
+            </Box>
+          )}
+        {!isPublic &&
           (!project.no_customer ? (
             <Box sx={priceWrapper}>
               <Box sx={infoWrapper}>
                 <Currency />
                 <Typography>{project.price || project.total_cost}</Typography>
               </Box>
+              {!isPublic &&
+                (currentRole === AUDITOR ? (
+                  !project.no_customer && (
+                    <Box sx={statusWrapper}>
+                      {project.status !== SUBMITED && (
+                        <>
+                          {project.status.toLowerCase() ===
+                          RESOLVED.toLowerCase() ? (
+                            <Box sx={{ backgroundColor: '#52176D' }} />
+                          ) : (
+                            project.status.toLowerCase() ===
+                              WAITING_FOR_AUDITS.toLowerCase() && (
+                              <Box sx={{ backgroundColor: '#FF9900' }} />
+                            )
+                          )}
+                          {project.status.toLowerCase() !==
+                            WAITING_FOR_AUDITS.toLowerCase() &&
+                            project.status.toLowerCase() !==
+                              RESOLVED.toLowerCase() && (
+                              <Box sx={{ backgroundColor: '#09C010' }} />
+                            )}
+                        </>
+                      )}
+                      <Typography>{project.status}</Typography>
+                    </Box>
+                  )
+                ) : (
+                  <Box sx={statusWrapper}>
+                    {project.status === DONE ? (
+                      <Box sx={{ backgroundColor: '#FF4444' }} />
+                    ) : project.publish_options.publish ? (
+                      <Box sx={{ backgroundColor: '#09C010' }} />
+                    ) : (
+                      <Box sx={{ backgroundColor: '#FF9900' }} />
+                    )}
+                    <Typography>
+                      {project.status === DONE
+                        ? 'Project closed'
+                        : project.publish_options.publish
+                        ? 'Published'
+                        : 'Hidden'}
+                    </Typography>
+                  </Box>
+                ))}
               {/*<Box sx={infoWrapper}>*/}
               {/*  <Star />*/}
               {/*  <Typography>150</Typography>*/}
@@ -124,59 +193,7 @@ const ProjectCard = ({ type, project, currentRole, isPublic }) => {
             </Box>
           ))}
       </Box>
-      <Box
-        sx={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          marginTop: 'auto',
-          marginBottom: 0,
-          width: '100%',
-        }}
-      >
-        {!isPublic &&
-          (currentRole === AUDITOR ? (
-            !project.no_customer && (
-              <Box sx={statusWrapper}>
-                {project.status !== SUBMITED && (
-                  <>
-                    {project.status.toLowerCase() === RESOLVED.toLowerCase() ? (
-                      <Box sx={{ backgroundColor: '#52176D' }} />
-                    ) : (
-                      project.status.toLowerCase() ===
-                        WAITING_FOR_AUDITS.toLowerCase() && (
-                        <Box sx={{ backgroundColor: '#FF9900' }} />
-                      )
-                    )}
-                    {project.status.toLowerCase() !==
-                      WAITING_FOR_AUDITS.toLowerCase() &&
-                      project.status.toLowerCase() !==
-                        RESOLVED.toLowerCase() && (
-                        <Box sx={{ backgroundColor: '#09C010' }} />
-                      )}
-                  </>
-                )}
-                <Typography>{project.status}</Typography>
-              </Box>
-            )
-          ) : (
-            <Box sx={statusWrapper}>
-              {project.status === DONE ? (
-                <Box sx={{ backgroundColor: '#FF4444' }} />
-              ) : project.publish_options.publish ? (
-                <Box sx={{ backgroundColor: '#09C010' }} />
-              ) : (
-                <Box sx={{ backgroundColor: '#FF9900' }} />
-              )}
-              <Typography>
-                {project.status === DONE
-                  ? 'Project closed'
-                  : project.publish_options.publish
-                  ? 'Published'
-                  : 'Hidden'}
-              </Typography>
-            </Box>
-          ))}
+      <Box sx={actionInfoSx}>
         {isPublic && (
           <Box
             sx={{
@@ -187,26 +204,12 @@ const ProjectCard = ({ type, project, currentRole, isPublic }) => {
               width: '100%',
             }}
           >
-            {/*</Button>*/}
-            {/*// </Box>*/}
-            {/*// </Box>*/}
-            {/*<Box>*/}
-            {/*  {*/}
-            {/*    <Typography sx={{ mb: '12px', fontSize: '14px!important' }}>*/}
-            {/*      {issuesCounter(project?.issues)}*/}
-            {/*    </Typography>*/}
-            {/*  }*/}
-            {/*</Box>*/}
             {project?.report_type?.toLowerCase() !== 'custom' && (
               <IssueSeveritySort issues={project?.issues} />
             )}
-            <Typography sx={{ fontSize: '14px!important', height: '21px' }}>
+            <Typography sx={{ fontSize: '11px!important', height: '21px' }}>
               {project.resolved_at &&
-                dayjs(
-                  project.resolved_at > 1000000000000
-                    ? project.resolved_at / 1000
-                    : project.resolved_at * 1000,
-                ).format('DD MMM YYYY')}
+                dayjs(dateConverter(project.resolved_at)).format('DD.MM.YYYY')}
             </Typography>
           </Box>
         )}
@@ -227,65 +230,70 @@ const ProjectCard = ({ type, project, currentRole, isPublic }) => {
                   name="Publish"
                 />
               }
-              sx={{ '& .MuiTypography-root': { fontSize: '14px' }, mb: '5px' }}
+              sx={{
+                '& .MuiTypography-root': { fontSize: '14px' },
+                marginRight: 'unset',
+                mb: '8px',
+              }}
               label="Publish"
             />
           )}
-        {isPublic ? (
-          <Button
-            variant="contained"
-            sx={[
-              editButton,
-              type === 'auditor' ? editAuditor : {},
-              { width: '100px' },
-            ]}
-            onClick={() => {
-              localStorage.setItem('prevPath', window.location.pathname);
-              navigate(`/audit/${project.id}`);
-            }}
-            {...addTestsLabel(
-              type === AUDITOR ? 'submit-button' : 'edit-button',
+        {type !== AUDITOR && (
+          <Box sx={smallButtonsBox}>
+            <Button
+              sx={copyBtn}
+              onClick={handleMakeCopy}
+              {...addTestsLabel('make-copy-button')}
+            >
+              Make a copy
+            </Button>
+            {project.publish_options.publish && (
+              <ShareProjectButton showText={true} projectId={project.id} />
             )}
-          >
-            View
-          </Button>
-        ) : (
-          <Button
-            variant="contained"
-            sx={[editButton, type === 'auditor' ? editAuditor : {}]}
-            onClick={handleClick}
-            {...addTestsLabel(
-              type === AUDITOR ? 'submit-button' : 'edit-button',
-            )}
-          >
-            {type === AUDITOR
-              ? project?.status.toLowerCase() !==
-                  WAITING_FOR_AUDITS.toLowerCase() &&
-                project?.status.toLowerCase() !== RESOLVED.toLowerCase()
-                ? 'Proceed'
-                : 'View'
-              : 'Edit'}
-          </Button>
+          </Box>
         )}
-        {!isPublic &&
-          (type !== AUDITOR ? (
-            <Box sx={smallButtonsBox}>
-              <Button
-                sx={copyBtn}
-                onClick={handleMakeCopy}
-                {...addTestsLabel('make-copy-button')}
-              >
-                Make a copy
-              </Button>
-              {project.publish_options.publish && (
-                <ShareProjectButton projectId={project.id} />
+        <Box sx={actionBtnSx(theme, isPublic)}>
+          {isPublic ? (
+            <Button
+              variant="contained"
+              sx={[
+                editButton,
+                type === 'auditor' ? editAuditor : {},
+                { width: '100px' },
+              ]}
+              onClick={() => {
+                localStorage.setItem('prevPath', window.location.pathname);
+                navigate(`/audit/${project.id}`);
+              }}
+              {...addTestsLabel(
+                type === AUDITOR ? 'submit-button' : 'edit-button',
               )}
-            </Box>
+            >
+              View
+            </Button>
           ) : (
+            <Button
+              variant="contained"
+              sx={[editButton, type === 'auditor' ? editAuditor : {}]}
+              onClick={handleClick}
+              {...addTestsLabel(
+                type === AUDITOR ? 'submit-button' : 'edit-button',
+              )}
+            >
+              {type === AUDITOR
+                ? project?.status.toLowerCase() !==
+                    WAITING_FOR_AUDITS.toLowerCase() &&
+                  project?.status.toLowerCase() !== RESOLVED.toLowerCase()
+                  ? 'Proceed'
+                  : 'View'
+                : 'Edit'}
+            </Button>
+          )}
+          {!isPublic &&
             project?.status.toLowerCase() ===
               WAITING_FOR_AUDITS.toLowerCase() && (
               <Button
-                sx={[editButton, { marginTop: '12px' }]}
+                sx={[editButton, type === 'auditor' ? { width: '50%' } : {}]}
                 variant="contained"
                 color={'primary'}
                 onClick={handleStartAudit}
@@ -293,8 +301,8 @@ const ProjectCard = ({ type, project, currentRole, isPublic }) => {
               >
                 Start audit
               </Button>
-            )
-          ))}
+            )}
+        </Box>
       </Box>
     </Box>
   );
@@ -312,7 +320,7 @@ export const userButtonSx = theme => ({
 const priceWrapper = theme => ({
   display: 'flex',
   gap: '30px',
-  mt: '18px',
+  my: '18px',
   [theme.breakpoints.down('md')]: {
     gap: '18px',
   },
@@ -321,9 +329,35 @@ const priceWrapper = theme => ({
   },
 });
 
+const actionInfoSx = theme => ({
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  marginTop: 'auto',
+  marginBottom: 0,
+  width: '100%',
+  [theme.breakpoints.down('xs')]: {
+    alignItems: 'flex-end',
+    flexDirection: 'column',
+  },
+});
+
 const publicSxView = theme => ({
   [theme.breakpoints.down(580)]: {
     flexDirection: 'column',
+  },
+});
+
+const actionBtnSx = (theme, isPublic) => ({
+  display: 'flex',
+  justifyContent: 'center',
+  gap: '8px',
+  alignItems: 'center',
+  width: '100%',
+  [theme.breakpoints.down('xs')]: {
+    justifyContent: 'flex-end',
+    flexDirection: 'column',
+    alignItems: isPublic ? 'center' : 'flex-end',
   },
 });
 
@@ -341,6 +375,7 @@ const cardInnerWrapper = (theme, isPublic) => ({
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'center',
+  width: '100%',
   [theme.breakpoints.down('xs')]: {
     alignItems: isPublic ? 'center' : 'flex-start',
   },
@@ -348,31 +383,74 @@ const cardInnerWrapper = (theme, isPublic) => ({
 
 const smallButtonsBox = theme => ({
   display: 'flex',
-  flexDirection: 'column',
   justifyContent: 'center',
+  alignItems: 'center',
+  gap: '10px',
   minWidth: '100px',
-  height: '60px',
-  mt: '12px',
+  my: '12px',
   [theme.breakpoints.down('xs')]: {
-    mt: '5px',
-    height: '52px',
+    mb: '10px',
     justifyContent: 'flex-start',
+    flexDirection: 'column',
   },
 });
 
 const copyBtn = theme => ({
   textTransform: 'none',
   fontSize: '10px',
+  margin: '8px 0',
   [theme.breakpoints.down('xs')]: {
     padding: '4px 6px',
+    margin: 'unset',
+    minHeight: 'unset',
   },
 });
+
+const dateWrapper = {
+  display: 'flex',
+  flexDirection: 'row',
+  gap: '0.5rem',
+  alignItems: 'center',
+  width: '100%',
+  [theme.breakpoints.down('sm')]: {
+    gap: '5px',
+    '& span': {
+      fontSize: '8px',
+    },
+  },
+  [theme.breakpoints.down('xxs')]: {
+    gap: '1px',
+  },
+};
+
+const dateStyle = {
+  fontSize: '11px!important',
+  fontWeight: 500,
+  color: '#434242',
+  border: '1.8px #E5E5E5 solid',
+  padding: '12px',
+  width: '100%',
+  textAlign: 'center',
+  [theme.breakpoints.down('md')]: {
+    fontSize: '9px!important',
+    padding: '10px',
+  },
+  [theme.breakpoints.down('xs')]: {
+    padding: '8px',
+    width: '70px',
+    fontSize: '8px!important',
+  },
+  [theme.breakpoints.down('xxs')]: {
+    padding: '5px 2px',
+    width: '50px',
+  },
+};
 
 const statusWrapper = theme => ({
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
-  gap: '15px',
+  gap: '8px',
   width: '100%',
   '& p': {
     fontSize: '10px',
@@ -384,9 +462,9 @@ const statusWrapper = theme => ({
     height: '17px',
     borderRadius: '50%',
   },
-  margin: '40px 0 18px',
+  // margin: '20px 0 18px',
   [theme.breakpoints.down('md')]: {
-    margin: '25px 0 10px',
+    // margin: '25px 0 10px',
   },
   [theme.breakpoints.down('xs')]: {
     marginTop: 0,
@@ -419,6 +497,7 @@ const editButton = theme => ({
 
 const editAuditor = theme => ({
   backgroundColor: theme.palette.secondary.main,
+  width: '50%',
   '&:hover': {
     backgroundColor: '#450e5d',
   },
@@ -445,10 +524,11 @@ const infoWrapper = theme => ({
 
 const categorySx = theme => ({
   textAlign: 'center',
-  height: '55px',
+  height: '35px',
+  width: '100%',
   overflow: 'hidden',
   wordBreak: 'break-word',
-  '-webkit-line-clamp': '3',
+  '-webkit-line-clamp': '2',
   '-webkit-box-orient': 'vertical',
   'text-overflow': 'ellipsis',
   display: '-webkit-box',
@@ -458,7 +538,7 @@ const categorySx = theme => ({
   margin: '10px 0 7px',
   [theme.breakpoints.down('xs')]: {
     fontSize: '10px!important',
-    textAlign: 'left',
+    // textAlign: 'left',
     height: '40px',
   },
   [theme.breakpoints.down('xxs')]: {
@@ -467,11 +547,11 @@ const categorySx = theme => ({
     '-webkit-line-clamp': '2',
   },
 });
-
+//
 const cardWrapper = theme => ({
   display: 'flex',
   flexDirection: 'column',
-  padding: '24px 30px 24px',
+  padding: '24px 14px 24px',
   height: '100%',
   boxShadow:
     '0px 64.1377px 76.5824px rgba(0, 0, 0, 0.07),' +
@@ -488,7 +568,7 @@ const cardWrapper = theme => ({
     lineHeight: '22px',
   },
   [theme.breakpoints.down('md')]: {
-    padding: '24px 22px 24px',
+    padding: '24px 12px 24px',
   },
   [theme.breakpoints.down('xs')]: {
     flexDirection: 'row',
