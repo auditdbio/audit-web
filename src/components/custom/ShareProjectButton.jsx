@@ -1,9 +1,10 @@
 import React, { useRef, useState } from 'react';
 import ClipboardJS from 'clipboard';
-import { Button } from '@mui/material';
+import { Button, Tooltip } from '@mui/material';
 import LaunchRoundedIcon from '@mui/icons-material/LaunchRounded.js';
 import { addTestsLabel } from '../../lib/helper.js';
 import { BASE_URL } from '../../services/urls.js';
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 
 const ShareProjectButton = ({
   projectId,
@@ -15,6 +16,7 @@ const ShareProjectButton = ({
   const [text, setText] = useState('Share the Project');
   const [hideIcon, setHideIcon] = useState(false);
   const buttonRef = useRef(null);
+  const [successCopied, setSuccessCopied] = useState(false);
 
   const handleShare = () => {
     const buffer = `${BASE_URL}project/${projectId}`;
@@ -28,10 +30,12 @@ const ShareProjectButton = ({
     const clipboard = new ClipboardJS(buttonRef.current, options);
     clipboard.on('success', a => {
       setText('Link copied');
+      setSuccessCopied(true);
       setHideIcon(true);
       clipboard.destroy();
       setTimeout(() => {
         setText('Share the Project');
+        setSuccessCopied(false);
         setHideIcon(false);
       }, 2000);
     });
@@ -45,18 +49,39 @@ const ShareProjectButton = ({
   };
 
   return (
-    <Button
-      sx={[buttonSx, sx]}
-      onClick={handleShare}
-      ref={buttonRef}
-      className={'share-button'}
-      {...addTestsLabel('share-button')}
-    >
-      {showIcon && !hideIcon && (
-        <LaunchRoundedIcon sx={{ marginRight: '5px' }} />
+    <>
+      {showIcon && !showText ? (
+        <Tooltip
+          arrow
+          placement={'top'}
+          title={successCopied ? 'Link copied' : 'Share project'}
+        >
+          <Button
+            sx={[buttonSx, sx]}
+            onClick={handleShare}
+            ref={buttonRef}
+            className={'share-button'}
+            {...addTestsLabel('share-button')}
+          >
+            {successCopied ? (
+              <CheckCircleOutlineIcon sx={{ marginRight: '5px' }} />
+            ) : (
+              <LaunchRoundedIcon sx={{ marginRight: '5px' }} />
+            )}
+          </Button>
+        </Tooltip>
+      ) : (
+        <Button
+          sx={[buttonSx, sx]}
+          onClick={handleShare}
+          ref={buttonRef}
+          className={'share-button'}
+          {...addTestsLabel('share-button')}
+        >
+          {showText && text}
+        </Button>
       )}
-      {showText && text}
-    </Button>
+    </>
   );
 };
 
