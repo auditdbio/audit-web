@@ -35,6 +35,7 @@ import Headings from '../router/Headings.jsx';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import EditIcon from '@mui/icons-material/Edit';
 import ExpandLessOutlinedIcon from '@mui/icons-material/ExpandLessOutlined';
+import AuditUserCard from '../components/AuditUserCard/AuditUserCard.jsx';
 
 const PublicProject = () => {
   const dispatch = useDispatch();
@@ -74,7 +75,7 @@ const PublicProject = () => {
       if (descriptionRef?.current?.offsetHeight > 400) {
         setShowReadMoreButton(true);
       }
-    }, 500);
+    }, 600);
   }, [descriptionRef.current]);
 
   const handleMakeOffer = () => {
@@ -167,7 +168,15 @@ const PublicProject = () => {
           severity={message || successMessage ? 'success' : 'error'}
           text={message || successMessage || error || auditError}
         />
-
+        <Button
+          variant="text"
+          sx={[messageButton(theme, project?.customer_id === user.id)]}
+          onClick={handleSendMessage}
+          disabled={project?.customer_id === user.id}
+          {...addTestsLabel('message-button')}
+        >
+          <ChatIcon />
+        </Button>
         <Modal
           open={modalIsOpen}
           onClose={handleCloseModal}
@@ -187,90 +196,25 @@ const PublicProject = () => {
         <Button
           onClick={() => navigate(-1)}
           sx={{ position: 'absolute', top: '0', minWidth: 'unset', left: '0' }}
+          color={user.current_role === AUDITOR ? 'secondary' : 'primary'}
         >
           <ArrowBackIcon />
         </Button>
-        <Box>
+        <Box sx={{ display: 'flex', justifyContent: 'center' }}>
           <Typography sx={projectNameSx}>{project?.name}</Typography>
         </Box>
-
-        <Box sx={customerInfoBlock}>
-          <Box sx={avatarBoxSx}>
-            <Avatar
-              src={customer?.avatar ? `${ASSET_URL}/id/${customer.avatar}` : ''}
-              alt="customer photo"
-              sx={avatarSx}
-            />
-          </Box>
-          <Box sx={customerInfoColumn}>
-            <Box sx={[customerInfoString, { mb: '15px' }]}>
-              <Box sx={fieldLabel}>First Name:</Box>
-              <Tooltip
-                title={customer?.first_name}
-                arrow
-                placement="top"
-                enterDelay={500}
-              >
-                <Typography sx={customerInfo}>
-                  {customer?.first_name}
-                </Typography>
-              </Tooltip>
-            </Box>
-            {customer?.last_name && (
-              <Box sx={customerInfoString}>
-                <Box sx={fieldLabel}>Last Name:</Box>
-                <Tooltip
-                  title={customer?.last_name}
-                  arrow
-                  placement="top"
-                  enterDelay={500}
-                >
-                  <Typography sx={customerInfo}>
-                    {customer?.last_name}
-                  </Typography>
-                </Tooltip>
-              </Box>
-            )}
-          </Box>
-
-          {customer?.contacts?.public_contacts && (
-            <Box sx={customerInfoColumn}>
-              <Box sx={[customerInfoString, { mb: '15px' }]}>
-                <Box sx={fieldLabel}>Email:</Box>
-                <Tooltip
-                  title={customer?.contacts.email}
-                  arrow
-                  placement="top"
-                  enterDelay={500}
-                >
-                  <Typography sx={customerInfo}>
-                    {customer?.contacts.email}
-                  </Typography>
-                </Tooltip>
-              </Box>
-              {customer?.last_name && (
-                <Box sx={customerInfoString}>
-                  <Box sx={fieldLabel}>Telegram:</Box>
-                  <Tooltip
-                    title={customer?.contacts.telegram}
-                    arrow
-                    placement="top"
-                    enterDelay={500}
-                  >
-                    <Typography sx={customerInfo}>
-                      {customer?.contacts.telegram}
-                    </Typography>
-                  </Tooltip>
-                </Box>
-              )}
-            </Box>
-          )}
-        </Box>
-
         <Box sx={{ width: '100%' }}>
-          <Collapse in={true} collapsedSize={showFull ? undefined : 250}>
+          <Collapse in={true} collapsedSize={showFull ? undefined : 400}>
             <Box sx={descriptionWrapper(theme, showFull)}>
               {/*<Box sx={descriptionSx(showFull)}>*/}
+              <AuditUserCard
+                avatar={customer?.avatar}
+                // role="Customer"
+                name={customer?.first_name + ' ' + customer?.last_name}
+                email={customer?.contacts.email}
+                telegram={customer?.contacts.telegram}
+                id={customer?.user_id}
+              />
               <Box ref={descriptionRef}>
                 <Markdown value={project?.description} />
               </Box>
@@ -294,7 +238,6 @@ const PublicProject = () => {
                 : {},
             ]}
           >
-            {/*{tab === 0 && (*/}
             {showReadMoreButton && (
               <Button
                 onClick={() => setShowFull(!showFull)}
@@ -361,15 +304,6 @@ const PublicProject = () => {
               Make Offer
             </Button>
           )}
-          <Button
-            variant="text"
-            // sx={[buttonSx, messageButton]}
-            onClick={handleSendMessage}
-            disabled={project?.customer_id === user.id}
-            {...addTestsLabel('message-button')}
-          >
-            <ChatIcon />
-          </Button>
         </Box>
       </Box>
     </Layout>
@@ -379,7 +313,7 @@ const PublicProject = () => {
 export default PublicProject;
 
 const descriptionWrapper = (theme, showFull) => ({
-  maxHeight: showFull ? 'none' : 250,
+  maxHeight: showFull ? 'none' : 400,
   '& .rc-md-editor': {
     height: '100%!important',
   },
@@ -389,8 +323,20 @@ const descriptionWrapper = (theme, showFull) => ({
     borderRight: 'unset',
   },
   '& .editor-container': {
-    borderBottom: '1px solid #e0e0e0',
+    borderBottom: 'unset',
   },
+  '& .title-sx': {
+    maxWidth: 'unset',
+  },
+});
+
+const messageButton = (theme, disable) => ({
+  position: 'absolute',
+  top: '10px',
+  right: 0,
+  zIndex: 333,
+  width: '35px',
+  height: '35px',
 });
 
 const readAllButton = theme => ({
@@ -422,14 +368,14 @@ const wrapper = role => {
     position: 'relative',
     display: 'flex',
     flexDirection: 'column',
-    padding: '30px 60px 60px',
+    padding: '30px 30px 60px',
     gap: '40px',
-    backgroundColor: '#fff',
+    backgroundColor: '#fcfaf6',
     borderRadius: '10px',
     border: `2px solid ${borderColor}`,
     justifyContent: 'space-between',
     [theme.breakpoints.down('lg')]: {
-      padding: '30px 40px',
+      padding: '30px 20px',
     },
     [theme.breakpoints.down('sm')]: {
       gap: '20px',
@@ -462,6 +408,7 @@ const fieldLabel = theme => ({
 
 const projectNameSx = {
   width: '100%',
+  maxWidth: '700px',
   fontSize: '20px !important',
   textAlign: 'center',
   fontWeight: 500,
