@@ -160,7 +160,7 @@ const AppRoutes = () => {
         <Route path="/oauth/callback" element={<ConnectAccount />} />
         {/*<Route path="/oauth/callback" element={<Github />} />*/}
         <Route path="/projects" element={<ProjectPage />} />
-        <Route path="/projects/:id" element={<PublicProject />} />
+        <Route path="/project/:id" element={<PublicProject />} />
         <Route path="/for-customers" element={<ForCustomer />} />
         <Route path="/for-auditors" element={<ForAuditor />} />
         <Route path="/auditors" element={<AuditorsPage />} />
