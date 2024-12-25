@@ -331,9 +331,9 @@ const projectNameSx = theme => ({
   height: '45px',
   overflow: 'hidden',
   wordBreak: 'break-word',
-  '-webkit-line-clamp': '2',
-  '-webkit-box-orient': 'vertical',
-  'text-overflow': 'ellipsis',
+  WebkitLineClamp: '2',
+  WebkitBoxOrient: 'vertical',
+  textOverflow: 'ellipsis',
   display: '-webkit-box',
 });
 
@@ -448,9 +448,9 @@ const categorySx = theme => ({
   height: '55px',
   overflow: 'hidden',
   wordBreak: 'break-word',
-  '-webkit-line-clamp': '3',
-  '-webkit-box-orient': 'vertical',
-  'text-overflow': 'ellipsis',
+  WebkitLineClamp: '3',
+  WebkitBoxOrient: 'vertical',
+  textOverflow: 'ellipsis',
   display: '-webkit-box',
   fontSize: '12px!important',
   fontWeight: 500,
@@ -464,7 +464,7 @@ const categorySx = theme => ({
   [theme.breakpoints.down('xxs')]: {
     height: '30px',
     maxWidth: '90px',
-    '-webkit-line-clamp': '2',
+    WebkitLineClamp: '2',
   },
 });
 

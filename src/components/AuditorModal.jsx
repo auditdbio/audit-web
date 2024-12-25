@@ -13,7 +13,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs from 'dayjs';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom/dist';
 import { useDispatch, useSelector } from 'react-redux';
 import { addTestsLabel, isAuth } from '../lib/helper.js';
 import { ASSET_URL } from '../services/urls.js';
@@ -27,11 +27,11 @@ import {
 import * as Yup from 'yup';
 import CustomSnackbar from './custom/CustomSnackbar.jsx';
 import ShareProfileButton from './custom/ShareProfileButton.jsx';
-import PriceCalculation from './PriceCalculation.jsx';
 import { setCurrentChat } from '../redux/actions/chatActions.js';
 import ChatIcon from './icons/ChatIcon.jsx';
 import { getAuditorRating } from '../redux/actions/auditorAction.js';
 import Star from './icons/Star.jsx';
+import { SCOPE_GIT_BLOCK, SCOPE_LINKS } from '../services/constants.js';
 
 export default function AuditorModal({
   open,
@@ -127,7 +127,18 @@ export default function AuditorModal({
 
   useEffect(() => {
     if (chosen) {
-      setScope(chosen.reduce((acc, project) => [...acc, ...project.scope], []));
+      setScope(
+        chosen.reduce((acc, project) => {
+          if (project.scope?.type === SCOPE_GIT_BLOCK) {
+            return [
+              ...acc,
+              ...project.scope.content.files.map(file => file.display_url),
+            ];
+          } else if (project.scope?.type === SCOPE_LINKS) {
+            return [...acc, ...project.scope.content];
+          }
+        }, []),
+      );
     }
   }, [chosen]);
 
@@ -460,7 +471,6 @@ const MakeOfferSchema = Yup.object().shape({
   price: Yup.number(),
   price_range: Yup.object(),
   project_id: Yup.string(),
-  scope: Yup.array(),
   time_frame: Yup.string(),
   time: Yup.object().shape({
     from: Yup.date(),

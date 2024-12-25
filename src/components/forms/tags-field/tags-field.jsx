@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Field, useField } from 'formik';
 import { TextField } from 'formik-mui';
 import { Box, Button, IconButton, InputAdornment, Modal } from '@mui/material';
@@ -8,6 +8,7 @@ import { AUDITOR } from '../../../redux/actions/types.js';
 import CustomSnackbar from '../../custom/CustomSnackbar.jsx';
 import { addTestsLabel } from '../../../lib/helper.js';
 import CloseIcon from '@mui/icons-material/Close';
+import { SCOPE_GIT_BLOCK, SCOPE_LINKS } from '../../../services/constants.js';
 
 const TagsField = ({
   name,
@@ -27,7 +28,48 @@ const TagsField = ({
   const popularTags = ['solidity', 'zkp', 'rust', 'defi', 'web3'];
 
   const handleAddTag = () => {
-    if (name !== 'scope' && name !== 'links') {
+    if (name === 'scope' || name === 'links') {
+      const scope =
+        field.value?.type === SCOPE_GIT_BLOCK
+          ? field.value.content.files
+          : field.value?.type === SCOPE_LINKS
+          ? field.value.content
+          : field.value;
+
+      if (scope.length < 20) {
+        let link = state.trim();
+        if (/^.+\..+/.test(link)) {
+          link = /^https?:\/\//.test(link) ? link : `https://${link}`;
+          if (field.value?.type === SCOPE_LINKS) {
+            fieldHelper.setValue({
+              type: SCOPE_LINKS,
+              content: [...scope, link],
+            });
+            setState('');
+          } else if (field.value?.type === SCOPE_GIT_BLOCK) {
+            fieldHelper.setValue({
+              type: SCOPE_GIT_BLOCK,
+              content: {
+                ...field.value.content,
+                files: [
+                  ...scope,
+                  {
+                    path: link.slice(link.indexOf('blob') + 46),
+                    display_url: link,
+                  },
+                ],
+              },
+            });
+          } else {
+            fieldHelper.setValue([...field.value, link]);
+            setState('');
+          }
+          if (handleSubmit) handleSubmit();
+        }
+      } else {
+        setError('The maximum number of links that can be added is 20');
+      }
+    } else {
       if (state.length <= 30 && state) {
         if (field.value.length < 20) {
           fieldHelper.setValue([...field.value, state]);
@@ -40,22 +82,6 @@ const TagsField = ({
         }
       } else {
         setError('Tag length is limited to 30 characters');
-      }
-    } else {
-      if (field.value.length < 20) {
-        const link = state.trim();
-        if (/^.+\..+/.test(link)) {
-          if (/^https?:\/\//.test(link)) {
-            fieldHelper.setValue([...field.value, link]);
-            setState('');
-          } else {
-            fieldHelper.setValue([...field.value, `https://${link}`]);
-            setState('');
-          }
-          if (handleSubmit) handleSubmit();
-        }
-      } else {
-        setError('The maximum number of links that can be added is 20');
       }
     }
 
@@ -213,7 +239,7 @@ const errorSx = theme => ({
   },
 });
 
-const wrapper = theme => ({
+const wrapper = {
   display: 'flex',
   gap: '28px',
   flexDirection: 'column',
@@ -223,17 +249,7 @@ const wrapper = theme => ({
   '& p.Mui-error': {
     display: 'none',
   },
-});
-
-const formLabelSx = theme => ({
-  fontWeight: 500,
-  fontSize: '14px',
-  lineHeight: '24px',
-  color: '#434242',
-  [theme.breakpoints.down('lg')]: {
-    fontSize: '14px',
-  },
-});
+};
 
 const fieldSx = theme => ({
   '& input': {

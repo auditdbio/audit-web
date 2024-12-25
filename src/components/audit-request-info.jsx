@@ -28,20 +28,16 @@ import {
   changeRolePublicAuditor,
   changeRolePublicAuditorNoRedirect,
 } from '../redux/actions/userAction.js';
-import CustomLink from './custom/CustomLink.jsx';
 import OfferModal from './modal/OfferModal.jsx';
 import ShareProjectButton from './custom/ShareProjectButton.jsx';
 import { setCurrentChat } from '../redux/actions/chatActions.js';
 import ChatIcon from './icons/ChatIcon.jsx';
 import ConfirmModal from './modal/ConfirmModal.jsx';
 import CustomSnackbar from './custom/CustomSnackbar.jsx';
-import PriceCalculation from './PriceCalculation.jsx';
 import EditDescription from './EditDescription/index.jsx';
 import DescriptionHistory from './DescriptionHistory/index.jsx';
 import EditTags from './EditDescription/EditTags.jsx';
 import EditPrice from './EditDescription/EditPrice.jsx';
-import Star from './icons/Star.jsx';
-import Currency from './icons/Currency.jsx';
 
 const AuditRequestInfo = ({
   project,
@@ -53,8 +49,10 @@ const AuditRequestInfo = ({
   stayHere,
   hideChange,
 }) => {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const matchXs = useMediaQuery(theme.breakpoints.down('xs'));
+
   const [open, setOpen] = useState(false);
   const [confirmDeclineOpen, setConfirmDeclineOpen] = useState(false);
   const [showAcceptButton, setShowAcceptButton] = useState(true);
@@ -65,8 +63,6 @@ const AuditRequestInfo = ({
   );
   const { user } = useSelector(s => s.user);
   const { chatList } = useSelector(s => s.chat);
-
-  const dispatch = useDispatch();
 
   const handleOpen = () => {
     if (user.current_role === AUDITOR && isAuth() && auditor?.first_name) {
@@ -187,7 +183,11 @@ const AuditRequestInfo = ({
       </Box>
       <Box sx={{ width: '100%' }} className="audit-content">
         <Box sx={contentWrapper} className="audit-request-content-wrapper">
-          <Typography sx={titleSx} className="audit-request-title">
+          <Typography
+            sx={titleSx}
+            className="audit-request-title"
+            component="div"
+          >
             <EditTags hideChange={hideChange} audit={project} />
           </Typography>
           <Divider sx={{ width: '100%' }} />
@@ -199,25 +199,6 @@ const AuditRequestInfo = ({
               request={true}
               user={user}
             />
-            {/*<Box sx={{ display: 'flex', alignItems: 'center', gap: '15px' }}>*/}
-            {/*  <svg*/}
-            {/*    width="26"*/}
-            {/*    height="26"*/}
-            {/*    viewBox="0 0 26 26"*/}
-            {/*    fill="none"*/}
-            {/*    xmlns="http://www.w3.org/2000/svg"*/}
-            {/*  >*/}
-            {/*    <path*/}
-            {/*      d="M13.2559 25.5499C20.2424 25.5499 25.9061 19.8862 25.9061 12.8997C25.9061 5.91319 20.2424 0.249512 13.2559 0.249512C6.26939 0.249512 0.605713 5.91319 0.605713 12.8997C0.605713 19.8862 6.26939 25.5499 13.2559 25.5499Z"*/}
-            {/*      fill="#52176D"*/}
-            {/*    />*/}
-            {/*    <path*/}
-            {/*      d="M13.257 4.64941L15.4702 9.71865L20.4071 10.5528L16.8321 14.4671L17.6833 20.0496L13.257 17.4188L8.83078 20.0496L9.68199 14.4671L6.10693 10.5528L11.0439 9.71865L13.257 4.64941Z"*/}
-            {/*      fill="#FFCA28"*/}
-            {/*    />*/}
-            {/*  </svg>*/}
-            {/*  150*/}
-            {/*</Box>*/}
           </Box>
 
           {!matchXs && (
@@ -320,7 +301,7 @@ const AuditRequestInfo = ({
 
         <Box sx={{ textAlign: 'center', mt: '10px' }}>
           <ShareProjectButton
-            projectId={project?.project_id}
+            projectId={project?.project_id || project?.id}
             sx={{ fontSize: '12px' }}
             showIcon
             isModal
@@ -328,7 +309,7 @@ const AuditRequestInfo = ({
         </Box>
 
         <Box sx={infoWrapper} className="audit-request-info">
-          {/*<Markdown value={project?.description} />*/}
+          <Markdown value={project?.description} />
           <EditDescription
             hideChange={hideChange}
             audit={project}
@@ -438,11 +419,6 @@ const AuditRequestInfo = ({
               )}
             </Box>
           )}
-          <Box sx={linkWrapper} className="audit-request-links">
-            {(project?.project_scope || project?.scope)?.map((link, idx) => (
-              <CustomLink link={link} key={idx} />
-            ))}
-          </Box>
         </Box>
       </Box>
 
@@ -639,7 +615,6 @@ const backButtonSx = theme => ({
   top: '-20px',
   [theme.breakpoints.down('sm')]: {
     left: '-25px',
-    // top: '-30px',
   },
 });
 

@@ -25,6 +25,7 @@ import { setCurrentChat } from '../redux/actions/chatActions.js';
 import ChatIcon from '../components/icons/ChatIcon.jsx';
 import Headings from '../router/Headings.jsx';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import { SCOPE_GIT_BLOCK } from '../services/constants.js';
 
 const PublicProject = () => {
   const dispatch = useDispatch();
@@ -274,7 +275,10 @@ const PublicProject = () => {
         </Box>
 
         <Box sx={linksList}>
-          {project?.scope.map((link, idx) => {
+          {(project?.scope.type === SCOPE_GIT_BLOCK
+            ? project.scope.content.files?.map(file => file.display_url)
+            : project.scope?.content
+          ).map((link, idx) => {
             return <CustomLink link={link} key={idx} sx={linkSx} />;
           })}
         </Box>

@@ -3,7 +3,6 @@ import theme from '../../../styles/themes';
 import { CustomButton } from '../../custom/Button';
 import { useNavigate } from 'react-router-dom';
 import React, { useState } from 'react';
-import ProjectModal from '../../ProjectModal.jsx';
 import AuditRequestInfo from '../../audit-request-info.jsx';
 import CustomSnackbar from '../../custom/CustomSnackbar.jsx';
 import { addTestsLabel } from '../../../lib/helper.js';

@@ -11,8 +11,8 @@ const SalarySlider = ({ min = 0, max = 100, name }) => {
 
   const handleChange = e => {
     let { value } = e.target;
-    if (value > 10000) {
-      value = 100;
+    if (value > max) {
+      value = max;
     } else if (value < 0) {
       value = 0;
     }
@@ -79,9 +79,9 @@ const infoWrapper = theme => ({
   '& .MuiOutlinedInput-input': {
     fontSize: '16px',
     textAlign: 'center',
-    '&[type=number]': { '-moz-appearance': 'textfield' },
+    '&[type=number]': { MozAppearance: 'textfield' },
     '&::-webkit-outer-spin-button, &::-webkit-inner-spin-button': {
-      '-webkit-appearance': 'none',
+      WebkitAppearance: 'none',
     },
   },
   [theme.breakpoints.down('xs')]: {

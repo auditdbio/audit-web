@@ -15,7 +15,8 @@ import {
   useMediaQuery,
 } from '@mui/material';
 import SaveIcon from '@mui/icons-material/Save';
-import { addTestsLabel, isAuth, reportBuilder } from '../../lib/helper.js';
+import { addTestsLabel, isAuth } from '../../lib/helper.js';
+import { reportBuilder } from '../../lib/reportBuilder.js';
 import {
   AUDITOR,
   CHANGE_ROLE_DONT_HAVE_PROFILE_AUDITOR,
