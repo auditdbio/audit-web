@@ -13,15 +13,15 @@ import { Link, useLocation } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom/dist';
 
 const Message = ({ message, user, currentChat, isRead }) => {
-// const Message = ({
-//   message,
-//   user,
-//   currentChat,
-//   isRead,
-//   type,
-//   orgId,
-//   chatRole,
-// }) => {
+  // const Message = ({
+  //   message,
+  //   user,
+  //   currentChat,
+  //   isRead,
+  //   type,
+  //   orgId,
+  //   chatRole,
+  // }) => {
   const { customer } = useSelector(state => state.customer);
   const { auditor } = useSelector(state => state.auditor);
 
@@ -48,19 +48,21 @@ const Message = ({ message, user, currentChat, isRead }) => {
     }
   }, [user.current_role, customer?.avatar, auditor?.avatar]);
 
-  const getMessageAvatar = () => {if (orgId) {
-  //   if (message?.from?.id === orgId) {
-  //     return userAvatar ? `${ASSET_URL}/${userAvatar}` : null;
-  //   }
-  // } else {
-  //   if (message?.from?.id === user?.id) {
-  //     return userAvatar ? `${ASSET_URL}/${userAvatar}` : null;
-  //   }
+  const getMessageAvatar = () => {
+    // if (orgId) {
+    //   if (message?.from?.id === orgId) {
+    //     return userAvatar ? `${ASSET_URL}/${userAvatar}` : null;
+    //   }
+    // } else {
+    //   if (message?.from?.id === user?.id) {
+    //     return userAvatar ? `${ASSET_URL}/${userAvatar}` : null;
+    //   }
     if (message?.from?.id === user?.id) {
       return userAvatar ? `${ASSET_URL}/id/${userAvatar}` : null;
     }
     return currentChat?.avatar ? `${ASSET_URL}/id/${currentChat.avatar}` : null;
   };
+  // }
 
   const downloadFile = () => {
     const token = Cookies.get('token');
