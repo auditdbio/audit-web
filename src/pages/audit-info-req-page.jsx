@@ -17,7 +17,10 @@ const AuditInfoReqPage = () => {
 
   useEffect(() => {
     dispatch(getAuditRequest(id));
-    return () => dispatch({ type: CLEAR_AUDIT_REQUEST });
+    return () => {
+      localStorage.removeItem('prevPath');
+      dispatch({ type: CLEAR_AUDIT_REQUEST });
+    };
   }, [id]);
 
   if (!auditRequest && !notFound) {

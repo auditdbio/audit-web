@@ -67,7 +67,7 @@ const EditDescription = ({ audit, auditRequest, hideChange, isPublic }) => {
                         fastSave={true}
                         mdProps={{
                           view: { menu: true, md: true, html: !matchXs },
-                          style: editMarkdownSx(),
+                          style: editMarkdownSx,
                         }}
                         sx={{ border: 'unset' }}
                         parentEntity={{
@@ -223,9 +223,9 @@ const EditDescription = ({ audit, auditRequest, hideChange, isPublic }) => {
                       ))}
                   </Box>
                   <Box sx={hideChange ? linksList : {}}>
-                    {!hideChange &&
-                      (audit?.status?.toLowerCase() !==
-                        RESOLVED.toLowerCase() && !isPublic ? (
+                    {!hideChange ? (
+                      audit?.status?.toLowerCase() !== RESOLVED.toLowerCase() &&
+                      !isPublic ? (
                         <Box sx={linksList}>
                           <ProjectLinksList
                             name="scope"
@@ -243,7 +243,14 @@ const EditDescription = ({ audit, auditRequest, hideChange, isPublic }) => {
                             <CustomLink link={link} key={idx} />
                           ))}
                         </Box>
-                      ))}
+                      )
+                    ) : (
+                      <Box sx={customerLinksList}>
+                        {values.scope?.map((link, idx) => (
+                          <CustomLink link={link} key={idx} />
+                        ))}
+                      </Box>
+                    )}
                   </Box>
                   {addLinkField && (
                     <Box sx={{ mt: '10px' }}>
@@ -305,7 +312,7 @@ const linkFieldSx = {
   '&::before': eventLine(10),
 };
 
-const markdownSx = (matchXs, description, editMode) => ({
+const markdownSx = (matchXs, description) => ({
   height: !matchXs
     ? description && description.length > 250
       ? '550px'
@@ -319,13 +326,13 @@ const markdownSx = (matchXs, description, editMode) => ({
   lineHeight: '24px',
 });
 
-const editMarkdownSx = (matchXs, description, editMode) => ({
+const editMarkdownSx = {
   height: '550px',
   backgroundColor: '#fcfaf6',
   fontWeight: 500,
   fontSize: '20px !important',
   lineHeight: '24px',
-});
+};
 
 const linksList = {
   border: '1px solid #dfe0df',
@@ -344,16 +351,17 @@ const customerLinksList = {
     fontSize: '18px',
   },
 };
-const editBtnSx = theme => ({
+const editBtnSx = {
   display: 'flex',
   gap: '10px',
   paddingRight: '20px',
   '& button': {
     minWidth: 'unset',
   },
-});
-const descriptionSx = full => ({
+};
+
+const descriptionSx = {
   '& .rc-md-editor': {
     borderBottom: 'none',
   },
-});
+};

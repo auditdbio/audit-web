@@ -4,6 +4,7 @@ import {
   Button,
   Collapse,
   IconButton,
+  Tooltip,
   Typography,
   useMediaQuery,
 } from '@mui/material';
@@ -19,6 +20,7 @@ import TagsField from '../../forms/tags-field/tags-field.jsx';
 import { useFormik, useFormikContext } from 'formik';
 import { AUDIT_PARENT_ENTITY } from '../../../services/file_constants.js';
 import ExpandLessOutlinedIcon from '@mui/icons-material/ExpandLessOutlined.js';
+import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 
 const DescriptionBlock = ({
   editMode,
@@ -29,6 +31,7 @@ const DescriptionBlock = ({
   values,
   user,
   audit,
+  issue = null,
   isEditFeedback,
   setIsEditFeedback,
   isPublic,
@@ -82,7 +85,12 @@ const DescriptionBlock = ({
   };
 
   const getFeedbackView = () => {
-    if ((user.current_role === CUSTOMER || isPublic) && isEditFeedback) {
+    if (
+      (user.current_role.toLowerCase() === CUSTOMER.toLowerCase() ||
+        user.current_role.toLowerCase() === AUDITOR.toLowerCase() ||
+        isPublic) &&
+      isEditFeedback
+    ) {
       return { menu: true, md: true, html: false };
     }
     return { menu: false, md: false, html: true };
@@ -214,13 +222,17 @@ const DescriptionBlock = ({
               position: 'relative',
               paddingTop: '5px',
               marginX: '1px',
-              '&::before': eventLine(
-                values.feedback || isEditFeedback || editMode || showFull
-                  ? 37
-                  : 19,
-                1,
-                35,
-              ),
+              ...(issue?.events?.length
+                ? {
+                    '&::before': eventLine(
+                      values.feedback || isEditFeedback || editMode || showFull
+                        ? 37
+                        : 19,
+                      1,
+                      35,
+                    ),
+                  }
+                : {}),
             },
             !showFull
               ? {
@@ -286,7 +298,9 @@ const DescriptionBlock = ({
               source: AUDIT_PARENT_ENTITY,
             }}
           />
-          {(user.current_role === CUSTOMER || isPublic) && (
+          {(user.current_role.toLowerCase() === CUSTOMER.toLowerCase() ||
+            user.current_role.toLowerCase() === AUDITOR.toLowerCase() ||
+            isPublic) && (
             <Box sx={editFeedbackButtonWrapper}>
               <IconButton
                 type="button"
@@ -301,6 +315,34 @@ const DescriptionBlock = ({
                   {isEditFeedback ? 'Save' : 'Edit'}
                 </Box>
               </IconButton>
+              {user.current_role.toLowerCase() === AUDITOR.toLowerCase() && (
+                <Tooltip
+                  title={
+                    'Customer feedback will be included in the report. Do not edit this field without a reasonable cause.'
+                  }
+                  placement="top"
+                  arrow={true}
+                  enterTouchDelay={0}
+                  leaveTouchDelay={4000}
+                >
+                  <Button
+                    color="secondary"
+                    sx={{
+                      minWidth: '20px',
+                      textTransform: 'none',
+                      padding: '2px',
+                      [theme.breakpoints.down(600)]: {
+                        padding: 0,
+                      },
+                    }}
+                  >
+                    <HelpOutlineIcon
+                      sx={{ fontSize: '18px' }}
+                      cursor="pointer"
+                    />
+                  </Button>
+                </Tooltip>
+              )}
             </Box>
           )}
         </Box>
@@ -488,6 +530,9 @@ const feedbackMarkdownSx = {
 
 const editFeedbackButtonWrapper = {
   position: 'absolute',
+  display: 'flex',
+  alignItems: 'center',
+  gap: '10px',
   right: '12px',
   bottom: '5px',
 };

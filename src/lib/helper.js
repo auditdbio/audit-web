@@ -23,6 +23,10 @@ export const capitalize = str => {
     : '';
 };
 
+export const dateConverter = date => {
+  return date > 1000000000000 ? date / 1000 : date * 1000;
+};
+
 export const encodeBase64url = str => {
   return window
     .btoa(str)

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Button, Modal, Typography } from '@mui/material';
+import { Box, Button, Modal, Popover, Typography } from '@mui/material';
 import AuditRequestInfo from '../audit-request-info.jsx';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -298,34 +298,38 @@ const AuditMessage = ({ message, handleError }) => {
             </Box>
           </Box>
         )}
-      <Modal
+      <Popover
+        anchorEl={null}
         open={isOpen && auditRequest?.id && user.current_role === AUDITOR}
         onClose={handleClose}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
+        sx={popoverSx}
       >
-        <Box sx={modalSx}>
+        <Box>
           <AuditRequestInfo
             project={auditRequest}
             onClose={() => setIsOpen(false)}
             stayHere={true}
+            isModal={true}
+            navigateTo={'/audit-request/' + auditRequest?.id}
           />
         </Box>
-      </Modal>
-      <Modal
+      </Popover>
+      <Popover
+        anchorEl={null}
         open={isOpen && auditRequest?.id && user.current_role === CUSTOMER}
         onClose={handleClose}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
+        sx={popoverSx}
       >
-        <Box sx={modalSx}>
+        <Box>
           <MessageModalCustomer
             audit={data}
             handleClose={handleClose}
-            auditRequest={data?.status?.toLowerCase() === 'request'}
+            auditRequest={auditRequest}
+            navigateTo={'/audit-request/' + auditRequest?.id + '/customer'}
+            isModal={true}
           />
         </Box>
-      </Modal>
+      </Popover>
       {/*<AuditInfo audit={auditRequest} auditRequest={auditRequest} />*/}
       {user.current_role === CUSTOMER &&
         data.status === 'Request' &&
@@ -406,6 +410,38 @@ const AuditMessage = ({ message, handleError }) => {
 };
 
 export default AuditMessage;
+
+const popoverSx = theme => ({
+  '& .MuiBackdrop-root': {
+    backgroundColor: '#3535357a',
+  },
+  '& .MuiPopover-paper': {
+    position: 'absolute',
+    backgroundColor: '#FCFAF6',
+    top: '50%!important',
+    left: '50%!important',
+    transform: 'translate(-50%, -50%)!important',
+    width: '90%',
+    maxHeight: '90vh',
+    overflowY: 'hidden',
+    borderRadius: '14px',
+    '& .rc-md-editor': {
+      height: '100%!important',
+    },
+    '& .audit-request-wrapper': {
+      paddingBottom: '10px',
+      minHeight: 'unset',
+    },
+    '& .audit-info-wrapper': {
+      minHeight: 'unset',
+      padding: '20px 40px',
+      gap: '10px',
+    },
+    '& .audit-request-button-wrapper': {
+      marginTop: '0',
+    },
+  },
+});
 
 const statusWrapper = theme => ({
   display: 'flex',

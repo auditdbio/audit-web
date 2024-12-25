@@ -78,6 +78,7 @@ import MarkEmailReadIcon from '@mui/icons-material/MarkEmailRead';
 import AddIcon from '@mui/icons-material/Add';
 import { AUDIT_PARENT_ENTITY } from '../services/file_constants.js';
 import DraftReportIcon from '../components/icons/DraftReportIcon.jsx';
+import dayjs from 'dayjs';
 
 const AuditOffer = ({ publicView, setPublicView }) => {
   const { auditId } = useParams();
@@ -278,15 +279,7 @@ const AuditOffer = ({ publicView, setPublicView }) => {
             !!error || !!successMessage || !!auditSuccessMessage || !!auditError
           }
         />
-
-        <Box
-          sx={{
-            display: 'flex',
-            width: '100%',
-            justifyContent: 'center',
-            position: 'relative',
-          }}
-        >
+        <Box sx={{ position: 'relative' }}>
           <Button
             sx={backButtonSx}
             onClick={() => {
@@ -327,6 +320,25 @@ const AuditOffer = ({ publicView, setPublicView }) => {
                 label="Publish"
               />
             )}
+          <Button
+            variant="text"
+            color="secondary"
+            sx={[buttonSx, sendMessageButton]}
+            onClick={handleSendMessage}
+            disabled={audit?.customer_id === user.id}
+            {...addTestsLabel('message-button')}
+          >
+            <ChatIcon />
+          </Button>
+        </Box>
+        <Box
+          sx={{
+            display: 'flex',
+            width: '100%',
+            justifyContent: 'center',
+            position: 'relative',
+          }}
+        >
           {/*{audit?.isPublic &&*/}
           {/*  audit?.status?.toLowerCase() === RESOLVED.toLowerCase() &&*/}
           {/*  audit?.auditor_id === user.id && (*/}
@@ -358,17 +370,18 @@ const AuditOffer = ({ publicView, setPublicView }) => {
               {audit?.project_name}
             </Typography>
           </Box>
-          <Button
-            variant="text"
-            color="secondary"
-            sx={[buttonSx, sendMessageButton]}
-            onClick={handleSendMessage}
-            disabled={audit?.customer_id === user.id}
-            {...addTestsLabel('message-button')}
-          >
-            <ChatIcon />
-          </Button>
         </Box>
+        {audit?.status?.toLowerCase() !== RESOLVED.toLowerCase() && (
+          <Box sx={dateBlock}>
+            <Box sx={dateWrapper}>
+              {dayjs(audit?.time?.from).format('DD.MM.YYYY')}
+            </Box>
+            -
+            <Box sx={dateWrapper}>
+              {dayjs(audit?.time?.to).format('DD.MM.YYYY')}
+            </Box>
+          </Box>
+        )}
 
         {showTopInfoButton && (
           <Box sx={{ width: '100%' }}>
@@ -615,12 +628,6 @@ const AuditOffer = ({ publicView, setPublicView }) => {
             </Box>
           )}
           <Box sx={infoWrapper} className={'qwe'}>
-            {/*<Box sx={descriptionSx(showFull)}>*/}
-            {/*  <Box ref={descriptionRef}>*/}
-            {/*    <Markdown value={audit?.description} />*/}
-            {/*  </Box>*/}
-            {/*</Box>*/}
-            {/*{audit?.conclusion && (*/}
             <Tabs
               value={tab}
               onChange={(e, newValue) => {
@@ -1154,6 +1161,25 @@ const tabsSx = theme => ({
   },
 });
 
+const dateWrapper = theme => ({
+  fontSize: '20px',
+  color: 'rgba(0,0,0,0.88)',
+  [theme.breakpoints.down('md')]: {
+    fontSize: '14px',
+  },
+});
+
+const dateBlock = theme => ({
+  display: 'flex',
+  alignItems: 'center',
+  gap: '10px',
+  marginY: '15px',
+  justifyContent: 'center',
+  [theme.breakpoints.down('sm')]: {
+    top: '-10px',
+  },
+});
+
 const tabSx = theme => ({
   // border: '1px solid rgba(255, 153, 0, 0.5)',
   textTransform: 'unset',
@@ -1187,7 +1213,6 @@ const headerTitleSx = theme => ({
   },
   [theme.breakpoints.down(680)]: {
     maxWidth: '340px',
-    mt: '22px',
   },
 });
 
@@ -1227,7 +1252,7 @@ const bottomActionInnerWrapper = theme => ({
 const headInfoSx = theme => ({
   display: 'flex',
   alignItems: 'flex-start',
-  mt: '15px',
+  // mt: '15px',
   gap: '15px',
   flexWrap: 'wrap',
   justifyContent: 'center',
@@ -1560,8 +1585,8 @@ const sendMessageButton = theme => ({
     height: '45px',
   },
   [theme.breakpoints.down('sm')]: {
-    top: '-20px',
-    right: '-10px',
+    top: '-30px',
+    right: '-15px',
   },
 });
 

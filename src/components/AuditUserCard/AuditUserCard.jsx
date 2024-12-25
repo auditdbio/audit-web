@@ -2,7 +2,7 @@ import React from 'react';
 import { Avatar, Box, Tooltip, Typography } from '@mui/material';
 import { ASSET_URL } from '../../services/urls.js';
 import { Link } from 'react-router-dom';
-//
+
 const AuditUserCard = ({ avatar, role, name, email, telegram, id }) => {
   return (
     <Box sx={wrapper}>
@@ -29,7 +29,11 @@ const AuditUserCard = ({ avatar, role, name, email, telegram, id }) => {
                 }}
               >
                 <Tooltip title={name} arrow placement="top">
-                  <Typography noWrap={true} sx={userNameWrapper}>
+                  <Typography
+                    className={'name-title'}
+                    noWrap={true}
+                    sx={userNameWrapper}
+                  >
                     {name}
                   </Typography>
                 </Tooltip>
@@ -41,10 +45,14 @@ const AuditUserCard = ({ avatar, role, name, email, telegram, id }) => {
             <Box sx={{ display: 'grid' }}>
               {!!email ? (
                 <Tooltip title={email} arrow placement="top">
-                  <Typography noWrap={true}>{email}</Typography>
+                  <Typography className={'title-sx'} noWrap={true}>
+                    {email}
+                  </Typography>
                 </Tooltip>
               ) : (
-                <Typography noWrap={true}>Not specified</Typography>
+                <Typography className={'title-sx'} noWrap={true}>
+                  Not specified
+                </Typography>
               )}
             </Box>
           </Box>
@@ -53,10 +61,14 @@ const AuditUserCard = ({ avatar, role, name, email, telegram, id }) => {
             <Box sx={{ display: 'grid' }}>
               {telegram ? (
                 <Tooltip title={telegram} arrow placement="top">
-                  <Typography noWrap={true}>{telegram}</Typography>
+                  <Typography className={'title-sx'} noWrap={true}>
+                    {telegram}
+                  </Typography>
                 </Tooltip>
               ) : (
-                <Typography noWrap={true}>Not specified</Typography>
+                <Typography className={'title-sx'} noWrap={true}>
+                  Not specified
+                </Typography>
               )}
             </Box>
           </Box>

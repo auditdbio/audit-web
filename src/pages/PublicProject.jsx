@@ -1,12 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom/dist';
-import { Avatar, Box, Button, Modal, Tooltip, Typography } from '@mui/material';
+import { Box, Button, Collapse, Modal, Typography } from '@mui/material';
 import Layout from '../styles/Layout.jsx';
 import { getProjectById } from '../redux/actions/projectAction.js';
 import Markdown from '../components/markdown/Markdown.jsx';
 import { getCurrentCustomer } from '../redux/actions/customerAction.js';
-import { ASSET_URL } from '../services/urls.js';
 import CustomLink from '../components/custom/CustomLink.jsx';
 import TagsList from '../components/tagsList.jsx';
 import { addTestsLabel, isAuth } from '../lib/helper.js';
@@ -25,6 +24,9 @@ import { setCurrentChat } from '../redux/actions/chatActions.js';
 import ChatIcon from '../components/icons/ChatIcon.jsx';
 import Headings from '../router/Headings.jsx';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import EditIcon from '@mui/icons-material/Edit';
+import ExpandLessOutlinedIcon from '@mui/icons-material/ExpandLessOutlined';
+import AuditUserCard from '../components/AuditUserCard/AuditUserCard.jsx';
 import { SCOPE_GIT_BLOCK } from '../services/constants.js';
 
 const PublicProject = () => {
@@ -65,7 +67,7 @@ const PublicProject = () => {
       if (descriptionRef?.current?.offsetHeight > 400) {
         setShowReadMoreButton(true);
       }
-    }, 500);
+    }, 600);
   }, [descriptionRef.current]);
 
   const handleMakeOffer = () => {
@@ -158,7 +160,15 @@ const PublicProject = () => {
           severity={message || successMessage ? 'success' : 'error'}
           text={message || successMessage || error || auditError}
         />
-
+        <Button
+          variant="text"
+          sx={messageButton}
+          onClick={handleSendMessage}
+          disabled={project?.customer_id === user.id}
+          {...addTestsLabel('message-button')}
+        >
+          <ChatIcon />
+        </Button>
         <Modal
           open={modalIsOpen}
           onClose={handleCloseModal}
@@ -178,97 +188,75 @@ const PublicProject = () => {
         <Button
           onClick={() => navigate(-1)}
           sx={{ position: 'absolute', top: '0', minWidth: 'unset', left: '0' }}
+          color={user.current_role === AUDITOR ? 'secondary' : 'primary'}
         >
           <ArrowBackIcon />
         </Button>
-        <Box>
+        <Box sx={{ display: 'flex', justifyContent: 'center' }}>
           <Typography sx={projectNameSx}>{project?.name}</Typography>
         </Box>
-
-        <Box sx={customerInfoBlock}>
-          <Box sx={avatarBoxSx}>
-            <Avatar
-              src={customer?.avatar ? `${ASSET_URL}/id/${customer.avatar}` : ''}
-              alt="customer photo"
-              sx={avatarSx}
-            />
-          </Box>
-          <Box sx={customerInfoColumn}>
-            <Box sx={[customerInfoString, { mb: '15px' }]}>
-              <Box sx={fieldLabel}>First Name:</Box>
-              <Tooltip
-                title={customer?.first_name}
-                arrow
-                placement="top"
-                enterDelay={500}
-              >
-                <Typography sx={customerInfo}>
-                  {customer?.first_name}
-                </Typography>
-              </Tooltip>
-            </Box>
-            {customer?.last_name && (
-              <Box sx={customerInfoString}>
-                <Box sx={fieldLabel}>Last Name:</Box>
-                <Tooltip
-                  title={customer?.last_name}
-                  arrow
-                  placement="top"
-                  enterDelay={500}
-                >
-                  <Typography sx={customerInfo}>
-                    {customer?.last_name}
-                  </Typography>
-                </Tooltip>
+        <Box sx={{ width: '100%' }}>
+          <Collapse in={true} collapsedSize={showFull ? undefined : 400}>
+            <Box sx={descriptionWrapper(theme, showFull)}>
+              <AuditUserCard
+                avatar={customer?.avatar}
+                name={customer?.first_name + ' ' + customer?.last_name}
+                email={customer?.contacts.email}
+                telegram={customer?.contacts.telegram}
+                id={customer?.user_id}
+              />
+              <Box ref={descriptionRef}>
+                <Markdown value={project?.description} />
               </Box>
+            </Box>
+          </Collapse>
+          <Box
+            sx={[
+              {
+                borderTop: '1px solid #E5E5E5',
+                display: 'flex',
+                justifyContent: 'center',
+                position: 'relative',
+                paddingTop: '8px',
+              },
+              !showFull
+                ? { boxShadow: '0px -24px 14px -8px rgba(252, 250, 246, 1)' }
+                : {},
+            ]}
+          >
+            {showReadMoreButton && (
+              <Button
+                onClick={() => setShowFull(!showFull)}
+                sx={[
+                  readAllButton,
+                  {
+                    position: 'relative',
+                    top: !showFull ? '-25px' : 0,
+                    backgroundColor: '#fcfaf6',
+                    zIndex: '1',
+                    marginBottom: showFull ? '20px' : 0,
+                    '&:hover': {
+                      backgroundColor: '#fcfaf6',
+                    },
+                  },
+                ]}
+                variant={'outlined'}
+              >
+                <span>{showFull ? 'Hide' : `Show`}</span>
+                <EditIcon sx={{ width: '20px' }} />
+                <ExpandLessOutlinedIcon
+                  sx={[
+                    showFull ? {} : { transform: 'rotate(180deg)' },
+                    {
+                      transition: '0.2s',
+                      width: '20px',
+                      height: '20px',
+                    },
+                  ]}
+                />
+              </Button>
             )}
           </Box>
-
-          {customer?.contacts?.public_contacts && (
-            <Box sx={customerInfoColumn}>
-              <Box sx={[customerInfoString, { mb: '15px' }]}>
-                <Box sx={fieldLabel}>Email:</Box>
-                <Tooltip
-                  title={customer?.contacts.email}
-                  arrow
-                  placement="top"
-                  enterDelay={500}
-                >
-                  <Typography sx={customerInfo}>
-                    {customer?.contacts.email}
-                  </Typography>
-                </Tooltip>
-              </Box>
-              {customer?.last_name && (
-                <Box sx={customerInfoString}>
-                  <Box sx={fieldLabel}>Telegram:</Box>
-                  <Tooltip
-                    title={customer?.contacts.telegram}
-                    arrow
-                    placement="top"
-                    enterDelay={500}
-                  >
-                    <Typography sx={customerInfo}>
-                      {customer?.contacts.telegram}
-                    </Typography>
-                  </Tooltip>
-                </Box>
-              )}
-            </Box>
-          )}
-        </Box>
-
-        <Box sx={{ width: '100%' }}>
-          <Box sx={descriptionSx(showFull)}>
-            <Box ref={descriptionRef}>
-              <Markdown value={project?.description} />
-            </Box>
-          </Box>
-          {showReadMoreButton && (
-            <Button onClick={() => setShowFull(!showFull)} sx={readAllButton}>
-              {showFull ? 'Hide ▲' : `Read all ▼`}
-            </Button>
-          )}
           <Box sx={tagsSx}>
             <TagsList data={project?.tags} />
           </Box>
@@ -302,15 +290,6 @@ const PublicProject = () => {
               Make Offer
             </Button>
           )}
-          <Button
-            variant="text"
-            // sx={[buttonSx, messageButton]}
-            onClick={handleSendMessage}
-            disabled={project?.customer_id === user.id}
-            {...addTestsLabel('message-button')}
-          >
-            <ChatIcon />
-          </Button>
         </Box>
       </Box>
     </Layout>
@@ -318,6 +297,50 @@ const PublicProject = () => {
 };
 
 export default PublicProject;
+
+const descriptionWrapper = (theme, showFull) => ({
+  maxHeight: showFull ? 'none' : 400,
+  '& .rc-md-editor': {
+    height: '100%!important',
+  },
+  overflow: 'hidden',
+  transition: 'max-height 0.3s ease',
+  '& .rc-md-editor .editor-container>.section': {
+    borderRight: 'unset',
+  },
+  '& .editor-container': {
+    borderBottom: 'unset',
+  },
+  '& .title-sx': {
+    maxWidth: 'unset',
+  },
+});
+
+const messageButton = {
+  position: 'absolute',
+  top: '10px',
+  right: 0,
+  zIndex: 333,
+  width: '35px',
+  height: '35px',
+};
+
+const readAllButton = theme => ({
+  p: '3px',
+  paddingX: '8px',
+  minWidth: 'unset',
+  textTransform: 'unset',
+  boxShadow: 'unset',
+  fontWeight: 600,
+  borderRadius: '8px',
+  width: '280px',
+  display: 'flex',
+  alignItems: 'center',
+  gap: '7px',
+  [theme.breakpoints.down('xs')]: {
+    fontSize: '16px',
+  },
+});
 
 const wrapper = role => {
   const borderColor =
@@ -330,14 +353,14 @@ const wrapper = role => {
     position: 'relative',
     display: 'flex',
     flexDirection: 'column',
-    padding: '30px 60px 60px',
+    padding: '30px 30px 60px',
     gap: '40px',
-    backgroundColor: '#fff',
+    backgroundColor: '#fcfaf6',
     borderRadius: '10px',
     border: `2px solid ${borderColor}`,
     justifyContent: 'space-between',
     [theme.breakpoints.down('lg')]: {
-      padding: '30px 40px',
+      padding: '30px 20px',
     },
     [theme.breakpoints.down('sm')]: {
       gap: '20px',
@@ -354,113 +377,14 @@ const wrapper = role => {
   };
 };
 
-const fieldLabel = theme => ({
-  flexShrink: 0,
-  width: '100px',
-  color: '#B2B3B3',
-  fontWeight: 500,
-  mr: '40px',
-  [theme.breakpoints.down('sm')]: {
-    mr: '15px',
-  },
-  [theme.breakpoints.down('xs')]: {
-    fontSize: '14px',
-  },
-});
-
 const projectNameSx = {
   width: '100%',
+  maxWidth: '700px',
   fontSize: '20px !important',
   textAlign: 'center',
   fontWeight: 500,
   wordBreak: 'break-word',
 };
-
-const customerInfoBlock = theme => ({
-  display: 'flex',
-  flexWrap: 'nowrap',
-  alignItems: 'center',
-  width: '100%',
-  maxWidth: '1400px',
-  margin: '0 auto',
-  [theme.breakpoints.down('xs')]: {
-    flexDirection: 'column',
-  },
-});
-
-const customerInfoColumn = theme => ({
-  width: '40%',
-  mr: '30px',
-  ':last-child': {
-    mr: 0,
-  },
-  [theme.breakpoints.down('xs')]: {
-    width: '100%',
-    mr: 0,
-    mb: '15px',
-  },
-});
-
-const customerInfoString = {
-  display: 'flex',
-  alignItems: 'center',
-};
-
-const avatarBoxSx = theme => ({
-  width: '15%',
-  [theme.breakpoints.down('xs')]: {
-    width: '100%',
-    mb: '30px',
-  },
-});
-
-const avatarSx = theme => ({
-  width: '120px',
-  height: '120px',
-  mr: '50px',
-  [theme.breakpoints.down('sm')]: {
-    width: '100px',
-    height: '100px',
-  },
-  [theme.breakpoints.down('xs')]: {
-    margin: '0 auto',
-  },
-});
-
-const customerInfo = theme => ({
-  color: '#434242',
-  fontSize: '15px !important',
-  fontWeight: 400,
-  overflow: 'hidden',
-  'text-overflow': 'ellipsis',
-  [theme.breakpoints.down('xs')]: {
-    fontSize: '14px !important',
-  },
-});
-
-const descriptionSx = full => ({
-  maxHeight: full ? 'unset' : '400px',
-  overflow: 'hidden',
-  border: '2px solid #E5E5E5',
-});
-
-const readAllButton = theme => ({
-  width: '100%',
-  padding: '8px',
-  fontWeight: 600,
-  fontSize: '16px',
-  color: 'black',
-  textTransform: 'none',
-  lineHeight: '25px',
-  background: '#E5E5E5',
-  borderRadius: 0,
-  boxShadow: '0px -24px 14px -8px rgba(252, 250, 246, 1)',
-  ':hover': { background: '#D5D5D5' },
-  [theme.breakpoints.down('xs')]: {
-    fontSize: '14px',
-    border: 'none',
-  },
-});
 
 const tagsSx = {
   mt: '30px',

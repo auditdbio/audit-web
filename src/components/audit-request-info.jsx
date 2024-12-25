@@ -12,7 +12,7 @@ import {
   useMediaQuery,
   Modal,
   Tooltip,
-  Divider,
+  Collapse,
 } from '@mui/material';
 import { CustomCard } from './custom/Card.jsx';
 import theme from '../styles/themes.js';
@@ -21,7 +21,6 @@ import {
   confirmAudit,
   deleteAuditRequest,
 } from '../redux/actions/auditAction.js';
-import Markdown from './markdown/Markdown.jsx';
 import { addTestsLabel, isAuth } from '../lib/helper.js';
 import { AUDITOR, CUSTOMER } from '../redux/actions/types.js';
 import {
@@ -38,9 +37,11 @@ import EditDescription from './EditDescription/index.jsx';
 import DescriptionHistory from './DescriptionHistory/index.jsx';
 import EditTags from './EditDescription/EditTags.jsx';
 import EditPrice from './EditDescription/EditPrice.jsx';
+import ExpandLessOutlinedIcon from '@mui/icons-material/ExpandLessOutlined.js';
+import EditIcon from '@mui/icons-material/Edit.js';
 
 const AuditRequestInfo = ({
-  project,
+  project = null,
   onClose,
   handleError,
   redirect,
@@ -48,21 +49,22 @@ const AuditRequestInfo = ({
   setError,
   stayHere,
   hideChange,
+  navigateTo,
 }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const matchXs = useMediaQuery(theme.breakpoints.down('xs'));
 
   const [open, setOpen] = useState(false);
   const [confirmDeclineOpen, setConfirmDeclineOpen] = useState(false);
   const [showAcceptButton, setShowAcceptButton] = useState(true);
-
+  const [showFullHeader, setShowFullHeader] = useState(false);
   const { auditor } = useSelector(s => s.auditor);
   const { auditRequest, auditRequests, successMessage } = useSelector(
     s => s.audits,
   );
   const { user } = useSelector(s => s.user);
   const { chatList } = useSelector(s => s.chat);
+  const [showFull, setShowFull] = useState(false);
 
   const handleOpen = () => {
     if (user.current_role === AUDITOR && isAuth() && auditor?.first_name) {
@@ -169,315 +171,296 @@ const AuditRequestInfo = ({
             <ArrowBackIcon color={'secondary'} />
           )}
         </Button>
-        <Typography
-          variant="h3"
-          sx={{
-            width: '100%',
-            textAlign: 'center',
-            wordBreak: 'break-word',
-            px: '10px',
-          }}
-        >
-          {project?.name || project?.project_name}
-        </Typography>
-      </Box>
-      <Box sx={{ width: '100%' }} className="audit-content">
-        <Box sx={contentWrapper} className="audit-request-content-wrapper">
-          <Typography
-            sx={titleSx}
-            className="audit-request-title"
-            component="div"
-          >
-            <EditTags hideChange={hideChange} audit={project} />
-          </Typography>
-          <Divider sx={{ width: '100%' }} />
-
-          <Box sx={salaryWrapper} className={'audit-request-salary'}>
-            <EditPrice
-              hideChange={hideChange}
-              audit={project}
-              request={true}
-              user={user}
-            />
-          </Box>
-
-          {!matchXs && (
-            <Box sx={{ display: 'flex', gap: '25px', flexWrap: 'wrap' }}>
-              {(project?.creator_contacts?.email ||
-                (project?.customer_contacts?.email !== null &&
-                  project?.customer_contacts?.email.length)) && (
-                <Box
-                  sx={{ display: 'flex', alignItems: 'center', gap: '10px' }}
-                >
-                  <EmailIcon />
-                  <Box sx={{ display: 'grid' }}>
-                    {project?.creator_contacts ? (
-                      <Tooltip
-                        title={project?.creator_contacts?.email}
-                        arrow
-                        placement="top"
-                      >
-                        <Typography
-                          variant="caption"
-                          sx={contactStyle}
-                          noWrap={true}
-                        >
-                          {project?.creator_contacts?.email}
-                        </Typography>
-                      </Tooltip>
-                    ) : (
-                      <Tooltip
-                        title={
-                          project?.customer_contacts?.email !== null
-                            ? project?.customer_contacts?.email
-                            : 'Hidden'
-                        }
-                        arrow
-                        placement="top"
-                      >
-                        <Typography
-                          variant="caption"
-                          sx={contactStyle}
-                          noWrap={true}
-                        >
-                          {project?.customer_contacts?.email !== null
-                            ? project?.customer_contacts?.email
-                            : 'Hidden'}
-                        </Typography>
-                      </Tooltip>
-                    )}
-                  </Box>
-                </Box>
-              )}
-              {(project?.creator_contacts?.telegram ||
-                (project?.customer_contacts?.telegram !== null &&
-                  !!project?.customer_contacts?.telegram.length)) && (
-                <Box
-                  sx={{ display: 'flex', alignItems: 'center', gap: '10px' }}
-                >
-                  <TelegramIcon />
-                  <Box sx={{ display: 'grid' }}>
-                    {project?.creator_contacts ? (
-                      <Tooltip
-                        title={project?.creator_contacts?.telegram}
-                        arrow
-                        placement="top"
-                      >
-                        <Typography
-                          variant="caption"
-                          sx={contactStyle}
-                          noWrap={true}
-                        >
-                          {project?.creator_contacts?.telegram}
-                        </Typography>
-                      </Tooltip>
-                    ) : (
-                      <Tooltip
-                        title={
-                          project?.customer_contacts?.telegram !== null
-                            ? project?.customer_contacts?.telegram
-                            : 'Hidden'
-                        }
-                        arrow
-                        placement="top"
-                      >
-                        <Typography
-                          variant="caption"
-                          sx={contactStyle}
-                          noWrap={true}
-                        >
-                          {project?.customer_contacts?.telegram !== null
-                            ? project?.customer_contacts?.telegram
-                            : 'Hidden'}
-                        </Typography>
-                      </Tooltip>
-                    )}
-                  </Box>
-                </Box>
-              )}
-            </Box>
-          )}
-        </Box>
-
-        <Box sx={{ textAlign: 'center', mt: '10px' }}>
-          <ShareProjectButton
-            projectId={project?.project_id || project?.id}
-            sx={{ fontSize: '12px' }}
-            showIcon
-            isModal
-          />
-        </Box>
-
-        <Box sx={infoWrapper} className="audit-request-info">
-          <Markdown value={project?.description} />
-          <EditDescription
-            hideChange={hideChange}
-            audit={project}
-            auditRequest={true}
-          />
-          {!hideChange && <DescriptionHistory audit={project} request={true} />}
-          {matchXs && (
-            <Box
-              sx={{
-                display: 'flex',
-                gap: '10px',
-                flexWrap: 'wrap',
-                justifyContent: 'center',
-              }}
-            >
-              {(project?.creator_contacts?.email ||
-                (project?.customer_contacts?.email !== null &&
-                  project?.customer_contacts?.email.length)) && (
-                <Box
-                  sx={{ display: 'flex', alignItems: 'center', gap: '10px' }}
-                >
-                  <EmailIcon />
-                  <Box sx={{ display: 'grid' }}>
-                    {project?.creator_contacts ? (
-                      <Tooltip
-                        title={project?.creator_contacts?.email}
-                        arrow
-                        placement="top"
-                      >
-                        <Typography
-                          variant="caption"
-                          sx={contactStyle}
-                          noWrap={true}
-                        >
-                          {project?.creator_contacts?.email}
-                        </Typography>
-                      </Tooltip>
-                    ) : (
-                      <Tooltip
-                        title={
-                          project?.customer_contacts?.email !== null
-                            ? project?.customer_contacts?.email
-                            : 'Hidden'
-                        }
-                        arrow
-                        placement="top"
-                      >
-                        <Typography
-                          variant="caption"
-                          sx={contactStyle}
-                          noWrap={true}
-                        >
-                          {project?.customer_contacts?.email !== null
-                            ? project?.customer_contacts?.email
-                            : 'Hidden'}
-                        </Typography>
-                      </Tooltip>
-                    )}
-                  </Box>
-                </Box>
-              )}
-              {(project?.creator_contacts?.telegram ||
-                (project?.customer_contacts?.telegram !== null &&
-                  !!project?.customer_contacts?.telegram.length)) && (
-                <Box
-                  sx={{ display: 'flex', alignItems: 'center', gap: '10px' }}
-                >
-                  <TelegramIcon />
-                  <Box sx={{ display: 'grid' }}>
-                    {project?.creator_contacts ? (
-                      <Tooltip
-                        title={project?.creator_contacts?.telegram}
-                        arrow
-                        placement="top"
-                      >
-                        <Typography
-                          variant="caption"
-                          sx={contactStyle}
-                          noWrap={true}
-                        >
-                          {project?.creator_contacts?.telegram}
-                        </Typography>
-                      </Tooltip>
-                    ) : (
-                      <Tooltip
-                        title={
-                          project?.customer_contacts?.telegram !== null
-                            ? project?.customer_contacts?.telegram
-                            : 'Hidden'
-                        }
-                        arrow
-                        placement="top"
-                      >
-                        <Typography
-                          variant="caption"
-                          sx={contactStyle}
-                          noWrap={true}
-                        >
-                          {project?.customer_contacts?.telegram !== null
-                            ? project?.customer_contacts?.telegram
-                            : 'Hidden'}
-                        </Typography>
-                      </Tooltip>
-                    )}
-                  </Box>
-                </Box>
-              )}
-            </Box>
-          )}
-        </Box>
-      </Box>
-
-      {/*{!isModal && (*/}
-      {/*  <PriceCalculation*/}
-      {/*    price={project?.price}*/}
-      {/*    sx={priceCalc}*/}
-      {/*    color="secondary"*/}
-      {/*    scope={project?.project_scope || project?.scope}*/}
-      {/*  />*/}
-      {/*)}*/}
-
-      <Box sx={buttonWrapper} className="audit-request-button-wrapper">
-        <Button
-          variant="contained"
-          color="secondary"
-          sx={buttonSx}
-          onClick={() => {
-            if (isModal) {
-              handleBack();
-            } else {
-              setConfirmDeclineOpen(true);
-            }
-          }}
-          {...addTestsLabel('project-modal_cancel-button')}
-        >
-          {isModal ? 'Cancel' : 'Decline'}
-        </Button>
-        <Button
-          variant="contained"
-          color="primary"
-          sx={buttonSx}
-          onClick={handleOpen}
-          {...addTestsLabel('project-modal_make-offer-button')}
-        >
-          Make offer
-        </Button>
-        {showAcceptButton &&
-          auditRequest &&
-          !isModal &&
-          auditRequest?.last_changer?.toLowerCase() === CUSTOMER && (
-            <Button
-              variant="contained"
-              sx={buttonSx}
-              onClick={handleAccept}
-              {...addTestsLabel('accept-button')}
-            >
-              Accept
-            </Button>
-          )}
+        <ShareProjectButton
+          projectId={project?.project_id || project?.id}
+          sx={{ position: 'absolute', top: '-20px', right: '40px' }}
+          showIcon
+          isModal
+        />
         <Button
           variant="text"
-          // sx={[buttonSx, messageButton]}
+          color="secondary"
+          className={'chat-btn'}
+          sx={[buttonSx, sendMessageButton]}
           onClick={handleSendMessage}
           disabled={project?.customer_id === user.id}
           {...addTestsLabel('message-button')}
         >
           <ChatIcon />
         </Button>
+      </Box>
+      <Typography
+        variant="h3"
+        sx={{
+          width: '100%',
+          textAlign: 'center',
+          wordBreak: 'break-word',
+          px: '10px',
+        }}
+      >
+        {project?.name || project?.project_name}
+      </Typography>
+      <Box sx={{ width: '100%' }} className={'request-content-sx'}>
+        <Box sx={{ width: '100%' }}>
+          <Box
+            sx={[
+              {
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                mt: '10px',
+              },
+            ]}
+          >
+            <Button
+              sx={[readAllButton]}
+              variant={'outlined'}
+              onClick={() => setShowFullHeader(!showFullHeader)}
+            >
+              {showFullHeader ? <span>Hide</span> : <span>Show</span>}
+              <TelegramIcon sx={{ width: '22px', height: '22px' }} />
+              <EmailIcon sx={{ width: '22px', height: '22px' }} />
+              {project?.price
+                ? `${project?.price} per line`
+                : `${project?.total_cost} total cost`}
+              <ExpandLessOutlinedIcon
+                sx={[
+                  showFullHeader ? {} : { transform: 'rotate(180deg)' },
+                  {
+                    transition: '0.2s',
+                    // marginRight: '0',
+                    // marginLeft: 'auto',
+                    width: '20px',
+                    height: '20px',
+                  },
+                ]}
+              />
+            </Button>
+          </Box>
+          <Collapse in={showFullHeader}>
+            <Box sx={contentWrapper}>
+              <Box sx={headInfoSx}>
+                <Box
+                  sx={{
+                    [theme.breakpoints.down('sm')]: {
+                      width: '280px',
+                      paddingRight: '5px',
+                      display: 'flex',
+                      justifyContent: 'flex-start',
+                    },
+                  }}
+                >
+                  <EditTags hideChange={hideChange} audit={project} />
+                </Box>
+                <Box
+                  sx={{
+                    [theme.breakpoints.down('sm')]: {
+                      width: '280px',
+                      paddingLeft: '5px',
+                      display: 'flex',
+                      justifyContent: 'flex-start',
+                    },
+                  }}
+                >
+                  <EditPrice
+                    hideChange={hideChange}
+                    audit={project}
+                    request={true}
+                    user={user}
+                  />
+                </Box>
+                <Box
+                  sx={[
+                    { display: 'flex', gap: '10px' },
+                    contactWrapper,
+                    {
+                      marginTop: 'unset',
+                      flexDirection: 'row!important',
+                    },
+                  ]}
+                >
+                  {project?.customer_contacts?.email && (
+                    <Box
+                      sx={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '10px',
+                        [theme.breakpoints.down('sm')]: {
+                          width: '280px',
+                          paddingRight: '5px',
+                          display: 'flex',
+                          justifyContent: 'flex-start',
+                        },
+                      }}
+                    >
+                      <EmailIcon sx={{ height: '32px' }} />
+                      <Box sx={{ display: 'grid' }}>
+                        <Tooltip
+                          title={project?.customer_contacts?.email}
+                          arrow
+                          placement="top"
+                        >
+                          <Typography variant="caption" noWrap={true}>
+                            {project?.customer_contacts?.email}
+                          </Typography>
+                        </Tooltip>
+                      </Box>
+                    </Box>
+                  )}
+                  {project?.customer_contacts?.telegram && (
+                    <Box
+                      sx={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '10px',
+                        [theme.breakpoints.down('sm')]: {
+                          width: '280px',
+                          paddingLeft: '5px',
+                          display: 'flex',
+                          justifyContent: 'flex-start',
+                        },
+                      }}
+                    >
+                      <TelegramIcon sx={{ height: '32px' }} />
+                      <Box sx={{ display: 'grid' }}>
+                        <Tooltip
+                          title={project?.customer_contacts?.telegram}
+                          arrow
+                          placement="top"
+                        >
+                          <Typography variant="caption" noWrap={true}>
+                            {project?.customer_contacts?.telegram}
+                          </Typography>
+                        </Tooltip>
+                      </Box>
+                    </Box>
+                  )}
+                </Box>
+              </Box>
+            </Box>
+          </Collapse>
+        </Box>
+        <Box sx={{ width: '100%' }} className="audit-content">
+          <>
+            <Collapse
+              in={true}
+              collapsedSize={showFull ? undefined : isModal ? 150 : 300}
+            >
+              <Box sx={descriptionWrapper(theme, showFull, isModal)}>
+                <Box sx={infoWrapper} className="audit-request-info">
+                  <EditDescription
+                    hideChange={hideChange}
+                    audit={project}
+                    auditRequest={true}
+                  />
+                </Box>
+              </Box>
+            </Collapse>
+            <Box
+              sx={[
+                {
+                  borderTop: '1px solid #E5E5E5',
+                  display: 'flex',
+                  justifyContent: 'center',
+                  position: 'relative',
+                  paddingTop: '8px',
+                },
+                !showFull
+                  ? {
+                      boxShadow: '0px -24px 14px -8px rgba(252, 250, 246, 1)',
+                    }
+                  : {},
+              ]}
+            >
+              <Button
+                onClick={() => {
+                  if (isModal) {
+                    if (navigateTo) {
+                      navigate(navigateTo);
+                    } else {
+                      navigate(`/project/${project.id}`);
+                    }
+                  } else {
+                    setShowFull(!showFull);
+                  }
+                }}
+                sx={[
+                  readAllButton,
+                  {
+                    position: 'relative',
+                    top: !showFull ? '-25px' : 0,
+                    backgroundColor: '#fcfaf6',
+                    zIndex: '1',
+                    marginBottom: showFull ? '20px' : 0,
+                    '&:hover': {
+                      backgroundColor: '#fcfaf6',
+                    },
+                  },
+                ]}
+                variant={'outlined'}
+              >
+                {!isModal ? (
+                  <span>{showFull ? 'Hide' : `Show`}</span>
+                ) : (
+                  <span>{showFull ? 'Hide' : `Show full`}</span>
+                )}
+                {!isModal && <EditIcon sx={{ width: '20px' }} />}
+                <ExpandLessOutlinedIcon
+                  sx={[
+                    showFull ? {} : { transform: 'rotate(180deg)' },
+                    {
+                      transition: '0.2s',
+                      width: '20px',
+                      height: '20px',
+                    },
+                    isModal ? { transform: 'rotate(90deg)' } : {},
+                  ]}
+                />
+              </Button>
+            </Box>
+          </>
+        </Box>
+        {!hideChange && <DescriptionHistory audit={project} request={true} />}
+
+        <Box sx={buttonWrapper} className="audit-request-button-wrapper">
+          <Button
+            variant="contained"
+            color="secondary"
+            sx={buttonSx}
+            onClick={() => {
+              if (isModal) {
+                handleBack();
+              } else {
+                setConfirmDeclineOpen(true);
+              }
+            }}
+            {...addTestsLabel('project-modal_cancel-button')}
+          >
+            {isModal ? 'Cancel' : 'Decline'}
+          </Button>
+          <Button
+            variant="contained"
+            color="primary"
+            sx={buttonSx}
+            onClick={handleOpen}
+            {...addTestsLabel('project-modal_make-offer-button')}
+          >
+            Make offer
+          </Button>
+          {showAcceptButton &&
+            auditRequest &&
+            !isModal &&
+            auditRequest?.last_changer?.toLowerCase() === CUSTOMER && (
+              <Button
+                variant="contained"
+                sx={buttonSx}
+                onClick={handleAccept}
+                {...addTestsLabel('accept-button')}
+              >
+                Accept
+              </Button>
+            )}
+        </Box>
       </Box>
 
       <Modal
@@ -516,33 +499,113 @@ const AuditRequestInfo = ({
 
 export default AuditRequestInfo;
 
-const contactStyle = theme => ({
-  // display: 'flex',
-  // alignItems: 'center',
-  // gap: '10px'
+const descriptionWrapper = (theme, showFull, isModal) => ({
+  maxHeight: showFull ? 'none' : isModal ? 150 : 300,
+  '& .rc-md-editor': {
+    height: '100%!important',
+  },
+  overflow: 'hidden',
+  transition: 'max-height 0.3s ease',
+  '& .rc-md-editor .editor-container>.section': {
+    borderRight: 'unset',
+  },
+  '& .editor-container': {
+    borderBottom: '1px solid #e0e0e0',
+  },
+});
+
+const readAllButton = theme => ({
+  p: '3px',
+  paddingX: '8px',
+  minWidth: 'unset',
+  textTransform: 'unset',
+  boxShadow: 'unset',
+  fontWeight: 600,
+  borderRadius: '8px',
+  width: '280px',
+  display: 'flex',
+  alignItems: 'center',
+  gap: '7px',
+  [theme.breakpoints.down('xs')]: {
+    fontSize: '16px',
+  },
+});
+
+const headInfoSx = theme => ({
+  display: 'flex',
+  alignItems: 'flex-start',
+  mt: '15px',
+  gap: '15px',
+  flexWrap: 'wrap',
+  justifyContent: 'center',
+  [theme.breakpoints.down('sm')]: {
+    gap: '10px',
+  },
+});
+
+const contactWrapper = theme => ({
+  maxWidth: '500px',
+  margin: '15px auto 0',
+  justifyContent: 'center',
+  '& span': {
+    fontSize: '16px',
+  },
+  [theme.breakpoints.down('sm')]: {
+    margin: '15px 0 0',
+    flexWrap: 'wrap',
+    maxWidth: 'unset',
+    gap: 'unset',
+    width: '100%',
+  },
+  [theme.breakpoints.down('xs')]: {
+    flexDirection: 'column',
+    margin: 'unset',
+    width: 'unset',
+    alignItems: 'center',
+  },
+});
+
+const sendMessageButton = theme => ({
+  width: 'unset!important',
+  position: 'absolute',
+  top: '-20px',
+  right: '-20px',
+  paddingY: 'unset!important',
+  marginRight: 'unset',
+  minWidth: 'unset',
+  '& svg': {
+    width: '45px',
+    height: '45px',
+  },
+  [theme.breakpoints.down('sm')]: {
+    top: '-20px',
+    right: '-10px',
+  },
 });
 
 const wrapper = theme => ({
-  overflowY: 'auto',
-  height: '100%',
-  padding: '30px 60px 60px',
+  padding: '25px 30px 60px',
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'center',
+  maxWidth: 'unset',
   gap: '20px',
   '& h3': {
     fontSize: '24px',
     fontWeight: 500,
   },
   [theme.breakpoints.down('md')]: {
-    padding: '20px 44px 60px',
-    '& h3': {
-      fontSize: '25px',
-    },
+    padding: '20px 24px 20px',
   },
   [theme.breakpoints.down('sm')]: {
     gap: '20px',
-    padding: '38px 20px 30px',
+    padding: '30px 20px 20px',
+    '& h3': {
+      fontSize: '20px',
+    },
+  },
+  [theme.breakpoints.down(780)]: {
+    borderRadius: '0!important',
   },
 });
 
@@ -550,7 +613,6 @@ const buttonWrapper = theme => ({
   mt: '40px',
   display: 'flex',
   mb: '10px',
-  maxWidth: '450px',
   width: '100%',
   justifyContent: 'center',
   [theme.breakpoints.down(500)]: {
@@ -569,21 +631,6 @@ const contentWrapper = {
   gap: '20px',
 };
 
-const titleSx = {
-  fontSize: '16px',
-  fontWeight: 500,
-  display: 'flex',
-  flexWrap: 'wrap',
-  gap: '5px',
-};
-
-const salaryWrapper = {
-  display: 'flex',
-  gap: '50px',
-  fontSize: '14px',
-  fontWeight: 500,
-};
-
 const infoWrapper = theme => ({
   marginTop: '20px',
   [theme.breakpoints.down('sm')]: {
@@ -591,21 +638,6 @@ const infoWrapper = theme => ({
       fontSize: '15px',
       fontWeight: 500,
     },
-  },
-});
-
-const linkWrapper = theme => ({
-  display: 'flex',
-  flexDirection: 'column',
-  marginTop: '30px',
-  padding: '0 15px',
-  '& p': {
-    display: 'flex',
-    alignItems: 'center',
-    fontSize: '14px',
-  },
-  [theme.breakpoints.down('sm')]: {
-    marginTop: '25px',
   },
 });
 
@@ -624,7 +656,7 @@ const buttonSx = theme => ({
   textTransform: 'unset',
   fontWeight: 600,
   mr: '20px',
-  width: '100%',
+  width: '200px',
   borderRadius: '10px',
   '&:last-child': { mr: 0 },
   [theme.breakpoints.down('md')]: {
@@ -643,26 +675,3 @@ const buttonSx = theme => ({
     width: '122px',
   },
 });
-
-const messageButton = theme => ({
-  width: '560px',
-  padding: '4px 0',
-  [theme.breakpoints.down('md')]: {
-    width: '440px',
-    padding: '4px 0',
-  },
-  [theme.breakpoints.down('sm')]: {
-    width: '360px',
-  },
-  [theme.breakpoints.down('xs')]: {
-    width: '290px',
-  },
-  [theme.breakpoints.down('xxs')]: {
-    width: '254px',
-  },
-});
-
-const priceCalc = {
-  width: '100%',
-  '& .head': { justifyContent: 'center' },
-};
