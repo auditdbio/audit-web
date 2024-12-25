@@ -60,7 +60,7 @@ const AuthorizedOptions = () => {
           {isAuth() && <ChatLabel />}
           <CustomBadge />
           <Avatar
-            src={userAvatar ? `${ASSET_URL}/${userAvatar}` : ''}
+            src={userAvatar ? `${ASSET_URL}/id/${userAvatar}` : ''}
             sx={mobileAvatarSx}
             alt="User photo"
           />
@@ -134,7 +134,7 @@ const AuthorizedOptions = () => {
                 }
               >
                 <Avatar
-                  src={userAvatar ? `${ASSET_URL}/${userAvatar}` : ''}
+                  src={userAvatar ? `${ASSET_URL}/id/${userAvatar}` : ''}
                   sx={avatarStyle(reduxUser.current_role)}
                   alt="User photo"
                 />

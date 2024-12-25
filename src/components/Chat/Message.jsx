@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import Cookies from 'js-cookie';
 import axios from 'axios';
@@ -8,22 +8,34 @@ import { ASSET_URL } from '../../services/urls.js';
 import theme from '../../styles/themes.js';
 import { AUDITOR, CUSTOMER } from '../../redux/actions/types.js';
 import ImageMessage from './ImageMessage.jsx';
-import AuditRequestInfo from '../audit-request-info.jsx';
 import AuditMessage from './AuditMessage.jsx';
 import { Link, useLocation } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom/dist';
 
-const Message = ({
-  message,
-  user,
-  currentChat,
-  isRead,
-  type,
-  orgId,
-  chatRole,
-}) => {
+const Message = ({ message, user, currentChat, isRead }) => {
+// const Message = ({
+//   message,
+//   user,
+//   currentChat,
+//   isRead,
+//   type,
+//   orgId,
+//   chatRole,
+// }) => {
   const { customer } = useSelector(state => state.customer);
   const { auditor } = useSelector(state => state.auditor);
+
+  let fileMessage;
+  if (message?.kind === 'File') {
+    try {
+      fileMessage = JSON.parse(message.text);
+    } catch (e) {
+      fileMessage = {};
+    }
+  } else {
+    fileMessage = {};
+  }
+
   const location = useLocation();
   const navigate = useNavigate();
   const userAvatar = useMemo(() => {
@@ -36,23 +48,24 @@ const Message = ({
     }
   }, [user.current_role, customer?.avatar, auditor?.avatar]);
 
-  const getMessageAvatar = () => {
-    if (orgId) {
-      if (message?.from?.id === orgId) {
-        return userAvatar ? `${ASSET_URL}/${userAvatar}` : null;
-      }
-    } else {
-      if (message?.from?.id === user?.id) {
-        return userAvatar ? `${ASSET_URL}/${userAvatar}` : null;
-      }
+  const getMessageAvatar = () => {if (orgId) {
+  //   if (message?.from?.id === orgId) {
+  //     return userAvatar ? `${ASSET_URL}/${userAvatar}` : null;
+  //   }
+  // } else {
+  //   if (message?.from?.id === user?.id) {
+  //     return userAvatar ? `${ASSET_URL}/${userAvatar}` : null;
+  //   }
+    if (message?.from?.id === user?.id) {
+      return userAvatar ? `${ASSET_URL}/id/${userAvatar}` : null;
     }
-    return currentChat?.avatar ? `${ASSET_URL}/${currentChat.avatar}` : null;
+    return currentChat?.avatar ? `${ASSET_URL}/id/${currentChat.avatar}` : null;
   };
 
   const downloadFile = () => {
     const token = Cookies.get('token');
     axios
-      .get(`${ASSET_URL}/${message.text}`, {
+      .get(`${ASSET_URL}/id/${fileMessage?.file_id}`, {
         responseType: 'blob',
         withCredentials: true,
         headers: { Authorization: `Bearer ${token}` },
@@ -61,10 +74,7 @@ const Message = ({
         const url = window.URL.createObjectURL(new Blob([data]));
         const link = document.createElement('a');
         link.href = url;
-        link.setAttribute(
-          'download',
-          decodeURIComponent(message.text).replace(/^\d*_/, ''),
-        );
+        link.setAttribute('download', fileMessage?.filename);
         document.body.appendChild(link);
         link.click();
       });
@@ -120,7 +130,7 @@ const Message = ({
           <AuditMessage message={message} />
         ) : message.kind === 'File' ? (
           <Typography title="Download" sx={linkMessage} onClick={downloadFile}>
-            <span>{decodeURIComponent(message.text).replace(/^\d*_/, '')}</span>
+            <span>{fileMessage?.filename}</span>
           </Typography>
         ) : (
           <Typography sx={{ whiteSpace: 'pre-wrap' }}>
@@ -198,7 +208,7 @@ const messageAvatarSx = theme => ({
 
 const messageTextSx = ({ isOwn }) => ({
   position: 'relative',
-  minWidth: '200px',
+  minWidth: '150px',
   maxWidth: '400px',
   margin: '0 20px',
   background: '#e5e5e5',

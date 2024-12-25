@@ -15,6 +15,7 @@ import {
   CHAT_UPDATE_DIFFERENT_ROLE_UNREAD,
   CHAT_SET_ERROR,
   CHAT_DELETE_MESSAGE,
+  RECEIVE_NEW_CHAT,
   CHAT_GET_LIST_ORG,
 } from './types.js';
 
@@ -170,7 +171,13 @@ export const chatSendMessage = (
   };
 };
 
-export const receiveNewChatMessage = message => {
+export const receiveNewChat = chat => {
+  return dispatch => {
+    dispatch({ type: RECEIVE_NEW_CHAT, payload: chat });
+  };
+};
+
+export const receiveNewChatMessage = (message, sameRole) => {
   return (dispatch, getState) => {
     const { chat: chatState, user } = getState();
     if (chatState.currentChat?.chatId === message.chat) {
@@ -210,10 +217,12 @@ export const receiveNewChatMessage = message => {
           },
         });
       } else {
-        dispatch({
-          type: CHAT_UPDATE_DIFFERENT_ROLE_UNREAD,
-          payload: chatState.differentRoleUnreadMessages + 1,
-        });
+        if (!sameRole) {
+          dispatch({
+            type: CHAT_UPDATE_DIFFERENT_ROLE_UNREAD,
+            payload: chatState.differentRoleUnreadMessages + 1,
+          });
+        }
       }
     }
   };

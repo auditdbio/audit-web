@@ -13,6 +13,7 @@ import {
   CHAT_UPDATE_READ,
   CHAT_UPDATE_TOTAL_UNREAD,
   DELETE_REQUEST,
+  RECEIVE_NEW_CHAT,
 } from '../actions/types.js';
 
 const initialState = {
@@ -47,6 +48,11 @@ export const chatReducer = (state = initialState, action) => {
         orgChatList: action.payload,
       };
     }
+    case RECEIVE_NEW_CHAT:
+      return {
+        ...state,
+        chatList: [...state.chatList, action.payload],
+      };
     case AUDIT_REQUEST_CREATE: {
       return {
         ...state,

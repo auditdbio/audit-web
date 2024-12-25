@@ -166,7 +166,7 @@ export default function AuditorModal({
                 }}
               >
                 <Avatar
-                  src={auditor.avatar && `${ASSET_URL}/${auditor.avatar}`}
+                  src={auditor.avatar && `${ASSET_URL}/id/${auditor.avatar}`}
                   sx={avatarStyle}
                   alt={`${auditor.first_name} photo`}
                 />
@@ -406,7 +406,7 @@ export default function AuditorModal({
                               }}
                               disablePast
                               inputFormat="DD.MM.YYYY"
-                              minDate={new Date()}
+                              minDate={dayjs()}
                             />
                             <Typography variant={'caption'}>-</Typography>
                             <Field
@@ -481,7 +481,6 @@ const MakeOfferSchema = Yup.object().shape({
 const modalWindow = theme => ({
   backgroundColor: theme.palette.background,
   overflow: 'unset',
-  width: '600px',
   display: 'flex',
   gap: '30px',
   flexDirection: 'column',

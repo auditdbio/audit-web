@@ -23,6 +23,10 @@ export const capitalize = str => {
     : '';
 };
 
+export const dateConverter = date => {
+  return date > 1000000000000 ? date / 1000 : date * 1000;
+};
+
 export const encodeBase64url = str => {
   return window
     .btoa(str)
@@ -44,6 +48,14 @@ export const getAverageFeedbackRating = rating => {
   }
 
   return 0;
+};
+
+export const issuesCounter = issues => {
+  if (issues.length > 1) {
+    return `${issues.length} issues`;
+  } else {
+    return `${issues.length} issue`;
+  }
 };
 
 export const reportBuilder = (report, issuesArray) => {

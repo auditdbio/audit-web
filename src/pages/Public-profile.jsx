@@ -301,7 +301,7 @@ const PublicProfile = ({ notFoundRedirect = true }) => {
               }}
             >
               <Avatar
-                src={data.avatar && `${ASSET_URL}/${data.avatar}`}
+                src={data.avatar && `${ASSET_URL}/id/${data.avatar}`}
                 sx={avatarStyle}
                 alt="User photo"
               />
@@ -611,8 +611,8 @@ const wrapper = (theme, color) => ({
 
 const goBackSx = {
   position: 'absolute',
-  top: '20px',
-  left: '30px',
+  top: '0px',
+  left: '-10px',
 };
 
 const badgeTitle = {

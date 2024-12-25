@@ -3,21 +3,19 @@ import {
   Box,
   Button,
   FormControlLabel,
-  IconButton,
-  InputAdornment,
   MenuItem,
   Switch,
   Tooltip,
   Typography,
+  useMediaQuery,
 } from '@mui/material';
 import { addSpacesToCamelCase, addTestsLabel } from '../../../lib/helper.js';
 import StatusControl from '../StatusControl.jsx';
 import { AUDITOR, CUSTOMER, RESOLVED } from '../../../redux/actions/types.js';
 import ArrowIcon from '../../icons/ArrowIcon.jsx';
 import { Field } from 'formik';
-import { Select, TextField } from 'formik-mui';
+import { Select } from 'formik-mui';
 import IssueSeverity from '../IssueSeverity.jsx';
-import SaveIcon from '@mui/icons-material/Save.js';
 import theme from '../../../styles/themes.js';
 import {
   DRAFT,
@@ -25,8 +23,11 @@ import {
   IN_PROGRESS,
   NOT_FIXED,
   VERIFICATION,
+  WILL_NOT_FIX,
 } from '../constants.js';
 import NoteAddIcon from '@mui/icons-material/NoteAdd.js';
+import FeedbackIcon from '@mui/icons-material/Feedback';
+import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 
 const StatusSeverityBlock = ({
   issue,
@@ -34,8 +35,6 @@ const StatusSeverityBlock = ({
   values,
   setFieldValue,
   handleSubmit,
-  errors,
-  touched,
   hideControl,
   dirty,
   user,
@@ -46,27 +45,86 @@ const StatusSeverityBlock = ({
 }) => {
   const [severityListOpen, setSeverityListOpen] = useState(false);
   const [statusListOpen, setStatusListOpen] = useState(false);
-  const [categoryPrevVal, setCategoryPrevVal] = useState(issue?.category || '');
+  const matchXs = useMediaQuery(theme => theme.breakpoints.down('xs'));
+  const matchXxs = useMediaQuery(theme => theme.breakpoints.down('xxs'));
 
   return (
     <Box sx={issueStatusBlock}>
       <Box
-        sx={[
-          issueWrapperSx(theme, !!issue),
-          !editMode ? { gap: '30px!important' } : {},
-        ]}
+        sx={issueWrapperSx(
+          theme,
+          isPublic,
+          audit?.status?.toLowerCase() === RESOLVED.toLowerCase(),
+          hideControl,
+          (issue?.status || values?.status) === 'Draft',
+          user.current_role === CUSTOMER,
+          !isEditFeedback && !issue?.feedback,
+        )}
       >
-        <Box sx={[issueInnerWrapperSx, blockSx(theme, !!issue)]}>
+        {(user.current_role !== CUSTOMER || isPublic) &&
+          !editMode &&
+          matchXxs && (
+            <Box sx={[buttonsBox, blockSx]}>
+              {!dirty ? (
+                <Tooltip arrow placement="top" title={'New issue'}>
+                  <Button
+                    variant="contained"
+                    type="button"
+                    color="primary"
+                    sx={[
+                      issueButton,
+                      {
+                        backgroundColor: 'rgba(0, 0, 0, 0.12)',
+                        '&:hover': {
+                          backgroundColor: 'rgba(0, 0, 0, 0.12)',
+                        },
+                      },
+                    ]}
+                    {...addTestsLabel('new-issue-button')}
+                  >
+                    <NoteAddIcon />
+                  </Button>
+                </Tooltip>
+              ) : (
+                <Tooltip arrow placement="top" title={'New issue'}>
+                  <Button
+                    variant="contained"
+                    type="submit"
+                    color="primary"
+                    disabled={!dirty}
+                    sx={issueButton}
+                    {...addTestsLabel('new-issue-button')}
+                  >
+                    <NoteAddIcon />
+                  </Button>
+                </Tooltip>
+              )}
+            </Box>
+          )}
+
+        <Box
+          sx={issueInnerWrapperSx(
+            theme,
+            (issue?.status || values?.status) === 'Draft',
+            audit?.status?.toLowerCase() === RESOLVED.toLowerCase(),
+            user.current_role === CUSTOMER,
+          )}
+        >
           <Box sx={statusBlockAlign}>
             <Typography
               onClick={() => isPublic && setStatusListOpen(true)}
-              sx={statusBlockTitle}
+              sx={[
+                statusBlockTitle,
+                { cursor: isPublic ? 'pointer' : 'default' },
+              ]}
             >
-              {isPublic && <ArrowIcon />}
-              <span>Status</span>
+              {isPublic && <ArrowIcon size={matchXs ? 'small' : 'medium'} />}
+              <span>Status:</span>
             </Typography>
             {!isPublic ? (
-              <Typography sx={statusValueSx(issue?.status || values.status)}>
+              <Typography
+                sx={statusValueSx(theme, issue?.status || values.status)}
+              >
                 {addSpacesToCamelCase(issue?.status || values.status)}
               </Typography>
             ) : (
@@ -85,7 +143,11 @@ const StatusSeverityBlock = ({
                 renderValue={selected => {
                   return (
                     <Box sx={{ textAlign: 'center' }}>
-                      <IssueSeverity text={selected} />
+                      <IssueSeverity
+                        text={
+                          selected === WILL_NOT_FIX ? 'Will not fix' : selected
+                        }
+                      />
                     </Box>
                   );
                 }}
@@ -98,7 +160,7 @@ const StatusSeverityBlock = ({
                   Fixed
                 </MenuItem>
                 <MenuItem
-                  value={NOT_FIXED}
+                  value={WILL_NOT_FIX}
                   sx={severityMenuItem}
                   classes={{ selected: 'selected-severity' }}
                 >
@@ -121,7 +183,7 @@ const StatusSeverityBlock = ({
 
         {(user.current_role !== CUSTOMER || isPublic) &&
         audit?.status?.toLowerCase() !== RESOLVED.toLowerCase() ? (
-          <Box sx={[severityWrapper, blockSx(theme, !!issue)]}>
+          <Box sx={[severityWrapper, blockSx]}>
             <Typography
               sx={[statusBlockTitle, { cursor: 'pointer' }]}
               onClick={() => {
@@ -130,7 +192,7 @@ const StatusSeverityBlock = ({
                 }
               }}
             >
-              <ArrowIcon />
+              <ArrowIcon size={matchXs ? 'small' : 'medium'} />
               <span>Severity</span>
             </Typography>
             <Field
@@ -202,105 +264,20 @@ const StatusSeverityBlock = ({
           </Box>
         )}
 
-        {(user.current_role === AUDITOR || isPublic) &&
-        !hideControl &&
-        audit?.status?.toLowerCase() !== RESOLVED.toLowerCase() ? (
-          <Box
-            sx={[
-              blockSx(theme, !!issue),
-              !!issue
-                ? {}
-                : {
-                    [theme.breakpoints.down(751)]: {
-                      width: '40%',
-                    },
-                  },
-            ]}
-          >
-            <Typography sx={[statusBlockTitle]}>
-              <span>Category</span>
-            </Typography>
-            <Field
-              component={TextField}
-              name="category"
-              placeholder="Enter a category"
-              disabled={false}
-              fullWidth={true}
-              sx={categoryInput}
-              onBlur={e => {
-                if (isPublic) {
-                  setCategoryPrevVal(values.category);
-                  if (editMode) {
-                    handleSubmit();
-                  }
-                }
-              }}
-              inputProps={{
-                sx: [
-                  { padding: '4px 2px', fontSize: '18px' },
-                  touched.category && errors.category
-                    ? { border: '1px solid red', borderRadius: '6px' }
-                    : {},
-                ],
-                ...addTestsLabel('issue-category-input'),
-              }}
-              InputProps={
-                user.current_role === AUDITOR &&
-                !isPublic &&
-                editMode &&
-                categoryPrevVal !== values.category
-                  ? {
-                      endAdornment: (
-                        <InputAdornment position="end">
-                          <IconButton
-                            edge="end"
-                            type="button"
-                            aria-label="Save"
-                            onClick={() => {
-                              setCategoryPrevVal(values.category);
-                              handleSubmit();
-                            }}
-                            sx={{
-                              display: 'flex',
-                              alignItems: 'flex-end',
-                            }}
-                            {...addTestsLabel('save-category-button')}
-                          >
-                            <SaveIcon color="secondary" fontSize="small" />
-                          </IconButton>
-                        </InputAdornment>
-                      ),
-                    }
-                  : null
-              }
-            />
-          </Box>
-        ) : (
-          values.category && (
-            <Box sx={[statusBlockAlign, blockSx(theme, !!issue)]}>
-              {!isPublic && (
-                <Typography sx={statusBlockTitle}>
-                  <span>Category</span>
-                </Typography>
-              )}
-              <Typography sx={statusBlockTitle}>{values.category}</Typography>
-            </Box>
-          )
-        )}
-
         {editMode &&
           user.current_role === AUDITOR &&
           !isPublic &&
           !hideControl && (
-            <Box sx={[statusBlockAlign, includeSx, blockSx(theme, !!issue)]}>
+            <Box sx={includeSx}>
               <FormControlLabel
                 label={
-                  <Typography sx={{ fontSize: '20px', fontWeight: 500 }}>
+                  <Typography sx={includeSxTitle}>
                     Include in the report
                   </Typography>
                 }
                 control={
                   <Switch
+                    size={matchXs ? 'small' : 'medium'}
                     checked={values.include}
                     color="secondary"
                     disabled={
@@ -319,72 +296,34 @@ const StatusSeverityBlock = ({
           )}
       </Box>
 
-      {(user.current_role !== CUSTOMER || isPublic) && !editMode && (
-        <Box
-          sx={[
-            buttonsBox,
-            !isPublic
-              ? {
-                  display: 'none!important',
-                  [theme.breakpoints.down(550)]: {
-                    display: 'flex!important',
-                  },
-                }
-              : {},
-          ]}
-        >
-          {!dirty ? (
-            <Tooltip arrow placement="top" title={'New issue'}>
-              <Button
-                variant="contained"
-                type="button"
-                color="primary"
-                // disabled={!dirty}
-                sx={[
-                  issueButton,
-                  {
-                    backgroundColor: 'rgba(0, 0, 0, 0.12)',
-                    '&:hover': {
-                      backgroundColor: 'rgba(0, 0, 0, 0.12)',
-                    },
-                  },
-                ]}
-                {...addTestsLabel('new-issue-button')}
-              >
-                <NoteAddIcon />
-              </Button>
-            </Tooltip>
-          ) : (
-            <Tooltip arrow placement="top" title={'New issue'}>
-              <Button
-                variant="contained"
-                type="submit"
-                color="primary"
-                disabled={!dirty}
-                sx={issueButton}
-                {...addTestsLabel('new-issue-button')}
-              >
-                <NoteAddIcon />
-              </Button>
-            </Tooltip>
-          )}
-        </Box>
-      )}
-
       {!isPublic &&
-        user.current_role === CUSTOMER &&
+        !hideControl &&
+        editMode &&
+        audit?.status?.toLowerCase() !== RESOLVED.toLowerCase() &&
+        (user.current_role.toLowerCase() === CUSTOMER.toLowerCase() ||
+          user.current_role.toLowerCase() === AUDITOR.toLowerCase()) &&
         !isEditFeedback &&
         !issue?.feedback && (
           <Box sx={buttonsBox}>
-            <Button
-              variant="contained"
-              color="primary"
-              sx={[issueButton, feedbackButton]}
-              onClick={() => setIsEditFeedback(prev => !prev)}
-              {...addTestsLabel('feedback-button')}
+            <Tooltip
+              arrow
+              placement="top"
+              title={
+                user.current_role.toLowerCase() === AUDITOR.toLowerCase()
+                  ? 'Customer feedback will be included in the report. Do not edit this field without a reasonable cause.'
+                  : 'Customer feedback will be included in the report'
+              }
             >
-              Send feedback
-            </Button>
+              <Button
+                variant="contained"
+                color="primary"
+                sx={[issueButton, feedbackButton]}
+                onClick={() => setIsEditFeedback(prev => !prev)}
+                {...addTestsLabel('feedback-button')}
+              >
+                <FeedbackIcon />
+              </Button>
+            </Tooltip>
           </Box>
         )}
     </Box>
@@ -394,75 +333,111 @@ const StatusSeverityBlock = ({
 export default StatusSeverityBlock;
 
 const includeSx = theme => ({
-  marginTop: '-5px',
-  '& p': {
-    width: '210px',
+  position: 'absolute',
+  top: 4,
+  right: '30px',
+  [theme.breakpoints.down('md')]: {
+    right: '20px',
   },
   [theme.breakpoints.down('sm')]: {
-    '& label': {
-      flexDirection: 'column-reverse',
-      marginRight: 'unset',
-    },
-    marginTop: '0',
-    // '& p': {
-    //   width: '170px',
-    // },
+    right: '10px',
+  },
+  [theme.breakpoints.down('xs')]: {
+    top: 10,
   },
 });
-//
-const issueWrapperSx = (theme, issue) => ({
+
+const includeSxTitle = theme => ({
+  fontSize: '16px!important',
+  fontWeight: 500,
+  [theme.breakpoints.down('xs')]: {
+    fontSize: '14px!important',
+  },
+});
+
+const issueWrapperSx = (
+  theme,
+  isPublic,
+  isResolved,
+  hideControl,
+  isDraft,
+  isCustomer,
+  isShowFeedbackBtn,
+) => ({
   display: 'flex',
+  flexGrow: 1,
   gap: '35px',
-  alignItems: 'flex-start',
+  alignItems: 'center',
+  justifyContent: 'space-between',
   [theme.breakpoints.down('sm')]: {
     gap: '25px!important',
     width: '100%',
-    // justifyContent: 'space-evenly',
   },
-  [theme.breakpoints.down(751)]: {
+  [theme.breakpoints.down('xs')]: {
     flexWrap: 'wrap',
-    gap: 'unset!important',
-    // flexDirection: 'column',
-    // alignItems: 'unset',
-    // gap: '25px',
   },
-  ...(issue && {
-    [theme.breakpoints.down(451)]: {
-      flexDirection: 'column',
-      alignItems: 'center',
-      gap: '25px!important',
-    },
-  }),
+  [theme.breakpoints.down(640)]: {
+    justifyContent:
+      isPublic || isResolved || hideControl || isDraft
+        ? 'space-around'
+        : 'center',
+    flexDirection:
+      isPublic || isResolved || hideControl || isDraft ? 'row' : 'column',
+    columnGap: '0px!important',
+    rowGap: '15px!important',
+    ml: isCustomer && isShowFeedbackBtn ? '50px' : 0,
+  },
+  [theme.breakpoints.down(450)]: {
+    flexDirection: (!hideControl && isDraft) || isCustomer ? 'column' : 'row',
+  },
+  [theme.breakpoints.down('xxs')]: {
+    flexDirection: 'column',
+  },
+  [theme.breakpoints.down(370)]: {
+    ml: 0,
+    mb: isCustomer && isShowFeedbackBtn ? '15px' : 0,
+  },
 });
 
-const issueInnerWrapperSx = theme => ({
-  flexDirection: 'column',
-  gap: '10px',
+const issueInnerWrapperSx = (theme, isDraft, isResolved, isCustomer) => ({
+  gap: '15px',
   display: 'flex',
-  alignItems: 'flex-start',
+  alignItems: 'center',
+  [theme.breakpoints.down('xs')]: {
+    justifyContent: 'center',
+  },
+  [theme.breakpoints.down(540)]: {
+    flexDirection: !isResolved && isCustomer ? 'column' : 'row',
+  },
+  [theme.breakpoints.down(435)]: {
+    width: '100%',
+    flexDirection: isDraft ? 'row' : 'column',
+  },
 });
 
 const issueStatusBlock = theme => ({
   display: 'flex',
-  // flexDirection: 'column',
   justifyContent: 'space-between',
   margin: '20px 0',
-  alignItems: 'flex-start',
-  // width: '20%',
-  // padding: '40px 10px 0px 25px',
+  alignItems: 'center',
   [theme.breakpoints.down('xs')]: {
-    flexDirection: 'column',
     padding: '10px 0px',
-    alignItems: 'center',
     margin: '0',
-    // width: '80%',
+  },
+  [theme.breakpoints.down(370)]: {
+    flexDirection: 'column',
   },
 });
 
 const statusBlockAlign = theme => ({
-  textAlign: 'left',
-  [theme.breakpoints.down('xs')]: {
-    textAlign: 'center',
+  display: 'flex',
+  flexDirection: 'row',
+  alignItems: 'center',
+  '& > p': {
+    mr: '10px',
+    [theme.breakpoints.down('xs')]: {
+      mr: '6px',
+    },
   },
 });
 
@@ -470,34 +445,32 @@ const statusBlockTitle = theme => ({
   display: 'flex',
   alignItems: 'center',
   columnGap: '10px',
-  fontSize: '20px',
+  fontSize: '16px!important',
   fontWeight: 500,
-  mb: '5px',
   [theme.breakpoints.down('xs')]: {
     justifyContent: 'center',
   },
+  [theme.breakpoints.down(650)]: {
+    fontSize: '14px!important',
+  },
 });
 
-const severityWrapper = {
-  // mb: '30px',
+const severityWrapper = theme => ({
+  display: 'flex',
+  alignItems: 'center',
   '& div.MuiFormControl-root': {
     width: '100%',
   },
-};
+  '& > p': {
+    mr: '15px',
+    [theme.breakpoints.down('xs')]: {
+      mr: '10px',
+    },
+  },
+});
 
-const blockSx = (theme, issue) => ({
-  width: '200px',
-  [theme.breakpoints.down('sm')]: {
-    width: '190px',
-  },
-  [theme.breakpoints.down(751)]: {
-    width: issue ? '50%' : '30%',
-    boxSizing: 'border-box',
-    padding: '10px',
-    alignItems: 'center!important',
-  },
-  [theme.breakpoints.down(451)]: {
-    width: issue ? '100%' : '50%!important',
+const blockSx = theme => ({
+  [theme.breakpoints.down(500)]: {
     boxSizing: 'unset',
     padding: 'unset',
     alignItems: 'center!important',
@@ -521,40 +494,49 @@ const selectFieldSx = theme => ({
       justifyContent: 'center',
     },
   },
-});
-
-const statusValueSx = status => {
-  let color = '#434242';
-  if (status === DRAFT) color = '#52176D';
-  if (status === VERIFICATION || status === IN_PROGRESS) color = '#5b97bb';
-  if (status === FIXED || status === NOT_FIXED) color = '#09C010';
-
-  return { fontSize: '20px', fontWeight: 500, color };
-};
-
-const categoryInput = theme => ({
-  '& fieldset': { borderWidth: 0 },
-  '& input': {
-    [theme.breakpoints.down('xs')]: { textAlign: 'center' },
+  '& #mui-component-select-severity': {
+    justifyContent: 'center',
+  },
+  '& #mui-component-select-status': {
+    justifyContent: 'center',
   },
 });
 
-const buttonsBox = (theme, isPublic) => ({
+const statusValueSx = (theme, status) => {
+  let color = '#434242';
+  if (status === DRAFT) color = '#52176D';
+  if (status === VERIFICATION || status === IN_PROGRESS) color = '#5b97bb';
+  if (status === FIXED || status === NOT_FIXED || status === WILL_NOT_FIX)
+    color = '#09C010';
+
+  return {
+    fontSize: '16px!important',
+    fontWeight: 500,
+    color,
+    mr: '0!important',
+    [theme.breakpoints.down('xs')]: {
+      fontSize: '14px!important',
+    },
+  };
+};
+
+const buttonsBox = theme => ({
   display: 'flex',
   justifyContent: 'flex-end',
-  // pt: '20px',
+  alignItems: 'center',
+  gap: '10px',
   position: 'relative',
   [theme.breakpoints.down('xs')]: {
     justifyContent: 'center',
     pt: 0,
-    mt: '20px',
-    // mb: '20px',
   },
 });
 
 const issueButton = theme => ({
   padding: '11px 10px',
-  width: '100%',
+  width: '50px',
+  minWidth: 'unset',
+  height: '47px',
   textTransform: 'none',
   fontWeight: 500,
   fontSize: '16px!important',
@@ -564,15 +546,11 @@ const issueButton = theme => ({
     padding: '12px 6px',
     letterSpacing: '-0.5px',
   },
-  [theme.breakpoints.down('xs')]: {
-    padding: '10px 30px',
-  },
 });
 
 const feedbackButton = theme => ({
-  fontWeight: '400!important',
-  padding: '6px 15px',
-  [theme.breakpoints.down('md')]: {
-    padding: '4px 15px',
+  ml: '10px',
+  [theme.breakpoints.down(370)]: {
+    ml: 0,
   },
 });

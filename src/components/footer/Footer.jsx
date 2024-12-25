@@ -97,7 +97,7 @@ const mainFooterStyles = isMobile => ({
   display: 'flex',
   flexDirection: 'column',
   justifyContent: 'space-between',
-  maxWidth: '1512px',
+  // maxWidth: '1512px',
   width: '100%',
   padding: isMobile ? '35px 30px 28px 30px' : '0 45px',
   gap: '30px',

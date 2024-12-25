@@ -31,7 +31,7 @@ const AuditIssueDetails = ({ isPublic, saved, hideControl }) => {
   );
 
   useEffect(() => {
-    if (hideControl) {
+    if (hideControl && !audit) {
       dispatch(getPublicAudit(auditId, code));
     }
   }, []);
@@ -75,11 +75,11 @@ const AuditIssueDetails = ({ isPublic, saved, hideControl }) => {
 
   return (
     <Layout
-      sx={layoutSx}
-      containerSx={{
-        maxWidth: 'unset!important',
-        padding: '0 35px!important',
-      }}
+    // sx={layoutSx}
+    // containerSx={{
+    //   maxWidth: 'unset!important',
+    //   padding: '0 35px!important',
+    // }}
     >
       <Headings
         title={`${issue?.name} | ${audit?.project_name || 'Issues'}`}
@@ -128,7 +128,7 @@ const layoutSx = theme => ({
 });
 
 const wrapper = theme => ({
-  padding: '50px 30px 80px',
+  padding: '45px 30px 60px',
   position: 'relative',
   display: 'flex',
   flexDirection: 'column',
@@ -139,6 +139,9 @@ const wrapper = theme => ({
   },
   [theme.breakpoints.down('sm')]: {
     padding: '50px 10px 30px',
+  },
+  [theme.breakpoints.down(780)]: {
+    borderRadius: 'unset',
   },
 });
 

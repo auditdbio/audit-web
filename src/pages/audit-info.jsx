@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, Link } from 'react-router-dom/dist';
 import dayjs from 'dayjs';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import { CustomCard } from '../components/custom/Card.jsx';
+import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 import {
   Avatar,
   Box,
@@ -11,6 +11,9 @@ import {
   Typography,
   Tooltip,
   Divider,
+  FormControlLabel,
+  Switch,
+  Collapse,
 } from '@mui/material';
 import TagsList from '../components/tagsList.jsx';
 import {
@@ -32,7 +35,7 @@ import {
   WAITING_FOR_AUDITS,
 } from '../redux/actions/types.js';
 import Markdown from '../components/markdown/Markdown.jsx';
-import { ASSET_URL } from '../services/urls.js';
+import FeedbackIcon from '@mui/icons-material/Feedback';
 import { addTestsLabel } from '../lib/helper.js';
 import CustomSnackbar from '../components/custom/CustomSnackbar.jsx';
 import CloseIcon from '@mui/icons-material/Close';
@@ -44,8 +47,13 @@ import AuditFeedbackModal from '../components/modal/AuditFeedbackModal.jsx';
 import EditDescription from '../components/EditDescription/index.jsx';
 import DescriptionHistory from '../components/DescriptionHistory/index.jsx';
 import EditTags from '../components/EditDescription/EditTags.jsx';
-import EditPrice from '../components/EditDescription/EditPrice.jsx';
+import AddCommentIcon from '@mui/icons-material/AddComment';
 import IssuesList from '../components/issuesPage/IssuesList.jsx';
+import { useParams } from 'react-router-dom';
+import theme from '../styles/themes.js';
+import EditIcon from '@mui/icons-material/Edit.js';
+import ExpandLessOutlinedIcon from '@mui/icons-material/ExpandLessOutlined.js';
+import AuditUserCard from '../components/AuditUserCard/AuditUserCard.jsx';
 
 const AuditInfo = ({
   audit,
@@ -64,6 +72,8 @@ const AuditInfo = ({
   const { successMessage, error } = useSelector(s => s.audits);
   const { user } = useSelector(s => s.user);
   const { chatList } = useSelector(s => s.chat);
+  const { auditId } = useParams();
+  const [showFull, setShowFull] = useState(false);
 
   const [isFeedbackModalOpen, setIsFeedbackModalOpen] = useState(false);
 
@@ -127,7 +137,7 @@ const AuditInfo = ({
   };
 
   return (
-    <CustomCard sx={wrapper} className={'audit-info-wrapper'}>
+    <>
       <Headings title={audit?.project_name || 'Audit Info'} />
       <CustomSnackbar
         autoHideDuration={5000}
@@ -136,40 +146,72 @@ const AuditInfo = ({
         text={error || successMessage}
         onClose={() => dispatch(clearMessage())}
       />
-
-      <Button
-        sx={backButtonSx}
-        onClick={() => {
-          if (!isPublic) {
-            if (handleClose) {
-              handleClose();
-            } else {
-              if (localStorage.getItem('prevPath')) {
-                navigate(localStorage.getItem('prevPath'));
-                localStorage.removeItem('prevPath');
-              } else navigate('/profile/audits');
-            }
-          } else {
-            if (localStorage.getItem('prevPath')) {
-              navigate(localStorage.getItem('prevPath'));
-              localStorage.removeItem('prevPath');
-            } else {
-              navigate(-1);
-            }
-          }
-        }}
-        aria-label="Go back"
-        {...addTestsLabel('go-back-button')}
-      >
-        {!handleClose ? <ArrowBackIcon /> : <CloseIcon />}
-      </Button>
       <Box
         sx={{
           display: 'flex',
           width: '100%',
           justifyContent: 'center',
-          flexDirection: 'column',
+          position: 'relative',
         }}
+      >
+        <Button
+          sx={[
+            backButtonSx,
+            auditRequest
+              ? { top: '-20px!important', left: '-30px!important' }
+              : {},
+          ]}
+          onClick={() => {
+            if (!isPublic) {
+              if (handleClose) {
+                handleClose();
+              } else {
+                if (localStorage.getItem('prevPath')) {
+                  navigate(localStorage.getItem('prevPath'));
+                  localStorage.removeItem('prevPath');
+                } else navigate('/profile/audits');
+              }
+            } else {
+              if (localStorage.getItem('prevPath')) {
+                navigate(localStorage.getItem('prevPath'));
+                localStorage.removeItem('prevPath');
+              } else {
+                navigate(-1);
+              }
+            }
+          }}
+          aria-label="Go back"
+          {...addTestsLabel('go-back-button')}
+        >
+          {!handleClose ? <ArrowBackIcon /> : <CloseIcon />}
+        </Button>
+        <Button
+          variant="text"
+          onClick={handleSendMessage}
+          sx={[pdfButtonSx, chatBtnSx]}
+          disabled={audit?.auditor_id === user.id}
+          {...addTestsLabel('message-button')}
+        >
+          <ChatIcon />
+        </Button>
+      </Box>
+      <Box
+        sx={[
+          {
+            display: 'flex',
+            width: '100%',
+            justifyContent: 'center',
+            flexDirection: 'column',
+          },
+          auditRequest
+            ? {
+                marginTop: '-20px',
+                [theme.breakpoints.down(600)]: {
+                  marginTop: '0',
+                },
+              }
+            : {},
+        ]}
       >
         <Box
           sx={{
@@ -216,319 +258,124 @@ const AuditInfo = ({
         </Box>
         <Divider sx={{ mt: '15px' }} />
       </Box>
-      <Box sx={{ maxWidth: '100%', width: '100%' }}>
-        <Box
-          sx={[contentWrapper, isPublic ? { alignItems: 'flex-start' } : {}]}
+      <Box sx={{ width: '100%' }}>
+        <Collapse
+          sx={{ width: '100%' }}
+          in={true}
+          collapsedSize={showFull ? undefined : 300}
         >
-          {audit.auditor_organization?.id ? (
-            <Box sx={userWrapper}>
-              <Avatar
-                src={
-                  audit?.auditor_organization.avatar
-                    ? `${ASSET_URL}/${audit?.auditor_organization?.avatar}`
-                    : ''
+          <Box sx={descriptionWrapper(theme, showFull)}>
+            <Box
+              sx={[
+                contentWrapper,
+                isPublic ? { alignItems: 'flex-start' } : {},
+              ]}
+            >
+              <AuditUserCard
+                avatar={audit?.avatar}
+                name={
+                  audit?.auditor_first_name + ' ' + audit?.auditor_last_name
                 }
-                alt="auditor photo"
+                email={audit?.auditor_contacts?.email}
+                telegram={audit?.auditor_contacts?.telegram}
               />
-              <Box sx={{ display: 'grid', textAlign: 'center' }}>
-                <Typography
-                  noWrap={true}
-                  sx={{ fontSize: '14px', color: 'grey!important' }}
-                >
-                  Organization:
-                </Typography>
-                <Tooltip
-                  title={audit?.auditor_organization.name}
-                  arrow
-                  placement="top"
-                >
-                  <Typography noWrap={true} sx={userNameWrapper}>
-                    {audit?.auditor_organization.name}
-                  </Typography>
-                </Tooltip>
-              </Box>
-            </Box>
-          ) : (
-            <Box sx={userWrapper}>
-              {isPublic && (
-                <Typography sx={roleTitleSx} align={'center'}>
-                  Auditor
-                </Typography>
-              )}
-              <Avatar
-                src={audit?.avatar ? `${ASSET_URL}/${audit?.avatar}` : ''}
-                alt="auditor photo"
-              />
-              <Link
-                to={`/a/${audit.auditor_id}`}
-                style={{ display: 'grid', textAlign: 'center' }}
-              >
-                <Tooltip
-                  title={audit?.auditor_first_name}
-                  arrow
-                  placement="top"
-                >
-                  <Typography noWrap={true} sx={userNameWrapper}>
-                    {audit?.auditor_first_name}
-                  </Typography>
-                </Tooltip>
-                <Tooltip title={audit?.auditor_last_name} arrow placement="top">
-                  <Typography noWrap={true} sx={userNameWrapper}>
-                    {audit?.auditor_last_name}
-                  </Typography>
-                </Tooltip>
-              </Link>
-            </Box>
-          )}
-          <Box sx={userInfoWrapper}>
-            {audit.auditor_organization?.id ? (
-              <>
-                <Box sx={infoWrapper}>
-                  <span>E-mail:</span>
-                  <Box sx={{ display: 'grid' }}>
-                    {!!audit?.auditor_organization?.contacts?.email ? (
-                      <Tooltip
-                        title={audit?.auditor_organization?.contacts?.email}
-                        arrow
-                        placement="top"
-                      >
-                        <Typography noWrap={true}>
-                          {audit?.auditor_organization?.contacts?.email}
-                        </Typography>
-                      </Tooltip>
-                    ) : (
-                      <Typography noWrap={true}>Not specified</Typography>
-                    )}
-                  </Box>
-                </Box>
-                <Box sx={infoWrapper}>
-                  <span>Telegram:</span>
-                  <Box sx={{ display: 'grid' }}>
-                    {!!audit?.auditor_organization?.contacts?.telegram ? (
-                      <Tooltip
-                        title={audit?.auditor_organization?.contacts?.telegram}
-                        arrow
-                        placement="top"
-                      >
-                        <Typography noWrap={true}>
-                          {audit?.auditor_organization?.contacts?.telegram}
-                        </Typography>
-                      </Tooltip>
-                    ) : (
-                      <Typography noWrap={true}>Not specified</Typography>
-                    )}
-                  </Box>
-                </Box>
-              </>
-            ) : (
-              <>
-                <Box sx={infoWrapper}>
-                  <span>E-mail:</span>
-                  <Box sx={{ display: 'grid' }}>
-                    {!!audit?.auditor_contacts?.email ? (
-                      <Tooltip
-                        title={audit?.auditor_contacts?.email}
-                        arrow
-                        placement="top"
-                      >
-                        <Typography noWrap={true}>
-                          {audit?.auditor_contacts?.email}
-                        </Typography>
-                      </Tooltip>
-                    ) : (
-                      <Typography noWrap={true}>Not specified</Typography>
-                    )}
-                  </Box>
-                </Box>
-                <Box sx={infoWrapper}>
-                  <span>Telegram:</span>
-                  <Box sx={{ display: 'grid' }}>
-                    {!!audit?.auditor_contacts?.telegram ? (
-                      <Tooltip
-                        title={audit?.auditor_contacts?.telegram}
-                        arrow
-                        placement="top"
-                      >
-                        <Typography noWrap={true}>
-                          {audit?.auditor_contacts?.telegram}
-                        </Typography>
-                      </Tooltip>
-                    ) : (
-                      <Typography noWrap={true}>Not specified</Typography>
-                    )}
-                  </Box>
-                </Box>
-                {!isPublic && (
+              {!!audit?.time?.from && !isPublic && (
+                <Box sx={projectWrapper}>
+                  <Typography>Time for project:</Typography>
                   <Box
-                    sx={{
-                      display: 'flex',
-                      color: '#434242',
-                      '& p': {
-                        fontSize: '15px!important',
-                        maxWidth: '200px',
-                        fontWeight: 400,
-                      },
-                    }}
+                    sx={{ display: 'flex', alignItems: 'center', gap: '10px' }}
                   >
-                    <Box sx={infoWrapper}>
-                      <span>Price:</span>
+                    <Box sx={dateWrapper}>
+                      {dayjs(audit?.time?.from).format('DD.MM.YYYY')}
                     </Box>
-                    <EditPrice
-                      hideIcon={true}
-                      audit={audit}
-                      user={user}
-                      isPublic={isPublic}
-                      request={request}
-                    />
+                    -
+                    <Box sx={dateWrapper}>
+                      {dayjs(audit?.time?.to).format('DD.MM.YYYY')}
+                    </Box>
                   </Box>
-                )}
-              </>
-            )}
-          </Box>
-
-          {!!audit?.time?.from && !isPublic && (
-            <Box sx={projectWrapper}>
-              <Typography>Time for project:</Typography>
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                <Box sx={dateWrapper}>
-                  {dayjs(audit?.time?.from).format('DD.MM.YYYY')}
-                </Box>
-                -
-                <Box sx={dateWrapper}>
-                  {dayjs(audit?.time?.to).format('DD.MM.YYYY')}
-                </Box>
-              </Box>
-              <TagsList />
-            </Box>
-          )}
-          {isPublic && (
-            <Box sx={userWrapper}>
-              <Typography align={'center'} sx={roleTitleSx}>
-                Customer
-              </Typography>
-              <Avatar
-                src={
-                  audit?.customer_avatar
-                    ? `${ASSET_URL}/${audit?.customer_avatar}`
-                    : ''
-                }
-                alt="auditor photo"
-              />
-              <Link
-                to={`/a/${audit.customer_id}`}
-                style={{ display: 'grid', textAlign: 'center' }}
-              >
-                <Tooltip
-                  title={audit?.customer_first_name}
-                  arrow
-                  placement="top"
-                >
-                  <Typography noWrap={true} sx={userNameWrapper}>
-                    {audit?.customer_first_name}
-                  </Typography>
-                </Tooltip>
-                <Tooltip
-                  title={audit?.customer_last_name}
-                  arrow
-                  placement="top"
-                >
-                  <Typography noWrap={true} sx={userNameWrapper}>
-                    {audit?.customer_last_name}
-                  </Typography>
-                </Tooltip>
-              </Link>
-            </Box>
-          )}
-          {isPublic && (
-            <Box sx={userInfoWrapper}>
-              <Box sx={infoWrapper}>
-                <span>E-mail:</span>
-                <Box sx={{ display: 'grid' }}>
-                  {!!audit?.customer_contacts?.email ? (
-                    <Tooltip
-                      title={audit?.customer_contacts?.email}
-                      arrow
-                      placement="top"
-                    >
-                      <Typography noWrap={true}>
-                        {audit?.customer_contacts?.email}
-                      </Typography>
-                    </Tooltip>
-                  ) : (
-                    <Typography noWrap={true}>Not specified</Typography>
-                  )}
-                </Box>
-              </Box>
-              <Box sx={infoWrapper}>
-                <span>Telegram:</span>
-                <Box sx={{ display: 'grid' }}>
-                  {!!audit?.customer_contacts?.telegram ? (
-                    <Tooltip
-                      title={audit?.customer_contacts?.telegram}
-                      arrow
-                      placement="top"
-                    >
-                      <Typography noWrap={true}>
-                        {audit?.customer_contacts?.telegram}
-                      </Typography>
-                    </Tooltip>
-                  ) : (
-                    <Typography noWrap={true}>Not specified</Typography>
-                  )}
-                </Box>
-              </Box>
-              {!isPublic && (
-                <Box
-                  sx={{
-                    display: 'flex',
-                    color: '#434242',
-                    '& p': {
-                      fontSize: '15px!important',
-                      maxWidth: '200px',
-                      fontWeight: 400,
-                    },
-                  }}
-                >
-                  <Box sx={infoWrapper}>
-                    <span>Price:</span>
-                  </Box>
-                  <EditPrice
-                    hideIcon={true}
-                    audit={audit}
-                    user={user}
-                    isPublic={isPublic}
-                    request={request}
-                  />
+                  <TagsList />
                 </Box>
               )}
             </Box>
-          )}
+            <EditDescription
+              isPublic={isPublic}
+              auditRequest={request}
+              audit={audit}
+            />
+          </Box>
+        </Collapse>
+        <Box
+          sx={[
+            {
+              // border: '1px solid #E5E5E5',
+              borderTop: '1px solid #E5E5E5',
+              display: 'flex',
+              width: '100%',
+              justifyContent: 'center',
+              position: 'relative',
+              paddingTop: '8px',
+            },
+            !showFull
+              ? {
+                  boxShadow: '0px -24px 14px -8px rgba(252, 250, 246, 1)',
+                }
+              : {},
+          ]}
+        >
+          <Button
+            onClick={() => setShowFull(!showFull)}
+            sx={[
+              readAllButton,
+              {
+                position: 'relative',
+                top: !showFull ? '-25px' : 0,
+                backgroundColor: '#fcfaf6',
+                zIndex: '1',
+                marginBottom: showFull ? '20px' : 0,
+                '&:hover': {
+                  backgroundColor: '#fcfaf6',
+                },
+              },
+            ]}
+            variant={'outlined'}
+          >
+            <span>{showFull ? 'Hide' : `Show`}</span>
+            <EditIcon sx={{ width: '20px' }} />
+            <ExpandLessOutlinedIcon
+              sx={[
+                showFull ? {} : { transform: 'rotate(180deg)' },
+                {
+                  transition: '0.2s',
+                  // marginRight: '0',
+                  // marginLeft: 'auto',
+                  width: '20px',
+                  height: '20px',
+                },
+              ]}
+            />
+          </Button>
+          {/*)}*/}
         </Box>
-        <EditDescription
-          isPublic={isPublic}
-          auditRequest={request}
-          audit={audit}
-        />
-        {!isPublic && <DescriptionHistory audit={audit} request={request} />}
       </Box>
-
       {audit?.conclusion && (
         <Box sx={{ border: '2px solid #E5E5E5', width: '100%' }}>
           <Box sx={conclusionTitle}>Conclusion</Box>
           <Markdown value={audit.conclusion} />
         </Box>
       )}
-
-      <Box>
+      <Box sx={{ display: 'flex', gap: '15px' }}>
         <Box
           sx={{
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
-            mt: '20px',
             gap: '15px',
           }}
         >
+          {/*<Box sx={historySx}>*/}
+          <DescriptionHistory audit={audit} request={request} />
+
+          {/*</Box>*/}
           {auditRequest && (
             <Button
               variant={'contained'}
@@ -540,7 +387,7 @@ const AuditInfo = ({
               Accept
             </Button>
           )}
-          {!audit?.status && (
+          {auditRequest && (
             <Button
               variant="contained"
               color="secondary"
@@ -556,23 +403,15 @@ const AuditInfo = ({
               <Button
                 variant={'contained'}
                 color={'secondary'}
-                onClick={() => dispatch(Report(audit))}
-                sx={[buttonSx]}
+                onClick={() => dispatch(downloadReport(audit))}
+                sx={[buttonSx, pdfButtonSx]}
                 {...addTestsLabel('report-button')}
               >
-                Download Report
+                {/*Download Report*/}
+                <PictureAsPdfIcon />
               </Button>
             </Box>
           )}
-          <Button
-            variant="text"
-            onClick={handleSendMessage}
-            sx={{ mb: '15px' }}
-            disabled={audit?.auditor_id === user.id}
-            {...addTestsLabel('message-button')}
-          >
-            <ChatIcon />
-          </Button>
         </Box>
 
         {audit?.report && !!issues?.length && (
@@ -587,10 +426,11 @@ const AuditInfo = ({
                   dispatch(downloadPublicReport(audit, code));
                 }
               }}
-              sx={[buttonSx, { marginBottom: '20px' }]}
+              sx={[buttonSx, pdfButtonSx]}
               {...addTestsLabel('report-button')}
             >
-              Download Report
+              {/*Download Report*/}
+              <PictureAsPdfIcon />
             </Button>
           </Box>
         )}
@@ -599,15 +439,31 @@ const AuditInfo = ({
           !isPublic &&
           !audit.no_customer && (
             <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={() => setIsFeedbackModalOpen(true)}
-                sx={[buttonSx, { marginBottom: '20px' }]}
-                {...addTestsLabel('feddback-button')}
-              >
-                {audit.feedback ? 'My feedback' : 'Leave feedback'}
-              </Button>
+              {!audit.feedback ? (
+                <Tooltip title={'Leave feedback'} arrow top>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={() => setIsFeedbackModalOpen(true)}
+                    sx={[buttonSx, pdfButtonSx]}
+                    {...addTestsLabel('feddback-button')}
+                  >
+                    <AddCommentIcon />
+                  </Button>
+                </Tooltip>
+              ) : (
+                <Tooltip title={'My feedback'} arrow top>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={() => setIsFeedbackModalOpen(true)}
+                    sx={[buttonSx, pdfButtonSx]}
+                    {...addTestsLabel('feddback-button')}
+                  >
+                    <FeedbackIcon />
+                  </Button>
+                </Tooltip>
+              )}
             </Box>
           )}
 
@@ -621,46 +477,20 @@ const AuditInfo = ({
             Confirm
           </Button>
         )}
-
-        {audit?.status &&
-          !!issues?.length &&
-          !isPublic &&
-          audit?.status?.toLowerCase() !== WAITING_FOR_AUDITS.toLowerCase() && (
-            <Button
-              variant="contained"
-              color="primary"
-              type="button"
-              onClick={goToIssues}
-              sx={[buttonSx, { marginBottom: '20px' }]}
-              {...addTestsLabel('issues-button')}
-            >
-              Issues ({issues?.length})
-            </Button>
-          )}
-        {/*)}*/}
       </Box>
-      {isPublic && (
-        <IssuesList
-          isPublic={isPublic}
-          hideControl={true}
-          auditId={audit.id}
-          code={code}
-        />
-      )}
-
       <ConfirmModal
         isOpen={isConfirmModalOpen}
         handleAgree={handleDecline}
         handleDisagree={() => setIsConfirmModalOpen(false)}
       />
-
       <AuditFeedbackModal
         isOpen={isFeedbackModalOpen}
         handleClose={() => setIsFeedbackModalOpen(false)}
         handleSend={handleSendFeedback}
         feedback={audit.feedback}
       />
-    </CustomCard>
+      {!!audit?.issues?.length && <IssuesList auditId={auditId} />}
+    </>
   );
 };
 
@@ -669,7 +499,63 @@ export default AuditInfo;
 const roleTitleSx = theme => ({
   fontSize: '20px',
   margin: 'unset!important',
-  // marginBottom: '15px',
+  //
+});
+
+const readAllButton = theme => ({
+  p: '3px',
+  paddingX: '8px',
+  minWidth: 'unset',
+  textTransform: 'unset',
+  boxShadow: 'unset',
+  fontWeight: 600,
+  borderRadius: '8px',
+  width: '280px',
+  display: 'flex',
+  alignItems: 'center',
+  gap: '7px',
+  // maxWidth: '300px',
+  [theme.breakpoints.down('xs')]: {
+    fontSize: '16px',
+  },
+});
+
+const descriptionWrapper = (theme, showFull) => ({
+  maxHeight: showFull ? 'none' : 300,
+  '& .rc-md-editor': {
+    height: '100%!important',
+  },
+  overflow: 'hidden',
+  transition: 'max-height 0.3s ease',
+  '& .rc-md-editor .editor-container>.section': {
+    borderRight: 'unset',
+  },
+  '& .editor-container': {
+    borderBottom: '1px solid #e0e0e0',
+  },
+  maxWidth: '100%',
+  width: '100%',
+});
+
+const historySx = theme => ({
+  marginY: '10px',
+  display: 'flex',
+  justifyContent: 'flex-start',
+  width: '100%',
+});
+
+const chatBtnSx = theme => ({
+  position: 'absolute',
+  top: '-20px',
+  right: '-20px',
+  [theme.breakpoints.down('md')]: {
+    top: '-12px',
+    right: '-14px',
+  },
+  [theme.breakpoints.down('md')]: {
+    top: '-22px',
+    right: '-10px',
+  },
 });
 
 const wrapper = theme => ({
@@ -701,11 +587,11 @@ const userNameWrapper = theme => ({
 
 const backButtonSx = theme => ({
   position: 'absolute',
-  left: 0,
-  top: '10px',
-  [theme.breakpoints.down('md')]: {
-    minWidth: 'unset',
-    top: 0,
+  left: '-38px',
+  top: '-20px',
+  [theme.breakpoints.down('sm')]: {
+    top: '-30px',
+    left: '-20px',
   },
 });
 
@@ -771,6 +657,23 @@ const userInfoWrapper = theme => ({
   gap: '32px',
   [theme.breakpoints.down('sm')]: {
     gap: '16px',
+  },
+});
+
+const pdfButtonSx = theme => ({
+  padding: '8.5px 0',
+  fontSize: '16px',
+  textTransform: 'unset',
+  fontWeight: 600,
+  height: '50px',
+  width: '50px!important',
+  minWidth: '50px',
+  borderRadius: '10px',
+  [theme.breakpoints.down('lg')]: {
+    height: '47px',
+  },
+  [theme.breakpoints.down('md')]: {
+    height: '45px',
   },
 });
 

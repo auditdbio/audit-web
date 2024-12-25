@@ -56,6 +56,8 @@ import UserProjects from '../pages/UserProjects.jsx';
 import PriceCalculationPage from '../pages/PriceCalculationPage.jsx';
 import { refreshToken } from '../redux/actions/userAction.js';
 import PublicAuditInfo from '../pages/PublicAuditInfo.jsx';
+import PublicAuditInfoPage from '../pages/PublicAuditInfo.jsx';
+import Audit from '../pages/Audit.jsx';
 import Organization from '../components/Organization.jsx';
 import CreateEditOrganization from '../pages/CreateEditOrganization.jsx';
 import {
@@ -179,7 +181,7 @@ const AppRoutes = () => {
         <Route path="/oauth/callback" element={<ConnectAccount />} />
         {/*<Route path="/oauth/callback" element={<Github />} />*/}
         <Route path="/projects" element={<ProjectPage />} />
-        <Route path="/projects/:id" element={<PublicProject />} />
+        <Route path="/project/:id" element={<PublicProject />} />
         <Route path="/for-customers" element={<ForCustomer />} />
         <Route path="/for-auditors" element={<ForAuditor />} />
         <Route path="/auditors" element={<AuditorsPage />} />
@@ -230,26 +232,7 @@ const AppRoutes = () => {
             </PrivateRoute>
           }
         />
-        <Route
-          path="/audit-info/:id/customer"
-          element={
-            <PrivateRoute auth={{ isAuthenticated: isAuth() }}>
-              <AuditInfoPage />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/audit-info/:id"
-          element={<AuditInfoPage isPublic={true} />}
-        />
-        <Route
-          path="/audit-info/:auditId/auditor"
-          element={
-            <PrivateRoute auth={{ isAuthenticated: isAuth() }}>
-              <AuditOffer />
-            </PrivateRoute>
-          }
-        />
+        <Route path="/audit/:auditId" element={<Audit />} />
         <Route
           path="/audit-builder/edit/:auditId"
           element={

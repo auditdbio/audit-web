@@ -128,7 +128,7 @@ const DescriptionModal = ({
       }
     }
   };
-
+  console.log(item.comment);
   return (
     <Box sx={{ margin: '8px 0', paddingLeft: '12px' }}>
       <Box sx={itemWrapperSx}>
@@ -140,14 +140,18 @@ const DescriptionModal = ({
             >
               <Avatar
                 src={
-                  item.author.avatar ? `${ASSET_URL}/${item.author.avatar}` : ''
+                  item.author.avatar
+                    ? `${ASSET_URL}/id/${item.author.avatar}`
+                    : ''
                 }
               />
             </Badge>
           ) : (
             <Avatar
               src={
-                item.author.avatar ? `${ASSET_URL}/${item.author.avatar}` : ''
+                item.author.avatar
+                  ? `${ASSET_URL}/id/${item.author.avatar}`
+                  : ''
               }
             />
           )}
@@ -286,7 +290,7 @@ const DescriptionModal = ({
                 <Avatar
                   src={
                     (oldValue || compare).author.avatar
-                      ? `${ASSET_URL}/${(oldValue || compare).author.avatar}`
+                      ? `${ASSET_URL}/id/${(oldValue || compare).author.avatar}`
                       : ''
                   }
                 />
@@ -312,7 +316,7 @@ const DescriptionModal = ({
                   <Avatar
                     src={
                       item.author.avatar
-                        ? `${ASSET_URL}/${item.author.avatar}`
+                        ? `${ASSET_URL}/id/${item.author.avatar}`
                         : ''
                     }
                   />
@@ -350,7 +354,7 @@ const DescriptionModal = ({
                 />
               </>
             )}
-            {data.total_cost && (
+            {!!data.total_cost && (
               <>
                 <Typography variant={'h6'} sx={{ fontWeight: 500 }}>
                   Total cost
@@ -420,19 +424,20 @@ const DescriptionModal = ({
               <>
                 <Divider sx={{ mt: '20px' }} />
                 <Typography variant={'h6'} sx={{ fontWeight: 500 }}>
-                  Comments
+                  Comment
                 </Typography>
                 <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-                  <ReactDiffViewer
-                    oldValue={JSON.stringify(
-                      oldValue.comment || compare?.comment || '',
-                      null,
-                      2,
-                    )}
-                    newValue={JSON.stringify(item.comment || '', null, 2)}
-                    splitView={!mediaSx}
-                    compareMethod={DiffMethod.WORDS}
-                  />
+                  <Typography>{item.comment}</Typography>
+                  {/*<ReactDiffViewer*/}
+                  {/*  oldValue={JSON.stringify(*/}
+                  {/*    oldValue.comment || compare?.comment || '',*/}
+                  {/*    null,*/}
+                  {/*    2,*/}
+                  {/*  )}*/}
+                  {/*  newValue={JSON.stringify(item.comment || '', null, 2)}*/}
+                  {/*  splitView={!mediaSx}*/}
+                  {/*  compareMethod={DiffMethod.WORDS}*/}
+                  {/*/>*/}
                 </Box>
               </>
             )}

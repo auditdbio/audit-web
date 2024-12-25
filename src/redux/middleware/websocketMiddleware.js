@@ -1,4 +1,5 @@
 import {
+  ADD_AUDIT_ISSUE,
   AUDITOR,
   CUSTOMER,
   DISCONNECTED_WS,
@@ -21,8 +22,10 @@ import {
 } from '../actions/websocketAction.js';
 import {
   deleteChatMessage,
+  receiveNewChat,
   receiveNewChatMessage,
 } from '../actions/chatActions.js';
+import { history } from '../../services/history.js';
 
 const API_URL = import.meta.env.VITE_API_WS_BASE_URL;
 
@@ -80,7 +83,7 @@ const websocketMiddleware = () => {
             } else if (message.kind.toLowerCase() === 'auditupdate') {
               if (
                 store.getState().user.user.current_role.toLowerCase() ===
-                message.user_role.toLowerCase()
+                message.user_role?.toLowerCase()
               ) {
                 store.dispatch({
                   type: IN_PROGRESS,
@@ -88,13 +91,29 @@ const websocketMiddleware = () => {
                 });
               }
             } else if (message.kind.toLowerCase() === 'chatmessage') {
+              const sameRole =
+                store.getState().user.user.current_role.toLowerCase() ===
+                message.user_role.toLowerCase();
               store.dispatch(
-                receiveNewChatMessage(message.payload.ChatMessage),
+                receiveNewChatMessage(message.payload.ChatMessage, sameRole),
               );
+            } else if (message.kind.toLowerCase() === 'newchat') {
+              if (
+                store.getState().user.user.current_role.toLowerCase() ===
+                message.user_role.toLowerCase()
+              ) {
+                store.dispatch(receiveNewChat(message.payload.NewChat));
+              }
             } else if (message.kind.toLowerCase() === 'chatdeletemessage') {
               store.dispatch(
                 deleteChatMessage(message.payload.ChatDeleteMessage),
               );
+            } else if (message.kind.toLowerCase() === 'requestaccept') {
+              let current_request = store.getState().audits?.auditRequest;
+              let request_id = message.payload.RequestAccept;
+              if (current_request?.id === request_id) {
+                history.push(`/audit/${request_id}`);
+              }
             } else if (message.kind.toLowerCase() === 'requestdecline') {
               store.dispatch({
                 type: REQUEST_DECLINE,
@@ -109,6 +128,15 @@ const websocketMiddleware = () => {
                 type: UPDATE_AUDIT_ISSUE_WS,
                 payload: message.payload.IssueUpdate,
               });
+            } else if (message.kind.toLowerCase() === 'newissue') {
+              const issuesState = store.getState().issues;
+              const payload = message.payload.NewIssue;
+              if (issuesState.issuesAuditId === payload?.audit) {
+                store.dispatch({
+                  type: ADD_AUDIT_ISSUE,
+                  payload: { issue: payload.issue, auditId: payload.audit },
+                });
+              }
             } else if (message.kind.toLowerCase() === 'organizationinvite') {
               store.dispatch({
                 type: ORGANIZATION_INVITE,

@@ -97,6 +97,11 @@ const AuditorsPage = () => {
   useEffect(() => {
     setCurrentPage(+searchParams.get('page') || 1);
   }, [searchParams.toString()]);
+  const handleGoBack = () => {
+    const path = localStorage.getItem('prev-path');
+    localStorage.removeItem('prev-path');
+    navigate(path || '/', { replace: true });
+  };
 
   return (
     <Layout>
@@ -105,7 +110,7 @@ const AuditorsPage = () => {
       <Box sx={wrapper}>
         <Box sx={headWrapper}>
           <Button
-            onClick={() => navigate(previousPath, { replace: true })}
+            onClick={handleGoBack}
             aria-label="Go back"
             {...addTestsLabel('go-back-button')}
           >

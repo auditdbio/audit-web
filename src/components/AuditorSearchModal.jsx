@@ -37,6 +37,7 @@ import CustomSnackbar from './custom/CustomSnackbar.jsx';
 import PriceCalculation from './PriceCalculation.jsx';
 import { ASSET_URL } from '../services/urls.js';
 import TotalPrice from './forms/TotalPrice/TotalPrice.jsx';
+import { CLEAR_SEARCHED_AUDITOR } from '../redux/actions/types.js';
 import { addUserInOrganization } from '../redux/actions/organizationAction.js';
 import { AUDITOR, CLEAR_SEARCH } from '../redux/actions/types.js';
 import { searchCustomers } from '../redux/actions/customerAction.js';
@@ -48,6 +49,7 @@ export default function AuditorSearchModal({
   handleSubmit,
   setState,
   setError,
+  projectInfo,
   invite,
   modeType,
   customer,
@@ -118,35 +120,41 @@ export default function AuditorSearchModal({
   };
 
   const handleSearch = async () => {
-    if (setState) {
-      await setState(true);
-    }
-    if (handleSubmit) {
-      handleSubmit();
-    }
-    if (organization.id) {
-      if (
-        organization.organization_type.toLowerCase() === AUDITOR.toLowerCase()
-      ) {
-        await navigate(
-          `/auditors?search=${query}&organization=${organization.link_id}`,
-          {
-            state: { from: location.pathname },
-          },
-        );
-      } else {
-        await navigate(
-          `/customers?search=${query}&organization=${organization.link_id}`,
-          {
-            state: { from: location.pathname },
-          },
-        );
-      }
-    } else {
-      await navigate(`/auditors?search=${query}&projectIdToInvite=${id}`, {
-        state: { from: location.pathname },
-      });
-    }
+    await setState(true);
+    handleSubmit();
+    localStorage.setItem('prev-path', '/edit-project/' + projectInfo.id);
+    await navigate(
+      `/auditors?search=${query}&projectIdToInvite=${id || projectInfo.id}`,
+    );
+    // if (setState) {
+    //   await setState(true);
+    // }
+    // if (handleSubmit) {
+    //   handleSubmit();
+    // }
+    // if (organization.id) {
+    //   if (
+    //     organization.organization_type.toLowerCase() === AUDITOR.toLowerCase()
+    //   ) {
+    //     await navigate(
+    //       `/auditors?search=${query}&organization=${organization.link_id}`,
+    //       {
+    //         state: { from: location.pathname },
+    //       },
+    //     );
+    //   } else {
+    //     await navigate(
+    //       `/customers?search=${query}&organization=${organization.link_id}`,
+    //       {
+    //         state: { from: location.pathname },
+    //       },
+    //     );
+    //   }
+    // } else {
+    //   await navigate(`/auditors?search=${query}&projectIdToInvite=${id}`, {
+    //     state: { from: location.pathname },
+    //   });
+    // }
   };
 
   return (
@@ -275,6 +283,9 @@ export default function AuditorSearchModal({
                     );
                   }
                 }
+                setMode('search');
+                setInputValue('');
+                dispatch({ type: CLEAR_SEARCHED_AUDITOR });
                 handleClose();
               }
             }}
@@ -325,7 +336,7 @@ export default function AuditorSearchModal({
                             inputFormat="DD.MM.YYYY"
                             onChange={e => setFieldValue('time.from', e)}
                             disablePast
-                            minDate={new Date()}
+                            minDate={dayjs()}
                           />
                           <Typography variant={'caption'}>-</Typography>
                           <Field
@@ -514,7 +525,15 @@ const searchField = {
     fontSize: '14px !important',
     width: '465px',
     [theme.breakpoints.down('sm')]: {
-      width: '120px',
+      width: '320px',
+      height: '30px',
+      fontSize: '11px',
+    },
+    [theme.breakpoints.down('xs')]: {
+      width: '220px',
+    },
+    [theme.breakpoints.down(400)]: {
+      width: '150px',
       height: '30px',
       fontSize: '11px',
     },

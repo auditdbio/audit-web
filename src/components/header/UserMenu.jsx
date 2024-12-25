@@ -68,7 +68,7 @@ export const UserMenu = ({ open, handleClose, anchor, userAvatar, pages }) => {
       <MenuItem onClick={handleClose}>
         <Box sx={userInfoSx}>
           <Avatar
-            src={userAvatar ? `${ASSET_URL}/${userAvatar}` : ''}
+            src={userAvatar ? `${ASSET_URL}/id/${userAvatar}` : ''}
             sx={avatarSx}
             alt="User photo"
           />

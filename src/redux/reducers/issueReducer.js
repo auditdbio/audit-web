@@ -12,6 +12,7 @@ import {
   SET_READ_CHANGES,
   UPDATE_AUDIT_ISSUE,
   UPDATE_AUDIT_ISSUE_WS,
+  GET_AUDIT,
 } from '../actions/types.js';
 
 const initialState = {
@@ -32,7 +33,7 @@ export const issueReducer = (state = initialState, action) => {
     case ADD_AUDIT_ISSUE:
       return {
         ...state,
-        successMessage: 'Audit issue created successfully',
+        successMessage: action.payload.successMessage || null,
         issues: [...state.issues, action.payload.issue],
       };
     case UPDATE_AUDIT_ISSUE:
@@ -43,18 +44,21 @@ export const issueReducer = (state = initialState, action) => {
           issue.id === action.payload.issue.id ? action.payload.issue : issue,
         ),
       };
+    case GET_AUDIT:
+      return {
+        ...state,
+        issues: action.payload.issues,
+      };
     case UPDATE_AUDIT_ISSUE_WS:
       return {
         ...state,
         issues:
           state.issuesAuditId === action.payload.audit
-            ? state.issues.some(issue => issue.id === action.payload.issue.id)
-              ? state.issues.map(issue =>
-                  issue.id === action.payload.issue.id
-                    ? action.payload.issue
-                    : issue,
-                )
-              : [...state.issues, action.payload.issue]
+            ? state.issues.map(issue =>
+                issue.id === action.payload.issue.id
+                  ? action.payload.issue
+                  : issue,
+              )
             : state.issues,
       };
     case RESET_PUBLIC_AUDIT:
