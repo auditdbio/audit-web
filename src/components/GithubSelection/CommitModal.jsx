@@ -246,7 +246,10 @@ const CommitModal = ({
       fieldHelper.setValue({
         type: SCOPE_GIT_BLOCK,
         content: {
-          ...field.value.content,
+          repository: {
+            clone_url: `https://github.com/${repository}`,
+          },
+          commit: sha,
           files: selectedFiles,
         },
       });
