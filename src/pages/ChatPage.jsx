@@ -89,11 +89,19 @@ const ChatPage = () => {
       <CustomCard sx={wrapper}>
         <Button
           variant="text"
-          sx={{ textTransform: 'unset', ml: '-15px', paddingLeft: '0' }}
+          sx={{
+            textTransform: 'unset',
+            ml: '-15px',
+            paddingLeft: '0',
+            display: 'flex',
+            minWidth: '44px',
+          }}
+          color={user.current_role === AUDITOR ? 'secondary' : 'primary'}
           onClick={handleGoBack}
         >
           <ArrowBackIcon />
         </Button>
+
         <Box sx={chatWrapper}>
           <ChatList
             chatList={chatList}
@@ -134,7 +142,7 @@ const ChatPage = () => {
 export default ChatPage;
 
 const layoutSx = theme => ({
-  paddingY: '40px !important',
+  paddingY: '20px !important',
   [theme.breakpoints.down('xs')]: {
     paddingY: '20px !important',
   },
@@ -142,19 +150,17 @@ const layoutSx = theme => ({
 
 const wrapper = theme => ({
   minHeight: '300px',
-  padding: '20px 40px 100px',
+  padding: '0px 20px 20px',
   position: 'relative',
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'flex-start',
-  gap: '15px',
   [theme.breakpoints.down('sm')]: {
-    padding: '30px 30px 50px',
     minHeight: '300px',
   },
-  [theme.breakpoints.down('xs')]: {
-    padding: '20px 15px 50px',
-    minHeight: '300px',
+  [theme.breakpoints.down(780)]: {
+    paddingX: '10px',
+    borderRadius: '0',
   },
 });
 
