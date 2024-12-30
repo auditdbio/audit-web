@@ -314,6 +314,7 @@ const PublicAudit = ({
                 telegram={audit?.customer_contacts?.telegram}
                 role={'Customer'}
                 id={audit.customer_id}
+                customer={true}
               />
             </Box>
             <EditDescription

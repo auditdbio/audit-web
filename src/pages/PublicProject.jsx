@@ -212,6 +212,7 @@ const PublicProject = () => {
                 email={customer?.contacts.email}
                 telegram={customer?.contacts.telegram}
                 id={customer?.user_id}
+                customer={true}
               />
               <Box ref={descriptionRef}>
                 <Markdown value={project?.description} />
