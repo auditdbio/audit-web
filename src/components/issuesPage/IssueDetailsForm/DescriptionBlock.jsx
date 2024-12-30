@@ -86,8 +86,8 @@ const DescriptionBlock = ({
 
   const getFeedbackView = () => {
     if (
-      (user.current_role.toLowerCase() === CUSTOMER.toLowerCase() ||
-        user.current_role.toLowerCase() === AUDITOR.toLowerCase() ||
+      (user?.current_role?.toLowerCase() === CUSTOMER.toLowerCase() ||
+        user?.current_role?.toLowerCase() === AUDITOR.toLowerCase() ||
         isPublic) &&
       isEditFeedback
     ) {
@@ -129,7 +129,8 @@ const DescriptionBlock = ({
             />
           </Box>
 
-          {(user.current_role !== CUSTOMER || isPublic) &&
+          {(user?.current_role?.toLowerCase() !== CUSTOMER?.toLowerCase() ||
+            isPublic) &&
             !hideControl &&
             audit?.status?.toLowerCase() !== RESOLVED.toLowerCase() && (
               <Box
@@ -170,7 +171,7 @@ const DescriptionBlock = ({
             )}
 
           <Box sx={linksList}>
-            {user.current_role !== CUSTOMER &&
+            {user?.current_role?.toLowerCase() !== CUSTOMER?.toLowerCase() &&
             !hideControl &&
             audit?.status?.toLowerCase() !== RESOLVED.toLowerCase() ? (
               <ProjectLinksList
@@ -200,7 +201,8 @@ const DescriptionBlock = ({
 
           {addLinkField && (
             <Box sx={{ mt: '10px' }}>
-              {user.current_role !== CUSTOMER && (
+              {user?.current_role?.toLowerCase() !==
+                CUSTOMER?.toLowerCase() && (
                 <TagsField
                   size="small"
                   name="links"
@@ -298,8 +300,8 @@ const DescriptionBlock = ({
               source: AUDIT_PARENT_ENTITY,
             }}
           />
-          {(user.current_role.toLowerCase() === CUSTOMER.toLowerCase() ||
-            user.current_role.toLowerCase() === AUDITOR.toLowerCase() ||
+          {(user?.current_role?.toLowerCase() === CUSTOMER.toLowerCase() ||
+            user?.current_role?.toLowerCase() === AUDITOR.toLowerCase() ||
             isPublic) && (
             <Box sx={editFeedbackButtonWrapper}>
               <IconButton
@@ -315,7 +317,7 @@ const DescriptionBlock = ({
                   {isEditFeedback ? 'Save' : 'Edit'}
                 </Box>
               </IconButton>
-              {user.current_role.toLowerCase() === AUDITOR.toLowerCase() && (
+              {user?.current_role?.toLowerCase() === AUDITOR.toLowerCase() && (
                 <Tooltip
                   title={
                     'Customer feedback will be included in the report. Do not edit this field without a reasonable cause.'

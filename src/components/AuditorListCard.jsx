@@ -51,7 +51,11 @@ const AuditorListCard = ({ auditor, projectIdToInvite, budge }) => {
   };
 
   const handleInvite = () => {
-    if (user.current_role === CUSTOMER && isAuth() && myProjects.length) {
+    if (
+      user?.current_role?.toLowerCase() === CUSTOMER?.toLowerCase() &&
+      isAuth() &&
+      myProjects.length
+    ) {
       if (projectIdToInvite) {
         return navigate(
           `/my-projects/${auditor.user_id}?projectIdToInvite=${projectIdToInvite}`,
@@ -76,7 +80,7 @@ const AuditorListCard = ({ auditor, projectIdToInvite, budge }) => {
       );
       handleError();
     } else if (
-      user.current_role === CUSTOMER &&
+      user?.current_role?.toLowerCase() === CUSTOMER?.toLowerCase() &&
       isAuth() &&
       !myProjects.length
     ) {

@@ -134,8 +134,8 @@ const AuditOffer = () => {
   useEffect(() => {
     if (
       audit &&
-      !audit.no_customer &&
-      audit.status.toLowerCase() === RESOLVED.toLowerCase()
+      !audit?.no_customer &&
+      audit?.status?.toLowerCase() === RESOLVED.toLowerCase()
     ) {
       dispatch(getAuditFeedback(AUDITOR, audit.auditor_id, audit.id));
     }

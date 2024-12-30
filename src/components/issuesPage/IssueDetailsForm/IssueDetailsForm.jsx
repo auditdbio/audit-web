@@ -148,7 +148,8 @@ const IssueDetailsForm = ({ issue = null, editMode = false, hideControl }) => {
                   inputRef={nameInputRef}
                   inputProps={{ ...addTestsLabel('issue-name-input') }}
                   InputProps={
-                    user.current_role !== CUSTOMER &&
+                    user?.current_role?.toLowerCase() !==
+                      CUSTOMER?.toLowerCase() &&
                     audit?.status?.toLowerCase() !== RESOLVED.toLowerCase() &&
                     editMode &&
                     !hideControl
@@ -282,7 +283,8 @@ const IssueDetailsForm = ({ issue = null, editMode = false, hideControl }) => {
                 inputRef={categoryInputRef}
                 inputProps={{ ...addTestsLabel('issue-category-input') }}
                 InputProps={
-                  user.current_role !== CUSTOMER &&
+                  user?.current_role?.toLowerCase() !==
+                    CUSTOMER?.toLowerCase() &&
                   audit?.status?.toLowerCase() !== RESOLVED.toLowerCase() &&
                   editMode &&
                   !hideControl

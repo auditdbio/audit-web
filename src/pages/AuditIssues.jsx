@@ -40,7 +40,7 @@ const AuditIssues = ({ isPublic }) => {
     if (localStorage.getItem('prev')) {
       navigate(localStorage.getItem('prev'));
     } else {
-      if (user.current_role === CUSTOMER) {
+      if (user?.current_role?.toLowerCase() === CUSTOMER?.toLowerCase()) {
         navigate(`/audit/${auditId}`);
       } else {
         navigate(`/audit/${auditId}`);
