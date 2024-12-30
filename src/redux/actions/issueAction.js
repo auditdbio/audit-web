@@ -10,6 +10,7 @@ import {
   SET_READ_CHANGES,
   SET_READ_ALL_CHANGES,
   UPDATE_AUDIT_ISSUE,
+  CREATE_AUDIT_ISSUE,
 } from './types.js';
 import { API_URL } from '../../services/urls.js';
 
@@ -88,16 +89,17 @@ export const addAuditIssue = (auditId, values) => {
       .post(`${API_URL}/audit/${auditId}/issue`, values, {
         headers: { Authorization: `Bearer ${token}` },
       })
-      .then(({ data }) =>
+      .then(({ data }) => {
+        dispatch(getIssues(auditId));
         dispatch({
-          type: ADD_AUDIT_ISSUE,
+          type: CREATE_AUDIT_ISSUE,
           payload: {
             auditId: auditId,
             issue: data,
             successMessage: 'Audit issue created successfully',
           },
-        }),
-      )
+        });
+      })
       .catch(e => dispatch({ type: REQUEST_ERROR }));
   };
 };

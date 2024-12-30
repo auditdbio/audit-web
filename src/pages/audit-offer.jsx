@@ -80,7 +80,7 @@ import { AUDIT_PARENT_ENTITY } from '../services/file_constants.js';
 import DraftReportIcon from '../components/icons/DraftReportIcon.jsx';
 import dayjs from 'dayjs';
 
-const AuditOffer = ({ publicView, setPublicView }) => {
+const AuditOffer = () => {
   const { auditId } = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();

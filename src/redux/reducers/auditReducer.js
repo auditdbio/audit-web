@@ -36,6 +36,7 @@ import {
   ADD_AUDIT_ISSUE,
   VERIFY_AUDIT_REPORT,
   UPDATE_AUDIT,
+  CREATE_AUDIT_ISSUE,
 } from '../actions/types.js';
 
 const initialState = {
@@ -106,6 +107,17 @@ export const auditReducer = (state = initialState, action) => {
         successMessage: 'Saved successfully',
       };
     case ADD_AUDIT_ISSUE:
+      return {
+        ...state,
+        audit:
+          action.payload.auditId && state.audit?.id === action.payload.auditId
+            ? {
+                ...state.audit,
+                issues: [...state.audit.issues, action.payload.issue],
+              }
+            : state.audit,
+      };
+    case CREATE_AUDIT_ISSUE:
       return {
         ...state,
         audit:
