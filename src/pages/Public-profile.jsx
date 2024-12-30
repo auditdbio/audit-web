@@ -271,7 +271,7 @@ const PublicProfile = ({ notFoundRedirect = true }) => {
                 navigate(localStorage.getItem('prev'));
                 localStorage.removeItem('prev');
               } else {
-                navigate('/');
+                navigate(-1);
               }
             }}
           >

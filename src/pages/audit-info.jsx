@@ -275,6 +275,7 @@ const AuditInfo = ({
                 name={
                   audit?.auditor_first_name + ' ' + audit?.auditor_last_name
                 }
+                id={audit?.auditor_id}
                 email={audit?.auditor_contacts?.email}
                 telegram={audit?.auditor_contacts?.telegram}
               />

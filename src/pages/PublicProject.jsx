@@ -209,11 +209,11 @@ const PublicProject = () => {
               {/*<Box sx={descriptionSx(showFull)}>*/}
               <AuditUserCard
                 avatar={customer?.avatar}
-                // role="Customer"
                 name={customer?.first_name + ' ' + customer?.last_name}
                 email={customer?.contacts.email}
                 telegram={customer?.contacts.telegram}
                 id={customer?.user_id}
+                customer={true}
               />
               <Box ref={descriptionRef}>
                 <Markdown value={project?.description} />
