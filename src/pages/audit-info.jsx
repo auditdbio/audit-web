@@ -345,8 +345,6 @@ const AuditInfo = ({
                 showFull ? {} : { transform: 'rotate(180deg)' },
                 {
                   transition: '0.2s',
-                  // marginRight: '0',
-                  // marginLeft: 'auto',
                   width: '20px',
                   height: '20px',
                 },
@@ -495,12 +493,6 @@ const AuditInfo = ({
 
 export default AuditInfo;
 
-const roleTitleSx = theme => ({
-  fontSize: '20px',
-  margin: 'unset!important',
-  //
-});
-
 const readAllButton = theme => ({
   p: '3px',
   paddingX: '8px',
@@ -513,7 +505,6 @@ const readAllButton = theme => ({
   display: 'flex',
   alignItems: 'center',
   gap: '7px',
-  // maxWidth: '300px',
   [theme.breakpoints.down('xs')]: {
     fontSize: '16px',
   },
@@ -536,13 +527,6 @@ const descriptionWrapper = (theme, showFull) => ({
   width: '100%',
 });
 
-const historySx = theme => ({
-  marginY: '10px',
-  display: 'flex',
-  justifyContent: 'flex-start',
-  width: '100%',
-});
-
 const chatBtnSx = theme => ({
   position: 'absolute',
   top: '-20px',
@@ -554,33 +538,6 @@ const chatBtnSx = theme => ({
   [theme.breakpoints.down('md')]: {
     top: '-22px',
     right: '-10px',
-  },
-});
-
-const wrapper = theme => ({
-  padding: '30px 60px 60px',
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'center',
-  gap: '40px',
-  position: 'relative',
-  '& h3': {
-    fontSize: '24px',
-    fontWeight: 500,
-  },
-  [theme.breakpoints.down('sm')]: {
-    gap: '40px',
-    padding: '25px 20px 30px',
-    '& h3': {
-      fontSize: '20px',
-    },
-  },
-});
-
-const userNameWrapper = theme => ({
-  maxWidth: '190px',
-  [theme.breakpoints.down('sm')]: {
-    maxWidth: 'unset',
   },
 });
 
@@ -609,53 +566,6 @@ const contentWrapper = theme => ({
     gap: '16px',
     maxWidth: '400px',
     marginX: 'auto',
-  },
-});
-
-const userWrapper = theme => ({
-  display: 'flex',
-  flexDirection: 'column',
-  gap: '15px',
-  '& .MuiAvatar-root': {
-    width: '120px',
-    height: '120px',
-  },
-  '& p': {
-    color: '#434242',
-    fontSize: '15px',
-    fontWeight: 500,
-    '&:nth-of-type(1)': {
-      margin: '13px 0 5px',
-    },
-  },
-  [theme.breakpoints.down('md')]: {
-    '& .MuiAvatar-root': {
-      width: '90px',
-      height: '90px',
-    },
-  },
-  [theme.breakpoints.down('sm')]: {
-    display: 'flex',
-    gap: '20px',
-    alignItems: 'center',
-    marginBottom: '20px',
-    '& p': {
-      color: '#434242',
-      fontSize: '15px',
-      fontWeight: 500,
-      '&:nth-of-type(1)': {
-        margin: '0 0 18px',
-      },
-    },
-  },
-});
-
-const userInfoWrapper = theme => ({
-  display: 'flex',
-  flexDirection: 'column',
-  gap: '32px',
-  [theme.breakpoints.down('sm')]: {
-    gap: '16px',
   },
 });
 
@@ -728,37 +638,6 @@ const projectWrapper = theme => ({
     '& p': {
       fontSize: '12px',
     },
-  },
-});
-
-const infoWrapper = theme => ({
-  display: 'flex',
-  alignItems: 'center',
-  fontWeight: 500,
-  color: '#434242',
-  '& p': {
-    fontSize: 'inherit',
-    maxWidth: '200px',
-  },
-  '& span': {
-    width: '85px',
-    marginRight: '30px',
-    color: '#B2B3B3',
-  },
-  fontSize: '15px',
-  [theme.breakpoints.down('md')]: {
-    '& span': {
-      width: '90px',
-      marginRight: '20px',
-    },
-  },
-  [theme.breakpoints.down('sm')]: {
-    '& p': {
-      maxWidth: '300px',
-    },
-  },
-  [theme.breakpoints.down('xs')]: {
-    fontSize: '12px',
   },
 });
 
