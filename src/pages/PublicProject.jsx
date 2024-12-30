@@ -206,10 +206,8 @@ const PublicProject = () => {
         <Box sx={{ width: '100%' }}>
           <Collapse in={true} collapsedSize={showFull ? undefined : 400}>
             <Box sx={descriptionWrapper(theme, showFull)}>
-              {/*<Box sx={descriptionSx(showFull)}>*/}
               <AuditUserCard
                 avatar={customer?.avatar}
-                // role="Customer"
                 name={customer?.first_name + ' ' + customer?.last_name}
                 email={customer?.contacts.email}
                 telegram={customer?.contacts.telegram}
@@ -218,7 +216,6 @@ const PublicProject = () => {
               <Box ref={descriptionRef}>
                 <Markdown value={project?.description} />
               </Box>
-              {/*</Box>*/}
             </Box>
           </Collapse>
           <Box
