@@ -12,16 +12,15 @@ import AuditMessage from './AuditMessage.jsx';
 import { Link, useLocation } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom/dist';
 
-const Message = ({ message, user, currentChat, isRead }) => {
-  // const Message = ({
-  //   message,
-  //   user,
-  //   currentChat,
-  //   isRead,
-  //   type,
-  //   orgId,
-  //   chatRole,
-  // }) => {
+const Message = ({
+  message,
+  user,
+  currentChat,
+  isRead,
+  type,
+  orgId,
+  chatRole,
+}) => {
   const { customer } = useSelector(state => state.customer);
   const { auditor } = useSelector(state => state.auditor);
 
@@ -48,15 +47,14 @@ const Message = ({ message, user, currentChat, isRead }) => {
     }
   }, [user.current_role, customer?.avatar, auditor?.avatar]);
 
+  const isOwn = () => {
+    return message.from.role.toLowerCase() === 'organization'
+      ? { isOwn: message.from?.org_user?.id === user.id }
+      : { isOwn: message.from?.id === user.id };
+  };
+
   const getMessageAvatar = () => {
-    // if (orgId) {
-    //   if (message?.from?.id === orgId) {
-    //     return userAvatar ? `${ASSET_URL}/${userAvatar}` : null;
-    //   }
-    // } else {
-    //   if (message?.from?.id === user?.id) {
-    //     return userAvatar ? `${ASSET_URL}/${userAvatar}` : null;
-    //   }
+    const avatar = isOwn() ? userAvatar : currentChat?.avatar;
     if (message?.from?.id === user?.id) {
       return userAvatar ? `${ASSET_URL}/id/${userAvatar}` : null;
     }
@@ -82,12 +80,6 @@ const Message = ({ message, user, currentChat, isRead }) => {
       });
   };
 
-  const isOwn = () => {
-    return message.from.role.toLowerCase() === 'organization'
-      ? { isOwn: message.from?.org_user?.id === user.id }
-      : { isOwn: message.from?.id === user.id };
-  };
-
   const handleGoProfile = () => {
     localStorage.setItem('prev', location.pathname);
     navigate(
@@ -98,13 +90,7 @@ const Message = ({ message, user, currentChat, isRead }) => {
   };
 
   return (
-    <Box
-      sx={messageSx({
-        isOwn: orgId
-          ? message.from?.id === orgId
-          : message.from?.id === user.id,
-      })}
-    >
+    <Box sx={messageSx(isOwn())}>
       <Avatar src={getMessageAvatar()} sx={messageAvatarSx} alt="User photo" />
       <Box
         sx={

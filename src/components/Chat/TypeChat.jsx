@@ -71,7 +71,6 @@ const TypeChat = ({ auditor, project }) => {
     }
   }, [myAuditor, myCustomer]);
 
-  //
   const handleSendMessage = e => {
     // TODO add check for pm or org chat
     if (organizations.length) {
@@ -136,7 +135,6 @@ const TypeChat = ({ auditor, project }) => {
     }
   };
 
-  //
   return (
     <>
       <Button
@@ -212,7 +210,7 @@ const TypeChat = ({ auditor, project }) => {
                     //     variant="body2"
                     //     sx={{ color: 'text.primary', display: 'inline' }}
                     //   >
-                    //     {org.name}
+                    //     {name}
                     //   </Typography>
                     // }
                   />

@@ -518,64 +518,66 @@ const AuditRequestInfo = ({
           >
             Make offer
           </Button>
-          {/*<Popover*/}
-          {/*  id={id}*/}
-          {/*  open={openAnchor}*/}
-          {/*  anchorEl={anchorEl}*/}
-          {/*  onClose={handleCloseAnchor}*/}
-          {/*  anchorOrigin={anchorOrigin}*/}
-          {/*  transformOrigin={transformOrigin}*/}
-          {/*>*/}
-          {/*  <List*/}
-          {/*    dense*/}
-          {/*    sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}*/}
-          {/*  >*/}
-          {/*    <ListItem disablePadding onClick={() => handleChose(auditor)}>*/}
-          {/*      <ListItemButton>*/}
-          {/*        <ListItemAvatar>*/}
-          {/*          <Avatar*/}
-          {/*            alt={user.name}*/}
-          {/*            // src={org.avatar && `${ASSET_URL}/${org.avatar}`}*/}
-          {/*          />*/}
-          {/*        </ListItemAvatar>*/}
-          {/*        <ListItemText id={user.name} primary={user.name} />*/}
-          {/*      </ListItemButton>*/}
-          {/*    </ListItem>*/}
-          {/*    {organizations.map(org => {*/}
-          {/*      const member = org.members.find(*/}
-          {/*        member => member.user_id === user.id,*/}
-          {/*      );*/}
-          {/*      const hasEditorAccess =*/}
-          {/*        Array.isArray(member?.access_level) &&*/}
-          {/*        member.access_level.some(level => level === 'Editor');*/}
+          <Popover
+            id={id}
+            open={openAnchor}
+            anchorEl={anchorEl}
+            onClose={handleCloseAnchor}
+            anchorOrigin={anchorOrigin}
+            transformOrigin={transformOrigin}
+          >
+            <List
+              dense
+              sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}
+            >
+              <ListItem disablePadding onClick={() => handleChose(auditor)}>
+                <ListItemButton>
+                  <ListItemAvatar>
+                    <Avatar
+                      alt={user.name}
+                      // src={org.avatar && `${ASSET_URL}/${org.avatar}`}
+                    />
+                  </ListItemAvatar>
+                  <ListItemText id={user.name} primary={user.name} />
+                </ListItemButton>
+              </ListItem>
+              {organizations.map(org => {
+                const member = org.members.find(
+                  member => member.user_id === user.id,
+                );
+                const hasEditorAccess =
+                  member.access_level === 'Editor' ||
+                  member.access_level === 'Owner';
 
-          {/*      return (*/}
-          {/*        <ListItem*/}
-          {/*          key={org.id}*/}
-          {/*          disablePadding*/}
-          {/*          disabled={!hasEditorAccess}*/}
-          {/*          onClick={() => {*/}
-          {/*            if (hasEditorAccess) {*/}
-          {/*              handleChose(org);*/}
-          {/*            }*/}
-          {/*          }}*/}
-          {/*        >*/}
-          {/*          <ListItemButton>*/}
-          {/*            <ListItemAvatar>*/}
-          {/*              <Avatar*/}
-          {/*                alt={org.name}*/}
-          {/*                src={*/}
-          {/*                  org.avatar ? `${ASSET_URL}/${org.avatar}` : undefined*/}
-          {/*                }*/}
-          {/*              />*/}
-          {/*            </ListItemAvatar>*/}
-          {/*            <ListItemText id={org.id} primary={org.name} />*/}
-          {/*          </ListItemButton>*/}
-          {/*        </ListItem>*/}
-          {/*      );*/}
-          {/*    })}*/}
-          {/*  </List>*/}
-          {/*</Popover>*/}
+                return (
+                  <ListItem
+                    key={org.id}
+                    disablePadding
+                    disabled={!hasEditorAccess}
+                    onClick={() => {
+                      if (hasEditorAccess) {
+                        handleChose(org);
+                      }
+                    }}
+                  >
+                    <ListItemButton>
+                      <ListItemAvatar>
+                        <Avatar
+                          alt={org.name}
+                          src={
+                            org.avatar
+                              ? `${ASSET_URL}/${org.avatar}`
+                              : undefined
+                          }
+                        />
+                      </ListItemAvatar>
+                      <ListItemText id={org.id} primary={org.name} />
+                    </ListItemButton>
+                  </ListItem>
+                );
+              })}
+            </List>
+          </Popover>
           {showAcceptButton &&
             auditRequest &&
             !isModal &&

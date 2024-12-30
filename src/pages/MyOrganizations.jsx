@@ -294,7 +294,6 @@ const gridItemSx = theme => ({
 const wrapper = theme => ({
   display: 'flex',
   flexDirection: 'column',
-  maxWidth: '1300px',
   width: '100%',
   '& ul': {
     fontSize: '16px',

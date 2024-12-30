@@ -129,7 +129,7 @@ const Organization = ({ linkId }) => {
                 minWidth: 'unset',
               }}
               onClick={() =>
-                navigate(location.state?.from || '/', { replace: true })
+                navigate(location.state?.from || -1, { replace: true })
               }
             >
               <ArrowBackIcon
@@ -408,7 +408,6 @@ const wrapper = theme => ({
   display: 'flex',
   borderColor: 'grey',
   flexDirection: 'column',
-  maxWidth: '1300px',
   width: '100%',
   '& ul': {
     fontSize: '16px',

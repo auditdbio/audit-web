@@ -38,7 +38,6 @@ export const getChatListByOrg = (role, id) => {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then(({ data }) => {
-        console.log(data);
         dispatch({ type: CHAT_GET_LIST_ORG, payload: data });
       });
   };
