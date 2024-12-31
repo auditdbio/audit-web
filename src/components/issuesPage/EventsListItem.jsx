@@ -9,6 +9,7 @@ import Markdown from '../markdown/Markdown.jsx';
 import { ASSET_URL } from '../../services/urls.js';
 import { AUDITOR, CUSTOMER } from '../../redux/actions/types.js';
 import theme from '../../styles/themes.js';
+import dayjs from 'dayjs';
 
 const EventsListItem = ({ event, idx, issue, issueRefs, auditPartner }) => {
   const issueRef = useRef(null);
@@ -21,7 +22,10 @@ const EventsListItem = ({ event, idx, issue, issueRefs, auditPartner }) => {
   const userAvatar = useMemo(() => {
     if (user.current_role === AUDITOR && !!auditor?.avatar) {
       return auditor.avatar;
-    } else if (user.current_role === CUSTOMER && !!customer?.avatar) {
+    } else if (
+      user?.current_role?.toLowerCase() === CUSTOMER?.toLowerCase() &&
+      !!customer?.avatar
+    ) {
       return customer.avatar;
     } else {
       return null;
@@ -30,9 +34,11 @@ const EventsListItem = ({ event, idx, issue, issueRefs, auditPartner }) => {
 
   const getAvatarURL = event => {
     if (user?.id === event.user) {
-      return userAvatar ? `${ASSET_URL}/${userAvatar}` : '';
+      return userAvatar ? `${ASSET_URL}/id/${userAvatar}` : '';
     } else {
-      return auditPartner?.avatar ? `${ASSET_URL}/${auditPartner?.avatar}` : '';
+      return auditPartner?.avatar
+        ? `${ASSET_URL}/id/${auditPartner?.avatar}`
+        : '';
     }
   };
 
@@ -41,6 +47,11 @@ const EventsListItem = ({ event, idx, issue, issueRefs, auditPartner }) => {
       ? unreadChanges(isComment)
       : {};
   };
+
+  const timestampInMillis =
+    event.timestamp > 1000000000000
+      ? event.timestamp / 1000
+      : event.timestamp * 1000;
 
   return event.kind !== 'Comment' ? (
     <Box sx={[eventSx, checkUnread(false)]} ref={issueRef}>
@@ -65,7 +76,7 @@ const EventsListItem = ({ event, idx, issue, issueRefs, auditPartner }) => {
       )}
 
       <Typography variant="span" sx={messageDate}>
-        ({new Date(event.timestamp * 1000).toDateString().replace(/^\w* /, '')})
+        {dayjs(timestampInMillis).format('MMM DD YYYY HH:mm')}
       </Typography>
     </Box>
   ) : (
@@ -86,7 +97,7 @@ const EventsListItem = ({ event, idx, issue, issueRefs, auditPartner }) => {
           </Typography>
         </Box>
         <Typography sx={messageDate} variant="span">
-          {new Date(event.timestamp * 1000).toLocaleString()}
+          {dayjs(timestampInMillis).format('MMM DD YYYY HH:mm')}
         </Typography>
       </Box>
       <Box sx={messageTextSx}>

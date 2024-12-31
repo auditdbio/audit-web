@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Button, Modal, Typography } from '@mui/material';
+import { Box, Button, Modal, Popover, Typography } from '@mui/material';
 import AuditRequestInfo from '../audit-request-info.jsx';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -27,6 +27,7 @@ import dayjs from 'dayjs';
 import ConfirmModal from '../modal/ConfirmModal.jsx';
 import { useNavigate } from 'react-router-dom/dist';
 import AuditInfo from '../../pages/audit-info.jsx';
+import MessageModalCustomer from '../MessageModalCustomer/MessageModalCustomer.jsx';
 
 const AuditMessage = ({ message, handleError }) => {
   const user = useSelector(state => state.user.user);
@@ -57,12 +58,12 @@ const AuditMessage = ({ message, handleError }) => {
 
   const handleView = () => {
     localStorage.setItem('prevPath', window.location.pathname);
-    navigate(`/audit-info/${data.id}/auditor`);
+    navigate(`/audit/${data.id}`);
   };
 
   const handleViewCustomer = () => {
     localStorage.setItem('prevPath', window.location.pathname);
-    navigate(`/audit-info/${data.id}/customer`);
+    navigate(`/audit/${data.id}`);
   };
 
   const handleOpenModal = () => {
@@ -109,7 +110,10 @@ const AuditMessage = ({ message, handleError }) => {
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-      <Typography align={'center'}>Audit request</Typography>
+      <Typography align={'center'}>
+        {' '}
+        {data.status.toLowerCase() === 'request' ? 'Audit request' : 'Audit'}
+      </Typography>
       <Typography align={'center'}>{data.project_name}</Typography>
       {data.status === 'Declined' ? (
         <Box sx={statusWrapper}>
@@ -169,15 +173,15 @@ const AuditMessage = ({ message, handleError }) => {
           </Box>
         </>
       )}
-      {data.status?.toLowerCase() === WAITING_FOR_AUDITS.toLowerCase() &&
-        user.current_role === CUSTOMER &&
+      {data?.status?.toLowerCase() === WAITING_FOR_AUDITS.toLowerCase() &&
+        user?.current_role?.toLowerCase() === CUSTOMER?.toLowerCase() &&
         message.from?.id === user.id && (
           <Button
             sx={{ textTransform: 'unset', width: '100%' }}
             variant={'contained'}
             onClick={() => {
               localStorage.setItem('prevPath', window.location.pathname);
-              navigate(`/audit-info/${data.id}/customer`);
+              navigate(`/audit/${data.id}`);
             }}
           >
             View
@@ -207,8 +211,8 @@ const AuditMessage = ({ message, handleError }) => {
             </Button>
           </Box>
         )}
-      {data.status === 'Request' &&
-        user.current_role === CUSTOMER &&
+      {data?.status === 'Request' &&
+        user?.current_role?.toLowerCase() === CUSTOMER?.toLowerCase() &&
         message.from?.id !== user.id && (
           <Box sx={{ width: '100%' }}>
             <Box sx={{ display: 'flex', gap: '20px' }}>
@@ -294,36 +298,44 @@ const AuditMessage = ({ message, handleError }) => {
             </Box>
           </Box>
         )}
-      <Modal
+      <Popover
+        anchorEl={null}
         open={isOpen && auditRequest?.id && user.current_role === AUDITOR}
         onClose={handleClose}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
+        sx={popoverSx}
       >
-        <Box sx={modalSx}>
+        <Box>
           <AuditRequestInfo
             project={auditRequest}
             onClose={() => setIsOpen(false)}
             stayHere={true}
+            isModal={true}
+            navigateTo={'/audit-request/' + auditRequest?.id}
           />
         </Box>
-      </Modal>
-      <Modal
-        open={isOpen && auditRequest?.id && user.current_role === CUSTOMER}
+      </Popover>
+      <Popover
+        anchorEl={null}
+        open={
+          isOpen &&
+          auditRequest?.id &&
+          user?.current_role?.toLowerCase() === CUSTOMER?.toLowerCase()
+        }
         onClose={handleClose}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
+        sx={popoverSx}
       >
-        <Box sx={modalSx}>
-          <AuditInfo
-            audit={auditRequest}
+        <Box>
+          <MessageModalCustomer
+            audit={data}
             handleClose={handleClose}
             auditRequest={auditRequest}
+            navigateTo={'/audit-request/' + auditRequest?.id + '/customer'}
+            isModal={true}
           />
         </Box>
-      </Modal>
+      </Popover>
       {/*<AuditInfo audit={auditRequest} auditRequest={auditRequest} />*/}
-      {user.current_role === CUSTOMER &&
+      {user?.current_role?.toLowerCase() === CUSTOMER?.toLowerCase() &&
         data.status === 'Request' &&
         message.from?.id === user.id && (
           <Box sx={{ mt: '15px' }}>
@@ -365,17 +377,18 @@ const AuditMessage = ({ message, handleError }) => {
             </Button>
           </Box>
         )}
-        {user.current_role === CUSTOMER && data.status === 'Started' && (
-          <Box sx={{ display: 'flex', gap: '20px' }}>
-            <Button
-              sx={{ textTransform: 'unset', width: '100%' }}
-              variant="contained"
-              onClick={handleViewCustomer}
-            >
-              View
-            </Button>
-          </Box>
-        )}
+        {user?.current_role?.toLowerCase() === CUSTOMER?.toLowerCase() &&
+          data.status === 'Started' && (
+            <Box sx={{ display: 'flex', gap: '20px' }}>
+              <Button
+                sx={{ textTransform: 'unset', width: '100%' }}
+                variant="contained"
+                onClick={handleViewCustomer}
+              >
+                View
+              </Button>
+            </Box>
+          )}
       </>
       <Modal
         open={open}
@@ -402,6 +415,38 @@ const AuditMessage = ({ message, handleError }) => {
 };
 
 export default AuditMessage;
+
+const popoverSx = theme => ({
+  '& .MuiBackdrop-root': {
+    backgroundColor: '#3535357a',
+  },
+  '& .MuiPopover-paper': {
+    position: 'absolute',
+    backgroundColor: '#FCFAF6',
+    top: '50%!important',
+    left: '50%!important',
+    transform: 'translate(-50%, -50%)!important',
+    width: '90%',
+    maxHeight: '90vh',
+    overflowY: 'hidden',
+    borderRadius: '14px',
+    '& .rc-md-editor': {
+      height: '100%!important',
+    },
+    '& .audit-request-wrapper': {
+      paddingBottom: '10px',
+      minHeight: 'unset',
+    },
+    '& .audit-info-wrapper': {
+      minHeight: 'unset',
+      padding: '20px 40px',
+      gap: '10px',
+    },
+    '& .audit-request-button-wrapper': {
+      marginTop: '0',
+    },
+  },
+});
 
 const statusWrapper = theme => ({
   display: 'flex',

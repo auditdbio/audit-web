@@ -55,9 +55,11 @@ import { AUDITOR, CUSTOMER } from '../redux/actions/types.js';
 import UserProjects from '../pages/UserProjects.jsx';
 import PriceCalculationPage from '../pages/PriceCalculationPage.jsx';
 import { refreshToken } from '../redux/actions/userAction.js';
+import PublicAuditInfo from '../pages/PublicAuditInfo.jsx';
+import PublicAuditInfoPage from '../pages/PublicAuditInfo.jsx';
+import Audit from '../pages/Audit.jsx';
 
 const AppRoutes = () => {
-  const { token } = useSelector(s => s.user);
   const currentRole = useSelector(s => s.user.user.current_role);
   const customer = useSelector(s => s.customer.customer);
   const auditor = useSelector(s => s.auditor.auditor);
@@ -66,10 +68,15 @@ const AppRoutes = () => {
   const [isOpen, setIsOpen] = React.useState(false);
 
   useEffect(() => {
+    const refreshInterval = setInterval(() => {
+      dispatch(refreshToken());
+    }, 10_000_000);
+
     if (isAuth()) {
       dispatch(getUnreadMessages());
       dispatch(refreshToken());
     }
+    return () => clearInterval(refreshInterval);
   }, [isAuth()]);
 
   useEffect(() => {
@@ -80,7 +87,7 @@ const AppRoutes = () => {
         dispatch(getAudits(currentRole));
       }
     }
-  }, [token, currentRole, isAuth()]);
+  }, [currentRole, isAuth()]);
 
   useEffect(() => {
     if (isAuth()) {
@@ -153,7 +160,7 @@ const AppRoutes = () => {
         <Route path="/oauth/callback" element={<ConnectAccount />} />
         {/*<Route path="/oauth/callback" element={<Github />} />*/}
         <Route path="/projects" element={<ProjectPage />} />
-        <Route path="/projects/:id" element={<PublicProject />} />
+        <Route path="/project/:id" element={<PublicProject />} />
         <Route path="/for-customers" element={<ForCustomer />} />
         <Route path="/for-auditors" element={<ForAuditor />} />
         <Route path="/auditors" element={<AuditorsPage />} />
@@ -203,22 +210,7 @@ const AppRoutes = () => {
             </PrivateRoute>
           }
         />
-        <Route
-          path="/audit-info/:id/customer"
-          element={
-            <PrivateRoute auth={{ isAuthenticated: isAuth() }}>
-              <AuditInfoPage />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/audit-info/:auditId/auditor"
-          element={
-            <PrivateRoute auth={{ isAuthenticated: isAuth() }}>
-              <AuditOffer />
-            </PrivateRoute>
-          }
-        />
+        <Route path="/audit/:auditId" element={<Audit />} />
         <Route
           path="/audit-builder/edit/:auditId"
           element={
@@ -257,6 +249,14 @@ const AppRoutes = () => {
             <PrivateRoute auth={{ isAuthenticated: isAuth() }}>
               <AuditIssueDetails />
             </PrivateRoute>
+          }
+        />
+        <Route
+          path="/p-issues/audit-issue/:auditId/:issueId"
+          element={
+            // <PrivateRoute auth={{ isAuthenticated: isAuth() }}>
+            <AuditIssueDetails hideControl={true} />
+            // </PrivateRoute>
           }
         />
         <Route
@@ -329,6 +329,8 @@ const AppRoutes = () => {
         />
 
         {/*Add new routes here*/}
+
+        {/*<Route path="/audit-info/:auditId" element={<PublicAuditInfo />} />*/}
 
         <Route path="/:role/:linkId" element={<ProfilePage />} />
         <Route path="*" element={<NotFound />} />

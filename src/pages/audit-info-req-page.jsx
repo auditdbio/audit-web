@@ -17,7 +17,10 @@ const AuditInfoReqPage = () => {
 
   useEffect(() => {
     dispatch(getAuditRequest(id));
-    return () => dispatch({ type: CLEAR_AUDIT_REQUEST });
+    return () => {
+      localStorage.removeItem('prevPath');
+      dispatch({ type: CLEAR_AUDIT_REQUEST });
+    };
   }, [id]);
 
   if (!auditRequest && !notFound) {
@@ -37,11 +40,13 @@ const AuditInfoReqPage = () => {
   if (auditRequest?.id && !notFound) {
     return (
       <Layout>
-        <AuditInfo
-          audit={auditRequest}
-          auditRequest={auditRequest}
-          request={true}
-        />
+        <CustomCard sx={wrapper}>
+          <AuditInfo
+            audit={auditRequest}
+            auditRequest={auditRequest}
+            request={true}
+          />
+        </CustomCard>
       </Layout>
     );
   }
@@ -50,22 +55,28 @@ const AuditInfoReqPage = () => {
 export default AuditInfoReqPage;
 
 const wrapper = theme => ({
-  padding: '30px 60px 60px',
+  padding: '25px 30px 60px',
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'center',
-  gap: '40px',
-  position: 'relative',
+  maxWidth: 'unset',
+  gap: '20px',
   '& h3': {
     fontSize: '24px',
     fontWeight: 500,
   },
+  [theme.breakpoints.down('md')]: {
+    padding: '20px 24px 20px',
+  },
   [theme.breakpoints.down('sm')]: {
-    gap: '40px',
-    padding: '25px 20px 30px',
+    gap: '20px',
+    padding: '30px 20px 20px',
     '& h3': {
       fontSize: '20px',
     },
+  },
+  [theme.breakpoints.down(780)]: {
+    borderRadius: '0!important',
   },
 });
 

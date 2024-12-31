@@ -11,7 +11,7 @@ import {
 } from '@mui/material';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import { Field, useField } from 'formik';
-import GithubBranchAutocomplete from '../GithubBranchAutocomplete.jsx';
+import GitHubIcon from '@mui/icons-material/GitHub';
 import CommitItem from './CommitItem.jsx';
 import { TextField } from 'formik-mui';
 import { addTestsLabel } from '../../lib/helper.js';
@@ -189,7 +189,7 @@ const GithubSelection = ({ project, noPrivate }) => {
   };
 
   return (
-    <Box sx={wrapper}>
+    <Box sx={wrapper} className={'github-wrapper'}>
       <Modal
         open={isOpen}
         onClose={handleClose}
@@ -346,7 +346,7 @@ const GithubSelection = ({ project, noPrivate }) => {
         sx={githubBtnSx}
         className={'github-btn'}
       >
-        Use github
+        <GitHubIcon />
       </Button>
     </Box>
   );
@@ -387,17 +387,16 @@ const wrapper = theme => ({
 });
 
 const githubBtnSx = theme => ({
-  padding: '5px',
-  height: '100%',
-  width: '130px',
-  [theme.breakpoints.down('sm')]: {
-    width: '110px',
-  },
-  [theme.breakpoints.down('xs')]: {
-    paddingY: '9px',
-  },
-  [theme.breakpoints.down(500)]: {
-    width: '100%',
+  padding: '12px 0',
+  fontSize: '16px',
+  textTransform: 'unset',
+  fontWeight: 600,
+  width: '50px!important',
+  minWidth: '50px',
+  borderRadius: '10px',
+  height: '44px',
+  [theme.breakpoints.down('md')]: {
+    padding: '10px 0',
   },
 });
 

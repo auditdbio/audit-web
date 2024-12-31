@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
   Avatar,
   Button,
+  Divider,
   Link,
   Tooltip,
   Typography,
@@ -45,6 +46,8 @@ import Star from '../components/icons/Star.jsx';
 import RatingDetails from '../components/RatingDetails.jsx';
 import UserFeedbacks from '../components/UserFeedbacks.jsx';
 import WalletConnectIcon from '../components/icons/WalletConnectIcon.jsx';
+import { getPublicAuditsAuditor } from '../redux/actions/auditAction.js';
+import ProjectCardList from '../components/Project-card-list.jsx';
 
 const PublicProfile = ({ notFoundRedirect = true }) => {
   const navigate = useNavigate();
@@ -59,6 +62,7 @@ const PublicProfile = ({ notFoundRedirect = true }) => {
   const { myProjects } = useSelector(s => s.project);
   const { user, publicUser } = useSelector(s => s.user);
   const { chatList } = useSelector(s => s.chat);
+  const { publicAudits } = useSelector(s => s.audits);
 
   const [errorMessage, setErrorMessage] = useState(null);
   const [message, setMessage] = useState(null);
@@ -87,7 +91,11 @@ const PublicProfile = ({ notFoundRedirect = true }) => {
   };
 
   const handleInvite = () => {
-    if (user.current_role === CUSTOMER && isAuth() && myProjects.length) {
+    if (
+      user?.current_role?.toLowerCase() === CUSTOMER?.toLowerCase() &&
+      isAuth() &&
+      myProjects.length
+    ) {
       navigate(`/my-projects/${currentAuditor.user_id}`);
     } else if (
       user.current_role !== CUSTOMER &&
@@ -104,7 +112,7 @@ const PublicProfile = ({ notFoundRedirect = true }) => {
       dispatch(changeRolePublicCustomerNoRedirect(CUSTOMER, user.id, customer));
       handleError();
     } else if (
-      user.current_role === CUSTOMER &&
+      user?.current_role?.toLowerCase() === CUSTOMER?.toLowerCase() &&
       isAuth() &&
       !myProjects.length
     ) {
@@ -165,6 +173,12 @@ const PublicProfile = ({ notFoundRedirect = true }) => {
       dispatch(getPublicProfile(id));
     }
   }, [id, roleParams, linkId]);
+
+  useEffect(() => {
+    if (currentAuditor?.user_id) {
+      dispatch(getPublicAuditsAuditor(currentAuditor.user_id));
+    }
+  }, [currentAuditor?.user_id]);
 
   useEffect(() => {
     const handleBeforeUnload = () => {
@@ -252,6 +266,22 @@ const PublicProfile = ({ notFoundRedirect = true }) => {
             </Button>
           )}
 
+          <Button
+            variant="text"
+            color={role.toLowerCase() === AUDITOR ? 'secondary' : 'primary'}
+            sx={goBackSx}
+            onClick={() => {
+              if (localStorage.getItem('prev')) {
+                navigate(localStorage.getItem('prev'));
+                localStorage.removeItem('prev');
+              } else {
+                navigate(-1);
+              }
+            }}
+          >
+            <ArrowBackIcon />
+          </Button>
+
           {data.kind === 'badge' && (
             <Typography sx={badgeTitle}>Not in base AuditDB</Typography>
           )}
@@ -274,7 +304,7 @@ const PublicProfile = ({ notFoundRedirect = true }) => {
               }}
             >
               <Avatar
-                src={data.avatar && `${ASSET_URL}/${data.avatar}`}
+                src={data.avatar && `${ASSET_URL}/id/${data.avatar}`}
                 sx={avatarStyle}
                 alt="User photo"
               />
@@ -536,6 +566,16 @@ const PublicProfile = ({ notFoundRedirect = true }) => {
                 </Button>
               )}
           </Box>
+          {role === AUDITOR && (
+            <>
+              <Divider sx={{ mb: '15px' }} />
+              <ProjectCardList
+                projects={publicAudits}
+                role={role}
+                isPublic={true}
+              />
+            </>
+          )}
         </Box>
       </Layout>
     );
@@ -573,8 +613,8 @@ const wrapper = (theme, color) => ({
 
 const goBackSx = {
   position: 'absolute',
-  top: '20px',
-  left: '30px',
+  top: '0px',
+  left: '-10px',
 };
 
 const badgeTitle = {

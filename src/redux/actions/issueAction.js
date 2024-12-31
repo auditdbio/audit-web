@@ -10,6 +10,7 @@ import {
   SET_READ_CHANGES,
   SET_READ_ALL_CHANGES,
   UPDATE_AUDIT_ISSUE,
+  CREATE_AUDIT_ISSUE,
 } from './types.js';
 import { API_URL } from '../../services/urls.js';
 
@@ -20,6 +21,17 @@ export const getIssues = auditId => {
       .get(`${API_URL}/audit/${auditId}/issue`, {
         headers: { Authorization: `Bearer ${token}` },
       })
+      .then(({ data: issues }) =>
+        dispatch({ type: GET_AUDIT_ISSUES, payload: { auditId, issues } }),
+      );
+  };
+};
+
+export const getPublicIssue = auditId => {
+  return dispatch => {
+    const token = Cookies.get('token');
+    axios
+      .get(`${API_URL}/audit/${auditId}/issue`)
       .then(({ data: issues }) =>
         dispatch({ type: GET_AUDIT_ISSUES, payload: { auditId, issues } }),
       );
@@ -40,7 +52,13 @@ export const updatePublicIssue = data => {
 
 export const addPublicIssue = data => {
   return dispatch => {
-    dispatch({ type: ADD_AUDIT_ISSUE, payload: { issue: data } });
+    dispatch({
+      type: ADD_AUDIT_ISSUE,
+      payload: {
+        issue: data,
+        successMessage: 'Audit issue created successfully',
+      },
+    });
   };
 };
 
@@ -71,15 +89,17 @@ export const addAuditIssue = (auditId, values) => {
       .post(`${API_URL}/audit/${auditId}/issue`, values, {
         headers: { Authorization: `Bearer ${token}` },
       })
-      .then(({ data }) =>
+      .then(({ data }) => {
+        dispatch(getIssues(auditId));
         dispatch({
-          type: ADD_AUDIT_ISSUE,
+          type: CREATE_AUDIT_ISSUE,
           payload: {
-            id: auditId,
+            auditId: auditId,
             issue: data,
+            successMessage: 'Audit issue created successfully',
           },
-        }),
-      )
+        });
+      })
       .catch(e => dispatch({ type: REQUEST_ERROR }));
   };
 };

@@ -37,7 +37,8 @@ const Header = ({ containerSx }) => {
 };
 
 const container = {
-  maxWidth: '1512px',
+  maxWidth: 'unset!important',
+  padding: '0 15px!important',
 };
 
 const wrapper = theme => ({
@@ -76,7 +77,7 @@ const logoStyle = theme => ({
     width: '140px',
     mr: 0,
   },
-  [theme.breakpoints.down('xxs')]: {
+  [theme.breakpoints.down(450)]: {
     height: '25px',
     width: '100px',
   },

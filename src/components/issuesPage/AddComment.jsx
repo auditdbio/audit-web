@@ -8,6 +8,7 @@ import { addTestsLabel } from '../../lib/helper.js';
 import { updateAuditIssue } from '../../redux/actions/issueAction.js';
 import theme from '../../styles/themes.js';
 import * as Yup from 'yup';
+import { AUDIT_PARENT_ENTITY } from '../../services/file_constants.js';
 
 const AddComment = ({ auditId, issueId }) => {
   const dispatch = useDispatch();
@@ -32,7 +33,7 @@ const AddComment = ({ auditId, issueId }) => {
             onSubmit={handleSubmit}
             style={{ width: '100%', paddingTop: '30px' }}
           >
-            <Box sx={{ width: '100%' }}>
+            <Box sx={editorWrapper}>
               <MarkdownEditor
                 name="message"
                 setFieldTouched={setFieldTouched}
@@ -40,6 +41,10 @@ const AddComment = ({ auditId, issueId }) => {
                 mdProps={{
                   placeholder: 'Leave a comment',
                   view: { menu: true, md: true, html: false },
+                }}
+                parentEntity={{
+                  id: auditId,
+                  source: AUDIT_PARENT_ENTITY,
                 }}
               />
             </Box>
@@ -76,6 +81,13 @@ export default AddComment;
 
 const validationSchema = Yup.object().shape({
   message: Yup.string().required('Comment cannot be empty'),
+});
+
+const editorWrapper = theme => ({
+  width: '100%',
+  '& .rc-md-editor': {
+    height: '200px!important',
+  },
 });
 
 const buttonBlock = {

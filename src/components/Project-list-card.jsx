@@ -1,11 +1,20 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Box, Button, Modal, Tooltip, Typography } from '@mui/material';
+import {
+  Box,
+  Button,
+  ClickAwayListener,
+  Modal,
+  Popover,
+  Tooltip,
+  Typography,
+} from '@mui/material';
 import AuditRequestInfo from './audit-request-info.jsx';
 import TagsList from './tagsList.jsx';
 import { clearMessage } from '../redux/actions/auditAction.js';
 import CustomSnackbar from './custom/CustomSnackbar.jsx';
 import { addTestsLabel } from '../lib/helper.js';
+import { CustomButton } from './custom/Button.jsx';
 
 const ProjectListCard = ({ project }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -14,13 +23,11 @@ const ProjectListCard = ({ project }) => {
   const successMessage = useSelector(s => s.audits.successMessage);
   const dispatch = useDispatch();
   const [errorState, setErrorState] = useState(null);
-
+  const handleCloseModal = () => {
+    setIsOpen(false);
+  };
   const handleOpen = () => {
     setIsOpen(true);
-  };
-
-  const handleClose = () => {
-    setIsOpen(false);
   };
 
   const handleError = () => {
@@ -78,24 +85,56 @@ const ProjectListCard = ({ project }) => {
           View more
         </Button>
       </Box>
-      <Modal
-        open={isOpen}
-        onClose={handleClose}
-        aria-labelledby="parent-modal-title"
-        aria-describedby="parent-modal-description"
-      >
-        <Box sx={modalWrapper}>
-          <AuditRequestInfo
-            onClose={handleClose}
-            project={project}
-            handleError={handleError}
-            isModal={true}
-            redirect={true}
-            hideChange={true}
-            setError={setErrorState}
-          />
-        </Box>
-      </Modal>
+      <ClickAwayListener onClickAway={handleCloseModal}>
+        <>
+          {isOpen ? (
+            <Popover
+              anchorEl={null}
+              open={isOpen}
+              onClose={handleCloseModal}
+              sx={{
+                '& .MuiPopover-paper': {
+                  position: 'absolute',
+                  backgroundColor: '#FCFAF6',
+                  top: '50%!important',
+                  left: '50%!important',
+                  transform: 'translate(-50%, -50%)!important',
+                  width: '100%',
+                  maxHeight: '90vh',
+                  overflowY: 'hidden',
+                  borderRadius: '14px',
+                  '& .rc-md-editor': {
+                    height: '100%!important',
+                  },
+                  '& .audit-request-wrapper': {
+                    paddingBottom: '10px',
+                    minHeight: 'unset',
+                  },
+                  '& .request-content-sx': {
+                    maxHeight: 'calc(100vh - 233px)',
+                    overflowY: 'auto',
+                  },
+                  '& .audit-request-button-wrapper': {
+                    marginTop: '0',
+                  },
+                },
+              }}
+            >
+              <Box>
+                <AuditRequestInfo
+                  onClose={handleCloseModal}
+                  project={project}
+                  handleError={handleError}
+                  isModal={true}
+                  redirect={true}
+                  hideChange={true}
+                  setError={setErrorState}
+                />
+              </Box>
+            </Popover>
+          ) : null}
+        </>
+      </ClickAwayListener>
     </Box>
   );
 };
@@ -172,6 +211,11 @@ const modalWrapper = theme => ({
   },
   '& .audit-request-button-wrapper': {
     marginTop: '20px',
+    paddingRight: '25px',
+    paddingTop: '35px',
+  },
+  '& .chat-btn': {
+    top: '-30px',
   },
   '& .audit-request-wrapper': {
     gap: '5px',

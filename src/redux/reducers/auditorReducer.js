@@ -11,6 +11,7 @@ import {
   SELECT_ROLE,
   GET_AUDITOR_RATING_DETAILS,
   CLEAR_CURRENT_AUDITOR_CUSTOMER,
+  CLEAR_SEARCHED_AUDITOR,
 } from '../actions/types.js';
 
 const initialState = {
@@ -46,6 +47,12 @@ export const auditorReducer = (state = initialState, action) => {
         ...state,
         auditors: action.payload.result,
         searchTotalAuditors: action.payload.totalDocuments,
+      };
+    case CLEAR_SEARCHED_AUDITOR:
+      return {
+        ...state,
+        auditors: [],
+        searchTotalAuditors: 0,
       };
     case GET_CURRENT_AUDITOR:
       return {

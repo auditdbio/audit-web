@@ -29,7 +29,6 @@ import {
 } from '../actions/types.js';
 
 const initialState = {
-  token: Cookies.get('token') || '',
   isAuth: false,
   user: JSON.parse(localStorage.getItem('user')) || {},
   error: null,
@@ -41,7 +40,6 @@ export const userReducer = (state = initialState, action) => {
   switch (action.type) {
     case USER_SIGNIN:
       return {
-        token: action.payload.token,
         isAuth: true,
         user: action.payload.user,
       };
@@ -55,7 +53,6 @@ export const userReducer = (state = initialState, action) => {
     case USER_REFRESH_TOKEN:
       return {
         ...state,
-        token: action.payload.token,
         isAuth: true,
       };
     case CONNECT_ACCOUNT:
@@ -111,7 +108,7 @@ export const userReducer = (state = initialState, action) => {
     case SIGN_IN_ERROR:
       return { ...state, error: action.payload };
     case LOG_OUT:
-      return { ...initialState, token: '', user: {} };
+      return { ...initialState, user: {} };
     case SELECT_ROLE:
       return { ...state, user: action.payload };
     case UPDATE_USER:

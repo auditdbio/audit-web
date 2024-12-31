@@ -33,7 +33,6 @@ const FieldEditor = ({ name, label, handleBlur, disabled }) => {
           onChange={e => {
             handleChange(e);
           }}
-          // size={matchMd ? 'small' : 'medium'}
           inputProps={{ ...addTestsLabel(`${name}-input`) }}
           onBlur={() => {
             handleBlur();
@@ -64,7 +63,6 @@ const fieldWrapper = theme => ({
   alignItems: 'center',
   minWidth: '390px',
   gap: '15px',
-  height: '58px',
   width: '100%',
   [theme.breakpoints.down('xs')]: {
     minWidth: 'unset',
@@ -77,6 +75,7 @@ const fieldSx = theme => ({
   // },
   '& input': {
     fontSize: '22px',
+    paddingY: '8px',
   },
   // [theme.breakpoints.up('sm')]: {
   //   '& input': {

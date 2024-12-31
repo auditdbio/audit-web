@@ -19,8 +19,9 @@ import TagsField from '../forms/tags-field/tags-field.jsx';
 import { addTestsLabel } from '../../lib/helper.js';
 import AddLinkIcon from '@mui/icons-material/AddLink.js';
 import { TextField } from 'formik-mui';
+import { AUDIT_PARENT_ENTITY } from '../../services/file_constants.js';
 
-const EditDescription = ({ audit, auditRequest, hideChange }) => {
+const EditDescription = ({ audit, auditRequest, hideChange, isPublic }) => {
   const [editMode, setEditMode] = useState(false);
   const [showFull, setShowFull] = useState(false);
   const [showComment, setShowComment] = useState(false);
@@ -51,7 +52,7 @@ const EditDescription = ({ audit, auditRequest, hideChange }) => {
             initialValues={{
               description: audit?.description,
               id: audit?.id,
-              scope: audit?.scope,
+              scope: audit?.project_scope || audit?.scope,
               comment: '',
             }}
             onSubmit={values => {
@@ -77,8 +78,10 @@ const EditDescription = ({ audit, auditRequest, hideChange }) => {
                           view: { menu: true, md: true, html: !matchXs },
                           style: editMarkdownSx(),
                         }}
-                        sx={{
-                          border: 'unset',
+                        sx={{ border: 'unset' }}
+                        parentEntity={{
+                          id: audit?.id,
+                          source: AUDIT_PARENT_ENTITY,
                         }}
                       />
                     </Box>
@@ -93,6 +96,10 @@ const EditDescription = ({ audit, auditRequest, hideChange }) => {
                       sx={{
                         border: 'unset',
                       }}
+                      parentEntity={{
+                        id: audit?.id,
+                        source: AUDIT_PARENT_ENTITY,
+                      }}
                     />
                   )}
                   <Box
@@ -105,7 +112,8 @@ const EditDescription = ({ audit, auditRequest, hideChange }) => {
                     }}
                   >
                     {!hideChange &&
-                      audit?.status.toLowerCase() !==
+                      !isPublic &&
+                      audit?.status?.toLowerCase() !==
                         RESOLVED.toLowerCase() && (
                         <Box>
                           <IconButton
@@ -119,7 +127,8 @@ const EditDescription = ({ audit, auditRequest, hideChange }) => {
                           >
                             <AddLinkIcon
                               color={
-                                user.current_role === CUSTOMER
+                                user?.current_role?.toLowerCase() ===
+                                CUSTOMER?.toLowerCase()
                                   ? 'primary'
                                   : 'secondary'
                               }
@@ -134,6 +143,7 @@ const EditDescription = ({ audit, auditRequest, hideChange }) => {
                         </Box>
                       )}
                     {!hideChange &&
+                      !isPublic &&
                       (!editMode ? (
                         audit?.status?.toLowerCase() !==
                           RESOLVED.toLowerCase() && (
@@ -143,7 +153,8 @@ const EditDescription = ({ audit, auditRequest, hideChange }) => {
                               textTransform: 'unset',
                             }}
                             color={
-                              user.current_role === CUSTOMER
+                              user?.current_role?.toLowerCase() ===
+                              CUSTOMER?.toLowerCase()
                                 ? 'primary'
                                 : 'secondary'
                             }
@@ -223,9 +234,9 @@ const EditDescription = ({ audit, auditRequest, hideChange }) => {
                       ))}
                   </Box>
                   <Box sx={hideChange ? linksList : {}}>
-                    {!hideChange &&
-                      (audit?.status?.toLowerCase() !==
-                      RESOLVED.toLowerCase() ? (
+                    {!hideChange ? (
+                      audit?.status?.toLowerCase() !== RESOLVED.toLowerCase() &&
+                      !isPublic ? (
                         <Box sx={linksList}>
                           <ProjectLinksList
                             name="scope"
@@ -238,7 +249,14 @@ const EditDescription = ({ audit, auditRequest, hideChange }) => {
                             <CustomLink link={link} key={idx} />
                           ))}
                         </Box>
-                      ))}
+                      )
+                    ) : (
+                      <Box sx={customerLinksList}>
+                        {values.scope?.map((link, idx) => (
+                          <CustomLink link={link} key={idx} />
+                        ))}
+                      </Box>
+                    )}
                   </Box>
                   {addLinkField && (
                     <Box sx={{ mt: '10px' }}>
@@ -268,7 +286,7 @@ export default EditDescription;
 const editButtonText = (theme, user) => ({
   ml: '6px',
   color:
-    user.current_role === CUSTOMER
+    user?.current_role?.toLowerCase() === CUSTOMER?.toLowerCase()
       ? theme.palette.primary.main
       : theme.palette.secondary.main,
   fontWeight: 500,
@@ -326,6 +344,7 @@ const editMarkdownSx = (matchXs, description, editMode) => ({
 
 const linksList = {
   border: '1px solid #dfe0df',
+  borderBottom: 'none',
   borderTop: 'none',
   padding: '0 15px 15px',
 };
@@ -333,6 +352,7 @@ const linksList = {
 const customerLinksList = {
   display: 'flex',
   flexDirection: 'column',
+  mt: '5px',
   '& p': {
     display: 'flex',
     alignItems: 'center',

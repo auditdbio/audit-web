@@ -31,6 +31,12 @@ import {
   GET_AUDIT_REQUEST_HISTORY,
   READ_AUDIT_HISTORY,
   READ_AUDIT_REQUEST_HISTORY,
+  GET_AUDITS_OF_AUDITOR,
+  GET_PUBLIC_AUDIT,
+  ADD_AUDIT_ISSUE,
+  VERIFY_AUDIT_REPORT,
+  UPDATE_AUDIT,
+  CREATE_AUDIT_ISSUE,
 } from '../actions/types.js';
 
 const initialState = {
@@ -42,10 +48,12 @@ const initialState = {
   successMessage: null,
   currentAuditPartner: null,
   publicReport: {},
+  publicAudits: [],
   auditHistory: [],
   approvedHistory: null,
   unreadHistory: null,
   auditRequestHistory: [],
+  verifyAudit: null,
 };
 
 export const auditReducer = (state = initialState, action) => {
@@ -74,6 +82,14 @@ export const auditReducer = (state = initialState, action) => {
           [action.payload.userId]: action.payload.unread,
         },
       };
+    case VERIFY_AUDIT_REPORT:
+      return {
+        ...state,
+        verifyAudit: action.payload,
+        ...(action.payload.verified
+          ? { successMessage: 'Audit verified successfully', error: null }
+          : { error: 'Verification code is incorrect', successMessage: null }),
+      };
     case DELETE_AUDIT:
       return {
         ...state,
@@ -89,6 +105,28 @@ export const auditReducer = (state = initialState, action) => {
         ),
         audit: action.payload,
         successMessage: 'Saved successfully',
+      };
+    case ADD_AUDIT_ISSUE:
+      return {
+        ...state,
+        audit:
+          action.payload.auditId && state.audit?.id === action.payload.auditId
+            ? {
+                ...state.audit,
+                issues: [...state.audit.issues, action.payload.issue],
+              }
+            : state.audit,
+      };
+    case CREATE_AUDIT_ISSUE:
+      return {
+        ...state,
+        audit:
+          action.payload.auditId && state.audit?.id === action.payload.auditId
+            ? {
+                ...state.audit,
+                issues: [...state.audit.issues, action.payload.issue],
+              }
+            : state.audit,
       };
     case EDIT_AUDIT_REQUEST_CUSTOMER:
       return {
@@ -151,6 +189,19 @@ export const auditReducer = (state = initialState, action) => {
           audit.id === action.payload.id ? action.payload : audit,
         ),
       };
+    case GET_PUBLIC_AUDIT:
+      return {
+        ...state,
+        audit: action.payload,
+        audits: state.audits?.map(audit =>
+          audit.id === action.payload.id ? action.payload : audit,
+        ),
+      };
+    case GET_AUDITS_OF_AUDITOR:
+      return {
+        ...state,
+        publicAudits: action.payload,
+      };
     case REQUEST_DECLINE:
       return {
         ...state,
@@ -196,12 +247,22 @@ export const auditReducer = (state = initialState, action) => {
         ),
         audit: action.payload,
       };
+    case UPDATE_AUDIT:
+      return {
+        ...state,
+        audits: state.audits?.map(audit =>
+          audit.id === action.payload.id ? action.payload : audit,
+        ),
+        audit: action.payload,
+        successMessage: 'Audit updated successfully',
+      };
     case RESOLVED:
       return {
         ...state,
         audits: state.audits?.map(audit =>
           audit.id === action.payload.id ? action.payload : audit,
         ),
+        audit: action.payload,
         successMessage: 'Audit resolved successfully',
       };
     case SUBMIT_AUDIT:

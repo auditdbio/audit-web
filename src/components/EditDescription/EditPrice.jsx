@@ -21,7 +21,15 @@ import { useDispatch } from 'react-redux';
 import SaveIcon from '@mui/icons-material/Save.js';
 import { addTestsLabel } from '../../lib/helper.js';
 
-const EditPrice = ({ role, audit, user, request, hideIcon, hideChange }) => {
+const EditPrice = ({
+  role,
+  audit,
+  user,
+  request,
+  hideIcon,
+  hideChange,
+  isPublic,
+}) => {
   const [isTotalPrice, setIsTotalPrice] = useState(false);
   const [editPrice, setEditPrice] = useState(false);
   const [showComment, setShowComment] = useState(false);
@@ -150,7 +158,8 @@ const EditPrice = ({ role, audit, user, request, hideIcon, hideChange }) => {
                         <Typography>per line</Typography>
                         <Switch
                           color={
-                            user.current_role === CUSTOMER
+                            user?.current_role?.toLowerCase() ===
+                            CUSTOMER?.toLowerCase()
                               ? 'primary'
                               : 'secondary'
                           }
@@ -206,7 +215,8 @@ const EditPrice = ({ role, audit, user, request, hideIcon, hideChange }) => {
                           >
                             <SaveIcon
                               color={
-                                user.current_role === CUSTOMER
+                                user?.current_role?.toLowerCase() ===
+                                CUSTOMER?.toLowerCase()
                                   ? 'primary'
                                   : 'secondary'
                               }
@@ -266,14 +276,16 @@ const EditPrice = ({ role, audit, user, request, hideIcon, hideChange }) => {
                   </Modal>
                   {!hideChange &&
                     !editPrice &&
-                    audit?.status.toLowerCase() !== RESOLVED.toLowerCase() && (
+                    !isPublic &&
+                    audit?.status?.toLowerCase() !== RESOLVED.toLowerCase() && (
                       <Button
                         sx={{ minWidth: 'unset' }}
                         onClick={() => setEditPrice(!editPrice)}
                       >
                         <EditIcon
                           color={
-                            user.current_role === CUSTOMER
+                            user?.current_role?.toLowerCase() ===
+                            CUSTOMER?.toLowerCase()
                               ? 'primary'
                               : 'secondary'
                           }

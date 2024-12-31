@@ -4,9 +4,8 @@ const IS_DEV = import.meta.env?.DEV;
 
 export const isAuth = () => {
   const token = Cookies.get('token');
-  const localToken = JSON.parse(localStorage.getItem('token'));
   const localUser = JSON.parse(localStorage.getItem('user'));
-  return !!(token && localToken && localUser);
+  return !!(token && localUser);
 };
 
 export const addTestsLabel = value => {
@@ -22,6 +21,10 @@ export const capitalize = str => {
   return typeof str === 'string' && str.length
     ? str[0].toUpperCase() + str.slice(1).toLowerCase()
     : '';
+};
+
+export const dateConverter = date => {
+  return date > 1000000000000 ? date / 1000 : date * 1000;
 };
 
 export const encodeBase64url = str => {
@@ -45,6 +48,14 @@ export const getAverageFeedbackRating = rating => {
   }
 
   return 0;
+};
+
+export const issuesCounter = issues => {
+  if (issues.length > 1) {
+    return `${issues.length} issues`;
+  } else {
+    return `${issues.length} issue`;
+  }
 };
 
 export const reportBuilder = (report, issuesArray) => {
