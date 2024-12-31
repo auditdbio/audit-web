@@ -9,6 +9,7 @@ import {
   USER_IS_ALREADY_EXIST,
   USER_SIGNIN,
   USER_SIGNUP,
+  USER_REFRESH_TOKEN,
   SELECT_ROLE,
   UPDATE_USER,
   CLEAR_SUCCESS,
@@ -31,78 +32,136 @@ import {
   CLEAR_MESSAGES,
   AUDITOR,
   CUSTOMER,
+  GET_AUDITS,
 } from './types.js';
-import { savePublicReport } from './auditAction.js';
+import { getAudits, savePublicReport } from './auditAction.js';
 
 const API_URL = import.meta.env.VITE_API_BASE_URL;
+const DEV = import.meta.env.DEV;
+const TOKEN_LIFETIME_MS = 21 * 24 * 60 * 60 * 1000;
+
+const devModeSetToken = token => {
+  // For development mode only:
+  if (DEV && token) {
+    Cookies.set('token', token, { expires: 21 });
+    Cookies.set('token_expiration', Date.now() + TOKEN_LIFETIME_MS, {
+      expires: 21,
+    });
+  }
+};
 
 export const signUpGithub = data => {
-  return dispatch => {
-    axios
-      .post(`${API_URL}/auth/github`, data)
-      .then(({ data }) => {
-        Cookies.set('token', data.token, { expires: 1 });
-        localStorage.setItem('token', JSON.stringify(data.token));
-        localStorage.setItem('user', JSON.stringify(data.user));
-        dispatch({ type: USER_SIGNIN, payload: data });
+  return async dispatch => {
+    try {
+      const { data: responseData } = await axios.post(
+        `${API_URL}/auth/github`,
+        data,
+      );
 
-        if (data.user?.is_new) {
-          axios.patch(
-            `${API_URL}/user/${data.user?.id}`,
-            { is_new: false },
-            { headers: { Authorization: `Bearer ${data.token}` } },
-          );
-          history.push({ pathname: `/edit-profile` }, { some: true });
-        } else {
-          const rolePrefix = data.user?.current_role?.[0];
-          history.push(
-            { pathname: `/${rolePrefix}/${data.user.id}` },
-            { some: true },
-          );
-        }
-      })
-      .catch(({ response }) => {
-        console.error(response);
-        if (
-          response?.status === 400 &&
-          response?.data === 'ServiceError: Role required'
-        ) {
-          history.push('/sign-up?select_role=true');
-        } else {
-          dispatch({ type: SIGN_IN_ERROR, payload: 'Sign In Failed' });
-        }
-      });
+      devModeSetToken(responseData.token);
+      const token = Cookies.get('token');
+      localStorage.setItem('user', JSON.stringify(responseData.user));
+
+      if (responseData.user?.is_new) {
+        await axios.patch(
+          `${API_URL}/user/${responseData.user?.id}`,
+          { is_new: false },
+          { headers: { Authorization: `Bearer ${token}` } },
+        );
+
+        dispatch({ type: USER_SIGNIN, payload: responseData });
+        history.push({ pathname: `/edit-profile` }, { some: true });
+      } else {
+        const rolePrefix = responseData.user?.current_role?.[0];
+        axios
+          .get(
+            `${API_URL}/my_audit/${
+              rolePrefix === 'c' ? 'customer' : 'auditor'
+            }`,
+            { headers: { Authorization: `Bearer ${token}` } },
+          )
+          .then(({ data: auditData }) => {
+            dispatch({ type: USER_SIGNIN, payload: responseData });
+            setTimeout(() => {
+              history.push(
+                {
+                  pathname: auditData.length
+                    ? `/profile/audits`
+                    : `/${rolePrefix}/${responseData.user.id}`,
+                },
+                { some: true },
+              );
+            });
+          });
+      }
+    } catch (error) {
+      const { response } = error;
+      dispatch({ type: SIGN_IN_ERROR, payload: 'Sign In Failed' });
+      console.error('Sign In Error:', response);
+    }
   };
 };
 
 export const signIn = values => {
-  return dispatch => {
-    axios
-      .post(`${API_URL}/auth/login`, values)
-      .then(({ data }) => {
-        Cookies.set('token', data.token, { expires: 1 });
-        localStorage.setItem('token', JSON.stringify(data.token));
-        localStorage.setItem('user', JSON.stringify(data.user));
-        dispatch({ type: USER_SIGNIN, payload: data });
+  return async (dispatch, getState) => {
+    try {
+      const { data } = await axios.post(`${API_URL}/auth/login`, values);
 
-        if (data.user?.is_new) {
-          axios.patch(
-            `${API_URL}/user/${data.user?.id}`,
-            { is_new: false },
-            { headers: { Authorization: `Bearer ${data.token}` } },
-          );
-          history.push({ pathname: `/edit-profile` }, { some: true });
-        } else {
-          const role = data.user?.current_role?.[0];
-          history.push(
-            { pathname: `/${role}/${data.user.id}` },
-            { some: true },
-          );
-        }
-      })
-      .catch(({ response }) => {
-        dispatch({ type: SIGN_IN_ERROR, payload: response.data });
-      });
+      devModeSetToken(data.token);
+      const token = Cookies.get('token');
+      localStorage.setItem('user', JSON.stringify(data.user));
+
+      if (data.user?.is_new) {
+        await axios.patch(
+          `${API_URL}/user/${data.user?.id}`,
+          { is_new: false },
+          { headers: { Authorization: `Bearer ${token}` } },
+        );
+
+        dispatch({ type: USER_SIGNIN, payload: data });
+        history.push({ pathname: `/edit-profile` }, { some: true });
+      } else {
+        const role = data.user?.current_role?.[0];
+        const { data: auditData } = await axios.get(
+          `${API_URL}/my_audit/${role === 'c' ? 'customer' : 'auditor'}`,
+          { headers: { Authorization: `Bearer ${token}` } },
+        );
+
+        dispatch({ type: USER_SIGNIN, payload: data });
+        history.push(
+          {
+            pathname: auditData.length
+              ? `/profile/audits`
+              : `/${role}/${data.user.id}`,
+          },
+          { some: true },
+        );
+      }
+    } catch (error) {
+      console.error(error);
+      const { response } = error;
+      dispatch({ type: SIGN_IN_ERROR, payload: response?.data });
+    }
+  };
+};
+
+export const refreshToken = () => {
+  return dispatch => {
+    const token = Cookies.get('token');
+    const expiration = Cookies.get('token_expiration');
+
+    if (token && expiration) {
+      if (expiration - Date.now() < TOKEN_LIFETIME_MS / 4) {
+        axios
+          .get(`${API_URL}/auth/restore_token`, {
+            headers: { Authorization: `Bearer ${token}` },
+          })
+          .then(({ data }) => {
+            devModeSetToken(data.token);
+            dispatch({ type: USER_REFRESH_TOKEN, payload: data });
+          });
+      }
+    }
   };
 };
 
@@ -121,9 +180,7 @@ export const clearUserMessages = () => {
 export const getMyProfile = id => {
   return dispatch => {
     axios(`${API_URL}/my_user`, {
-      headers: {
-        Authorization: 'Bearer ' + Cookies.get('token'),
-      },
+      headers: { Authorization: 'Bearer ' + Cookies.get('token') },
     })
       .then(({ data }) => {
         dispatch({ type: GET_MY_PROFILE, payload: data });
@@ -244,7 +301,9 @@ export const connect_account = (user_id, values, isWallet = false) => {
         let linkId = user.id;
         if (user.current_role === AUDITOR) {
           linkId = auditor.auditor?.link_id || user.id;
-        } else if (user.current_role === CUSTOMER) {
+        } else if (
+          user?.current_role?.toLowerCase() === CUSTOMER?.toLowerCase()
+        ) {
           linkId = customer.customer?.link_id || user.id;
         }
         history.push(`/${rolePrefix}/${linkId}`, { some: true });
@@ -290,7 +349,6 @@ export const authGithub = (user_id, values) => {
       .post(`${API_URL}/auth/github`, values)
       .then(({ data }) => {
         if (user.linked_accounts.find(el => el.name === 'GitHub')) {
-          localStorage.setItem('token', JSON.stringify(data.token));
           localStorage.setItem('user', JSON.stringify(data.user));
           dispatch({ type: USER_SIGNIN, payload: data });
           localStorage.setItem('authenticated', 'true');
@@ -345,7 +403,7 @@ export const authenticate = () => {
 export const logout = () => {
   history.push('/');
   Cookies.remove('token');
-  localStorage.removeItem('token');
+  Cookies.remove('token_expiration');
   localStorage.removeItem('user');
   return { type: LOG_OUT };
 };
@@ -367,7 +425,6 @@ export const changeRole = (role, id) => {
       .then(({ data: user }) => {
         dispatch({ type: SELECT_ROLE, payload: user });
         localStorage.setItem('user', JSON.stringify(user));
-
         if (user.is_new) {
           axios.patch(
             `${API_URL}/user/${user.id}`,
@@ -376,7 +433,20 @@ export const changeRole = (role, id) => {
           );
           history.push({ pathname: `/edit-profile` }, { some: true });
         } else {
-          history.push({ pathname: `/${role[0]}/${user.id}` }, { some: true });
+          axios
+            .get(`${API_URL}/my_audit/${role}`, {
+              headers: { Authorization: `Bearer ${token}` },
+            })
+            .then(({ data: auditData }) => {
+              history.push(
+                {
+                  pathname: auditData.length
+                    ? `/profile/audits`
+                    : `/${role[0]}/${user.id}`,
+                },
+                { some: true },
+              );
+            });
         }
       });
   };

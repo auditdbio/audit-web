@@ -15,6 +15,7 @@ import {
   CHAT_UPDATE_DIFFERENT_ROLE_UNREAD,
   CHAT_SET_ERROR,
   CHAT_DELETE_MESSAGE,
+  RECEIVE_NEW_CHAT,
 } from './types.js';
 
 export const getChatList = role => {
@@ -38,9 +39,11 @@ export const getChatMessages = (chatId, userId) => {
       .then(({ data }) => {
         dispatch({ type: CHAT_GET_MESSAGES, payload: data });
         axios
-          .patch(`${API_URL}/chat/${chatId}/unread/0`, null, {
-            headers: { Authorization: `Bearer ${token}` },
-          })
+          .patch(
+            `${API_URL}/chat/${chatId}/unread/0`,
+            {},
+            { headers: { Authorization: `Bearer ${token}` } },
+          )
           .then(() => {
             dispatch({
               type: CHAT_UPDATE_READ,
@@ -69,9 +72,11 @@ export const setCurrentChat = (
 
     if (previousChatId) {
       const token = Cookies.get('token');
-      axios.patch(`${API_URL}/chat/${previousChatId}/unread/0`, null, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      axios.patch(
+        `${API_URL}/chat/${previousChatId}/unread/0`,
+        {},
+        { headers: { Authorization: `Bearer ${token}` } },
+      );
     }
 
     dispatch({ type: CHAT_CLOSE_CURRENT_CHAT });
@@ -143,7 +148,13 @@ export const chatSendMessage = (text, to, fromRole, isFirst, kind = 'Text') => {
   };
 };
 
-export const receiveNewChatMessage = message => {
+export const receiveNewChat = chat => {
+  return dispatch => {
+    dispatch({ type: RECEIVE_NEW_CHAT, payload: chat });
+  };
+};
+
+export const receiveNewChatMessage = (message, sameRole) => {
   return (dispatch, getState) => {
     const { chat: chatState, user } = getState();
     if (chatState.currentChat?.chatId === message.chat) {
@@ -183,10 +194,12 @@ export const receiveNewChatMessage = message => {
           },
         });
       } else {
-        dispatch({
-          type: CHAT_UPDATE_DIFFERENT_ROLE_UNREAD,
-          payload: chatState.differentRoleUnreadMessages + 1,
-        });
+        if (!sameRole) {
+          dispatch({
+            type: CHAT_UPDATE_DIFFERENT_ROLE_UNREAD,
+            payload: chatState.differentRoleUnreadMessages + 1,
+          });
+        }
       }
     }
   };
@@ -235,9 +248,11 @@ export const getUnreadForDifferentRole = () => {
 export const closeCurrentChat = chatId => {
   if (chatId) {
     const token = Cookies.get('token');
-    axios.patch(`${API_URL}/chat/${chatId}/unread/0`, null, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
+    axios.patch(
+      `${API_URL}/chat/${chatId}/unread/0`,
+      {},
+      { headers: { Authorization: `Bearer ${token}` } },
+    );
   }
 
   return { type: CHAT_CLOSE_CURRENT_CHAT };

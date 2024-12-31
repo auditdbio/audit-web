@@ -4,6 +4,7 @@ export const IN_PROGRESS = 'InProgress';
 export const VERIFICATION = 'Verification';
 export const FIXED = 'Fixed';
 export const NOT_FIXED = 'NotFixed';
+export const WILL_NOT_FIX = 'WillNotFix';
 
 // Issue Status Change Actions:
 export const BEGIN_ACTION = 'Begin';
@@ -33,5 +34,6 @@ export const statusOrder = {
   [IN_PROGRESS]: 1,
   [VERIFICATION]: 2,
   [NOT_FIXED]: 3,
-  [FIXED]: 4,
+  [WILL_NOT_FIX]: 4,
+  [FIXED]: 5,
 };

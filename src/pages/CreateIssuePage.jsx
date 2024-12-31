@@ -19,11 +19,11 @@ const CreateIssuePage = ({ isPublic, saved }) => {
 
   return (
     <Layout
-      sx={{ padding: '40px' }}
-      containerSx={{
-        maxWidth: 'unset!important',
-        padding: '0 35px!important',
-      }}
+    // sx={layoutSx}
+    // containerSx={{
+    //   maxWidth: 'unset!important',
+    //   padding: '0 35px!important',
+    // }}
     >
       <Headings title={`New Issue | ${audit?.project_name}`} noIndex={true} />
 
@@ -47,28 +47,35 @@ const CreateIssuePage = ({ isPublic, saved }) => {
 
 export default CreateIssuePage;
 
+const layoutSx = theme => ({
+  padding: '40px',
+  [theme.breakpoints.down(780)]: {
+    padding: '25px 0',
+  },
+});
+
 const wrapper = theme => ({
-  padding: '40px 45px 80px',
+  padding: '45px 30px 60px',
   position: 'relative',
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'center',
   maxWidth: 'unset',
-  gap: '20px',
   [theme.breakpoints.down('md')]: {
-    padding: '38px 44px 60px',
-    '& h3': {
-      fontSize: '30px',
-    },
+    padding: '50px 20px 60px',
   },
   [theme.breakpoints.down('sm')]: {
-    gap: '20px',
-    padding: '38px 20px 30px',
+    padding: '50px 10px 30px',
+  },
+  [theme.breakpoints.down(780)]: {
+    borderRadius: 'unset',
   },
 });
 
 const backButtonSx = {
   position: 'absolute',
+  display: 'flex',
+  justifyContent: 'flex-start',
   left: '0',
   top: '5px',
 };

@@ -134,7 +134,7 @@ const OfferModal = ({
                         setFieldValue('time.from', value.toString());
                       }}
                       disablePast
-                      minDate={new Date()}
+                      minDate={dayjs()}
                     />
                     <Typography variant="caption">-</Typography>
                     <Field

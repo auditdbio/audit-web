@@ -11,8 +11,9 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack.js';
 import { getIssues } from '../redux/actions/issueAction.js';
 import { CUSTOMER } from '../redux/actions/types.js';
 import Headings from '../router/Headings.jsx';
+import { getAudit } from '../redux/actions/auditAction.js';
 
-const AuditIssues = () => {
+const AuditIssues = ({ isPublic }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { auditId } = useParams();
@@ -27,13 +28,23 @@ const AuditIssues = () => {
     if (issuesAuditId !== auditId) {
       dispatch(getIssues(auditId));
     }
+    dispatch(getAudit(auditId));
+    return () => {
+      if (localStorage.getItem('prev')) {
+        localStorage.removeItem('prev');
+      }
+    };
   }, []);
 
   const handleGoBack = () => {
-    if (user.current_role === CUSTOMER) {
-      navigate(`/audit-info/${auditId}/customer`);
+    if (localStorage.getItem('prev')) {
+      navigate(localStorage.getItem('prev'));
     } else {
-      navigate(`/audit-info/${auditId}/auditor`);
+      if (user?.current_role?.toLowerCase() === CUSTOMER?.toLowerCase()) {
+        navigate(`/audit/${auditId}`);
+      } else {
+        navigate(`/audit/${auditId}`);
+      }
     }
   };
 
@@ -75,7 +86,7 @@ const AuditIssues = () => {
 export default AuditIssues;
 
 const wrapper = theme => ({
-  padding: '48px 45px 80px',
+  padding: '50px 30px 80px',
   position: 'relative',
   display: 'flex',
   flexDirection: 'column',
@@ -95,6 +106,6 @@ const wrapper = theme => ({
 
 const backButtonSx = {
   position: 'absolute',
-  left: '0',
+  left: '-10px',
   top: '5px',
 };

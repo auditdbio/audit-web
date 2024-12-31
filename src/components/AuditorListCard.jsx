@@ -14,6 +14,7 @@ import {
   changeRolePublicCustomerNoRedirect,
 } from '../redux/actions/userAction.js';
 import CustomSnackbar from './custom/CustomSnackbar.jsx';
+import Star from './icons/Star.jsx';
 
 const AuditorListCard = ({ auditor, projectIdToInvite, budge }) => {
   const navigate = useNavigate();
@@ -50,7 +51,11 @@ const AuditorListCard = ({ auditor, projectIdToInvite, budge }) => {
   };
 
   const handleInvite = () => {
-    if (user.current_role === CUSTOMER && isAuth() && myProjects.length) {
+    if (
+      user?.current_role?.toLowerCase() === CUSTOMER?.toLowerCase() &&
+      isAuth() &&
+      myProjects.length
+    ) {
       if (projectIdToInvite) {
         return navigate(
           `/my-projects/${auditor.user_id}?projectIdToInvite=${projectIdToInvite}`,
@@ -75,7 +80,7 @@ const AuditorListCard = ({ auditor, projectIdToInvite, budge }) => {
       );
       handleError();
     } else if (
-      user.current_role === CUSTOMER &&
+      user?.current_role?.toLowerCase() === CUSTOMER?.toLowerCase() &&
       isAuth() &&
       !myProjects.length
     ) {
@@ -110,10 +115,23 @@ const AuditorListCard = ({ auditor, projectIdToInvite, budge }) => {
         <Box sx={avatarDescription}>
           <Box>
             <Avatar
-              src={auditor.avatar && `${ASSET_URL}/${auditor.avatar}`}
+              src={auditor.avatar && `${ASSET_URL}/id/${auditor.avatar}`}
               sx={avatarStyle}
               alt={`${auditor.first_name} photo`}
             />
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                mt: '5px',
+              }}
+            >
+              <Star size={14} />
+              <Typography sx={{ fontSize: '12px!important', ml: '5px' }}>
+                {Math.trunc(auditor.rating || 0)}
+              </Typography>
+            </Box>
           </Box>
           <Box sx={descriptionStyle(theme)}>
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
@@ -143,6 +161,7 @@ const AuditorListCard = ({ auditor, projectIdToInvite, budge }) => {
           <TagsList data={auditor.tags} />
         </Box>
       </Box>
+
       <Box sx={cardRightSide}>
         {(auditor.price_range.from > 0 || auditor.price_range.to > 0) && (
           <Typography sx={priceStyle}>

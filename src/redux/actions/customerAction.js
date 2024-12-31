@@ -7,6 +7,7 @@ import {
   UPDATE_CUSTOMER,
   CUSTOMER_SET_ERROR,
   GET_PUBLIC_PROFILE,
+  CLEAR_CURRENT_AUDITOR_CUSTOMER,
 } from './types.js';
 import { history } from '../../services/history.js';
 import createSearchValues from '../../lib/createSearchValues.js';
@@ -152,4 +153,8 @@ export const searchCustomers = values => {
         console.error(response, 'res');
       });
   };
+};
+
+export const clearCurrentCustomer = () => {
+  return { type: CLEAR_CURRENT_AUDITOR_CUSTOMER };
 };

@@ -86,7 +86,9 @@ const ChangeLinkId = ({ setNewLinkId }) => {
             setNewLinkId(values.link_id);
             if (user.current_role === AUDITOR) {
               dispatch(updateAuditor(values));
-            } else if (user.current_role === CUSTOMER) {
+            } else if (
+              user?.current_role?.toLowerCase() === CUSTOMER?.toLowerCase()
+            ) {
               dispatch(updateCustomer(values));
             }
           }}

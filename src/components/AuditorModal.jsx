@@ -30,6 +30,8 @@ import ShareProfileButton from './custom/ShareProfileButton.jsx';
 import PriceCalculation from './PriceCalculation.jsx';
 import { setCurrentChat } from '../redux/actions/chatActions.js';
 import ChatIcon from './icons/ChatIcon.jsx';
+import { getAuditorRating } from '../redux/actions/auditorAction.js';
+import Star from './icons/Star.jsx';
 
 export default function AuditorModal({
   open,
@@ -47,6 +49,7 @@ export default function AuditorModal({
 
   const customerReducer = useSelector(state => state.customer.customer);
   const { user } = useSelector(s => s.user);
+  const { auditorRating } = useSelector(s => s.auditor);
   const { chatList } = useSelector(s => s.chat);
   const myProjects = useSelector(state => state.project.myProjects);
 
@@ -55,7 +58,11 @@ export default function AuditorModal({
   const [scope, setScope] = useState([]);
 
   const handleInvite = () => {
-    if (user.current_role === CUSTOMER && isAuth() && myProjects.length) {
+    if (
+      user?.current_role?.toLowerCase() === CUSTOMER?.toLowerCase() &&
+      isAuth() &&
+      myProjects.length
+    ) {
       return navigate(`/my-projects/${auditor.user_id}`);
     } else if (
       user.current_role !== CUSTOMER &&
@@ -76,7 +83,7 @@ export default function AuditorModal({
       );
       handleError();
     } else if (
-      user.current_role === CUSTOMER &&
+      user?.current_role?.toLowerCase() === CUSTOMER?.toLowerCase() &&
       isAuth() &&
       !myProjects.length
     ) {
@@ -128,6 +135,12 @@ export default function AuditorModal({
     }
   }, [chosen]);
 
+  useEffect(() => {
+    if (open && auditor.user_id) {
+      dispatch(getAuditorRating(auditor.user_id, true));
+    }
+  }, [auditor, open]);
+
   return (
     <Dialog open={open} onClose={handleClose} sx={dialogSx}>
       <Box className="auditor-modal" sx={{ overflowX: 'hidden' }}>
@@ -141,20 +154,51 @@ export default function AuditorModal({
               text={message}
             />
             <Box sx={contentWrapper}>
-              <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+              <Box
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  flexDirection: 'column',
+                }}
+              >
                 <Avatar
-                  src={auditor.avatar && `${ASSET_URL}/${auditor.avatar}`}
+                  src={auditor.avatar && `${ASSET_URL}/id/${auditor.avatar}`}
                   sx={avatarStyle}
                   alt={`${auditor.first_name} photo`}
                 />
+                {auditorRating && (
+                  <Button
+                    sx={{
+                      m: '10px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      color: 'black',
+                    }}
+                    type="button"
+                    onClick={() =>
+                      navigate(`/a/${auditor.user_id}?rating=true`)
+                    }
+                  >
+                    <Star size={20} />
+                    <Typography
+                      component="span"
+                      sx={{ ml: '10px', fontWeight: 500, fontSize: '16px' }}
+                    >
+                      {auditorRating.user_id === auditor.user_id
+                        ? Math.trunc(auditorRating.summary)
+                        : Math.trunc(auditor.rating || 0)}
+                    </Typography>
+                  </Button>
+                )}
+                <ShareProfileButton
+                  userId={auditor.link_id || auditor.user_id}
+                  sx={{ fontSize: '12px' }}
+                  isModal
+                  role={AUDITOR}
+                  isPublic
+                />
               </Box>
-              <ShareProfileButton
-                userId={auditor.link_id || auditor.user_id}
-                sx={{ fontSize: '12px' }}
-                isModal
-                role={AUDITOR}
-                isPublic
-              />
+
               <Box sx={infoStyle}>
                 <Box sx={infoInnerStyle}>
                   <Box sx={infoWrapper}>
@@ -356,7 +400,7 @@ export default function AuditorModal({
                               }}
                               disablePast
                               inputFormat="DD.MM.YYYY"
-                              minDate={new Date()}
+                              minDate={dayjs()}
                             />
                             <Typography variant={'caption'}>-</Typography>
                             <Field
@@ -431,7 +475,6 @@ const MakeOfferSchema = Yup.object().shape({
 const modalWindow = theme => ({
   backgroundColor: theme.palette.background,
   overflow: 'unset',
-  width: '600px',
   display: 'flex',
   gap: '30px',
   flexDirection: 'column',

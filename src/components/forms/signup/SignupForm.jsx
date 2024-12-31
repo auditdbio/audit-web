@@ -219,9 +219,13 @@ const submitButton = theme => ({
   fontWeight: 600,
   borderRadius: radiusOfComponents,
   maxWidth: '262px',
-  fontSize: '16px',
-  paddingY: '11px',
+  fontSize: '20px',
+  paddingY: '9px',
   width: '100%',
+  textTransform: 'unset',
+  [theme.breakpoints.down('xl')]: {
+    fontSize: '18px',
+  },
   [theme.breakpoints.down('sm')]: {
     width: '225px',
     padding: '8px 0',
@@ -267,7 +271,37 @@ const fieldWrapper = theme => ({
       width: '130px',
     },
   },
+  '& .field-wrapper label': {
+    fontSize: '20px',
+  },
+  '& .field-wrapper input': {
+    paddingY: '12px',
+    fontSize: '20px',
+  },
+  '& .password-wrapper input': {
+    paddingY: '12px',
+    fontSize: '20px',
+  },
+  '& .password-wrapper label': {
+    fontSize: '20px',
+  },
+  [theme.breakpoints.down('xl')]: {
+    '& .field-wrapper label': {
+      fontSize: '18px',
+    },
+    '& .password-wrapper label': {
+      fontSize: '18px',
+    },
+  },
   [theme.breakpoints.down('md')]: {
+    '& .field-wrapper input': {
+      paddingY: '10px',
+      fontSize: '18px',
+    },
+    '& .password-wrapper input': {
+      paddingY: '10px',
+      fontSize: '18px',
+    },
     '& .password-wrapper,.field-wrapper': {
       '& label': {
         fontSize: '18px',
@@ -276,6 +310,20 @@ const fieldWrapper = theme => ({
   },
   [theme.breakpoints.down('sm')]: {
     width: '100%',
+    '& .field-wrapper input': {
+      paddingY: '10px',
+      fontSize: '14px',
+    },
+    '& .password-wrapper input': {
+      paddingY: '10px',
+      fontSize: '14px',
+    },
+    '& .field-wrapper label': {
+      fontSize: '14px',
+    },
+    '& .password-wrapper label': {
+      fontSize: '14px',
+    },
     gap: '16px',
     '& .password-wrapper, .field-wrapper': {
       flexDirection: 'column',
@@ -310,12 +358,16 @@ const tabsSx = theme => ({
 });
 
 const tabSx = theme => ({
-  height: '40px',
+  height: '53px',
   minHeight: '40px',
   width: '50%',
   color: '#222222',
-  fontSize: '16px',
+  fontSize: '20px',
   textTransform: 'capitalize',
+  [theme.breakpoints.down('xl')]: {
+    fontSize: '18px',
+    height: '50px',
+  },
   [theme.breakpoints.down('sm')]: {
     fontSize: '14px',
   },

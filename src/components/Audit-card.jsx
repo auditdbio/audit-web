@@ -14,7 +14,7 @@ import {
   WAITING_FOR_AUDITS,
 } from '../redux/actions/types.js';
 import dayjs from 'dayjs';
-import { addTestsLabel } from '../lib/helper.js';
+import { addTestsLabel, dateConverter } from '../lib/helper.js';
 
 const AuditCard = ({ audit, request }) => {
   const navigate = useNavigate();
@@ -42,6 +42,15 @@ const AuditCard = ({ audit, request }) => {
           </Typography>
         </Tooltip>
       </Box>
+      <Tooltip
+        title={audit?.tags?.map(el => el).join(', ') ?? ''}
+        arrow
+        placement="top"
+      >
+        <Typography sx={categorySx}>
+          {audit?.tags?.map(el => el).join(', ') ?? ''}
+        </Typography>
+      </Tooltip>
       {!audit.total_cost ? (
         <Typography sx={priceTextStyle}>${audit?.price} per line</Typography>
       ) : (
@@ -49,30 +58,40 @@ const AuditCard = ({ audit, request }) => {
           ${audit?.total_cost} total cost
         </Typography>
       )}
-      <Box sx={dateWrapper}>
-        <Typography sx={dateStyle}>
-          {dayjs(audit?.time?.from).format('DD.MM.YYYY')}
-        </Typography>
-        <Typography variant="caption">-</Typography>
-        <Typography sx={dateStyle}>
-          {dayjs(audit?.time?.to).format('DD.MM.YYYY')}
-        </Typography>
-      </Box>
+      {audit?.status?.toLowerCase() !== RESOLVED.toLowerCase() ? (
+        <Box sx={dateWrapper}>
+          <Typography sx={dateStyle}>
+            {dayjs(audit?.time?.from).format('DD.MM.YYYY')}
+          </Typography>
+          <Typography variant="caption">-</Typography>
+          <Typography sx={dateStyle}>
+            {dayjs(audit?.time?.to).format('DD.MM.YYYY')}
+          </Typography>
+        </Box>
+      ) : (
+        audit?.resolved_at && (
+          <Box sx={dateWrapper}>
+            <Typography sx={[dateStyle, { border: 'unset' }]}>
+              {dayjs(dateConverter(audit?.resolved_at)).format('DD.MM.YYYY')}
+            </Typography>
+          </Box>
+        )
+      )}
 
       {!request ? (
         <Box sx={statusWrapper}>
-          {audit.status !== SUBMITED && (
+          {audit?.status !== SUBMITED && (
             <>
-              {audit.status.toLowerCase() === RESOLVED.toLowerCase() ? (
+              {audit?.status?.toLowerCase() === RESOLVED.toLowerCase() ? (
                 <Box sx={{ backgroundColor: '#52176D' }} />
               ) : (
-                audit.status.toLowerCase() ===
+                audit?.status?.toLowerCase() ===
                   WAITING_FOR_AUDITS.toLowerCase() && (
                   <Box sx={{ backgroundColor: '#FF9900' }} />
                 )
               )}
-              {audit.status.toLowerCase() !== RESOLVED.toLowerCase() &&
-                audit.status.toLowerCase() !==
+              {audit?.status?.toLowerCase() !== RESOLVED.toLowerCase() &&
+                audit?.status?.toLowerCase() !==
                   WAITING_FOR_AUDITS.toLowerCase() && (
                   <Box sx={{ backgroundColor: '#09C010' }} />
                 )}
@@ -86,34 +105,44 @@ const AuditCard = ({ audit, request }) => {
           <Typography>Request</Typography>
         </Box>
       )}
-      {!audit.status && (
-        <CustomButton
-          variant="contained"
-          sx={[
-            acceptButtonStyle,
-            audit?.last_changer?.toLowerCase() === CUSTOMER
-              ? { backgroundColor: '#d7d7d7' }
-              : {},
-          ]}
-          disabled={audit?.last_changer?.toLowerCase() === CUSTOMER}
-          onClick={() => dispatch(confirmAudit(audit))}
-          {...addTestsLabel('audits_accept-button')}
-        >
-          Accept
-        </CustomButton>
-      )}
-      <CustomButton
-        sx={viewButtonStyle}
-        variant="contained"
-        onClick={() =>
-          request
-            ? navigate(`/audit-request/${audit.id}/customer`)
-            : navigate(`/audit-info/${audit.id}/customer`)
-        }
-        {...addTestsLabel('audits_view-button')}
+      <Box
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: '8px',
+          width: '100%',
+          justifyContent: 'center',
+        }}
       >
-        View
-      </CustomButton>
+        {!audit?.status && (
+          <CustomButton
+            variant="contained"
+            sx={[
+              acceptButtonStyle,
+              audit?.last_changer?.toLowerCase() === CUSTOMER
+                ? { backgroundColor: '#d7d7d7' }
+                : {},
+            ]}
+            disabled={audit?.last_changer?.toLowerCase() === CUSTOMER}
+            onClick={() => dispatch(confirmAudit(audit))}
+            {...addTestsLabel('audits_accept-button')}
+          >
+            Accept
+          </CustomButton>
+        )}
+        <CustomButton
+          sx={viewButtonStyle}
+          variant="contained"
+          onClick={() =>
+            request
+              ? navigate(`/audit-request/${audit.id}/customer`)
+              : navigate(`/audit/${audit.id}`)
+          }
+          {...addTestsLabel('audits_view-button')}
+        >
+          View
+        </CustomButton>
+      </Box>
     </Card>
   );
 };
@@ -124,6 +153,31 @@ const btnWrapper = () => ({
   [theme.breakpoints.down('xs')]: {
     flexDirection: 'column',
     gap: '12px',
+  },
+});
+
+const categorySx = theme => ({
+  textAlign: 'center',
+  height: '35px',
+  width: '100%',
+  overflow: 'hidden',
+  wordBreak: 'break-word',
+  '-webkit-line-clamp': '2',
+  '-webkit-box-orient': 'vertical',
+  'text-overflow': 'ellipsis',
+  display: '-webkit-box',
+  fontSize: '12px!important',
+  fontWeight: 500,
+  color: '#434242',
+  margin: '10px 0 7px',
+  [theme.breakpoints.down('xs')]: {
+    fontSize: '10px!important',
+    height: '40px',
+  },
+  [theme.breakpoints.down('xxs')]: {
+    height: '30px',
+    maxWidth: '90px',
+    '-webkit-line-clamp': '2',
   },
 });
 
@@ -156,7 +210,7 @@ const acceptButtonStyle = {
   backgroundColor: '#52176D',
   fontWeight: 600,
   lineHeight: '25px',
-  width: '100px',
+  width: '50%',
   textTransform: 'none',
   borderRadius: '10px',
   gap: '40px',
@@ -174,7 +228,7 @@ const viewButtonStyle = {
   fontSize: '15px!important',
   fontWeight: 600,
   lineHeight: '25px',
-  width: '100px',
+  width: '50%',
   textTransform: 'none',
   borderRadius: '10px',
   gap: '40px',
@@ -243,6 +297,7 @@ const auditNameStyle = {
   [theme.breakpoints.down('sm')]: {
     fontSize: '14px!important',
     height: '45px',
+    textAlign: 'center',
   },
 };
 

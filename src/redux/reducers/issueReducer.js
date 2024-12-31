@@ -5,10 +5,14 @@ import {
   DELETE_PUBLIC_ISSUE,
   DISCLOSE_ALL_ISSUES,
   GET_AUDIT_ISSUES,
+  GET_PUBLIC_AUDIT,
   REQUEST_ERROR,
   RESET_PUBLIC_AUDIT,
+  SET_READ_ALL_CHANGES,
   SET_READ_CHANGES,
   UPDATE_AUDIT_ISSUE,
+  UPDATE_AUDIT_ISSUE_WS,
+  GET_AUDIT,
 } from '../actions/types.js';
 
 const initialState = {
@@ -29,7 +33,7 @@ export const issueReducer = (state = initialState, action) => {
     case ADD_AUDIT_ISSUE:
       return {
         ...state,
-        successMessage: 'Audit issue created successfully',
+        successMessage: action.payload.successMessage || null,
         issues: [...state.issues, action.payload.issue],
       };
     case UPDATE_AUDIT_ISSUE:
@@ -40,6 +44,23 @@ export const issueReducer = (state = initialState, action) => {
           issue.id === action.payload.issue.id ? action.payload.issue : issue,
         ),
       };
+    case GET_AUDIT:
+      return {
+        ...state,
+        issues: action.payload.issues,
+      };
+    case UPDATE_AUDIT_ISSUE_WS:
+      return {
+        ...state,
+        issues:
+          state.issuesAuditId === action.payload.audit
+            ? state.issues.map(issue =>
+                issue.id === action.payload.issue.id
+                  ? action.payload.issue
+                  : issue,
+              )
+            : state.issues,
+      };
     case RESET_PUBLIC_AUDIT:
       return { ...state, issues: [] };
     case DISCLOSE_ALL_ISSUES:
@@ -47,6 +68,11 @@ export const issueReducer = (state = initialState, action) => {
         ...state,
         issues: action.payload,
         successMessage: 'All issues disclosed',
+      };
+    case GET_PUBLIC_AUDIT:
+      return {
+        ...state,
+        issues: action.payload.issues,
       };
     case REQUEST_ERROR:
       return { ...state, error: 'Error while processing request' };
@@ -59,6 +85,14 @@ export const issueReducer = (state = initialState, action) => {
         issues: state.issues?.map(issue =>
           issue.id === issueId ? { ...issue, read: readCount } : issue,
         ),
+      };
+    case SET_READ_ALL_CHANGES:
+      return {
+        ...state,
+        issues: state.issues?.map(issue => ({
+          ...issue,
+          read: issue?.events?.length + 1 || 0,
+        })),
       };
     case DELETE_ISSUE:
       return {

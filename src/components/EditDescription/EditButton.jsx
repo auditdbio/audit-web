@@ -8,10 +8,7 @@ import { CUSTOMER } from '../../redux/actions/types.js';
 const EditButton = ({ editMode, handleClick }) => {
   const currentRole = useSelector(s => s.user.user.current_role);
   return (
-    <Button
-      sx={{ ml: '8px', minWidth: 'unset', maxWidth: 'unset' }}
-      onClick={handleClick}
-    >
+    <Button sx={{ minWidth: 'unset', maxWidth: 'unset' }} onClick={handleClick}>
       {!editMode ? (
         <EditIcon
           color={currentRole === CUSTOMER ? 'primary' : 'secondary'}

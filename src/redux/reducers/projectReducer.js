@@ -14,6 +14,7 @@ import {
   CLEAR_CLOC,
   PROJECT_ERROR,
   CLEAR_ERROR,
+  CLEAR_PROJECT,
 } from '../actions/types.js';
 
 const initialState = {
@@ -37,6 +38,7 @@ export const projectReducer = (state = initialState, action) => {
         recentProject: action.payload,
         myProjects: [...state.myProjects, action.payload],
         projects: [...state.projects, action.payload],
+        currentProject: action.payload,
       };
     case GET_PROJECTS_BY_USER_ID:
       return {
@@ -49,6 +51,13 @@ export const projectReducer = (state = initialState, action) => {
         projects: action.payload.result,
         searchTotalProjects: action.payload.totalDocuments,
       };
+    case CLEAR_PROJECT: {
+      return {
+        ...state,
+        recentProject: null,
+        currentProject: null,
+      };
+    }
     case GET_CURRENT_PROJECT:
       return {
         ...state,

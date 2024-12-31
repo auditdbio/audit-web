@@ -9,6 +9,9 @@ import {
   CLEAR_MESSAGES,
   AUDITOR_SET_ERROR,
   SELECT_ROLE,
+  GET_AUDITOR_RATING_DETAILS,
+  CLEAR_CURRENT_AUDITOR_CUSTOMER,
+  CLEAR_SEARCHED_AUDITOR,
 } from '../actions/types.js';
 
 const initialState = {
@@ -19,6 +22,7 @@ const initialState = {
   error: null,
   success: null,
   currentAuditor: null,
+  auditorRating: null,
 };
 
 export const auditorReducer = (state = initialState, action) => {
@@ -31,6 +35,11 @@ export const auditorReducer = (state = initialState, action) => {
         auditor: action.payload.auditor,
         success: action.payload.message,
       };
+    case GET_AUDITOR_RATING_DETAILS:
+      return {
+        ...state,
+        auditorRating: action.payload,
+      };
     case SEARCH_AUDITOR:
       return { ...state, searchAuditors: action.payload };
     case GET_AUDITORS:
@@ -38,6 +47,12 @@ export const auditorReducer = (state = initialState, action) => {
         ...state,
         auditors: action.payload.result,
         searchTotalAuditors: action.payload.totalDocuments,
+      };
+    case CLEAR_SEARCHED_AUDITOR:
+      return {
+        ...state,
+        auditors: [],
+        searchTotalAuditors: 0,
       };
     case GET_CURRENT_AUDITOR:
       return {
@@ -72,6 +87,12 @@ export const auditorReducer = (state = initialState, action) => {
         ...state,
         success: null,
         error: null,
+      };
+    case CLEAR_CURRENT_AUDITOR_CUSTOMER:
+      return {
+        ...state,
+        currentAuditor: null,
+        auditorRating: null,
       };
     default:
       return state;

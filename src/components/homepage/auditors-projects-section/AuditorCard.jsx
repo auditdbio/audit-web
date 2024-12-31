@@ -62,7 +62,7 @@ const AuditorCard = ({ auditor }) => {
       />
 
       <Avatar
-        src={auditor.avatar && `${ASSET_URL}/${auditor.avatar}`}
+        src={auditor.avatar && `${ASSET_URL}/id/${auditor.avatar}`}
         alt={`${auditor?.first_name} photo`}
         sx={avatarStyle}
       />
@@ -100,7 +100,9 @@ const AuditorCard = ({ auditor }) => {
           )}
           <Box sx={infoStyle}>
             <Star />
-            <Typography sx={priceSx}>150</Typography>
+            <Typography sx={priceSx}>
+              {Math.trunc(auditor.rating || 0)}
+            </Typography>
           </Box>
         </Box>
         <CustomButton

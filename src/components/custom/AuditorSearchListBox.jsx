@@ -27,7 +27,8 @@ const mainContainer = {
   display: 'flex',
   alignItems: 'start',
   height: '60px',
-  gap: '120px',
+  // gap: '120px',
+  justifyContent: 'space-between',
   padding: '12px 12px 0px 30px',
   fontWeight: '600',
   borderBottom: '1px solid #434242',
@@ -35,7 +36,7 @@ const mainContainer = {
     height: '35px',
     padding: '10px',
     gap: '10px',
-    width: '120px',
+    width: '100%',
   },
 };
 
@@ -73,7 +74,7 @@ const statusStyle = theme => ({
 
   display: {
     zero: 'none',
-    sm: 'none',
+    sm: 'flex',
     md: 'flex',
     lg: 'flex',
   },
@@ -91,7 +92,7 @@ const circleStyle = theme => ({
 
   display: {
     zero: 'none',
-    sm: 'none',
+    sm: 'flex',
     md: 'flex',
     lg: 'flex',
   },

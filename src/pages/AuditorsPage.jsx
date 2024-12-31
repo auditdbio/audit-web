@@ -36,6 +36,7 @@ const AuditorsPage = () => {
         ...data,
         page: 1,
         sort: filter.sort || '',
+        sort_by: filter.sort_by || '',
         search: filter.search || '',
         tags: filter.tags || [],
         dateFrom: filter.dateFrom || '',
@@ -54,7 +55,8 @@ const AuditorsPage = () => {
     tags: searchParams.getAll('tags') || [],
     dateFrom: searchParams.get('dateFrom') || new Date(),
     dateTo: searchParams.get('dateTo') || new Date(),
-    sort: searchParams.get('sort') || '',
+    sort: searchParams.get('sort') || '1',
+    sort_by: searchParams.get('sort_by') || 'rating',
     readyToWait: searchParams.get('readyToWait') || '',
     price: {
       from: searchParams.get('from') || 0,
@@ -94,6 +96,11 @@ const AuditorsPage = () => {
   useEffect(() => {
     setCurrentPage(+searchParams.get('page') || 1);
   }, [searchParams.toString()]);
+  const handleGoBack = () => {
+    const path = localStorage.getItem('prev-path');
+    localStorage.removeItem('prev-path');
+    navigate(path || '/', { replace: true });
+  };
 
   return (
     <Layout>
@@ -102,7 +109,7 @@ const AuditorsPage = () => {
       <Box sx={wrapper}>
         <Box sx={headWrapper}>
           <Button
-            onClick={() => navigate('/')}
+            onClick={handleGoBack}
             aria-label="Go back"
             {...addTestsLabel('go-back-button')}
           >

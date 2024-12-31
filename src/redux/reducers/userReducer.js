@@ -7,6 +7,7 @@ import {
   USER_IS_ALREADY_EXIST,
   USER_SIGNIN,
   USER_SIGNUP,
+  USER_REFRESH_TOKEN,
   SELECT_ROLE,
   UPDATE_USER,
   CLEAR_SUCCESS,
@@ -28,7 +29,6 @@ import {
 } from '../actions/types.js';
 
 const initialState = {
-  token: Cookies.get('token') || '',
   isAuth: false,
   user: JSON.parse(localStorage.getItem('user')) || {},
   error: null,
@@ -40,7 +40,6 @@ export const userReducer = (state = initialState, action) => {
   switch (action.type) {
     case USER_SIGNIN:
       return {
-        token: action.payload.token,
         isAuth: true,
         user: action.payload.user,
       };
@@ -50,6 +49,11 @@ export const userReducer = (state = initialState, action) => {
         user: action.payload,
         success:
           'An authorization email has been sent to your email address, please check your email',
+      };
+    case USER_REFRESH_TOKEN:
+      return {
+        ...state,
+        isAuth: true,
       };
     case CONNECT_ACCOUNT:
       return {
@@ -104,7 +108,7 @@ export const userReducer = (state = initialState, action) => {
     case SIGN_IN_ERROR:
       return { ...state, error: action.payload };
     case LOG_OUT:
-      return { ...initialState, token: '', user: {} };
+      return { ...initialState, user: {} };
     case SELECT_ROLE:
       return { ...state, user: action.payload };
     case UPDATE_USER:

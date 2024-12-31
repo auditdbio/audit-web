@@ -48,10 +48,10 @@ const AuditRequestCard = ({ type, request, audit }) => {
               <Typography>{request.price}</Typography>
             )}
           </Box>
-          <Box sx={infoWrapper}>
-            <Star />
-            <Typography>150</Typography>
-          </Box>
+          {/*<Box sx={infoWrapper}>*/}
+          {/*  <Star />*/}
+          {/*  <Typography>150</Typography>*/}
+          {/*</Box>*/}
         </Box>
       </Box>
       <Box sx={buttonWrapper}>
@@ -99,9 +99,9 @@ const cardInnerWrapper = theme => ({
 const buttonWrapper = theme => ({
   display: 'flex',
   alignItems: 'center',
-  justifyContent: 'space-between',
+  justifyContent: 'center',
   width: '100%',
-  gap: '7px',
+  gap: '8px',
   mt: '24px',
   [theme.breakpoints.down('xs')]: {
     flexDirection: 'column',
@@ -149,7 +149,8 @@ const actionButton = theme => ({
   fontSize: '14px',
   fontWeight: 600,
   lineHeight: '20px',
-  width: '100px',
+  width: '50%',
+  height: '43px',
   textTransform: 'none',
   borderRadius: '10px',
   gap: '40px',
@@ -160,6 +161,7 @@ const actionButton = theme => ({
   },
   [theme.breakpoints.down('xs')]: {
     fontSize: '11px',
+    width: '100px',
   },
 });
 

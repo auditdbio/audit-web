@@ -12,8 +12,9 @@ import { useDispatch } from 'react-redux';
 import TagsArray from '../tagsArray/index.jsx';
 import { TextField } from 'formik-mui';
 import { addTestsLabel } from '../../lib/helper.js';
+import { RESOLVED } from '../../redux/actions/types.js';
 
-const EditTags = ({ audit, confirmed, hideChange }) => {
+const EditTags = ({ audit, confirmed, hideChange, isPublic }) => {
   const [editTags, setEditTags] = useState(false);
   const [showComment, setShowComment] = useState(false);
   const dispatch = useDispatch();
@@ -42,11 +43,11 @@ const EditTags = ({ audit, confirmed, hideChange }) => {
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',
-                mt: '15px',
+                // mt: '15px',
               }}
             >
               {editTags && (
-                <Box sx={fieldWrapper}>
+                <Box sx={fieldWrapper} className={'tags-wrapper'}>
                   <TagsField size={'small'} name="tags" tags={audit?.tags} />
                   <Box
                     sx={{
@@ -123,7 +124,7 @@ const EditTags = ({ audit, confirmed, hideChange }) => {
                   justifyContent: 'center',
                   gap: '5px',
                   alignItems: 'center',
-                  mt: '5px',
+                  // mt: '5px',
                   '& .tags-array-wrapper': {
                     gap: '5px',
                   },
@@ -138,12 +139,15 @@ const EditTags = ({ audit, confirmed, hideChange }) => {
                     <TagsArray name="tags" />
                   </Box>
                 )}
-                {!hideChange && !editTags && (
-                  <EditButton
-                    handleClick={() => setEditTags(!editTags)}
-                    editMode={editTags}
-                  />
-                )}
+                {!hideChange &&
+                  !editTags &&
+                  !isPublic &&
+                  audit?.status?.toLowerCase() !== RESOLVED.toLowerCase() && (
+                    <EditButton
+                      handleClick={() => setEditTags(!editTags)}
+                      editMode={editTags}
+                    />
+                  )}
               </Box>
             </Box>
           </Form>
