@@ -298,7 +298,9 @@ export const connect_account = (user_id, values, isWallet = false) => {
         let linkId = user.id;
         if (user.current_role === AUDITOR) {
           linkId = auditor.auditor?.link_id || user.id;
-        } else if (user.current_role === CUSTOMER) {
+        } else if (
+          user?.current_role?.toLowerCase() === CUSTOMER?.toLowerCase()
+        ) {
           linkId = customer.customer?.link_id || user.id;
         }
         history.push(`/${rolePrefix}/${linkId}`, { some: true });

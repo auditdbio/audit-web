@@ -35,7 +35,7 @@ const ChatPage = () => {
         auditor &&
         !auditor?.user_id &&
         !auditor?.first_name) ||
-      (user.current_role === CUSTOMER &&
+      (user?.current_role?.toLowerCase() === CUSTOMER?.toLowerCase() &&
         customer &&
         !customer?.user_id &&
         !customer?.first_name)

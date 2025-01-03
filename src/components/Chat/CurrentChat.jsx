@@ -297,7 +297,11 @@ const CurrentChat = ({
             </Button>
           </Box>
           <Button
-            color={user.current_role === CUSTOMER ? 'secondary' : 'primary'}
+            color={
+              user?.current_role?.toLowerCase() === CUSTOMER?.toLowerCase()
+                ? 'secondary'
+                : 'primary'
+            }
             variant={'contained'}
             sx={requestBtn}
             {...addTestsLabel('request-button')}

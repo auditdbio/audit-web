@@ -146,7 +146,7 @@ const PublicConstructor = ({ saved, isPublic }) => {
     );
     if (report?.auditor_name && report?.project_name && report?.description) {
       if (isAuth()) {
-        if (user.current_role === CUSTOMER) {
+        if (user?.current_role?.toLowerCase() === CUSTOMER?.toLowerCase()) {
           const data = {
             ...filteredReport,
             isPublic: true,

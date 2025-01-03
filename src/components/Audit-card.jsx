@@ -77,18 +77,18 @@ const AuditCard = ({ audit, request }) => {
 
       {!request ? (
         <Box sx={statusWrapper}>
-          {audit.status !== SUBMITED && (
+          {audit?.status !== SUBMITED && (
             <>
-              {audit.status.toLowerCase() === RESOLVED.toLowerCase() ? (
+              {audit?.status?.toLowerCase() === RESOLVED.toLowerCase() ? (
                 <Box sx={{ backgroundColor: '#52176D' }} />
               ) : (
-                audit.status.toLowerCase() ===
+                audit?.status?.toLowerCase() ===
                   WAITING_FOR_AUDITS.toLowerCase() && (
                   <Box sx={{ backgroundColor: '#FF9900' }} />
                 )
               )}
-              {audit.status.toLowerCase() !== RESOLVED.toLowerCase() &&
-                audit.status.toLowerCase() !==
+              {audit?.status?.toLowerCase() !== RESOLVED.toLowerCase() &&
+                audit?.status?.toLowerCase() !==
                   WAITING_FOR_AUDITS.toLowerCase() && (
                   <Box sx={{ backgroundColor: '#09C010' }} />
                 )}
@@ -111,7 +111,7 @@ const AuditCard = ({ audit, request }) => {
           justifyContent: 'center',
         }}
       >
-        {!audit.status && (
+        {!audit?.status && (
           <CustomButton
             variant="contained"
             sx={[

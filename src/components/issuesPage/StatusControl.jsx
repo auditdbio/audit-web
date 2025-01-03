@@ -95,7 +95,10 @@ const StatusControl = ({ status, setFieldValue }) => {
               status !== 'Draft'
                 ? { textTransform: 'none' }
                 : { textTransform: 'none' },
-              statusBtn(theme, user.current_role === CUSTOMER),
+              statusBtn(
+                theme,
+                user?.current_role?.toLowerCase() === CUSTOMER?.toLowerCase(),
+              ),
             ]}
             onClick={() => handleChangeStatus(action.action)}
             {...addTestsLabel('change-status-button')}

@@ -125,7 +125,8 @@ const EditDescription = ({ audit, auditRequest, hideChange, isPublic }) => {
                           >
                             <AddLinkIcon
                               color={
-                                user.current_role === CUSTOMER
+                                user?.current_role?.toLowerCase() ===
+                                CUSTOMER?.toLowerCase()
                                   ? 'primary'
                                   : 'secondary'
                               }
@@ -150,7 +151,8 @@ const EditDescription = ({ audit, auditRequest, hideChange, isPublic }) => {
                               textTransform: 'unset',
                             }}
                             color={
-                              user.current_role === CUSTOMER
+                              user?.current_role?.toLowerCase() ===
+                              CUSTOMER?.toLowerCase()
                                 ? 'primary'
                                 : 'secondary'
                             }
@@ -279,7 +281,7 @@ export default EditDescription;
 const editButtonText = (theme, user) => ({
   ml: '6px',
   color:
-    user.current_role === CUSTOMER
+    user?.current_role?.toLowerCase() === CUSTOMER?.toLowerCase()
       ? theme.palette.primary.main
       : theme.palette.secondary.main,
   fontWeight: 500,

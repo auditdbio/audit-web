@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Box, Button, Modal, Popover, Typography } from '@mui/material';
 import AuditRequestInfo from '../audit-request-info.jsx';
 import { useDispatch, useSelector } from 'react-redux';
 import {
+  acceptAudit,
   confirmAudit,
   deleteAuditRequest,
   getAuditRequest,
@@ -25,6 +26,7 @@ import OfferModal from '../modal/OfferModal.jsx';
 import dayjs from 'dayjs';
 import ConfirmModal from '../modal/ConfirmModal.jsx';
 import { useNavigate } from 'react-router-dom/dist';
+import AuditInfo from '../../pages/audit-info.jsx';
 import MessageModalCustomer from '../MessageModalCustomer/MessageModalCustomer.jsx';
 
 const AuditMessage = ({ message, handleError }) => {
@@ -32,6 +34,7 @@ const AuditMessage = ({ message, handleError }) => {
   const [open, setOpen] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const data = JSON.parse(message.text);
+  const auditInfo = useSelector(s => s.audits?.auditRequest);
   const dispatch = useDispatch();
   const { auditor } = useSelector(s => s.auditor);
   const [confirmDeclineOpen, setConfirmDeclineOpen] = useState(false);
@@ -96,6 +99,14 @@ const AuditMessage = ({ message, handleError }) => {
   const handleConfirm = () => {
     dispatch(confirmAudit(data));
   };
+
+  // useEffect(() => {
+  //   dispatch(getAuditRequest(data.id));
+  //   return () => {
+  //     dispatch({ type: CLEAR_AUDIT_REQUEST });
+  //   };
+  // }, [data.id]);
+  //
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
@@ -162,8 +173,8 @@ const AuditMessage = ({ message, handleError }) => {
           </Box>
         </>
       )}
-      {data.status?.toLowerCase() === WAITING_FOR_AUDITS.toLowerCase() &&
-        user.current_role === CUSTOMER &&
+      {data?.status?.toLowerCase() === WAITING_FOR_AUDITS.toLowerCase() &&
+        user?.current_role?.toLowerCase() === CUSTOMER?.toLowerCase() &&
         message.from?.id === user.id && (
           <Button
             sx={{ textTransform: 'unset', width: '100%' }}
@@ -200,8 +211,8 @@ const AuditMessage = ({ message, handleError }) => {
             </Button>
           </Box>
         )}
-      {data.status === 'Request' &&
-        user.current_role === CUSTOMER &&
+      {data?.status === 'Request' &&
+        user?.current_role?.toLowerCase() === CUSTOMER?.toLowerCase() &&
         message.from?.id !== user.id && (
           <Box sx={{ width: '100%' }}>
             <Box sx={{ display: 'flex', gap: '20px' }}>
@@ -305,7 +316,11 @@ const AuditMessage = ({ message, handleError }) => {
       </Popover>
       <Popover
         anchorEl={null}
-        open={isOpen && auditRequest?.id && user.current_role === CUSTOMER}
+        open={
+          isOpen &&
+          auditRequest?.id &&
+          user?.current_role?.toLowerCase() === CUSTOMER?.toLowerCase()
+        }
         onClose={handleClose}
         sx={popoverSx}
       >
@@ -319,7 +334,8 @@ const AuditMessage = ({ message, handleError }) => {
           />
         </Box>
       </Popover>
-      {user.current_role === CUSTOMER &&
+      {/*<AuditInfo audit={auditRequest} auditRequest={auditRequest} />*/}
+      {user?.current_role?.toLowerCase() === CUSTOMER?.toLowerCase() &&
         data.status === 'Request' &&
         message.from?.id === user.id && (
           <Box sx={{ mt: '15px' }}>
@@ -361,17 +377,18 @@ const AuditMessage = ({ message, handleError }) => {
             </Button>
           </Box>
         )}
-        {user.current_role === CUSTOMER && data.status === 'Started' && (
-          <Box sx={{ display: 'flex', gap: '20px' }}>
-            <Button
-              sx={{ textTransform: 'unset', width: '100%' }}
-              variant="contained"
-              onClick={handleViewCustomer}
-            >
-              View
-            </Button>
-          </Box>
-        )}
+        {user?.current_role?.toLowerCase() === CUSTOMER?.toLowerCase() &&
+          data.status === 'Started' && (
+            <Box sx={{ display: 'flex', gap: '20px' }}>
+              <Button
+                sx={{ textTransform: 'unset', width: '100%' }}
+                variant="contained"
+                onClick={handleViewCustomer}
+              >
+                View
+              </Button>
+            </Box>
+          )}
       </>
       <Modal
         open={open}
@@ -460,5 +477,50 @@ const infoWrapper = theme => ({
   alignItems: 'center',
   [theme.breakpoints.down('xs')]: {
     gap: '5px',
+  },
+});
+
+const modalSx = theme => ({
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: 1000,
+  maxHeight: '80%',
+  // height: '100%',
+  overflowY: 'auto',
+  bgcolor: 'background.paper',
+  // boxShadow: 24,
+  borderRadius: '10px',
+  // height: '100%',
+  '& .audit-info-wrapper': {
+    // overflowY: 'auto',
+    // height: '100%',
+    padding: '20px',
+    borderRight: 'unset',
+    borderRadius: '10px',
+  },
+  '& .audit-request-wrapper': {
+    // overflowY: 'auto',
+    // height: '100%',
+    padding: '20px',
+    borderRight: 'unset',
+    borderRadius: '10px',
+  },
+  // [theme.breakpoints.down('lg')]: {
+  //   maxHeight: '600px',
+  // },
+  [theme.breakpoints.down('md')]: {
+    maxWidth: 700,
+    // maxHeight: '450px',
+    width: 'unset',
+  },
+  // [theme.breakpoints.down('sm')]: {
+  //   maxHeight: '300px',
+  // },
+  [theme.breakpoints.down('xs')]: {
+    maxWidth: '95%',
+    width: '100%',
+    // maxHeight: '80%',
   },
 });
