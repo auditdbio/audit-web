@@ -13,7 +13,7 @@ import { CUSTOMER } from '../redux/actions/types.js';
 import Headings from '../router/Headings.jsx';
 import { getAudit } from '../redux/actions/auditAction.js';
 
-const AuditIssues = ({ isPublic }) => {
+const AuditIssues = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { auditId } = useParams();

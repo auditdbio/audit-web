@@ -1,20 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { isAuth } from '../lib/helper.js';
-import { PrivateRoute } from '../router/PrivateRoute.jsx';
 import PublicAuditInfoPage from './PublicAuditInfo.jsx';
 import { getAudit, getPublicAudit } from '../redux/actions/auditAction.js';
-import {
-  AUDITOR,
-  CLEAR_AUDIT,
-  CUSTOMER,
-  RESOLVED,
-} from '../redux/actions/types.js';
+import { AUDITOR, CLEAR_AUDIT, CUSTOMER } from '../redux/actions/types.js';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import AuditOffer from './audit-offer.jsx';
 import AuditInfoPage from './audit-info-page.jsx';
-import Headings from '../router/Headings.jsx';
-import ResolveAuditConfirmation from '../components/issuesPage/ResolveAuditConfirmation.jsx';
 import { CustomCard } from '../components/custom/Card.jsx';
 import Layout from '../styles/Layout.jsx';
 import Loader from '../components/Loader.jsx';
@@ -28,11 +20,7 @@ const Audit = () => {
   const code = searchParams.get('code');
   const [publicView, setPublicView] = useState(false);
   const user = useSelector(s => s.user.user);
-  const {
-    audit,
-    successMessage: auditSuccessMessage,
-    error: auditError,
-  } = useSelector(s => s.audits);
+  const { audit } = useSelector(s => s.audits);
   const notFound = useSelector(s => s.notFound.error);
 
   useEffect(() => {
@@ -94,23 +82,13 @@ const Audit = () => {
   }
 
   return (
-    <Layout
-    // sx={layoutSx}
-    // containerSx={{ maxWidth: 'unset!important', padding: '0 35px!important' }}
-    >
+    <Layout>
       <CustomCard sx={wrapper}>{renderContent()}</CustomCard>
     </Layout>
   );
 };
 
 export default Audit;
-
-const layoutSx = theme => ({
-  padding: '10px!important',
-  [theme.breakpoints.down(780)]: {
-    padding: '10px 0!important',
-  },
-});
 
 const wrapper = theme => ({
   padding: '25px 30px 60px',

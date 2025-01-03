@@ -3,7 +3,7 @@ import Layout from '../styles/Layout.jsx';
 import { CustomCard } from '../components/custom/Card.jsx';
 import { Button, Typography } from '@mui/material';
 import { Box } from '@mui/system';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { deleteBadgeProfile } from '../redux/actions/auditorAction.js';
 import { useNavigate } from 'react-router-dom/dist';
 import { useParams } from 'react-router-dom';

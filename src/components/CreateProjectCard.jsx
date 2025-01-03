@@ -1,14 +1,10 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Box,
   Button,
   Typography,
   useMediaQuery,
   Tooltip,
-  FormControl,
-  InputLabel,
-  Select,
-  Switch,
   Collapse,
 } from '@mui/material';
 import theme, { radiusOfComponents } from '../styles/themes.js';
@@ -20,18 +16,15 @@ import { ProjectLinksList } from './custom/ProjectLinksList.jsx';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack.js';
 import CreateNewFolderIcon from '@mui/icons-material/CreateNewFolder';
 import PersonAddAlt1Icon from '@mui/icons-material/PersonAddAlt1';
-import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import AuditorSearchModal from './AuditorSearchModal.jsx';
 import TagsField from './forms/tags-field/tags-field.jsx';
 import {
   changeStatusProject,
   clearProjectMessage,
-  closeProject,
   createProject,
   createProjectNoRedirect,
   editProject,
   editProjectNoRedirect,
-  getProjects,
 } from '../redux/actions/projectAction.js';
 import { useDispatch, useSelector } from 'react-redux';
 import * as Yup from 'yup';
@@ -42,24 +35,18 @@ import {
 } from '../redux/actions/auditAction.js';
 import SaveIcon from '@mui/icons-material/Save';
 import MarkdownEditor from './markdown/Markdown-editor.jsx';
-import SalarySlider from './forms/salary-slider/salary-slider.jsx';
-import CloseProjectModal from './CloseProjectModal.jsx';
-import { AUDITOR, CLEAR_PROJECT, DONE } from '../redux/actions/types.js';
+import { CLEAR_PROJECT, DONE } from '../redux/actions/types.js';
 import CustomSnackbar from './custom/CustomSnackbar.jsx';
 import { addTestsLabel } from '../lib/helper.js';
 import { history } from '../services/history.js';
 import PriceCalculation from './PriceCalculation.jsx';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
-import QuestionMarkIcon from '@mui/icons-material/QuestionMark';
-import MenuItem from '@mui/material/MenuItem';
-import axios from 'axios';
 import GithubSelection from './GithubSelection/GithubSelection.jsx';
 import { getFilterData } from '../redux/actions/configAction.js';
 import {
   clearCommit,
   clearRepoOwner,
-  getCommitData,
   getMyGithub,
   getRepoOwner,
   getSha,
@@ -68,8 +55,7 @@ import TotalPrice from './forms/TotalPrice/TotalPrice.jsx';
 import { PROJECT_PARENT_ENTITY } from '../services/file_constants.js';
 import ExpandLessOutlinedIcon from '@mui/icons-material/ExpandLessOutlined.js';
 
-const GoBack = ({ role, path }) => {
-  const location = useLocation();
+const GoBack = ({ path }) => {
   const navigate = useNavigate();
   return (
     <Button
@@ -421,10 +407,6 @@ const CreateProjectCard = ({ projectInfo }) => {
                         sx={{ '& .head': { justifyContent: 'center' } }}
                       />
                     )}
-
-                    {/*<Box>*/}
-                    {/*  <AuditRequestsArray requests={auditRequests ?? []} />*/}
-                    {/*</Box>*/}
                   </Box>
                   <Collapse
                     in={true}
@@ -573,14 +555,11 @@ const linkFieldWrapper = theme => ({
     width: '100%',
   },
   [theme.breakpoints.down(500)]: {
-    // flexDirection: 'column',
     '& .github-wrapper': {
       width: 'unset',
     },
     gap: '10px',
-    '& .field-wrapper': {
-      // width: '100%',
-    },
+    '& .field-wrapper': {},
   },
 });
 
@@ -643,62 +622,15 @@ const readAllButton = (theme, showFull) => ({
   display: 'flex',
   alignItems: 'center',
   gap: '7px',
-  // maxWidth: '300px',
   [theme.breakpoints.down('xs')]: {
     fontSize: '16px',
   },
 });
 
 const buttonGroup = {
-  // width: "100%",
-  // width: '220px',
   display: 'flex',
   alignSelf: 'center',
   gap: '20px',
-};
-
-const inviteButton = {
-  backgroundColor: theme.palette.primary.main,
-  textTransform: 'none',
-  boxShadow: '0',
-  maxHeight: '36px',
-  padding: '8px 42px',
-  whiteSpace: 'nowrap',
-  color: '#FCFAF6',
-  fontWeight: '600',
-  borderRadius: '4px',
-  width: '180px',
-  margin: '0 auto',
-  height: '36px',
-  // width: '100%',
-  fontSize: '16px',
-  // paddingY: "11px",
-  ':hover': {
-    boxShadow: '0',
-  },
-  [theme.breakpoints.down('sm')]: {
-    padding: '3px 15px',
-  },
-};
-
-const publishButton = {
-  // backgroundColor: theme.palette.secondary.main,
-  textTransform: 'none',
-  boxShadow: '0',
-  maxHeight: '36px',
-  width: '180px',
-  // padding: '8px 42px',
-  // whiteSpace: 'nowrap',
-  // color: '#FCFAF6',
-  height: '36px',
-  fontWeight: '600',
-  borderRadius: '4px',
-  // maxWidth: '180px',
-  // margin: '0 auto',
-  fontSize: '16px',
-  '& svg': {
-    marginRight: '7px',
-  },
 };
 
 const formCard = {
@@ -713,42 +645,14 @@ const formWrapper = theme => ({
   height: '100%',
   width: '100%',
   gap: '16px',
-  // justifyContent: 'space-between',
-  // gap: "175px",
   [theme.breakpoints.down('xs')]: {
-    // gap: '16px',
     flexDirection: 'column',
-  },
-});
-
-const submitButton = theme => ({
-  backgroundColor: theme.palette.primary.main,
-  boxShadow: '0',
-  padding: '11px 0',
-  color: '#FCFAF6',
-  fontWeight: 600,
-  lineHeight: 1.2,
-  textTransform: 'unset',
-  borderRadius: radiusOfComponents,
-  width: '402px',
-  margin: '0 auto',
-  fontSize: '16px',
-  paddingY: '11px',
-  ':hover': {
-    boxShadow: '0',
-  },
-  [theme.breakpoints.down('sm')]: {
-    width: '225px',
-    padding: '13px 0',
-    fontSize: '14px',
   },
 });
 
 const fieldWrapper = theme => ({
   display: 'flex',
   flexDirection: 'column',
-  // justifyContent: "space-between",
-  // maxWidth: "450px",
   width: '50%',
   gap: '20px',
   [theme.breakpoints.down('md')]: {

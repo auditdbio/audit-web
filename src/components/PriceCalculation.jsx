@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import GitUrlParse from 'git-url-parse';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline.js';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore.js';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess.js';
@@ -47,17 +46,6 @@ const PriceCalculation = ({
       const links = scope.reduce((acc, url) => {
         if (!url.startsWith('http')) return acc;
 
-        // const parsedUrl = GitUrlParse(url);
-        // if (
-        //   ((parsedUrl.resource === 'github.com' ||
-        //     parsedUrl.source === 'github.com') &&
-        //     url.includes('/blob/')) ||
-        //   parsedUrl.source === 'githubusercontent.com' ||
-        //   parsedUrl.resource === 'raw.githubusercontent.com'
-        // ) {
-        //   acc.push(url);
-        // }
-
         acc.push(url);
         return acc;
       }, []);
@@ -82,10 +70,6 @@ const PriceCalculation = ({
       dispatch(getCloc({ links: correctLinks }));
     }
   };
-
-  // if (!correctLinks.length) {
-  //   return null;
-  // }
 
   return (
     <Box sx={sx}>
@@ -142,7 +126,6 @@ const PriceCalculation = ({
         )}
       </Box>
 
-      {/*{cloc && (*/}
       <Box sx={calcResult}>
         <Box sx={calcResultHead}>
           <Box>
@@ -249,7 +232,6 @@ const PriceCalculation = ({
           </Box>
         )}
       </Box>
-      {/*)}*/}
     </Box>
   );
 };

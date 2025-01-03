@@ -61,13 +61,6 @@ export const createRequest = (values, redirect, navigateTo, stay) => {
       )
       .then(({ data }) => {
         dispatch(getAuditsRequest(current_role));
-        // if (!redirect && !stay) {
-        //   history.back();
-        // } else if (navigateTo && !stay) {
-        //   history.push(navigateTo);
-        // } else if (stay) {
-        //   null;
-        // }
         dispatch({ type: AUDIT_REQUEST_CREATE, payload: data });
       })
       .catch(({ response }) => {
@@ -80,7 +73,6 @@ export const createRequest = (values, redirect, navigateTo, stay) => {
 export const createRequestModal = values => {
   return dispatch => {
     const token = Cookies.get('token');
-    const current_role = JSON.parse(localStorage.getItem('user')).current_role;
     axios
       .post(
         `${API_URL}/audit_request`,
@@ -98,7 +90,6 @@ export const createRequestModal = values => {
         },
       )
       .then(({ data }) => {
-        // dispatch(getAuditsRequest(current_role));
         dispatch({ type: AUDIT_REQUEST_CREATE, payload: data });
       })
       .catch(({ response }) => {
@@ -117,9 +108,6 @@ export const getAuditsRequest = role => {
       },
     }).then(({ data }) => {
       dispatch({ type: GET_AUDIT_REQUEST, payload: data });
-      // history.push("/home-customer", {
-      //     some: true
-      // });
     });
   };
 };
@@ -155,9 +143,6 @@ export const getAudits = role => {
       })
       .then(({ data }) => {
         dispatch({ type: GET_AUDITS, payload: data });
-        // history.push("/home-customer", {
-        //     some: true
-        // });
       });
   };
 };
@@ -410,15 +395,9 @@ export const resolveAudit = audit => {
 export const getPublicAuditsAuditor = id => {
   return dispatch => {
     const token = Cookies.get('token');
-    axios
-      .get(
-        `${API_URL}/public_audits/${id}/auditor`,
-        // { action: 'resolve' },
-        // { headers: { Authorization: `Bearer ${token}` } },
-      )
-      .then(({ data }) => {
-        dispatch({ type: GET_AUDITS_OF_AUDITOR, payload: data });
-      });
+    axios.get(`${API_URL}/public_audits/${id}/auditor`).then(({ data }) => {
+      dispatch({ type: GET_AUDITS_OF_AUDITOR, payload: data });
+    });
   };
 };
 
@@ -477,26 +456,6 @@ export const getPublicReport = (data, { generate }) => {
       .then(res => {
         downloadResponse(res);
       });
-  };
-};
-
-export const createPublicReport = data => {
-  return dispatch => {
-    dispatch({ type: CREATE_PUBLIC_REPORT, payload: data });
-  };
-};
-
-export const updatePublicReport = data => {
-  return dispatch => {
-    localStorage.setItem('report', JSON.stringify(data));
-    dispatch({ type: CREATE_PUBLIC_REPORT, payload: data });
-  };
-};
-
-export const getPublicAuditReport = () => {
-  return dispatch => {
-    const report = JSON.parse(localStorage.getItem('report') || '{}');
-    dispatch({ type: GET_PUBLIC_REPORT, payload: report });
   };
 };
 
@@ -626,7 +585,6 @@ export const savePublicReport = data => {
       })
       .catch(() => dispatch({ type: REQUEST_ERROR }));
   };
-  // .catch(() => dispatch({ type: REQUEST_ERROR }));
 };
 
 export const clearMessage = () => {
@@ -665,21 +623,6 @@ export const sendAuditFeedback = feedback => {
       })
       .catch(() => {
         dispatch({ type: REQUEST_ERROR });
-      });
-  };
-};
-
-export const addCommentAudit = (id, values) => {
-  return dispatch => {
-    const token = Cookies.get('token');
-    axios
-      .patch(`${API_URL}/audit/${id}`, values, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-      .then(({ data }) => {
-        console.log(data);
       });
   };
 };

@@ -8,7 +8,6 @@ import MenuItem from '@mui/material/MenuItem';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import { Box } from '@mui/material';
 import { addTestsLabel, isAuth } from '../../lib/helper.js';
-import theme from '../../styles/themes.js';
 
 const StyledMenu = styled(props => (
   <Menu

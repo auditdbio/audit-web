@@ -13,9 +13,7 @@ import {
   createRequest,
   createRequestModal,
 } from '../../redux/actions/auditAction.js';
-import SalarySlider from '../forms/salary-slider/salary-slider.jsx';
 import theme from '../../styles/themes.js';
-import PriceCalculation from '../PriceCalculation.jsx';
 import TotalPrice from '../forms/TotalPrice/TotalPrice.jsx';
 
 const OfferModal = ({
@@ -100,17 +98,7 @@ const OfferModal = ({
                 Add more info
               </Typography>
               <Box sx={{ width: '100%' }}>
-                {/*<Typography variant="caption">*/}
-                {/*  Price per line of code*/}
-                {/*</Typography>*/}
-                {/*<SalarySlider name="price" />*/}
                 <TotalPrice />
-                {/*<PriceCalculation*/}
-                {/*  price={values.price}*/}
-                {/*  scope={values.scope}*/}
-                {/*  sx={{ mt: '10px', '& .head': { justifyContent: 'center' } }}*/}
-                {/*  color="secondary"*/}
-                {/*/>*/}
               </Box>
               <Box>
                 <Typography variant="caption">Time frame</Typography>
@@ -177,7 +165,6 @@ const MakeOfferSchema = Yup.object().shape({
   customer_contacts: Yup.object(),
   customer_id: Yup.string(),
   opener: Yup.string(),
-  // price: Yup.number(),
   price_range: Yup.object(),
   project_id: Yup.string(),
   scope: Yup.array(),

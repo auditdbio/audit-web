@@ -23,7 +23,6 @@ import {
   NEED_TO_AUTH_GITHUB,
   SWITCH_REPO,
   NOT_FOUND_REPOS,
-  CLEAR_NOT_FOUND,
   CLEAR_NOT_FOUND_ERROR,
 } from '../actions/types.js';
 

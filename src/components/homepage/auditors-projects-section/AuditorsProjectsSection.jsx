@@ -28,7 +28,6 @@ const wrapperStyle = {
 
 const AuditorsProjectsSectionStyle = theme => ({
   width: '100%',
-  // maxWidth: '1512px',
   paddingX: '35px',
   backgroundColor: theme.palette.secondary.main,
   display: 'flex',

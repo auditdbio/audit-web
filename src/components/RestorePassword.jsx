@@ -82,9 +82,6 @@ const fieldWrapper = theme => ({
   gap: '10px',
   '& .field-wrapper': {
     gap: '15px',
-    // '& input': {
-    //   height: '1rem',
-    // },
   },
   [theme.breakpoints.down('md')]: {
     '& .MuiInputBase-root': {

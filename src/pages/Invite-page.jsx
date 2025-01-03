@@ -18,7 +18,7 @@ import { mergeCurrentAccount } from '../redux/actions/auditorAction.js';
 const InvitePage = () => {
   const dispatch = useDispatch();
   const user = useSelector(s => s.auditor.auditor);
-  const { id, secret } = useParams();
+  const { secret } = useParams();
   const [isOpenSubmit, setIsOpenSubmit] = useState(false);
   const [isOpenMerge, setIsOpenMerge] = useState(false);
   const initialValues = {

@@ -2,7 +2,6 @@ import {
   CLEAR_AUDIT,
   CLEAR_AUDIT_REQUEST,
   CLEAR_NOT_FOUND,
-  CLEAR_REQUEST,
   NOT_FOUND,
 } from '../actions/types.js';
 

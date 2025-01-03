@@ -8,13 +8,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import MyProjectListCard from '../components/My-project-list-card.jsx';
 import AuditorModal from '../components/AuditorModal.jsx';
 import { useParams, useSearchParams } from 'react-router-dom';
-import { getCurrentAuditor } from '../redux/actions/auditorAction.js';
 import { clearMessage, createRequest } from '../redux/actions/auditAction.js';
 import { getAuditorById } from '../redux/actions/auditorAction.js';
 import { addTestsLabel } from '../lib/helper.js';
 import CustomSnackbar from '../components/custom/CustomSnackbar.jsx';
 import Headings from '../router/Headings.jsx';
-import { CLEAR_MESSAGES } from '../redux/actions/types.js';
 
 const MyProjects = () => {
   const navigate = useNavigate();
@@ -31,9 +29,7 @@ const MyProjects = () => {
   const { currentAuditor } = useSelector(s => s.auditor);
 
   useEffect(() => {
-    // if (!auditor) {
     dispatch(getAuditorById(params.id));
-    // }
     return () => {
       localStorage.removeItem('chat-path');
     };

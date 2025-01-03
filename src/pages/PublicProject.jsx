@@ -1,20 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom/dist';
-import {
-  Avatar,
-  Box,
-  Button,
-  Collapse,
-  Modal,
-  Tooltip,
-  Typography,
-} from '@mui/material';
+import { Box, Button, Collapse, Modal, Typography } from '@mui/material';
 import Layout from '../styles/Layout.jsx';
 import { getProjectById } from '../redux/actions/projectAction.js';
 import Markdown from '../components/markdown/Markdown.jsx';
 import { getCurrentCustomer } from '../redux/actions/customerAction.js';
-import { ASSET_URL } from '../services/urls.js';
 import CustomLink from '../components/custom/CustomLink.jsx';
 import TagsList from '../components/tagsList.jsx';
 import { addTestsLabel, isAuth } from '../lib/helper.js';
@@ -206,10 +197,8 @@ const PublicProject = () => {
         <Box sx={{ width: '100%' }}>
           <Collapse in={true} collapsedSize={showFull ? undefined : 400}>
             <Box sx={descriptionWrapper(theme, showFull)}>
-              {/*<Box sx={descriptionSx(showFull)}>*/}
               <AuditUserCard
                 avatar={customer?.avatar}
-                // role="Customer"
                 name={customer?.first_name + ' ' + customer?.last_name}
                 email={customer?.contacts.email}
                 telegram={customer?.contacts.telegram}
@@ -218,13 +207,11 @@ const PublicProject = () => {
               <Box ref={descriptionRef}>
                 <Markdown value={project?.description} />
               </Box>
-              {/*</Box>*/}
             </Box>
           </Collapse>
           <Box
             sx={[
               {
-                // border: '1px solid #E5E5E5',
                 borderTop: '1px solid #E5E5E5',
                 display: 'flex',
                 justifyContent: 'center',
@@ -263,8 +250,6 @@ const PublicProject = () => {
                     showFull ? {} : { transform: 'rotate(180deg)' },
                     {
                       transition: '0.2s',
-                      // marginRight: '0',
-                      // marginLeft: 'auto',
                       width: '20px',
                       height: '20px',
                     },
@@ -272,7 +257,6 @@ const PublicProject = () => {
                 />
               </Button>
             )}
-            {/*)}*/}
           </Box>
           <Box sx={tagsSx}>
             <TagsList data={project?.tags} />
@@ -351,7 +335,6 @@ const readAllButton = theme => ({
   display: 'flex',
   alignItems: 'center',
   gap: '7px',
-  // maxWidth: '300px',
   [theme.breakpoints.down('xs')]: {
     fontSize: '16px',
   },
@@ -392,20 +375,6 @@ const wrapper = role => {
   };
 };
 
-const fieldLabel = theme => ({
-  flexShrink: 0,
-  width: '100px',
-  color: '#B2B3B3',
-  fontWeight: 500,
-  mr: '40px',
-  [theme.breakpoints.down('sm')]: {
-    mr: '15px',
-  },
-  [theme.breakpoints.down('xs')]: {
-    fontSize: '14px',
-  },
-});
-
 const projectNameSx = {
   width: '100%',
   maxWidth: '700px',
@@ -414,74 +383,6 @@ const projectNameSx = {
   fontWeight: 500,
   wordBreak: 'break-word',
 };
-
-const customerInfoBlock = theme => ({
-  display: 'flex',
-  flexWrap: 'nowrap',
-  alignItems: 'center',
-  width: '100%',
-  maxWidth: '1400px',
-  margin: '0 auto',
-  [theme.breakpoints.down('xs')]: {
-    flexDirection: 'column',
-  },
-});
-
-const customerInfoColumn = theme => ({
-  width: '40%',
-  mr: '30px',
-  ':last-child': {
-    mr: 0,
-  },
-  [theme.breakpoints.down('xs')]: {
-    width: '100%',
-    mr: 0,
-    mb: '15px',
-  },
-});
-
-const customerInfoString = {
-  display: 'flex',
-  alignItems: 'center',
-};
-
-const avatarBoxSx = theme => ({
-  width: '15%',
-  [theme.breakpoints.down('xs')]: {
-    width: '100%',
-    mb: '30px',
-  },
-});
-
-const avatarSx = theme => ({
-  width: '120px',
-  height: '120px',
-  mr: '50px',
-  [theme.breakpoints.down('sm')]: {
-    width: '100px',
-    height: '100px',
-  },
-  [theme.breakpoints.down('xs')]: {
-    margin: '0 auto',
-  },
-});
-
-const customerInfo = theme => ({
-  color: '#434242',
-  fontSize: '15px !important',
-  fontWeight: 400,
-  overflow: 'hidden',
-  'text-overflow': 'ellipsis',
-  [theme.breakpoints.down('xs')]: {
-    fontSize: '14px !important',
-  },
-});
-
-const descriptionSx = full => ({
-  maxHeight: full ? 'unset' : '400px',
-  overflow: 'hidden',
-  border: '2px solid #E5E5E5',
-});
 
 const tagsSx = {
   mt: '30px',

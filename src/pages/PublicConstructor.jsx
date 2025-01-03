@@ -6,7 +6,6 @@ import {
   Box,
   Button,
   Collapse,
-  IconButton,
   Modal,
   Tab,
   Tabs,
@@ -23,12 +22,10 @@ import { ProjectLinksList } from '../components/custom/ProjectLinksList.jsx';
 import IssuesList from '../components/issuesPage/IssuesList.jsx';
 import { useDispatch, useSelector } from 'react-redux';
 import { getIssues, getPublicIssues } from '../redux/actions/issueAction.js';
-import * as Yup from 'yup';
 import {
   addReportAudit,
   clearMessage,
   downloadReport,
-  editAuditCustomer,
   getAudit,
   getPublicReport,
   handleResetPublicAudit,
@@ -42,8 +39,6 @@ import {
   CHANGE_ROLE_DONT_HAVE_PROFILE_AUDITOR,
   CLEAR_AUDIT,
   CUSTOMER,
-  RESOLVED,
-  WAITING_FOR_AUDITS,
 } from '../redux/actions/types.js';
 import { useParams } from 'react-router-dom';
 import Loader from '../components/Loader.jsx';
@@ -54,8 +49,6 @@ import { addTestsLabel, isAuth, reportBuilder } from '../lib/helper.js';
 import { changeRolePublicAuditor } from '../redux/actions/userAction.js';
 import Headings from '../router/Headings.jsx';
 import { AUDIT_PARENT_ENTITY } from '../services/file_constants.js';
-import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf.js';
-import AddIcon from '@mui/icons-material/Add.js';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import EditIcon from '@mui/icons-material/Edit.js';
 import ExpandLessOutlinedIcon from '@mui/icons-material/ExpandLessOutlined.js';
@@ -63,7 +56,6 @@ import AddLinkIcon from '@mui/icons-material/AddLink.js';
 
 const PublicConstructor = ({ saved, isPublic }) => {
   const matchXs = useMediaQuery(theme.breakpoints.down('xs'));
-  const matchMd = useMediaQuery(theme.breakpoints.down('md'));
   const report = JSON.parse(localStorage.getItem('report') || '{}');
   const publicIssues = JSON.parse(localStorage.getItem('publicIssues') || '[]');
   const auditor = useSelector(s => s.auditor.auditor);
@@ -245,7 +237,6 @@ const PublicConstructor = ({ saved, isPublic }) => {
             <ArrowBackIcon color={'secondary'} />
           </Button>
           <Formik
-            // validationSchema={SubmitValidation}
             initialValues={initialValues}
             onSubmit={values => {
               if (saved) {
@@ -261,15 +252,7 @@ const PublicConstructor = ({ saved, isPublic }) => {
               }
             }}
           >
-            {({
-              handleSubmit,
-              setFieldValue,
-              setFieldTouched,
-              errors,
-              dirty,
-              values,
-              resetForm,
-            }) => {
+            {({ handleSubmit, setFieldValue, setFieldTouched, values }) => {
               return (
                 <Form onSubmit={handleSubmit} style={{ width: '100%' }}>
                   <CustomSnackbar
@@ -310,7 +293,6 @@ const PublicConstructor = ({ saved, isPublic }) => {
                         <Tabs
                           value={tab}
                           onChange={(e, newValue) => {
-                            // setShowFull(false);
                             setTab(newValue);
                             if (editConclusion) {
                               setEditConclusion(false);
@@ -321,14 +303,12 @@ const PublicConstructor = ({ saved, isPublic }) => {
                           aria-label="secondary tabs example"
                           sx={tabsSx}
                         >
-                          {/*{tab !== 0 && (*/}
                           <Tab
                             sx={[
                               tabSx,
                               {
                                 borderRadius: '8px 0 0 0',
                                 marginRight: '15px',
-                                // border: '1px solid',
                               },
                               tab === 0 ? { color: '#52176D' } : selectedTabSx,
                             ]}
@@ -343,7 +323,6 @@ const PublicConstructor = ({ saved, isPublic }) => {
                                   paddingRight: '0',
                                   width: '150px',
                                   borderRadius: '0 0 0 0',
-                                  // border: '1px solid',
                                   borderRight: 'unset',
                                 },
                                 conclusionSx,
@@ -358,10 +337,6 @@ const PublicConstructor = ({ saved, isPublic }) => {
                             <Button
                               sx={[
                                 tabSx,
-                                {
-                                  // borderRadius: '8px 0 0 0',
-                                  // border: '1px solid',
-                                },
                                 tab === 0
                                   ? { color: 'rgba(0, 0, 0, 0.6)' }
                                   : selectedTabSx,
@@ -369,7 +344,6 @@ const PublicConstructor = ({ saved, isPublic }) => {
                               value={1}
                               onClick={() => {
                                 setEditConclusion(true);
-                                // setShowFull(true);
                                 setTab(1);
                               }}
                             >
@@ -398,7 +372,6 @@ const PublicConstructor = ({ saved, isPublic }) => {
                             </Button>
                           )}
                         </Tabs>
-                        {/*)}*/}
                         {tab === 0 ? (
                           <Collapse
                             in={true}
@@ -473,7 +446,6 @@ const PublicConstructor = ({ saved, isPublic }) => {
                             collapsedSize={showFull ? undefined : 150}
                           >
                             <Box sx={descriptionWrapper(theme, showFull)}>
-                              {/*<Box>*/}
                               <MarkdownEditor
                                 saved={saved}
                                 name="conclusion"
@@ -496,7 +468,6 @@ const PublicConstructor = ({ saved, isPublic }) => {
                                     : {}
                                 }
                               />
-                              {/*</Box>*/}
                             </Box>
                           </Collapse>
                         )}
@@ -504,7 +475,6 @@ const PublicConstructor = ({ saved, isPublic }) => {
                           <Box
                             sx={[
                               {
-                                // border: '1px solid #E5E5E5',
                                 display: 'flex',
                                 justifyContent: 'center',
                                 position: 'relative',
@@ -519,7 +489,6 @@ const PublicConstructor = ({ saved, isPublic }) => {
                                 : {},
                             ]}
                           >
-                            {/*{tab === 0 && (*/}
                             <Button
                               onClick={() => setShowFull(!showFull)}
                               sx={[
@@ -547,15 +516,12 @@ const PublicConstructor = ({ saved, isPublic }) => {
                                     : { transform: 'rotate(180deg)' },
                                   {
                                     transition: '0.2s',
-                                    // marginRight: '0',
-                                    // marginLeft: 'auto',
                                     width: '20px',
                                     height: '20px',
                                   },
                                 ]}
                               />
                             </Button>
-                            {/*)}*/}
                           </Box>
                         )}
                       </Box>
@@ -715,18 +681,11 @@ const tagsWrapperSx = theme => ({
       fontSize: '18px!important',
       top: '3px!important',
     },
-    // '& input': {
-    //   paddingY: '1px',
-    // },
   },
   [theme.breakpoints.down('md')]: {
     '& label': {
       fontSize: '16px!important',
-      // top: '3px!important',
     },
-    // '& input': {
-    //   paddingY: '1px',
-    // },
   },
   [theme.breakpoints.down(700)]: {
     flexDirection: 'column',
@@ -744,13 +703,11 @@ const backBtnSx = theme => ({
 });
 
 const selectedTabSx = theme => ({
-  // background: 'linear-gradient(180deg, #FFFFFF 0%, #E5E5E5 100%)',
   borderWidth: '0.991146px 0.991146px 0px 0.991146px',
   borderColor: '#B2B3B3',
 });
 
 const selectedButtonSx = theme => ({
-  // background: 'linear-gradient(180deg, #FFFFFF 0%, #E5E5E5 100%)',
   borderWidth: '0.991146px 0.991146px 0px 0.991146px',
   borderColor: '#B2B3B3',
 });
@@ -764,13 +721,10 @@ const layoutSx = theme => ({
 });
 
 const tabSx = theme => ({
-  // border: '1px solid rgba(255, 153, 0, 0.5)',
-  // background: 'linear-gradient(180deg, #FFFFFF 0%, #E5E5E5 100%)',
   textTransform: 'unset',
   width: '150px',
   minHeight: '32px',
   height: '34.5px!important',
-  // color: '#FF9900',
   margin: '0 1px',
   fontWeight: 600,
   borderRadius: '0 8px 8px 0',
@@ -794,17 +748,11 @@ const descriptionWrapper = (theme, showFull) => ({
     height: '100%!important',
     minHeight: '340px',
   },
-  // '& .md-editor-wrapper': {
-  //   margin: '-0.7px',
-  // },
   overflow: 'hidden',
   transition: 'max-height 0.3s ease',
   '& .rc-md-editor .editor-container>.section': {
     borderRight: 'unset',
   },
-  // '& .editor-container': {
-  //   borderBottom: '1px solid #e0e0e0',
-  // },
 });
 
 const tabsSx = theme => ({
@@ -852,7 +800,6 @@ const readAllButton = theme => ({
   display: 'flex',
   alignItems: 'center',
   gap: '7px',
-  // maxWidth: '300px',
   [theme.breakpoints.down('xs')]: {
     fontSize: '16px',
   },
@@ -895,12 +842,6 @@ const titleSx = theme => ({
   [theme.breakpoints.down('sm')]: {
     fontSize: '26px',
   },
-});
-
-const SubmitValidation = Yup.object().shape({
-  project_name: Yup.string().required('File is required'),
-  description: Yup.string().required('File is required'),
-  auditor_name: Yup.string().required('File is required'),
 });
 
 const wrapper = theme => ({

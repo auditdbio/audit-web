@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom/dist';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import {
   Avatar,
   Box,
@@ -12,7 +12,6 @@ import {
   useMediaQuery,
 } from '@mui/material';
 import Currency from './icons/Currency.jsx';
-import Star from './icons/Star.jsx';
 import {
   AUDITOR,
   DONE,
@@ -20,7 +19,7 @@ import {
   SUBMITED,
   WAITING_FOR_AUDITS,
 } from '../redux/actions/types.js';
-import { addTestsLabel, dateConverter, issuesCounter } from '../lib/helper.js';
+import { addTestsLabel, dateConverter } from '../lib/helper.js';
 import {
   handlePublishAudit,
   startAudit,
@@ -175,10 +174,6 @@ const ProjectCard = ({ type, project, currentRole, isPublic }) => {
                     </Typography>
                   </Box>
                 ))}
-              {/*<Box sx={infoWrapper}>*/}
-              {/*  <Star />*/}
-              {/*  <Typography>150</Typography>*/}
-              {/*</Box>*/}
             </Box>
           ) : (
             <Box sx={priceWrapper}>
@@ -462,10 +457,6 @@ const statusWrapper = theme => ({
     height: '17px',
     borderRadius: '50%',
   },
-  // margin: '20px 0 18px',
-  [theme.breakpoints.down('md')]: {
-    // margin: '25px 0 10px',
-  },
   [theme.breakpoints.down('xs')]: {
     marginTop: 0,
     gap: '10px',
@@ -538,7 +529,6 @@ const categorySx = theme => ({
   margin: '10px 0 7px',
   [theme.breakpoints.down('xs')]: {
     fontSize: '10px!important',
-    // textAlign: 'left',
     height: '40px',
   },
   [theme.breakpoints.down('xxs')]: {
@@ -547,7 +537,7 @@ const categorySx = theme => ({
     '-webkit-line-clamp': '2',
   },
 });
-//
+
 const cardWrapper = theme => ({
   display: 'flex',
   flexDirection: 'column',

@@ -92,7 +92,6 @@ const ChatListItem = ({
             </Box>
           )}
         </Box>
-        {/*<Box sx={userStatusSx({ online: true })}>Online</Box>*/}
       </Box>
     </Link>
   );
@@ -202,33 +201,6 @@ const roleSx = role => ({
   },
   [theme.breakpoints.down('sm')]: {
     height: '20px',
-    fontSize: '10px',
-  },
-});
-
-const userStatusSx = ({ online }) => ({
-  fontSize: '16px',
-  fontWeight: 500,
-  color: '#B2B3B3',
-  position: 'relative',
-  '::before': {
-    content: '""',
-    display: 'inline-block',
-    width: '10px',
-    height: '10px',
-    background: online ? '#09C010' : 'red',
-    borderRadius: '50%',
-    mr: '10px',
-    [theme.breakpoints.down('sm')]: {
-      width: '7px',
-      height: '7px',
-      mr: '5px',
-    },
-  },
-  [theme.breakpoints.down('md')]: {
-    fontSize: '12px',
-  },
-  [theme.breakpoints.down('sm')]: {
     fontSize: '10px',
   },
 });

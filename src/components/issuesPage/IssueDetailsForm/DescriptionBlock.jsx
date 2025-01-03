@@ -17,7 +17,7 @@ import { ProjectLinksList } from '../../custom/ProjectLinksList.jsx';
 import CustomLink from '../../custom/CustomLink.jsx';
 import theme from '../../../styles/themes.js';
 import TagsField from '../../forms/tags-field/tags-field.jsx';
-import { useFormik, useFormikContext } from 'formik';
+import { useFormikContext } from 'formik';
 import { AUDIT_PARENT_ENTITY } from '../../../services/file_constants.js';
 import ExpandLessOutlinedIcon from '@mui/icons-material/ExpandLessOutlined.js';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
@@ -247,11 +247,9 @@ const DescriptionBlock = ({
             sx={[
               readAllButton,
               {
-                // position: 'relative',
                 top: !showFull ? '-22px' : 0,
                 backgroundColor: '#fcfaf6',
                 zIndex: '1',
-                // marginBottom: showFull ? '20px' : 0,
                 '&:hover': {
                   backgroundColor: '#fcfaf6',
                 },
@@ -266,8 +264,6 @@ const DescriptionBlock = ({
                 showFull ? {} : { transform: 'rotate(180deg)' },
                 {
                   transition: '0.2s',
-                  // marginRight: '0',
-                  // marginLeft: 'auto',
                   width: '20px',
                   height: '20px',
                 },
@@ -392,7 +388,6 @@ const readAllButton = theme => ({
   display: 'flex',
   alignItems: 'center',
   gap: '7px',
-  // maxWidth: '300px',
   [theme.breakpoints.down('xs')]: {
     fontSize: '16px',
   },
@@ -460,7 +455,6 @@ const linkSx = theme => ({
 const markdownWrapper = {
   position: 'relative',
   '& .rc-md-editor': {
-    // borderBottom: 'none',
     borderRight: '1px solid #e0e0e0!important',
   },
   '& .sec-html': {
@@ -468,15 +462,7 @@ const markdownWrapper = {
   },
   '& .sec-md': {
     borderRight: '1px solid #e0e0e0!important',
-    // borderRight: '1px solid #b9b9b9',
-    // borderBottom: '1px solid #b9b9b9',
   },
-  // '& .section': {
-  //   borderRightColor: '#b9b9b9 !important',
-  // },
-  // '& .sec-md.visible': {
-  //   borderBottom: '1px solid #b9b9b9',
-  // },
 };
 
 const markdownSx = matchXs => ({
@@ -485,8 +471,6 @@ const markdownSx = matchXs => ({
   fontWeight: 500,
   fontSize: '20px !important',
   lineHeight: '24px',
-  // borderLeft: '1px solid #b9b9b9',
-  // borderTop: matchXs ? '1px solid #b9b9b9' : 'none',
   borderRight: 'none',
 });
 
@@ -495,7 +479,6 @@ const feedbackWrapper = {
   mt: '20px',
   '& .rc-md-navigation.visible': {
     borderRight: '1px solid #e0e0e0',
-    // borderBottom: '1px solid #b9b9b9',
   },
   '& .rc-md-editor': {
     height: '100%!important',

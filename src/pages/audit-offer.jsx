@@ -15,9 +15,6 @@ import {
   useMediaQuery,
   Collapse,
   IconButton,
-  Divider,
-  InputAdornment,
-  Slider,
   Switch,
   Tabs,
   Tab,
@@ -30,16 +27,13 @@ import {
   clearMessage,
   downloadReport,
   editAuditCustomer,
-  getAudit,
   getAuditFeedback,
   handlePublishAudit,
   startAudit,
 } from '../redux/actions/auditAction.js';
 import AuditUpload from '../components/forms/audit-upload/index.jsx';
-import Loader from '../components/Loader.jsx';
 import {
   AUDITOR,
-  CLEAR_AUDIT,
   CUSTOMER,
   RESOLVED,
   SUBMITED,
@@ -69,18 +63,14 @@ import AuditFeedbackModal from '../components/modal/AuditFeedbackModal.jsx';
 import EditPrice from '../components/EditDescription/EditPrice.jsx';
 import ExpandLessOutlinedIcon from '@mui/icons-material/ExpandLessOutlined';
 import AddLinkIcon from '@mui/icons-material/AddLink.js';
-import SummarizeIcon from '@mui/icons-material/Summarize';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
-import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
-import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
-import MarkEmailReadIcon from '@mui/icons-material/MarkEmailRead';
 import AddIcon from '@mui/icons-material/Add';
 import { AUDIT_PARENT_ENTITY } from '../services/file_constants.js';
 import DraftReportIcon from '../components/icons/DraftReportIcon.jsx';
 import dayjs from 'dayjs';
 
-const AuditOffer = ({ publicView, setPublicView }) => {
+const AuditOffer = () => {
   const { auditId } = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -111,8 +101,6 @@ const AuditOffer = ({ publicView, setPublicView }) => {
   const { issues, issuesAuditId } = useSelector(s => s.issues);
   const { user } = useSelector(s => s.user);
   const { chatList } = useSelector(s => s.chat);
-  const { auditor } = useSelector(s => s.auditor);
-  const { customer } = useSelector(s => s.customer);
   const [conclusionState, setConclusionState] = useState('');
   const [showTopInfoButton, setShowTopInfoButton] = useState(false);
   const infoRef = useRef();
@@ -140,16 +128,6 @@ const AuditOffer = ({ publicView, setPublicView }) => {
       dispatch(getAuditFeedback(AUDITOR, audit.auditor_id, audit.id));
     }
   }, [audit?.id]);
-  //
-  //   useEffect(() => {
-  //     setTimeout(() => {
-  //       if (
-  //         descriptionRef?.current?.children[0]?.children[0]?.offsetHeight > 150
-  //       ) {
-  //         setShowReadMoreButton(true);
-  //       }
-  //     }, 500);
-  //   }, [descriptionRef?.current]);
 
   useEffect(() => {
     if (issuesAuditId !== auditId) {
@@ -231,33 +209,7 @@ const AuditOffer = ({ publicView, setPublicView }) => {
   }, [issues]);
 
   const handleGenerateReport = (isDraft = false) => {
-    // if (isPublic) {
-    //   if (report?.auditor_name && report?.project_name && report?.description) {
-    //     if (isAuth()) {
-    //       if (user.current_role === AUDITOR) {
-    //         const linkId = auditor.link_id || auditor.user_id;
-    //         report.profile_link = linkId
-    //           ? `${BASE_URL}a/${linkId}`
-    //           : `${BASE_URL}disclaimer/`;
-    //       } else if (user.current_role === CUSTOMER) {
-    //         const linkId = customer.link_id || customer.user_id;
-    //         report.profile_link = linkId
-    //           ? `${BASE_URL}c/${linkId}`
-    //           : `${BASE_URL}disclaimer/`;
-    //       }
-    //     }
-    //     const newData = reportBuilder(report, issuesArray);
-    //     dispatch(getPublicReport(newData, { generate: true }));
-    //   } else {
-    //     handleSubmit();
-    //     setOpenMessage(true);
-    //   }
-    //
-    //   setMenuAnchorEl(null);
-    // } else {
     dispatch(downloadReport(audit, { generate: true, isDraft }));
-    // setMenuAnchorEl(null);
-    // }
   };
 
   return (
@@ -268,7 +220,6 @@ const AuditOffer = ({ publicView, setPublicView }) => {
         setIsOpen={setResolveConfirmation}
         audit={audit}
       />
-      {/*<CustomCard sx={wrapper}>*/}
       <Box sx={{ width: '100%' }}>
         <CustomSnackbar
           autoHideDuration={5000}
@@ -339,25 +290,6 @@ const AuditOffer = ({ publicView, setPublicView }) => {
             position: 'relative',
           }}
         >
-          {/*{audit?.isPublic &&*/}
-          {/*  audit?.status?.toLowerCase() === RESOLVED.toLowerCase() &&*/}
-          {/*  audit?.auditor_id === user.id && (*/}
-          {/*    <FormControlLabel*/}
-          {/*      control={*/}
-          {/*        <Switch*/}
-          {/*          checked={publicView}*/}
-          {/*          onChange={e => setPublicView(e.target.checked)}*/}
-          {/*        />*/}
-          {/*      }*/}
-          {/*      sx={{*/}
-          {/*        '& .MuiTypography-root': { fontSize: '14px' },*/}
-          {/*        top: '-20px',*/}
-          {/*        position: 'absolute',*/}
-          {/*        right: '150px',*/}
-          {/*      }}*/}
-          {/*      label="Preview"*/}
-          {/*    />*/}
-          {/*  )}*/}
           <Box sx={headerTitleSx}>
             <Typography
               variant="h3"
@@ -411,8 +343,6 @@ const AuditOffer = ({ publicView, setPublicView }) => {
                     showFullHeader ? {} : { transform: 'rotate(180deg)' },
                     {
                       transition: '0.2s',
-                      // marginRight: '0',
-                      // marginLeft: 'auto',
                       width: '20px',
                       height: '20px',
                     },
@@ -642,13 +572,11 @@ const AuditOffer = ({ publicView, setPublicView }) => {
               aria-label="secondary tabs example"
               sx={tabsSx}
             >
-              {/*{tab !== 0 && (*/}
               <Tab
                 sx={[tabSx, tab === 1 ? { color: '#52176D' } : {}]}
                 value={0}
                 label={'Description'}
               />
-              {/*)}*/}
               {audit?.conclusion ? (
                 <Tab
                   sx={[tabSx, tab === 0 ? { color: '#52176D' } : {}]}
@@ -686,7 +614,6 @@ const AuditOffer = ({ publicView, setPublicView }) => {
                 )
               )}
             </Tabs>
-            {/*)}*/}
             {tab === 0 ? (
               <Collapse in={true} collapsedSize={showFull ? undefined : 150}>
                 <Box
@@ -727,9 +654,6 @@ const AuditOffer = ({ publicView, setPublicView }) => {
                                 },
                               }}
                             >
-                              {/*{audit?.conclusion && (*/}
-                              {/*  <Box sx={conclusionTitle}>Conclusion</Box>*/}
-                              {/*)}*/}
                               <MarkdownEditor
                                 name="conclusion"
                                 setMdRef={setMdRef}
@@ -790,7 +714,6 @@ const AuditOffer = ({ publicView, setPublicView }) => {
               <Box
                 sx={[
                   {
-                    // border: '1px solid #E5E5E5',
                     borderTop: '1px solid #E5E5E5',
                     display: 'flex',
                     justifyContent: 'center',
@@ -804,7 +727,6 @@ const AuditOffer = ({ publicView, setPublicView }) => {
                     : {},
                 ]}
               >
-                {/*{tab === 0 && (*/}
                 <Button
                   onClick={() => setShowFull(!showFull)}
                   sx={[
@@ -830,18 +752,14 @@ const AuditOffer = ({ publicView, setPublicView }) => {
                       showFull ? {} : { transform: 'rotate(180deg)' },
                       {
                         transition: '0.2s',
-                        // marginRight: '0',
-                        // marginLeft: 'auto',
                         width: '20px',
                         height: '20px',
                       },
                     ]}
                   />
                 </Button>
-                {/*)}*/}
               </Box>
             )}
-            {/*</Box>*/}
             <Box sx={bottomActionSx}>
               <Box sx={bottomActionInnerWrapper}>
                 <DescriptionHistory
@@ -850,27 +768,6 @@ const AuditOffer = ({ publicView, setPublicView }) => {
                   spaceY={false}
                   wrapperStyle={historyWrapperSx}
                 />
-                {/*{!audit?.conclusion && (*/}
-                {/*  <Button*/}
-                {/*    sx={[*/}
-                {/*      buttonSx,*/}
-                {/*      {*/}
-                {/*        marginX: '0!important',*/}
-                {/*        // marginTop: '20px',*/}
-                {/*      },*/}
-                {/*    ]}*/}
-                {/*    type="button"*/}
-                {/*    variant="contained"*/}
-                {/*    color="secondary"*/}
-                {/*    disabled={*/}
-                {/*      audit?.status?.toLowerCase() ===*/}
-                {/*      WAITING_FOR_AUDITS.toLowerCase()*/}
-                {/*    }*/}
-                {/*    onClick={() => handleEditSaveConclusion()}*/}
-                {/*  >*/}
-                {/*    {editConclusion ? 'Save conclusion' : 'Add conclusion'}*/}
-                {/*  </Button>*/}
-                {/*)}*/}
               </Box>
               {audit?.status?.toLowerCase() ===
               WAITING_FOR_AUDITS.toLowerCase() ? (
@@ -940,12 +837,7 @@ const AuditOffer = ({ publicView, setPublicView }) => {
                             marginRight: '0!important',
                             marginLeft: '0!important',
                           },
-                          // publicBtnSx
                         ]}
-                        // disabled={
-                        //   audit?.status?.toLowerCase() ===
-                        //   WAITING_FOR_AUDITS.toLowerCase()
-                        // }
                         onClick={handleGenerateReport}
                       >
                         {/*Generate report*/}
@@ -1029,7 +921,6 @@ const AuditOffer = ({ publicView, setPublicView }) => {
                           buttonSx,
                           {
                             marginRight: '0!important',
-                            // ml: '15px',
                           },
                         ]}
                         {...addTestsLabel('resolve-button')}
@@ -1131,7 +1022,6 @@ const AuditOffer = ({ publicView, setPublicView }) => {
             ) : null}
           </Box>
         )}
-      {/*</CustomCard>*/}
 
       <AuditFeedbackModal
         feedback={audit?.feedback}
@@ -1181,12 +1071,10 @@ const dateBlock = theme => ({
 });
 
 const tabSx = theme => ({
-  // border: '1px solid rgba(255, 153, 0, 0.5)',
   textTransform: 'unset',
   width: '140px',
   minHeight: '32px',
   height: '38.5px!important',
-  // color: '#FF9900',
   fontWeight: 600,
   borderRadius: '0 8px 8px 0',
   fontSize: '20px',
@@ -1252,7 +1140,6 @@ const bottomActionInnerWrapper = theme => ({
 const headInfoSx = theme => ({
   display: 'flex',
   alignItems: 'flex-start',
-  // mt: '15px',
   gap: '15px',
   flexWrap: 'wrap',
   justifyContent: 'center',
@@ -1263,66 +1150,13 @@ const headInfoSx = theme => ({
 
 const historyWrapperSx = theme => ({
   width: '180px!important',
-  // width: '115px!important',
   '& .btn-history,': {
     width: '50px',
     minWidth: '50px',
   },
-  // [theme.breakpoints.down(1400)]: {
-  //   width: '335px',
-  // },
   [theme.breakpoints.down(696)]: {
     width: 'unset!important',
   },
-  // [theme.breakpoints.down('sm')]: {
-  //   '& .btn-history,': {
-  //     width: '240px!important',
-  //   },
-  // },
-  // [theme.breakpoints.down(920)]: {
-  //   '& .btn-history,': {
-  //     width: '50px!important',
-  //     minWidth: '50px',
-  //   },
-  // },
-  // [theme.breakpoints.down(630)]: {
-  //   width: '100%',
-  //   '& .btn-history,': {
-  //     width: '100%!important',
-  //   },
-  //   '& .MuiBadge-root': {
-  //     width: '100%!important',
-  //   },
-  // },
-});
-
-const historyWrapperSxNoConclusion = theme => ({
-  [theme.breakpoints.down(1124)]: {
-    width: 'unset',
-    '& .btn-history,': {
-      width: '270px!important',
-    },
-  },
-  [theme.breakpoints.down('sm')]: {
-    '& .btn-history,': {
-      width: '240px!important',
-    },
-  },
-  [theme.breakpoints.down(920)]: {
-    '& .btn-history,': {
-      width: '50px!important',
-      minWidth: '50px',
-    },
-  },
-  // [theme.breakpoints.down(630)]: {
-  //   width: '100%',
-  //   '& .btn-history,': {
-  //     width: '100%!important',
-  //   },
-  //   '& .MuiBadge-root': {
-  //     width: '100%!important',
-  //   },
-  // },
 });
 
 const bottomActionSx = theme => ({
@@ -1330,7 +1164,6 @@ const bottomActionSx = theme => ({
   justifyContent: 'space-between',
   alignItems: 'center',
   gap: '25px',
-  // marginTop: '20px',
   [theme.breakpoints.down(600)]: {
     gap: '15px',
   },
@@ -1338,17 +1171,6 @@ const bottomActionSx = theme => ({
     flexWrap: 'wrap',
     justifyContent: 'center',
     gap: '15px',
-  },
-});
-
-const auditActionSx = theme => ({
-  display: 'flex',
-  alignItems: 'center',
-  mt: '10px',
-  justifyContent: 'flex-end',
-  gap: '25px',
-  [theme.breakpoints.down(950)]: {
-    flexWrap: 'wrap',
   },
 });
 
@@ -1360,43 +1182,6 @@ const uploadSx = theme => ({
   },
   [theme.breakpoints.down(540)]: {
     order: 1,
-  },
-});
-
-const auditActionWrapperSx = {
-  [theme.breakpoints.down(630)]: {
-    flexDirection: 'column',
-    gap: '15px',
-    '& button': {
-      width: '100%',
-      margin: 0,
-    },
-  },
-};
-
-const wrapper = theme => ({
-  padding: '25px 30px 60px',
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'center',
-  maxWidth: 'unset',
-  gap: '20px',
-  '& h3': {
-    fontSize: '24px',
-    fontWeight: 500,
-  },
-  [theme.breakpoints.down('md')]: {
-    padding: '20px 24px 20px',
-  },
-  [theme.breakpoints.down('sm')]: {
-    gap: '20px',
-    padding: '30px 20px 20px',
-    '& h3': {
-      fontSize: '20px',
-    },
-  },
-  [theme.breakpoints.down(780)]: {
-    borderRadius: '0!important',
   },
 });
 
@@ -1419,14 +1204,7 @@ const contactWrapper = theme => ({
     margin: 'unset',
     width: 'unset',
     alignItems: 'center',
-    // gap: '10px',
   },
-});
-
-const descriptionSx = full => ({
-  maxHeight: full ? 'unset' : '400px',
-  overflow: 'hidden',
-  border: '2px solid #E5E5E5',
 });
 
 const subTitleSx = {
@@ -1454,25 +1232,7 @@ const fileWrapper = theme => ({
   alignItems: 'flex-end',
   gap: '15px',
   justifyContent: 'center',
-  [theme.breakpoints.down('sm')]: {
-    // flexDirection: 'column',
-    // gap: '10px',
-  },
 });
-
-const titleSx = theme => ({
-  fontWeight: 500,
-  [theme.breakpoints.down('md')]: {
-    fontSize: '16px',
-  },
-});
-
-const salaryWrapper = {
-  display: 'flex',
-  gap: '50px',
-  fontSize: '16px',
-  fontWeight: 500,
-};
 
 const infoWrapper = theme => ({
   marginTop: '15px',
@@ -1507,32 +1267,8 @@ const readAllButton = theme => ({
   display: 'flex',
   alignItems: 'center',
   gap: '7px',
-  // maxWidth: '300px',
   [theme.breakpoints.down('xs')]: {
     fontSize: '16px',
-  },
-});
-
-const linkWrapper = theme => ({
-  display: 'flex',
-  flexDirection: 'column',
-  columnGap: '80px',
-  mt: '50px',
-  mb: '30px',
-  '& button': {
-    padding: 1,
-    minWidth: 'unset',
-  },
-  '& p': {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '5px',
-    fontSize: '14px',
-  },
-  [theme.breakpoints.down('sm')]: {
-    columnGap: '40px',
-    marginTop: '25px',
-    gap: '10px',
   },
 });
 
@@ -1545,14 +1281,6 @@ const backButtonSx = theme => ({
     left: '-20px',
   },
 });
-
-const buttonWrapper = {
-  display: 'flex',
-  justifyContent: 'center',
-  maxWidth: '400px',
-  margin: '0 auto',
-  paddingBottom: '25px',
-};
 
 const buttonSx = theme => ({
   padding: '8.5px 0',
@@ -1603,10 +1331,6 @@ const workflowToggleBox = theme => ({
   [theme.breakpoints.down('md')]: {
     height: '45px',
   },
-  [theme.breakpoints.down('xs')]: {
-    //
-    // margin: '0 auto 20px',
-  },
 });
 
 const workflowButton = useWorkflow => ({
@@ -1629,15 +1353,6 @@ const workflowButton = useWorkflow => ({
   },
 });
 
-const conclusionTitle = theme => ({
-  pb: '10px',
-  pt: '20px',
-  fontSize: '20px',
-  fontWeight: 500,
-  textAlign: 'center',
-  border: '1px solid #e0e0e0',
-});
-
 const editButton = {
   position: 'absolute',
   bottom: '10px',
@@ -1651,9 +1366,3 @@ const editButtonText = theme => ({
   fontSize: '14px',
   lineHeight: '17px',
 });
-
-const priceCalc = {
-  width: '100%',
-  mb: '30px',
-  '& .head': { justifyContent: 'center' },
-};

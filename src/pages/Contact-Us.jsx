@@ -127,20 +127,6 @@ const AuditDb = () => {
                           width: '100%',
                         }}
                       >
-                        {/*<Snackbar*/}
-                        {/*    autoHideDuration={10000}*/}
-                        {/*    open={!!error}*/}
-                        {/*    anchorOrigin={{ horizontal: 'right', vertical: 'top' }}*/}
-                        {/*    onClose={() => {*/}
-                        {/*        // dispatch(clearUserError())*/}
-                        {/*    }}*/}
-                        {/*>*/}
-                        {/*    <Stack sx={{ width: '100%', flexDirection: 'column', gap: 2 }} spacing={2}>*/}
-                        {/*        <Alert severity='success'>*/}
-                        {/*            <AlertTitle>{error}</AlertTitle>*/}
-                        {/*        </Alert>*/}
-                        {/*    </Stack>*/}
-                        {/*</Snackbar>*/}
                         <SimpleField name="name" label="Name" emptyPH={true} />
                         <SimpleField
                           name="company"
@@ -213,28 +199,6 @@ const contentWrapper = theme => ({
   },
 });
 
-const formLabelSx = theme => ({
-  fontWeight: 500,
-  fontSize: '14px',
-  lineHeight: '24px',
-  color: '#434242',
-  [theme.breakpoints.down('lg')]: {
-    fontSize: '14px',
-  },
-});
-
-const textFieldSx = theme => ({
-  width: '100%',
-  '& .MuiOutlinedInput-root': {
-    borderRadius: radiusOfComponents,
-  },
-  '& .MuiOutlinedInput-input': {
-    padding: '15px 20px',
-    fontSize: '16px',
-    fontWeight: 400,
-    color: '#000000',
-  },
-});
 const contactWrapper = theme => ({
   flexDirection: 'column',
   justifyContent: 'center',

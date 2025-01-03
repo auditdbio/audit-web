@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState } from 'react';
-import Markdown from '../markdown/Markdown.jsx';
 import { FastField, Form, Formik } from 'formik';
 import {
   editAuditCustomer,
@@ -23,7 +22,6 @@ import { AUDIT_PARENT_ENTITY } from '../../services/file_constants.js';
 
 const EditDescription = ({ audit, auditRequest, hideChange, isPublic }) => {
   const [editMode, setEditMode] = useState(false);
-  const [showFull, setShowFull] = useState(false);
   const [showComment, setShowComment] = useState(false);
   const descriptionRef = useRef();
   const dispatch = useDispatch();
@@ -195,7 +193,6 @@ const EditDescription = ({ audit, auditRequest, hideChange, isPublic }) => {
                               <FastField
                                 component={TextField}
                                 name={'comment'}
-                                // label={label}
                                 placeholder={'Add a comment'}
                                 fullWidth={true}
                                 disabled={false}
@@ -258,7 +255,6 @@ const EditDescription = ({ audit, auditRequest, hideChange, isPublic }) => {
                   </Box>
                   {addLinkField && (
                     <Box sx={{ mt: '10px' }}>
-                      {/*{user.current_role !== CUSTOMER && (*/}
                       <TagsField
                         size="small"
                         name="scope"
@@ -266,7 +262,6 @@ const EditDescription = ({ audit, auditRequest, hideChange, isPublic }) => {
                         handleSubmit={handleSubmit}
                         sx={linkFieldSx}
                       />
-                      {/*)}*/}
                     </Box>
                   )}
                 </Form>

@@ -142,15 +142,9 @@ const linkFieldWrapper = theme => ({
   gap: '7px',
   alignItems: 'center',
   marginBottom: '15px',
-  // '& .github-btn': {
-  //   // height: '47px',
-  // },
   '& .field-wrapper': {
     width: '100%',
   },
-  // '& .tag-input-field .MuiOutlinedInput-root': {
-  //   height: '57px!important',
-  // },
   [theme.breakpoints.down('md')]: {
     '& label': {
       top: '-6px!important',
@@ -162,7 +156,6 @@ const linkFieldWrapper = theme => ({
     },
   },
   [theme.breakpoints.down(500)]: {
-    // flexDirection: 'column',
     '& .github-wrapper': {
       width: 'unset',
     },
@@ -209,7 +202,6 @@ const backButtonSx = theme => ({
 const wrapper = theme => ({
   display: 'flex',
   flexDirection: 'column',
-  // maxWidth: '1300px',
   minHeight: '560px!important',
   width: '100%',
   '& ul': {
