@@ -165,7 +165,7 @@ const wrapper = theme => ({
 });
 
 const chatWrapper = {
-  height: '70vh',
+  height: 'calc(100vh - 165px)',
   width: '100%',
   display: 'flex',
   border: '2px solid #e5e5e5',

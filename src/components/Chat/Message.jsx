@@ -2,15 +2,15 @@ import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import Cookies from 'js-cookie';
 import axios from 'axios';
-import { Avatar, Box, Button, Modal, Typography } from '@mui/material';
+import { Avatar, Box, Typography } from '@mui/material';
 import DoneAllIcon from '@mui/icons-material/DoneAll';
 import { ASSET_URL } from '../../services/urls.js';
-import theme from '../../styles/themes.js';
 import { AUDITOR, CUSTOMER } from '../../redux/actions/types.js';
 import ImageMessage from './ImageMessage.jsx';
 import AuditMessage from './AuditMessage.jsx';
+import theme from '../../styles/themes.js';
 
-const Message = ({ message, user, currentChat, isRead }) => {
+const Message = ({ message, user, currentChat, isRead, previousMessage }) => {
   const { customer } = useSelector(state => state.customer);
   const { auditor } = useSelector(state => state.auditor);
 
@@ -60,9 +60,20 @@ const Message = ({ message, user, currentChat, isRead }) => {
       });
   };
 
+  const shouldShowAvatar =
+    !previousMessage || previousMessage.from?.id !== message.from?.id;
+
   return (
     <Box sx={messageSx({ isOwn: message.from?.id === user.id })}>
-      <Avatar src={getMessageAvatar()} sx={messageAvatarSx} alt="User photo" />
+      {shouldShowAvatar ? (
+        <Avatar
+          src={getMessageAvatar()}
+          sx={messageAvatarSx}
+          alt="User photo"
+        />
+      ) : (
+        <Box sx={avatarPlugSx} />
+      )}
       <Box
         sx={
           message.kind === 'Audit'
@@ -129,6 +140,19 @@ const contentSx = theme => ({
   },
 });
 
+const avatarPlugSx = theme => ({
+  width: '50px',
+  height: '50px',
+  [theme.breakpoints.down('sm')]: {
+    width: '35px',
+    height: '35px',
+  },
+  [theme.breakpoints.down('xs')]: {
+    width: '30px',
+    height: '30px',
+  },
+});
+
 const messageAvatarSx = theme => ({
   width: '50px',
   height: '50px',
@@ -146,7 +170,7 @@ const messageTextSx = ({ isOwn }) => ({
   position: 'relative',
   minWidth: '150px',
   maxWidth: '400px',
-  margin: '0 20px',
+  margin: '0 10px',
   background: '#e5e5e5',
   borderRadius: isOwn ? '15px 0 15px 15px' : '0 15px 15px 15px',
   '& p': {
@@ -185,7 +209,7 @@ const requestTextSx = ({ isOwn }) => ({
   minWidth: '150px',
   maxWidth: '400px',
   width: '100%',
-  margin: '0 20px',
+  margin: '0 10px',
   background: '#e5e5e5',
   padding: '15px',
   paddingBottom: '30px',

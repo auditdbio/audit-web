@@ -267,6 +267,7 @@ const CurrentChat = ({
                       message={msg}
                       currentChat={currentChat}
                       isRead={isInterlocutorRead}
+                      previousMessage={idx > 0 ? chatMessages[idx - 1] : null}
                     />
                   </Box>
                 );
@@ -473,7 +474,7 @@ const attachButton = theme => ({
 
 const chatSx = theme => ({
   position: 'relative',
-  padding: '40px',
+  padding: '10px',
   flexGrow: 1,
   display: 'flex',
   flexDirection: 'column',
