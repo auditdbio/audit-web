@@ -1,9 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Box, Button, Modal, Popover, Typography } from '@mui/material';
 import AuditRequestInfo from '../audit-request-info.jsx';
 import { useDispatch, useSelector } from 'react-redux';
 import {
-  acceptAudit,
   confirmAudit,
   deleteAuditRequest,
   getAuditRequest,
@@ -26,7 +25,6 @@ import OfferModal from '../modal/OfferModal.jsx';
 import dayjs from 'dayjs';
 import ConfirmModal from '../modal/ConfirmModal.jsx';
 import { useNavigate } from 'react-router-dom/dist';
-import AuditInfo from '../../pages/audit-info.jsx';
 import MessageModalCustomer from '../MessageModalCustomer/MessageModalCustomer.jsx';
 
 const AuditMessage = ({ message, handleError }) => {
@@ -99,14 +97,6 @@ const AuditMessage = ({ message, handleError }) => {
   const handleConfirm = () => {
     dispatch(confirmAudit(data));
   };
-
-  // useEffect(() => {
-  //   dispatch(getAuditRequest(data.id));
-  //   return () => {
-  //     dispatch({ type: CLEAR_AUDIT_REQUEST });
-  //   };
-  // }, [data.id]);
-  //
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
