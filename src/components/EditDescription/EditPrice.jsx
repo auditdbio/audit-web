@@ -158,7 +158,8 @@ const EditPrice = ({
                         <Typography>per line</Typography>
                         <Switch
                           color={
-                            user.current_role === CUSTOMER
+                            user?.current_role?.toLowerCase() ===
+                            CUSTOMER?.toLowerCase()
                               ? 'primary'
                               : 'secondary'
                           }
@@ -214,7 +215,8 @@ const EditPrice = ({
                           >
                             <SaveIcon
                               color={
-                                user.current_role === CUSTOMER
+                                user?.current_role?.toLowerCase() ===
+                                CUSTOMER?.toLowerCase()
                                   ? 'primary'
                                   : 'secondary'
                               }
@@ -282,7 +284,8 @@ const EditPrice = ({
                       >
                         <EditIcon
                           color={
-                            user.current_role === CUSTOMER
+                            user?.current_role?.toLowerCase() ===
+                            CUSTOMER?.toLowerCase()
                               ? 'primary'
                               : 'secondary'
                           }

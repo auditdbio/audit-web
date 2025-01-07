@@ -91,7 +91,11 @@ const PublicProfile = ({ notFoundRedirect = true }) => {
   };
 
   const handleInvite = () => {
-    if (user.current_role === CUSTOMER && isAuth() && myProjects.length) {
+    if (
+      user?.current_role?.toLowerCase() === CUSTOMER?.toLowerCase() &&
+      isAuth() &&
+      myProjects.length
+    ) {
       navigate(`/my-projects/${currentAuditor.user_id}`);
     } else if (
       user.current_role !== CUSTOMER &&
@@ -108,7 +112,7 @@ const PublicProfile = ({ notFoundRedirect = true }) => {
       dispatch(changeRolePublicCustomerNoRedirect(CUSTOMER, user.id, customer));
       handleError();
     } else if (
-      user.current_role === CUSTOMER &&
+      user?.current_role?.toLowerCase() === CUSTOMER?.toLowerCase() &&
       isAuth() &&
       !myProjects.length
     ) {
@@ -271,7 +275,7 @@ const PublicProfile = ({ notFoundRedirect = true }) => {
                 navigate(localStorage.getItem('prev'));
                 localStorage.removeItem('prev');
               } else {
-                navigate('/');
+                navigate(-1);
               }
             }}
           >

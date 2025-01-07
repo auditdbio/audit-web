@@ -135,7 +135,11 @@ const DescriptionModal = ({
         <Box sx={userTitleSx} onClick={handleOpen}>
           {unread && unread[user?.id] >= idx + 1 && unread[user?.id] > 0 ? (
             <Badge
-              color={user.current_role === CUSTOMER ? 'primary' : 'secondary'}
+              color={
+                user?.current_role?.toLowerCase() === CUSTOMER?.toLowerCase()
+                  ? 'primary'
+                  : 'secondary'
+              }
               badgeContent="new"
             >
               <Avatar
@@ -169,7 +173,8 @@ const DescriptionModal = ({
                       <Chip
                         size={'small'}
                         label={
-                          user.current_role === CUSTOMER
+                          user?.current_role?.toLowerCase() ===
+                          CUSTOMER?.toLowerCase()
                             ? 'Customer'
                             : 'Auditor'
                         }
@@ -199,7 +204,11 @@ const DescriptionModal = ({
             {!!isApprovedByMe.length && (
               <Chip
                 size={'small'}
-                label={user.current_role === CUSTOMER ? 'Customer' : 'Auditor'}
+                label={
+                  user?.current_role?.toLowerCase() === CUSTOMER?.toLowerCase()
+                    ? 'Customer'
+                    : 'Auditor'
+                }
                 color="info"
               />
             )}

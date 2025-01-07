@@ -58,7 +58,11 @@ export default function AuditorModal({
   const [scope, setScope] = useState([]);
 
   const handleInvite = () => {
-    if (user.current_role === CUSTOMER && isAuth() && myProjects.length) {
+    if (
+      user?.current_role?.toLowerCase() === CUSTOMER?.toLowerCase() &&
+      isAuth() &&
+      myProjects.length
+    ) {
       return navigate(`/my-projects/${auditor.user_id}`);
     } else if (
       user.current_role !== CUSTOMER &&
@@ -79,7 +83,7 @@ export default function AuditorModal({
       );
       handleError();
     } else if (
-      user.current_role === CUSTOMER &&
+      user?.current_role?.toLowerCase() === CUSTOMER?.toLowerCase() &&
       isAuth() &&
       !myProjects.length
     ) {

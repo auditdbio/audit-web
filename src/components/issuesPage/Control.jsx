@@ -110,7 +110,7 @@ const Control = ({
     );
     if (report?.auditor_name && report?.project_name && report?.description) {
       if (isAuth()) {
-        if (user.current_role === CUSTOMER) {
+        if (user?.current_role?.toLowerCase() === CUSTOMER?.toLowerCase()) {
           const data = {
             ...filteredReport,
             isPublic: true,
@@ -160,7 +160,9 @@ const Control = ({
             report.profile_link = linkId
               ? `${BASE_URL}a/${linkId}`
               : `${BASE_URL}disclaimer/`;
-          } else if (user.current_role === CUSTOMER) {
+          } else if (
+            user?.current_role?.toLowerCase() === CUSTOMER?.toLowerCase()
+          ) {
             const linkId = customer.link_id || customer.user_id;
             report.profile_link = linkId
               ? `${BASE_URL}c/${linkId}`

@@ -28,7 +28,10 @@ const Message = ({ message, user, currentChat, isRead }) => {
   const userAvatar = useMemo(() => {
     if (user.current_role === AUDITOR && !!auditor?.avatar) {
       return auditor.avatar;
-    } else if (user.current_role === CUSTOMER && !!customer?.avatar) {
+    } else if (
+      user?.current_role?.toLowerCase() === CUSTOMER?.toLowerCase() &&
+      !!customer?.avatar
+    ) {
       return customer.avatar;
     } else {
       return null;

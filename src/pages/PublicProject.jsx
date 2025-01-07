@@ -86,7 +86,9 @@ const PublicProject = () => {
         } else {
           setModalIsOpen(true);
         }
-      } else if (user.current_role === CUSTOMER) {
+      } else if (
+        user?.current_role?.toLowerCase() === CUSTOMER?.toLowerCase()
+      ) {
         if (!auditor?.first_name) {
           setMessage('Switched to auditor role');
           setModalIsOpen(true);
@@ -206,19 +208,17 @@ const PublicProject = () => {
         <Box sx={{ width: '100%' }}>
           <Collapse in={true} collapsedSize={showFull ? undefined : 400}>
             <Box sx={descriptionWrapper(theme, showFull)}>
-              {/*<Box sx={descriptionSx(showFull)}>*/}
               <AuditUserCard
                 avatar={customer?.avatar}
-                // role="Customer"
                 name={customer?.first_name + ' ' + customer?.last_name}
                 email={customer?.contacts.email}
                 telegram={customer?.contacts.telegram}
                 id={customer?.user_id}
+                customer={true}
               />
               <Box ref={descriptionRef}>
                 <Markdown value={project?.description} />
               </Box>
-              {/*</Box>*/}
             </Box>
           </Collapse>
           <Box

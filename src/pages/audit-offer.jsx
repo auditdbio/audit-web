@@ -80,7 +80,7 @@ import { AUDIT_PARENT_ENTITY } from '../services/file_constants.js';
 import DraftReportIcon from '../components/icons/DraftReportIcon.jsx';
 import dayjs from 'dayjs';
 
-const AuditOffer = ({ publicView, setPublicView }) => {
+const AuditOffer = () => {
   const { auditId } = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -134,8 +134,8 @@ const AuditOffer = ({ publicView, setPublicView }) => {
   useEffect(() => {
     if (
       audit &&
-      !audit.no_customer &&
-      audit.status.toLowerCase() === RESOLVED.toLowerCase()
+      !audit?.no_customer &&
+      audit?.status?.toLowerCase() === RESOLVED.toLowerCase()
     ) {
       dispatch(getAuditFeedback(AUDITOR, audit.auditor_id, audit.id));
     }
@@ -848,29 +848,12 @@ const AuditOffer = ({ publicView, setPublicView }) => {
                   buttonStyle={buttonSx}
                   audit={audit}
                   spaceY={false}
-                  wrapperStyle={historyWrapperSx}
+                  wrapperStyle={historyWrapperSx(
+                    theme,
+                    audit?.status?.toLowerCase() ===
+                      WAITING_FOR_AUDITS.toLowerCase(),
+                  )}
                 />
-                {/*{!audit?.conclusion && (*/}
-                {/*  <Button*/}
-                {/*    sx={[*/}
-                {/*      buttonSx,*/}
-                {/*      {*/}
-                {/*        marginX: '0!important',*/}
-                {/*        // marginTop: '20px',*/}
-                {/*      },*/}
-                {/*    ]}*/}
-                {/*    type="button"*/}
-                {/*    variant="contained"*/}
-                {/*    color="secondary"*/}
-                {/*    disabled={*/}
-                {/*      audit?.status?.toLowerCase() ===*/}
-                {/*      WAITING_FOR_AUDITS.toLowerCase()*/}
-                {/*    }*/}
-                {/*    onClick={() => handleEditSaveConclusion()}*/}
-                {/*  >*/}
-                {/*    {editConclusion ? 'Save conclusion' : 'Add conclusion'}*/}
-                {/*  </Button>*/}
-                {/*)}*/}
               </Box>
               {audit?.status?.toLowerCase() ===
               WAITING_FOR_AUDITS.toLowerCase() ? (
@@ -921,7 +904,15 @@ const AuditOffer = ({ publicView, setPublicView }) => {
                 </Box>
               )}
               {audit?.status?.toLowerCase() !== RESOLVED.toLowerCase() ? (
-                <Box sx={bottomActionInnerWrapper}>
+                <Box
+                  sx={[
+                    bottomActionInnerWrapper,
+                    audit?.status?.toLowerCase() ===
+                    WAITING_FOR_AUDITS.toLowerCase()
+                      ? actionWaitingSx
+                      : {},
+                  ]}
+                >
                   {audit?.status?.toLowerCase() ===
                   WAITING_FOR_AUDITS.toLowerCase() ? (
                     <Tooltip arrow placement="top" title={'Generate report'}>
@@ -940,12 +931,7 @@ const AuditOffer = ({ publicView, setPublicView }) => {
                             marginRight: '0!important',
                             marginLeft: '0!important',
                           },
-                          // publicBtnSx
                         ]}
-                        // disabled={
-                        //   audit?.status?.toLowerCase() ===
-                        //   WAITING_FOR_AUDITS.toLowerCase()
-                        // }
                         onClick={handleGenerateReport}
                       >
                         {/*Generate report*/}
@@ -1261,39 +1247,24 @@ const headInfoSx = theme => ({
   },
 });
 
-const historyWrapperSx = theme => ({
+const historyWrapperSx = (theme, isWaiting) => ({
   width: '180px!important',
   // width: '115px!important',
   '& .btn-history,': {
     width: '50px',
     minWidth: '50px',
   },
-  // [theme.breakpoints.down(1400)]: {
-  //   width: '335px',
-  // },
-  [theme.breakpoints.down(696)]: {
+  [theme.breakpoints.down(!isWaiting ? 696 : 540)]: {
     width: 'unset!important',
   },
-  // [theme.breakpoints.down('sm')]: {
-  //   '& .btn-history,': {
-  //     width: '240px!important',
-  //   },
-  // },
-  // [theme.breakpoints.down(920)]: {
-  //   '& .btn-history,': {
-  //     width: '50px!important',
-  //     minWidth: '50px',
-  //   },
-  // },
-  // [theme.breakpoints.down(630)]: {
-  //   width: '100%',
-  //   '& .btn-history,': {
-  //     width: '100%!important',
-  //   },
-  //   '& .MuiBadge-root': {
-  //     width: '100%!important',
-  //   },
-  // },
+});
+
+const actionWaitingSx = theme => ({
+  justifyContent: 'flex-end',
+  minWidth: '180px',
+  [theme.breakpoints.down(540)]: {
+    minWidth: 'unset',
+  },
 });
 
 const historyWrapperSxNoConclusion = theme => ({
