@@ -72,13 +72,33 @@ const Message = ({ message, user, currentChat, isRead, previousMessage }) => {
           alt="User photo"
         />
       ) : (
-        <Box sx={avatarPlugSx} />
+        <Box sx={avatarPlugSx}>
+          <Box
+            sx={{
+              fontSize: '14px',
+              color: '#434242',
+              [theme.breakpoints.down('sm')]: {
+                fontSize: '12px',
+              },
+            }}
+          >
+            {new Date(message?.time / 1000)
+              .toLocaleTimeString()
+              .replace(/:\d\d(?=$|( AM| PM))/, '')}
+          </Box>
+        </Box>
       )}
       <Box
         sx={
           message.kind === 'Audit'
-            ? requestTextSx({ isOwn: message.from?.id === user.id })
-            : messageTextSx({ isOwn: message.from?.id === user.id })
+            ? requestTextSx(
+                { isOwn: message.from?.id === user.id },
+                !shouldShowAvatar,
+              )
+            : messageTextSx(
+                { isOwn: message.from?.id === user.id },
+                !shouldShowAvatar,
+              )
         }
       >
         {message.kind === 'Image' ? (
@@ -95,11 +115,13 @@ const Message = ({ message, user, currentChat, isRead, previousMessage }) => {
           </Typography>
         )}
         <Box sx={messageTimeSx}>
-          <Box sx={{ mr: '5px' }}>
-            {new Date(message?.time / 1000)
-              .toLocaleTimeString()
-              .replace(/:\d\d(?=$|( AM| PM))/, '')}
-          </Box>
+          {shouldShowAvatar && (
+            <Box sx={{ mr: '5px' }}>
+              {new Date(message?.time / 1000)
+                .toLocaleTimeString()
+                .replace(/:\d\d(?=$|( AM| PM))/, '')}
+            </Box>
+          )}
           {isRead && user.id === message.from?.id && (
             <DoneAllIcon fontSize="small" />
           )}
@@ -142,14 +164,14 @@ const contentSx = theme => ({
 
 const avatarPlugSx = theme => ({
   width: '50px',
-  height: '50px',
+  display: 'flex',
+  alignItems: 'flex-start',
+  justifyContent: 'center',
   [theme.breakpoints.down('sm')]: {
     width: '35px',
-    height: '35px',
   },
   [theme.breakpoints.down('xs')]: {
     width: '30px',
-    height: '30px',
   },
 });
 
@@ -166,7 +188,7 @@ const messageAvatarSx = theme => ({
   },
 });
 
-const messageTextSx = ({ isOwn }) => ({
+const messageTextSx = ({ isOwn, single }) => ({
   position: 'relative',
   minWidth: '150px',
   maxWidth: '400px',
@@ -174,7 +196,7 @@ const messageTextSx = ({ isOwn }) => ({
   background: '#e5e5e5',
   borderRadius: isOwn ? '15px 0 15px 15px' : '0 15px 15px 15px',
   '& p': {
-    padding: '15px 30px 25px',
+    padding: single || isOwn ? '10px 30px 20px' : '10px 30px 20px',
     fontSize: '20px',
     fontWeight: 500,
     lineHeight: '25px',
@@ -190,7 +212,7 @@ const messageTextSx = ({ isOwn }) => ({
     margin: '0 10px',
     '& p': {
       lineHeight: '20px',
-      padding: '10px 20px 18px',
+      padding: single ? '10px 20px 18px' : '5px 20px 25px',
       fontSize: '16px',
     },
   },
@@ -265,7 +287,7 @@ const messageTimeSx = theme => ({
   alignItems: 'center',
   position: 'absolute',
   bottom: 2,
-  right: 10,
+  right: 5,
   fontSize: '14px',
   color: '#434242',
   [theme.breakpoints.down('sm')]: {

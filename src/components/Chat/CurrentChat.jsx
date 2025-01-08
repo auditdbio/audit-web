@@ -244,34 +244,30 @@ const CurrentChat = ({
             </Box>
           )}
           {!currentChat?.isNew ? (
-            chatMessages
-              .slice(...getDisplayedMessages())
-              .map((msg, idx, ar) => {
-                const date = new Date(msg?.time / 1000).toDateString();
-                const prevMsgDate = new Date(
-                  ar[idx - 1]?.time / 1000,
-                ).toDateString();
-                const unreadLabel = !!unread && ar.length - unread === idx;
-                const isInterlocutorRead = idx < ar.length - interlocutorUnread;
-                return (
-                  <Box
-                    key={msg.id}
-                    ref={unreadLabel ? newMessagesTextRef : null}
-                  >
-                    {date !== prevMsgDate && (
-                      <Box sx={msgDateSx}>{date.replace(/[^ ]+/, '')}</Box>
-                    )}
-                    {unreadLabel && <Box sx={newMessagesSx}>New messages:</Box>}
-                    <Message
-                      user={user}
-                      message={msg}
-                      currentChat={currentChat}
-                      isRead={isInterlocutorRead}
-                      previousMessage={idx > 0 ? chatMessages[idx - 1] : null}
-                    />
-                  </Box>
-                );
-              })
+            chatMessages.slice(getDisplayedMessages()).map((msg, idx, ar) => {
+              const date = new Date(msg?.time / 1000).toDateString();
+              const prevMsgDate = new Date(
+                ar[idx - 1]?.time / 1000,
+              ).toDateString();
+              const unreadLabel = !!unread && ar.length - unread === idx;
+              const isInterlocutorRead = idx < ar.length - interlocutorUnread;
+
+              return (
+                <Box key={msg.id} ref={unreadLabel ? newMessagesTextRef : null}>
+                  {date !== prevMsgDate && (
+                    <Box sx={msgDateSx}>{date.replace(/[^ ]+/, '')}</Box>
+                  )}
+                  {unreadLabel && <Box sx={newMessagesSx}>New messages:</Box>}
+                  <Message
+                    user={user}
+                    message={msg}
+                    currentChat={currentChat}
+                    isRead={isInterlocutorRead}
+                    previousMessage={idx > 0 ? chatMessages[idx - 1] : null}
+                  />
+                </Box>
+              );
+            })
           ) : (
             <Box sx={[newMessagesSx, { borderBottom: 'none' }]}>
               No messages here yet...
