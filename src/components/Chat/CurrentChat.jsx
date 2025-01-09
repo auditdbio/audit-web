@@ -222,7 +222,6 @@ const CurrentChat = ({
             >
               {currentChat?.name}
             </Link>
-            {/*<Box sx={userStatusSx({ online: true })}>Online</Box>*/}
           </Box>
 
           <IconButton
@@ -298,7 +297,11 @@ const CurrentChat = ({
             </Button>
           </Box>
           <Button
-            color={user.current_role === CUSTOMER ? 'secondary' : 'primary'}
+            color={
+              user?.current_role?.toLowerCase() === CUSTOMER?.toLowerCase()
+                ? 'secondary'
+                : 'primary'
+            }
             variant={'contained'}
             sx={requestBtn}
             {...addTestsLabel('request-button')}
@@ -313,8 +316,6 @@ const CurrentChat = ({
 };
 
 export default CurrentChat;
-
-const yearNow = new Date().getFullYear();
 
 const requestBtn = theme => ({
   height: '55px',
@@ -430,33 +431,6 @@ const userNameSx = theme => ({
   [theme.breakpoints.down('xs')]: {
     fontSize: '16px',
     mb: '3px',
-  },
-});
-
-const userStatusSx = ({ online }) => ({
-  fontSize: '16px',
-  fontWeight: 500,
-  color: '#B2B3B3',
-  position: 'relative',
-  '::before': {
-    content: '""',
-    display: 'inline-block',
-    width: '10px',
-    height: '10px',
-    background: online ? '#09C010' : 'red',
-    borderRadius: '50%',
-    mr: '10px',
-    [theme.breakpoints.down('xs')]: {
-      width: '7px',
-      height: '7px',
-      mr: '7px',
-    },
-  },
-  [theme.breakpoints.down('sm')]: {
-    fontSize: '12px',
-  },
-  [theme.breakpoints.down('xs')]: {
-    fontSize: '9px',
   },
 });
 

@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
 import {
   Box,
@@ -24,7 +23,6 @@ import {
   BRANCH_NAME,
   CLEAR_COMMIT,
   CLEAR_COMMITINFO,
-  GET_SHA,
   GET_TAG,
   SWITCH_GITHUB_TAB,
 } from '../redux/actions/types.js';
@@ -52,9 +50,7 @@ const GithubBranchAutocomplete = ({ repository, needSave, handleReset }) => {
   }, [repository, repoOwner]);
 
   useEffect(() => {
-    // if (branches.length) {
     dispatch(getTags(repository));
-    // }
   }, [repository]);
 
   const handleClick = () => {
@@ -71,10 +67,6 @@ const GithubBranchAutocomplete = ({ repository, needSave, handleReset }) => {
     dispatch({ type: BRANCH_NAME, payload: branch });
     dispatch({ type: CLEAR_COMMITINFO });
     dispatch({ type: CLEAR_COMMIT });
-    // if (needSave) {
-    //   localStorage.setItem('sha', sha);
-    //   dispatch({ type: CLEAR_COMMITINFO });
-    // }
     handleClickAway();
   };
 
@@ -296,12 +288,6 @@ const fieldSx = theme => ({
 
 const branchTitleSx = theme => ({
   fontSize: '14px!important',
-  // [theme.breakpoints.down('xs')]: {
-  //   maxWidth: '300px',
-  // },
-  // [theme.breakpoints.down(500)]: {
-  //   maxWidth: '200px',
-  // },
 });
 
 const modalWrapper = theme => ({

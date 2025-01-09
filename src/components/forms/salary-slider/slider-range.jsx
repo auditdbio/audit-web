@@ -18,12 +18,6 @@ export const SliderRange = ({ min, max, value, onChange, label, sx }) => {
             ...sliderSx,
             ...sx,
           }}
-          // trackStyle={{ backgroundColor: "#007aff" }}
-          // handleStyle={{
-          //   borderColor: "#007aff",
-          //   backgroundColor: "#007aff",
-          // }}
-          // railStyle={{ backgroundColor: "#b7b7b7" }}
         />
         <Box sx={infoWrapper}>
           {value.from}-{value.to} $

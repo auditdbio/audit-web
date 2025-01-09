@@ -58,7 +58,11 @@ export default function AuditorModal({
   const [scope, setScope] = useState([]);
 
   const handleInvite = () => {
-    if (user.current_role === CUSTOMER && isAuth() && myProjects.length) {
+    if (
+      user?.current_role?.toLowerCase() === CUSTOMER?.toLowerCase() &&
+      isAuth() &&
+      myProjects.length
+    ) {
       return navigate(`/my-projects/${auditor.user_id}`);
     } else if (
       user.current_role !== CUSTOMER &&
@@ -79,7 +83,7 @@ export default function AuditorModal({
       );
       handleError();
     } else if (
-      user.current_role === CUSTOMER &&
+      user?.current_role?.toLowerCase() === CUSTOMER?.toLowerCase() &&
       isAuth() &&
       !myProjects.length
     ) {
@@ -304,7 +308,6 @@ export default function AuditorModal({
                 {!budge && (
                   <Button
                     variant="text"
-                    // sx={[findButton, messageButton]}
                     onClick={handleSendMessage}
                     disabled={auditor?.user_id === user.id}
                     {...addTestsLabel('message-button')}
@@ -434,11 +437,6 @@ export default function AuditorModal({
                           }}
                         >
                           <SalarySlider name={'price'} />
-                          {/*<PriceCalculation*/}
-                          {/*  price={values.price}*/}
-                          {/*  sx={priceCalc}*/}
-                          {/*  scope={scope}*/}
-                          {/*/>*/}
                         </Box>
                         <Box sx={{ justifyContent: 'center', display: 'flex' }}>
                           <Button
@@ -615,27 +613,6 @@ const aboutSx = theme => ({
   },
 });
 
-const backButton = {
-  backgroundColor: theme.palette.secondary.main,
-  color: theme.palette.background.default,
-  borderRadius: '4px',
-  width: {
-    zero: '100px',
-    sm: '100px',
-    md: '150px',
-    lg: '230px',
-  },
-  height: '45px',
-  textTransform: 'none',
-  ':hover': {
-    backgroundColor: theme.palette.secondary.main,
-  },
-  [theme.breakpoints.down('sm')]: {
-    height: '30px',
-    fontSize: '10px',
-  },
-};
-
 const fieldButtonContainer = theme => ({
   display: 'flex',
   flexDirection: 'column',
@@ -659,44 +636,6 @@ const offerDialogStyle = {
     height: '100%',
     width: '100%',
   },
-};
-const searchIcon = {
-  [theme.breakpoints.down('sm')]: {
-    fontSize: '15px',
-  },
-};
-
-const searchField = {
-  '& .MuiAutocomplete-input': {
-    fontSize: '14px',
-    [theme.breakpoints.down('sm')]: {
-      fontSize: '11px',
-    },
-  },
-  '&  .MuiOutlinedInput-root': {
-    backgroundColor: theme.palette.background.default,
-    padding: '0px',
-    height: '45px',
-    borderRadius: '4px',
-    paddingLeft: '8px',
-    fontSize: '14px !important',
-    width: '465px',
-    [theme.breakpoints.down('sm')]: {
-      width: '120px',
-      height: '30px',
-      fontSize: '11px',
-      // padding: "0",
-    },
-  },
-};
-const customDropdown = {
-  '& .MuiAutocomplete-listbox': {
-    padding: '0',
-  },
-  border: '1px solid #434242',
-  borderRadius: '0px',
-  boxShadow: '0',
-  padding: 0,
 };
 
 const sendButton = {
@@ -722,14 +661,6 @@ const rateLabel = theme => ({
   fontSize: '11px',
   color: '#B2B3B3',
   fontWeight: 500,
-});
-
-const sliderSx = theme => ({
-  height: '9px',
-  '& .MuiSlider-track, .MuiSlider-rail': {
-    backgroundColor: '#B9B9B9',
-    border: 'none',
-  },
 });
 
 const dateWrapper = {
@@ -768,10 +699,4 @@ const dateStyle = {
       fontSize: '10px',
     },
   },
-};
-
-const priceCalc = {
-  width: '100%',
-  margin: '30px 0',
-  '& .head': { justifyContent: 'center' },
 };

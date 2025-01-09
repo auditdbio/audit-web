@@ -39,7 +39,6 @@ export const getAuditor = (redirect = false) => {
       })
       .catch(({ response }) => {
         console.log(response, 'res');
-        // dispatch({type: SIGN_IN_ERROR})
       });
   };
 };
@@ -56,7 +55,6 @@ export const getCurrentAuditor = id => {
       })
       .catch(({ response }) => {
         console.log(response, 'res');
-        // dispatch({type: SIGN_IN_ERROR})
       });
   };
 };

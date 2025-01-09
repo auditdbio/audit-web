@@ -52,7 +52,6 @@ import ProjectCardList from '../components/Project-card-list.jsx';
 const PublicProfile = ({ notFoundRedirect = true }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const matchXs = useMediaQuery(theme.breakpoints.down('xs'));
   const matchSm = useMediaQuery(theme.breakpoints.down('sm'));
 
   const { role: roleParams, id, linkId } = useParams();
@@ -91,7 +90,11 @@ const PublicProfile = ({ notFoundRedirect = true }) => {
   };
 
   const handleInvite = () => {
-    if (user.current_role === CUSTOMER && isAuth() && myProjects.length) {
+    if (
+      user?.current_role?.toLowerCase() === CUSTOMER?.toLowerCase() &&
+      isAuth() &&
+      myProjects.length
+    ) {
       navigate(`/my-projects/${currentAuditor.user_id}`);
     } else if (
       user.current_role !== CUSTOMER &&
@@ -108,7 +111,7 @@ const PublicProfile = ({ notFoundRedirect = true }) => {
       dispatch(changeRolePublicCustomerNoRedirect(CUSTOMER, user.id, customer));
       handleError();
     } else if (
-      user.current_role === CUSTOMER &&
+      user?.current_role?.toLowerCase() === CUSTOMER?.toLowerCase() &&
       isAuth() &&
       !myProjects.length
     ) {
@@ -271,7 +274,7 @@ const PublicProfile = ({ notFoundRedirect = true }) => {
                 navigate(localStorage.getItem('prev'));
                 localStorage.removeItem('prev');
               } else {
-                navigate('/');
+                navigate(-1);
               }
             }}
           >
@@ -526,7 +529,6 @@ const PublicProfile = ({ notFoundRedirect = true }) => {
                 }
               })}
           </Box>
-          {/*{matchXs && <MobileTagsList data={data.tags} />}*/}
           <Box
             sx={{
               display: 'flex',
@@ -687,7 +689,6 @@ const ratingButton = {
 const contentWrapper = theme => ({
   display: 'flex',
   gap: '70px',
-  // justifyContent: 'center',
   margin: '0 auto',
   width: '100%',
   maxWidth: '1200px',
@@ -697,7 +698,6 @@ const contentWrapper = theme => ({
   [theme.breakpoints.down('sm')]: {
     alignItems: 'center',
     maxWidth: 'unset',
-    // justifyContent: 'flex-start',
     margin: 0,
     gap: '30px',
     width: '100%',

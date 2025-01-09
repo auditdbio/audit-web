@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Box, Button, Tooltip, Typography } from '@mui/material';
 import Currency from './icons/Currency.jsx';
-import Star from './icons/Star.jsx';
 import theme from '../styles/themes.js';
 import { useNavigate } from 'react-router-dom/dist';
 import { useDispatch } from 'react-redux';
@@ -29,7 +28,6 @@ const AuditRequestCard = ({ type, request, audit }) => {
             {request.project_name}
           </Typography>
         </Tooltip>
-        {/*<Typography sx={categorySx}>{(request || audit)?.tags?.map(el => el).join(', ') ?? ''}</Typography>*/}
         <Box sx={dateWrapper}>
           <Typography sx={dateStyle}>
             {dayjs((request || audit)?.time?.from).format('DD.MM.YYYY')}
@@ -48,10 +46,6 @@ const AuditRequestCard = ({ type, request, audit }) => {
               <Typography>{request.price}</Typography>
             )}
           </Box>
-          {/*<Box sx={infoWrapper}>*/}
-          {/*  <Star />*/}
-          {/*  <Typography>150</Typography>*/}
-          {/*</Box>*/}
         </Box>
       </Box>
       <Box sx={buttonWrapper}>

@@ -1,9 +1,18 @@
 import React from 'react';
-import { Avatar, Box, Tooltip, Typography } from '@mui/material';
+import { Avatar, Box, Button, Tooltip, Typography } from '@mui/material';
 import { ASSET_URL } from '../../services/urls.js';
 import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom/dist';
 
-const AuditUserCard = ({ avatar, role, name, email, telegram, id }) => {
+const AuditUserCard = ({
+  avatar,
+  role,
+  name,
+  email,
+  telegram,
+  id,
+  customer,
+}) => {
   return (
     <Box sx={wrapper}>
       <Typography sx={roleTitleSx} align={'center'}>
@@ -21,7 +30,7 @@ const AuditUserCard = ({ avatar, role, name, email, telegram, id }) => {
             <span>Name:</span>
             <Box sx={{ display: 'grid' }}>
               <Link
-                to={`/a/${id}`}
+                to={!customer ? `/a/${id}` : `/c/${id}`}
                 style={{
                   display: 'grid',
                   textAlign: 'center',
@@ -149,7 +158,6 @@ const userInfoWrapper = theme => ({
   display: 'flex',
   flexDirection: 'column',
   gap: '20px',
-  // marginTop: '20px',
   [theme.breakpoints.down('sm')]: {
     gap: '10px',
   },

@@ -1,9 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Box, Button, Modal, Popover, Typography } from '@mui/material';
 import AuditRequestInfo from '../audit-request-info.jsx';
 import { useDispatch, useSelector } from 'react-redux';
 import {
-  acceptAudit,
   confirmAudit,
   deleteAuditRequest,
   getAuditRequest,
@@ -26,7 +25,6 @@ import OfferModal from '../modal/OfferModal.jsx';
 import dayjs from 'dayjs';
 import ConfirmModal from '../modal/ConfirmModal.jsx';
 import { useNavigate } from 'react-router-dom/dist';
-import AuditInfo from '../../pages/audit-info.jsx';
 import MessageModalCustomer from '../MessageModalCustomer/MessageModalCustomer.jsx';
 
 const AuditMessage = ({ message, handleError }) => {
@@ -100,14 +98,6 @@ const AuditMessage = ({ message, handleError }) => {
     dispatch(confirmAudit(data));
   };
 
-  // useEffect(() => {
-  //   dispatch(getAuditRequest(data.id));
-  //   return () => {
-  //     dispatch({ type: CLEAR_AUDIT_REQUEST });
-  //   };
-  // }, [data.id]);
-  //
-
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
       <Typography align={'center'}>
@@ -173,8 +163,8 @@ const AuditMessage = ({ message, handleError }) => {
           </Box>
         </>
       )}
-      {data.status?.toLowerCase() === WAITING_FOR_AUDITS.toLowerCase() &&
-        user.current_role === CUSTOMER &&
+      {data?.status?.toLowerCase() === WAITING_FOR_AUDITS.toLowerCase() &&
+        user?.current_role?.toLowerCase() === CUSTOMER?.toLowerCase() &&
         message.from?.id === user.id && (
           <Button
             sx={{ textTransform: 'unset', width: '100%' }}
@@ -211,8 +201,8 @@ const AuditMessage = ({ message, handleError }) => {
             </Button>
           </Box>
         )}
-      {data.status === 'Request' &&
-        user.current_role === CUSTOMER &&
+      {data?.status === 'Request' &&
+        user?.current_role?.toLowerCase() === CUSTOMER?.toLowerCase() &&
         message.from?.id !== user.id && (
           <Box sx={{ width: '100%' }}>
             <Box sx={{ display: 'flex', gap: '20px' }}>
@@ -316,7 +306,11 @@ const AuditMessage = ({ message, handleError }) => {
       </Popover>
       <Popover
         anchorEl={null}
-        open={isOpen && auditRequest?.id && user.current_role === CUSTOMER}
+        open={
+          isOpen &&
+          auditRequest?.id &&
+          user?.current_role?.toLowerCase() === CUSTOMER?.toLowerCase()
+        }
         onClose={handleClose}
         sx={popoverSx}
       >
@@ -331,7 +325,7 @@ const AuditMessage = ({ message, handleError }) => {
         </Box>
       </Popover>
       {/*<AuditInfo audit={auditRequest} auditRequest={auditRequest} />*/}
-      {user.current_role === CUSTOMER &&
+      {user?.current_role?.toLowerCase() === CUSTOMER?.toLowerCase() &&
         data.status === 'Request' &&
         message.from?.id === user.id && (
           <Box sx={{ mt: '15px' }}>
@@ -373,17 +367,18 @@ const AuditMessage = ({ message, handleError }) => {
             </Button>
           </Box>
         )}
-        {user.current_role === CUSTOMER && data.status === 'Started' && (
-          <Box sx={{ display: 'flex', gap: '20px' }}>
-            <Button
-              sx={{ textTransform: 'unset', width: '100%' }}
-              variant="contained"
-              onClick={handleViewCustomer}
-            >
-              View
-            </Button>
-          </Box>
-        )}
+        {user?.current_role?.toLowerCase() === CUSTOMER?.toLowerCase() &&
+          data.status === 'Started' && (
+            <Box sx={{ display: 'flex', gap: '20px' }}>
+              <Button
+                sx={{ textTransform: 'unset', width: '100%' }}
+                variant="contained"
+                onClick={handleViewCustomer}
+              >
+                View
+              </Button>
+            </Box>
+          )}
       </>
       <Modal
         open={open}

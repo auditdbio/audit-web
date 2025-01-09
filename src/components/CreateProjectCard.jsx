@@ -88,7 +88,6 @@ const CreateProjectCard = ({ projectInfo }) => {
     ),
   );
 
-  const [auditRequests, setAuditRequests] = useState([]);
   const [isPublished, setIsPublished] = useState(
     projectInfo?.publish_options?.publish || false,
   );
@@ -112,17 +111,6 @@ const CreateProjectCard = ({ projectInfo }) => {
       dispatch(getMyGithub());
     }
   }, [githubData?.scope?.includes('repo'), githubData?.id]);
-
-  useEffect(() => {
-    if (auditReducer.auditRequests && projectInfo) {
-      setAuditRequests(
-        auditReducer.auditRequests &&
-          auditReducer.auditRequests.filter(
-            request => request.project_id === projectInfo.id,
-          ),
-      );
-    }
-  }, [auditReducer.auditRequests]);
 
   useEffect(() => {
     dispatch(getFilterData());
@@ -426,11 +414,6 @@ const CreateProjectCard = ({ projectInfo }) => {
                         sx={{ '& .head': { justifyContent: 'center' } }}
                       />
                     )}
-
-                    {/* TODO: Delete this??? */}
-                    {/*<Box>*/}
-                    {/*  <AuditRequestsArray requests={auditRequests ?? []} />*/}
-                    {/*</Box>*/}
                   </Box>
                   <Collapse
                     in={true}

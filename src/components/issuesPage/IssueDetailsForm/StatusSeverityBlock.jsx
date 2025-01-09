@@ -27,7 +27,6 @@ import {
 } from '../constants.js';
 import NoteAddIcon from '@mui/icons-material/NoteAdd.js';
 import FeedbackIcon from '@mui/icons-material/Feedback';
-import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 
 const StatusSeverityBlock = ({
   issue,
@@ -54,14 +53,15 @@ const StatusSeverityBlock = ({
         sx={issueWrapperSx(
           theme,
           isPublic,
-          audit?.status?.toLowerCase() === RESOLVED.toLowerCase(),
+          audit?.status?.toLowerCase() === RESOLVED?.toLowerCase(),
           hideControl,
           (issue?.status || values?.status) === 'Draft',
-          user.current_role === CUSTOMER,
+          user?.current_role?.toLowerCase() === CUSTOMER?.toLowerCase(),
           !isEditFeedback && !issue?.feedback,
         )}
       >
-        {(user.current_role !== CUSTOMER || isPublic) &&
+        {(user?.current_role?.toLowerCase() !== CUSTOMER?.toLowerCase() ||
+          isPublic) &&
           !editMode &&
           matchXxs && (
             <Box sx={[buttonsBox, blockSx]}>
@@ -106,8 +106,8 @@ const StatusSeverityBlock = ({
           sx={issueInnerWrapperSx(
             theme,
             (issue?.status || values?.status) === 'Draft',
-            audit?.status?.toLowerCase() === RESOLVED.toLowerCase(),
-            user.current_role === CUSTOMER,
+            audit?.status?.toLowerCase() === RESOLVED?.toLowerCase(),
+            user?.current_role?.toLowerCase() === CUSTOMER?.toLowerCase(),
           )}
         >
           <Box sx={statusBlockAlign}>
@@ -173,7 +173,7 @@ const StatusSeverityBlock = ({
           {editMode &&
             !isPublic &&
             !hideControl &&
-            audit?.status?.toLowerCase() !== RESOLVED.toLowerCase() && (
+            audit?.status?.toLowerCase() !== RESOLVED?.toLowerCase() && (
               <StatusControl
                 status={issue.status}
                 setFieldValue={setFieldValue}
@@ -181,8 +181,9 @@ const StatusSeverityBlock = ({
             )}
         </Box>
 
-        {(user.current_role !== CUSTOMER || isPublic) &&
-        audit?.status?.toLowerCase() !== RESOLVED.toLowerCase() ? (
+        {(user?.current_role?.toLowerCase() !== CUSTOMER?.toLowerCase() ||
+          isPublic) &&
+        audit?.status?.toLowerCase() !== RESOLVED?.toLowerCase() ? (
           <Box sx={[severityWrapper, blockSx]}>
             <Typography
               sx={[statusBlockTitle, { cursor: 'pointer' }]}
@@ -265,7 +266,7 @@ const StatusSeverityBlock = ({
         )}
 
         {editMode &&
-          user.current_role === AUDITOR &&
+          user?.current_role?.toLowerCase() === AUDITOR?.toLowerCase() &&
           !isPublic &&
           !hideControl && (
             <Box sx={includeSx}>
@@ -281,8 +282,9 @@ const StatusSeverityBlock = ({
                     checked={values.include}
                     color="secondary"
                     disabled={
-                      user.current_role === CUSTOMER ||
-                      audit?.status?.toLowerCase() === RESOLVED.toLowerCase()
+                      user?.current_role?.toLowerCase() ===
+                        CUSTOMER?.toLowerCase() ||
+                      audit?.status?.toLowerCase() === RESOLVED?.toLowerCase()
                     }
                     onChange={e => {
                       setFieldValue('include', e.target.checked);
@@ -299,9 +301,9 @@ const StatusSeverityBlock = ({
       {!isPublic &&
         !hideControl &&
         editMode &&
-        audit?.status?.toLowerCase() !== RESOLVED.toLowerCase() &&
-        (user.current_role.toLowerCase() === CUSTOMER.toLowerCase() ||
-          user.current_role.toLowerCase() === AUDITOR.toLowerCase()) &&
+        audit?.status?.toLowerCase() !== RESOLVED?.toLowerCase() &&
+        (user?.current_role?.toLowerCase() === CUSTOMER?.toLowerCase() ||
+          user?.current_role?.toLowerCase() === AUDITOR?.toLowerCase()) &&
         !isEditFeedback &&
         !issue?.feedback && (
           <Box sx={buttonsBox}>
@@ -309,7 +311,7 @@ const StatusSeverityBlock = ({
               arrow
               placement="top"
               title={
-                user.current_role.toLowerCase() === AUDITOR.toLowerCase()
+                user?.current_role?.toLowerCase() === AUDITOR?.toLowerCase()
                   ? 'Customer feedback will be included in the report. Do not edit this field without a reasonable cause.'
                   : 'Customer feedback will be included in the report'
               }

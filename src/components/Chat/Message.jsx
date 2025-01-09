@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import Cookies from 'js-cookie';
 import axios from 'axios';
-import { Avatar, Box, Button, Modal, Typography } from '@mui/material';
+import { Avatar, Box, Typography } from '@mui/material';
 import DoneAllIcon from '@mui/icons-material/DoneAll';
 import { ASSET_URL } from '../../services/urls.js';
 import theme from '../../styles/themes.js';
@@ -28,7 +28,10 @@ const Message = ({ message, user, currentChat, isRead }) => {
   const userAvatar = useMemo(() => {
     if (user.current_role === AUDITOR && !!auditor?.avatar) {
       return auditor.avatar;
-    } else if (user.current_role === CUSTOMER && !!customer?.avatar) {
+    } else if (
+      user?.current_role?.toLowerCase() === CUSTOMER?.toLowerCase() &&
+      !!customer?.avatar
+    ) {
       return customer.avatar;
     } else {
       return null;
@@ -121,14 +124,6 @@ const messageSx = ({ isOwn }) => ({
   flexDirection: isOwn ? 'row-reverse' : 'row',
 });
 
-const contentSx = theme => ({
-  borderRadius: '10px',
-  padding: '15px 30px 25px',
-  '& p': {
-    padding: 'unset',
-  },
-});
-
 const messageAvatarSx = theme => ({
   width: '50px',
   height: '50px',
@@ -191,7 +186,6 @@ const requestTextSx = ({ isOwn }) => ({
   paddingBottom: '30px',
   borderRadius: isOwn ? '15px 0 15px 15px' : '0 15px 15px 15px',
   '& p': {
-    // padding: '15px',
     fontSize: '20px',
     fontWeight: 500,
     lineHeight: '25px',
@@ -213,7 +207,6 @@ const requestTextSx = ({ isOwn }) => ({
     margin: '0 10px',
     '& p': {
       lineHeight: '20px',
-      // padding: '10px 20px 18px',
       fontSize: '16px',
     },
   },

@@ -37,7 +37,6 @@ const Footer = ({ containerSx }) => {
                 aria-label="Twitter"
                 {...addTestsLabel('footer_twitter-link')}
               >
-                {/*<TwitterIcon sx={iconStyle} />*/}
                 <XTwitterLogo />
               </a>
               <a
@@ -66,14 +65,12 @@ const Footer = ({ containerSx }) => {
                 disableRipple
                 key={page.id}
               >
-                {/*<Box sx={menuItem(isMobile)}>*/}
                 <Link
                   to={page.path}
                   {...addTestsLabel(`footer_${page.name}-link`)}
                 >
                   {page.name}
                 </Link>
-                {/*</Box>*/}
               </MenuItem>
             ))}
           </Box>
@@ -97,7 +94,6 @@ const mainFooterStyles = isMobile => ({
   display: 'flex',
   flexDirection: 'column',
   justifyContent: 'space-between',
-  // maxWidth: '1512px',
   width: '100%',
   padding: isMobile ? '35px 30px 28px 30px' : '0 45px',
   gap: '30px',
@@ -170,13 +166,6 @@ const menuItems = theme => ({
   },
 });
 
-const menuItem = isMobile => ({
-  // fontSize: isMobile ? '18px' : '26px',
-  '& a': {
-    color: '#fff',
-  },
-});
-
 const menuItemWrap = isMobile => ({
   backgroundColor: 'transparent',
   textAlign: 'left',
@@ -194,12 +183,6 @@ const menuItemWrap = isMobile => ({
   },
 });
 
-const rightsStyles = isMobile => ({
-  fontSize: isMobile ? '9px' : '18px',
-  fontWeight: '400',
-  textAlign: 'center',
-});
-
 const pages = [
   {
     id: 1,
@@ -211,10 +194,6 @@ const pages = [
     name: 'For auditors',
     path: '/for-auditors',
   },
-  // {
-  // 	id: 3,
-  // 	name: "Product",
-  // },
   {
     id: 3,
     name: 'AuditDB',
@@ -225,10 +204,6 @@ const pages = [
     name: 'Contact us',
     path: '/contact-us',
   },
-  // {
-  // 	id: 6,
-  // 	name: "About Us",
-  // },
 ];
 
 export default Footer;

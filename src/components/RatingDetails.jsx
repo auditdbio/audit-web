@@ -74,29 +74,6 @@ const RatingDetails = ({ rating, role, username }) => {
             />
           </Box>
         ))}
-
-        {/*<Box sx={{ display: 'flex', flexWrap: 'wrap' }}>*/}
-        {/*  {Object.keys(ratingDetails).map(point => (*/}
-        {/*    <Box*/}
-        {/*      key={point}*/}
-        {/*      sx={{*/}
-        {/*        display: 'flex',*/}
-        {/*        flexDirection: 'column',*/}
-        {/*        width: '50%',*/}
-        {/*        alignItems: 'center',*/}
-        {/*        padding: '20px',*/}
-        {/*      }}*/}
-        {/*    >*/}
-        {/*      <span style={{ marginBottom: '10px', fontWeight: 500 }}>*/}
-        {/*        {point}*/}
-        {/*      </span>*/}
-        {/*      <CircularProgressBar*/}
-        {/*        value={ratingDetails[point].split('/')[0]}*/}
-        {/*        maxValue={ratingDetails[point].split('/')[1]}*/}
-        {/*      />*/}
-        {/*    </Box>*/}
-        {/*  ))}*/}
-        {/*</Box>*/}
       </Box>
       <hr />
       <Box sx={infoWrapper}>

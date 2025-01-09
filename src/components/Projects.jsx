@@ -99,16 +99,6 @@ const wrapper = theme => ({
   },
 });
 
-const gridItemStyle = theme => ({
-  width: '25%',
-  [theme.breakpoints.down('sm')]: {
-    width: '33.330%',
-  },
-  [theme.breakpoints.down('xs')]: {
-    width: '100%',
-  },
-});
-
 const buttonSx = theme => ({
   padding: '9px 35px',
   borderRadius: '10px',

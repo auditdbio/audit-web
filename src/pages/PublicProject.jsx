@@ -78,7 +78,9 @@ const PublicProject = () => {
         } else {
           setModalIsOpen(true);
         }
-      } else if (user.current_role === CUSTOMER) {
+      } else if (
+        user?.current_role?.toLowerCase() === CUSTOMER?.toLowerCase()
+      ) {
         if (!auditor?.first_name) {
           setMessage('Switched to auditor role');
           setModalIsOpen(true);
@@ -204,6 +206,7 @@ const PublicProject = () => {
                 email={customer?.contacts.email}
                 telegram={customer?.contacts.telegram}
                 id={customer?.user_id}
+                customer={true}
               />
               <Box ref={descriptionRef}>
                 <Markdown value={project?.description} />

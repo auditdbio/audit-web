@@ -251,7 +251,6 @@ export const getMyGithubOrgs = () => {
         }
       })
       .catch(error => {
-        // console.log(error);
         dispatch({ type: NEED_TO_AUTH_GITHUB });
         const user = JSON.parse(localStorage.getItem('user'));
         const newData = {

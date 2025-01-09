@@ -4,7 +4,6 @@ import {
   RECEIVE_CUSTOMER_MESSAGE,
   RECEIVE_MESSAGES,
   USER_IS_ALREADY_EXIST,
-  USER_SIGNUP,
   WEBSOCKET_CONNECT,
   WEBSOCKET_DISCONNECT,
 } from './types.js';
@@ -53,7 +52,3 @@ export const getUnreadMessages = () => {
       });
   };
 };
-
-// export const websocketSend = message => {
-//   return { type: WEBSOCKET_SEND, message };
-// };

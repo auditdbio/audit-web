@@ -131,7 +131,7 @@ const PublicConstructor = ({ saved, isPublic }) => {
     );
     if (report?.auditor_name && report?.project_name && report?.description) {
       if (isAuth()) {
-        if (user.current_role === CUSTOMER) {
+        if (user?.current_role?.toLowerCase() === CUSTOMER.toLowerCase()) {
           const data = {
             ...filteredReport,
             isPublic: true,
@@ -208,7 +208,6 @@ const PublicConstructor = ({ saved, isPublic }) => {
             <ArrowBackIcon color={'secondary'} />
           </Button>
           <Formik
-            // validationSchema={SubmitValidation}
             initialValues={initialValues}
             onSubmit={values => {
               if (saved) {
@@ -265,7 +264,6 @@ const PublicConstructor = ({ saved, isPublic }) => {
                         <Tabs
                           value={tab}
                           onChange={(e, newValue) => {
-                            // setShowFull(false);
                             setTab(newValue);
                             if (editConclusion) {
                               setEditConclusion(false);
@@ -276,14 +274,12 @@ const PublicConstructor = ({ saved, isPublic }) => {
                           aria-label="secondary tabs example"
                           sx={tabsSx}
                         >
-                          {/*{tab !== 0 && (*/}
                           <Tab
                             sx={[
                               tabSx,
                               {
                                 borderRadius: '8px 0 0 0',
                                 marginRight: '15px',
-                                // border: '1px solid',
                               },
                               tab === 0 ? { color: '#52176D' } : selectedTabSx,
                             ]}
@@ -298,7 +294,6 @@ const PublicConstructor = ({ saved, isPublic }) => {
                                   paddingRight: '0',
                                   width: '150px',
                                   borderRadius: '0 0 0 0',
-                                  // border: '1px solid',
                                   borderRight: 'unset',
                                 },
                                 conclusionSx,
@@ -313,10 +308,6 @@ const PublicConstructor = ({ saved, isPublic }) => {
                             <Button
                               sx={[
                                 tabSx,
-                                {
-                                  // borderRadius: '8px 0 0 0',
-                                  // border: '1px solid',
-                                },
                                 tab === 0
                                   ? { color: 'rgba(0, 0, 0, 0.6)' }
                                   : selectedTabSx,
@@ -324,7 +315,6 @@ const PublicConstructor = ({ saved, isPublic }) => {
                               value={1}
                               onClick={() => {
                                 setEditConclusion(true);
-                                // setShowFull(true);
                                 setTab(1);
                               }}
                             >
@@ -353,7 +343,6 @@ const PublicConstructor = ({ saved, isPublic }) => {
                             </Button>
                           )}
                         </Tabs>
-                        {/*)}*/}
                         {tab === 0 ? (
                           <Collapse
                             in={true}
@@ -430,7 +419,6 @@ const PublicConstructor = ({ saved, isPublic }) => {
                             collapsedSize={showFull ? undefined : 150}
                           >
                             <Box sx={descriptionWrapper(theme, showFull)}>
-                              {/*<Box>*/}
                               <MarkdownEditor
                                 saved={saved}
                                 name="conclusion"
@@ -453,7 +441,6 @@ const PublicConstructor = ({ saved, isPublic }) => {
                                     : {}
                                 }
                               />
-                              {/*</Box>*/}
                             </Box>
                           </Collapse>
                         )}
@@ -794,7 +781,6 @@ const readAllButton = theme => ({
   display: 'flex',
   alignItems: 'center',
   gap: '7px',
-  // maxWidth: '300px',
   [theme.breakpoints.down('xs')]: {
     fontSize: '16px',
   },
@@ -838,12 +824,6 @@ const titleSx = theme => ({
     fontSize: '26px',
   },
 });
-
-// const SubmitValidation = Yup.object().shape({
-//   project_name: Yup.string().required('File is required'),
-//   description: Yup.string().required('File is required'),
-//   auditor_name: Yup.string().required('File is required'),
-// });
 
 const wrapper = theme => ({
   padding: '25px 30px 60px',

@@ -3,24 +3,14 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, Link } from 'react-router-dom/dist';
 import dayjs from 'dayjs';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import {
-  Avatar,
-  Box,
-  Button,
-  Typography,
-  Tooltip,
-  Divider,
-  Collapse,
-} from '@mui/material';
+import { Box, Button, Typography, Divider, Collapse } from '@mui/material';
 import Headings from '../../router/Headings.jsx';
 import CustomSnackbar from '../custom/CustomSnackbar.jsx';
 import { CustomCard } from '../custom/Card.jsx';
 import CloseIcon from '@mui/icons-material/Close';
 import EditTags from '../EditDescription/EditTags.jsx';
-import EditPrice from '../EditDescription/EditPrice.jsx';
 import TagsList from '../tagsList.jsx';
 import EditDescription from '../EditDescription/index.jsx';
-import DescriptionHistory from '../DescriptionHistory/index.jsx';
 import Markdown from '../markdown/Markdown.jsx';
 import ChatIcon from '../icons/ChatIcon.jsx';
 import IssuesList from '../issuesPage/IssuesList.jsx';
@@ -46,7 +36,6 @@ import {
 } from '../../redux/actions/types.js';
 import { setCurrentChat } from '../../redux/actions/chatActions.js';
 import { addTestsLabel } from '../../lib/helper.js';
-import { ASSET_URL } from '../../services/urls.js';
 import theme from '../../styles/themes.js';
 import AuditUserCard from '../AuditUserCard/AuditUserCard.jsx';
 import EditIcon from '@mui/icons-material/Edit';
@@ -245,6 +234,7 @@ const MessageModalCustomer = ({
                 name={
                   audit?.auditor_first_name + ' ' + audit?.auditor_last_name
                 }
+                id={audit?.auditor_id}
                 email={audit?.auditor_contacts?.email}
                 telegram={audit?.auditor_contacts?.telegram}
               />
@@ -276,7 +266,6 @@ const MessageModalCustomer = ({
         <Box
           sx={[
             {
-              // border: '1px solid #E5E5E5',
               borderTop: '1px solid #E5E5E5',
               display: 'flex',
               width: '100%',
@@ -337,7 +326,6 @@ const MessageModalCustomer = ({
               ]}
             />
           </Button>
-          {/*)}*/}
         </Box>
       </Box>
       {audit?.conclusion && (
@@ -463,7 +451,6 @@ const MessageModalCustomer = ({
               Issues ({issues?.length})
             </Button>
           )}
-        {/*)}*/}
       </Box>
       {isPublic && (
         <IssuesList
@@ -504,7 +491,6 @@ const readAllButton = theme => ({
   display: 'flex',
   alignItems: 'center',
   gap: '7px',
-  // maxWidth: '300px',
   [theme.breakpoints.down('xs')]: {
     fontSize: '16px',
   },
@@ -547,13 +533,6 @@ const wrapper = theme => ({
   },
 });
 
-const userNameWrapper = theme => ({
-  maxWidth: '190px',
-  [theme.breakpoints.down('sm')]: {
-    maxWidth: 'unset',
-  },
-});
-
 const backButtonSx = theme => ({
   position: 'absolute',
   left: 0,
@@ -579,53 +558,6 @@ const contentWrapper = theme => ({
     gap: '16px',
     maxWidth: '400px',
     marginX: 'auto',
-  },
-});
-
-const userWrapper = theme => ({
-  display: 'flex',
-  flexDirection: 'column',
-  gap: '15px',
-  '& .MuiAvatar-root': {
-    width: '120px',
-    height: '120px',
-  },
-  '& p': {
-    color: '#434242',
-    fontSize: '15px',
-    fontWeight: 500,
-    '&:nth-of-type(1)': {
-      margin: '13px 0 5px',
-    },
-  },
-  [theme.breakpoints.down('md')]: {
-    '& .MuiAvatar-root': {
-      width: '90px',
-      height: '90px',
-    },
-  },
-  [theme.breakpoints.down('sm')]: {
-    display: 'flex',
-    gap: '20px',
-    alignItems: 'center',
-    marginBottom: '20px',
-    '& p': {
-      color: '#434242',
-      fontSize: '15px',
-      fontWeight: 500,
-      '&:nth-of-type(1)': {
-        margin: '0 0 18px',
-      },
-    },
-  },
-});
-
-const userInfoWrapper = theme => ({
-  display: 'flex',
-  flexDirection: 'column',
-  gap: '32px',
-  [theme.breakpoints.down('sm')]: {
-    gap: '16px',
   },
 });
 
@@ -681,37 +613,6 @@ const projectWrapper = theme => ({
     '& p': {
       fontSize: '12px',
     },
-  },
-});
-
-const infoWrapper = theme => ({
-  display: 'flex',
-  alignItems: 'center',
-  fontWeight: 500,
-  color: '#434242',
-  '& p': {
-    fontSize: 'inherit',
-    maxWidth: '200px',
-  },
-  '& span': {
-    width: '85px',
-    marginRight: '30px',
-    color: '#B2B3B3',
-  },
-  fontSize: '15px',
-  [theme.breakpoints.down('md')]: {
-    '& span': {
-      width: '90px',
-      marginRight: '20px',
-    },
-  },
-  [theme.breakpoints.down('sm')]: {
-    '& p': {
-      maxWidth: '300px',
-    },
-  },
-  [theme.breakpoints.down('xs')]: {
-    fontSize: '12px',
   },
 });
 

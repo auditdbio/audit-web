@@ -18,7 +18,6 @@ import {
   VERIFIED_ACTION,
   WILL_NOT_FIX,
 } from './constants.js';
-import QuestionMarkIcon from '@mui/icons-material/QuestionMark';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline.js';
 
 const StatusControl = ({ status, setFieldValue }) => {
@@ -96,7 +95,10 @@ const StatusControl = ({ status, setFieldValue }) => {
               status !== 'Draft'
                 ? { textTransform: 'none' }
                 : { textTransform: 'none' },
-              statusBtn(theme, user.current_role === CUSTOMER),
+              statusBtn(
+                theme,
+                user?.current_role?.toLowerCase() === CUSTOMER?.toLowerCase(),
+              ),
             ]}
             onClick={() => handleChangeStatus(action.action)}
             {...addTestsLabel('change-status-button')}

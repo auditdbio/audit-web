@@ -285,7 +285,6 @@ const CustomPaper = props => {
 };
 
 const MakeOfferSchema = Yup.object().shape({
-  // price: Yup.number(),
   price_range: Yup.object(),
   project_id: Yup.string(),
   time_frame: Yup.string(),
@@ -416,20 +415,6 @@ const rateLabel = theme => ({
   fontWeight: 500,
 });
 
-const sliderSx = theme => ({
-  height: '9px',
-  '& .MuiSlider-track, .MuiSlider-rail': {
-    backgroundColor: '#B9B9B9',
-    border: 'none',
-  },
-});
-
-const infoWrapper = theme => ({
-  border: '1.42857px solid #E5E5E5',
-  width: '100px',
-  padding: '15px 0',
-  textAlign: 'center',
-});
 const dateWrapper = {
   display: 'flex',
   flexDirection: 'row',

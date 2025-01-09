@@ -4,11 +4,8 @@ import { CustomButton } from './custom/Button.jsx';
 import { useNavigate } from 'react-router-dom/dist';
 import { useDispatch } from 'react-redux';
 import { confirmAudit } from '../redux/actions/auditAction.js';
-import { useMemo } from 'react';
 import {
   CUSTOMER,
-  DONE,
-  IN_PROGRESS,
   RESOLVED,
   SUBMITED,
   WAITING_FOR_AUDITS,
@@ -80,18 +77,18 @@ const AuditCard = ({ audit, request }) => {
 
       {!request ? (
         <Box sx={statusWrapper}>
-          {audit.status !== SUBMITED && (
+          {audit?.status !== SUBMITED && (
             <>
-              {audit.status.toLowerCase() === RESOLVED.toLowerCase() ? (
+              {audit?.status?.toLowerCase() === RESOLVED.toLowerCase() ? (
                 <Box sx={{ backgroundColor: '#52176D' }} />
               ) : (
-                audit.status.toLowerCase() ===
+                audit?.status?.toLowerCase() ===
                   WAITING_FOR_AUDITS.toLowerCase() && (
                   <Box sx={{ backgroundColor: '#FF9900' }} />
                 )
               )}
-              {audit.status.toLowerCase() !== RESOLVED.toLowerCase() &&
-                audit.status.toLowerCase() !==
+              {audit?.status?.toLowerCase() !== RESOLVED.toLowerCase() &&
+                audit?.status?.toLowerCase() !==
                   WAITING_FOR_AUDITS.toLowerCase() && (
                   <Box sx={{ backgroundColor: '#09C010' }} />
                 )}
@@ -114,7 +111,7 @@ const AuditCard = ({ audit, request }) => {
           justifyContent: 'center',
         }}
       >
-        {!audit.status && (
+        {!audit?.status && (
           <CustomButton
             variant="contained"
             sx={[
@@ -146,15 +143,6 @@ const AuditCard = ({ audit, request }) => {
     </Card>
   );
 };
-
-const btnWrapper = () => ({
-  display: 'flex',
-  gap: '12px',
-  [theme.breakpoints.down('xs')]: {
-    flexDirection: 'column',
-    gap: '12px',
-  },
-});
 
 const categorySx = theme => ({
   textAlign: 'center',

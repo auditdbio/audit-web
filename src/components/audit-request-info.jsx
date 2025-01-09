@@ -228,8 +228,6 @@ const AuditRequestInfo = ({
                   showFullHeader ? {} : { transform: 'rotate(180deg)' },
                   {
                     transition: '0.2s',
-                    // marginRight: '0',
-                    // marginLeft: 'auto',
                     width: '20px',
                     height: '20px',
                   },
