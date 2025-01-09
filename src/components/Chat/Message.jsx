@@ -64,7 +64,14 @@ const Message = ({ message, user, currentChat, isRead, previousMessage }) => {
     !previousMessage || previousMessage.from?.id !== message.from?.id;
 
   return (
-    <Box sx={messageSx({ isOwn: message.from?.id === user.id })}>
+    <Box
+      sx={[
+        messageSx({ isOwn: message.from?.id === user.id }),
+        !shouldShowAvatar && message.from?.id === user.id
+          ? { marginBottom: '15px' }
+          : {},
+      ]}
+    >
       {shouldShowAvatar ? (
         <Avatar
           src={getMessageAvatar()}
@@ -72,7 +79,7 @@ const Message = ({ message, user, currentChat, isRead, previousMessage }) => {
           alt="User photo"
         />
       ) : (
-        <Box sx={avatarPlugSx}>
+        <Box className={'avatar-plug'} sx={avatarPlugSx}>
           <Box
             sx={{
               fontSize: '14px',
@@ -89,7 +96,7 @@ const Message = ({ message, user, currentChat, isRead, previousMessage }) => {
         </Box>
       )}
       <Box
-        sx={
+        sx={[
           message.kind === 'Audit'
             ? requestTextSx(
                 { isOwn: message.from?.id === user.id },
@@ -98,8 +105,15 @@ const Message = ({ message, user, currentChat, isRead, previousMessage }) => {
             : messageTextSx(
                 { isOwn: message.from?.id === user.id },
                 !shouldShowAvatar,
-              )
-        }
+              ),
+          shouldShowAvatar
+            ? {
+                '& p': {
+                  paddingBottom: '20px',
+                },
+              }
+            : {},
+        ]}
       >
         {message.kind === 'Image' ? (
           <ImageMessage message={message} />
@@ -114,7 +128,14 @@ const Message = ({ message, user, currentChat, isRead, previousMessage }) => {
             {makeLinksClickable(message.text)}
           </Typography>
         )}
-        <Box sx={messageTimeSx}>
+        <Box
+          sx={messageTimeSx(
+            theme,
+            shouldShowAvatar,
+            message.from?.id === user.id,
+          )}
+          className={'messageTimeSx'}
+        >
           {shouldShowAvatar && (
             <Box sx={{ mr: '5px' }}>
               {new Date(message?.time / 1000)
@@ -152,6 +173,9 @@ function makeLinksClickable(text) {
 const messageSx = ({ isOwn }) => ({
   display: 'flex',
   flexDirection: isOwn ? 'row-reverse' : 'row',
+  '&:hover .avatar-plug': {
+    opacity: 1,
+  },
 });
 
 const contentSx = theme => ({
@@ -164,6 +188,7 @@ const contentSx = theme => ({
 
 const avatarPlugSx = theme => ({
   width: '50px',
+  opacity: '0',
   display: 'flex',
   alignItems: 'flex-start',
   justifyContent: 'center',
@@ -190,13 +215,13 @@ const messageAvatarSx = theme => ({
 
 const messageTextSx = ({ isOwn, single }) => ({
   position: 'relative',
-  minWidth: '150px',
+  minWidth: '50px',
   maxWidth: '400px',
   margin: '0 10px',
   background: '#e5e5e5',
   borderRadius: isOwn ? '15px 0 15px 15px' : '0 15px 15px 15px',
   '& p': {
-    padding: single || isOwn ? '10px 30px 20px' : '10px 30px 20px',
+    padding: single || isOwn ? '10px 20px 10px' : '10px 20px 10px',
     fontSize: '20px',
     fontWeight: 500,
     lineHeight: '25px',
@@ -228,7 +253,7 @@ const messageTextSx = ({ isOwn, single }) => ({
 
 const requestTextSx = ({ isOwn }) => ({
   position: 'relative',
-  minWidth: '150px',
+  minWidth: '50px',
   maxWidth: '400px',
   width: '100%',
   margin: '0 10px',
@@ -282,12 +307,17 @@ const linkMessage = {
   },
 };
 
-const messageTimeSx = theme => ({
+const messageTimeSx = (theme, single, isOwn) => ({
   display: 'flex',
   alignItems: 'center',
   position: 'absolute',
-  bottom: 2,
+  bottom: single ? '2px' : '-20px',
   right: 5,
+  ...(isOwn
+    ? {}
+    : {
+        left: '8px!important',
+      }),
   fontSize: '14px',
   color: '#434242',
   [theme.breakpoints.down('sm')]: {

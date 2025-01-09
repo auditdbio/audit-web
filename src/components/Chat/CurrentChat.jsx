@@ -474,21 +474,21 @@ const chatSx = theme => ({
   flexGrow: 1,
   display: 'flex',
   flexDirection: 'column',
-  rowGap: '20px',
+  rowGap: '10px',
   overflowY: 'auto',
   '::-webkit-scrollbar': {
     width: '6px',
   },
   [theme.breakpoints.down('sm')]: {
-    padding: '30px 20px 20px',
-    rowGap: '20px',
+    // padding: '30px 20px 20px',
+    // rowGap: '20px',
     '::-webkit-scrollbar': {
       width: '4px',
     },
   },
   [theme.breakpoints.down('xs')]: {
-    padding: '30px 10px 20px',
-    rowGap: '15px',
+    // padding: '30px 10px 20px',
+    // rowGap: '15px',
   },
 });
 
