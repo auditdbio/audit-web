@@ -64,14 +64,7 @@ const Message = ({ message, user, currentChat, isRead, previousMessage }) => {
     !previousMessage || previousMessage.from?.id !== message.from?.id;
 
   return (
-    <Box
-      sx={[
-        messageSx({ isOwn: message.from?.id === user.id }),
-        !shouldShowAvatar && message.from?.id === user.id
-          ? { marginBottom: '15px' }
-          : {},
-      ]}
-    >
+    <Box sx={[messageSx({ isOwn: message.from?.id === user.id })]}>
       {shouldShowAvatar ? (
         <Avatar
           src={getMessageAvatar()}
@@ -216,12 +209,12 @@ const messageAvatarSx = theme => ({
 const messageTextSx = ({ isOwn, single }) => ({
   position: 'relative',
   minWidth: '50px',
-  maxWidth: '400px',
+  maxWidth: '700px',
   margin: '0 10px',
   background: '#e5e5e5',
   borderRadius: isOwn ? '15px 0 15px 15px' : '0 15px 15px 15px',
   '& p': {
-    padding: single || isOwn ? '10px 20px 10px' : '10px 20px 10px',
+    padding: single || isOwn ? '5px 20px 10px' : '5px 20px 10px',
     fontSize: '20px',
     fontWeight: 500,
     lineHeight: '25px',
@@ -230,14 +223,13 @@ const messageTextSx = ({ isOwn, single }) => ({
     wordBreak: 'break-word',
   },
   [theme.breakpoints.down('md')]: {
-    maxWidth: '360px',
+    maxWidth: '560px',
   },
   [theme.breakpoints.down('sm')]: {
-    maxWidth: '290px',
+    maxWidth: '490px',
     margin: '0 10px',
     '& p': {
       lineHeight: '20px',
-      padding: single ? '10px 20px 18px' : '5px 20px 25px',
       fontSize: '16px',
     },
   },
@@ -311,7 +303,7 @@ const messageTimeSx = (theme, single, isOwn) => ({
   display: 'flex',
   alignItems: 'center',
   position: 'absolute',
-  bottom: single ? '2px' : '-20px',
+  bottom: '2px',
   right: 5,
   ...(isOwn
     ? {}

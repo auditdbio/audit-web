@@ -142,9 +142,9 @@ const ChatPage = () => {
 export default ChatPage;
 
 const layoutSx = theme => ({
-  paddingY: '20px !important',
+  paddingY: '10px !important',
   [theme.breakpoints.down('xs')]: {
-    paddingY: '20px !important',
+    paddingY: '10px !important',
   },
 });
 
@@ -165,7 +165,7 @@ const wrapper = theme => ({
 });
 
 const chatWrapper = {
-  height: 'calc(100vh - 165px)',
+  height: 'calc(100vh - 126px)',
   width: '100%',
   display: 'flex',
   border: '2px solid #e5e5e5',
