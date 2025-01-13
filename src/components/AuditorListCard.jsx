@@ -149,7 +149,6 @@ const AuditorListCard = ({ auditor, projectIdToInvite, budge }) => {
                   </Typography>
                 </Tooltip>
               </Box>
-              {/*<Typography sx={projectStyle}>{auditor.company}</Typography>*/}
             </Box>
             <Box sx={statusGroup(theme)}>
               <CircleIcon sx={statusCircle} />
