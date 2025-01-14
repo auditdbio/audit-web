@@ -101,7 +101,7 @@ const Message = ({ message, user, currentChat, isRead, previousMessage }) => {
             }}
           >
             {new Date(message?.time / 1000)
-              .toLocaleTimeString('en-US', { hour12: true })
+              .toLocaleTimeString()
               .replace(/:\d\d(?=$|( AM| PM))/, '')}
           </Box>
         </Box>
