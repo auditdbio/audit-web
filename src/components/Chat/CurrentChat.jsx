@@ -448,7 +448,7 @@ const attachButton = theme => ({
 
 const chatSx = theme => ({
   position: 'relative',
-  padding: '10px',
+  padding: '25px 5px',
   flexGrow: 1,
   display: 'flex',
   flexDirection: 'column',

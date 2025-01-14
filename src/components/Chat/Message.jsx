@@ -66,24 +66,42 @@ const Message = ({ message, user, currentChat, isRead, previousMessage }) => {
   return (
     <Box sx={[messageSx({ isOwn: message.from?.id === user.id })]}>
       {shouldShowAvatar ? (
-        <Avatar
-          src={getMessageAvatar()}
-          sx={messageAvatarSx}
-          alt="User photo"
-        />
+        <Box
+          sx={{
+            width: '60px',
+            display: 'flex',
+            justifyContent: 'center',
+            [theme.breakpoints.down('xs')]: {
+              width: '50px',
+            },
+          }}
+        >
+          <Avatar
+            src={getMessageAvatar()}
+            sx={messageAvatarSx}
+            alt="User photo"
+          />
+        </Box>
       ) : (
         <Box className={'avatar-plug'} sx={avatarPlugSx}>
           <Box
             sx={{
-              fontSize: '14px',
+              fontSize: '13px',
               color: '#434242',
+              width: '60px',
+              display: 'flex',
+              justifyContent: 'center',
               [theme.breakpoints.down('sm')]: {
                 fontSize: '12px',
+              },
+              [theme.breakpoints.down('xs')]: {
+                fontSize: '10px',
+                width: '50px',
               },
             }}
           >
             {new Date(message?.time / 1000)
-              .toLocaleTimeString()
+              .toLocaleTimeString('en-US', { hour12: true })
               .replace(/:\d\d(?=$|( AM| PM))/, '')}
           </Box>
         </Box>
@@ -130,14 +148,17 @@ const Message = ({ message, user, currentChat, isRead, previousMessage }) => {
           className={'messageTimeSx'}
         >
           {shouldShowAvatar && (
-            <Box sx={{ mr: '5px' }}>
+            <Box sx={{ mr: '5px', paddingBottom: '2px' }}>
               {new Date(message?.time / 1000)
                 .toLocaleTimeString()
                 .replace(/:\d\d(?=$|( AM| PM))/, '')}
             </Box>
           )}
           {isRead && user.id === message.from?.id && (
-            <DoneAllIcon fontSize="small" />
+            <DoneAllIcon
+              sx={{ width: '18px', height: '18px' }}
+              fontSize="small"
+            />
           )}
         </Box>
       </Box>
@@ -180,29 +201,22 @@ const contentSx = theme => ({
 });
 
 const avatarPlugSx = theme => ({
-  width: '50px',
+  width: '60px',
   opacity: '0',
   display: 'flex',
   alignItems: 'flex-start',
   justifyContent: 'center',
-  [theme.breakpoints.down('sm')]: {
-    width: '35px',
-  },
   [theme.breakpoints.down('xs')]: {
-    width: '30px',
+    width: '50px',
   },
 });
 
 const messageAvatarSx = theme => ({
   width: '50px',
   height: '50px',
-  [theme.breakpoints.down('sm')]: {
-    width: '35px',
-    height: '35px',
-  },
   [theme.breakpoints.down('xs')]: {
-    width: '30px',
-    height: '30px',
+    width: '40px',
+    height: '40px',
   },
 });
 
@@ -210,14 +224,14 @@ const messageTextSx = ({ isOwn, single }) => ({
   position: 'relative',
   minWidth: '50px',
   maxWidth: '700px',
-  margin: '0 10px',
+  margin: '0 5px',
   background: '#e5e5e5',
   borderRadius: isOwn ? '15px 0 15px 15px' : '0 15px 15px 15px',
   '& p': {
     padding: single || isOwn ? '5px 20px 10px' : '5px 20px 10px',
     fontSize: '20px',
     fontWeight: 500,
-    lineHeight: '25px',
+    lineHeight: '22px',
     color: '#434242',
     overflow: 'hidden',
     wordBreak: 'break-word',
@@ -227,16 +241,15 @@ const messageTextSx = ({ isOwn, single }) => ({
   },
   [theme.breakpoints.down('sm')]: {
     maxWidth: '490px',
-    margin: '0 10px',
     '& p': {
-      lineHeight: '20px',
+      lineHeight: '17px',
       fontSize: '16px',
     },
   },
   [theme.breakpoints.down('xs')]: {
     minWidth: '100px',
     '& p': {
-      lineHeight: '18px',
+      lineHeight: '16px',
       padding: '5px 10px 18px',
       fontSize: '14px',
     },
@@ -248,7 +261,7 @@ const requestTextSx = ({ isOwn }) => ({
   minWidth: '50px',
   maxWidth: '400px',
   width: '100%',
-  margin: '0 10px',
+  margin: '0 5px',
   background: '#e5e5e5',
   padding: '15px',
   paddingBottom: '30px',
@@ -273,7 +286,6 @@ const requestTextSx = ({ isOwn }) => ({
   },
   [theme.breakpoints.down('sm')]: {
     maxWidth: '290px',
-    margin: '0 10px',
     '& p': {
       lineHeight: '20px',
       // padding: '10px 20px 18px',
@@ -303,8 +315,8 @@ const messageTimeSx = (theme, single, isOwn) => ({
   display: 'flex',
   alignItems: 'center',
   position: 'absolute',
-  bottom: '2px',
-  right: 5,
+  bottom: '0px',
+  right: 4,
   ...(isOwn
     ? {}
     : {
