@@ -93,6 +93,7 @@ const CreateProjectCard = ({ projectInfo }) => {
   const auditReducer = useSelector(state => state.audits);
   const [auditRequests, setAuditRequests] = useState([]);
   const [error, setError] = useState(null);
+  const [clear, setClear] = useState(false);
   const projectMessage = useSelector(state => state.project.message);
   const [isPublished, setIsPublished] = useState(
     projectInfo?.publish_options?.publish || false,
@@ -180,6 +181,7 @@ const CreateProjectCard = ({ projectInfo }) => {
   };
 
   const handleCloseInviteModal = () => {
+    setClear(true);
     setOpenInvite(false);
   };
 
