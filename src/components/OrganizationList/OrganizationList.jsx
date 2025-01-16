@@ -22,7 +22,7 @@ const OrganizationList = ({ organizations }) => {
             >
               <Tooltip title={org.name} placement="top" arrow>
                 <Avatar
-                  src={org.avatar ? `${ASSET_URL}/${org.avatar}` : ''}
+                  src={org.avatar ? `${ASSET_URL}/id/${org.avatar}` : ''}
                   sx={{
                     border: `1px solid ${
                       user.current_role === CUSTOMER

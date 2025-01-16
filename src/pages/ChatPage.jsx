@@ -170,52 +170,54 @@ const ChatPage = () => {
           }}
         >
           <Box sx={orgListSx}>
-            <Tooltip title={'Personal'} arrow placement={'top'}>
-              <>
-                <Box
-                  sx={[
-                    orgListItemSx,
-                    !searchParams.get('org')
-                      ? selectedTab(
-                          theme,
-                          user.current_role.toLowerCase() ===
-                            AUDITOR.toLowerCase(),
-                        )
-                      : {},
-                  ]}
-                  onClick={handleChoose}
-                >
+            <>
+              <Box
+                sx={[
+                  orgListItemSx,
+                  !searchParams.get('org')
+                    ? selectedTab(
+                        theme,
+                        user.current_role.toLowerCase() ===
+                          AUDITOR.toLowerCase(),
+                      )
+                    : {},
+                ]}
+                onClick={handleChoose}
+              >
+                <Tooltip title={'Personal'} arrow placement={'top'}>
                   <Avatar
                     sx={orgAvatarSx}
                     src={
-                      profile?.avatar ? `${ASSET_URL}/${profile.avatar}` : null
+                      profile?.avatar
+                        ? `${ASSET_URL}/id/${profile?.avatar}`
+                        : ''
                     }
                   />
-                </Box>
-                {/*<Divider />*/}
-              </>
-            </Tooltip>
+                </Tooltip>
+              </Box>
+            </>
             {organizations.map(org => (
-              <Tooltip title={org.name} key={org.id} arrow placement={'top'}>
-                <Box
-                  sx={[
-                    orgListItemSx,
-                    searchParams.get('org') === org.id
-                      ? selectedTab(
-                          theme,
-                          user.current_role.toLowerCase() ===
-                            AUDITOR.toLowerCase(),
-                        )
-                      : {},
-                  ]}
-                  onClick={() => handleChoose(org)}
-                >
+              <Box
+                key={org.id}
+                sx={[
+                  orgListItemSx,
+                  searchParams.get('org') === org.id
+                    ? selectedTab(
+                        theme,
+                        user.current_role.toLowerCase() ===
+                          AUDITOR.toLowerCase(),
+                      )
+                    : {},
+                ]}
+                onClick={() => handleChoose(org)}
+              >
+                <Tooltip title={org.name} arrow placement={'top'}>
                   <Avatar
                     sx={orgAvatarSx}
-                    src={org?.avatar ? `${ASSET_URL}/${org.avatar}` : null}
+                    src={org?.avatar ? `${ASSET_URL}/id/${org.avatar}` : null}
                   />
-                </Box>
-              </Tooltip>
+                </Tooltip>
+              </Box>
             ))}
           </Box>
           <Box sx={chatWrapper}>
@@ -268,6 +270,7 @@ export default ChatPage;
 const orgListItemSx = theme => ({
   padding: '5px',
   borderRadius: '8px',
+  cursor: 'pointer',
   width: '70px',
   [theme.breakpoints.down('sm')]: {
     width: '50px',

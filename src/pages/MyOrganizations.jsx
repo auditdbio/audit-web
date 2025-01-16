@@ -22,7 +22,8 @@ import Headings from '../router/Headings.jsx';
 import Layout from '../styles/Layout.jsx';
 import Loader from '../components/Loader.jsx';
 import { CustomCard } from '../components/custom/Card.jsx';
-import InfoCard from '../components/custom/info-card.jsx';
+import PeopleIcon from '@mui/icons-material/People';
+import OrganizationCard from '../components/OrganizationCard.jsx';
 
 const MyOrganization = () => {
   const role = useSelector(s => s.user.user.current_role);
@@ -64,194 +65,74 @@ const MyOrganization = () => {
   return (
     <Layout>
       <CustomCard sx={wrapper}>
-        <Box role={role} sx={{ position: 'relative' }}>
-          <Button
-            sx={{
-              top: '10px',
-              left: '10px',
-              position: 'absolute',
-              minWidth: 'unset',
-            }}
-            onClick={() => navigate(`/${user.current_role[0]}/${user.id}`)}
-          >
-            <ArrowBackIcon
-              color={role === CUSTOMER ? 'primary' : 'secondary'}
-            />
-          </Button>
-          <Box sx={innerWrapper}>
-            <Box sx={contentWrapper}>
-              {!organizations.length && !own.length ? (
-                <Box>
-                  <Loader />
-                </Box>
-              ) : (
-                <>
-                  {!!own.length && (
-                    <Box sx={{ width: '100%' }}>
-                      <Typography variant={'h4'}>My organizations</Typography>
-                      <Grid
-                        sx={{ mt: '5px!important' }}
-                        container
-                        spacing={{ xs: 2, md: 3 }}
-                        columns={{ xs: 4, sm: 8, md: 12 }}
-                      >
-                        {own?.map(org => {
-                          return (
-                            <Grid sx={gridItemSx} item>
-                              <Link to={`/o/${org.link_id}`} key={org.id}>
-                                <Card
-                                  sx={{
-                                    padding: '15px',
-                                    border: `1px solid ${
-                                      role === CUSTOMER
-                                        ? theme.palette.primary.main
-                                        : theme.palette.secondary.main
-                                    }!important`,
-                                  }}
-                                >
-                                  {org.avatar ? (
-                                    <CardMedia
-                                      sx={{ height: 140, borderRadius: '7px' }}
-                                      image={
-                                        org.avatar &&
-                                        org.avatar.startsWith(
-                                          'data:image/png;base64',
-                                        )
-                                          ? org.avatar
-                                          : `${ASSET_URL}/${org.avatar}`
-                                      }
-                                      title={org.name}
-                                    />
-                                  ) : (
-                                    <Box
-                                      sx={{
-                                        height: '140px',
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        justifyContent: 'center',
-                                        backgroundColor:
-                                          role === CUSTOMER
-                                            ? theme.palette.primary.main
-                                            : theme.palette.secondary.main,
-                                        borderRadius: '8px',
-                                      }}
-                                    >
-                                      <span
-                                        style={{
-                                          fontSize: '30px',
-                                          color: '#fff',
-                                        }}
-                                      >
-                                        {org.name.slice(0, 3)}
-                                      </span>
-                                    </Box>
-                                  )}
-                                  <Typography
-                                    sx={{
-                                      overflowWrap: 'anywhere',
-                                      mt: '15px',
-                                      textAlign: 'center',
-                                    }}
-                                  >
-                                    {org.name}
-                                  </Typography>
-                                </Card>
-                              </Link>
-                            </Grid>
-                          );
-                        })}
-                      </Grid>
-                    </Box>
-                  )}
-                  {!!organizations.length && (
-                    <Box sx={{ width: '100%' }}>
-                      <Typography variant={'h4'}>Organizations</Typography>
-                      <Grid
-                        sx={{ mt: '5px!important' }}
-                        container
-                        spacing={{ xs: 2, md: 3 }}
-                        columns={{ xs: 4, sm: 8, md: 12 }}
-                      >
-                        {organizations?.map(org => {
-                          return (
-                            <Grid sx={gridItemSx} item>
-                              <Link to={`/o/${org.link_id}`} key={org.id}>
-                                <Card
-                                  sx={{
-                                    padding: '15px',
-                                    border: `1px solid ${
-                                      role === CUSTOMER
-                                        ? theme.palette.primary.main
-                                        : theme.palette.secondary.main
-                                    }!important`,
-                                  }}
-                                >
-                                  {org.avatar ? (
-                                    <CardMedia
-                                      sx={{ height: 140, borderRadius: '7px' }}
-                                      image={
-                                        org.avatar &&
-                                        org.avatar.startsWith(
-                                          'data:image/png;base64',
-                                        )
-                                          ? org.avatar
-                                          : `${ASSET_URL}/${org.avatar}`
-                                      }
-                                      title={org.name}
-                                    />
-                                  ) : (
-                                    <Box
-                                      sx={{
-                                        height: '140px',
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        justifyContent: 'center',
-                                        backgroundColor:
-                                          role === CUSTOMER
-                                            ? theme.palette.primary.main
-                                            : theme.palette.secondary.main,
-                                        borderRadius: '8px',
-                                      }}
-                                    >
-                                      <span
-                                        style={{
-                                          fontSize: '30px',
-                                          color: '#fff',
-                                        }}
-                                      >
-                                        {org.name.slice(0, 3)}
-                                      </span>
-                                    </Box>
-                                  )}
-                                  <Typography
-                                    sx={{
-                                      overflowWrap: 'anywhere',
-                                      mt: '15px',
-                                      textAlign: 'center',
-                                    }}
-                                  >
-                                    {org.name}
-                                  </Typography>
-                                </Card>
-                              </Link>
-                            </Grid>
-                          );
-                        })}
-                      </Grid>
-                    </Box>
-                  )}
-                </>
-              )}
-            </Box>
-            <Button
-              onClick={() => navigate('/create-organization')}
-              variant={'contained'}
-              color={role === CUSTOMER ? 'primary' : 'secondary'}
-              sx={buttonSx}
-            >
-              Create organization
-            </Button>
+        <Button
+          sx={{
+            top: '10px',
+            left: '0px',
+            position: 'absolute',
+            minWidth: 'unset',
+          }}
+          onClick={() => navigate(`/${user.current_role[0]}/${user.id}`)}
+        >
+          <ArrowBackIcon color={role === CUSTOMER ? 'primary' : 'secondary'} />
+        </Button>
+        <Box sx={innerWrapper}>
+          <Box sx={contentWrapper}>
+            {!organizations.length && !own.length ? (
+              <Box>
+                <Loader />
+              </Box>
+            ) : (
+              <>
+                {!!own.length && (
+                  <Box sx={{ width: '100%' }}>
+                    <Typography variant={'h4'}>My organizations</Typography>
+                    <Grid
+                      sx={gridSx}
+                      container
+                      spacing={{ xs: 2, md: 3 }}
+                      columns={{ xs: 4, sm: 8, md: 12 }}
+                    >
+                      {own?.map(org => {
+                        return (
+                          <Grid sx={gridItemSx} item>
+                            <OrganizationCard org={org} />
+                          </Grid>
+                        );
+                      })}
+                    </Grid>
+                  </Box>
+                )}
+                {!!organizations.length && (
+                  <Box sx={{ width: '100%' }}>
+                    <Typography variant={'h4'}>Organizations</Typography>
+                    <Grid
+                      sx={gridSx}
+                      container
+                      spacing={{ xs: 2, md: 3 }}
+                      columns={{ xs: 4, sm: 8, md: 12 }}
+                    >
+                      {organizations?.map(org => {
+                        return (
+                          <Grid sx={gridItemSx} key={org.id} item>
+                            <OrganizationCard org={org} />
+                          </Grid>
+                        );
+                      })}
+                    </Grid>
+                  </Box>
+                )}
+              </>
+            )}
           </Box>
+          <Button
+            onClick={() => navigate('/create-organization')}
+            variant={'contained'}
+            color={role === CUSTOMER ? 'primary' : 'secondary'}
+            sx={buttonSx}
+          >
+            Create organization
+          </Button>
         </Box>
       </CustomCard>
     </Layout>
@@ -276,6 +157,14 @@ const buttonSx = theme => ({
   },
 });
 
+const gridSx = theme => ({
+  mt: '5px!important',
+  marginLeft: '-16px',
+  [theme.breakpoints.down('xs')]: {
+    marginLeft: '-8px',
+  },
+});
+
 const gridItemSx = theme => ({
   width: '20%',
   [theme.breakpoints.down('md')]: {
@@ -295,6 +184,7 @@ const wrapper = theme => ({
   display: 'flex',
   flexDirection: 'column',
   width: '100%',
+  position: 'relative',
   '& ul': {
     fontSize: '16px',
     marginBottom: '28px',
@@ -303,6 +193,20 @@ const wrapper = theme => ({
       marginTop: '7px',
     },
   },
+  padding: '25px 30px 60px',
+  [theme.breakpoints.down('md')]: {
+    padding: '20px 24px 20px',
+  },
+  [theme.breakpoints.down('sm')]: {
+    gap: '20px',
+    padding: '30px 10px 20px',
+    '& h3': {
+      fontSize: '20px',
+    },
+  },
+  [theme.breakpoints.down(780)]: {
+    borderRadius: '0!important',
+  },
 });
 
 const innerWrapper = theme => ({
@@ -310,18 +214,12 @@ const innerWrapper = theme => ({
   minHeight: '520px',
   display: 'flex',
   flexDirection: 'column',
-  padding: '40px 40px 40px',
   gap: '30px',
   justifyContent: 'space-between',
-  [theme.breakpoints.down('sm')]: {
-    gap: '20px',
-    padding: '20px',
-    paddingTop: '55px',
-
-    '& h4': {
-      fontSize: '25px',
-    },
+  '& h4': {
+    textAlign: 'center',
   },
+  [theme.breakpoints.down('sm')]: {},
   [theme.breakpoints.down('xs')]: {
     width: '100%',
     gap: '25px',

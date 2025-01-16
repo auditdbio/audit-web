@@ -120,22 +120,22 @@ const Organization = ({ linkId }) => {
     return (
       <Layout>
         <CustomCard sx={wrapper}>
+          <Button
+            sx={{
+              top: '10px',
+              left: '0px',
+              position: 'absolute',
+              minWidth: 'unset',
+            }}
+            onClick={() =>
+              navigate(location.state?.from || -1, { replace: true })
+            }
+          >
+            <ArrowBackIcon
+              color={role === CUSTOMER ? 'primary' : 'secondary'}
+            />
+          </Button>
           <Box role={role} sx={{ position: 'relative' }}>
-            <Button
-              sx={{
-                top: '15px',
-                left: '10px',
-                position: 'absolute',
-                minWidth: 'unset',
-              }}
-              onClick={() =>
-                navigate(location.state?.from || -1, { replace: true })
-              }
-            >
-              <ArrowBackIcon
-                color={role === CUSTOMER ? 'primary' : 'secondary'}
-              />
-            </Button>
             <AuditorSearchModal
               open={showAddUser}
               editMode={true}
@@ -417,6 +417,21 @@ const wrapper = theme => ({
       marginTop: '7px',
     },
   },
+  position: 'relative',
+  padding: '25px 30px 60px',
+  [theme.breakpoints.down('md')]: {
+    padding: '20px 24px 20px',
+  },
+  [theme.breakpoints.down('sm')]: {
+    gap: '20px',
+    padding: '30px 10px 20px',
+    '& h3': {
+      fontSize: '20px',
+    },
+  },
+  [theme.breakpoints.down(780)]: {
+    borderRadius: '0!important',
+  },
 });
 
 const aboutWrapper = theme => ({
@@ -439,27 +454,7 @@ const aboutWrapper = theme => ({
   },
 });
 
-const innerWrapper = theme => ({
-  width: '100%',
-  minHeight: '520px',
-  display: 'flex',
-  flexDirection: 'column',
-  padding: '60px 40px 40px',
-  gap: '30px',
-  justifyContent: 'space-between',
-  [theme.breakpoints.down('sm')]: {
-    gap: '20px',
-    padding: '20px',
-  },
-  [theme.breakpoints.down('xs')]: {
-    width: '100%',
-    alignItems: 'center',
-    gap: '25px',
-    '& .mobile-tag-wrapper': {
-      maxWidth: '380px',
-    },
-  },
-});
+const innerWrapper = theme => ({});
 
 const infoInnerStyle = theme => ({
   display: 'flex',
