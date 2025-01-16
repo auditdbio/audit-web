@@ -38,6 +38,7 @@ const OrganizationCard = ({ org }) => {
         onClick={() => navigate(`/o/${org.link_id}`)}
         sx={buttonSx}
         variant={'contained'}
+        color={role === CUSTOMER ? 'primary' : 'secondary'}
       >
         View more
       </Button>
