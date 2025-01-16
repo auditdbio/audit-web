@@ -228,7 +228,7 @@ const messageTextSx = ({ isOwn, single }) => ({
   background: '#e5e5e5',
   borderRadius: isOwn ? '15px 0 15px 15px' : '0 15px 15px 15px',
   '& p': {
-    padding: single || isOwn ? '5px 20px 10px' : '5px 20px 10px',
+    padding: single || isOwn ? '5px 20px 16px' : '5px 20px 16px',
     fontSize: '20px',
     fontWeight: 500,
     lineHeight: '22px',
@@ -316,7 +316,7 @@ const messageTimeSx = (theme, single, isOwn) => ({
   alignItems: 'center',
   position: 'absolute',
   bottom: '0px',
-  right: 4,
+  right: 1,
   ...(isOwn
     ? {}
     : {
