@@ -211,6 +211,7 @@ const issueLinksSx = theme => ({
 });
 
 const linkPropSx = theme => ({
+  width: 'unset',
   [theme.breakpoints.down('xs')]: {
     '& span': {
       fontSize: '12px !important',

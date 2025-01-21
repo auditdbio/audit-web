@@ -102,13 +102,13 @@ export default ChatListItem;
 const wrapper = theme => ({
   direction: 'ltr',
   display: 'flex',
-  padding: '20px 15px',
+  padding: '10px 15px',
   borderBottom: '2px solid #e5e5e5',
   cursor: 'pointer',
   textDecoration: 'none',
   ':hover': { backgroundColor: '#F1F1F1' },
   [theme.breakpoints.down('md')]: {
-    padding: '15px 10px',
+    padding: '10px 10px',
   },
   [theme.breakpoints.down('sm')]: {
     padding: '10px 5px',
@@ -121,10 +121,7 @@ const chatDataWrapper = theme => ({
   alignItems: 'space-between',
   justifyContent: 'flex-start',
   flexGrow: 1,
-  height: '90px',
-  [theme.breakpoints.down('md')]: {
-    height: '75px',
-  },
+  height: '74px',
   [theme.breakpoints.down('sm')]: {
     height: '58px',
   },
@@ -139,7 +136,7 @@ const chatData = {
 const avatarBorder = role => ({
   flexShrink: 0,
   padding: '2px',
-  mr: '30px',
+  mr: '15px',
   width: '68px',
   height: '68px',
   borderRadius: '50%',
@@ -169,7 +166,7 @@ const avatarStyle = {
 const userNameSx = theme => ({
   pr: '5px',
   display: '-webkit-box',
-  fontSize: '24px',
+  fontSize: '18px',
   fontWeight: 600,
   color: 'black',
   overflow: 'hidden',

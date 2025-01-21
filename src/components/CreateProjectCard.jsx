@@ -78,7 +78,6 @@ const CreateProjectCard = ({ projectInfo }) => {
   const matchXs = useMediaQuery(theme.breakpoints.down('xs'));
 
   const customerReducer = useSelector(s => s.customer);
-  const auditReducer = useSelector(s => s.audits);
   const { successMessage, errorMessage } = useSelector(s => s.audits);
   const projectMessage = useSelector(s => s.project.message);
   const project = useSelector(s => s.project?.currentProject);
@@ -101,6 +100,7 @@ const CreateProjectCard = ({ projectInfo }) => {
   const [isDirty, setIsDirty] = useState(false);
   const [changeStatus, setChangeStatus] = useState(false);
   const [openInvite, setOpenInvite] = useState(false);
+  const [clear, setClear] = useState(false);
 
   useEffect(() => {
     dispatch(getAuditsRequest('customer'));
@@ -166,6 +166,7 @@ const CreateProjectCard = ({ projectInfo }) => {
   };
 
   const handleCloseInviteModal = () => {
+    setClear(true);
     setOpenInvite(false);
   };
 

@@ -80,7 +80,7 @@ const AuditIssueDetails = ({ isPublic, saved, hideControl }) => {
         noIndex={true}
       />
 
-      <CustomCard sx={wrapper}>
+      <CustomCard sx={wrapper} id={'issue-page'}>
         <Button
           sx={backButtonSx}
           onClick={() => navigate(-1)}

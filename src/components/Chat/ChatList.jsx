@@ -73,9 +73,9 @@ const ChatList = ({ chatList, chatListIsOpen, setChatListIsOpen }) => {
               <CloseIcon />
             </IconButton>
           </Box>
-          <Typography variant="span" sx={chatsLabel}>
-            Chats
-          </Typography>
+          {/*<Typography variant="span" sx={chatsLabel}>*/}
+          {/*  Chats*/}
+          {/*</Typography>*/}
         </Box>
 
         <Box sx={chatListSx}>
@@ -224,17 +224,16 @@ const mobileChatListOpenBackground = theme => ({
 });
 
 const listHeader = theme => ({
-  height: '85px',
   borderBottom: '2px solid #e5e5e5',
   padding: '10px 15px',
-  [theme.breakpoints.down('sm')]: {
-    height: '75px',
-  },
 });
 
 const searchFieldSx = theme => ({
   width: '100%',
-  mb: '13px',
+  mb: '2.5px',
+  '& input': {
+    height: '35px!important',
+  },
 });
 
 const searchInputStyle = {

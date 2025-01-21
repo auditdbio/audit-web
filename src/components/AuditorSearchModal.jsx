@@ -7,14 +7,12 @@ import theme from '../styles/themes.js';
 import { Box } from '@mui/system';
 import InputAdornment from '@mui/material/InputAdornment';
 import SearchIcon from '@mui/icons-material/Search';
-import Autocomplete from '@mui/material/Autocomplete';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 import { Paper, Typography } from '@mui/material';
 import AuditorSearchListBox from './custom/AuditorSearchListBox.jsx';
 import IconButton from '@mui/material/IconButton';
 import { ArrowBack } from '@mui/icons-material';
 import { useDispatch, useSelector } from 'react-redux';
-import { getAuditors } from '../redux/actions/auditorAction.js';
 import { createRequest } from '../redux/actions/auditAction.js';
 import dayjs from 'dayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
@@ -27,6 +25,10 @@ import { useParams } from 'react-router-dom';
 import { addTestsLabel } from '../lib/helper.js';
 import TotalPrice from './forms/TotalPrice/TotalPrice.jsx';
 import { CLEAR_SEARCHED_AUDITOR } from '../redux/actions/types.js';
+import Cookies from 'js-cookie';
+import axios from 'axios';
+import { API_URL } from '../services/urls.js';
+import _ from 'lodash';
 
 export default function AuditorSearchModal({
   open,
@@ -39,24 +41,21 @@ export default function AuditorSearchModal({
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { id } = useParams();
-  const auditorReducer = useSelector(state => state.auditor.auditors);
+
   const projectReducer = useSelector(state => state.project);
   const customerReducer = useSelector(state => state.customer);
+
   const [selectedAuditor, setSelectedAuditor] = useState({});
-
-  const [openDrop, setOpenDrop] = useState(false);
   const [mode, setMode] = useState('search');
-
-  const [inputValue, setInputValue] = useState('');
   const [query, setQuery] = useState('');
-
-  useEffect(() => {
-    dispatch(getAuditors(query, 15));
-  }, [query]);
-
-  const handleInputChange = event => {
-    setQuery(event.target.value);
-  };
+  const [page, setPage] = useState(1);
+  const [auditors, setAuditors] = useState([]);
+  const [lastList, setLastList] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [scrollPosition, setScrollPosition] = useState(0);
+  const [searchValue, setSearchValue] = useState('');
+  const scrollTimeout = useRef(null);
+  const listInnerRef = useRef();
 
   const handleOptionChange = option => {
     setSelectedAuditor(option);
@@ -72,69 +71,173 @@ export default function AuditorSearchModal({
     );
   };
 
+  useEffect(() => {
+    const fetchAuditors = async () => {
+      try {
+        setIsLoading(true);
+        setPage(1);
+        setLastList(false);
+        const token = Cookies.get('token');
+
+        if (listInnerRef.current) {
+          setScrollPosition(listInnerRef.current.scrollTop);
+        }
+
+        const response = await axios.get(
+          `${API_URL}/search?query=${query}&sort_by=rating&tags=&sort_order=-1&page=1&per_page=15&kind=auditor badge`,
+          { headers: { Authorization: `Bearer ${token}` } },
+        );
+
+        setAuditors(response.data.result);
+      } catch (error) {
+        console.error('Error fetching auditors:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    if (query) {
+      fetchAuditors();
+    }
+  }, [query]);
+
+  useEffect(() => {
+    if (!isLoading && listInnerRef.current && scrollPosition > 0) {
+      requestAnimationFrame(() => {
+        listInnerRef.current.scrollTop = scrollPosition;
+      });
+    }
+  }, [isLoading, auditors]);
+
+  useEffect(() => {
+    const fetchMoreAuditors = async () => {
+      if (isLoading || lastList) return;
+
+      try {
+        setIsLoading(true);
+        const token = Cookies.get('token');
+        const response = await axios.get(
+          `${API_URL}/search?query=${query}&sort_by=rating&tags=&sort_order=-1&page=${page}&per_page=15&kind=auditor badge`,
+          { headers: { Authorization: `Bearer ${token}` } },
+        );
+
+        if (response.data.result.length === 0) {
+          setLastList(true);
+          return;
+        }
+
+        setAuditors(prev => {
+          const newAuditors = response.data.result;
+          const uniqueAuditors = [...prev];
+
+          newAuditors.forEach(newAuditor => {
+            if (
+              !uniqueAuditors.some(
+                existing => existing.user_id === newAuditor.user_id,
+              )
+            ) {
+              uniqueAuditors.push(newAuditor);
+            }
+          });
+
+          return uniqueAuditors;
+        });
+      } catch (error) {
+        console.error('Error fetching more auditors:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    if (page > 1) {
+      fetchMoreAuditors();
+    }
+  }, [page, query, lastList]);
+
+  const handleScroll = useCallback(
+    _.throttle(e => {
+      if (!isLoading && !lastList) {
+        const { scrollTop, scrollHeight, clientHeight } = e.target;
+        if (scrollHeight - scrollTop <= clientHeight * 1.2) {
+          setPage(prev => prev + 1);
+        }
+      }
+    }, 300),
+    [isLoading, lastList, page],
+  );
+
+  const handleSearchInput = e => {
+    const value = e.target.value;
+    setSearchValue(value);
+
+    if (scrollTimeout.current) {
+      clearTimeout(scrollTimeout.current);
+    }
+
+    scrollTimeout.current = setTimeout(() => {
+      setPage(1);
+      setLastList(false);
+      setQuery(value);
+    }, 300);
+  };
+
   return (
-    <Dialog open={open} onClose={handleClose}>
+    <Dialog
+      open={open}
+      onClose={() => {
+        setPage(1);
+        setQuery('');
+        setSearchValue('');
+        setAuditors([]);
+        setMode('search');
+        handleClose();
+      }}
+    >
       {mode === 'search' && (
         <DialogContent sx={modalWindow}>
           <Box sx={fieldButtonContainer}>
-            {auditorReducer && (
-              <Autocomplete
-                open={openDrop}
-                onOpen={() => {
-                  if (inputValue) {
-                    setOpenDrop(true);
-                  }
+            <Box sx={{ position: 'relative', width: '100%' }}>
+              <TextField
+                value={searchValue}
+                onChange={handleSearchInput}
+                variant="outlined"
+                sx={searchField}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <SearchIcon sx={searchIcon} />
+                    </InputAdornment>
+                  ),
                 }}
-                openOnFocus={true}
-                onClose={() => setOpenDrop(false)}
-                inputValue={inputValue}
-                onInputChange={(e, value, reason) => {
-                  setInputValue(value);
-                  if (!value) {
-                    setOpenDrop(false);
-                  }
-                }}
-                freeSolo
-                onChange={handleOptionChange}
-                options={auditorReducer}
-                onKeyDown={e => {
-                  if (e.key === 'Enter') {
-                    handleSearch();
-                  }
-                }}
-                filterOptions={options => options}
-                getOptionLabel={option => option.user_id}
-                renderOption={(props, option) => (
-                  <AuditorSearchListBox
-                    {...props}
-                    auditor={option}
-                    handleSelectOption={() => handleOptionChange(option)}
-                  />
-                )}
-                PaperComponent={CustomPaper}
-                renderInput={params => (
-                  <TextField
-                    variant="outlined"
-                    onChange={handleInputChange}
-                    {...params}
-                    id="name"
-                    sx={searchField}
-                    type="text"
-                    InputProps={{
-                      ...params.InputProps,
-                      startAdornment: (
-                        <>
-                          <InputAdornment position="start">
-                            <SearchIcon sx={searchIcon} />
-                          </InputAdornment>
-                          {params.InputProps.startAdornment}
-                        </>
-                      ),
-                    }}
-                  />
-                )}
               />
-            )}
+              {searchValue && auditors.length > 0 && (
+                <Box ref={listInnerRef} sx={userListSx} onScroll={handleScroll}>
+                  {auditors.map(option => (
+                    <Box
+                      key={option.user_id}
+                      onClick={() => handleOptionChange(option)}
+                      sx={{
+                        padding: '8px',
+                        cursor: 'pointer',
+                        '&:hover': {
+                          backgroundColor: '#f5f5f5',
+                        },
+                      }}
+                    >
+                      <AuditorSearchListBox
+                        auditor={option}
+                        handleSelectOption={() => handleOptionChange(option)}
+                      />
+                    </Box>
+                  ))}
+                  {isLoading && (
+                    <Box sx={{ textAlign: 'center', padding: '8px' }}>
+                      Loading...
+                    </Box>
+                  )}
+                </Box>
+              )}
+            </Box>
             <Button
               sx={findButton}
               onClick={handleSearch}
@@ -191,7 +294,6 @@ export default function AuditorSearchModal({
                   setError('You cannot create an audit request with yourself');
                 }
                 setMode('search');
-                setInputValue('');
                 dispatch({ type: CLEAR_SEARCHED_AUDITOR });
                 handleClose();
               }
@@ -222,7 +324,7 @@ export default function AuditorSearchModal({
                     <Box sx={{ paddingX: '15px' }}>
                       <Typography
                         style={{
-                          ...rateLabel(),
+                          ...rateLabel,
                           color: 'black',
                           marginBottom: '10px',
                           fontSize: '13px',
@@ -230,7 +332,7 @@ export default function AuditorSearchModal({
                       >
                         Add some information
                       </Typography>
-                      <Typography style={rateLabel()}>
+                      <Typography style={rateLabel}>
                         Choose audit timeline
                       </Typography>
                       <Box sx={dateWrapper}>
@@ -294,6 +396,30 @@ const MakeOfferSchema = Yup.object().shape({
   }),
 });
 
+const userListSx = theme => ({
+  position: 'fixed',
+  top: 'auto',
+  left: 'auto',
+  transform: 'translateY(4px)',
+  width: '490px',
+  maxHeight: '300px',
+  overflowY: 'auto',
+  backgroundColor: 'white',
+  zIndex: 9999,
+  border: '1px solid #ddd',
+  borderRadius: '10px',
+  boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+  [theme.breakpoints.down('sm')]: {
+    width: '360px',
+  },
+  [theme.breakpoints.down('xs')]: {
+    width: '278px',
+  },
+  [theme.breakpoints.down(450)]: {
+    width: '200px',
+  },
+});
+
 const modalWindow = {
   backgroundColor: theme.palette.primary.main,
   width: '700px',
@@ -302,7 +428,15 @@ const modalWindow = {
   alignItems: 'center',
   [theme.breakpoints.down('sm')]: {
     height: '100%',
-    width: '100%',
+    width: '500px',
+  },
+  [theme.breakpoints.down('xs')]: {
+    height: '100%',
+    width: '400px',
+  },
+  [theme.breakpoints.down(450)]: {
+    height: '100%',
+    width: '280px',
   },
 };
 
@@ -325,7 +459,9 @@ const offerDialogStyle = {
 const fieldButtonContainer = {
   display: 'flex',
   gap: '10px',
+  width: '100%',
 };
+
 const searchIcon = {
   [theme.breakpoints.down('sm')]: {
     fontSize: '15px',
@@ -333,15 +469,7 @@ const searchIcon = {
 };
 
 const searchField = {
-  '& .MuiAutocomplete-listbox': {
-    border: 'none',
-  },
-  '& .MuiAutocomplete-input': {
-    fontSize: '14px',
-    [theme.breakpoints.down('sm')]: {
-      fontSize: '11px',
-    },
-  },
+  width: '100%',
   '& .MuiOutlinedInput-root': {
     backgroundColor: theme.palette.background.default,
     padding: '0px',
@@ -349,31 +477,25 @@ const searchField = {
     borderRadius: '4px',
     paddingLeft: '8px',
     fontSize: '14px !important',
-    width: '465px',
     [theme.breakpoints.down('sm')]: {
-      width: '320px',
-      height: '30px',
-      fontSize: '11px',
-    },
-    [theme.breakpoints.down('xs')]: {
-      width: '220px',
-    },
-    [theme.breakpoints.down(400)]: {
-      width: '150px',
       height: '30px',
       fontSize: '11px',
     },
   },
 };
+
 const customDropdown = {
   '& .MuiAutocomplete-listbox': {
     padding: '0',
+    overscrollBehavior: 'none',
+    scrollBehavior: 'smooth',
   },
   border: '1px solid #434242',
   borderRadius: '0px',
   boxShadow: '0',
   padding: 0,
 };
+
 const findButton = {
   backgroundColor: theme.palette.secondary.main,
   color: theme.palette.background.default,
@@ -391,6 +513,7 @@ const findButton = {
     padding: '6px 18px',
   },
 };
+
 const sendButton = {
   backgroundColor: theme.palette.primary.main,
   color: theme.palette.background.default,
@@ -409,11 +532,12 @@ const sendButton = {
     color: theme.palette.background.default,
   },
 };
-const rateLabel = theme => ({
+
+const rateLabel = {
   fontSize: '11px',
   color: '#B2B3B3',
   fontWeight: 500,
-});
+};
 
 const dateWrapper = {
   display: 'flex',
@@ -430,6 +554,7 @@ const dateWrapper = {
     },
   },
 };
+
 const dateStyle = {
   width: '150px',
   height: '40px',
