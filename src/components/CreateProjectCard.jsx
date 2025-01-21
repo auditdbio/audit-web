@@ -228,6 +228,33 @@ const CreateProjectCard = ({ projectInfo }) => {
     };
   }, []);
 
+  useEffect(() => {
+    if (initialValues?.id && initialValues.scope.length) {
+      const getRepoUrl = initialValues.scope[0];
+      function getShaFromGitHubUrl(url) {
+        const regex = /\/blob\/([0-9a-f]{40})\//;
+        const match = url.match(regex);
+        return match ? match[1] : null;
+      }
+
+      function parseGitHubUrl(gitHubUrl) {
+        const urlParts = gitHubUrl.split('/');
+        const owner = urlParts[3];
+        const repo = urlParts[4];
+
+        return `${owner}/${repo}`;
+      }
+
+      const githubRepo = parseGitHubUrl(getRepoUrl);
+      const sha = getShaFromGitHubUrl(getRepoUrl);
+      dispatch(getSha(sha));
+      dispatch(getRepoOwner(githubRepo));
+    }
+    return () => {
+      dispatch({ type: CLEAR_PROJECT });
+    };
+  }, []);
+
   return (
     <Formik
       initialValues={initialValues}

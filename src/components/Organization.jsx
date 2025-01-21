@@ -186,7 +186,7 @@ const Organization = ({ linkId }) => {
                   <Avatar
                     src={
                       organization.avatar &&
-                      `${ASSET_URL}/${organization.avatar}`
+                      `${ASSET_URL}/id/${organization.avatar}`
                     }
                     sx={[
                       avatarStyle,

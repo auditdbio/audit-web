@@ -611,7 +611,7 @@ const AuditRequestInfo = ({
         disableScrollLock
       >
         <OfferModal
-          auditor={auditor}
+          auditor={auditorData}
           project={project}
           user={user}
           redirect={redirect}

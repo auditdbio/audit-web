@@ -14,6 +14,7 @@ import {
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit.js';
 import {
+  addUserInOrganization,
   changeAccessLevel,
   deleteUserFromOrganization,
 } from '../../redux/actions/organizationAction.js';
@@ -21,17 +22,22 @@ import DeleteForeverRoundedIcon from '@mui/icons-material/DeleteForeverRounded.j
 import ListItemButton from '@mui/material/ListItemButton';
 import { ASSET_URL } from '../../services/urls.js';
 import { useDispatch, useSelector } from 'react-redux';
-import ConfirmModal from '../modal/ConfirmModal.jsx';
+import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
+import IconButton from '@mui/material/IconButton';
+import { addTestsLabel } from '../../lib/helper.js';
+import { ArrowBack } from '@mui/icons-material';
+import Radio from '@mui/material/Radio';
+import { CUSTOMER } from '../../redux/actions/types.js';
+import theme from '../../styles/themes.js';
 
 const UserLIstItem = ({ value, labelId, organization }) => {
   const user = useSelector(s => s.user.user);
   const [isOpen, setIsOpen] = useState(false);
   const dispatch = useDispatch();
   const [isOpenConfirm, setIsOpenConfirm] = useState(false);
-  const [rulesOfMember, setRulesOfMember] = useState({
-    Representative: value.access_level.includes('Representative'),
-    Editor: value.access_level.includes('Editor'),
-  });
+  const [rulesOfMember, setRulesOfMember] = useState(
+    value.access_level || 'Representative',
+  );
 
   const handleChangeOwner = () => {
     dispatch(
@@ -47,11 +53,26 @@ const UserLIstItem = ({ value, labelId, organization }) => {
   };
 
   const handleClose = () => {
-    setRulesOfMember({
-      Representative: value.access_level.includes('Representative'),
-      Editor: value.access_level.includes('Editor'),
-    });
+    setRulesOfMember(value.access_level);
     setIsOpen(false);
+  };
+
+  const handleChangeAccess = () => {
+    const data = [
+      {
+        user_id: value?.user_id,
+        access_level: rulesOfMember,
+      },
+    ];
+    dispatch(
+      changeAccessLevel(
+        organization.id,
+        value.user_id,
+        { access_level: rulesOfMember },
+        organization.link_id,
+      ),
+    );
+    handleClose();
   };
 
   return (
@@ -93,88 +114,120 @@ const UserLIstItem = ({ value, labelId, organization }) => {
               aria-describedby="modal-modal-description"
             >
               <Box sx={modalSx}>
-                <Typography id="modal-modal-title" variant="h6" component="h2">
-                  Rules of {value.username}
-                </Typography>
-                <Box
-                  sx={{
-                    mt: '10px',
-                    display: 'flex',
-                    justifyContent: 'center',
-                    gap: '20px',
-                  }}
-                >
-                  <FormControlLabel
-                    value="Representative"
-                    control={<Checkbox />}
-                    label="Representative"
-                    labelPlacement="top"
-                    checked={rulesOfMember.Representative}
-                    onChange={e => {
-                      setRulesOfMember({
-                        ...rulesOfMember,
-                        Representative: e.target.checked,
-                      });
-                    }}
-                  />
-                  <FormControlLabel
-                    value="Editor"
-                    control={<Checkbox />}
-                    label="Editor"
-                    checked={rulesOfMember.Editor}
-                    labelPlacement="top"
-                    onChange={e => {
-                      setRulesOfMember({
-                        ...rulesOfMember,
-                        Editor: e.target.checked,
-                      });
-                    }}
-                  />
+                <Box>
+                  <IconButton
+                    onClick={handleClose}
+                    color={
+                      user?.current_role?.toLowerCase() ===
+                      CUSTOMER?.toLowerCase()
+                        ? 'primary'
+                        : 'secondary'
+                    }
+                    {...addTestsLabel('go-back-button')}
+                  >
+                    <CloseOutlinedIcon />
+                  </IconButton>
                 </Box>
-                <Box sx={{ display: 'flex', gap: '15px' }}>
+                <Box sx={{ p: '15px' }}>
+                  <Typography variant={'h4'} sx={{ fontWeight: 500 }}>
+                    Current organization
+                  </Typography>
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      gap: '10px',
+                      alignItems: 'center',
+                      marginY: '15px',
+                    }}
+                  >
+                    <Avatar src={`${ASSET_URL}/id/${organization.avatar}`} />
+                    <Typography variant={'h5'}>{organization.name}</Typography>
+                  </Box>
+                  <Typography variant={'h5'} sx={{ fontWeight: 500 }}>
+                    {`Change the role of ${value.username}`}
+                  </Typography>
+
+                  <Box
+                    sx={{
+                      mt: '10px',
+                      display: 'flex',
+                      justifyContent: 'center',
+                      gap: '20px',
+                    }}
+                  >
+                    <FormControlLabel
+                      value="Owner"
+                      control={
+                        <Radio
+                          checked={rulesOfMember === 'Owner'}
+                          color={
+                            user?.current_role?.toLowerCase() ===
+                            CUSTOMER?.toLowerCase()
+                              ? 'primary'
+                              : 'secondary'
+                          }
+                          onChange={() => setRulesOfMember('Owner')}
+                        />
+                      }
+                      sx={{ width: '30%' }}
+                      label="Owner"
+                      labelPlacement="top"
+                    />
+                    <FormControlLabel
+                      value="Editor"
+                      control={
+                        <Radio
+                          checked={rulesOfMember === 'Editor'}
+                          color={
+                            user?.current_role?.toLowerCase() ===
+                            CUSTOMER?.toLowerCase()
+                              ? 'primary'
+                              : 'secondary'
+                          }
+                          onChange={() => setRulesOfMember('Editor')}
+                        />
+                      }
+                      sx={{ width: '30%' }}
+                      label="Editor"
+                      labelPlacement="top"
+                    />
+                    <FormControlLabel
+                      value="Representative"
+                      control={
+                        <Radio
+                          checked={rulesOfMember === 'Representative'}
+                          color={
+                            user?.current_role?.toLowerCase() ===
+                            CUSTOMER?.toLowerCase()
+                              ? 'primary'
+                              : 'secondary'
+                          }
+                          onChange={() => setRulesOfMember('Representative')}
+                        />
+                      }
+                      sx={{ width: '30%' }}
+                      label="Representative"
+                      labelPlacement="top"
+                    />
+                  </Box>
                   <Button
                     variant={'contained'}
-                    onClick={() => {
-                      const rules = Object.keys(rulesOfMember).filter(
-                        key => rulesOfMember[key],
-                      );
-                      dispatch(
-                        changeAccessLevel(
-                          organization.id,
-                          value.user_id,
-                          rules,
-                          organization.link_id,
-                        ),
-                      );
-                      setIsOpen(false);
-                    }}
                     sx={{
                       textTransform: 'unset',
-                      mt: '10px',
-                      width: '50%',
+                      display: 'block',
+                      marginX: 'auto',
+                      marginTop: '20px',
                     }}
+                    color={
+                      user?.current_role?.toLowerCase() ===
+                      CUSTOMER?.toLowerCase()
+                        ? 'primary'
+                        : 'secondary'
+                    }
+                    onClick={handleChangeAccess}
                   >
                     Save
                   </Button>
-                  <Button
-                    sx={{
-                      textTransform: 'unset',
-                      mt: '10px',
-                      width: '50%',
-                    }}
-                    color={'secondary'}
-                    variant={'contained'}
-                    onClick={() => {
-                      setIsOpenConfirm(true);
-                    }}
-                  >
-                    Make owner
-                  </Button>
-                  <ConfirmModal
-                    handleAgree={() => handleChangeOwner()}
-                    handleDisagree={() => setIsOpenConfirm(false)}
-                    isOpen={isOpenConfirm}
-                  />
                 </Box>
               </Box>
             </Modal>
@@ -188,7 +241,7 @@ const UserLIstItem = ({ value, labelId, organization }) => {
           <Avatar
             sx={{ width: '30px', height: '30px' }}
             alt={`Avatar n°${value + 1}`}
-            src={value.avatar ? `${ASSET_URL}/${value.avatar}` : ''}
+            src={value.avatar ? `${ASSET_URL}/id/${value.avatar}` : ''}
           />
         </ListItemAvatar>
         <ListItemText id={labelId} primary={value.username} />
@@ -204,14 +257,21 @@ export default UserLIstItem;
 
 const modalSx = theme => ({
   position: 'absolute',
-  width: 400,
   bgcolor: 'background.paper',
   borderRadius: '8px',
   boxShadow: 24,
-  p: 4,
+  p: 3,
   top: '50%',
   left: '50%',
   transform: 'translate(-50%, -50%)',
+  backgroundColor: 'white',
+  padding: '10px',
+  width: '700px',
+  [theme.breakpoints.down('sm')]: {
+    paddingBottom: '30px',
+    height: '100%',
+    width: '100%',
+  },
   [theme.breakpoints.down(500)]: {
     width: '310px',
     p: 2,

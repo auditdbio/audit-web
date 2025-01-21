@@ -12,7 +12,7 @@ const OrganizationCard = ({ org }) => {
   const navigate = useNavigate();
 
   return (
-    <Box sx={wrapper(theme, role)}>
+    <Box sx={wrapper(theme, role)} className={'org-card'}>
       <Avatar
         src={org.avatar ? `${ASSET_URL}/id/${org.avatar}` : ''}
         sx={avatarSx}

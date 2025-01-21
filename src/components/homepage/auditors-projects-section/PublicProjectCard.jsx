@@ -15,6 +15,8 @@ import ProjectModal from '../../ProjectModal.jsx';
 import AuditRequestInfo from '../../audit-request-info.jsx';
 import CustomSnackbar from '../../custom/CustomSnackbar.jsx';
 import { addTestsLabel } from '../../../lib/helper.js';
+import { useDispatch, useSelector } from 'react-redux';
+import { clearMessage } from '../../../redux/actions/auditAction.js';
 
 const PublicProjectCard = ({ project }) => {
   const navigate = useNavigate();
@@ -24,7 +26,10 @@ const PublicProjectCard = ({ project }) => {
   const handleView = e => {
     setOpenModal(true);
   };
-
+  const dispatch = useDispatch();
+  const { auditRequest, auditRequests, successMessage } = useSelector(
+    s => s.audits,
+  );
   const handleCloseModal = () => {
     setOpenModal(false);
   };
@@ -59,13 +64,14 @@ const PublicProjectCard = ({ project }) => {
 
       <CustomSnackbar
         autoHideDuration={3000}
-        open={!!message || !!errorMessage}
+        open={!!message || !!errorMessage || successMessage}
         onClose={() => {
+          dispatch(clearMessage());
           setMessage(null);
           setErrorMessage(null);
         }}
         severity={errorMessage ? 'error' : 'success'}
-        text={message || errorMessage}
+        text={message || errorMessage || successMessage}
       />
 
       <Box sx={statusWrapper}>

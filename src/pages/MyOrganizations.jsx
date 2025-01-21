@@ -17,13 +17,11 @@ import theme from '../styles/themes.js';
 import { useNavigate, useParams, Link } from 'react-router-dom/dist';
 import { useDispatch, useSelector } from 'react-redux';
 import { AUDITOR, CUSTOMER } from '../redux/actions/types.js';
-import { ASSET_URL } from '../services/urls.js';
-import Headings from '../router/Headings.jsx';
 import Layout from '../styles/Layout.jsx';
 import Loader from '../components/Loader.jsx';
 import { CustomCard } from '../components/custom/Card.jsx';
-import PeopleIcon from '@mui/icons-material/People';
 import OrganizationCard from '../components/OrganizationCard.jsx';
+import Badge from '@mui/material/Badge';
 
 const MyOrganization = () => {
   const role = useSelector(s => s.user.user.current_role);
@@ -33,6 +31,7 @@ const MyOrganization = () => {
   const matchXxs = useMediaQuery(theme.breakpoints.down(590));
   const own = useSelector(s => s.organization.own);
   const organizations = useSelector(s => s.organization.includeMe);
+  const invites = useSelector(s => s.organization.invites);
   const loading = useSelector(s => s.organization.loading);
 
   const {
@@ -47,21 +46,6 @@ const MyOrganization = () => {
   } = useSelector(s => s.auditor);
   const { user, error } = useSelector(s => s.user);
 
-  // if (!organizations.length && !own.length) {
-  //   return (
-  //     <Layout>
-  //       <Headings title="Organization" />
-  //       <CustomCard
-  //         sx={[
-  //           wrapper,
-  //           { height: '100%', justifyContent: 'center', alignItems: 'center' },
-  //         ]}
-  //       >
-  //         <Loader />
-  //       </CustomCard>
-  //     </Layout>
-  //   );
-  // } else {
   return (
     <Layout>
       <CustomCard sx={wrapper}>
@@ -84,6 +68,38 @@ const MyOrganization = () => {
               </Box>
             ) : (
               <>
+                {!!invites.length && (
+                  <Box sx={{ width: '100%' }}>
+                    <Typography variant={'h4'}>Invites</Typography>
+                    <Grid
+                      sx={gridSx}
+                      container
+                      spacing={{ xs: 2, md: 3 }}
+                      columns={{ xs: 4, sm: 8, md: 12 }}
+                    >
+                      {invites?.map(org => {
+                        return (
+                          <Grid sx={gridItemSx} item>
+                            <Badge
+                              badgeContent={'Invite'}
+                              color={
+                                role === CUSTOMER ? 'primary' : 'secondary'
+                              }
+                              sx={{
+                                '& .MuiBadge-badge': {
+                                  top: '20px',
+                                  right: '34px',
+                                },
+                              }}
+                            >
+                              <OrganizationCard org={org} />
+                            </Badge>
+                          </Grid>
+                        );
+                      })}
+                    </Grid>
+                  </Box>
+                )}
                 {!!own.length && (
                   <Box sx={{ width: '100%' }}>
                     <Typography variant={'h4'}>My organizations</Typography>
@@ -167,6 +183,12 @@ const gridSx = theme => ({
 
 const gridItemSx = theme => ({
   width: '20%',
+  '& .MuiBadge-root': {
+    width: '100%',
+  },
+  '& .org-card': {
+    width: '100%',
+  },
   [theme.breakpoints.down('md')]: {
     width: '25%',
   },

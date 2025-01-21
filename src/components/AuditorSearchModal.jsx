@@ -37,7 +37,7 @@ import CustomSnackbar from './custom/CustomSnackbar.jsx';
 import PriceCalculation from './PriceCalculation.jsx';
 import { ASSET_URL } from '../services/urls.js';
 import TotalPrice from './forms/TotalPrice/TotalPrice.jsx';
-import { CLEAR_SEARCHED_AUDITOR } from '../redux/actions/types.js';
+import { CLEAR_SEARCHED_AUDITOR, CUSTOMER } from '../redux/actions/types.js';
 import { addUserInOrganization } from '../redux/actions/organizationAction.js';
 import { AUDITOR, CLEAR_SEARCH } from '../redux/actions/types.js';
 import { searchCustomers } from '../redux/actions/customerAction.js';
@@ -63,8 +63,8 @@ export default function AuditorSearchModal({
   const customerReducer = useSelector(state => state.customer);
   const [selectedAuditor, setSelectedAuditor] = useState({});
   const organization = useSelector(s => s.organization.organization);
-  const [rulesOfMember, setRulesOfMember] = useState(false);
-  const location = useLocation();
+  const [rulesOfMember, setRulesOfMember] = useState('Representative');
+  const user = useSelector(s => s.user.user);
   const [openDrop, setOpenDrop] = useState(false);
   const [mode, setMode] = useState(modeType || 'search');
   const [inputValue, setInputValue] = useState('');
@@ -108,7 +108,7 @@ export default function AuditorSearchModal({
     const data = [
       {
         user_id: customer?.user_id ? customer.user_id : selectedAuditor.user_id,
-        access_level: rulesOfMember ? 'Editor' : 'Representative',
+        access_level: rulesOfMember,
       },
     ];
     dispatch(
@@ -408,29 +408,59 @@ export default function AuditorSearchModal({
                 gap: '20px',
               }}
             >
-              {/*<FormControlLabel*/}
-              {/*  value="Representative"*/}
-              {/*  control={<Checkbox />}*/}
-              {/*  label="Representative"*/}
-              {/*  labelPlacement="top"*/}
-              {/*  onChange={e => {*/}
-              {/*    setRulesOfMember({*/}
-              {/*      ...rulesOfMember,*/}
-              {/*      representative: e.target.checked,*/}
-              {/*    });*/}
-              {/*  }}*/}
-              {/*/>*/}
+              <FormControlLabel
+                value="Owner"
+                control={
+                  <Radio
+                    checked={rulesOfMember === 'Owner'}
+                    color={
+                      user?.current_role?.toLowerCase() ===
+                      CUSTOMER?.toLowerCase()
+                        ? 'primary'
+                        : 'secondary'
+                    }
+                    onChange={() => setRulesOfMember('Owner')}
+                  />
+                }
+                sx={{ width: '30%' }}
+                label="Owner"
+                labelPlacement="top"
+                disabled
+              />
               <FormControlLabel
                 value="Editor"
                 control={
                   <Radio
-                    onClick={e => {
-                      setRulesOfMember(!rulesOfMember);
-                    }}
-                    checked={rulesOfMember}
+                    checked={rulesOfMember === 'Editor'}
+                    color={
+                      user?.current_role?.toLowerCase() ===
+                      CUSTOMER?.toLowerCase()
+                        ? 'primary'
+                        : 'secondary'
+                    }
+                    onChange={() => setRulesOfMember('Editor')}
                   />
                 }
+                sx={{ width: '30%' }}
                 label="Editor"
+                labelPlacement="top"
+              />
+              <FormControlLabel
+                value="Representative"
+                control={
+                  <Radio
+                    checked={rulesOfMember === 'Representative'}
+                    color={
+                      user?.current_role?.toLowerCase() ===
+                      CUSTOMER?.toLowerCase()
+                        ? 'primary'
+                        : 'secondary'
+                    }
+                    onChange={() => setRulesOfMember('Representative')}
+                  />
+                }
+                sx={{ width: '30%' }}
+                label="Representative"
                 labelPlacement="top"
               />
             </Box>
@@ -442,6 +472,11 @@ export default function AuditorSearchModal({
                 marginX: 'auto',
                 marginTop: '20px',
               }}
+              color={
+                user?.current_role?.toLowerCase() === CUSTOMER?.toLowerCase()
+                  ? 'primary'
+                  : 'secondary'
+              }
               onClick={handleInviteUser}
             >
               Invite
