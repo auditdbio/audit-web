@@ -138,16 +138,22 @@ const CreateProjectCard = ({ projectInfo }) => {
     price: projectInfo ? projectInfo.price : 0,
     total_cost: projectInfo ? projectInfo.total_cost : 0,
     creator_contacts: customerReducer?.customer?.contacts,
+
+    // scope: {
+    //   type: projectInfo?.scope?.type || SCOPE_GIT_BLOCK,
+    //   content: projectInfo?.scope?.content || {
+    //     repository: {
+    //       clone_url: null,
+    //       display_url: null,
+    //     },
+    //     commit: null,
+    //     files: [],
+    //   },
+    // },
+    // TODO: replace to git block
     scope: {
-      type: projectInfo?.scope?.type || SCOPE_GIT_BLOCK,
-      content: projectInfo?.scope?.content || {
-        repository: {
-          clone_url: null,
-          display_url: null,
-        },
-        commit: null,
-        files: [],
-      },
+      type: projectInfo?.scope?.type || SCOPE_LINKS,
+      content: projectInfo?.scope?.content || [],
     },
   };
 

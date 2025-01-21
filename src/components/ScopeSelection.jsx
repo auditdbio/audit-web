@@ -41,78 +41,82 @@ const ScopeSelection = ({
 
   return (
     <>
-      {scope.type === SCOPE_GIT_BLOCK ? (
-        <Box sx={[linkFieldWrapper, { height: '44px' }, sx]}>
-          <Button
-            variant="contained"
-            sx={{ flex: 1, height: '100%' }}
-            onClick={() => setIsGithubSelectionOpen(true)}
-          >
-            Add scope from GitHub
-          </Button>
-          <Tooltip
-            title={
-              scope?.content?.files?.length
-                ? 'Adding manually is not available if there are links added using GitHub'
-                : 'Add links manually'
-            }
-            arrow={true}
-            placement="top"
-          >
-            <Box sx={{ height: '100%' }}>
-              <Button
-                variant="contained"
-                sx={{
-                  width: '50px',
-                  minWidth: 'unset',
-                  height: '100%',
-                }}
-                color="secondary"
-                onClick={() =>
-                  handleChangeScopeType(SCOPE_LINKS, setFieldValue)
-                }
-                disabled={!!scope?.content?.files?.length}
-              >
-                <AddLinkIcon />
-              </Button>
-            </Box>
-          </Tooltip>
-        </Box>
-      ) : (
-        <Box sx={[linkFieldWrapper, sx]}>
-          <TagsField
-            size={matchSm ? 'small' : 'medium'}
-            name="scope"
-            label="Project links"
-            setFieldTouched={setFieldTouched}
-            onBlur={onBlur}
-          />
-          <Tooltip
-            title={
-              scope?.content?.length
-                ? 'Selection via GitHub is not available if there are links added manually'
-                : 'Use GitHub to choose scope'
-            }
-            arrow={true}
-            placement="top"
-          >
-            <span>
-              <Button
-                onClick={() => {
-                  handleChangeScopeType(SCOPE_GIT_BLOCK, setFieldValue);
-                  setIsGithubSelectionOpen(true);
-                }}
-                variant="contained"
-                sx={githubBtnSx}
-                className="github-btn"
-                disabled={!!scope?.content?.length}
-              >
-                <GitHubIcon />
-              </Button>
-            </span>
-          </Tooltip>
-        </Box>
-      )}
+      {/*temporarily disabled*/}
+      {/*TODO: uncomment this*/}
+
+      {/*{scope.type === SCOPE_GIT_BLOCK ? (*/}
+      {/*  <Box sx={[linkFieldWrapper, { height: '44px' }, sx]}>*/}
+      {/*    <Button*/}
+      {/*      variant="contained"*/}
+      {/*      sx={{ flex: 1, height: '100%' }}*/}
+      {/*      onClick={() => setIsGithubSelectionOpen(true)}*/}
+      {/*    >*/}
+      {/*      Add scope from GitHub*/}
+      {/*    </Button>*/}
+      {/*    <Tooltip*/}
+      {/*      title={*/}
+      {/*        scope?.content?.files?.length*/}
+      {/*          ? 'Adding manually is not available if there are links added using GitHub'*/}
+      {/*          : 'Add links manually'*/}
+      {/*      }*/}
+      {/*      arrow={true}*/}
+      {/*      placement="top"*/}
+      {/*    >*/}
+      {/*      <Box sx={{ height: '100%' }}>*/}
+      {/*        <Button*/}
+      {/*          variant="contained"*/}
+      {/*          sx={{*/}
+      {/*            width: '50px',*/}
+      {/*            minWidth: 'unset',*/}
+      {/*            height: '100%',*/}
+      {/*          }}*/}
+      {/*          color="secondary"*/}
+      {/*          onClick={() =>*/}
+      {/*            handleChangeScopeType(SCOPE_LINKS, setFieldValue)*/}
+      {/*          }*/}
+      {/*          disabled={!!scope?.content?.files?.length}*/}
+      {/*        >*/}
+      {/*          <AddLinkIcon />*/}
+      {/*        </Button>*/}
+      {/*      </Box>*/}
+      {/*    </Tooltip>*/}
+      {/*  </Box>*/}
+      {/*) : (*/}
+      <Box sx={[linkFieldWrapper, sx]}>
+        <TagsField
+          size={matchSm ? 'small' : 'medium'}
+          name="scope"
+          label="Project links"
+          setFieldTouched={setFieldTouched}
+          onBlur={onBlur}
+          disabled={!!scope?.content?.files?.length}
+        />
+        <Tooltip
+          title={
+            scope?.content?.length
+              ? 'Selection via GitHub is not available if there are links added manually'
+              : 'Use GitHub to choose scope'
+          }
+          arrow={true}
+          placement="top"
+        >
+          <span>
+            <Button
+              onClick={() => {
+                handleChangeScopeType(SCOPE_GIT_BLOCK, setFieldValue);
+                setIsGithubSelectionOpen(true);
+              }}
+              variant="contained"
+              sx={githubBtnSx}
+              className="github-btn"
+              disabled={!!scope?.content?.length}
+            >
+              <GitHubIcon />
+            </Button>
+          </span>
+        </Tooltip>
+      </Box>
+      {/*)}*/}
       <GithubSelection
         project={project}
         isOpen={isGithubSelectionOpen}

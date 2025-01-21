@@ -19,6 +19,7 @@ const TagsField = ({
   setFieldTouched,
   handleSubmit,
   onBlur,
+  disabled = false,
 }) => {
   const role = useSelector(s => s.user.user.current_role);
   const [field, meta, fieldHelper] = useField(name);
@@ -40,7 +41,11 @@ const TagsField = ({
         let link = state.trim();
         if (/^.+\..+/.test(link)) {
           link = /^https?:\/\//.test(link) ? link : `https://${link}`;
-          if (field.value?.type === SCOPE_LINKS) {
+          if (
+            field.value?.type === SCOPE_LINKS ||
+            (field.value?.type === SCOPE_GIT_BLOCK &&
+              !field.value?.content?.files?.length)
+          ) {
             fieldHelper.setValue({
               type: SCOPE_LINKS,
               content: [...scope, link],
@@ -117,8 +122,8 @@ const TagsField = ({
           component={TextField}
           placeholder={placeholder ? placeholder : ''}
           fullWidth={true}
-          name={'tag-field'}
-          disabled={false}
+          name="tag-field"
+          disabled={disabled}
           label={label}
           size={size}
           value={state || ''}
@@ -140,6 +145,7 @@ const TagsField = ({
                   edge="end"
                   color={role !== AUDITOR ? 'primary' : 'secondary'}
                   onClick={handleAddTag}
+                  disabled={disabled}
                   {...addTestsLabel('add-tag-button')}
                 >
                   <AddIcon />
