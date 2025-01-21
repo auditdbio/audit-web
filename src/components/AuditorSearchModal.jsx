@@ -404,65 +404,83 @@ export default function AuditorSearchModal({
               sx={{
                 mt: '10px',
                 display: 'flex',
-                justifyContent: 'center',
                 gap: '20px',
+                flexDirection: 'column',
+                alignItems: 'flex-start',
               }}
             >
-              <FormControlLabel
-                value="Owner"
-                control={
-                  <Radio
-                    checked={rulesOfMember === 'Owner'}
-                    color={
-                      user?.current_role?.toLowerCase() ===
-                      CUSTOMER?.toLowerCase()
-                        ? 'primary'
-                        : 'secondary'
-                    }
-                    onChange={() => setRulesOfMember('Owner')}
-                  />
-                }
-                sx={{ width: '30%' }}
-                label="Owner"
-                labelPlacement="top"
-                disabled
-              />
-              <FormControlLabel
-                value="Editor"
-                control={
-                  <Radio
-                    checked={rulesOfMember === 'Editor'}
-                    color={
-                      user?.current_role?.toLowerCase() ===
-                      CUSTOMER?.toLowerCase()
-                        ? 'primary'
-                        : 'secondary'
-                    }
-                    onChange={() => setRulesOfMember('Editor')}
-                  />
-                }
-                sx={{ width: '30%' }}
-                label="Editor"
-                labelPlacement="top"
-              />
-              <FormControlLabel
-                value="Representative"
-                control={
-                  <Radio
-                    checked={rulesOfMember === 'Representative'}
-                    color={
-                      user?.current_role?.toLowerCase() ===
-                      CUSTOMER?.toLowerCase()
-                        ? 'primary'
-                        : 'secondary'
-                    }
-                    onChange={() => setRulesOfMember('Representative')}
-                  />
-                }
-                sx={{ width: '30%' }}
-                label="Representative"
-                labelPlacement="top"
-              />
+              <Box>
+                <FormControlLabel
+                  value="Owner"
+                  control={
+                    <Radio
+                      checked={rulesOfMember === 'Owner'}
+                      color={
+                        user?.current_role?.toLowerCase() ===
+                        CUSTOMER?.toLowerCase()
+                          ? 'primary'
+                          : 'secondary'
+                      }
+                      onChange={() => setRulesOfMember('Owner')}
+                    />
+                  }
+                  sx={{ marginX: '0' }}
+                  label="Owner"
+                  labelPlacement="right"
+                  disabled
+                />
+                <Typography sx={roleDescriptionTitle}>
+                  Has full control over organization management.
+                </Typography>
+              </Box>
+              <Box>
+                <FormControlLabel
+                  value="Editor"
+                  control={
+                    <Radio
+                      checked={rulesOfMember === 'Editor'}
+                      color={
+                        user?.current_role?.toLowerCase() ===
+                        CUSTOMER?.toLowerCase()
+                          ? 'primary'
+                          : 'secondary'
+                      }
+                      onChange={() => setRulesOfMember('Editor')}
+                    />
+                  }
+                  label="Editor"
+                  sx={{ marginX: '0' }}
+                  labelPlacement="right"
+                />
+                <Typography sx={roleDescriptionTitle}>
+                  Can manage audits and communicate on behalf of the
+                  organization.
+                </Typography>
+              </Box>
+              <Box>
+                <FormControlLabel
+                  value="Representative"
+                  control={
+                    <Radio
+                      checked={rulesOfMember === 'Representative'}
+                      color={
+                        user?.current_role?.toLowerCase() ===
+                        CUSTOMER?.toLowerCase()
+                          ? 'primary'
+                          : 'secondary'
+                      }
+                      onChange={() => setRulesOfMember('Representative')}
+                    />
+                  }
+                  label="Representative"
+                  sx={{ marginX: '0' }}
+                  labelPlacement="right"
+                />
+                <Typography sx={roleDescriptionTitle}>
+                  Can communicate on behalf of the organization but cannot
+                  manage audits.
+                </Typography>
+              </Box>
             </Box>
             <Button
               variant={'contained'}
@@ -501,6 +519,18 @@ const MakeOfferSchema = Yup.object().shape({
     from: Yup.date(),
     to: Yup.date().required().min(Yup.ref('from')),
   }),
+});
+
+const roleDescriptionTitle = theme => ({
+  fontSize: '16px',
+  color: '#9f9f9f',
+  marginLeft: '42px',
+  [theme.breakpoints.down('md')]: {
+    fontSize: '12px',
+  },
+  [theme.breakpoints.down('xs')]: {
+    fontSize: '10px',
+  },
 });
 
 const modalWindow = {
