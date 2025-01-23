@@ -126,9 +126,9 @@ const AppRoutes = () => {
 
   useEffect(() => {
     if (needUpdate) {
-      setIsOpen(true);
+      setIsOpen(true)
     }
-  }, [needUpdate]);
+  }, [needUpdate])
 
   const handleReload = () => {
     setIsOpen(false);

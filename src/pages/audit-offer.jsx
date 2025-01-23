@@ -231,33 +231,7 @@ const AuditOffer = () => {
   }, [issues]);
 
   const handleGenerateReport = (isDraft = false) => {
-    // if (isPublic) {
-    //   if (report?.auditor_name && report?.project_name && report?.description) {
-    //     if (isAuth()) {
-    //       if (user.current_role === AUDITOR) {
-    //         const linkId = auditor.link_id || auditor.user_id;
-    //         report.profile_link = linkId
-    //           ? `${BASE_URL}a/${linkId}`
-    //           : `${BASE_URL}disclaimer/`;
-    //       } else if (user.current_role === CUSTOMER) {
-    //         const linkId = customer.link_id || customer.user_id;
-    //         report.profile_link = linkId
-    //           ? `${BASE_URL}c/${linkId}`
-    //           : `${BASE_URL}disclaimer/`;
-    //       }
-    //     }
-    //     const newData = reportBuilder(report, issuesArray);
-    //     dispatch(getPublicReport(newData, { generate: true }));
-    //   } else {
-    //     handleSubmit();
-    //     setOpenMessage(true);
-    //   }
-    //
-    //   setMenuAnchorEl(null);
-    // } else {
     dispatch(downloadReport(audit, { generate: true, isDraft }));
-    // setMenuAnchorEl(null);
-    // }
   };
 
   return (
@@ -339,25 +313,6 @@ const AuditOffer = () => {
             position: 'relative',
           }}
         >
-          {/*{audit?.isPublic &&*/}
-          {/*  audit?.status?.toLowerCase() === RESOLVED.toLowerCase() &&*/}
-          {/*  audit?.auditor_id === user.id && (*/}
-          {/*    <FormControlLabel*/}
-          {/*      control={*/}
-          {/*        <Switch*/}
-          {/*          checked={publicView}*/}
-          {/*          onChange={e => setPublicView(e.target.checked)}*/}
-          {/*        />*/}
-          {/*      }*/}
-          {/*      sx={{*/}
-          {/*        '& .MuiTypography-root': { fontSize: '14px' },*/}
-          {/*        top: '-20px',*/}
-          {/*        position: 'absolute',*/}
-          {/*        right: '150px',*/}
-          {/*      }}*/}
-          {/*      label="Preview"*/}
-          {/*    />*/}
-          {/*  )}*/}
           <Box sx={headerTitleSx}>
             <Typography
               variant="h3"
