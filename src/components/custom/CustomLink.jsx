@@ -5,6 +5,7 @@ import LinkIcon from '@mui/icons-material/Link';
 import theme from '../../styles/themes.js';
 
 export const linkShortener = (link, shortLinkLength) => {
+  if (!link) return '';
   const regex = /(^https?:\/\/(www\.)?(github\.com\/)?)|(\?.*$)/g;
   const shortLink = link.replace(regex, '');
   if (shortLinkLength) {
@@ -47,10 +48,10 @@ const CustomLink = ({ link, showIcon = true, sx = {}, shortLength = null }) => {
   return (
     <Box sx={{ display: 'flex', width: '100%' }}>
       <Typography
-        noWrap={!link.includes('blob')}
+        noWrap={!link?.includes('blob')}
         sx={[
           linkBoxSx,
-          link.includes('blob') ? { wordBreak: 'break-all' } : {},
+          link?.includes('blob') ? { wordBreak: 'break-all' } : {},
         ]}
       >
         {showIcon &&
@@ -65,14 +66,14 @@ const CustomLink = ({ link, showIcon = true, sx = {}, shortLength = null }) => {
           sx={[
             linkSx,
             sx,
-            link.includes('blob') ? { overflow: 'unset!important' } : {},
+            link?.includes('blob') ? { overflow: 'unset!important' } : {},
           ]}
           ref={linkBoxRef}
           onClick={e => e.stopPropagation()}
         >
           <Tooltip sx={{ width: 'unset' }} title={link} arrow placement="top">
             <span style={{ fontSize: '14px' }}>
-              {link.includes('blob')
+              {link?.includes('blob')
                 ? shortenLink(link)
                 : linkShortener(link, shortLinkLength)}
             </span>

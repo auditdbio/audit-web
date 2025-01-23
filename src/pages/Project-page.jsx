@@ -48,13 +48,6 @@ const ProjectPage = () => {
     dispatch(searchProjects(filter));
   };
 
-  const clearFilter = () => {
-    setQuery(query => {
-      const { ...data } = query || {};
-      return {};
-    });
-  };
-
   const initialFilter = {
     page: searchParams.get('page') || 1,
     search: searchParams.get('search') || '',

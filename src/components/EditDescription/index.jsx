@@ -1,5 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
-import Markdown from '../markdown/Markdown.jsx';
+import React, { useState } from 'react';
 import { FastField, Form, Formik } from 'formik';
 import {
   editAuditCustomer,
@@ -20,25 +19,17 @@ import { addTestsLabel } from '../../lib/helper.js';
 import AddLinkIcon from '@mui/icons-material/AddLink.js';
 import { TextField } from 'formik-mui';
 import { AUDIT_PARENT_ENTITY } from '../../services/file_constants.js';
+import { SCOPE_GIT_BLOCK } from '../../services/constants.js';
 
 const EditDescription = ({ audit, auditRequest, hideChange, isPublic }) => {
-  const [editMode, setEditMode] = useState(false);
-  const [showFull, setShowFull] = useState(false);
-  const [showComment, setShowComment] = useState(false);
-  const descriptionRef = useRef();
   const dispatch = useDispatch();
-  const [showReadMoreButton, setShowReadMoreButton] = useState(false);
   const matchXs = useMediaQuery(theme.breakpoints.down('xs'));
-  const [addLinkField, setAddLinkField] = useState(false);
-  const user = useSelector(s => s.user.user);
 
-  useEffect(() => {
-    setTimeout(() => {
-      if (descriptionRef?.current?.offsetHeight > 400) {
-        setShowReadMoreButton(true);
-      }
-    }, 500);
-  }, [descriptionRef.current]);
+  const [editMode, setEditMode] = useState(false);
+  const [showComment, setShowComment] = useState(false);
+  const [addLinkField, setAddLinkField] = useState(false);
+
+  const { user } = useSelector(s => s.user);
 
   const handleEdit = () => {
     setEditMode(true);
@@ -47,12 +38,12 @@ const EditDescription = ({ audit, auditRequest, hideChange, isPublic }) => {
   return (
     <>
       <Box sx={descriptionSx}>
-        <Box ref={descriptionRef}>
+        <Box>
           <Formik
             initialValues={{
               description: audit?.description,
               id: audit?.id,
-              scope: audit?.project_scope || audit?.scope,
+              scope: audit?.scope || audit?.project_scope,
               comment: '',
             }}
             onSubmit={values => {
@@ -76,7 +67,7 @@ const EditDescription = ({ audit, auditRequest, hideChange, isPublic }) => {
                         fastSave={true}
                         mdProps={{
                           view: { menu: true, md: true, html: !matchXs },
-                          style: editMarkdownSx(),
+                          style: editMarkdownSx,
                         }}
                         sx={{ border: 'unset' }}
                         parentEntity={{
@@ -128,7 +119,7 @@ const EditDescription = ({ audit, auditRequest, hideChange, isPublic }) => {
                             <AddLinkIcon
                               color={
                                 user?.current_role?.toLowerCase() ===
-                                CUSTOMER?.toLowerCase()
+                                CUSTOMER.toLowerCase()
                                   ? 'primary'
                                   : 'secondary'
                               }
@@ -153,8 +144,7 @@ const EditDescription = ({ audit, auditRequest, hideChange, isPublic }) => {
                               textTransform: 'unset',
                             }}
                             color={
-                              user?.current_role?.toLowerCase() ===
-                              CUSTOMER?.toLowerCase()
+                              user?.current_role?.toLowerCase() === CUSTOMER.toLowerCase()
                                 ? 'primary'
                                 : 'secondary'
                             }
@@ -197,7 +187,6 @@ const EditDescription = ({ audit, auditRequest, hideChange, isPublic }) => {
                               <FastField
                                 component={TextField}
                                 name={'comment'}
-                                // label={label}
                                 placeholder={'Add a comment'}
                                 fullWidth={true}
                                 disabled={false}
@@ -245,7 +234,12 @@ const EditDescription = ({ audit, auditRequest, hideChange, isPublic }) => {
                         </Box>
                       ) : (
                         <Box sx={customerLinksList}>
-                          {values.scope?.map((link, idx) => (
+                          {(values.scope?.type === SCOPE_GIT_BLOCK
+                            ? values.scope.content.files?.map(
+                                file => file.display_url,
+                              )
+                            : values.scope?.content
+                          )?.map((link, idx) => (
                             <CustomLink link={link} key={idx} />
                           ))}
                         </Box>
@@ -260,7 +254,6 @@ const EditDescription = ({ audit, auditRequest, hideChange, isPublic }) => {
                   </Box>
                   {addLinkField && (
                     <Box sx={{ mt: '10px' }}>
-                      {/*{user.current_role !== CUSTOMER && (*/}
                       <TagsField
                         size="small"
                         name="scope"
@@ -268,7 +261,6 @@ const EditDescription = ({ audit, auditRequest, hideChange, isPublic }) => {
                         handleSubmit={handleSubmit}
                         sx={linkFieldSx}
                       />
-                      {/*)}*/}
                     </Box>
                   )}
                 </Form>
@@ -286,7 +278,7 @@ export default EditDescription;
 const editButtonText = (theme, user) => ({
   ml: '6px',
   color:
-    user?.current_role?.toLowerCase() === CUSTOMER?.toLowerCase()
+    user?.current_role?.toLowerCase() === CUSTOMER.toLowerCase()
       ? theme.palette.primary.main
       : theme.palette.secondary.main,
   fontWeight: 500,
@@ -320,7 +312,7 @@ const linkFieldSx = {
   '&::before': eventLine(10),
 };
 
-const markdownSx = (matchXs, description, editMode) => ({
+const markdownSx = (matchXs, description) => ({
   height: !matchXs
     ? description && description.length > 250
       ? '550px'
@@ -334,13 +326,13 @@ const markdownSx = (matchXs, description, editMode) => ({
   lineHeight: '24px',
 });
 
-const editMarkdownSx = (matchXs, description, editMode) => ({
+const editMarkdownSx = {
   height: '550px',
   backgroundColor: '#fcfaf6',
   fontWeight: 500,
   fontSize: '20px !important',
   lineHeight: '24px',
-});
+};
 
 const linksList = {
   border: '1px solid #dfe0df',
@@ -359,16 +351,17 @@ const customerLinksList = {
     fontSize: '18px',
   },
 };
-const editBtnSx = theme => ({
+const editBtnSx = {
   display: 'flex',
   gap: '10px',
   paddingRight: '20px',
   '& button': {
     minWidth: 'unset',
   },
-});
-const descriptionSx = full => ({
+};
+
+const descriptionSx = {
   '& .rc-md-editor': {
     borderBottom: 'none',
   },
-});
+};

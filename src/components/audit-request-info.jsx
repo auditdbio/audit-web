@@ -12,7 +12,6 @@ import {
   useMediaQuery,
   Modal,
   Tooltip,
-  Divider,
   Collapse,
 } from '@mui/material';
 import { CustomCard } from './custom/Card.jsx';
@@ -22,25 +21,18 @@ import {
   confirmAudit,
   deleteAuditRequest,
 } from '../redux/actions/auditAction.js';
-import Markdown from './markdown/Markdown.jsx';
-import {
-  addTestsLabel,
-  getAverageFeedbackRating,
-  isAuth,
-} from '../lib/helper.js';
+import { addTestsLabel, isAuth } from '../lib/helper.js';
 import { AUDITOR, CUSTOMER } from '../redux/actions/types.js';
 import {
   changeRolePublicAuditor,
   changeRolePublicAuditorNoRedirect,
 } from '../redux/actions/userAction.js';
-import CustomLink from './custom/CustomLink.jsx';
 import OfferModal from './modal/OfferModal.jsx';
 import ShareProjectButton from './custom/ShareProjectButton.jsx';
 import { setCurrentChat } from '../redux/actions/chatActions.js';
 import ChatIcon from './icons/ChatIcon.jsx';
 import ConfirmModal from './modal/ConfirmModal.jsx';
 import CustomSnackbar from './custom/CustomSnackbar.jsx';
-import PriceCalculation from './PriceCalculation.jsx';
 import EditDescription from './EditDescription/index.jsx';
 import DescriptionHistory from './DescriptionHistory/index.jsx';
 import EditTags from './EditDescription/EditTags.jsx';
@@ -59,8 +51,9 @@ const AuditRequestInfo = ({
   hideChange,
   navigateTo,
 }) => {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
-  const matchXs = useMediaQuery(theme.breakpoints.down('xs'));
+
   const [open, setOpen] = useState(false);
   const [confirmDeclineOpen, setConfirmDeclineOpen] = useState(false);
   const [showAcceptButton, setShowAcceptButton] = useState(true);
@@ -72,8 +65,6 @@ const AuditRequestInfo = ({
   const { user } = useSelector(s => s.user);
   const { chatList } = useSelector(s => s.chat);
   const [showFull, setShowFull] = useState(false);
-
-  const dispatch = useDispatch();
 
   const handleOpen = () => {
     if (user.current_role === AUDITOR && isAuth() && auditor?.first_name) {
@@ -237,8 +228,6 @@ const AuditRequestInfo = ({
                   showFullHeader ? {} : { transform: 'rotate(180deg)' },
                   {
                     transition: '0.2s',
-                    // marginRight: '0',
-                    // marginLeft: 'auto',
                     width: '20px',
                     height: '20px',
                   },
@@ -357,26 +346,17 @@ const AuditRequestInfo = ({
             >
               <Box sx={descriptionWrapper(theme, showFull, isModal)}>
                 <Box sx={infoWrapper} className="audit-request-info">
-                  {/*<Markdown value={project?.description} />*/}
                   <EditDescription
                     hideChange={hideChange}
                     audit={project}
                     auditRequest={true}
                   />
-                  {/*<Box sx={linkWrapper} className="audit-request-links">*/}
-                  {/*  {(project?.project_scope || project?.scope)?.map(*/}
-                  {/*    (link, idx) => (*/}
-                  {/*      <CustomLink link={link} key={idx} />*/}
-                  {/*    ),*/}
-                  {/*  )}*/}
-                  {/*</Box>*/}
                 </Box>
               </Box>
             </Collapse>
             <Box
               sx={[
                 {
-                  // border: '1px solid #E5E5E5',
                   borderTop: '1px solid #E5E5E5',
                   display: 'flex',
                   justifyContent: 'center',
@@ -390,7 +370,6 @@ const AuditRequestInfo = ({
                   : {},
               ]}
             >
-              {/*{tab === 0 && (*/}
               <Button
                 onClick={() => {
                   if (isModal) {
@@ -429,8 +408,6 @@ const AuditRequestInfo = ({
                     showFull ? {} : { transform: 'rotate(180deg)' },
                     {
                       transition: '0.2s',
-                      // marginRight: '0',
-                      // marginLeft: 'auto',
                       width: '20px',
                       height: '20px',
                     },
@@ -438,7 +415,6 @@ const AuditRequestInfo = ({
                   ]}
                 />
               </Button>
-              {/*)}*/}
             </Box>
           </>
         </Box>
@@ -482,15 +458,6 @@ const AuditRequestInfo = ({
                 Accept
               </Button>
             )}
-          {/*<Button*/}
-          {/*  variant="text"*/}
-          {/*  // sx={[buttonSx, messageButton]}*/}
-          {/*  onClick={handleSendMessage}*/}
-          {/*  disabled={project?.customer_id === user.id}*/}
-          {/*  {...addTestsLabel('message-button')}*/}
-          {/*>*/}
-          {/*  <ChatIcon />*/}
-          {/*</Button>*/}
         </Box>
       </Box>
 
@@ -530,12 +497,6 @@ const AuditRequestInfo = ({
 
 export default AuditRequestInfo;
 
-const contactStyle = theme => ({
-  // display: 'flex',
-  // alignItems: 'center',
-  // gap: '10px'
-});
-
 const descriptionWrapper = (theme, showFull, isModal) => ({
   maxHeight: showFull ? 'none' : isModal ? 150 : 300,
   '& .rc-md-editor': {
@@ -563,7 +524,6 @@ const readAllButton = theme => ({
   display: 'flex',
   alignItems: 'center',
   gap: '7px',
-  // maxWidth: '300px',
   [theme.breakpoints.down('xs')]: {
     fontSize: '16px',
   },
@@ -600,7 +560,6 @@ const contactWrapper = theme => ({
     margin: 'unset',
     width: 'unset',
     alignItems: 'center',
-    // gap: '10px',
   },
 });
 
@@ -670,21 +629,6 @@ const contentWrapper = {
   gap: '20px',
 };
 
-const titleSx = {
-  fontSize: '16px',
-  fontWeight: 500,
-  display: 'flex',
-  flexWrap: 'wrap',
-  gap: '5px',
-};
-
-const salaryWrapper = {
-  display: 'flex',
-  gap: '50px',
-  fontSize: '14px',
-  fontWeight: 500,
-};
-
 const infoWrapper = theme => ({
   marginTop: '20px',
   [theme.breakpoints.down('sm')]: {
@@ -695,28 +639,12 @@ const infoWrapper = theme => ({
   },
 });
 
-const linkWrapper = theme => ({
-  display: 'flex',
-  flexDirection: 'column',
-  marginTop: '30px',
-  padding: '0 15px',
-  '& p': {
-    display: 'flex',
-    alignItems: 'center',
-    fontSize: '14px',
-  },
-  [theme.breakpoints.down('sm')]: {
-    marginTop: '25px',
-  },
-});
-
 const backButtonSx = theme => ({
   position: 'absolute',
   left: '-28px',
   top: '-20px',
   [theme.breakpoints.down('sm')]: {
     left: '-25px',
-    // top: '-30px',
   },
 });
 
@@ -745,26 +673,3 @@ const buttonSx = theme => ({
     width: '122px',
   },
 });
-
-const messageButton = theme => ({
-  width: '560px',
-  padding: '4px 0',
-  [theme.breakpoints.down('md')]: {
-    width: '440px',
-    padding: '4px 0',
-  },
-  [theme.breakpoints.down('sm')]: {
-    width: '360px',
-  },
-  [theme.breakpoints.down('xs')]: {
-    width: '290px',
-  },
-  [theme.breakpoints.down('xxs')]: {
-    width: '254px',
-  },
-});
-
-const priceCalc = {
-  width: '100%',
-  '& .head': { justifyContent: 'center' },
-};

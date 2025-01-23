@@ -27,7 +27,6 @@ import {
 } from '../constants.js';
 import NoteAddIcon from '@mui/icons-material/NoteAdd.js';
 import FeedbackIcon from '@mui/icons-material/Feedback';
-import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 
 const StatusSeverityBlock = ({
   issue,

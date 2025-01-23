@@ -1,5 +1,4 @@
 import {
-  BRANCH_NAME,
   CLEAR_COMMIT,
   CLEAR_REPO_OWNER,
   GET_BRANCHES,
@@ -113,6 +112,7 @@ export const getCommitData = (repoOwner, sha) => {
     });
   };
 };
+
 export const getDefaultBranch = repoOwner => {
   const token = Cookies.get('token');
   return dispatch => {
@@ -132,21 +132,19 @@ export const getDefaultBranch = repoOwner => {
 };
 
 export const getRepoOwner = repoOwner => {
-  return dispatch => {
-    dispatch({ type: GET_REPO_OWNER, payload: repoOwner });
-  };
+  return { type: GET_REPO_OWNER, payload: repoOwner };
 };
 
 export const getSha = sha => {
-  return dispatch => {
-    dispatch({ type: GET_SHA, payload: sha });
-  };
+  return { type: GET_SHA, payload: sha };
 };
 
 export const clearRepoOwner = () => {
-  return dispatch => {
-    dispatch({ type: CLEAR_REPO_OWNER });
-  };
+  return { type: CLEAR_REPO_OWNER };
+};
+
+export const clearCommit = () => {
+  return { type: CLEAR_COMMIT };
 };
 
 export const getTotalCommits = (repoOwner, branch) => {
@@ -169,12 +167,6 @@ export const getTotalCommits = (repoOwner, branch) => {
         payload: lastPage ? parseInt(lastPage) : 1,
       });
     });
-  };
-};
-
-export const clearCommit = () => {
-  return dispatch => {
-    dispatch({ type: CLEAR_COMMIT });
   };
 };
 
@@ -259,7 +251,6 @@ export const getMyGithubOrgs = () => {
         }
       })
       .catch(error => {
-        // console.log(error);
         dispatch({ type: NEED_TO_AUTH_GITHUB });
         const user = JSON.parse(localStorage.getItem('user'));
         const newData = {
@@ -275,7 +266,7 @@ export const getMyGithubOrgs = () => {
       });
   };
 };
-//
+
 export const getMyPublicGithubOrgs = user => {
   return dispatch => {
     axios(`${API_URL}/github/users/${user}/orgs?per_page=100`, {

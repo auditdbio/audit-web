@@ -37,7 +37,7 @@ const GitHubAuthComponent = ({ desc, noPrivate }) => {
         sx={{ textTransform: 'unset' }}
         variant={'contained'}
       >
-        Authenticate with GitHub{' '}
+        Authenticate with GitHub
       </Button>
     </Box>
   );

@@ -5,14 +5,11 @@ import dayjs from 'dayjs';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 import {
-  Avatar,
   Box,
   Button,
   Typography,
   Tooltip,
   Divider,
-  FormControlLabel,
-  Switch,
   Collapse,
 } from '@mui/material';
 import TagsList from '../components/tagsList.jsx';
@@ -32,7 +29,6 @@ import {
   DONE,
   RESOLVED,
   SUBMITED,
-  WAITING_FOR_AUDITS,
 } from '../redux/actions/types.js';
 import Markdown from '../components/markdown/Markdown.jsx';
 import FeedbackIcon from '@mui/icons-material/Feedback';
@@ -123,10 +119,6 @@ const AuditInfo = ({
     );
     localStorage.setItem('path', window.location.pathname);
     navigate(`/chat/${audit?.auditor_id}`);
-  };
-
-  const goToIssues = () => {
-    navigate(`/issues/audit-issue/${audit?.id}`);
   };
 
   const handleSendFeedback = values => {
@@ -307,7 +299,6 @@ const AuditInfo = ({
         <Box
           sx={[
             {
-              // border: '1px solid #E5E5E5',
               borderTop: '1px solid #E5E5E5',
               display: 'flex',
               width: '100%',
@@ -352,7 +343,6 @@ const AuditInfo = ({
               ]}
             />
           </Button>
-          {/*)}*/}
         </Box>
       </Box>
       {audit?.conclusion && (
@@ -370,10 +360,8 @@ const AuditInfo = ({
             gap: '15px',
           }}
         >
-          {/*<Box sx={historySx}>*/}
           <DescriptionHistory audit={audit} request={request} />
 
-          {/*</Box>*/}
           {auditRequest && (
             <Button
               variant={'contained'}

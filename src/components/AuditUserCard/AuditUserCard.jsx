@@ -158,7 +158,6 @@ const userInfoWrapper = theme => ({
   display: 'flex',
   flexDirection: 'column',
   gap: '20px',
-  // marginTop: '20px',
   [theme.breakpoints.down('sm')]: {
     gap: '10px',
   },

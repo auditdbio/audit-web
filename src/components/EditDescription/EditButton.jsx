@@ -23,5 +23,5 @@ const EditButton = ({ editMode, handleClick }) => {
     </Button>
   );
 };
-//
+
 export default EditButton;

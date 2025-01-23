@@ -280,17 +280,6 @@ const nameStyle = {
   color: '#152BEA',
 };
 
-const projectStyle = {
-  fontWeight: 500,
-  fontSize: {
-    zero: '9px',
-    sm: '11px',
-    md: '13px',
-    lg: '14px',
-  },
-  color: '#434242',
-};
-
 const statusGroup = theme => ({
   display: 'flex',
   alignItems: 'center',
@@ -362,5 +351,3 @@ const tagsWrapper = theme => ({
     maxWidth: '130px',
   },
 });
-
-const fakeTagsArray = ['Python', 'Java', 'Audit', 'Big Four'];

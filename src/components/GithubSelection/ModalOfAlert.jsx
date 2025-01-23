@@ -1,11 +1,13 @@
 import React from 'react';
 import { Box, Button, Typography } from '@mui/material';
-//
-const ModalOfAlert = ({ onSave, onClose }) => {
+import CloseRoundedIcon from '@mui/icons-material/CloseRounded.js';
+
+const ModalOfAlert = ({ onSave, onDisagree, onClose }) => {
   return (
     <Box>
-      <Typography variant={'body1'}>
-        Are you sure you want to close? You have unsaved files.
+      <Typography variant="body1" sx={{ textAlign: 'center' }}>
+        You have unsaved files.
+        <br /> Apply changes?
       </Typography>
       <Box
         sx={{
@@ -15,11 +17,14 @@ const ModalOfAlert = ({ onSave, onClose }) => {
           mt: '20px',
         }}
       >
-        <Button variant={'contained'} onClick={onSave}>
+        <Button variant="contained" onClick={onSave}>
           agree
         </Button>
-        <Button variant={'contained'} onClick={onClose} color={'secondary'}>
+        <Button variant="contained" onClick={onDisagree} color="secondary">
           disagree
+        </Button>
+        <Button onClick={onClose} sx={closeSx}>
+          <CloseRoundedIcon />
         </Button>
       </Box>
     </Box>
@@ -27,3 +32,10 @@ const ModalOfAlert = ({ onSave, onClose }) => {
 };
 
 export default ModalOfAlert;
+
+const closeSx = {
+  position: 'absolute',
+  top: 5,
+  right: 5,
+  minWidth: '40px',
+};

@@ -6,12 +6,8 @@ import {
   Chip,
   ClickAwayListener,
   Divider,
-  FormControl,
-  InputLabel,
   Modal,
-  OutlinedInput,
   Popover,
-  Select,
   Typography,
   useMediaQuery,
 } from '@mui/material';
@@ -20,19 +16,13 @@ import { useDispatch, useSelector } from 'react-redux';
 import dayjs from 'dayjs';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import { ASSET_URL } from '../../services/urls.js';
-import { FastField, Field } from 'formik';
-import { TextField } from '@mui/material';
-import { addTestsLabel } from '../../lib/helper.js';
 import MenuItem from '@mui/material/MenuItem';
-import CheckRoundedIcon from '@mui/icons-material/CheckRounded';
 import {
   approveHistory,
   approveHistoryAndRead,
-  approveHistoryAndReadRequest,
   handleReadHistory,
   handleReadRequestHistory,
 } from '../../redux/actions/auditAction.js';
-import PendingIcon from '@mui/icons-material/Pending';
 import Badge from '@mui/material/Badge';
 import { CUSTOMER } from '../../redux/actions/types.js';
 
@@ -437,16 +427,6 @@ const DescriptionModal = ({
                 </Typography>
                 <Box sx={{ display: 'flex', flexDirection: 'column' }}>
                   <Typography>{item.comment}</Typography>
-                  {/*<ReactDiffViewer*/}
-                  {/*  oldValue={JSON.stringify(*/}
-                  {/*    oldValue.comment || compare?.comment || '',*/}
-                  {/*    null,*/}
-                  {/*    2,*/}
-                  {/*  )}*/}
-                  {/*  newValue={JSON.stringify(item.comment || '', null, 2)}*/}
-                  {/*  splitView={!mediaSx}*/}
-                  {/*  compareMethod={DiffMethod.WORDS}*/}
-                  {/*/>*/}
                 </Box>
               </>
             )}
@@ -460,7 +440,6 @@ const DescriptionModal = ({
                 onClick={handleApprove}
                 variant={'contained'}
                 sx={{ mt: '15px', textTransform: 'unset', width: '157px' }}
-                // disabled={item.approved.length === 2}
               >
                 Approve changes
               </Button>
@@ -479,7 +458,6 @@ const DescriptionModal = ({
                     ml: '20px',
                     width: '157px',
                   }}
-                  // disabled={item.approved.length === 2}
                 >
                   Show history
                 </Button>
@@ -600,9 +578,6 @@ const userTitleSx = theme => ({
   alignItems: 'center',
   width: 'calc(100% - 320px)',
   textOverflow: 'hidden',
-  // [theme.breakpoints.down('md')]: {
-  //   width: '400px',
-  // },
   [theme.breakpoints.down('sm')]: {
     width: 'calc(100% - 280px)',
   },
@@ -626,8 +601,5 @@ const modalSx = theme => ({
   paddingTop: '7px',
   [theme.breakpoints.down('xs')]: {
     padding: 2,
-    // '& .react-diff-1klnsbn-empty-gutter': {
-    //   display: 'none',
-    // },
   },
 });

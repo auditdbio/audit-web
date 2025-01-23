@@ -7,13 +7,14 @@ import { useField } from 'formik';
 
 const TotalPrice = () => {
   const currentRole = useSelector(s => s.user.user.current_role);
-  const [field, fieldMeta, fieldHelper] = useField('total_cost');
-  const [fieldPrice, fiel, priceHelper] = useField('price');
-  const [isTotalCost, setIsTotalCost] = useState(!!field.value);
+  const [, , TotalCostHelper] = useField('total_cost');
+  const [priceField, , priceHelper] = useField('price');
+  const [isTotalCost, setIsTotalCost] = useState(!priceField.value);
+
   const handleChangePriceToCost = () => {
     setIsTotalCost(!isTotalCost);
     if (isTotalCost) {
-      fieldHelper.setValue(null);
+      TotalCostHelper.setValue(null);
     } else {
       priceHelper.setValue(null);
     }
@@ -24,7 +25,6 @@ const TotalPrice = () => {
       <Box sx={priceLabelSx}>
         Price per line of code
         <Switch
-          defaultChecked
           checked={isTotalCost}
           size="small"
           sx={{ marginX: '7px' }}

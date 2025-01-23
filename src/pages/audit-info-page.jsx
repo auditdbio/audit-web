@@ -14,9 +14,7 @@ import Headings from '../router/Headings.jsx';
 import { useSearchParams } from 'react-router-dom/dist';
 
 const AuditInfoPage = ({ isPublic, publicView, setPublicView }) => {
-  const { auditId } = useParams();
   const dispatch = useDispatch();
-  const notFound = useSelector(s => s.notFound.error);
   const auditConfirm = useSelector(s => s.audits?.audit);
   const { issuesAuditId } = useSelector(s => s.issues);
   const queryParams = new URLSearchParams(location.search);
@@ -46,7 +44,6 @@ const AuditInfoPage = ({ isPublic, publicView, setPublicView }) => {
   }, [auditConfirm?.status, issuesAuditId]);
 
   return (
-    // <Layout>
     <AuditInfo
       isPublic={isPublic}
       audit={auditConfirm}
@@ -56,44 +53,7 @@ const AuditInfoPage = ({ isPublic, publicView, setPublicView }) => {
       publicView={publicView}
       setPublicView={setPublicView}
     />
-    // </Layout>
   );
 };
 
 export default AuditInfoPage;
-
-const wrapper = theme => ({
-  padding: '30px 60px 60px',
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'center',
-  gap: '40px',
-  position: 'relative',
-  '& h3': {
-    fontSize: '24px',
-    fontWeight: 500,
-  },
-  [theme.breakpoints.down('sm')]: {
-    gap: '40px',
-    padding: '25px 20px 30px',
-    '& h3': {
-      fontSize: '20px',
-    },
-  },
-});
-
-const wrapperCustom = theme => ({
-  padding: '48px 74px 80px',
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'center',
-  gap: '80px',
-  position: 'relative',
-  [theme.breakpoints.down('md')]: {
-    padding: '38px 44px 60px',
-  },
-  [theme.breakpoints.down('sm')]: {
-    gap: '40px',
-    padding: '38px 20px 30px',
-  },
-});

@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import GitUrlParse from 'git-url-parse';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline.js';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore.js';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess.js';
@@ -24,6 +23,7 @@ import {
   getCloc,
 } from '../redux/actions/projectAction.js';
 import CustomSnackbar from './custom/CustomSnackbar.jsx';
+import { SCOPE_GIT_BLOCK, SCOPE_LINKS } from '../services/constants.js';
 
 const PriceCalculation = ({
   scope,
@@ -44,25 +44,21 @@ const PriceCalculation = ({
 
   useEffect(() => {
     if (scope) {
-      const links = scope.reduce((acc, url) => {
-        if (!url.startsWith('http')) return acc;
+      let links = scope;
+      if (scope.type === SCOPE_LINKS) {
+        links = scope.content;
+      } else if (scope.type === SCOPE_GIT_BLOCK) {
+        links = scope.content.files.map(file => file.display_url);
+      }
 
-        // const parsedUrl = GitUrlParse(url);
-        // if (
-        //   ((parsedUrl.resource === 'github.com' ||
-        //     parsedUrl.source === 'github.com') &&
-        //     url.includes('/blob/')) ||
-        //   parsedUrl.source === 'githubusercontent.com' ||
-        //   parsedUrl.resource === 'raw.githubusercontent.com'
-        // ) {
-        //   acc.push(url);
-        // }
+      const filteredLinks = links.reduce((acc, url) => {
+        if (!url.startsWith('http')) return acc;
 
         acc.push(url);
         return acc;
       }, []);
 
-      setCorrectLinks(links);
+      setCorrectLinks(filteredLinks);
     }
   }, [scope]);
 
@@ -82,10 +78,6 @@ const PriceCalculation = ({
       dispatch(getCloc({ links: correctLinks }));
     }
   };
-
-  // if (!correctLinks.length) {
-  //   return null;
-  // }
 
   return (
     <Box sx={sx}>
@@ -142,7 +134,6 @@ const PriceCalculation = ({
         )}
       </Box>
 
-      {/*{cloc && (*/}
       <Box sx={calcResult}>
         <Box sx={calcResultHead}>
           <Box>
@@ -249,7 +240,6 @@ const PriceCalculation = ({
           </Box>
         )}
       </Box>
-      {/*)}*/}
     </Box>
   );
 };

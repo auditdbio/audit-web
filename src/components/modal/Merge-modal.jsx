@@ -1,15 +1,9 @@
 import React from 'react';
 import { Box, Button, Typography, useMediaQuery } from '@mui/material';
 import SimpleField from '../forms/fields/simple-field.jsx';
-import { TextField } from 'formik-mui';
-import { addTestsLabel, isAuth } from '../../lib/helper.js';
-import { FastField, Form, Formik } from 'formik';
+import { Form, Formik } from 'formik';
 import { useDispatch } from 'react-redux';
-import {
-  mergeAccount,
-  mergeCurrentAccount,
-} from '../../redux/actions/auditorAction.js';
-import { signUp } from '../../redux/actions/userAction.js';
+import { mergeAccount } from '../../redux/actions/auditorAction.js';
 import * as Yup from 'yup';
 import PasswordField from '../forms/fields/password-field.jsx';
 import theme from '../../styles/themes.js';

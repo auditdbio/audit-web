@@ -4,9 +4,35 @@ import theme from '../../styles/themes.js';
 import { FieldArray, useField } from 'formik';
 import React from 'react';
 import CustomLink from './CustomLink.jsx';
+import { SCOPE_GIT_BLOCK, SCOPE_LINKS } from '../../services/constants.js';
 
 export const ProjectLinksList = ({ name, handleSubmit }) => {
-  const [field, meta] = useField(name);
+  const [field, meta, helper] = useField(name);
+
+  const handleRemove = idx => {
+    const { value } = field;
+    let updatedScope;
+
+    if (value?.type === SCOPE_GIT_BLOCK) {
+      updatedScope = {
+        ...value,
+        content: {
+          ...value.content,
+          files: value.content.files.filter((_, i) => i !== idx),
+        },
+      };
+    } else if (value?.type === SCOPE_LINKS) {
+      updatedScope = {
+        ...value,
+        content: value.content.filter((_, i) => i !== idx),
+      };
+    } else {
+      updatedScope = value.filter((_, i) => i !== idx);
+    }
+
+    helper.setValue(updatedScope);
+    if (handleSubmit) handleSubmit();
+  };
 
   return (
     <Box>
@@ -24,18 +50,22 @@ export const ProjectLinksList = ({ name, handleSubmit }) => {
 
       <FieldArray
         name={name}
-        render={arrayHelper =>
-          field.value?.map((link, idx) => {
+        render={() => {
+          const scope =
+            field.value?.type === SCOPE_GIT_BLOCK
+              ? field.value.content?.files?.map(file => file.display_url)
+              : field.value?.type === SCOPE_LINKS
+              ? field.value.content
+              : field.value;
+
+          return scope?.map((link, idx) => {
             return (
               <Box key={idx} sx={linkWrapper}>
                 <CustomLink link={link} showIcon={false} sx={linkSx} />
 
                 <IconButton
                   sx={{ padding: '5px' }}
-                  onClick={() => {
-                    arrayHelper.remove(idx);
-                    if (handleSubmit) handleSubmit();
-                  }}
+                  onClick={() => handleRemove(idx)}
                 >
                   <CloseIcon
                     sx={{
@@ -46,8 +76,8 @@ export const ProjectLinksList = ({ name, handleSubmit }) => {
                 </IconButton>
               </Box>
             );
-          })
-        }
+          });
+        }}
       />
     </Box>
   );

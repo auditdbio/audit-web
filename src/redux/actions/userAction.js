@@ -26,22 +26,19 @@ import {
   ERROR_ADD_ACCOUNT,
   ERROR_IDENTITY,
   DELETE_LINKED_ACCOUNT,
-  GET_PROFILE,
   GET_PUBLIC_PROFILE,
   GET_MY_PROFILE,
   CLEAR_MESSAGES,
   AUDITOR,
   CUSTOMER,
-  GET_AUDITS,
 } from './types.js';
-import { getAudits, savePublicReport } from './auditAction.js';
+import { savePublicReport } from './auditAction.js';
 
 const API_URL = import.meta.env.VITE_API_BASE_URL;
 const DEV = import.meta.env.DEV;
 const TOKEN_LIFETIME_MS = 21 * 24 * 60 * 60 * 1000;
 
 const devModeSetToken = token => {
-  // For development mode only:
   if (DEV && token) {
     Cookies.set('token', token, { expires: 21 });
     Cookies.set('token_expiration', Date.now() + TOKEN_LIFETIME_MS, {
@@ -103,7 +100,7 @@ export const signUpGithub = data => {
 };
 
 export const signIn = values => {
-  return async (dispatch, getState) => {
+  return async dispatch => {
     try {
       const { data } = await axios.post(`${API_URL}/auth/login`, values);
 
@@ -394,10 +391,6 @@ export const sendRestoreMessage = values => {
         console.log(e);
       });
   };
-};
-
-export const authenticate = () => {
-  return { type: AUTH_TRUE };
 };
 
 export const logout = () => {

@@ -52,7 +52,6 @@ import ProjectCardList from '../components/Project-card-list.jsx';
 const PublicProfile = ({ notFoundRedirect = true }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const matchXs = useMediaQuery(theme.breakpoints.down('xs'));
   const matchSm = useMediaQuery(theme.breakpoints.down('sm'));
 
   const { role: roleParams, id, linkId } = useParams();
@@ -530,7 +529,6 @@ const PublicProfile = ({ notFoundRedirect = true }) => {
                 }
               })}
           </Box>
-          {/*{matchXs && <MobileTagsList data={data.tags} />}*/}
           <Box
             sx={{
               display: 'flex',
@@ -691,7 +689,6 @@ const ratingButton = {
 const contentWrapper = theme => ({
   display: 'flex',
   gap: '70px',
-  // justifyContent: 'center',
   margin: '0 auto',
   width: '100%',
   maxWidth: '1200px',
@@ -701,7 +698,6 @@ const contentWrapper = theme => ({
   [theme.breakpoints.down('sm')]: {
     alignItems: 'center',
     maxWidth: 'unset',
-    // justifyContent: 'flex-start',
     margin: 0,
     gap: '30px',
     width: '100%',

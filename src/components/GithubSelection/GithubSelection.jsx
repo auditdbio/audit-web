@@ -1,18 +1,7 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import {
-  Box,
-  Button,
-  Divider,
-  List,
-  Modal,
-  Tab,
-  Tabs,
-  Typography,
-} from '@mui/material';
+import React, { useEffect, useState } from 'react';
+import { Box, Button, Modal, Typography } from '@mui/material';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import { Field, useField } from 'formik';
-import GitHubIcon from '@mui/icons-material/GitHub';
-import CommitItem from './CommitItem.jsx';
 import { TextField } from 'formik-mui';
 import { addTestsLabel } from '../../lib/helper.js';
 import CustomSnackbar from '../custom/CustomSnackbar.jsx';
@@ -29,55 +18,52 @@ import {
   getRepoOwner,
   getTotalCommits,
 } from '../../redux/actions/githubAction.js';
-import CommitIcon from '@mui/icons-material/Commit';
-import dayjs from 'dayjs';
-import { getMyProfile, logout } from '../../redux/actions/userAction.js';
+import { getMyProfile } from '../../redux/actions/userAction.js';
 import GithubOwnRepositories from './GithubOwnRepositories.jsx';
-import GithubOwnOrgs from './GithubOwnOrgs.jsx';
 import GitHubAuthComponent from './GitHubAuthComponent.jsx';
 import CommitModal from './CommitModal.jsx';
 import CommitsList from './CommitsList.jsx';
 import {
-  CLEAR_NOT_FOUND,
   CLEAR_NOT_FOUND_ERROR,
   SWITCH_REPO,
 } from '../../redux/actions/types.js';
+import { SCOPE_GIT_BLOCK, SCOPE_LINKS } from '../../services/constants.js';
 
-const GITHUB_ID = import.meta.env.VITE_GITHUB_CLIENT_ID;
-const BASE_URL = import.meta.env.VITE_BASE_URL;
-
-const GithubSelection = ({ project, noPrivate }) => {
+const GithubSelection = ({ project, noPrivate, isOpen, setIsOpen }) => {
+  const dispatch = useDispatch();
   const [field, _, fieldHelper] = useField('scope');
   const [urlRepo, setUrlRepo] = useState('');
-  const { branch } = useSelector(state => state.github);
-  const [isOpen, setIsOpen] = useState(false);
   const [selected, setSelected] = useState([]);
+  const [repository, setRepository] = useState(null);
+  const [error, setError] = useState('');
+
   const {
+    branch,
     defaultBranch,
-    totalCommitsPage,
-    commits,
     myOrganizations,
     myRepositories,
     sha,
-    repoOwner,
-    tag,
-    commitInfo,
     notFound,
     commitPage: page,
   } = useSelector(state => state.github);
-  const [repository, setRepository] = useState(null);
-  const [error, setError] = useState('');
-  const dispatch = useDispatch();
   const githubData = useSelector(s =>
     s.user?.user?.linked_accounts?.find(
       el => el?.name?.toLowerCase() === 'github',
     ),
   );
-  const orgs = useSelector(s => s.github.myOrganizations);
+
+  useEffect(() => {
+    if (isOpen) {
+      if (field.value.type === SCOPE_LINKS) {
+        setSelected(field.value.content);
+      } else if (field.value.type === SCOPE_GIT_BLOCK) {
+        setSelected(field.value.content.files);
+      }
+    }
+  }, [isOpen]);
 
   useEffect(() => {
     if (project?.id) {
-      const getRepoUrl = field.value[0];
       function parseGitHubUrl(gitHubUrl) {
         const urlParts = gitHubUrl.split('/');
         const owner = urlParts[3];
@@ -85,9 +71,22 @@ const GithubSelection = ({ project, noPrivate }) => {
 
         return `${owner}/${repo}`;
       }
-      const validUrl = parseGitHubUrl(getRepoUrl);
-      if (getRepoUrl.includes('github.com/')) {
-        setRepository(validUrl);
+
+      if (field.value.type === SCOPE_LINKS) {
+        const getRepoUrl = field.value.content[0];
+        if (getRepoUrl) {
+          const validUrl = parseGitHubUrl(getRepoUrl);
+          if (getRepoUrl.includes('github.com/')) {
+            setRepository(validUrl);
+          }
+        }
+      } else if (field.value.type === SCOPE_GIT_BLOCK) {
+        if (field.value?.content?.repository?.clone_url) {
+          const validUrl = parseGitHubUrl(
+            field.value.content.repository.clone_url,
+          );
+          setRepository(validUrl);
+        }
       }
     }
   }, []);
@@ -122,10 +121,6 @@ const GithubSelection = ({ project, noPrivate }) => {
     }
   }, [githubData?.scope?.includes('repo'), githubData?.username]);
 
-  // useEffect(() => {
-  //   dispatch(getMyProfile());
-  // }, []);
-
   const handleAddProject = () => {
     if (urlRepo.includes('github.com/')) {
       function parseGitHubUrl(gitHubUrl) {
@@ -156,13 +151,25 @@ const GithubSelection = ({ project, noPrivate }) => {
   const handleReset = () => {
     setRepository(null);
     setUrlRepo('');
-    fieldHelper.setValue(field.value.filter(el => !el.includes('github.com')));
-    setSelected(field.value.filter(el => !el.includes('github.com')));
+
+    setSelected([]);
+    fieldHelper.setValue({
+      type: SCOPE_GIT_BLOCK,
+      content: {
+        repository: {
+          clone_url: null,
+        },
+        commit: null,
+        files: [],
+      },
+    });
+
     dispatch(clearRepoOwner());
     dispatch(clearCommit());
     dispatch({ type: SWITCH_REPO });
     dispatch({ type: CLEAR_NOT_FOUND_ERROR });
   };
+
   useEffect(() => {
     const handleStorageChange = event => {
       if (
@@ -189,166 +196,153 @@ const GithubSelection = ({ project, noPrivate }) => {
   };
 
   return (
-    <Box sx={wrapper} className={'github-wrapper'}>
-      <Modal
-        open={isOpen}
-        onClose={handleClose}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-      >
-        <Box sx={modalSx}>
-          {!sha && (
-            <Box sx={{ height: '100%' }}>
-              {!repository ? (
-                <Box
+    <Modal
+      open={isOpen}
+      onClose={handleClose}
+      aria-labelledby="modal-modal-title"
+      aria-describedby="modal-modal-description"
+    >
+      <Box sx={modalSx}>
+        {!sha && (
+          <Box sx={{ height: '100%' }}>
+            {!repository ? (
+              <Box
+                sx={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  height: '100%',
+                }}
+              >
+                <Button
                   sx={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    height: '100%',
+                    marginLeft: '-15px',
+                    minWidth: '34px',
+                    marginBottom: '5px',
+                    alignSelf: 'flex-start',
                   }}
+                  onClick={handleClose}
                 >
-                  <Button
-                    sx={{
-                      marginLeft: '-15px',
-                      minWidth: '34px',
-                      marginBottom: '5px',
-                      alignSelf: 'flex-start',
+                  <CloseRoundedIcon />
+                </Button>
+                <Box sx={projectUrlWrapper}>
+                  <CustomSnackbar
+                    autoHideDuration={3000}
+                    open={!!error}
+                    onClose={() => {
+                      setError('');
                     }}
-                    onClick={handleClose}
+                    severity={'error'}
+                    text={error}
+                  />
+                  <Field
+                    component={TextField}
+                    placeholder={'Github repository url'}
+                    fullWidth={true}
+                    name={'tag-field'}
+                    disabled={false}
+                    label={'Github repository url'}
+                    size={'small'}
+                    value={urlRepo}
+                    onKeyDown={e => {
+                      if (e.key === 'Enter') {
+                        handleAddProject();
+                      }
+                    }}
+                    onChange={e => setUrlRepo(e.target.value)}
+                    sx={fieldSx}
+                    inputProps={{ ...addTestsLabel('project-input') }}
+                  />
+                  <Button
+                    onClick={handleAddProject}
+                    variant={'contained'}
+                    sx={btnSx}
                   >
-                    <CloseRoundedIcon />
+                    Submit
                   </Button>
-                  <Box sx={projectUrlWrapper}>
-                    <CustomSnackbar
-                      autoHideDuration={3000}
-                      open={!!error}
-                      onClose={() => {
-                        setError('');
-                      }}
-                      severity={'error'}
-                      text={error}
-                    />
-                    <Field
-                      component={TextField}
-                      placeholder={'Github repository url'}
-                      fullWidth={true}
-                      name={'tag-field'}
-                      disabled={false}
-                      label={'Github repository url'}
-                      size={'small'}
-                      value={urlRepo}
-                      onKeyDown={e => {
-                        if (e.key === 'Enter') {
-                          handleAddProject();
-                        }
-                      }}
-                      onChange={e => setUrlRepo(e.target.value)}
-                      sx={fieldSx}
-                      inputProps={{ ...addTestsLabel('project-input') }}
-                    />
-                    <Button
-                      onClick={handleAddProject}
-                      variant={'contained'}
-                      sx={btnSx}
-                    >
-                      Submit
-                    </Button>
-                  </Box>
-                  {githubData?.id ? (
-                    <>
-                      {!githubData?.scope?.includes('repo') && (
-                        <GitHubAuthComponent
-                          noPrivate={noPrivate}
-                          desc={
-                            'Authenticate via GitHub to select from your private repositories'
-                          }
-                        />
-                      )}
-                      <GithubOwnRepositories
-                        setRepository={handleOpenOwnRepo}
-                        myRepositories={myRepositories}
-                        myOrganizations={myOrganizations}
-                      />
-                    </>
-                  ) : (
-                    <GitHubAuthComponent />
-                  )}
                 </Box>
-              ) : (
-                <>
-                  {!notFound ? (
-                    <CommitsList
-                      handleReset={handleReset}
-                      handleClose={handleClose}
-                      repository={repository}
+                {githubData?.id ? (
+                  <>
+                    {!githubData?.scope?.includes('repo') && (
+                      <GitHubAuthComponent
+                        noPrivate={noPrivate}
+                        desc={
+                          'Authenticate via GitHub to select from your private repositories'
+                        }
+                      />
+                    )}
+                    <GithubOwnRepositories
+                      setRepository={handleOpenOwnRepo}
+                      myRepositories={myRepositories}
+                      myOrganizations={myOrganizations}
                     />
-                  ) : (
-                    <Box sx={notFoundSx}>
+                  </>
+                ) : (
+                  <GitHubAuthComponent />
+                )}
+              </Box>
+            ) : (
+              <>
+                {!notFound ? (
+                  <CommitsList
+                    handleReset={handleReset}
+                    handleClose={handleClose}
+                    repository={repository}
+                  />
+                ) : (
+                  <Box sx={notFoundSx}>
+                    <Button
+                      sx={{
+                        marginLeft: '-15px',
+                        minWidth: '34px',
+                        marginBottom: '5px',
+                        alignSelf: 'flex-start',
+                      }}
+                      onClick={() => {
+                        handleClose();
+                        dispatch({ type: CLEAR_NOT_FOUND_ERROR });
+                        handleReset();
+                      }}
+                    >
+                      <CloseRoundedIcon />
+                    </Button>
+                    <Box
+                      sx={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                      }}
+                    >
+                      <Typography variant={'h4'}>
+                        Repository not found
+                      </Typography>
                       <Button
-                        sx={{
-                          marginLeft: '-15px',
-                          minWidth: '34px',
-                          marginBottom: '5px',
-                          alignSelf: 'flex-start',
-                        }}
-                        onClick={() => {
-                          handleClose();
-                          dispatch({ type: CLEAR_NOT_FOUND_ERROR });
-                          handleReset();
-                        }}
+                        sx={buttonSx}
+                        color={'primary'}
+                        variant={'contained'}
+                        onClick={handleReset}
                       >
-                        <CloseRoundedIcon />
+                        Switch repository
                       </Button>
-                      <Box
-                        sx={{
-                          display: 'flex',
-                          flexDirection: 'column',
-                          alignItems: 'center',
-                        }}
-                      >
-                        <Typography variant={'h4'}>
-                          Repository not found
-                        </Typography>
-                        <Button
-                          sx={buttonSx}
-                          color={'primary'}
-                          variant={'contained'}
-                          onClick={handleReset}
-                        >
-                          Switch repository
-                        </Button>
-                      </Box>
                     </Box>
-                  )}
-                </>
-              )}
-            </Box>
-          )}
-          {sha && (
-            <CommitModal
-              sha={sha}
-              selected={selected}
-              setSelected={setSelected}
-              handleCloseCommit={handleCloseCommit}
-              repository={repository}
-              onClose={handleClose}
-              handleSwitchRep={handleReset}
-            />
-          )}
-        </Box>
-      </Modal>
-      <Button
-        onClick={() => {
-          setIsOpen(true);
-          setSelected(field.value);
-        }}
-        variant={'contained'}
-        sx={githubBtnSx}
-        className={'github-btn'}
-      >
-        <GitHubIcon />
-      </Button>
-    </Box>
+                  </Box>
+                )}
+              </>
+            )}
+          </Box>
+        )}
+        {sha && (
+          <CommitModal
+            sha={sha}
+            selected={selected}
+            setSelected={setSelected}
+            handleCloseCommit={handleCloseCommit}
+            repository={repository}
+            onClose={handleClose}
+            handleSwitchRep={handleReset}
+          />
+        )}
+      </Box>
+    </Modal>
   );
 };
 
@@ -369,7 +363,7 @@ const notFoundSx = theme => ({
   },
 });
 
-const buttonSx = theme => ({
+const buttonSx = {
   textTransform: 'unset',
   display: 'flex',
   gap: '5px',
@@ -377,28 +371,7 @@ const buttonSx = theme => ({
   lineHeight: '22px',
   maxWidth: '100%',
   marginTop: '25px',
-});
-
-const wrapper = theme => ({
-  height: '100%',
-  [theme.breakpoints.down(500)]: {
-    width: '100%',
-  },
-});
-
-const githubBtnSx = theme => ({
-  padding: '12px 0',
-  fontSize: '16px',
-  textTransform: 'unset',
-  fontWeight: 600,
-  width: '50px!important',
-  minWidth: '50px',
-  borderRadius: '10px',
-  height: '44px',
-  [theme.breakpoints.down('md')]: {
-    padding: '10px 0',
-  },
-});
+};
 
 const projectUrlWrapper = theme => ({
   display: 'flex',
@@ -425,10 +398,10 @@ const btnSx = theme => ({
   },
 });
 
-const fieldSx = theme => ({
+const fieldSx = {
   maxWidth: '500px',
   width: '100%',
-});
+};
 
 const modalSx = theme => ({
   position: 'absolute',

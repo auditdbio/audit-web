@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom/dist';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import {
   Avatar,
   Box,
@@ -12,7 +12,6 @@ import {
   useMediaQuery,
 } from '@mui/material';
 import Currency from './icons/Currency.jsx';
-import Star from './icons/Star.jsx';
 import {
   AUDITOR,
   DONE,
@@ -20,7 +19,7 @@ import {
   SUBMITED,
   WAITING_FOR_AUDITS,
 } from '../redux/actions/types.js';
-import { addTestsLabel, dateConverter, issuesCounter } from '../lib/helper.js';
+import { addTestsLabel, dateConverter } from '../lib/helper.js';
 import {
   handlePublishAudit,
   startAudit,
@@ -33,7 +32,6 @@ import IssueSeveritySort from './IssueSeveritySort/IssueSeverityFilter.jsx';
 
 const ProjectCard = ({ type, project, currentRole, isPublic }) => {
   const navigate = useNavigate();
-
   const dispatch = useDispatch();
   const matchSx = useMediaQuery(theme.breakpoints.down('xs'));
 
@@ -175,10 +173,6 @@ const ProjectCard = ({ type, project, currentRole, isPublic }) => {
                     </Typography>
                   </Box>
                 ))}
-              {/*<Box sx={infoWrapper}>*/}
-              {/*  <Star />*/}
-              {/*  <Typography>150</Typography>*/}
-              {/*</Box>*/}
             </Box>
           ) : (
             <Box sx={priceWrapper}>
@@ -310,12 +304,12 @@ const ProjectCard = ({ type, project, currentRole, isPublic }) => {
 
 export default ProjectCard;
 
-export const userButtonSx = theme => ({
+export const userButtonSx = {
   textTransform: 'unset',
   display: 'flex',
   gap: '8px',
   marginBottom: '12px',
-});
+};
 
 const priceWrapper = theme => ({
   display: 'flex',
@@ -361,15 +355,15 @@ const actionBtnSx = (theme, isPublic) => ({
   },
 });
 
-const projectNameSx = theme => ({
+const projectNameSx = {
   height: '45px',
   overflow: 'hidden',
   wordBreak: 'break-word',
-  '-webkit-line-clamp': '2',
-  '-webkit-box-orient': 'vertical',
-  'text-overflow': 'ellipsis',
+  WebkitLineClamp: '2',
+  WebkitBoxOrient: 'vertical',
+  textOverflow: 'ellipsis',
   display: '-webkit-box',
-});
+};
 
 const cardInnerWrapper = (theme, isPublic) => ({
   display: 'flex',
@@ -462,10 +456,6 @@ const statusWrapper = theme => ({
     height: '17px',
     borderRadius: '50%',
   },
-  // margin: '20px 0 18px',
-  [theme.breakpoints.down('md')]: {
-    // margin: '25px 0 10px',
-  },
   [theme.breakpoints.down('xs')]: {
     marginTop: 0,
     gap: '10px',
@@ -528,9 +518,9 @@ const categorySx = theme => ({
   width: '100%',
   overflow: 'hidden',
   wordBreak: 'break-word',
-  '-webkit-line-clamp': '2',
-  '-webkit-box-orient': 'vertical',
-  'text-overflow': 'ellipsis',
+  WebkitLineClamp: '2',
+  WebkitBoxOrient: 'vertical',
+  textOverflow: 'ellipsis',
   display: '-webkit-box',
   fontSize: '12px!important',
   fontWeight: 500,
@@ -538,16 +528,15 @@ const categorySx = theme => ({
   margin: '10px 0 7px',
   [theme.breakpoints.down('xs')]: {
     fontSize: '10px!important',
-    // textAlign: 'left',
     height: '40px',
   },
   [theme.breakpoints.down('xxs')]: {
     height: '30px',
     maxWidth: '90px',
-    '-webkit-line-clamp': '2',
+    WebkitLineClamp: '2',
   },
 });
-//
+
 const cardWrapper = theme => ({
   display: 'flex',
   flexDirection: 'column',

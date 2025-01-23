@@ -7,15 +7,14 @@ import {
   Button,
   Divider,
   InputAdornment,
-  Menu,
-  MenuItem,
   TextField,
   Tooltip,
   Typography,
   useMediaQuery,
 } from '@mui/material';
 import SaveIcon from '@mui/icons-material/Save';
-import { addTestsLabel, isAuth, reportBuilder } from '../../lib/helper.js';
+import { addTestsLabel, isAuth } from '../../lib/helper.js';
+import { reportBuilder } from '../../lib/reportBuilder.js';
 import {
   AUDITOR,
   CHANGE_ROLE_DONT_HAVE_PROFILE_AUDITOR,
@@ -35,10 +34,7 @@ import {
   savePublicReport,
 } from '../../redux/actions/auditAction.js';
 import CustomSnackbar from '../custom/CustomSnackbar.jsx';
-import {
-  changeRolePublicAuditor,
-  clearUserSuccess,
-} from '../../redux/actions/userAction.js';
+import { changeRolePublicAuditor } from '../../redux/actions/userAction.js';
 import theme from '../../styles/themes.js';
 import { BASE_URL } from '../../services/urls.js';
 import RefreshIcon from '@mui/icons-material/Refresh';
@@ -365,7 +361,6 @@ const Control = ({
                             },
                           },
                         ]}
-                        // onClick={handleNewIssue}
                         {...addTestsLabel('new-issue-button')}
                       >
                         {/*New issue*/}
@@ -402,7 +397,6 @@ const Control = ({
                             buttonSx,
                             (isPublic || saved) && xss ? publicBtnSx : {},
                           ]}
-                          // disabled={checkDraftIssues()}
                           onClick={handleDiscloseAll}
                         >
                           <DiscloseIcon />
@@ -426,7 +420,6 @@ const Control = ({
                           ]}
                         >
                           {/*Disclose all*/}
-                          {/*<UnfoldMoreIcon />*/}
                           <DiscloseIcon />
                         </Button>
                       </Tooltip>
@@ -524,8 +517,6 @@ const Control = ({
                   },
                 },
               ]}
-              // disabled={audit?.status?.toLowerCase() === RESOLVED.toLowerCase()}
-              // onClick={handleNewIssue}
               {...addTestsLabel('new-issue-button')}
             >
               <NoteAddIcon />
@@ -591,7 +582,6 @@ const customerViewSx = theme => ({
     },
   },
   [theme.breakpoints.down(600)]: {
-    // flexDirection: 'column-reverse',
     '& .customer-button-wrapper': {
       justifyContent: 'center',
       gap: '15px',
@@ -633,9 +623,6 @@ const searchBlock = theme => ({
   display: 'flex',
   flexGrow: 1,
   alignItems: 'center',
-  // [theme.breakpoints.down('xs')]: {
-  //   mt: '20px',
-  // },
 });
 
 const publicSearchBlock = theme => ({
@@ -643,7 +630,6 @@ const publicSearchBlock = theme => ({
   flexGrow: 1,
   alignItems: 'center',
   [theme.breakpoints.down(555)]: {
-    // mt: '20px',
     mr: 0,
   },
 });
@@ -660,29 +646,9 @@ const textFieldSx = theme => ({
   },
 });
 
-const menuButton = theme => ({
-  width: '42px',
-  height: '45px',
-  borderRadius: '8px',
-  background: theme.palette.secondary.main,
-  padding: 0,
-  mr: '20px',
-  '&:hover': {
-    filter: 'brightness(0.8)',
-    background: theme.palette.secondary.main,
-  },
-  [theme.breakpoints.down('sm')]: {
-    width: '39px',
-    height: '39px',
-  },
-});
-
 const buttonBoxSx = theme => ({
   display: 'flex',
   justifyContent: 'center',
-  // [theme.breakpoints.down('md')]: {
-  //   width: '100%',
-  // },
   [theme.breakpoints.down(630)]: {
     flexDirection: 'column',
     gap: '15px',
@@ -724,15 +690,5 @@ const publicBtnSx = theme => ({
   [theme.breakpoints.down(690)]: {
     width: '100%',
     mr: 0,
-  },
-});
-
-const singleButtonSx = theme => ({
-  [theme.breakpoints.down(690)]: {
-    width: '130px!important',
-    mr: 0,
-  },
-  [theme.breakpoints.down(555)]: {
-    width: '100%!important',
   },
 });

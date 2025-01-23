@@ -1,20 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom/dist';
-import {
-  Avatar,
-  Box,
-  Button,
-  Collapse,
-  Modal,
-  Tooltip,
-  Typography,
-} from '@mui/material';
+import { Box, Button, Collapse, Modal, Typography } from '@mui/material';
 import Layout from '../styles/Layout.jsx';
 import { getProjectById } from '../redux/actions/projectAction.js';
 import Markdown from '../components/markdown/Markdown.jsx';
 import { getCurrentCustomer } from '../redux/actions/customerAction.js';
-import { ASSET_URL } from '../services/urls.js';
 import CustomLink from '../components/custom/CustomLink.jsx';
 import TagsList from '../components/tagsList.jsx';
 import { addTestsLabel, isAuth } from '../lib/helper.js';
@@ -36,6 +27,7 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import EditIcon from '@mui/icons-material/Edit';
 import ExpandLessOutlinedIcon from '@mui/icons-material/ExpandLessOutlined';
 import AuditUserCard from '../components/AuditUserCard/AuditUserCard.jsx';
+import { SCOPE_GIT_BLOCK } from '../services/constants.js';
 
 const PublicProject = () => {
   const dispatch = useDispatch();
@@ -172,7 +164,7 @@ const PublicProject = () => {
         />
         <Button
           variant="text"
-          sx={[messageButton(theme, project?.customer_id === user.id)]}
+          sx={messageButton}
           onClick={handleSendMessage}
           disabled={project?.customer_id === user.id}
           {...addTestsLabel('message-button')}
@@ -224,7 +216,6 @@ const PublicProject = () => {
           <Box
             sx={[
               {
-                // border: '1px solid #E5E5E5',
                 borderTop: '1px solid #E5E5E5',
                 display: 'flex',
                 justifyContent: 'center',
@@ -232,9 +223,7 @@ const PublicProject = () => {
                 paddingTop: '8px',
               },
               !showFull
-                ? {
-                    boxShadow: '0px -24px 14px -8px rgba(252, 250, 246, 1)',
-                  }
+                ? { boxShadow: '0px -24px 14px -8px rgba(252, 250, 246, 1)' }
                 : {},
             ]}
           >
@@ -263,8 +252,6 @@ const PublicProject = () => {
                     showFull ? {} : { transform: 'rotate(180deg)' },
                     {
                       transition: '0.2s',
-                      // marginRight: '0',
-                      // marginLeft: 'auto',
                       width: '20px',
                       height: '20px',
                     },
@@ -272,7 +259,6 @@ const PublicProject = () => {
                 />
               </Button>
             )}
-            {/*)}*/}
           </Box>
           <Box sx={tagsSx}>
             <TagsList data={project?.tags} />
@@ -280,7 +266,10 @@ const PublicProject = () => {
         </Box>
 
         <Box sx={linksList}>
-          {project?.scope.map((link, idx) => {
+          {(project?.scope.type === SCOPE_GIT_BLOCK
+            ? project.scope.content.files?.map(file => file.display_url)
+            : project.scope?.content
+          ).map((link, idx) => {
             return <CustomLink link={link} key={idx} sx={linkSx} />;
           })}
         </Box>
@@ -330,14 +319,14 @@ const descriptionWrapper = (theme, showFull) => ({
   },
 });
 
-const messageButton = (theme, disable) => ({
+const messageButton = {
   position: 'absolute',
   top: '10px',
   right: 0,
   zIndex: 333,
   width: '35px',
   height: '35px',
-});
+};
 
 const readAllButton = theme => ({
   p: '3px',
@@ -351,7 +340,6 @@ const readAllButton = theme => ({
   display: 'flex',
   alignItems: 'center',
   gap: '7px',
-  // maxWidth: '300px',
   [theme.breakpoints.down('xs')]: {
     fontSize: '16px',
   },
@@ -392,20 +380,6 @@ const wrapper = role => {
   };
 };
 
-const fieldLabel = theme => ({
-  flexShrink: 0,
-  width: '100px',
-  color: '#B2B3B3',
-  fontWeight: 500,
-  mr: '40px',
-  [theme.breakpoints.down('sm')]: {
-    mr: '15px',
-  },
-  [theme.breakpoints.down('xs')]: {
-    fontSize: '14px',
-  },
-});
-
 const projectNameSx = {
   width: '100%',
   maxWidth: '700px',
@@ -414,74 +388,6 @@ const projectNameSx = {
   fontWeight: 500,
   wordBreak: 'break-word',
 };
-
-const customerInfoBlock = theme => ({
-  display: 'flex',
-  flexWrap: 'nowrap',
-  alignItems: 'center',
-  width: '100%',
-  maxWidth: '1400px',
-  margin: '0 auto',
-  [theme.breakpoints.down('xs')]: {
-    flexDirection: 'column',
-  },
-});
-
-const customerInfoColumn = theme => ({
-  width: '40%',
-  mr: '30px',
-  ':last-child': {
-    mr: 0,
-  },
-  [theme.breakpoints.down('xs')]: {
-    width: '100%',
-    mr: 0,
-    mb: '15px',
-  },
-});
-
-const customerInfoString = {
-  display: 'flex',
-  alignItems: 'center',
-};
-
-const avatarBoxSx = theme => ({
-  width: '15%',
-  [theme.breakpoints.down('xs')]: {
-    width: '100%',
-    mb: '30px',
-  },
-});
-
-const avatarSx = theme => ({
-  width: '120px',
-  height: '120px',
-  mr: '50px',
-  [theme.breakpoints.down('sm')]: {
-    width: '100px',
-    height: '100px',
-  },
-  [theme.breakpoints.down('xs')]: {
-    margin: '0 auto',
-  },
-});
-
-const customerInfo = theme => ({
-  color: '#434242',
-  fontSize: '15px !important',
-  fontWeight: 400,
-  overflow: 'hidden',
-  'text-overflow': 'ellipsis',
-  [theme.breakpoints.down('xs')]: {
-    fontSize: '14px !important',
-  },
-});
-
-const descriptionSx = full => ({
-  maxHeight: full ? 'unset' : '400px',
-  overflow: 'hidden',
-  border: '2px solid #E5E5E5',
-});
 
 const tagsSx = {
   mt: '30px',

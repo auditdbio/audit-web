@@ -195,14 +195,6 @@ const messageSx = ({ isOwn }) => ({
   },
 });
 
-const contentSx = theme => ({
-  borderRadius: '10px',
-  padding: '15px 30px 25px',
-  '& p': {
-    padding: 'unset',
-  },
-});
-
 const avatarPlugSx = theme => ({
   width: '60px',
   opacity: '0',
@@ -270,7 +262,6 @@ const requestTextSx = ({ isOwn }) => ({
   paddingBottom: '30px',
   borderRadius: isOwn ? '15px 0 15px 15px' : '0 15px 15px 15px',
   '& p': {
-    // padding: '15px',
     fontSize: '20px',
     fontWeight: 500,
     lineHeight: '25px',
@@ -291,7 +282,6 @@ const requestTextSx = ({ isOwn }) => ({
     maxWidth: '290px',
     '& p': {
       lineHeight: '20px',
-      // padding: '10px 20px 18px',
       fontSize: '16px',
     },
   },

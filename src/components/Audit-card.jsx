@@ -4,11 +4,8 @@ import { CustomButton } from './custom/Button.jsx';
 import { useNavigate } from 'react-router-dom/dist';
 import { useDispatch } from 'react-redux';
 import { confirmAudit } from '../redux/actions/auditAction.js';
-import { useMemo } from 'react';
 import {
   CUSTOMER,
-  DONE,
-  IN_PROGRESS,
   RESOLVED,
   SUBMITED,
   WAITING_FOR_AUDITS,
@@ -146,15 +143,6 @@ const AuditCard = ({ audit, request }) => {
     </Card>
   );
 };
-
-const btnWrapper = () => ({
-  display: 'flex',
-  gap: '12px',
-  [theme.breakpoints.down('xs')]: {
-    flexDirection: 'column',
-    gap: '12px',
-  },
-});
 
 const categorySx = theme => ({
   textAlign: 'center',

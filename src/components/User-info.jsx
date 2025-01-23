@@ -241,9 +241,7 @@ const UserInfo = ({ role, linkId }) => {
                   sx={{ display: 'flex', alignItems: 'center', gap: '7px' }}
                 >
                   <Tooltip title={account.url} placement="top">
-                    {/*<Link href={account.url} target={'_blank'}>*/}
                     <LinkedinIcon />
-                    {/*</Link>*/}
                   </Tooltip>
                 </Box>
               );
@@ -450,7 +448,6 @@ const buttonSx = theme => ({
   textTransform: 'capitalize',
   fontWeight: 600,
   fontSize: '18px',
-  // padding: '9px 50px',
   width: '214px',
   borderRadius: '10px',
   [theme.breakpoints.down('xs')]: {

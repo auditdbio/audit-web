@@ -10,9 +10,6 @@ const DragAndDropInput = ({
   auditorId,
 }) => {
   const [dragActive, setDragActive] = useState(false);
-  const [originalFileName, setOriginalFileName] = useState(
-    auditReportName || '',
-  );
   const dispatch = useDispatch();
   const formData = new FormData();
   const user = useSelector(state => state.user.user);

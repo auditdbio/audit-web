@@ -27,17 +27,6 @@ export const getIssues = auditId => {
   };
 };
 
-export const getPublicIssue = auditId => {
-  return dispatch => {
-    const token = Cookies.get('token');
-    axios
-      .get(`${API_URL}/audit/${auditId}/issue`)
-      .then(({ data: issues }) =>
-        dispatch({ type: GET_AUDIT_ISSUES, payload: { auditId, issues } }),
-      );
-  };
-};
-
 export const getPublicIssues = (data, auditId) => {
   return dispatch => {
     dispatch({ type: GET_AUDIT_ISSUES, payload: { auditId, issues: data } });
@@ -59,26 +48,6 @@ export const addPublicIssue = data => {
         successMessage: 'Audit issue created successfully',
       },
     });
-  };
-};
-
-export const deletePublicIssue = data => {
-  return dispatch => {
-    dispatch({ type: DELETE_PUBLIC_ISSUE, payload: { issue: data } });
-  };
-};
-
-export const deleteIssue = (issue, auditId) => {
-  const token = Cookies.get('token');
-
-  return dispatch => {
-    axios
-      .delete(`${API_URL}/audit/${auditId}/issue/${issue.id}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      })
-      .then(({ data }) => {
-        dispatch({ type: DELETE_ISSUE, payload: { issue: data } });
-      });
   };
 };
 

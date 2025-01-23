@@ -25,7 +25,7 @@ import { RESOLVED } from '../redux/actions/types.js';
 import { addTestsLabel } from '../lib/helper.js';
 import DescriptionBlock from '../components/issuesPage/IssueDetailsForm/DescriptionBlock.jsx';
 import StatusSeverityBlock from '../components/issuesPage/IssueDetailsForm/StatusSeverityBlock.jsx';
-import { NOT_FIXED, WILL_NOT_FIX } from '../components/issuesPage/constants.js';
+import { WILL_NOT_FIX } from '../components/issuesPage/constants.js';
 import NoteAddIcon from '@mui/icons-material/NoteAdd';
 
 const PublicIssueDetailsForm = ({ issue = null, editMode = false, saved }) => {
@@ -66,7 +66,7 @@ const PublicIssueDetailsForm = ({ issue = null, editMode = false, saved }) => {
     id: issue?.id,
   };
 
-  const handleSubmitForm = (values, { setFieldValue }) => {
+  const handleSubmitForm = values => {
     if (editMode) {
       const prev = issuePrevValues || initialValues;
 
@@ -199,7 +199,6 @@ const PublicIssueDetailsForm = ({ issue = null, editMode = false, saved }) => {
                         variant="contained"
                         type="button"
                         color="primary"
-                        // disabled={!dirty}
                         sx={[
                           issueButton,
                           {

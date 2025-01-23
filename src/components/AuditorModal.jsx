@@ -13,7 +13,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs from 'dayjs';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom/dist';
 import { useDispatch, useSelector } from 'react-redux';
 import { addTestsLabel, isAuth } from '../lib/helper.js';
 import { ASSET_URL } from '../services/urls.js';
@@ -27,11 +27,11 @@ import {
 import * as Yup from 'yup';
 import CustomSnackbar from './custom/CustomSnackbar.jsx';
 import ShareProfileButton from './custom/ShareProfileButton.jsx';
-import PriceCalculation from './PriceCalculation.jsx';
 import { setCurrentChat } from '../redux/actions/chatActions.js';
 import ChatIcon from './icons/ChatIcon.jsx';
 import { getAuditorRating } from '../redux/actions/auditorAction.js';
 import Star from './icons/Star.jsx';
+import { SCOPE_GIT_BLOCK, SCOPE_LINKS } from '../services/constants.js';
 
 export default function AuditorModal({
   open,
@@ -131,7 +131,18 @@ export default function AuditorModal({
 
   useEffect(() => {
     if (chosen) {
-      setScope(chosen.reduce((acc, project) => [...acc, ...project.scope], []));
+      setScope(
+        chosen.reduce((acc, project) => {
+          if (project.scope?.type === SCOPE_GIT_BLOCK) {
+            return [
+              ...acc,
+              ...project.scope.content.files.map(file => file.display_url),
+            ];
+          } else if (project.scope?.type === SCOPE_LINKS) {
+            return [...acc, ...project.scope.content];
+          }
+        }, []),
+      );
     }
   }, [chosen]);
 
@@ -297,7 +308,6 @@ export default function AuditorModal({
                 {!budge && (
                   <Button
                     variant="text"
-                    // sx={[findButton, messageButton]}
                     onClick={handleSendMessage}
                     disabled={auditor?.user_id === user.id}
                     {...addTestsLabel('message-button')}
@@ -427,11 +437,6 @@ export default function AuditorModal({
                           }}
                         >
                           <SalarySlider name={'price'} />
-                          {/*<PriceCalculation*/}
-                          {/*  price={values.price}*/}
-                          {/*  sx={priceCalc}*/}
-                          {/*  scope={scope}*/}
-                          {/*/>*/}
                         </Box>
                         <Box sx={{ justifyContent: 'center', display: 'flex' }}>
                           <Button
@@ -464,7 +469,6 @@ const MakeOfferSchema = Yup.object().shape({
   price: Yup.number(),
   price_range: Yup.object(),
   project_id: Yup.string(),
-  scope: Yup.array(),
   time_frame: Yup.string(),
   time: Yup.object().shape({
     from: Yup.date(),
@@ -609,27 +613,6 @@ const aboutSx = theme => ({
   },
 });
 
-const backButton = {
-  backgroundColor: theme.palette.secondary.main,
-  color: theme.palette.background.default,
-  borderRadius: '4px',
-  width: {
-    zero: '100px',
-    sm: '100px',
-    md: '150px',
-    lg: '230px',
-  },
-  height: '45px',
-  textTransform: 'none',
-  ':hover': {
-    backgroundColor: theme.palette.secondary.main,
-  },
-  [theme.breakpoints.down('sm')]: {
-    height: '30px',
-    fontSize: '10px',
-  },
-};
-
 const fieldButtonContainer = theme => ({
   display: 'flex',
   flexDirection: 'column',
@@ -653,44 +636,6 @@ const offerDialogStyle = {
     height: '100%',
     width: '100%',
   },
-};
-const searchIcon = {
-  [theme.breakpoints.down('sm')]: {
-    fontSize: '15px',
-  },
-};
-
-const searchField = {
-  '& .MuiAutocomplete-input': {
-    fontSize: '14px',
-    [theme.breakpoints.down('sm')]: {
-      fontSize: '11px',
-    },
-  },
-  '&  .MuiOutlinedInput-root': {
-    backgroundColor: theme.palette.background.default,
-    padding: '0px',
-    height: '45px',
-    borderRadius: '4px',
-    paddingLeft: '8px',
-    fontSize: '14px !important',
-    width: '465px',
-    [theme.breakpoints.down('sm')]: {
-      width: '120px',
-      height: '30px',
-      fontSize: '11px',
-      // padding: "0",
-    },
-  },
-};
-const customDropdown = {
-  '& .MuiAutocomplete-listbox': {
-    padding: '0',
-  },
-  border: '1px solid #434242',
-  borderRadius: '0px',
-  boxShadow: '0',
-  padding: 0,
 };
 
 const sendButton = {
@@ -716,14 +661,6 @@ const rateLabel = theme => ({
   fontSize: '11px',
   color: '#B2B3B3',
   fontWeight: 500,
-});
-
-const sliderSx = theme => ({
-  height: '9px',
-  '& .MuiSlider-track, .MuiSlider-rail': {
-    backgroundColor: '#B9B9B9',
-    border: 'none',
-  },
 });
 
 const dateWrapper = {
@@ -762,10 +699,4 @@ const dateStyle = {
       fontSize: '10px',
     },
   },
-};
-
-const priceCalc = {
-  width: '100%',
-  margin: '30px 0',
-  '& .head': { justifyContent: 'center' },
 };

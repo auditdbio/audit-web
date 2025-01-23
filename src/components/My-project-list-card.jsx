@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Box, Checkbox, Tooltip, Typography } from '@mui/material';
 import Currency from './icons/Currency.jsx';
-import Star from './icons/Star.jsx';
 import { addTestsLabel } from '../lib/helper.js';
 
 const MyProjectListCard = ({ type, project, setState, state, isChecked }) => {
@@ -52,10 +51,6 @@ const MyProjectListCard = ({ type, project, setState, state, isChecked }) => {
             <Currency />
             <Typography>{project.price || project.total_cost}</Typography>
           </Box>
-          {/*<Box sx={infoWrapper}>*/}
-          {/*  <Star />*/}
-          {/*  <Typography>150</Typography>*/}
-          {/*</Box>*/}
         </Box>
       </Box>
       <Box

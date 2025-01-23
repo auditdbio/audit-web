@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Box, Button, Typography } from '@mui/material';
+import React from 'react';
+import { Box, Typography } from '@mui/material';
 import CircleIcon from '@mui/icons-material/Circle';
 import theme from '../../styles/themes.js';
 
@@ -27,7 +27,6 @@ const mainContainer = {
   display: 'flex',
   alignItems: 'start',
   height: '60px',
-  // gap: '120px',
   justifyContent: 'space-between',
   padding: '12px 12px 0px 30px',
   fontWeight: '600',
@@ -50,7 +49,6 @@ const statusContainer = {
 };
 
 const nameStyle = theme => ({
-  // fontSize: "14px",
   fontWeight: '500px',
   width: {
     zero: '100%',
@@ -68,7 +66,6 @@ const nameStyle = theme => ({
 });
 
 const statusStyle = theme => ({
-  // fontSize: "10px",
   fontWeight: '500',
   color: '#434242',
 

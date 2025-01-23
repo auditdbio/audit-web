@@ -18,7 +18,6 @@ import {
   VERIFIED_ACTION,
   WILL_NOT_FIX,
 } from './constants.js';
-import QuestionMarkIcon from '@mui/icons-material/QuestionMark';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline.js';
 
 const StatusControl = ({ status, setFieldValue }) => {

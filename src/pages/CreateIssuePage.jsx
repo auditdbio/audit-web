@@ -18,13 +18,7 @@ const CreateIssuePage = ({ isPublic, saved }) => {
   );
 
   return (
-    <Layout
-    // sx={layoutSx}
-    // containerSx={{
-    //   maxWidth: 'unset!important',
-    //   padding: '0 35px!important',
-    // }}
-    >
+    <Layout>
       <Headings title={`New Issue | ${audit?.project_name}`} noIndex={true} />
 
       <CustomCard sx={wrapper}>
@@ -46,13 +40,6 @@ const CreateIssuePage = ({ isPublic, saved }) => {
 };
 
 export default CreateIssuePage;
-
-const layoutSx = theme => ({
-  padding: '40px',
-  [theme.breakpoints.down(780)]: {
-    padding: '25px 0',
-  },
-});
 
 const wrapper = theme => ({
   padding: '45px 30px 60px',

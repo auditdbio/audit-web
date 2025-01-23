@@ -1,6 +1,5 @@
 import React from 'react';
 import { Box, Tooltip, Typography } from '@mui/material';
-import { issuesCounter } from '../../lib/helper.js';
 
 const IssueSeveritySort = ({ issues }) => {
   const issueSort = issues.reduce((acc, issue) => {
