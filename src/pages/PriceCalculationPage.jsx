@@ -3,8 +3,6 @@ import Headings from '../router/Headings.jsx';
 import { CustomCard } from '../components/custom/Card.jsx';
 import Layout from '../styles/Layout.jsx';
 import { Box, Button, Typography, useMediaQuery } from '@mui/material';
-import TagsField from '../components/forms/tags-field/tags-field.jsx';
-import GithubSelection from '../components/GithubSelection/GithubSelection.jsx';
 import { ProjectLinksList } from '../components/custom/ProjectLinksList.jsx';
 import SalarySlider from '../components/forms/salary-slider/salary-slider.jsx';
 import PriceCalculation from '../components/PriceCalculation.jsx';
@@ -16,6 +14,8 @@ import { useNavigate } from 'react-router-dom/dist';
 import { getFilterData } from '../redux/actions/configAction.js';
 import { clearCommit, clearRepoOwner } from '../redux/actions/githubAction.js';
 import { useDispatch } from 'react-redux';
+import { SCOPE_GIT_BLOCK } from '../services/constants.js';
+import ScopeSelection from '../components/ScopeSelection.jsx';
 
 const PriceCalculationPage = () => {
   const matchSm = useMediaQuery(theme.breakpoints.down('sm'));
@@ -29,6 +29,21 @@ const PriceCalculationPage = () => {
       dispatch(clearCommit());
     };
   }, []);
+
+  const initialValues = {
+    price: 0,
+    scope: {
+      type: SCOPE_GIT_BLOCK,
+      content: {
+        repository: {
+          clone_url: null,
+          display_url: null,
+        },
+        commit: null,
+        files: [],
+      },
+    },
+  };
 
   return (
     <Layout>
@@ -64,28 +79,23 @@ const PriceCalculationPage = () => {
             </li>
           </ul>
           <Formik
-            initialValues={{
-              scope: [],
-              price: 0,
-            }}
+            initialValues={initialValues}
             onSubmit={values => {
               console.log(values);
             }}
           >
-            {({ handleSubmit, values, setFieldTouched }) => {
+            {({ handleSubmit, values, setFieldTouched, setFieldValue }) => {
               return (
                 <Form onSubmit={handleSubmit}>
                   <Box sx={fieldWrapper}>
                     <Box sx={blockSx}>
-                      <Box sx={linkFieldWrapper}>
-                        <TagsField
-                          size={matchSm ? 'small' : 'medium'}
-                          name="scope"
-                          label="Project links"
-                          setFieldTouched={setFieldTouched}
-                        />
-                        <GithubSelection />
-                      </Box>
+                      <ScopeSelection
+                        scope={values.scope}
+                        setFieldValue={setFieldValue}
+                        setFieldTouched={setFieldTouched}
+                        sx={{ my: '14px' }}
+                      />
+
                       {!matchSm && <ProjectLinksList name="scope" />}
                     </Box>
                     <Box sx={blockSx}>
@@ -137,43 +147,6 @@ const contentWrapperSx = theme => ({
   },
 });
 
-const linkFieldWrapper = theme => ({
-  display: 'flex',
-  gap: '7px',
-  alignItems: 'center',
-  marginBottom: '15px',
-  // '& .github-btn': {
-  //   // height: '47px',
-  // },
-  '& .field-wrapper': {
-    width: '100%',
-  },
-  // '& .tag-input-field .MuiOutlinedInput-root': {
-  //   height: '57px!important',
-  // },
-  [theme.breakpoints.down('md')]: {
-    '& label': {
-      top: '-6px!important',
-    },
-  },
-  [theme.breakpoints.down('sm')]: {
-    '& label': {
-      top: '0px!important',
-    },
-  },
-  [theme.breakpoints.down(500)]: {
-    // flexDirection: 'column',
-    '& .github-wrapper': {
-      width: 'unset',
-    },
-    width: '100%',
-    gap: '10px',
-    '& .field-wrapper': {
-      width: '100%',
-    },
-  },
-});
-
 const priceLabelSx = {
   fontSize: '14px',
   fontWeight: 500,
@@ -202,14 +175,13 @@ const fieldWrapper = theme => ({
   },
 });
 
-const backButtonSx = theme => ({
+const backButtonSx = {
   minWidth: '50px',
-});
+};
 
 const wrapper = theme => ({
   display: 'flex',
   flexDirection: 'column',
-  // maxWidth: '1300px',
   minHeight: '560px!important',
   width: '100%',
   '& ul': {

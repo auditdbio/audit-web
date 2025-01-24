@@ -243,7 +243,6 @@ const CurrentChat = ({
             >
               {currentChat?.name}
             </Link>
-            {/*<Box sx={userStatusSx({ online: true })}>Online</Box>*/}
           </Box>
 
           <IconButton
@@ -266,34 +265,35 @@ const CurrentChat = ({
           )}
           {!currentChat?.isNew ? (
             chatMessages
-              .slice(...getDisplayedMessages())
+              .slice(getDisplayedMessages())
               .map((msg, idx, ar) => {
-                const date = new Date(msg?.time / 1000).toDateString();
-                const prevMsgDate = new Date(
-                  ar[idx - 1]?.time / 1000,
-                ).toDateString();
-                const unreadLabel = !!unread && ar.length - unread === idx;
-                const isInterlocutorRead = idx < ar.length - interlocutorUnread;
-                return (
-                  <Box
-                    key={msg.id}
-                    ref={unreadLabel ? newMessagesTextRef : null}
-                  >
-                    {date !== prevMsgDate && (
-                      <Box sx={msgDateSx}>{date.replace(/[^ ]+/, '')}</Box>
-                    )}
-                    {unreadLabel && <Box sx={newMessagesSx}>New messages:</Box>}
-                    <Message
-                      user={user}
-                      orgId={orgId}
-                      message={msg}
-                      currentChat={currentChat}
-                      isRead={isInterlocutorRead}
-                      chatRole={currentChat?.role}
-                    />
-                  </Box>
-                );
-              })
+              const date = new Date(msg?.time / 1000).toDateString();
+              const prevMsgDate = new Date(
+                ar[idx - 1]?.time / 1000,
+              ).toDateString();
+              const unreadLabel = !!unread && ar.length - unread === idx;
+              const isInterlocutorRead = idx < ar.length - interlocutorUnread;
+              return (
+                <Box
+                  key={msg.id}
+                  ref={unreadLabel ? newMessagesTextRef : null}
+                >
+                  {date !== prevMsgDate && (
+                    <Box sx={msgDateSx}>{date.replace(/[^ ]+/, '')}</Box>
+                  )}
+                  {unreadLabel && <Box sx={newMessagesSx}>New messages:</Box>}
+                  <Message
+                    user={user}
+                    orgId={orgId}
+                    chatRole={currentChat?.role}
+                    message={msg}
+                    currentChat={currentChat}
+                    isRead={isInterlocutorRead}
+                    previousMessage={idx > 0 ? chatMessages[idx - 1] : null}
+                  />
+                </Box>
+              );
+            })
           ) : (
             <Box sx={[newMessagesSx, { borderBottom: 'none' }]}>
               No messages here yet...
@@ -321,7 +321,11 @@ const CurrentChat = ({
             </Button>
           </Box>
           <Button
-            color={user.current_role === CUSTOMER ? 'secondary' : 'primary'}
+            color={
+              user?.current_role?.toLowerCase() === CUSTOMER?.toLowerCase()
+                ? 'secondary'
+                : 'primary'
+            }
             variant={'contained'}
             sx={requestBtn}
             {...addTestsLabel('request-button')}
@@ -336,8 +340,6 @@ const CurrentChat = ({
 };
 
 export default CurrentChat;
-
-const yearNow = new Date().getFullYear();
 
 const requestBtn = theme => ({
   height: '55px',
@@ -369,18 +371,8 @@ const btnWrapper = theme => ({
 const currentChatHeader = theme => ({
   display: 'flex',
   alignItems: 'center',
-  height: '85px',
   borderBottom: '2px solid #e5e5e5',
-  padding: '12px 20px',
-  [theme.breakpoints.down('sm')]: {
-    height: '75px',
-  },
-  [theme.breakpoints.down('xs')]: {
-    padding: '12px 8px',
-  },
-  [theme.breakpoints.down('xxs')]: {
-    padding: '12px 1px',
-  },
+  padding: '5.7px 20px',
 });
 
 const menuButtonSx = theme => ({
@@ -395,8 +387,8 @@ const menuButtonSx = theme => ({
 });
 
 const avatarWrapper = role => ({
-  width: '60px',
-  height: '60px',
+  width: '40px',
+  height: '40px',
   mr: '30px',
   padding: '2px',
   borderRadius: '50%',
@@ -405,19 +397,11 @@ const avatarWrapper = role => ({
       ? theme.palette.secondary.main
       : theme.palette.primary.main
   }`,
-  [theme.breakpoints.down('sm')]: {
-    width: '50px',
-    height: '50px',
-  },
   [theme.breakpoints.down('xs')]: {
-    width: '40px',
-    height: '40px',
     mr: '15px',
     borderWidth: '3px',
   },
   [theme.breakpoints.down('xxs')]: {
-    width: '30px',
-    height: '30px',
     mr: '10px',
   },
 });
@@ -456,65 +440,34 @@ const userNameSx = theme => ({
   },
 });
 
-const userStatusSx = ({ online }) => ({
-  fontSize: '16px',
-  fontWeight: 500,
-  color: '#B2B3B3',
-  position: 'relative',
-  '::before': {
-    content: '""',
-    display: 'inline-block',
-    width: '10px',
-    height: '10px',
-    background: online ? '#09C010' : 'red',
-    borderRadius: '50%',
-    mr: '10px',
-    [theme.breakpoints.down('xs')]: {
-      width: '7px',
-      height: '7px',
-      mr: '7px',
-    },
-  },
-  [theme.breakpoints.down('sm')]: {
-    fontSize: '12px',
-  },
-  [theme.breakpoints.down('xs')]: {
-    fontSize: '9px',
-  },
-});
-
 const attachButton = theme => ({
-  [theme.breakpoints.down('sm')]: {
-    width: '40px',
-    height: '40px',
-  },
-  [theme.breakpoints.down('xs')]: {
-    width: '35px',
-    height: '35px',
+  '& svg': {
+    width: '30px',
+    height: '30px',
   },
 });
 
 const chatSx = theme => ({
   position: 'relative',
-  padding: '40px',
+  padding: '25px 5px',
   flexGrow: 1,
   display: 'flex',
   flexDirection: 'column',
-  rowGap: '20px',
+  rowGap: '10px',
   overflowY: 'auto',
   '::-webkit-scrollbar': {
     width: '6px',
   },
   [theme.breakpoints.down('sm')]: {
-    padding: '30px 20px 20px',
-    rowGap: '20px',
+    // padding: '30px 20px 20px',
+    // rowGap: '20px',
     '::-webkit-scrollbar': {
       width: '4px',
     },
   },
   [theme.breakpoints.down('xs')]: {
-    padding: '30px 10px 20px',
-    rowGap: '15px',
+    // padding: '30px 10px 20px',
+    // rowGap: '15px',
   },
 });
 

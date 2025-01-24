@@ -260,7 +260,6 @@ const Filter = ({ target, submit, initial }) => {
                                   (upToDown.sort === '1' ? (
                                     <ArrowUpwardIcon
                                       sx={{
-                                        // fontSize: 'small',
                                         color: 'black',
                                         width: '19px',
                                         height: '19px',
@@ -269,7 +268,6 @@ const Filter = ({ target, submit, initial }) => {
                                   ) : (
                                     <ArrowDownwardIcon
                                       sx={{
-                                        // fontSize: 'small',
                                         color: 'black',
                                         width: '19px',
                                         height: '19px',
@@ -349,7 +347,6 @@ const Filter = ({ target, submit, initial }) => {
                                   (upToDown.sort === '1' ? (
                                     <ArrowUpwardIcon
                                       sx={{
-                                        // fontSize: 'small',
                                         color: 'black',
                                         width: '19px',
                                         height: '19px',
@@ -358,7 +355,6 @@ const Filter = ({ target, submit, initial }) => {
                                   ) : (
                                     <ArrowDownwardIcon
                                       sx={{
-                                        // fontSize: 'small',
                                         color: 'black',
                                         width: '19px',
                                         height: '19px',
@@ -383,7 +379,6 @@ const Filter = ({ target, submit, initial }) => {
                   </ClickAwayListener>
                 </Box>
               )}
-              {/*</Modal>*/}
             </Box>
           </Form>
         );

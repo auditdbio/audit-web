@@ -100,7 +100,6 @@ const ChatListItem = ({
             </Box>
           )}
         </Box>
-        {/*<Box sx={userStatusSx({ online: true })}>Online</Box>*/}
       </Box>
     </Link>
   );
@@ -111,13 +110,13 @@ export default ChatListItem;
 const wrapper = theme => ({
   direction: 'ltr',
   display: 'flex',
-  padding: '20px 15px',
+  padding: '10px 15px',
   borderBottom: '2px solid #e5e5e5',
   cursor: 'pointer',
   textDecoration: 'none',
   ':hover': { backgroundColor: '#F1F1F1' },
   [theme.breakpoints.down('md')]: {
-    padding: '15px 10px',
+    padding: '10px 10px',
   },
   [theme.breakpoints.down('sm')]: {
     padding: '10px 5px',
@@ -130,10 +129,7 @@ const chatDataWrapper = theme => ({
   alignItems: 'space-between',
   justifyContent: 'flex-start',
   flexGrow: 1,
-  height: '90px',
-  [theme.breakpoints.down('md')]: {
-    height: '75px',
-  },
+  height: '74px',
   [theme.breakpoints.down('sm')]: {
     height: '58px',
   },
@@ -148,7 +144,7 @@ const chatData = {
 const avatarBorder = role => ({
   flexShrink: 0,
   padding: '2px',
-  mr: '30px',
+  mr: '15px',
   width: '68px',
   height: '68px',
   borderRadius: '50%',
@@ -178,7 +174,7 @@ const avatarStyle = {
 const userNameSx = theme => ({
   pr: '5px',
   display: '-webkit-box',
-  fontSize: '24px',
+  fontSize: '18px',
   fontWeight: 600,
   color: 'black',
   overflow: 'hidden',
@@ -210,33 +206,6 @@ const roleSx = role => ({
   },
   [theme.breakpoints.down('sm')]: {
     height: '20px',
-    fontSize: '10px',
-  },
-});
-
-const userStatusSx = ({ online }) => ({
-  fontSize: '16px',
-  fontWeight: 500,
-  color: '#B2B3B3',
-  position: 'relative',
-  '::before': {
-    content: '""',
-    display: 'inline-block',
-    width: '10px',
-    height: '10px',
-    background: online ? '#09C010' : 'red',
-    borderRadius: '50%',
-    mr: '10px',
-    [theme.breakpoints.down('sm')]: {
-      width: '7px',
-      height: '7px',
-      mr: '5px',
-    },
-  },
-  [theme.breakpoints.down('md')]: {
-    fontSize: '12px',
-  },
-  [theme.breakpoints.down('sm')]: {
     fontSize: '10px',
   },
 });

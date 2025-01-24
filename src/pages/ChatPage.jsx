@@ -53,7 +53,7 @@ const ChatPage = () => {
         auditor &&
         !auditor?.user_id &&
         !auditor?.first_name) ||
-      (user.current_role === CUSTOMER &&
+      (user?.current_role?.toLowerCase() === CUSTOMER?.toLowerCase() &&
         customer &&
         !customer?.user_id &&
         !customer?.first_name)
@@ -155,7 +155,14 @@ const ChatPage = () => {
       <CustomCard sx={wrapper}>
         <Button
           variant="text"
-          sx={{ textTransform: 'unset', ml: '-15px', paddingLeft: '0' }}
+          sx={{
+            textTransform: 'unset',
+            ml: '-15px',
+            paddingLeft: '0',
+            display: 'flex',
+            minWidth: '44px',
+          }}
+          color={user.current_role === AUDITOR ? 'secondary' : 'primary'}
           onClick={handleGoBack}
         >
           <ArrowBackIcon />
@@ -278,9 +285,9 @@ const orgListItemSx = theme => ({
 });
 
 const layoutSx = theme => ({
-  padding: '40px !important',
+  paddingY: '10px !important',
   [theme.breakpoints.down('md')]: {
-    padding: '20px 0 !important',
+    paddingY: '10px !important',
   },
 });
 
@@ -377,21 +384,22 @@ const wrapper = theme => ({
     borderRadius: 'unset',
   },
   [theme.breakpoints.down('sm')]: {
-    // padding: '30px 30px 50px',
     minHeight: '300px',
   },
-  [theme.breakpoints.down('xs')]: {
-    // padding: '20px 40px 50px',
-    minHeight: '300px',
-    gap: '8px',
-    padding: '10px 10px 30px',
+  [theme.breakpoints.down(780)]: {
+    paddingX: '10px',
+    borderRadius: '0',
+  // [theme.breakpoints.down('xs')]: {
+  //   // padding: '20px 40px 50px',
+  //   minHeight: '300px',
+  //   gap: '8px',
+  //   padding: '10px 10px 30px',
   },
 });
 
-const chatWrapper = theme => ({
-  height: '70vh',
-  minHeight: '590px',
-  width: 'calc(100% - 70px)',
+const chatWrapper = {
+  height: 'calc(100vh - 126px)',
+  width: '100%',
   display: 'flex',
   border: '2px solid #e5e5e5',
   position: 'relative',

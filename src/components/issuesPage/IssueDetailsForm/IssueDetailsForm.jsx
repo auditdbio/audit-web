@@ -18,14 +18,12 @@ import { AUDITOR, CUSTOMER, RESOLVED } from '../../../redux/actions/types.js';
 import { clearMessage } from '../../../redux/actions/auditAction.js';
 import {
   addAuditIssue,
-  addPublicIssue,
   updateAuditIssue,
-  updatePublicIssue,
 } from '../../../redux/actions/issueAction.js';
 import CustomSnackbar from '../../custom/CustomSnackbar.jsx';
 import DescriptionBlock from './DescriptionBlock.jsx';
 import StatusSeverityBlock from './StatusSeverityBlock.jsx';
-import { DRAFT, NOT_FIXED } from '../constants.js';
+import { DRAFT } from '../constants.js';
 import theme from '../../../styles/themes.js';
 import NoteAddIcon from '@mui/icons-material/NoteAdd';
 
@@ -148,7 +146,8 @@ const IssueDetailsForm = ({ issue = null, editMode = false, hideControl }) => {
                   inputRef={nameInputRef}
                   inputProps={{ ...addTestsLabel('issue-name-input') }}
                   InputProps={
-                    user.current_role !== CUSTOMER &&
+                    user?.current_role?.toLowerCase() !==
+                      CUSTOMER?.toLowerCase() &&
                     audit?.status?.toLowerCase() !== RESOLVED.toLowerCase() &&
                     editMode &&
                     !hideControl
@@ -182,7 +181,6 @@ const IssueDetailsForm = ({ issue = null, editMode = false, hideControl }) => {
                         variant="contained"
                         type="button"
                         color="primary"
-                        // disabled={!dirty}
                         sx={[
                           issueButton,
                           {
@@ -211,46 +209,6 @@ const IssueDetailsForm = ({ issue = null, editMode = false, hideControl }) => {
                       </Button>
                     </Tooltip>
                   ))}
-                {/*{!matchXss && user.current_role !== CUSTOMER && !editMode && (*/}
-                {/*  //*/}
-                {/*  <Box sx={buttonsBox}>*/}
-                {/*    {!dirty ? (*/}
-                {/*      <Tooltip arrow placement="top" title={'New issue'}>*/}
-                {/*        <Button*/}
-                {/*          variant="contained"*/}
-                {/*          type="button"*/}
-                {/*          color="primary"*/}
-                {/*          // disabled={!dirty}*/}
-                {/*          sx={[*/}
-                {/*            issueButton,*/}
-                {/*            {*/}
-                {/*              backgroundColor: 'rgba(0, 0, 0, 0.12)',*/}
-                {/*              '&:hover': {*/}
-                {/*                backgroundColor: 'rgba(0, 0, 0, 0.12)',*/}
-                {/*              },*/}
-                {/*            },*/}
-                {/*          ]}*/}
-                {/*          {...addTestsLabel('new-issue-button')}*/}
-                {/*        >*/}
-                {/*          <NoteAddIcon />*/}
-                {/*        </Button>*/}
-                {/*      </Tooltip>*/}
-                {/*    ) : (*/}
-                {/*      <Tooltip arrow placement="top" title={'New issue'}>*/}
-                {/*        <Button*/}
-                {/*          variant="contained"*/}
-                {/*          type="submit"*/}
-                {/*          color="primary"*/}
-                {/*          disabled={!dirty}*/}
-                {/*          sx={issueButton}*/}
-                {/*          {...addTestsLabel('new-issue-button')}*/}
-                {/*        >*/}
-                {/*          <NoteAddIcon />*/}
-                {/*        </Button>*/}
-                {/*      </Tooltip>*/}
-                {/*    )}*/}
-                {/*  </Box>*/}
-                {/*)}*/}
               </Box>
             </Tooltip>
             <Box sx={infoWrapperSx}>
@@ -282,7 +240,8 @@ const IssueDetailsForm = ({ issue = null, editMode = false, hideControl }) => {
                 inputRef={categoryInputRef}
                 inputProps={{ ...addTestsLabel('issue-category-input') }}
                 InputProps={
-                  user.current_role !== CUSTOMER &&
+                  user?.current_role?.toLowerCase() !==
+                    CUSTOMER?.toLowerCase() &&
                   audit?.status?.toLowerCase() !== RESOLVED.toLowerCase() &&
                   editMode &&
                   !hideControl
@@ -344,19 +303,6 @@ const issueValidationSchema = Yup.object().shape({
   feedback: Yup.string(),
 });
 
-const buttonsBox = {
-  display: 'flex',
-  justifyContent: 'flex-end',
-  // pt: '20px',
-  position: 'relative',
-  [theme.breakpoints.down('xs')]: {
-    justifyContent: 'center',
-    pt: 0,
-    // mt: '20px',
-    // mb: '20px',
-  },
-};
-
 const issueButton = theme => ({
   padding: '11px 10px',
   minWidth: 'unset',
@@ -365,14 +311,6 @@ const issueButton = theme => ({
   fontSize: '16px!important',
   lineHeight: '25px',
   width: '51px',
-  [theme.breakpoints.down('md')]: {
-    // fontSize: '14px!important',
-    // padding: '12px 6px',
-    // letterSpacing: '-0.5px',
-  },
-  [theme.breakpoints.down('xs')]: {
-    // padding: '10px 30px',
-  },
 });
 
 const nameInputWrapper = theme => ({
@@ -426,8 +364,4 @@ const editButtonText = theme => ({
 const infoWrapperSx = theme => ({
   display: 'flex',
   flexDirection: 'column-reverse',
-  // [theme.breakpoints.down('xs')]: {
-  //   flexDirection: 'column',
-  //   alignItems: 'center',
-  // },
 });

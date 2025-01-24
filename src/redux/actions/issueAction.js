@@ -10,6 +10,7 @@ import {
   SET_READ_CHANGES,
   SET_READ_ALL_CHANGES,
   UPDATE_AUDIT_ISSUE,
+  CREATE_AUDIT_ISSUE,
 } from './types.js';
 import { API_URL } from '../../services/urls.js';
 
@@ -20,17 +21,6 @@ export const getIssues = auditId => {
       .get(`${API_URL}/audit/${auditId}/issue`, {
         headers: { Authorization: `Bearer ${token}` },
       })
-      .then(({ data: issues }) =>
-        dispatch({ type: GET_AUDIT_ISSUES, payload: { auditId, issues } }),
-      );
-  };
-};
-
-export const getPublicIssue = auditId => {
-  return dispatch => {
-    const token = Cookies.get('token');
-    axios
-      .get(`${API_URL}/audit/${auditId}/issue`)
       .then(({ data: issues }) =>
         dispatch({ type: GET_AUDIT_ISSUES, payload: { auditId, issues } }),
       );
@@ -61,26 +51,6 @@ export const addPublicIssue = data => {
   };
 };
 
-export const deletePublicIssue = data => {
-  return dispatch => {
-    dispatch({ type: DELETE_PUBLIC_ISSUE, payload: { issue: data } });
-  };
-};
-
-export const deleteIssue = (issue, auditId) => {
-  const token = Cookies.get('token');
-
-  return dispatch => {
-    axios
-      .delete(`${API_URL}/audit/${auditId}/issue/${issue.id}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      })
-      .then(({ data }) => {
-        dispatch({ type: DELETE_ISSUE, payload: { issue: data } });
-      });
-  };
-};
-
 export const addAuditIssue = (auditId, values) => {
   return dispatch => {
     const token = Cookies.get('token');
@@ -88,16 +58,17 @@ export const addAuditIssue = (auditId, values) => {
       .post(`${API_URL}/audit/${auditId}/issue`, values, {
         headers: { Authorization: `Bearer ${token}` },
       })
-      .then(({ data }) =>
+      .then(({ data }) => {
+        dispatch(getIssues(auditId));
         dispatch({
-          type: ADD_AUDIT_ISSUE,
+          type: CREATE_AUDIT_ISSUE,
           payload: {
             auditId: auditId,
             issue: data,
             successMessage: 'Audit issue created successfully',
           },
-        }),
-      )
+        });
+      })
       .catch(e => dispatch({ type: REQUEST_ERROR }));
   };
 };

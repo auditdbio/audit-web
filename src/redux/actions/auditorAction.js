@@ -39,7 +39,6 @@ export const getAuditor = (redirect = false) => {
       })
       .catch(({ response }) => {
         console.log(response, 'res');
-        // dispatch({type: SIGN_IN_ERROR})
       });
   };
 };
@@ -56,7 +55,6 @@ export const getCurrentAuditor = id => {
       })
       .catch(({ response }) => {
         console.log(response, 'res');
-        // dispatch({type: SIGN_IN_ERROR})
       });
   };
 };
@@ -141,12 +139,12 @@ export const updateAuditor = (values, redirect = true) => {
   };
 };
 
-export const getAuditors = (values = '', amount = 0) => {
+export const getAuditors = (values = '', amount = 0, page = 1) => {
   return dispatch => {
     const token = Cookies.get('token');
     axios
       .get(
-        `${API_URL}/search?query=${values}&sort_by=rating&tags=&sort_order=-1&page=1&per_page=${amount}&kind=auditor badge`,
+        `${API_URL}/search?query=${values}&sort_by=rating&tags=&sort_order=-1&page=${page}&per_page=${amount}&kind=auditor badge`,
         isAuth() ? { headers: { Authorization: `Bearer ${token}` } } : {},
       )
       .then(({ data }) => {

@@ -96,7 +96,4 @@ const buttonSx = theme => ({
     width: '40px',
     height: '40px',
   },
-  // [theme.breakpoints.down('xs')]: {
-  //   padding: '4px 6px',
-  // },
 });

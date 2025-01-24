@@ -11,23 +11,6 @@ const Faq = () => {
 
       <CustomCard sx={wrapper}>
         <Typography variant="h3">F.A.Q</Typography>
-        {/*<Typography>*/}
-        {/*    We're here to help you develop your career as an auditor. Whether you're just starting out or*/}
-        {/*    looking to take your career to the next level, we're ready to provide you with the support you need.*/}
-        {/*</Typography>*/}
-        {/*<Typography>*/}
-        {/*    One of the critical features of our platform is the ability to connect you with potential customers.*/}
-        {/*    By leveraging our network, you can find new opportunities to grow your business and take on exciting*/}
-        {/*    new projects.*/}
-        {/*</Typography>*/}
-        {/*<Typography>*/}
-        {/*    Our platform allows you to connect with potential customers, expanding your business opportunities.*/}
-        {/*    In the near future, we'll be launching an audit constructor, a rating system, and other instruments*/}
-        {/*    to help you enhance your professional development.*/}
-        {/*</Typography>*/}
-        {/*<Typography>*/}
-        {/*    Success in the audits field depends on staying ahead of the curve. Keep in mind these pro tips:*/}
-        {/*</Typography>*/}
         <ol>
           <li>
             What is the process for submitting a smart contract for auditing on
@@ -81,10 +64,6 @@ const Faq = () => {
             contract's security.
           </Typography>
         </ol>
-        {/*<Typography>*/}
-        {/*    Following these steps guarantees optimal results from your audits. So, get your project assessed by*/}
-        {/*    an auditor today and be confident in your code's reliability.*/}
-        {/*</Typography>*/}
       </CustomCard>
     </Layout>
   );

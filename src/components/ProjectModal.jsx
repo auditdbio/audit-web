@@ -8,6 +8,8 @@ import { Typography } from '@mui/material';
 import GitHubIcon from '@mui/icons-material/GitHub';
 import Markdown from './markdown/Markdown.jsx';
 
+// Unused component ?
+
 export default function ProjectModal({ open, handleClose, project }) {
   return (
     <Dialog open={open} onClose={handleClose}>
@@ -99,16 +101,6 @@ const modalSubheader = {
   fontWeight: '400',
 };
 
-const modalDescription = {
-  fontSize: {
-    zero: '12px',
-    sm: '12px',
-    md: '14px',
-    lg: '15px',
-  },
-  fontWeight: '400',
-};
-
 const linksList = {
   display: 'flex',
   flexDirection: 'column',
@@ -173,7 +165,6 @@ const findButton = {
   backgroundColor: theme.palette.primary.main,
   color: theme.palette.background.default,
   borderRadius: '4px',
-  // padding: "12px 63px",
   height: '45px',
   width: {
     zero: '100px',
@@ -188,7 +179,6 @@ const findButton = {
   [theme.breakpoints.down('sm')]: {
     height: '30px',
     fontSize: '10px',
-    // padding: "6px 31px",
   },
 };
 
@@ -202,7 +192,6 @@ const backButton = {
     md: '150px',
     lg: '230px',
   },
-  // padding: "12px 63px",
   height: '45px',
   textTransform: 'none',
   ':hover': {
@@ -211,6 +200,5 @@ const backButton = {
   [theme.breakpoints.down('sm')]: {
     height: '30px',
     fontSize: '10px',
-    // padding: "6px 31px",
   },
 };

@@ -7,7 +7,6 @@ import SigninPage from '../pages/SigninPage.jsx';
 import { PrivateRoute } from '../router/PrivateRoute.jsx';
 import { isAuth } from '../lib/helper.js';
 import EditProfile from '../pages/edit-profile.jsx';
-import AuditOffer from '../pages/audit-offer.jsx';
 import CreateProject from '../pages/CreateProject.jsx';
 import ProfilePage from '../pages/profile-page.jsx';
 import { getAuditor } from '../redux/actions/auditorAction.js';
@@ -31,7 +30,6 @@ import CreateIssuePage from '../pages/CreateIssuePage.jsx';
 import PublicProfile from '../pages/Public-profile.jsx';
 import NotFound from '../pages/Not-Found.jsx';
 import AuditInfoReqPage from '../pages/audit-info-req-page.jsx';
-import AuditInfoPage from '../pages/audit-info-page.jsx';
 import {
   getUnreadMessages,
   websocketConnect,
@@ -47,7 +45,6 @@ import PublicConstructor from '../pages/PublicConstructor.jsx';
 import CustomSnackbar from '../components/custom/CustomSnackbar.jsx';
 import InvitePage from '../pages/Invite-page.jsx';
 import DeleteBadge from '../pages/Delete-badge.jsx';
-import Github from '../pages/Github.jsx';
 import ConnectAccount from '../pages/Connect-account.jsx';
 import DisclaimerPage from '../pages/DisclaimerPage.jsx';
 import Headings from '../router/Headings.jsx';
@@ -55,8 +52,6 @@ import { AUDITOR, CUSTOMER } from '../redux/actions/types.js';
 import UserProjects from '../pages/UserProjects.jsx';
 import PriceCalculationPage from '../pages/PriceCalculationPage.jsx';
 import { refreshToken } from '../redux/actions/userAction.js';
-import PublicAuditInfo from '../pages/PublicAuditInfo.jsx';
-import PublicAuditInfoPage from '../pages/PublicAuditInfo.jsx';
 import Audit from '../pages/Audit.jsx';
 import Organization from '../components/Organization.jsx';
 import CreateEditOrganization from '../pages/CreateEditOrganization.jsx';
@@ -179,7 +174,6 @@ const AppRoutes = () => {
         <Route path="/sign-in" element={<SigninPage />} />
         <Route path="/invite-user/:id/:secret" element={<InvitePage />} />
         <Route path="/oauth/callback" element={<ConnectAccount />} />
-        {/*<Route path="/oauth/callback" element={<Github />} />*/}
         <Route path="/projects" element={<ProjectPage />} />
         <Route path="/project/:id" element={<PublicProject />} />
         <Route path="/for-customers" element={<ForCustomer />} />
@@ -275,11 +269,7 @@ const AppRoutes = () => {
         />
         <Route
           path="/p-issues/audit-issue/:auditId/:issueId"
-          element={
-            // <PrivateRoute auth={{ isAuthenticated: isAuth() }}>
-            <AuditIssueDetails hideControl={true} />
-            // </PrivateRoute>
-          }
+          element={<AuditIssueDetails hideControl={true} />}
         />
         <Route
           path="/public-issues/audit-issue/:auditId/:issueId"
@@ -378,8 +368,6 @@ const AppRoutes = () => {
         />
 
         {/*Add new routes here*/}
-
-        {/*<Route path="/audit-info/:auditId" element={<PublicAuditInfo />} />*/}
 
         <Route path="/:role/:linkId" element={<ProfilePage />} />
         <Route path="*" element={<NotFound />} />

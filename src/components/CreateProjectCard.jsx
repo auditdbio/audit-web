@@ -1,17 +1,13 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Box,
   Button,
   Typography,
   useMediaQuery,
   Tooltip,
-  FormControl,
-  InputLabel,
-  Select,
-  Switch,
   Collapse,
 } from '@mui/material';
-import theme, { radiusOfComponents } from '../styles/themes.js';
+import theme from '../styles/themes.js';
 import { useNavigate } from 'react-router-dom/dist';
 import TagsArray from './tagsArray/index.jsx';
 import { Form, Formik } from 'formik';
@@ -20,46 +16,36 @@ import { ProjectLinksList } from './custom/ProjectLinksList.jsx';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack.js';
 import CreateNewFolderIcon from '@mui/icons-material/CreateNewFolder';
 import PersonAddAlt1Icon from '@mui/icons-material/PersonAddAlt1';
-import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import AuditorSearchModal from './AuditorSearchModal.jsx';
 import TagsField from './forms/tags-field/tags-field.jsx';
 import {
   changeStatusProject,
   clearProjectMessage,
-  closeProject,
   createProject,
   createProjectNoRedirect,
   editProject,
   editProjectNoRedirect,
-  getProjects,
 } from '../redux/actions/projectAction.js';
 import { useDispatch, useSelector } from 'react-redux';
 import * as Yup from 'yup';
-import { useLocation, useSearchParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom/dist';
 import {
   clearMessage,
   getAuditsRequest,
 } from '../redux/actions/auditAction.js';
 import SaveIcon from '@mui/icons-material/Save';
 import MarkdownEditor from './markdown/Markdown-editor.jsx';
-import SalarySlider from './forms/salary-slider/salary-slider.jsx';
-import CloseProjectModal from './CloseProjectModal.jsx';
-import { AUDITOR, CLEAR_PROJECT, DONE } from '../redux/actions/types.js';
+import { CLEAR_PROJECT, DONE } from '../redux/actions/types.js';
 import CustomSnackbar from './custom/CustomSnackbar.jsx';
 import { addTestsLabel } from '../lib/helper.js';
 import { history } from '../services/history.js';
 import PriceCalculation from './PriceCalculation.jsx';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
-import QuestionMarkIcon from '@mui/icons-material/QuestionMark';
-import MenuItem from '@mui/material/MenuItem';
-import axios from 'axios';
-import GithubSelection from './GithubSelection/GithubSelection.jsx';
 import { getFilterData } from '../redux/actions/configAction.js';
 import {
   clearCommit,
   clearRepoOwner,
-  getCommitData,
   getMyGithub,
   getRepoOwner,
   getSha,
@@ -67,9 +53,10 @@ import {
 import TotalPrice from './forms/TotalPrice/TotalPrice.jsx';
 import { PROJECT_PARENT_ENTITY } from '../services/file_constants.js';
 import ExpandLessOutlinedIcon from '@mui/icons-material/ExpandLessOutlined.js';
+import { SCOPE_GIT_BLOCK, SCOPE_LINKS } from '../services/constants.js';
+import ScopeSelection from './ScopeSelection.jsx';
 
-const GoBack = ({ role, path }) => {
-  const location = useLocation();
+const GoBack = ({ path }) => {
   const navigate = useNavigate();
   return (
     <Button
@@ -89,50 +76,41 @@ const CreateProjectCard = ({ projectInfo }) => {
   const [getSearchParam] = useSearchParams();
   const matchMd = useMediaQuery(theme.breakpoints.down('md'));
   const matchXs = useMediaQuery(theme.breakpoints.down('xs'));
-  const customerReducer = useSelector(state => state.customer);
-  const auditReducer = useSelector(state => state.audits);
-  const [auditRequests, setAuditRequests] = useState([]);
-  const [error, setError] = useState(null);
-  const projectMessage = useSelector(state => state.project.message);
-  const [isPublished, setIsPublished] = useState(
-    projectInfo?.publish_options?.publish || false,
-  );
-  const [copy, setCopy] = useState(false);
-  const project = useSelector(s => s.project?.currentProject);
-  const [isClosed, setIsClosed] = useState(
-    projectInfo?.status === DONE || false,
-  );
-  const { successMessage, errorMessage } = useSelector(s => s.audits);
-  const [showFull, setShowFull] = useState(false);
-  const [state, setState] = useState(false);
-  const [isDirty, setIsDirty] = useState(false);
-  const [changeStatus, setChangeStatus] = useState(false);
 
-  useEffect(() => {
-    dispatch(getAuditsRequest('customer'));
-  }, []);
+  const customerReducer = useSelector(s => s.customer);
+  const { successMessage, errorMessage } = useSelector(s => s.audits);
+  const projectMessage = useSelector(s => s.project.message);
+  const project = useSelector(s => s.project?.currentProject);
   const githubData = useSelector(s =>
     s.user?.user?.linked_accounts?.find(
       el => el?.name?.toLowerCase() === 'github',
     ),
   );
 
+  const [isPublished, setIsPublished] = useState(
+    projectInfo?.publish_options?.publish || false,
+  );
+  const [isClosed, setIsClosed] = useState(
+    projectInfo?.status === DONE || false,
+  );
+  const [error, setError] = useState(null);
+  const [copy, setCopy] = useState(false);
+  const [showFull, setShowFull] = useState(false);
+  const [state, setState] = useState(false);
+  const [isDirty, setIsDirty] = useState(false);
+  const [changeStatus, setChangeStatus] = useState(false);
+  const [openInvite, setOpenInvite] = useState(false);
+  const [clear, setClear] = useState(false);
+
+  useEffect(() => {
+    dispatch(getAuditsRequest('customer'));
+  }, []);
+
   useEffect(() => {
     if (githubData?.id && githubData?.scope?.includes('repo')) {
       dispatch(getMyGithub());
     }
   }, [githubData?.scope?.includes('repo'), githubData?.id]);
-
-  useEffect(() => {
-    if (auditReducer.auditRequests && projectInfo) {
-      setAuditRequests(
-        auditReducer.auditRequests &&
-          auditReducer.auditRequests.filter(
-            request => request.project_id === projectInfo.id,
-          ),
-      );
-    }
-  }, [auditReducer.auditRequests]);
 
   useEffect(() => {
     dispatch(getFilterData());
@@ -144,13 +122,6 @@ const CreateProjectCard = ({ projectInfo }) => {
 
   let editMode = !!projectInfo || !!project?.id;
 
-  const validationSchema = Yup.object().shape({
-    tags: Yup.array().min(1, 'Please enter at least one tag'),
-    scope: Yup.array().min(1, 'Please enter at least one link'),
-    name: Yup.string().required('Name field is required'),
-    description: Yup.string().required('Description field is required'),
-  });
-
   const initialValues = {
     id: projectInfo ? projectInfo?.id || project?.id : '',
     publish_options: {
@@ -161,15 +132,30 @@ const CreateProjectCard = ({ projectInfo }) => {
     },
     publish_contacts: true,
     name: projectInfo ? projectInfo.name : '',
-    scope: projectInfo ? projectInfo.scope : [],
     description: projectInfo ? projectInfo.description : '',
     tags: projectInfo ? projectInfo.tags : [],
     status: projectInfo?.status === DONE ? DONE : '',
     price: projectInfo ? projectInfo.price : 0,
     total_cost: projectInfo ? projectInfo.total_cost : 0,
     creator_contacts: customerReducer?.customer?.contacts,
+
+    // scope: {
+    //   type: projectInfo?.scope?.type || SCOPE_GIT_BLOCK,
+    //   content: projectInfo?.scope?.content || {
+    //     repository: {
+    //       clone_url: null,
+    //       display_url: null,
+    //     },
+    //     commit: null,
+    //     files: [],
+    //   },
+    // },
+    // TODO: replace to git block
+    scope: {
+      type: projectInfo?.scope?.type || SCOPE_LINKS,
+      content: projectInfo?.scope?.content || [],
+    },
   };
-  const [openInvite, setOpenInvite] = useState(false);
 
   const handleInviteModal = onSubmit => {
     setState(true);
@@ -180,6 +166,7 @@ const CreateProjectCard = ({ projectInfo }) => {
   };
 
   const handleCloseInviteModal = () => {
+    setClear(true);
     setOpenInvite(false);
   };
 
@@ -201,9 +188,63 @@ const CreateProjectCard = ({ projectInfo }) => {
     }
   };
 
+  const handleSubmit = values => {
+    const newValue = {
+      ...values,
+      [!values.total_cost ? 'price' : 'total_cost']: parseInt(
+        !values.total_cost ? values.price : values.total_cost,
+      ),
+    };
+
+    if (!values.total_cost) {
+      delete newValue.total_cost;
+    } else {
+      delete newValue.price;
+    }
+    setIsDirty(false);
+
+    if (
+      editMode &&
+      (projectInfo?.id ?? project?.id) &&
+      !getSearchParam.get('copy')
+    ) {
+      if (!state) {
+        dispatch(
+          editProject({
+            ...newValue,
+            id: projectInfo.id || project?.id,
+            status: projectInfo?.status === DONE ? DONE : '',
+          }),
+        );
+      } else {
+        if (!changeStatus) {
+          dispatch(
+            editProjectNoRedirect({
+              ...newValue,
+              id: projectInfo?.id || project?.id,
+            }),
+          );
+        } else {
+          dispatch(
+            changeStatusProject({
+              ...newValue,
+              id: projectInfo?.id || project?.id,
+            }),
+          );
+        }
+        setChangeStatus(false);
+      }
+    } else {
+      if ((!state || project?.id) && !copy) {
+        dispatch(createProject(newValue));
+      } else {
+        dispatch(createProjectNoRedirect(newValue));
+      }
+    }
+  };
+
   useEffect(() => {
-    if (initialValues?.id && initialValues.scope.length) {
-      const getRepoUrl = initialValues.scope[0];
+    if (initialValues?.id && initialValues.scope) {
       function getShaFromGitHubUrl(url) {
         const regex = /\/blob\/([0-9a-f]{40})\//;
         const match = url.match(regex);
@@ -214,14 +255,27 @@ const CreateProjectCard = ({ projectInfo }) => {
         const urlParts = gitHubUrl.split('/');
         const owner = urlParts[3];
         const repo = urlParts[4];
-
         return `${owner}/${repo}`;
       }
 
-      const githubRepo = parseGitHubUrl(getRepoUrl);
-      const sha = getShaFromGitHubUrl(getRepoUrl);
-      dispatch(getSha(sha));
-      dispatch(getRepoOwner(githubRepo));
+      if (
+        initialValues.scope.type === SCOPE_LINKS &&
+        initialValues.scope.content.length
+      ) {
+        const getRepoUrl = initialValues.scope.content[0];
+        const githubRepo = parseGitHubUrl(getRepoUrl);
+        const sha = getShaFromGitHubUrl(getRepoUrl);
+        dispatch(getSha(sha));
+        dispatch(getRepoOwner(githubRepo));
+      } else if (initialValues.scope.type === SCOPE_GIT_BLOCK) {
+        const clone_url = initialValues.scope.content.repository.clone_url;
+        const sha = initialValues.scope.content.commit;
+        if (clone_url && sha) {
+          const githubRepo = parseGitHubUrl(clone_url);
+          dispatch(getSha(sha));
+          dispatch(getRepoOwner(githubRepo));
+        }
+      }
     }
     return () => {
       dispatch({ type: CLEAR_PROJECT });
@@ -259,60 +313,7 @@ const CreateProjectCard = ({ projectInfo }) => {
     <Formik
       initialValues={initialValues}
       validationSchema={validationSchema}
-      onSubmit={values => {
-        const newValue = {
-          ...values,
-          [!values.total_cost ? 'price' : 'total_cost']: parseInt(
-            !values.total_cost ? values.price : values.total_cost,
-          ),
-        };
-
-        if (!values.total_cost) {
-          delete newValue.total_cost;
-        } else {
-          delete newValue.price;
-        }
-        setIsDirty(false);
-
-        if (
-          editMode &&
-          (projectInfo?.id ?? project?.id) &&
-          !getSearchParam.get('copy')
-        ) {
-          if (!state) {
-            dispatch(
-              editProject({
-                ...newValue,
-                id: projectInfo.id || project?.id,
-                status: projectInfo?.status === DONE ? DONE : '',
-              }),
-            );
-          } else {
-            if (!changeStatus) {
-              dispatch(
-                editProjectNoRedirect({
-                  ...newValue,
-                  id: projectInfo?.id || project?.id,
-                }),
-              );
-            } else {
-              dispatch(
-                changeStatusProject({
-                  ...newValue,
-                  id: projectInfo?.id || project?.id,
-                }),
-              );
-            }
-            setChangeStatus(false);
-          }
-        } else {
-          if ((!state || project?.id) && !copy) {
-            dispatch(createProject(newValue));
-          } else {
-            dispatch(createProjectNoRedirect(newValue));
-          }
-        }
-      }}
+      onSubmit={handleSubmit}
     >
       {({
         handleSubmit,
@@ -362,7 +363,7 @@ const CreateProjectCard = ({ projectInfo }) => {
 
             <CustomSnackbar
               autoHideDuration={3000}
-              open={!!error || projectMessage}
+              open={!!error || !!projectMessage}
               onClose={() => {
                 setError(null);
                 dispatch(clearProjectMessage());
@@ -388,6 +389,7 @@ const CreateProjectCard = ({ projectInfo }) => {
               onClose={() => dispatch(clearMessage())}
             />
 
+            {/* TODO: Delete this??? */}
             {/*<CloseProjectModal*/}
             {/*  isOpen={closeConfirmIsOpen}*/}
             {/*  setIsOpen={setCloseConfirmIsOpen}*/}
@@ -418,15 +420,13 @@ const CreateProjectCard = ({ projectInfo }) => {
                         <TagsArray name="tags" />
                       </Box>
                       <Box sx={fieldWrapper}>
-                        <Box sx={linkFieldWrapper}>
-                          <TagsField
-                            size={matchMd ? 'small' : 'medium'}
-                            name="scope"
-                            label="Project links"
-                            setFieldTouched={setFieldTouched}
-                          />
-                          <GithubSelection project={projectInfo} />
-                        </Box>
+                        <ScopeSelection
+                          scope={values.scope}
+                          project={projectInfo}
+                          setFieldValue={setFieldValue}
+                          setFieldTouched={setFieldTouched}
+                        />
+
                         <ProjectLinksList name="scope" />
                         <Box>
                           <TotalPrice />
@@ -448,10 +448,6 @@ const CreateProjectCard = ({ projectInfo }) => {
                         sx={{ '& .head': { justifyContent: 'center' } }}
                       />
                     )}
-
-                    {/*<Box>*/}
-                    {/*  <AuditRequestsArray requests={auditRequests ?? []} />*/}
-                    {/*</Box>*/}
                   </Box>
                   <Collapse
                     in={true}
@@ -503,8 +499,6 @@ const CreateProjectCard = ({ projectInfo }) => {
                         showFull ? {} : { transform: 'rotate(180deg)' },
                         {
                           transition: '0.2s',
-                          // marginRight: '0',
-                          // marginLeft: 'auto',
                           width: '20px',
                           height: '20px',
                         },
@@ -519,7 +513,7 @@ const CreateProjectCard = ({ projectInfo }) => {
                     >
                       <Button
                         variant="contained"
-                        sx={[buttonSx]}
+                        sx={buttonSx}
                         onClick={() => {
                           handleInviteModal(handleSubmit);
                         }}
@@ -537,7 +531,7 @@ const CreateProjectCard = ({ projectInfo }) => {
                       <Button
                         type="submit"
                         variant="contained"
-                        sx={[buttonSx]}
+                        sx={buttonSx}
                         {...addTestsLabel(
                           `${editMode ? 'save' : 'create'}-button`,
                         )}
@@ -552,14 +546,19 @@ const CreateProjectCard = ({ projectInfo }) => {
                     >
                       <Button
                         variant="outlined"
-                        sx={[buttonSx]}
+                        sx={buttonSx}
                         type="button"
-                        color={'secondary'}
+                        color="secondary"
                         onClick={() => {
+                          let scope_length =
+                            values.scope.type === SCOPE_GIT_BLOCK
+                              ? values.scope.content.files?.length
+                              : values.scope.content?.length;
+
                           if (
                             values.name &&
                             values.tags.length > 0 &&
-                            values.scope.length > 0 &&
+                            scope_length > 0 &&
                             values.description
                           ) {
                             handlePublish(values, handleSubmit);
@@ -592,33 +591,40 @@ const CreateProjectCard = ({ projectInfo }) => {
 };
 export default CreateProjectCard;
 
-const linkFieldWrapper = theme => ({
-  display: 'flex',
-  gap: '7px',
-  alignItems: 'center',
-  '& .field-wrapper': {
-    width: '100%',
-  },
-  [theme.breakpoints.down(500)]: {
-    // flexDirection: 'column',
-    '& .github-wrapper': {
-      width: 'unset',
-    },
-    gap: '10px',
-    '& .field-wrapper': {
-      // width: '100%',
-    },
-  },
+const validationSchema = Yup.object().shape({
+  tags: Yup.array().min(1, 'Please enter at least one tag'),
+  name: Yup.string().required('Name field is required'),
+  description: Yup.string().required('Description field is required'),
+  scope: Yup.object()
+    .shape({
+      type: Yup.string().required('Type is required'),
+      content: Yup.mixed().required('Content is required'),
+    })
+    .test('valid-scope', 'Please enter at least one link', value => {
+      if (!value || !value.type || !value.content) {
+        return false;
+      }
+      if (value.type === SCOPE_LINKS) {
+        return Array.isArray(value.content) && value.content.length > 0;
+      } else if (value.type === SCOPE_GIT_BLOCK) {
+        return (
+          value.content.files &&
+          Array.isArray(value.content.files) &&
+          value.content.files.length > 0
+        );
+      }
+      return false;
+    }),
 });
 
-const mainBox = theme => ({
+const mainBox = {
   position: 'relative',
   display: 'flex',
   flexDirection: 'column',
   '& .editor-container': {
     borderBottom: 'unset!important',
   },
-});
+};
 
 const backButtonSx = theme => ({
   position: 'absolute',
@@ -645,7 +651,7 @@ const wrapper = theme => ({
   },
 });
 
-const buttonSx = theme => ({
+const buttonSx = {
   padding: '8.5px 0',
   fontSize: '16px',
   textTransform: 'unset',
@@ -654,7 +660,7 @@ const buttonSx = theme => ({
   minWidth: '50px',
   borderRadius: '10px',
   height: '44px',
-});
+};
 
 const readAllButton = (theme, showFull) => ({
   p: '3px',
@@ -670,62 +676,15 @@ const readAllButton = (theme, showFull) => ({
   display: 'flex',
   alignItems: 'center',
   gap: '7px',
-  // maxWidth: '300px',
   [theme.breakpoints.down('xs')]: {
     fontSize: '16px',
   },
 });
 
 const buttonGroup = {
-  // width: "100%",
-  // width: '220px',
   display: 'flex',
   alignSelf: 'center',
   gap: '20px',
-};
-
-const inviteButton = {
-  backgroundColor: theme.palette.primary.main,
-  textTransform: 'none',
-  boxShadow: '0',
-  maxHeight: '36px',
-  padding: '8px 42px',
-  whiteSpace: 'nowrap',
-  color: '#FCFAF6',
-  fontWeight: '600',
-  borderRadius: '4px',
-  width: '180px',
-  margin: '0 auto',
-  height: '36px',
-  // width: '100%',
-  fontSize: '16px',
-  // paddingY: "11px",
-  ':hover': {
-    boxShadow: '0',
-  },
-  [theme.breakpoints.down('sm')]: {
-    padding: '3px 15px',
-  },
-};
-
-const publishButton = {
-  // backgroundColor: theme.palette.secondary.main,
-  textTransform: 'none',
-  boxShadow: '0',
-  maxHeight: '36px',
-  width: '180px',
-  // padding: '8px 42px',
-  // whiteSpace: 'nowrap',
-  // color: '#FCFAF6',
-  height: '36px',
-  fontWeight: '600',
-  borderRadius: '4px',
-  // maxWidth: '180px',
-  // margin: '0 auto',
-  fontSize: '16px',
-  '& svg': {
-    marginRight: '7px',
-  },
 };
 
 const formCard = {
@@ -740,42 +699,14 @@ const formWrapper = theme => ({
   height: '100%',
   width: '100%',
   gap: '16px',
-  // justifyContent: 'space-between',
-  // gap: "175px",
   [theme.breakpoints.down('xs')]: {
-    // gap: '16px',
     flexDirection: 'column',
-  },
-});
-
-const submitButton = theme => ({
-  backgroundColor: theme.palette.primary.main,
-  boxShadow: '0',
-  padding: '11px 0',
-  color: '#FCFAF6',
-  fontWeight: 600,
-  lineHeight: 1.2,
-  textTransform: 'unset',
-  borderRadius: radiusOfComponents,
-  width: '402px',
-  margin: '0 auto',
-  fontSize: '16px',
-  paddingY: '11px',
-  ':hover': {
-    boxShadow: '0',
-  },
-  [theme.breakpoints.down('sm')]: {
-    width: '225px',
-    padding: '13px 0',
-    fontSize: '14px',
   },
 });
 
 const fieldWrapper = theme => ({
   display: 'flex',
   flexDirection: 'column',
-  // justifyContent: "space-between",
-  // maxWidth: "450px",
   width: '50%',
   gap: '20px',
   [theme.breakpoints.down('md')]: {

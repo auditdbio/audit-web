@@ -1,8 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
-import theme from '../../styles/themes.js';
 import Tooltip from '@mui/material/Tooltip';
 import { Box, Button, Chip } from '@mui/material';
-import ClearIcon from '@mui/icons-material/Clear.js';
 import { useSelector } from 'react-redux';
 import { AUDITOR } from '../../redux/actions/types.js';
 

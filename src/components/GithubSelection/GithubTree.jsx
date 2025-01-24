@@ -14,13 +14,14 @@ const GithubTreeNode = ({
   deletedFromField,
   handleSelectAll,
 }) => {
-  const [field, _, filedHelper] = useField('scope');
-  const { sha, repoOwner } = useSelector(state => state.github);
-  const [isTreeOpen, setIsTreeOpen] = React.useState(true);
-  const isTree = node.type === 'tree';
+  const [field] = useField('scope');
+  const [isTreeOpen, setIsTreeOpen] = useState(true);
   const [isIndeterminate, setIsIndeterminate] = useState(false);
-  const { filterConfig } = useSelector(s => s.filter);
   const [includes, setIncludes] = useState(false);
+
+  const { sha, repoOwner } = useSelector(state => state.github);
+  const { filterConfig } = useSelector(s => s.filter);
+  const isTree = node.type === 'tree';
 
   const handleToggle = () => {
     setIsTreeOpen(!isTreeOpen);
@@ -96,10 +97,7 @@ const GithubTreeNode = ({
         return newData.tree.every(childNode => {
           if (childNode.type === 'blob') {
             const blobUrl = createBlopUrl(repoOwner, sha, `${childNode.path}`);
-            return selected.includes(blobUrl);
-            // ||
-            // (field.value.includes(blobUrl) &&
-            //   !deletedFromField.includes(blobUrl))
+            return !!selected.find(file => file.display_url === blobUrl);
           } else if (childNode.type === 'tree') {
             return checkIfAllSelected(childNode);
           }
@@ -121,9 +119,7 @@ const GithubTreeNode = ({
         );
       } else if (currentNode.type === 'blob') {
         const blobUrl = createBlopUrl(repoOwner, sha, `${currentNode.path}`);
-        return selected.includes(blobUrl);
-        // ||
-        // (field.value.includes(blobUrl) && !deletedFromField.includes(blobUrl))
+        return !!selected.find(file => file.display_url === blobUrl);
       } else {
         return false;
       }
@@ -131,14 +127,10 @@ const GithubTreeNode = ({
 
     setIsIndeterminate(checkIfIndeterminate(node));
   }, [selected, field.value, deletedFromField]);
-  //
+
   const checkSelected = () => {
     const blobUrl = createBlopUrl(repoOwner, sha, node.path);
-    const callback = item => item === blobUrl;
-
-    return selected.some(callback);
-    // ||
-    // (field.value.some(callback) && !deletedFromField.includes(blobUrl))
+    return selected.some(file => file.display_url === blobUrl);
   };
 
   useEffect(() => {
@@ -204,10 +196,6 @@ const GithubTreeNode = ({
           node.type === 'blob' && endsWithAny(node.name, filterConfig)
             ? filterItemSx
             : {},
-          // node.type === 'tree' &&
-          // node.tree.some(el => !endsWithAny(el.name, filterConfig))
-          //   ? filterItemSx
-          //   : itemsSx,
         ]}
       >
         {node.type === 'tree' ? (
@@ -322,15 +310,14 @@ const ulStyle = ({ inner }) => ({
   padding: inner ? '0 0 0 15px' : 0,
 });
 
-const selectedSx = theme => ({
-  // border: `1px solid ${theme.palette.primary.main}`,
+const selectedSx = {
   backgroundColor: '#efefefa6',
   borderRadius: '5px',
-});
+};
 
-const filterItemSx = theme => ({
+const filterItemSx = {
   borderRadius: '5px',
   '& p': {
     color: 'grey',
   },
-});
+};

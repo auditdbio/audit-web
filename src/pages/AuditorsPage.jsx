@@ -64,13 +64,6 @@ const AuditorsPage = () => {
     },
   };
 
-  const clearFilter = () => {
-    setQuery(query => {
-      const { ...data } = query || {};
-      return {};
-    });
-  };
-
   const getNumberOfPages = () => {
     return Math.ceil(totalAuditors / 10);
   };

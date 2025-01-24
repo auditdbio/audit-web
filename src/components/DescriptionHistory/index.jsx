@@ -15,14 +15,12 @@ import {
   getAuditRequestHistory,
 } from '../../redux/actions/auditAction.js';
 import Badge from '@mui/material/Badge';
-import { CUSTOMER } from '../../redux/actions/types.js';
 import CustomSnackbar from '../custom/CustomSnackbar.jsx';
 import HistoryIcon from '@mui/icons-material/History';
 
 const HistoryDescription = ({
   audit,
   request,
-  spaceY = true,
   buttonStyle,
   wrapperStyle = {},
 }) => {
@@ -83,7 +81,7 @@ const HistoryDescription = ({
         text="You have modifications awaiting your approval."
       />
       {isOpen && (
-        <Box sx={modalStyle}>
+        <Box>
           <Modal
             open={isOpen}
             onClose={() => setIsOpen(false)}
@@ -117,7 +115,6 @@ const HistoryDescription = ({
                   <Box
                     sx={{
                       display: 'flex',
-                      // justifyContent: 'space-between',
                       paddingX: '12px',
                     }}
                   >
@@ -280,19 +277,6 @@ const titleSx = theme => ({
   [theme.breakpoints.down('md')]: {
     fontSize: '24px',
   },
-});
-
-const modalStyle = theme => ({
-  // width: '95%',
-  // p: 2,
-  //
-  // height: '80%',
-  // display: 'flex',
-  // justifyContent: 'center',
-  // alignItems: 'center',
-  // [theme.breakpoints.down('sm')]: {
-  //   height: '95%',
-  // },
 });
 
 const modalSx = theme => ({

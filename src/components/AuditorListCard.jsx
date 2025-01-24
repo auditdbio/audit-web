@@ -51,7 +51,11 @@ const AuditorListCard = ({ auditor, projectIdToInvite, budge }) => {
   };
 
   const handleInvite = () => {
-    if (user.current_role === CUSTOMER && isAuth() && myProjects.length) {
+    if (
+      user?.current_role?.toLowerCase() === CUSTOMER?.toLowerCase() &&
+      isAuth() &&
+      myProjects.length
+    ) {
       if (projectIdToInvite) {
         return navigate(
           `/my-projects/${auditor.user_id}?projectIdToInvite=${projectIdToInvite}`,
@@ -76,7 +80,7 @@ const AuditorListCard = ({ auditor, projectIdToInvite, budge }) => {
       );
       handleError();
     } else if (
-      user.current_role === CUSTOMER &&
+      user?.current_role?.toLowerCase() === CUSTOMER?.toLowerCase() &&
       isAuth() &&
       !myProjects.length
     ) {
@@ -145,7 +149,6 @@ const AuditorListCard = ({ auditor, projectIdToInvite, budge }) => {
                   </Typography>
                 </Tooltip>
               </Box>
-              {/*<Typography sx={projectStyle}>{auditor.company}</Typography>*/}
             </Box>
             <Box sx={statusGroup(theme)}>
               <CircleIcon sx={statusCircle} />
@@ -277,17 +280,6 @@ const nameStyle = {
   color: '#152BEA',
 };
 
-const projectStyle = {
-  fontWeight: 500,
-  fontSize: {
-    zero: '9px',
-    sm: '11px',
-    md: '13px',
-    lg: '14px',
-  },
-  color: '#434242',
-};
-
 const statusGroup = theme => ({
   display: 'flex',
   alignItems: 'center',
@@ -359,5 +351,3 @@ const tagsWrapper = theme => ({
     maxWidth: '130px',
   },
 });
-
-const fakeTagsArray = ['Python', 'Java', 'Audit', 'Big Four'];

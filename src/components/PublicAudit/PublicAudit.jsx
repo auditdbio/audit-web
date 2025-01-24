@@ -1,12 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, Link } from 'react-router-dom/dist';
-import dayjs from 'dayjs';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import {
-  acceptAudit,
   clearMessage,
-  confirmAudit,
   deleteAudit,
   deleteAuditRequest,
   downloadPublicReport,
@@ -14,55 +11,37 @@ import {
   handlePublishAudit,
   sendAuditFeedback,
 } from '../../redux/actions/auditAction.js';
-import { CustomCard } from '../custom/Card.jsx';
 import Headings from '../../router/Headings.jsx';
 import CustomSnackbar from '../custom/CustomSnackbar.jsx';
 import {
-  Avatar,
   Box,
   Button,
   Collapse,
   Divider,
   FormControlLabel,
   Switch,
-  Tooltip,
   Typography,
 } from '@mui/material';
-import CloseIcon from '@mui/icons-material/Close';
 import EditTags from '../EditDescription/EditTags.jsx';
-import EditPrice from '../EditDescription/EditPrice.jsx';
-import TagsList from '../tagsList.jsx';
 import EditDescription from '../EditDescription/index.jsx';
-import DescriptionHistory from '../DescriptionHistory/index.jsx';
 import Markdown from '../markdown/Markdown.jsx';
 import ChatIcon from '../icons/ChatIcon.jsx';
 import IssuesList from '../issuesPage/IssuesList.jsx';
 import ConfirmModal from '../modal/ConfirmModal.jsx';
 import AuditFeedbackModal from '../modal/AuditFeedbackModal.jsx';
-import {
-  AUDITOR,
-  CUSTOMER,
-  DONE,
-  RESOLVED,
-  SUBMITED,
-  WAITING_FOR_AUDITS,
-} from '../../redux/actions/types.js';
+import { AUDITOR, RESOLVED } from '../../redux/actions/types.js';
 import { setCurrentChat } from '../../redux/actions/chatActions.js';
-import { addTestsLabel, isAuth } from '../../lib/helper.js';
-import { ASSET_URL } from '../../services/urls.js';
+import { addTestsLabel } from '../../lib/helper.js';
 import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 import TaskAltIcon from '@mui/icons-material/TaskAlt';
 import DragAndDropInput from '../DrgaAndDrop/DragAndDrop.jsx';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import theme from '../../styles/themes.js';
-import EditIcon from '@mui/icons-material/Edit.js';
 import ExpandLessOutlinedIcon from '@mui/icons-material/ExpandLessOutlined.js';
 import AuditUserCard from '../AuditUserCard/AuditUserCard.jsx';
 
 const PublicAudit = ({
   audit,
-  auditRequest,
-  issues,
   confirmed,
   handleClose,
   request,
@@ -81,10 +60,6 @@ const PublicAudit = ({
 
   const [isFeedbackModalOpen, setIsFeedbackModalOpen] = useState(false);
 
-  const handleConfirm = () => {
-    dispatch(confirmAudit(audit, true));
-  };
-
   const handleDecline = () => {
     if (audit?.status) {
       dispatch(deleteAudit(audit.id));
@@ -92,16 +67,6 @@ const PublicAudit = ({
       dispatch(deleteAuditRequest(audit.id));
     }
     handleClose();
-  };
-
-  const handleAcceptAudit = () => {
-    dispatch(
-      acceptAudit({
-        id: audit.id,
-        report: audit.report,
-        status: SUBMITED,
-      }),
-    );
   };
 
   const handleSendMessage = () => {
@@ -128,10 +93,6 @@ const PublicAudit = ({
     );
     localStorage.setItem('path', window.location.pathname);
     navigate(`/chat/${audit?.auditor_id}`);
-  };
-
-  const goToIssues = () => {
-    navigate(`/issues/audit-issue/${audit?.id}`);
   };
 
   const handleSendFeedback = values => {
@@ -314,6 +275,7 @@ const PublicAudit = ({
                 telegram={audit?.customer_contacts?.telegram}
                 role={'Customer'}
                 id={audit.customer_id}
+                customer={true}
               />
             </Box>
             <EditDescription
@@ -370,8 +332,6 @@ const PublicAudit = ({
                 showFull ? {} : { transform: 'rotate(180deg)' },
                 {
                   transition: '0.2s',
-                  // marginRight: '0',
-                  // marginLeft: 'auto',
                   width: '20px',
                   height: '20px',
                 },
@@ -482,7 +442,6 @@ const readAllButton = theme => ({
   display: 'flex',
   alignItems: 'center',
   gap: '7px',
-  // maxWidth: '300px',
   [theme.breakpoints.down('xs')]: {
     fontSize: '16px',
   },
@@ -565,15 +524,6 @@ const buttonSx = theme => ({
   minWidth: 'unset',
   borderRadius: '10px',
   ':last-child': { mr: 0 },
-  // [theme.breakpoints.down('md')]: {
-  //   width: '210px',
-  // },
-  // [theme.breakpoints.down('sm')]: {
-  //   width: '170px',
-  // },
-  // [theme.breakpoints.down('xs')]: {
-  //   width: '100px',
-  // },
 });
 
 const conclusionTitle = theme => ({

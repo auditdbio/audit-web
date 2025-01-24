@@ -43,7 +43,6 @@ const EditTags = ({ audit, confirmed, hideChange, isPublic }) => {
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',
-                // mt: '15px',
               }}
             >
               {editTags && (
@@ -91,7 +90,6 @@ const EditTags = ({ audit, confirmed, hideChange, isPublic }) => {
                         <FastField
                           component={TextField}
                           name={'comment'}
-                          // label={label}
                           placeholder={'Add your comment for tag updates'}
                           fullWidth={true}
                           disabled={false}
@@ -124,7 +122,6 @@ const EditTags = ({ audit, confirmed, hideChange, isPublic }) => {
                   justifyContent: 'center',
                   gap: '5px',
                   alignItems: 'center',
-                  // mt: '5px',
                   '& .tags-array-wrapper': {
                     gap: '5px',
                   },

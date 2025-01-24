@@ -34,7 +34,6 @@ export const getCustomer = (redirect = false) => {
       })
       .catch(({ response }) => {
         console.log(response, 'res');
-        // dispatch({type: SIGN_IN_ERROR})
       });
   };
 };
@@ -51,7 +50,6 @@ export const getCurrentCustomer = id => {
       })
       .catch(({ response }) => {
         console.log(response, 'res');
-        // dispatch({type: SIGN_IN_ERROR})
       });
   };
 };
@@ -173,8 +171,4 @@ export const searchCustomers = values => {
         console.error(response, 'res');
       });
   };
-};
-
-export const clearCurrentCustomer = () => {
-  return { type: CLEAR_CURRENT_AUDITOR_CUSTOMER };
 };

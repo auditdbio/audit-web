@@ -13,10 +13,10 @@ const EventsList = ({ issue, auditPartner, auditId }) => {
   const endOfList = useRef(null);
 
   useEffect(() => {
+    const windowHeight =
+      document.documentElement.clientHeight || window.innerHeight;
+    const contentHeight = document.getElementById('issue-page')?.clientHeight;
     const handleScroll = () => {
-      const windowHeight =
-        document.documentElement.clientHeight || window.innerHeight;
-
       clearTimeout(timerRef.current);
       if (endOfList.current) {
         const { top } = endOfList.current.getBoundingClientRect();
@@ -37,7 +37,12 @@ const EventsList = ({ issue, auditPartner, auditId }) => {
       }, 20);
     };
 
-    window.addEventListener('scroll', handleScroll);
+    if (contentHeight >= windowHeight) {
+      window.addEventListener('scroll', handleScroll);
+    } else {
+      handleScroll();
+    }
+
     return () => {
       clearTimeout(timerRef.current);
       window.removeEventListener('scroll', handleScroll);
