@@ -4,7 +4,6 @@ import {
   Box,
   Button,
   Checkbox,
-  Divider,
   Modal,
   Typography,
   useMediaQuery,
@@ -21,44 +20,34 @@ import GithubBranchAutocomplete from '../GithubBranchAutocomplete.jsx';
 import ModalOfAlert from './ModalOfAlert.jsx';
 import dayjs from 'dayjs';
 import GitHubIcon from '@mui/icons-material/GitHub.js';
+import { SCOPE_GIT_BLOCK } from '../../services/constants.js';
 
-const reg = /[a-z]/i;
 const CommitModal = ({
   sha,
   onClose,
   repository,
-  handleCloseCommit,
-  setOpen,
   selected,
   setSelected,
   handleSwitchRep,
 }) => {
-  const [field, _, fieldHelper] = useField('scope');
-  const data = useSelector(state => state.github.commit);
-  const commit = useSelector(state => state.github.commitInfo);
-  const [modalOpen, setModalOpen] = useState(false);
-  const [deletedFromField, setDeletedFromField] = useState([]);
   const dispatch = useDispatch();
-  const [newObj, setNewObj] = useState(null);
-  const [checkLength, setCheckLength] = useState(false);
-  const { filterConfig } = useSelector(s => s.filter);
-  const { defaultBranch, branch: branchState } = useSelector(
-    state => state.github,
-  );
-  const [modalOpenAlert, setModalOpenAlert] = useState(false);
   const sxMedia = useMediaQuery(theme => theme.breakpoints.down('xs'));
   const smMedia = useMediaQuery(theme => theme.breakpoints.down('sm'));
 
-  useEffect(() => {
-    // if (!commit.sha) {
-    dispatch(getCommitData(repository, sha));
-    // }
-  }, [repository, sha]);
+  const [field, _, fieldHelper] = useField('scope');
+  const [modalOpen, setModalOpen] = useState(false);
+  const [deletedFromField, setDeletedFromField] = useState([]);
+  const [newObj, setNewObj] = useState(null);
+  const [checkLength, setCheckLength] = useState(false);
+  const [modalOpenAlert, setModalOpenAlert] = useState(false);
 
-  function updateCommitShaInLinks(links, newCommitSha) {
-    const regex = /\/blob\/[0-9a-f]{40}\//;
-    return links.map(link => link.replace(regex, `/blob/${newCommitSha}/`));
-  }
+  const data = useSelector(state => state.github.commit);
+  const commit = useSelector(state => state.github.commitInfo);
+  const { filterConfig } = useSelector(s => s.filter);
+
+  useEffect(() => {
+    dispatch(getCommitData(repository, sha));
+  }, [repository, sha]);
 
   const endsWithAny = (str, suffixes) => {
     return suffixes.some(suffix => {
@@ -76,14 +65,18 @@ const CommitModal = ({
     });
   };
 
-  // useEffect(() => {
-  //   if (sha && field.value.length) {
-  //     fieldHelper.setValue(updateCommitShaInLinks(field.value, sha));
-  //   }
-  // }, [sha]);
+  function updateCommitShaInLinks(files, newCommitSha) {
+    const regex = /\/blob\/[0-9a-f]{40}\//;
+    return files.map(file => {
+      return {
+        ...file,
+        display_url: file.display_url.replace(regex, `/blob/${newCommitSha}/`),
+      };
+    });
+  }
 
   useEffect(() => {
-    if (sha && selected.length) {
+    if (sha && selected.length && field.value.type === SCOPE_GIT_BLOCK) {
       setSelected(updateCommitShaInLinks(selected, sha));
     }
   }, [sha]);
@@ -141,13 +134,17 @@ const CommitModal = ({
   const handleAddRemove = (node, addAll = false) => {
     if (node.type === 'blob') {
       const blobUrl = createBlopUrl(repository, sha, node.path);
-      const setStateFilter = prev => prev.filter(item => item !== blobUrl);
+      const isSelectedIncludes = !!selected.find(
+        file => file.display_url === blobUrl,
+      );
 
-      if (selected.includes(blobUrl) && !addAll) {
-        setSelected(setStateFilter);
-      } else if (!selected.includes(blobUrl)) {
+      if (isSelectedIncludes && !addAll) {
+        setSelected(prev => prev.filter(file => file.display_url !== blobUrl));
+      } else if (!isSelectedIncludes) {
         setSelected(prev =>
-          !prev.includes(blobUrl) ? [...prev, blobUrl] : prev,
+          prev.find(file => file.display_url === blobUrl)
+            ? prev
+            : [...prev, { path: node.path, display_url: blobUrl }],
         );
       }
     } else if (node.type === 'tree') {
@@ -158,8 +155,11 @@ const CommitModal = ({
   const handleRemoveAll = node => {
     if (node.type === 'blob') {
       const blobUrl = createBlopUrl(repository, sha, node.path);
-      if (selected.includes(blobUrl)) {
-        setSelected(prev => prev.filter(item => item !== blobUrl));
+      const isSelectedIncludes = !!selected.find(
+        file => file.display_url === blobUrl,
+      );
+      if (isSelectedIncludes) {
+        setSelected(prev => prev.filter(file => file.display_url !== blobUrl));
       }
     } else if (node.type === 'tree') {
       node.tree.map(el => handleRemoveAll(el));
@@ -176,16 +176,30 @@ const CommitModal = ({
 
   const handleReset = () => {
     setSelected([]);
-    fieldHelper.setValue([]);
+    fieldHelper.setValue({
+      type: SCOPE_GIT_BLOCK,
+      content: {
+        repository: {
+          clone_url: null,
+        },
+        commit: null,
+        files: [],
+      },
+    });
   };
 
   const checkDiff = useMemo(() => {
-    return selected.every((el, idx) => {
-      return field.value.includes(el);
-    });
+    if (selected.length !== field.value.content.files.length) {
+      return false;
+    }
+    return !!selected.every(file =>
+      field.value.content.files.find(
+        item => item.display_url === file.display_url,
+      ),
+    );
   }, [selected, field.value]);
 
-  const closeModal = () => {
+  const closeCommitModal = () => {
     if (!checkDiff) {
       setModalOpenAlert(true);
     } else {
@@ -194,36 +208,20 @@ const CommitModal = ({
     }
   };
 
-  // const checkAll = useMemo(() => {
-  //   if (data && data.tree) {
-  //     return selected
-  //       .filter(el => el.includes('github'))
-  //       .every(value => {
-  //         const pathIndex = value.indexOf('blob') + 46;
-  //         const path = value.slice(pathIndex);
-  //         return data.tree?.some(treeItem => treeItem.path === path);
-  //       });
-  //   }
-  // }, [data?.tree, sha]);
-
   const checkAllSelected = useMemo(() => {
     if (data && data.tree) {
       return selected
-        .filter(el => el.includes('github'))
-        .every(value => {
-          const pathIndex = value.indexOf('blob') + 46;
-          const path = value.slice(pathIndex);
+        .filter(file => file.display_url.includes('github'))
+        .every(file => {
+          const pathIndex = file.display_url.indexOf('blob') + 46;
+          const path = file.display_url.slice(pathIndex);
           return data.tree?.some(treeItem => treeItem.path === path);
         });
     }
   }, [data?.tree, sha]);
 
   useEffect(() => {
-    if (
-      // (checkAll !== undefined && checkAll === false) ||
-      checkAllSelected !== undefined &&
-      checkAllSelected === false
-    ) {
+    if (checkAllSelected === false) {
       setCheckLength(true);
     } else {
       setCheckLength(false);
@@ -231,46 +229,32 @@ const CommitModal = ({
   }, [data?.tree, sha]);
 
   const handleSave = () => {
+    let selectedFiles = selected;
     if (checkLength) {
-      const filteredValue = selected.filter(el => !el.includes('github.com'));
-      const filteredValue2 = selected.filter(value => {
-        const pathIndex = value.indexOf('blob') + 46;
-        const path = value.slice(pathIndex);
+      const filteredValue = selected.filter(
+        file => !file.display_url.includes('github.com'),
+      );
+      const filteredValue2 = selected.filter(file => {
+        const pathIndex = file.display_url.indexOf('blob') + 46;
+        const path = file.display_url.slice(pathIndex);
         return data.tree?.some(treeItem => treeItem.path === path);
       });
-      fieldHelper.setValue([...filteredValue, ...filteredValue2]);
-    } else {
-      fieldHelper.setValue([
-        // ...field.value.filter(el => !deletedFromField.includes(el)),
-        ...selected,
-      ]);
+      selectedFiles = [...filteredValue, ...filteredValue2];
     }
-    setSelected([]);
-    onClose();
-  };
 
-  // useEffect(() => {
-  //   if (checkAll !== undefined && !checkAll) {
-  //     const filteredValue = field.value.filter(value => {
-  //       const pathIndex = value.indexOf('blob') + 46;
-  //       const path = value.slice(pathIndex);
-  //       return !data?.tree?.some(treeItem => treeItem.path === path);
-  //     });
-  //     filteredValue.forEach(el => {
-  //       const pathIndex = el.indexOf('blob') + 46;
-  //       const path = el.slice(pathIndex);
-  //       if (el.includes('github')) {
-  //         handleRemoveAll({ path, type: 'blob' });
-  //       }
-  //     });
-  //   }
-  // }, [data.tree, sha, checkAll]);
+    if (field.value.type === SCOPE_GIT_BLOCK) {
+      fieldHelper.setValue({
+        type: SCOPE_GIT_BLOCK,
+        content: {
+          repository: {
+            clone_url: `https://github.com/${repository}`,
+          },
+          commit: sha,
+          files: selectedFiles,
+        },
+      });
+    }
 
-  const handleAgree = () => {
-    fieldHelper.setValue([
-      // ...field.value.filter(el => !deletedFromField.includes(el)),
-      ...selected,
-    ]);
     setSelected([]);
     onClose();
   };
@@ -287,9 +271,7 @@ const CommitModal = ({
       )
       .every(childNode => {
         const blobUrl = createBlopUrl(repository, sha, `${childNode.path}`);
-        return selected.includes(blobUrl);
-        // ||
-        // (field.value.includes(blobUrl) && !deletedFromField.includes(blobUrl))
+        return !!selected.find(file => file.display_url === blobUrl);
       });
   }, [selected, field.value, deletedFromField, data]);
 
@@ -300,9 +282,7 @@ const CommitModal = ({
       )
       .some(childNode => {
         const blobUrl = createBlopUrl(repository, sha, `${childNode.path}`);
-        return selected.includes(blobUrl);
-        // ||
-        // (field.value.includes(blobUrl) && !deletedFromField.includes(blobUrl))
+        return !!selected.find(file => file.display_url === blobUrl);
       });
   }, [selected, field.value, deletedFromField, data]);
 
@@ -346,7 +326,7 @@ const CommitModal = ({
           }}
         >
           <Box sx={closeSx}>
-            <Button onClick={closeModal}>
+            <Button onClick={closeCommitModal}>
               <CloseRoundedIcon />
             </Button>
             <Modal
@@ -356,17 +336,14 @@ const CommitModal = ({
               aria-describedby="modal-modal-description"
             >
               <Box sx={alertModalSx}>
-                <ModalOfAlert onClose={handleDisagree} onSave={handleSave} />
+                <ModalOfAlert
+                  onDisagree={handleDisagree}
+                  onSave={handleSave}
+                  onClose={() => setModalOpenAlert(false)}
+                />
               </Box>
             </Modal>
-            {/*<Button*/}
-            {/*  sx={{ textTransform: 'unset' }}*/}
-            {/*  onClick={handleChangeCommit}*/}
-            {/*>*/}
-            {/*  Back to commits*/}
-            {/*</Button>*/}
           </Box>
-          {/*<Typography variant="h4">Commit</Typography>*/}
           <Box>
             {commit.sha && (
               <Box
@@ -489,7 +466,6 @@ const CommitModal = ({
                   data={newObj}
                   selected={selected}
                   deletedFromField={deletedFromField}
-                  setSelected={setSelected}
                   handleAddRemove={handleAddRemove}
                   handleSelectAll={handleSelectAll}
                 />
@@ -571,13 +547,13 @@ const closeSx = theme => ({
   },
 });
 
-const titleSx = theme => ({
+const titleSx = {
   ontWeight: 500,
   overflowWrap: 'anywhere',
   fontSize: '14px!important',
-});
+};
 
-const alertModalSx = theme => ({
+const alertModalSx = {
   position: 'absolute',
   top: '50%',
   left: '50%',
@@ -587,7 +563,7 @@ const alertModalSx = theme => ({
   borderRadius: '10px',
   boxShadow: 24,
   p: 4,
-});
+};
 
 const actionWrapper = theme => ({
   marginY: '15px',
@@ -603,18 +579,7 @@ const actionWrapper = theme => ({
   },
 });
 
-const modalSx = theme => ({
-  // position: 'absolute',
-  // zIndex: 999,
-  // top: '50%',
-  // left: '50%',
-  // right: '50%',
-  // bottom: '50%',
-  // transform: 'translate(-50%, -50%)',
+const modalSx = {
   width: '100%',
   height: '100%',
-  // padding: 4,
-  // [theme.breakpoints.down('xs')]: {
-  //   padding: 1.5,
-  // },
-});
+};

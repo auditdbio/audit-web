@@ -15,6 +15,7 @@ import {
 } from '../../redux/actions/auditAction.js';
 import theme from '../../styles/themes.js';
 import TotalPrice from '../forms/TotalPrice/TotalPrice.jsx';
+import { SCOPE_LINKS } from '../../services/constants.js';
 
 const OfferModal = ({
   auditor,
@@ -28,6 +29,29 @@ const OfferModal = ({
 }) => {
   const dispatch = useDispatch();
 
+  const initialValues = {
+    auditor_id: auditor?.user_id,
+    auditor_contacts: { ...auditor?.contacts },
+    customer_contacts: { ...project?.creator_contacts },
+    customer_id: project?.customer_id,
+    last_changer: user.current_role,
+    price: project?.price || '',
+    total_cost: project?.total_cost || '',
+    description: project?.description || '',
+    price_range: {
+      from: project?.price || '',
+      to: project?.price || '',
+    },
+    time: {
+      from: dayjs(project?.time?.from) || new Date(),
+      to: dayjs(project?.time?.to) || new Date(),
+    },
+    project_id: project?.project_id || project?.id,
+    scope: project?.scope ||
+      project?.project_scope || { type: SCOPE_LINKS, content: [] },
+    time_frame: '',
+  };
+
   return (
     <Box sx={modalWrapper}>
       <Button
@@ -40,27 +64,7 @@ const OfferModal = ({
       <Formik
         validationSchema={MakeOfferSchema}
         validator={() => ({})}
-        initialValues={{
-          auditor_id: auditor?.user_id,
-          auditor_contacts: { ...auditor?.contacts },
-          customer_contacts: { ...project?.creator_contacts },
-          customer_id: project?.customer_id,
-          last_changer: user.current_role,
-          price: project?.price || '',
-          total_cost: project?.total_cost || '',
-          description: project?.description || '',
-          price_range: {
-            from: project?.price || '',
-            to: project?.price || '',
-          },
-          time: {
-            from: dayjs(project?.time?.from) || new Date(),
-            to: dayjs(project?.time?.to) || new Date(),
-          },
-          project_id: project?.project_id || project?.id,
-          scope: project?.scope || project?.project_scope,
-          time_frame: '',
-        }}
+        initialValues={initialValues}
         onSubmit={values => {
           const newValue = {
             ...values,
@@ -167,7 +171,6 @@ const MakeOfferSchema = Yup.object().shape({
   opener: Yup.string(),
   price_range: Yup.object(),
   project_id: Yup.string(),
-  scope: Yup.array(),
   time_frame: Yup.string(),
   time: Yup.object().shape({
     from: Yup.date(),

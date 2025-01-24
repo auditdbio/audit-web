@@ -27,6 +27,7 @@ import {
   SWITCH_GITHUB_TAB,
 } from '../redux/actions/types.js';
 import LocalOfferOutlinedIcon from '@mui/icons-material/LocalOfferOutlined';
+
 const GithubBranchAutocomplete = ({ repository, needSave, handleReset }) => {
   const branches = useSelector(state => state.github.branches);
   const [loading, setLoading] = useState(false);

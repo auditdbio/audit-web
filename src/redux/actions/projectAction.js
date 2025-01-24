@@ -23,11 +23,11 @@ import { isAuth } from '../../lib/helper.js';
 
 const API_URL = import.meta.env.VITE_API_BASE_URL;
 
-export const createProject = values => {
+export const createProject = project => {
   return async dispatch => {
     const token = Cookies.get('token');
     await axios
-      .post(`${API_URL}/project`, values, {
+      .post(`${API_URL}/project`, project, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

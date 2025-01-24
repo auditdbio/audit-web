@@ -23,6 +23,7 @@ import {
   getCloc,
 } from '../redux/actions/projectAction.js';
 import CustomSnackbar from './custom/CustomSnackbar.jsx';
+import { SCOPE_GIT_BLOCK, SCOPE_LINKS } from '../services/constants.js';
 
 const PriceCalculation = ({
   scope,
@@ -43,14 +44,21 @@ const PriceCalculation = ({
 
   useEffect(() => {
     if (scope) {
-      const links = scope.reduce((acc, url) => {
+      let links = scope;
+      if (scope.type === SCOPE_LINKS) {
+        links = scope.content;
+      } else if (scope.type === SCOPE_GIT_BLOCK) {
+        links = scope.content.files.map(file => file.display_url);
+      }
+
+      const filteredLinks = links.reduce((acc, url) => {
         if (!url.startsWith('http')) return acc;
 
         acc.push(url);
         return acc;
       }, []);
 
-      setCorrectLinks(links);
+      setCorrectLinks(filteredLinks);
     }
   }, [scope]);
 

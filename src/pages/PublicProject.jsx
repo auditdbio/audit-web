@@ -27,6 +27,7 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import EditIcon from '@mui/icons-material/Edit';
 import ExpandLessOutlinedIcon from '@mui/icons-material/ExpandLessOutlined';
 import AuditUserCard from '../components/AuditUserCard/AuditUserCard.jsx';
+import { SCOPE_GIT_BLOCK } from '../services/constants.js';
 
 const PublicProject = () => {
   const dispatch = useDispatch();
@@ -163,7 +164,7 @@ const PublicProject = () => {
         />
         <Button
           variant="text"
-          sx={[messageButton(theme, project?.customer_id === user.id)]}
+          sx={messageButton}
           onClick={handleSendMessage}
           disabled={project?.customer_id === user.id}
           {...addTestsLabel('message-button')}
@@ -222,9 +223,7 @@ const PublicProject = () => {
                 paddingTop: '8px',
               },
               !showFull
-                ? {
-                    boxShadow: '0px -24px 14px -8px rgba(252, 250, 246, 1)',
-                  }
+                ? { boxShadow: '0px -24px 14px -8px rgba(252, 250, 246, 1)' }
                 : {},
             ]}
           >
@@ -267,7 +266,10 @@ const PublicProject = () => {
         </Box>
 
         <Box sx={linksList}>
-          {project?.scope.map((link, idx) => {
+          {(project?.scope.type === SCOPE_GIT_BLOCK
+            ? project.scope.content.files?.map(file => file.display_url)
+            : project.scope?.content
+          ).map((link, idx) => {
             return <CustomLink link={link} key={idx} sx={linkSx} />;
           })}
         </Box>
@@ -317,14 +319,14 @@ const descriptionWrapper = (theme, showFull) => ({
   },
 });
 
-const messageButton = (theme, disable) => ({
+const messageButton = {
   position: 'absolute',
   top: '10px',
   right: 0,
   zIndex: 333,
   width: '35px',
   height: '35px',
-});
+};
 
 const readAllButton = theme => ({
   p: '3px',

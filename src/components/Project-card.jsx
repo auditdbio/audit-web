@@ -32,7 +32,6 @@ import IssueSeveritySort from './IssueSeveritySort/IssueSeverityFilter.jsx';
 
 const ProjectCard = ({ type, project, currentRole, isPublic }) => {
   const navigate = useNavigate();
-
   const dispatch = useDispatch();
   const matchSx = useMediaQuery(theme.breakpoints.down('xs'));
 
@@ -305,12 +304,12 @@ const ProjectCard = ({ type, project, currentRole, isPublic }) => {
 
 export default ProjectCard;
 
-export const userButtonSx = theme => ({
+export const userButtonSx = {
   textTransform: 'unset',
   display: 'flex',
   gap: '8px',
   marginBottom: '12px',
-});
+};
 
 const priceWrapper = theme => ({
   display: 'flex',
@@ -356,15 +355,15 @@ const actionBtnSx = (theme, isPublic) => ({
   },
 });
 
-const projectNameSx = theme => ({
+const projectNameSx = {
   height: '45px',
   overflow: 'hidden',
   wordBreak: 'break-word',
-  '-webkit-line-clamp': '2',
-  '-webkit-box-orient': 'vertical',
-  'text-overflow': 'ellipsis',
+  WebkitLineClamp: '2',
+  WebkitBoxOrient: 'vertical',
+  textOverflow: 'ellipsis',
   display: '-webkit-box',
-});
+};
 
 const cardInnerWrapper = (theme, isPublic) => ({
   display: 'flex',
@@ -519,9 +518,9 @@ const categorySx = theme => ({
   width: '100%',
   overflow: 'hidden',
   wordBreak: 'break-word',
-  '-webkit-line-clamp': '2',
-  '-webkit-box-orient': 'vertical',
-  'text-overflow': 'ellipsis',
+  WebkitLineClamp: '2',
+  WebkitBoxOrient: 'vertical',
+  textOverflow: 'ellipsis',
   display: '-webkit-box',
   fontSize: '12px!important',
   fontWeight: 500,
@@ -534,7 +533,7 @@ const categorySx = theme => ({
   [theme.breakpoints.down('xxs')]: {
     height: '30px',
     maxWidth: '90px',
-    '-webkit-line-clamp': '2',
+    WebkitLineClamp: '2',
   },
 });
 

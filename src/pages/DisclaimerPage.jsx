@@ -30,7 +30,6 @@ const DisclaimerPage = () => {
         <CustomButton
           sx={[gitCoinSx, { color: '#fff' }]}
           onClick={() => {
-            console.log(123);
             navigate(`/audit-builder/${auditId}`);
           }}
         >

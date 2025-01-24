@@ -8,6 +8,8 @@ import { Typography } from '@mui/material';
 import GitHubIcon from '@mui/icons-material/GitHub';
 import Markdown from './markdown/Markdown.jsx';
 
+// Unused component ?
+
 export default function ProjectModal({ open, handleClose, project }) {
   return (
     <Dialog open={open} onClose={handleClose}>

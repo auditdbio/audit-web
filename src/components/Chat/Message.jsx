@@ -195,14 +195,6 @@ const messageSx = ({ isOwn }) => ({
   },
 });
 
-const contentSx = theme => ({
-  borderRadius: '10px',
-  padding: '15px 30px 25px',
-  '& p': {
-    padding: 'unset',
-  },
-});
-
 const avatarPlugSx = theme => ({
   width: '60px',
   opacity: '0',

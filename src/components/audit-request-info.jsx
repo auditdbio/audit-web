@@ -51,7 +51,9 @@ const AuditRequestInfo = ({
   hideChange,
   navigateTo,
 }) => {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
+
   const [open, setOpen] = useState(false);
   const [confirmDeclineOpen, setConfirmDeclineOpen] = useState(false);
   const [showAcceptButton, setShowAcceptButton] = useState(true);
@@ -63,8 +65,6 @@ const AuditRequestInfo = ({
   const { user } = useSelector(s => s.user);
   const { chatList } = useSelector(s => s.chat);
   const [showFull, setShowFull] = useState(false);
-
-  const dispatch = useDispatch();
 
   const handleOpen = () => {
     if (user.current_role === AUDITOR && isAuth() && auditor?.first_name) {

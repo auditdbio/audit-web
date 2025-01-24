@@ -7,14 +7,12 @@ import theme from '../styles/themes.js';
 import { Box } from '@mui/system';
 import InputAdornment from '@mui/material/InputAdornment';
 import SearchIcon from '@mui/icons-material/Search';
-import Autocomplete from '@mui/material/Autocomplete';
 import { useEffect, useRef, useState, useCallback } from 'react';
-import { Paper, Slider, Typography } from '@mui/material';
+import { Paper, Typography } from '@mui/material';
 import AuditorSearchListBox from './custom/AuditorSearchListBox.jsx';
 import IconButton from '@mui/material/IconButton';
 import { ArrowBack } from '@mui/icons-material';
 import { useDispatch, useSelector } from 'react-redux';
-import { getAuditors } from '../redux/actions/auditorAction.js';
 import { createRequest } from '../redux/actions/auditAction.js';
 import dayjs from 'dayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
@@ -24,12 +22,9 @@ import { useNavigate } from 'react-router-dom/dist';
 import { Field, Formik, Form } from 'formik';
 import * as Yup from 'yup';
 import { useParams } from 'react-router-dom';
-import { addTestsLabel, isAuth } from '../lib/helper.js';
-import CustomSnackbar from './custom/CustomSnackbar.jsx';
-import PriceCalculation from './PriceCalculation.jsx';
+import { addTestsLabel } from '../lib/helper.js';
 import TotalPrice from './forms/TotalPrice/TotalPrice.jsx';
 import { CLEAR_SEARCHED_AUDITOR } from '../redux/actions/types.js';
-import ListBoxItem from './ListBoxItem.jsx';
 import Cookies from 'js-cookie';
 import axios from 'axios';
 import { API_URL } from '../services/urls.js';
@@ -46,15 +41,12 @@ export default function AuditorSearchModal({
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { id } = useParams();
-  const { auditors: auditorReducer, searchTotalAuditors } = useSelector(
-    state => state.auditor,
-  );
+
   const projectReducer = useSelector(state => state.project);
   const customerReducer = useSelector(state => state.customer);
+
   const [selectedAuditor, setSelectedAuditor] = useState({});
   const [mode, setMode] = useState('search');
-  const listInnerRef = useRef();
-  const [inputValue, setInputValue] = useState('');
   const [query, setQuery] = useState('');
   const [page, setPage] = useState(1);
   const [auditors, setAuditors] = useState([]);
@@ -63,6 +55,7 @@ export default function AuditorSearchModal({
   const [scrollPosition, setScrollPosition] = useState(0);
   const [searchValue, setSearchValue] = useState('');
   const scrollTimeout = useRef(null);
+  const listInnerRef = useRef();
 
   const handleOptionChange = option => {
     setSelectedAuditor(option);
@@ -219,7 +212,7 @@ export default function AuditorSearchModal({
               />
               {searchValue && auditors.length > 0 && (
                 <Box ref={listInnerRef} sx={userListSx} onScroll={handleScroll}>
-                  {auditors.map((option, index) => (
+                  {auditors.map(option => (
                     <Box
                       key={option.user_id}
                       onClick={() => handleOptionChange(option)}
@@ -301,7 +294,6 @@ export default function AuditorSearchModal({
                   setError('You cannot create an audit request with yourself');
                 }
                 setMode('search');
-                setInputValue('');
                 dispatch({ type: CLEAR_SEARCHED_AUDITOR });
                 handleClose();
               }
@@ -332,7 +324,7 @@ export default function AuditorSearchModal({
                     <Box sx={{ paddingX: '15px' }}>
                       <Typography
                         style={{
-                          ...rateLabel(),
+                          ...rateLabel,
                           color: 'black',
                           marginBottom: '10px',
                           fontSize: '13px',
@@ -340,7 +332,7 @@ export default function AuditorSearchModal({
                       >
                         Add some information
                       </Typography>
-                      <Typography style={rateLabel()}>
+                      <Typography style={rateLabel}>
                         Choose audit timeline
                       </Typography>
                       <Box sx={dateWrapper}>
@@ -469,6 +461,7 @@ const fieldButtonContainer = {
   gap: '10px',
   width: '100%',
 };
+
 const searchIcon = {
   [theme.breakpoints.down('sm')]: {
     fontSize: '15px',
@@ -490,6 +483,7 @@ const searchField = {
     },
   },
 };
+
 const customDropdown = {
   '& .MuiAutocomplete-listbox': {
     padding: '0',
@@ -501,6 +495,7 @@ const customDropdown = {
   boxShadow: '0',
   padding: 0,
 };
+
 const findButton = {
   backgroundColor: theme.palette.secondary.main,
   color: theme.palette.background.default,
@@ -518,6 +513,7 @@ const findButton = {
     padding: '6px 18px',
   },
 };
+
 const sendButton = {
   backgroundColor: theme.palette.primary.main,
   color: theme.palette.background.default,
@@ -536,11 +532,12 @@ const sendButton = {
     color: theme.palette.background.default,
   },
 };
-const rateLabel = theme => ({
+
+const rateLabel = {
   fontSize: '11px',
   color: '#B2B3B3',
   fontWeight: 500,
-});
+};
 
 const dateWrapper = {
   display: 'flex',
@@ -557,6 +554,7 @@ const dateWrapper = {
     },
   },
 };
+
 const dateStyle = {
   width: '150px',
   height: '40px',
