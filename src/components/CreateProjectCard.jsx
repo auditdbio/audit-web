@@ -380,6 +380,7 @@ const CreateProjectCard = ({ projectInfo }) => {
               setState={setState}
               setError={setError}
               projectInfo={project}
+              type={'auditor'}
             />
             <CustomSnackbar
               autoHideDuration={5000}

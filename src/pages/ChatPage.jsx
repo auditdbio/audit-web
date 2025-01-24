@@ -167,15 +167,7 @@ const ChatPage = () => {
         >
           <ArrowBackIcon />
         </Button>
-        <Box
-          sx={{
-            display: 'flex',
-            flexDirection: 'row',
-            width: '100%',
-            height: '70vh',
-            minHeight: '590px',
-          }}
-        >
+        <Box sx={chatInnerWrapper}>
           <Box sx={orgListSx}>
             <>
               <Box
@@ -311,7 +303,7 @@ const mobileChatListOpenBackground = theme => ({
 const orgListSx = theme => ({
   display: 'flex',
   flexDirection: 'column',
-  // width: '70px',
+  minWidth: '72px',
   border: '2px solid #e5e5e5',
   borderRight: 'unset',
   padding: '0 0 5px',
@@ -321,9 +313,9 @@ const orgListSx = theme => ({
   '::-webkit-scrollbar': {
     width: '0px',
   },
-  // [theme.breakpoints.down('md')]: {
-  //   width: '73px',
-  // },
+  [theme.breakpoints.down('sm')]: {
+    minWidth: '52px',
+  },
 });
 
 const leftSideSx = theme => ({
@@ -373,40 +365,42 @@ const selectedTab = (theme, primary) => ({
 
 const wrapper = theme => ({
   minHeight: '300px',
-  padding: '10px 20px 60px 5px',
+  padding: '0px 20px 20px',
   position: 'relative',
   display: 'flex',
   maxWidth: 'unset',
   flexDirection: 'column',
   alignItems: 'flex-start',
-  gap: '15px',
-  [theme.breakpoints.down('md')]: {
-    borderRadius: 'unset',
-  },
   [theme.breakpoints.down('sm')]: {
     minHeight: '300px',
   },
   [theme.breakpoints.down(780)]: {
     paddingX: '10px',
     borderRadius: '0',
-  // [theme.breakpoints.down('xs')]: {
-  //   // padding: '20px 40px 50px',
-  //   minHeight: '300px',
-  //   gap: '8px',
-  //   padding: '10px 10px 30px',
+    // [theme.breakpoints.down('xs')]: {
+    //   // padding: '20px 40px 50px',
+    //   minHeight: '300px',
+    //   gap: '8px',
+    //   padding: '10px 10px 30px',
+  },
+});
+
+const chatInnerWrapper = theme => ({
+  display: 'flex',
+  flexDirection: 'row',
+  width: '100%',
+  height: 'calc(100vh - 160px)',
+  [theme.breakpoints.down('sm')]: {
+    height: 'calc(100vh - 130px)',
   },
 });
 
 const chatWrapper = {
-  height: 'calc(100vh - 126px)',
   width: '100%',
   display: 'flex',
   border: '2px solid #e5e5e5',
   position: 'relative',
-  [theme.breakpoints.down('sm')]: {
-    width: 'calc(100% - 50px)',
-  },
-});
+};
 
 const selectLabelWrapper = {
   position: 'relative',

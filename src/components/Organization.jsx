@@ -144,6 +144,7 @@ const Organization = ({ linkId }) => {
                 setShowAddUser(false);
               }}
               setError={() => console.log('error')}
+              type={organization?.organization_type?.toLowerCase()}
             />
             <Box sx={innerWrapper}>
               {/*<Headings*/}

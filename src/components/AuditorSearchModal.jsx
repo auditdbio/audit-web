@@ -44,6 +44,7 @@ import { addUserInOrganization } from '../redux/actions/organizationAction.js';
 import { AUDITOR, CLEAR_SEARCH } from '../redux/actions/types.js';
 import { searchCustomers } from '../redux/actions/customerAction.js';
 import Radio from '@mui/material/Radio';
+import { getAuditors } from '../redux/actions/auditorAction.js';
 
 export default function AuditorSearchModal({
   open,
@@ -55,6 +56,7 @@ export default function AuditorSearchModal({
   invite,
   modeType,
   customer,
+  type = 'auditor',
 }) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -185,7 +187,7 @@ export default function AuditorSearchModal({
         }
 
         const response = await axios.get(
-          `${API_URL}/search?query=${query}&sort_by=rating&tags=&sort_order=-1&page=1&per_page=15&kind=auditor badge`,
+          `${API_URL}/search?query=${query}&sort_by=rating&tags=&sort_order=-1&page=1&per_page=15&kind=${type} badge`,
           { headers: { Authorization: `Bearer ${token}` } },
         );
 
@@ -218,7 +220,7 @@ export default function AuditorSearchModal({
         setIsLoading(true);
         const token = Cookies.get('token');
         const response = await axios.get(
-          `${API_URL}/search?query=${query}&sort_by=rating&tags=&sort_order=-1&page=${page}&per_page=15&kind=auditor badge`,
+          `${API_URL}/search?query=${query}&sort_by=rating&tags=&sort_order=-1&page=${page}&per_page=15&kind=${type} badge`,
           { headers: { Authorization: `Bearer ${token}` } },
         );
 
@@ -313,25 +315,33 @@ export default function AuditorSearchModal({
                   }}
                 />
                 {searchValue && auditors.length > 0 && (
-                  <Box ref={listInnerRef} sx={userListSx} onScroll={handleScroll}>
-                    {(!!auditorReducer.length ? auditorReducer : customersReducer).map(option => (
-                      <Box
-                        key={option.user_id}
-                        onClick={() => handleOptionChange(option)}
-                        sx={{
-                          padding: '8px',
-                          cursor: 'pointer',
-                          '&:hover': {
-                            backgroundColor: '#f5f5f5',
-                          },
-                        }}
-                      >
-                        <AuditorSearchListBox
-                          auditor={option}
-                          handleSelectOption={() => handleOptionChange(option)}
-                        />
-                      </Box>
-                    ))}
+                  <Box
+                    ref={listInnerRef}
+                    sx={userListSx}
+                    onScroll={handleScroll}
+                  >
+                    {(!!auditors.length ? auditors : customersReducer).map(
+                      option => (
+                        <Box
+                          key={option.user_id}
+                          onClick={() => handleOptionChange(option)}
+                          sx={{
+                            padding: '8px',
+                            cursor: 'pointer',
+                            '&:hover': {
+                              backgroundColor: '#f5f5f5',
+                            },
+                          }}
+                        >
+                          <AuditorSearchListBox
+                            auditor={option}
+                            handleSelectOption={() =>
+                              handleOptionChange(option)
+                            }
+                          />
+                        </Box>
+                      ),
+                    )}
                     {isLoading && (
                       <Box sx={{ textAlign: 'center', padding: '8px' }}>
                         Loading...

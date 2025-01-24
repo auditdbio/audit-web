@@ -103,27 +103,28 @@ export default function AuditorModal({
     } else {
       window.scrollTo(0, 0);
 
-    const existingChat = chatList.find(chat =>
-      chat.members?.find(
-        member =>
-          member.id === auditor?.user_id &&
-          member.role?.toLowerCase() === AUDITOR,
-      ),
-    );
-    const chatId = existingChat ? existingChat.id : auditor?.user_id;
-    const members = [auditor?.user_id, user.id];
+      const existingChat = chatList.find(chat =>
+        chat.members?.find(
+          member =>
+            member.id === auditor?.user_id &&
+            member.role?.toLowerCase() === AUDITOR,
+        ),
+      );
+      const chatId = existingChat ? existingChat.id : auditor?.user_id;
+      const members = [auditor?.user_id, user.id];
 
-    dispatch(
-      setCurrentChat(chatId, {
-        name: auditor.first_name,
-        avatar: auditor.avatar,
-        role: AUDITOR,
-        isNew: !existingChat,
-        members,
-      }),
-    );
-    localStorage.setItem('path', window.location.pathname);
-    navigate(`/chat/${existingChat ? existingChat.id : auditor?.user_id}`);
+      dispatch(
+        setCurrentChat(chatId, {
+          name: auditor.first_name,
+          avatar: auditor.avatar,
+          role: AUDITOR,
+          isNew: !existingChat,
+          members,
+        }),
+      );
+      localStorage.setItem('path', window.location.pathname);
+      navigate(`/chat/${existingChat ? existingChat.id : auditor?.user_id}`);
+    }
   };
 
   useEffect(() => {
@@ -688,6 +689,7 @@ const dateWrapper = {
     },
   },
 };
+
 const dateStyle = {
   width: '150px',
   height: '40px',
