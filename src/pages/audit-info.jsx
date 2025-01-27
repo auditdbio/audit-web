@@ -270,6 +270,10 @@ const AuditInfo = ({
                 id={audit?.auditor_id}
                 email={audit?.auditor_contacts?.email}
                 telegram={audit?.auditor_contacts?.telegram}
+                role={user.current_role}
+                audit={audit}
+                user={user}
+                showPrice={true}
               />
               {!!audit?.time?.from && !isPublic && (
                 <Box sx={projectWrapper}>
