@@ -18,35 +18,15 @@ import CustomSnackbar from '../components/custom/CustomSnackbar.jsx';
 const ProjectPage = () => {
   const matchXs = useMediaQuery(theme.breakpoints.down('xs'));
   const [searchParams, setSearchParams] = useSearchParams();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  
   const projects = useSelector(s => s.project.searchProjects);
   const totalProjects = useSelector(s => s.project.searchTotalProjects);
-  const [currentPage, setCurrentPage] = useState(
-    +searchParams.get('page') || 1,
-  );
-  const [query, setQuery] = useState(undefined);
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
   const { successMessage, errorMessage } = useSelector(s => s.audits);
-
-  const applyFilter = filter => {
-    setQuery(query => {
-      const { ...data } = query || {};
-      setCurrentPage(1);
-      return {
-        ...data,
-        page: 1,
-        sort: filter.sort || '',
-        search: filter.search || '',
-        tags: filter.tags || [],
-        dateFrom: filter.dateFrom || '',
-        dateTo: filter.dateTo || '',
-        from: filter.price.from || '',
-        to: filter.price.to || '',
-        readyToWait: filter.readyToWait || '',
-      };
-    });
-    dispatch(searchProjects(filter));
-  };
+  
+  const [currentPage, setCurrentPage] = useState(+searchParams.get('page') || 1);
+  const [query, setQuery] = useState(undefined);
 
   const initialFilter = {
     page: searchParams.get('page') || 1,
@@ -62,33 +42,37 @@ const ProjectPage = () => {
     },
   };
 
-  const handleGoBack = () => {
-    navigate(-1);
-  };
-
-  const getNumberOfPages = () => {
-    return Math.ceil(totalProjects / 10);
+  const applyFilter = filter => {
+    setQuery(prevQuery => ({
+      ...(prevQuery || {}),
+      page: 1,
+      sort: filter.sort || '',
+      search: filter.search || '',
+      tags: filter.tags || [],
+      dateFrom: filter.dateFrom || '',
+      dateTo: filter.dateTo || '',
+      from: filter.price.from || '',
+      to: filter.price.to || '',
+      readyToWait: filter.readyToWait || '',
+    }));
+    setCurrentPage(1);
+    dispatch(searchProjects(filter));
   };
 
   const handleChangePage = (e, page) => {
     setCurrentPage(page);
-    setQuery(prev => {
-      const { ...data } = prev || initialFilter;
-      return { ...data, page };
-    });
+    setQuery(prev => ({
+      ...(prev || initialFilter),
+      page
+    }));
   };
 
   useEffect(() => {
-    if (query) {
-      setSearchParams({ ...query });
-    }
+    query && setSearchParams({ ...query });
   }, [query]);
 
   useEffect(() => {
     dispatch(searchProjects(initialFilter));
-  }, [searchParams.toString()]);
-
-  useEffect(() => {
     setCurrentPage(+searchParams.get('page') || 1);
   }, [searchParams.toString()]);
 
@@ -96,21 +80,31 @@ const ProjectPage = () => {
     return () => dispatch(clearMessage());
   }, []);
 
+  const renderPagination = () => (
+    <CustomPagination
+      show={projects?.length > 0}
+      count={Math.ceil(totalProjects / 10)}
+      page={currentPage}
+      onChange={handleChangePage}
+      showFirstLast={!matchXs}
+      size="small"
+    />
+  );
+
   return (
     <Layout>
       <Headings title="Projects" />
-
       <CustomSnackbar
         autoHideDuration={5000}
         open={!!successMessage}
-        severity={'success'}
+        severity="success"
         text={successMessage}
         onClose={() => dispatch(clearMessage())}
       />
       <Box sx={wrapper}>
         <Box sx={projectTopWrapper}>
           <Button
-            onClick={handleGoBack}
+            onClick={() => navigate(-1)}
             aria-label="Go back"
             {...addTestsLabel('projects_back-button')}
           >
@@ -124,15 +118,8 @@ const ProjectPage = () => {
             />
           </Box>
         </Box>
-        <CustomPagination
-          show={projects?.length > 0}
-          count={getNumberOfPages()}
-          sx={{ mb: '20px' }}
-          page={currentPage}
-          onChange={handleChangePage}
-          showFirstLast={!matchXs}
-          size="small"
-        />
+
+        {renderPagination()}
 
         <Box sx={contentWrapper}>
           <Box sx={{ display: 'flex', flexWrap: 'wrap' }}>
@@ -154,15 +141,9 @@ const ProjectPage = () => {
 
         {projects?.length === 0 && <Box sx={noResults}>No results</Box>}
 
-        <CustomPagination
-          show={projects?.length > 0}
-          count={getNumberOfPages()}
-          sx={{ display: 'flex', justifyContent: 'flex-end' }}
-          page={currentPage}
-          onChange={handleChangePage}
-          showFirstLast={!matchXs}
-          size="small"
-        />
+        <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+          {renderPagination()}
+        </Box>
       </Box>
     </Layout>
   );
@@ -171,7 +152,7 @@ const ProjectPage = () => {
 export default ProjectPage;
 
 const contentWrapper = theme => ({
-  mb: '20px',
+  my: '20px',
   [theme.breakpoints.down('sm')]: {
     flexDirection: 'column',
     flexWrap: 'unset',

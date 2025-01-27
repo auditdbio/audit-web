@@ -37,7 +37,7 @@ import TaskAltIcon from '@mui/icons-material/TaskAlt';
 import DragAndDropInput from '../DrgaAndDrop/DragAndDrop.jsx';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import theme from '../../styles/themes.js';
-import ExpandLessOutlinedIcon from '@mui/icons-material/ExpandLessOutlined.js';
+import ExpandLessOutlinedIcon from '@mui/icons-material/ExpandLessOutlined';
 import AuditUserCard from '../AuditUserCard/AuditUserCard.jsx';
 
 const PublicAudit = ({
@@ -69,6 +69,38 @@ const PublicAudit = ({
     handleClose();
   };
 
+  const handleNavigateBack = () => {
+    const prevPath = localStorage.getItem('prevPath');
+    if (prevPath) {
+      navigate(prevPath);
+      localStorage.removeItem('prevPath');
+    } else {
+      navigate('/profile/audits');
+    }
+  };
+
+  const handlePublishToggle = (checked) => {
+    dispatch(
+      handlePublishAudit({
+        id: audit.id,
+        public: checked,
+      }),
+    );
+    if (publicView) setPublicView(false);
+  };
+
+  const handleDownloadReport = () => {
+    const isPrivateAccess = !isPublic || !audit.isPublic || 
+                           audit?.auditor_id === user?.id || 
+                           audit?.customer_id === user?.id;
+
+    if (isPrivateAccess) {
+      dispatch(downloadReport(audit));
+    } else {
+      dispatch(downloadPublicReport(audit, code));
+    }
+  };
+
   const handleSendMessage = () => {
     window.scrollTo(0, 0);
 
@@ -79,18 +111,18 @@ const PublicAudit = ({
           member.role?.toLowerCase() === AUDITOR,
       ),
     );
-    const chatId = existingChat ? existingChat.id : audit?.auditor_id;
-    const members = [audit?.auditor_id, user.id];
 
-    dispatch(
-      setCurrentChat(chatId, {
-        name: audit?.auditor_first_name,
-        avatar: audit.avatar,
-        role: AUDITOR,
-        isNew: !existingChat,
-        members,
-      }),
-    );
+    const chatData = {
+      name: audit?.auditor_first_name,
+      avatar: audit.avatar,
+      role: AUDITOR,
+      isNew: !existingChat,
+      members: [audit?.auditor_id, user.id],
+    };
+
+    const chatId = existingChat ? existingChat.id : audit?.auditor_id;
+    
+    dispatch(setCurrentChat(chatId, chatData));
     localStorage.setItem('path', window.location.pathname);
     navigate(`/chat/${audit?.auditor_id}`);
   };
@@ -121,38 +153,11 @@ const PublicAudit = ({
       >
         <Button
           sx={backButtonSx}
-          onClick={() => {
-            if (localStorage.getItem('prevPath')) {
-              navigate(localStorage.getItem('prevPath'));
-              localStorage.removeItem('prevPath');
-            } else {
-              navigate('/profile/audits');
-            }
-          }}
+          onClick={handleNavigateBack}
           {...addTestsLabel('go-back-button')}
         >
           <ArrowBackIcon color="secondary" />
         </Button>
-        {/*{audit?.isPublic &&*/}
-        {/*  audit?.status?.toLowerCase() === RESOLVED.toLowerCase() &&*/}
-        {/*  user?.current_role?.toLowerCase() === AUDITOR.toLowerCase() &&*/}
-        {/*  (audit?.customer_id === user.id || audit?.auditor_id === user.id) && (*/}
-        {/*    <FormControlLabel*/}
-        {/*      control={*/}
-        {/*        <Switch*/}
-        {/*          checked={publicView}*/}
-        {/*          onChange={e => setPublicView(e.target.checked)}*/}
-        {/*        />*/}
-        {/*      }*/}
-        {/*      sx={{*/}
-        {/*        '& .MuiTypography-root': { fontSize: '14px' },*/}
-        {/*        top: '-20px',*/}
-        {/*        position: 'absolute',*/}
-        {/*        right: '150px',*/}
-        {/*      }}*/}
-        {/*      label="Preview"*/}
-        {/*    />*/}
-        {/*  )}*/}
         {audit?.status?.toLowerCase() === RESOLVED.toLowerCase() &&
           user?.current_role?.toLowerCase() === AUDITOR.toLowerCase() &&
           (audit?.customer_id === user.id || audit?.auditor_id === user.id) && (
@@ -160,15 +165,7 @@ const PublicAudit = ({
               control={
                 <Switch
                   checked={audit?.isPublic}
-                  onChange={e => {
-                    dispatch(
-                      handlePublishAudit({
-                        id: audit.id,
-                        public: e.target.checked,
-                      }),
-                    );
-                    if (publicView) setPublicView(false);
-                  }}
+                  onChange={e => handlePublishToggle(e.target.checked)}
                   color="secondary"
                 />
               }
@@ -353,23 +350,11 @@ const PublicAudit = ({
           <Button
             variant={'contained'}
             color={'secondary'}
-            onClick={() => {
-              if (
-                !isPublic ||
-                !audit.isPublic ||
-                audit?.auditor_id === user?.id ||
-                audit?.customer_id === user?.id
-              ) {
-                dispatch(downloadReport(audit));
-              } else {
-                dispatch(downloadPublicReport(audit, code));
-              }
-            }}
+            onClick={handleDownloadReport}
             sx={[buttonSx]}
             {...addTestsLabel('report-button')}
           >
             <PictureAsPdfIcon />
-            {/*Download report*/}
           </Button>
           {audit?.report_sha && (
             <>

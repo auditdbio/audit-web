@@ -246,10 +246,15 @@ const EditDescription = ({ audit, auditRequest, hideChange, isPublic }) => {
                       )
                     ) : (
                       <Box sx={customerLinksList}>
-                        {values.scope?.map((link, idx) => (
-                          <CustomLink link={link} key={idx} />
-                        ))}
-                      </Box>
+                          {(values.scope?.type === SCOPE_GIT_BLOCK
+                            ? values.scope.content.files?.map(
+                                file => file.display_url,
+                              )
+                            : values.scope?.content
+                          )?.map((link, idx) => (
+                            <CustomLink link={link} key={idx} />
+                          ))}
+                        </Box>
                     )}
                   </Box>
                   {addLinkField && (

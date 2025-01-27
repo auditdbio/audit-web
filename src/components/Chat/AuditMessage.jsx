@@ -32,7 +32,6 @@ const AuditMessage = ({ message, handleError }) => {
   const [open, setOpen] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const data = JSON.parse(message.text);
-  const auditInfo = useSelector(s => s.audits?.auditRequest);
   const dispatch = useDispatch();
   const { auditor } = useSelector(s => s.auditor);
   const [confirmDeclineOpen, setConfirmDeclineOpen] = useState(false);

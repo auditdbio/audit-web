@@ -39,13 +39,14 @@ const Audit = () => {
   }, [auditId]);
 
   const renderContent = () => {
+    const role = user.current_role?.toLowerCase();
     if (!audit?.id && !notFound) {
       return <Loader />;
     }
 
     if (isAuth()) {
       if (
-        user.current_role?.toLowerCase() === CUSTOMER.toLowerCase() &&
+        role === CUSTOMER.toLowerCase() &&
         audit?.customer_id === user.id &&
         !publicView &&
         !audit.isPublic
@@ -58,7 +59,7 @@ const Audit = () => {
         );
       }
       if (
-        user.current_role?.toLowerCase() === AUDITOR.toLowerCase() &&
+        role === AUDITOR.toLowerCase() &&
         audit?.auditor_id === user.id &&
         !publicView
       ) {

@@ -63,18 +63,16 @@ const AuditInfo = ({
 }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const { successMessage, error } = useSelector(s => s.audits);
   const { user } = useSelector(s => s.user);
   const { chatList } = useSelector(s => s.chat);
   const { auditId } = useParams();
+
+  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+  const [isFeedbackModalOpen, setIsFeedbackModalOpen] = useState(false);
   const [showFull, setShowFull] = useState(false);
 
-  const [isFeedbackModalOpen, setIsFeedbackModalOpen] = useState(false);
-
-  const handleConfirm = () => {
-    dispatch(confirmAudit(audit, true));
-  };
+  const handleConfirm = () => dispatch(confirmAudit(audit, true));
 
   const handleDecline = () => {
     if (audit?.status) {
@@ -93,6 +91,30 @@ const AuditInfo = ({
         status: SUBMITED,
       }),
     );
+  };
+
+  const handleNavigateBack = () => {
+    if (!isPublic) {
+      if (handleClose) {
+        handleClose();
+      } else {
+        const prevPath = localStorage.getItem('prevPath');
+        if (prevPath) {
+          navigate(prevPath);
+          localStorage.removeItem('prevPath');
+        } else {
+          navigate('/profile/audits');
+        }
+      }
+    } else {
+      const prevPath = localStorage.getItem('prevPath');
+      if (prevPath) {
+        navigate(prevPath);
+        localStorage.removeItem('prevPath');
+      } else {
+        navigate(-1);
+      }
+    }
   };
 
   const handleSendMessage = () => {
@@ -122,9 +144,16 @@ const AuditInfo = ({
   };
 
   const handleSendFeedback = values => {
-    const feedback = { audit_id: audit.id, ...values };
-    dispatch(sendAuditFeedback(feedback));
+    dispatch(sendAuditFeedback({ audit_id: audit.id, ...values }));
     setIsFeedbackModalOpen(false);
+  };
+
+  const handleDownloadReport = () => {
+    if (!isPublic) {
+      dispatch(downloadReport(audit));
+    } else {
+      dispatch(downloadPublicReport(audit, code));
+    }
   };
 
   return (
@@ -152,25 +181,7 @@ const AuditInfo = ({
               ? { top: '-20px!important', left: '-30px!important' }
               : {},
           ]}
-          onClick={() => {
-            if (!isPublic) {
-              if (handleClose) {
-                handleClose();
-              } else {
-                if (localStorage.getItem('prevPath')) {
-                  navigate(localStorage.getItem('prevPath'));
-                  localStorage.removeItem('prevPath');
-                } else navigate('/profile/audits');
-              }
-            } else {
-              if (localStorage.getItem('prevPath')) {
-                navigate(localStorage.getItem('prevPath'));
-                localStorage.removeItem('prevPath');
-              } else {
-                navigate(-1);
-              }
-            }
-          }}
+          onClick={handleNavigateBack}
           aria-label="Go back"
           {...addTestsLabel('go-back-button')}
         >
@@ -389,11 +400,10 @@ const AuditInfo = ({
               <Button
                 variant={'contained'}
                 color={'secondary'}
-                onClick={() => dispatch(downloadReport(audit))}
+                onClick={handleDownloadReport}
                 sx={[buttonSx, pdfButtonSx]}
                 {...addTestsLabel('report-button')}
               >
-                {/*Download Report*/}
                 <PictureAsPdfIcon />
               </Button>
             </Box>
@@ -405,17 +415,10 @@ const AuditInfo = ({
             <Button
               variant={'contained'}
               color={'secondary'}
-              onClick={() => {
-                if (!isPublic) {
-                  dispatch(downloadReport(audit));
-                } else {
-                  dispatch(downloadPublicReport(audit, code));
-                }
-              }}
+              onClick={handleDownloadReport}
               sx={[buttonSx, pdfButtonSx]}
               {...addTestsLabel('report-button')}
             >
-              {/*Download Report*/}
               <PictureAsPdfIcon />
             </Button>
           </Box>

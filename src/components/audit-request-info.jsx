@@ -339,84 +339,82 @@ const AuditRequestInfo = ({
           </Collapse>
         </Box>
         <Box sx={{ width: '100%' }} className="audit-content">
-          <>
-            <Collapse
-              in={true}
-              collapsedSize={showFull ? undefined : isModal ? 150 : 300}
-            >
-              <Box sx={descriptionWrapper(theme, showFull, isModal)}>
-                <Box sx={infoWrapper} className="audit-request-info">
-                  <EditDescription
-                    hideChange={hideChange}
-                    audit={project}
-                    auditRequest={true}
-                  />
-                </Box>
-              </Box>
-            </Collapse>
-            <Box
-              sx={[
-                {
-                  borderTop: '1px solid #E5E5E5',
-                  display: 'flex',
-                  justifyContent: 'center',
-                  position: 'relative',
-                  paddingTop: '8px',
-                },
-                !showFull
-                  ? {
-                      boxShadow: '0px -24px 14px -8px rgba(252, 250, 246, 1)',
-                    }
-                  : {},
-              ]}
-            >
-              <Button
-                onClick={() => {
-                  if (isModal) {
-                    if (navigateTo) {
-                      navigate(navigateTo);
-                    } else {
-                      navigate(`/project/${project.id}`);
-                    }
-                  } else {
-                    setShowFull(!showFull);
-                  }
-                }}
-                sx={[
-                  readAllButton,
-                  {
-                    position: 'relative',
-                    top: !showFull ? '-25px' : 0,
-                    backgroundColor: '#fcfaf6',
-                    zIndex: '1',
-                    marginBottom: showFull ? '20px' : 0,
-                    '&:hover': {
-                      backgroundColor: '#fcfaf6',
-                    },
-                  },
-                ]}
-                variant={'outlined'}
-              >
-                {!isModal ? (
-                  <span>{showFull ? 'Hide' : `Show`}</span>
-                ) : (
-                  <span>{showFull ? 'Hide' : `Show full`}</span>
-                )}
-                {!isModal && <EditIcon sx={{ width: '20px' }} />}
-                <ExpandLessOutlinedIcon
-                  sx={[
-                    showFull ? {} : { transform: 'rotate(180deg)' },
-                    {
-                      transition: '0.2s',
-                      width: '20px',
-                      height: '20px',
-                    },
-                    isModal ? { transform: 'rotate(90deg)' } : {},
-                  ]}
+          <Collapse
+            in={true}
+            collapsedSize={showFull ? undefined : isModal ? 150 : 300}
+          >
+            <Box sx={descriptionWrapper(theme, showFull, isModal)}>
+              <Box sx={infoWrapper} className="audit-request-info">
+                <EditDescription
+                  hideChange={hideChange}
+                  audit={project}
+                  auditRequest={true}
                 />
-              </Button>
+              </Box>
             </Box>
-          </>
+          </Collapse>
+          <Box
+            sx={[
+              {
+                borderTop: '1px solid #E5E5E5',
+                display: 'flex',
+                justifyContent: 'center',
+                position: 'relative',
+                paddingTop: '8px',
+              },
+              !showFull
+                ? {
+                    boxShadow: '0px -24px 14px -8px rgba(252, 250, 246, 1)',
+                  }
+                : {},
+            ]}
+          >
+            <Button
+              onClick={() => {
+                if (isModal) {
+                  if (navigateTo) {
+                    navigate(navigateTo);
+                  } else {
+                    navigate(`/project/${project.id}`);
+                  }
+                } else {
+                  setShowFull(!showFull);
+                }
+              }}
+              sx={[
+                readAllButton,
+                {
+                  position: 'relative',
+                  top: !showFull ? '-25px' : 0,
+                  backgroundColor: '#fcfaf6',
+                  zIndex: '1',
+                  marginBottom: showFull ? '20px' : 0,
+                  '&:hover': {
+                    backgroundColor: '#fcfaf6',
+                  },
+                },
+              ]}
+              variant={'outlined'}
+            >
+              {!isModal ? (
+                <span>{showFull ? 'Hide' : `Show`}</span>
+              ) : (
+                <span>{showFull ? 'Hide' : `Show full`}</span>
+              )}
+              {!isModal && <EditIcon sx={{ width: '20px' }} />}
+              <ExpandLessOutlinedIcon
+                sx={[
+                  showFull ? {} : { transform: 'rotate(180deg)' },
+                  {
+                    transition: '0.2s',
+                    width: '20px',
+                    height: '20px',
+                  },
+                  isModal ? { transform: 'rotate(90deg)' } : {},
+                ]}
+              />
+            </Button>
+          </Box>
         </Box>
         {!hideChange && <DescriptionHistory audit={project} request={true} />}
 

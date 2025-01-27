@@ -14,7 +14,7 @@ import {
   useMediaQuery,
 } from '@mui/material';
 import { addTestsLabel } from '../../../lib/helper.js';
-import { AUDITOR, CUSTOMER, RESOLVED } from '../../../redux/actions/types.js';
+import { CUSTOMER, RESOLVED } from '../../../redux/actions/types.js';
 import { clearMessage } from '../../../redux/actions/auditAction.js';
 import {
   addAuditIssue,

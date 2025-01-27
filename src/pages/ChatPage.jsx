@@ -96,7 +96,11 @@ const ChatPage = () => {
             display: 'flex',
             minWidth: '44px',
           }}
-          color={user.current_role === AUDITOR ? 'secondary' : 'primary'}
+          color={
+            user.current_role?.toLowerCase() === AUDITOR.toLowerCase()
+              ? 'secondary'
+              : 'primary'
+          }
           onClick={handleGoBack}
         >
           <ArrowBackIcon />
