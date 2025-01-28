@@ -46,6 +46,7 @@ const DescriptionModal = ({
   const [anchorEl, setAnchorEl] = useState(null);
   const mediaSx = useMediaQuery(theme => theme.breakpoints.down('xs'));
   const auditRequestHistory = useSelector(s => s.audits.auditRequestHistory);
+  const issuesReducer = useSelector(s => s.issues.issues);
 
   useEffect(() => {
     if (openDiff) {
@@ -84,6 +85,14 @@ const DescriptionModal = ({
     }
   }, [mainAudit, compare]);
 
+  const checkIssue = useMemo(() => {
+    if (compare) {
+      return compare.issues;
+    } else {
+      return oldValue?.issues;
+    }
+  }, [oldValue, compare]);
+
   const handleApprove = () => {
     if (openDiff) {
       if (!request) {
@@ -118,7 +127,7 @@ const DescriptionModal = ({
       }
     }
   };
-  console.log(item.comment);
+
   return (
     <Box sx={{ margin: '8px 0', paddingLeft: '12px' }}>
       <Box sx={itemWrapperSx}>
@@ -411,14 +420,41 @@ const DescriptionModal = ({
                 <Typography variant={'h6'} sx={{ fontWeight: 500 }}>
                   Conclusion
                 </Typography>
-                <ReactDiffViewer
-                  oldValue={JSON.stringify(checkAudit.conclusion, null, 2)}
-                  newValue={JSON.stringify(data.conclusion, null, 2)}
-                  splitView={!mediaSx}
-                  compareMethod={DiffMethod.WORDS}
-                />
               </>
             )}
+            {issuesReducer.map(issue => {
+              const issueData = item?.issues[issue.id];
+              const compareIssue = checkIssue[issue.id]
+                ? JSON.parse(checkIssue[issue.id])
+                : null;
+              const convertedIssue = issueData ? JSON.parse(issueData) : null;
+
+              if (convertedIssue?.feedback) {
+                return (
+                  <React.Fragment key={issue.id}>
+                    <Divider sx={{ mt: '20px' }} />
+                    <Typography variant="h6" sx={{ fontWeight: 500 }}>
+                      {`Issue ${convertedIssue?.issue_name}`}
+                    </Typography>
+                    <ReactDiffViewer
+                      oldValue={JSON.stringify(
+                        compareIssue?.feedback || {},
+                        null,
+                        2,
+                      )}
+                      newValue={JSON.stringify(
+                        convertedIssue?.feedback || {},
+                        null,
+                        2,
+                      )}
+                      splitView={!mediaSx}
+                      compareMethod={DiffMethod.WORDS}
+                    />
+                  </React.Fragment>
+                );
+              }
+            })}
+
             {item.comment && (
               <>
                 <Divider sx={{ mt: '20px' }} />
