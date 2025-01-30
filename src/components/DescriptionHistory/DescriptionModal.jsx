@@ -491,7 +491,10 @@ const DescriptionModal = ({
                     />
                   </Button>
                 </Box>
-                <Collapse sx={{ width: '100%' }} in={checkIssuesDiff}>
+                <Collapse
+                  sx={{ width: '100%', padding: '10px', paddingTop: 'unset' }}
+                  in={checkIssuesDiff}
+                >
                   {issuesReducer.map(issue => {
                     const issueData = item?.issues[issue.id];
                     const compareIssue = checkIssue[issue.id]
