@@ -5,6 +5,7 @@ import {
   Button,
   Chip,
   ClickAwayListener,
+  Collapse,
   Divider,
   Modal,
   Popover,
@@ -25,6 +26,8 @@ import {
 } from '../../redux/actions/auditAction.js';
 import Badge from '@mui/material/Badge';
 import { CUSTOMER } from '../../redux/actions/types.js';
+import ExpandLessOutlinedIcon from '@mui/icons-material/ExpandLessOutlined';
+import { issuesCounter } from '../../lib/helper.js';
 
 const DescriptionModal = ({
   item,
@@ -47,6 +50,7 @@ const DescriptionModal = ({
   const mediaSx = useMediaQuery(theme => theme.breakpoints.down('xs'));
   const auditRequestHistory = useSelector(s => s.audits.auditRequestHistory);
   const issuesReducer = useSelector(s => s.issues.issues);
+  const [checkIssuesDiff, setCheckIssuesDiff] = useState(false);
 
   useEffect(() => {
     if (openDiff) {
@@ -127,6 +131,19 @@ const DescriptionModal = ({
       }
     }
   };
+
+  useEffect(() => {
+    setCheckIssuesDiff(
+      issuesReducer.some(issue => {
+        const issueData = item?.issues[issue.id];
+        const compareIssue = checkIssue[issue.id]
+          ? JSON.parse(checkIssue[issue.id])
+          : null;
+        const convertedIssue = issueData ? JSON.parse(issueData) : null;
+        return compareIssue?.feedback === convertedIssue?.feedback;
+      }),
+    );
+  }, [issuesReducer, item, checkIssue]);
 
   return (
     <Box sx={{ margin: '8px 0', paddingLeft: '12px' }}>
@@ -420,40 +437,99 @@ const DescriptionModal = ({
                 <Typography variant={'h6'} sx={{ fontWeight: 500 }}>
                   Conclusion
                 </Typography>
+                <ReactDiffViewer
+                  oldValue={JSON.stringify(checkAudit.conclusion, null, 2)}
+                  newValue={JSON.stringify(data.conclusion, null, 2)}
+                  splitView={!mediaSx}
+                  compareMethod={DiffMethod.WORDS}
+                />
               </>
             )}
-            {issuesReducer.map(issue => {
-              const issueData = item?.issues[issue.id];
-              const compareIssue = checkIssue[issue.id]
-                ? JSON.parse(checkIssue[issue.id])
-                : null;
-              const convertedIssue = issueData ? JSON.parse(issueData) : null;
 
-              if (convertedIssue?.feedback) {
-                return (
-                  <React.Fragment key={issue.id}>
-                    <Divider sx={{ mt: '20px' }} />
-                    <Typography variant="h6" sx={{ fontWeight: 500 }}>
-                      {`Issue ${convertedIssue?.issue_name}`}
-                    </Typography>
-                    <ReactDiffViewer
-                      oldValue={JSON.stringify(
-                        compareIssue?.feedback || {},
-                        null,
-                        2,
-                      )}
-                      newValue={JSON.stringify(
-                        convertedIssue?.feedback || {},
-                        null,
-                        2,
-                      )}
-                      splitView={!mediaSx}
-                      compareMethod={DiffMethod.WORDS}
+            {!!Object.keys(item.issues).length && (
+              <>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '20px',
+                    my: '5px',
+                  }}
+                >
+                  <Typography variant={'h6'} sx={{ fontWeight: 500 }}>
+                    Issues:
+                  </Typography>
+                  <Button
+                    variant={'outlined'}
+                    sx={[
+                      readAllButton,
+                      {
+                        position: 'relative',
+                        backgroundColor: '#fcfaf6',
+                        zIndex: '1',
+                        '&:hover': {
+                          backgroundColor: '#fcfaf6',
+                        },
+                      },
+                    ]}
+                    onClick={() => setCheckIssuesDiff(!checkIssuesDiff)}
+                  >
+                    <span>
+                      {!checkIssuesDiff
+                        ? `Expand ${issuesCounter(issuesReducer)}`
+                        : `Hide issues`}
+                    </span>
+                    <ExpandLessOutlinedIcon
+                      sx={[
+                        checkIssuesDiff ? {} : { transform: 'rotate(180deg)' },
+                        {
+                          transition: '0.2s',
+                          width: '20px',
+                          height: '20px',
+                        },
+                      ]}
                     />
-                  </React.Fragment>
-                );
-              }
-            })}
+                  </Button>
+                </Box>
+                <Collapse sx={{ width: '100%' }} in={checkIssuesDiff}>
+                  {issuesReducer.map(issue => {
+                    const issueData = item?.issues[issue.id];
+                    const compareIssue = checkIssue[issue.id]
+                      ? JSON.parse(checkIssue[issue.id])
+                      : null;
+                    const convertedIssue = issueData
+                      ? JSON.parse(issueData)
+                      : null;
+                    if (convertedIssue?.feedback) {
+                      return (
+                        <React.Fragment key={issue.id}>
+                          <Typography
+                            variant={'h6'}
+                            sx={{ fontWeight: 500, fontSize: '16px' }}
+                          >
+                            {convertedIssue.issue_name}
+                          </Typography>
+                          <ReactDiffViewer
+                            oldValue={JSON.stringify(
+                              compareIssue?.feedback || {},
+                              null,
+                              2,
+                            )}
+                            newValue={JSON.stringify(
+                              convertedIssue?.feedback || {},
+                              null,
+                              2,
+                            )}
+                            splitView={!mediaSx}
+                            compareMethod={DiffMethod.WORDS}
+                          />
+                        </React.Fragment>
+                      );
+                    }
+                  })}
+                </Collapse>
+              </>
+            )}
 
             {item.comment && (
               <>
@@ -507,6 +583,23 @@ const DescriptionModal = ({
 };
 
 export default DescriptionModal;
+
+const readAllButton = theme => ({
+  p: '3px',
+  paddingX: '8px',
+  minWidth: 'unset',
+  textTransform: 'unset',
+  boxShadow: 'unset',
+  fontWeight: 600,
+  borderRadius: '8px',
+  width: '280px',
+  display: 'flex',
+  alignItems: 'center',
+  gap: '7px',
+  [theme.breakpoints.down('xs')]: {
+    fontSize: '16px',
+  },
+});
 
 const titleWrapper = theme => ({
   display: 'flex',
