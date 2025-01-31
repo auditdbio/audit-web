@@ -446,6 +446,18 @@ const DescriptionModal = ({
               </>
             )}
 
+            {item.comment && (
+              <>
+                <Divider sx={{ mt: '20px' }} />
+                <Typography variant={'h6'} sx={{ fontWeight: 500 }}>
+                  Comment
+                </Typography>
+                <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+                  <Typography>{item.comment}</Typography>
+                </Box>
+              </>
+            )}
+
             {!!Object.keys(item.issues).length && (
               <>
                 <Box
@@ -456,27 +468,25 @@ const DescriptionModal = ({
                     my: '5px',
                   }}
                 >
-                  <Typography variant={'h6'} sx={{ fontWeight: 500 }}>
-                    Issues:
-                  </Typography>
+                  {/*<Typography variant={'h6'} sx={{ fontWeight: 500 }}>*/}
+                  {/*  Issues:*/}
+                  {/*</Typography>*/}
                   <Button
-                    variant={'outlined'}
                     sx={[
-                      readAllButton,
+                      // readAllButton,
                       {
-                        position: 'relative',
-                        backgroundColor: '#fcfaf6',
-                        zIndex: '1',
-                        '&:hover': {
-                          backgroundColor: '#fcfaf6',
-                        },
+                        textTransform: 'unset',
+                        padding: 'unset',
+                        color: '#212529',
+                        fontSize: '20px',
+                        fontWeigh: 700,
                       },
                     ]}
                     onClick={() => setCheckIssuesDiff(!checkIssuesDiff)}
                   >
                     <span>
                       {!checkIssuesDiff
-                        ? `Expand ${issuesCounter(issuesReducer)}`
+                        ? `Show ${issuesCounter(Object.keys(item.issues))}`
                         : `Hide issues`}
                     </span>
                     <ExpandLessOutlinedIcon
@@ -510,16 +520,16 @@ const DescriptionModal = ({
                             variant={'h6'}
                             sx={{ fontWeight: 500, fontSize: '16px' }}
                           >
-                            {convertedIssue.issue_name}
+                            {convertedIssue.issue_name} feedback
                           </Typography>
                           <ReactDiffViewer
                             oldValue={JSON.stringify(
-                              compareIssue?.feedback || {},
+                              compareIssue?.feedback || '',
                               null,
                               2,
                             )}
                             newValue={JSON.stringify(
-                              convertedIssue?.feedback || {},
+                              convertedIssue?.feedback || '',
                               null,
                               2,
                             )}
@@ -531,18 +541,6 @@ const DescriptionModal = ({
                     }
                   })}
                 </Collapse>
-              </>
-            )}
-
-            {item.comment && (
-              <>
-                <Divider sx={{ mt: '20px' }} />
-                <Typography variant={'h6'} sx={{ fontWeight: 500 }}>
-                  Comment
-                </Typography>
-                <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-                  <Typography>{item.comment}</Typography>
-                </Box>
               </>
             )}
             <Box
