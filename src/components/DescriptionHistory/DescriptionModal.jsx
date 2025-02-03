@@ -366,6 +366,9 @@ const DescriptionModal = ({
                 </Box>
               )}
             </Box>
+            <Typography variant={'h5'} sx={{ fontWeight: 500 }}>
+              Audit
+            </Typography>
             {data.price && (
               <>
                 <Typography variant={'h6'} sx={{ fontWeight: 500 }}>
@@ -448,7 +451,7 @@ const DescriptionModal = ({
 
             {item.comment && (
               <>
-                <Divider sx={{ mt: '20px' }} />
+                <Divider sx={{ mt: '20px', borderColor: '#c9c9c9' }} />
                 <Typography variant={'h6'} sx={{ fontWeight: 500 }}>
                   Comment
                 </Typography>
@@ -460,6 +463,7 @@ const DescriptionModal = ({
 
             {!!Object.keys(item.issues).length && (
               <>
+                <Divider sx={{ my: '10px' }} />
                 <Box
                   sx={{
                     display: 'flex',
@@ -468,27 +472,17 @@ const DescriptionModal = ({
                     my: '5px',
                   }}
                 >
-                  {/*<Typography variant={'h6'} sx={{ fontWeight: 500 }}>*/}
-                  {/*  Issues:*/}
-                  {/*</Typography>*/}
-                  <Button
-                    sx={[
-                      // readAllButton,
-                      {
-                        textTransform: 'unset',
-                        padding: 'unset',
-                        color: '#212529',
-                        fontSize: '20px',
-                        fontWeigh: 700,
-                      },
-                    ]}
+                  <Typography
                     onClick={() => setCheckIssuesDiff(!checkIssuesDiff)}
+                    variant={'h5'}
+                    sx={{
+                      fontWeight: 500,
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '7px',
+                    }}
                   >
-                    <span>
-                      {!checkIssuesDiff
-                        ? `Show ${issuesCounter(Object.keys(item.issues))}`
-                        : `Hide issues`}
-                    </span>
+                    Issues{' '}
                     <ExpandLessOutlinedIcon
                       sx={[
                         checkIssuesDiff ? {} : { transform: 'rotate(180deg)' },
@@ -499,7 +493,7 @@ const DescriptionModal = ({
                         },
                       ]}
                     />
-                  </Button>
+                  </Typography>
                 </Box>
                 <Collapse
                   sx={{ width: '100%', padding: '10px', paddingTop: 'unset' }}
@@ -546,7 +540,6 @@ const DescriptionModal = ({
             <Box
               sx={[
                 openDiff ? { display: 'flex', justifyContent: 'center' } : {},
-                { mt: '20px' },
               ]}
             >
               <Button
