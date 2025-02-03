@@ -495,10 +495,7 @@ const DescriptionModal = ({
                     />
                   </Typography>
                 </Box>
-                <Collapse
-                  sx={{ width: '100%', padding: '10px', paddingTop: 'unset' }}
-                  in={checkIssuesDiff}
-                >
+                <Collapse sx={{ width: '100%' }} in={checkIssuesDiff}>
                   {issuesReducer.map(issue => {
                     const issueData = item?.issues[issue.id];
                     const compareIssue = checkIssue[issue.id]
@@ -512,7 +509,7 @@ const DescriptionModal = ({
                         <React.Fragment key={issue.id}>
                           <Typography
                             variant={'h6'}
-                            sx={{ fontWeight: 500, fontSize: '16px' }}
+                            sx={{ fontWeight: 500, fontSize: '20px' }}
                           >
                             {convertedIssue.issue_name} feedback
                           </Typography>
