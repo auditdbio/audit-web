@@ -20,7 +20,13 @@ export const linkShortener = (link, shortLinkLength) => {
   return shortLink;
 };
 
-const CustomLink = ({ link, showIcon = true, sx = {}, shortLength = null }) => {
+const CustomLink = ({
+  link,
+  showIcon = true,
+  sx = {},
+  shortLength = null,
+  isGithub,
+}) => {
   const linkBoxRef = useRef();
   const matchSm = useMediaQuery(theme.breakpoints.down('sm'));
   const [shortLinkLength, setShortLinkLength] = useState(shortLength);
@@ -73,7 +79,9 @@ const CustomLink = ({ link, showIcon = true, sx = {}, shortLength = null }) => {
         >
           <Tooltip sx={{ width: 'unset' }} title={link} arrow placement="top">
             <span style={{ fontSize: '14px' }}>
-              {link?.includes('blob')
+              {isGithub
+                ? link.slice(link.lastIndexOf('/') + 1).replaceAll('%20', ' ')
+                : link?.includes('blob')
                 ? shortenLink(link)
                 : linkShortener(link, shortLinkLength)}
             </span>
@@ -94,8 +102,8 @@ const linkBoxSx = {
 const linkSx = {
   fontFamily: 'monospace',
   fontWeight: 400,
-  color: '#152BEA',
-  textDecoration: 'none',
+  color: '#333333',
+  textDecoration: 'none!important',
   display: 'flex',
   width: '100%',
   overflow: 'hidden',

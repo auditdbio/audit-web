@@ -390,17 +390,7 @@ const CreateProjectCard = ({ projectInfo }) => {
                           label="Tags"
                           setFieldTouched={setFieldTouched}
                         />
-                        <TagsArray name="tags" />
-                      </Box>
-                      <Box sx={fieldWrapper}>
-                        <ScopeSelection
-                          scope={values.scope}
-                          project={projectInfo}
-                          setFieldValue={setFieldValue}
-                          setFieldTouched={setFieldTouched}
-                        />
-
-                        <ProjectLinksList name="scope" />
+                        {!!values?.tags?.length && <TagsArray name="tags" />}
                         <Box>
                           <TotalPrice />
                         </Box>
@@ -410,6 +400,18 @@ const CreateProjectCard = ({ projectInfo }) => {
                             scope={values.scope}
                             totalPrice={values.total_cost}
                           />
+                        )}
+                      </Box>
+                      <Box sx={[fieldWrapper, { gap: '7px' }]}>
+                        <ScopeSelection
+                          scope={values.scope}
+                          project={projectInfo}
+                          setFieldValue={setFieldValue}
+                          setFieldTouched={setFieldTouched}
+                        />
+                        {(!!values?.scope?.content?.files?.length ||
+                          !!values?.scope?.content?.length) && (
+                          <ProjectLinksList name="scope" />
                         )}
                       </Box>
                     </Box>

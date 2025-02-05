@@ -61,7 +61,12 @@ export const ProjectLinksList = ({ name, handleSubmit }) => {
           return scope?.map((link, idx) => {
             return (
               <Box key={idx} sx={linkWrapper}>
-                <CustomLink link={link} showIcon={false} sx={linkSx} />
+                <CustomLink
+                  isGithub={field.value?.type === SCOPE_GIT_BLOCK}
+                  link={link}
+                  showIcon={false}
+                  sx={linkSx}
+                />
 
                 <IconButton
                   sx={{ padding: '5px' }}
