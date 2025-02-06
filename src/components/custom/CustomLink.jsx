@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Box, Tooltip, Typography, Link, useMediaQuery } from '@mui/material';
+import { Box, Link, Tooltip, Typography, useMediaQuery } from '@mui/material';
 import GitHubIcon from '@mui/icons-material/GitHub.js';
 import LinkIcon from '@mui/icons-material/Link';
 import theme from '../../styles/themes.js';
@@ -50,6 +50,10 @@ const CustomLink = ({
     const path = parts.slice(parts.indexOf(sha) + 1, parts.length).join('/');
     return `${repo}/${sha?.slice(0, 7)}.../${path}`;
   };
+  const mySlice = url => {
+    const regex = /\/blob\/([0-9a-f]{40})\//;
+    return url.split(regex)[2];
+  };
 
   return (
     <Box sx={{ display: 'flex', width: '100%' }}>
@@ -80,7 +84,7 @@ const CustomLink = ({
           <Tooltip sx={{ width: 'unset' }} title={link} arrow placement="top">
             <span style={{ fontSize: '14px' }}>
               {isGithub
-                ? link.slice(link.lastIndexOf('/') + 1).replaceAll('%20', ' ')
+                ? mySlice(link)
                 : link?.includes('blob')
                 ? shortenLink(link)
                 : linkShortener(link, shortLinkLength)}

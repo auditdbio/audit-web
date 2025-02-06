@@ -154,8 +154,11 @@ const ScopeSelection = ({
               <span>
                 <Button
                   onClick={() => {
-                    handleChangeScopeType(SCOPE_GIT_BLOCK, setFieldValue);
-                    setTypeScope(SCOPE_GIT_BLOCK);
+                    if (typeScope === SCOPE_LINKS) {
+                      handleChangeScopeType(SCOPE_GIT_BLOCK, setFieldValue);
+                      setTypeScope(SCOPE_GIT_BLOCK);
+                    }
+                    setIsGithubSelectionOpen(true);
                   }}
                   variant="contained"
                   sx={githubBtnSx}
@@ -193,8 +196,8 @@ const ScopeSelection = ({
                     className="github-btn"
                     disabled={!!scope?.content?.length}
                   >
-                    {/*<GitHubIcon />*/}
-                    <GithubBranchIcon />
+                    <GitHubIcon />
+                    {/*<GithubBranchIcon />*/}
                   </Button>
                 </span>
               </Tooltip>
@@ -211,23 +214,45 @@ const ScopeSelection = ({
             Add links to the project
           </Typography>
         ) : (
-          <Typography
-            variant="body2"
-            sx={{ color: '#1f1f1f', fontSize: '16px' }}
-          >
+          <Box>
             {!scope?.content?.files?.length ? (
-              'Select scope from GitHub'
+              <Typography
+                variant="body2"
+                sx={{
+                  color: '#1f1f1f',
+                  fontSize: '16px',
+                }}
+              >
+                {' '}
+                Select scope from GitHub
+              </Typography>
             ) : (
               <>
-                For the project, selected files from the{' '}
-                <span style={{ fontWeight: 500, color: '#000' }}>
-                  {repoOwner}
-                </span>{' '}
-                repository at commit{' '}
-                <span style={{ fontWeight: 500, color: '#000' }}>{sha}</span>
+                <Typography
+                  variant="body2"
+                  sx={{
+                    color: '#1f1f1f',
+                    fontSize: '16px',
+                  }}
+                >
+                  Repository:{' '}
+                  <span style={{ fontWeight: 500, color: '#000' }}>
+                    {repoOwner}
+                  </span>
+                </Typography>
+                <Typography
+                  variant="body2"
+                  sx={{
+                    color: '#1f1f1f',
+                    fontSize: '16px',
+                  }}
+                >
+                  Commit:{' '}
+                  <span style={{ fontWeight: 500, color: '#000' }}>{sha}</span>
+                </Typography>
               </>
             )}
-          </Typography>
+          </Box>
         )}
       </Box>
       {/*)}*/}
