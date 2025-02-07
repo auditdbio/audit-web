@@ -9,7 +9,12 @@ import { getCurrentCustomer } from '../redux/actions/customerAction.js';
 import CustomLink from '../components/custom/CustomLink.jsx';
 import TagsList from '../components/tagsList.jsx';
 import { addTestsLabel, isAuth } from '../lib/helper.js';
-import { AUDITOR, CLEAR_NOT_FOUND, CUSTOMER } from '../redux/actions/types.js';
+import {
+  AUDITOR,
+  CLEAR_NOT_FOUND,
+  CLEAR_PROJECT,
+  CUSTOMER,
+} from '../redux/actions/types.js';
 import NotFound from './Not-Found.jsx';
 import theme from '../styles/themes.js';
 import Loader from '../components/Loader.jsx';
@@ -53,6 +58,7 @@ const PublicProject = () => {
     dispatch(getProjectById(id));
     return () => {
       dispatch({ type: CLEAR_NOT_FOUND });
+      dispatch({ type: CLEAR_PROJECT });
     };
   }, []);
 
