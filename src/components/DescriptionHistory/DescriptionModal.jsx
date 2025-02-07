@@ -366,7 +366,10 @@ const DescriptionModal = ({
                 </Box>
               )}
             </Box>
-            <Typography variant={'h5'} sx={{ fontWeight: 500 }}>
+            <Typography
+              variant={'h5'}
+              sx={{ fontWeight: 500, color: '#8e8e8e' }}
+            >
               Audit
             </Typography>
             {data.price && (
@@ -449,18 +452,6 @@ const DescriptionModal = ({
               </>
             )}
 
-            {item.comment && (
-              <>
-                <Divider sx={{ mt: '20px', borderColor: '#c9c9c9' }} />
-                <Typography variant={'h6'} sx={{ fontWeight: 500 }}>
-                  Comment
-                </Typography>
-                <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-                  <Typography>{item.comment}</Typography>
-                </Box>
-              </>
-            )}
-
             {!!Object.keys(item.issues).length && (
               <>
                 <Divider sx={{ my: '10px' }} />
@@ -480,6 +471,7 @@ const DescriptionModal = ({
                       display: 'flex',
                       alignItems: 'center',
                       gap: '7px',
+                      color: '#8e8e8e',
                     }}
                   >
                     Issues{' '}
@@ -532,6 +524,17 @@ const DescriptionModal = ({
                     }
                   })}
                 </Collapse>
+              </>
+            )}
+            {item.comment && (
+              <>
+                <Divider sx={{ mt: '20px', borderColor: '#c9c9c9' }} />
+                <Typography variant={'h6'} sx={{ fontWeight: 500 }}>
+                  Comment
+                </Typography>
+                <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+                  <Typography>{item.comment}</Typography>
+                </Box>
               </>
             )}
             <Box
@@ -719,7 +722,11 @@ const modalSx = theme => ({
   height: '90%',
   overflowY: 'auto',
   paddingTop: '7px',
+  '&::-webkit-scrollbar': {
+    width: '2px',
+  },
   [theme.breakpoints.down('xs')]: {
     padding: 2,
+    paddingRight: '8px',
   },
 });
