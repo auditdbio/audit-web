@@ -144,6 +144,7 @@ const HistoryDescription = ({
                             item={item}
                             request={request}
                             idx={index}
+                            issues={item.issues}
                           />
                         </React.Fragment>
                       );
