@@ -50,6 +50,7 @@ const DescriptionModal = ({
   const auditRequestHistory = useSelector(s => s.audits.auditRequestHistory);
   const issuesReducer = useSelector(s => s.issues.issues);
   const [checkIssuesDiff, setCheckIssuesDiff] = useState(false);
+  const machXxs = useMediaQuery(theme => theme.breakpoints.down(570));
 
   useEffect(() => {
     if (openDiff) {
@@ -175,10 +176,48 @@ const DescriptionModal = ({
             />
           )}
           <Box sx={titleWrapper}>
-            <Typography sx={[titleSx, { mr: '7px' }]} variant={'h5'}>
-              {item.author.name}
-            </Typography>
-            {!mediaSx && (
+            <Box>
+              <Typography sx={[titleSx, { mr: '7px' }]} variant={'h5'}>
+                {item.author.name}
+              </Typography>
+              {machXxs &&
+                (!!isApprovedByMe.length || !!isApprovedByOther.length) && (
+                  <Box sx={aproovesSx}>
+                    <Typography sx={{ fontWeight: 600 }}>Approve</Typography>
+
+                    {approvedChange && isApproved ? (
+                      <Chip size={'small'} label={'Approved'} color="success" />
+                    ) : (
+                      <>
+                        {!!isApprovedByMe.length && (
+                          <Chip
+                            size={'small'}
+                            label={
+                              user?.current_role?.toLowerCase() ===
+                              CUSTOMER?.toLowerCase()
+                                ? 'Customer'
+                                : 'Auditor'
+                            }
+                            color="warning"
+                          />
+                        )}
+                        {!!isApprovedByOther.length && (
+                          <Chip
+                            label={
+                              user.current_role !== CUSTOMER
+                                ? 'Customer'
+                                : 'Auditor'
+                            }
+                            size={'small'}
+                            color="secondary"
+                          />
+                        )}
+                      </>
+                    )}
+                  </Box>
+                )}
+            </Box>
+            {!machXxs && (
               <Box sx={chipSx}>
                 {approvedChange && isApproved ? (
                   <Chip size={'small'} label={'Approved'} color="success" />
@@ -213,45 +252,49 @@ const DescriptionModal = ({
             )}
           </Box>
         </Box>
-        {mediaSx && (!!isApprovedByMe.length || !!isApprovedByOther.length) && (
-          <Box sx={aproovesSx}>
-            <Typography sx={{ fontWeight: 600 }}>Approve</Typography>
-            {!!isApprovedByMe.length && (
-              <Chip
-                size={'small'}
-                label={
-                  user?.current_role?.toLowerCase() === CUSTOMER?.toLowerCase()
-                    ? 'Customer'
-                    : 'Auditor'
-                }
-                color="info"
-              />
-            )}
-            {!!isApprovedByOther.length && (
-              <Chip
-                label={user.current_role !== CUSTOMER ? 'Customer' : 'Auditor'}
-                size={'small'}
-                color="error"
-              />
-            )}
+        {!mediaSx ? (
+          <>
+            <Button
+              variant={'contained'}
+              onClick={e => {
+                e.stopPropagation();
+                setAnchorEl(e.currentTarget);
+              }}
+              sx={compareSx}
+              disabled={
+                !(request ? auditRequestHistory : auditHistory).filter(
+                  el => el.id !== item.id,
+                ).length
+              }
+            >
+              Compare with
+            </Button>
+            <Typography variant={'h6'} sx={dateSx}>
+              {dayjs(item.date / 1000).format('MM.DD.YYYY HH:mm')}
+            </Typography>
+          </>
+        ) : (
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: '7px' }}>
+            <Button
+              variant={'contained'}
+              onClick={e => {
+                e.stopPropagation();
+                setAnchorEl(e.currentTarget);
+              }}
+              sx={compareSx}
+              disabled={
+                !(request ? auditRequestHistory : auditHistory).filter(
+                  el => el.id !== item.id,
+                ).length
+              }
+            >
+              Compare with
+            </Button>
+            <Typography variant={'h6'} sx={dateSx}>
+              {dayjs(item.date / 1000).format('MM.DD.YYYY HH:mm')}
+            </Typography>
           </Box>
         )}
-        <Button
-          variant={'contained'}
-          onClick={e => {
-            e.stopPropagation();
-            setAnchorEl(e.currentTarget);
-          }}
-          sx={compareSx}
-          disabled={
-            !(request ? auditRequestHistory : auditHistory).filter(
-              el => el.id !== item.id,
-            ).length
-          }
-        >
-          Compare with
-        </Button>
-
         <Popover
           open={Boolean(anchorEl)}
           anchorEl={anchorEl}
@@ -293,10 +336,6 @@ const DescriptionModal = ({
             </Box>
           </ClickAwayListener>
         </Popover>
-
-        <Typography variant={'h6'} sx={dateSx}>
-          {dayjs(item.date / 1000).format('MM.DD.YYYY HH:mm')}
-        </Typography>
       </Box>
       <Modal
         open={isOpenDiff}
@@ -597,6 +636,7 @@ const readAllButton = theme => ({
 const aproovesSx = theme => ({
   display: 'flex',
   gap: '8px',
+  mt: '7px',
   [theme.breakpoints.down('xs')]: {
     alignSelf: 'center',
   },
@@ -690,10 +730,12 @@ const itemWrapperSx = theme => ({
   justifyContent: 'space-between',
   cursor: 'pointer',
   [theme.breakpoints.down('xs')]: {
-    flexDirection: 'column',
     gap: '8px',
     padding: '10px 0',
     alignItems: 'flex-start',
+  },
+  [theme.breakpoints.down(460)]: {
+    flexDirection: 'column',
   },
 });
 
