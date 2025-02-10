@@ -27,7 +27,6 @@ import {
 import Badge from '@mui/material/Badge';
 import { CUSTOMER } from '../../redux/actions/types.js';
 import ExpandLessOutlinedIcon from '@mui/icons-material/ExpandLessOutlined';
-import { issuesCounter } from '../../lib/helper.js';
 
 const DescriptionModal = ({
   item,
@@ -215,7 +214,7 @@ const DescriptionModal = ({
           </Box>
         </Box>
         {mediaSx && (!!isApprovedByMe.length || !!isApprovedByOther.length) && (
-          <Box sx={{ display: 'flex', gap: '8px' }}>
+          <Box sx={aproovesSx}>
             <Typography sx={{ fontWeight: 600 }}>Approve</Typography>
             {!!isApprovedByMe.length && (
               <Chip
@@ -368,7 +367,7 @@ const DescriptionModal = ({
             </Box>
             <Typography
               variant={'h5'}
-              sx={{ fontWeight: 500, color: '#8e8e8e' }}
+              sx={{ fontWeight: 500, color: '#8e8e8e', mt: '7px' }}
             >
               Audit
             </Typography>
@@ -454,7 +453,7 @@ const DescriptionModal = ({
 
             {!!Object.keys(item.issues).length && (
               <>
-                <Divider sx={{ my: '10px' }} />
+                <Divider sx={{ my: '7px', borderColor: '#c9c9c9' }} />
                 <Box
                   sx={{
                     display: 'flex',
@@ -528,7 +527,7 @@ const DescriptionModal = ({
             )}
             {item.comment && (
               <>
-                <Divider sx={{ mt: '20px', borderColor: '#c9c9c9' }} />
+                <Divider sx={{ mt: '7px', borderColor: '#c9c9c9' }} />
                 <Typography variant={'h6'} sx={{ fontWeight: 500 }}>
                   Comment
                 </Typography>
@@ -595,6 +594,14 @@ const readAllButton = theme => ({
   },
 });
 
+const aproovesSx = theme => ({
+  display: 'flex',
+  gap: '8px',
+  [theme.breakpoints.down('xs')]: {
+    alignSelf: 'center',
+  },
+});
+
 const titleWrapper = theme => ({
   display: 'flex',
   justifyContent: 'space-between',
@@ -610,6 +617,9 @@ const chipSx = theme => ({
   [theme.breakpoints.down('sm')]: {
     width: '85px',
   },
+  [theme.breakpoints.down('xs')]: {
+    alignSelf: 'center',
+  },
 });
 
 const dateSx = theme => ({
@@ -619,6 +629,9 @@ const dateSx = theme => ({
   [theme.breakpoints.down('sm')]: {
     fontSize: '14px',
     width: '122px',
+  },
+  [theme.breakpoints.down('xs')]: {
+    alignSelf: 'flex-end',
   },
 });
 
@@ -692,6 +705,8 @@ const compareSx = theme => ({
   },
   [theme.breakpoints.down('xs')]: {
     order: 1,
+    alignSelf: 'flex-end',
+    width: '122px',
   },
 });
 
