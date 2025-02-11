@@ -20,7 +20,7 @@ const ScopeSelection = ({
 }) => {
   const matchSm = useMediaQuery(theme.breakpoints.down('sm'));
   const [isGithubSelectionOpen, setIsGithubSelectionOpen] = useState(false);
-  const [typeScope, setTypeScope] = useState(scope.type || SCOPE_LINKS);
+  const [typeScope, setTypeScope] = useState(scope.type || SCOPE_GIT_BLOCK);
   const { sha, repoOwner } = useSelector(state => state.github);
   const [clear, setClear] = useState(false);
 
@@ -91,7 +91,7 @@ const ScopeSelection = ({
       {/*  </Box>*/}
       {/*) : (*/}
       <Box sx={selectionToolSx}>
-        <Typography>Add links to the project</Typography>
+        <Typography>Add links to the scope</Typography>
         <Box sx={{ display: 'flex' }}>
           <Button
             onClick={() => {
@@ -127,7 +127,6 @@ const ScopeSelection = ({
                       handleChangeScopeType(SCOPE_GIT_BLOCK, setFieldValue);
                       setTypeScope(SCOPE_GIT_BLOCK);
                     }
-                    setIsGithubSelectionOpen(true);
                   }
                 }}
                 variant={
@@ -242,7 +241,7 @@ const ScopeSelection = ({
             variant={'body2'}
             sx={{ color: 'text.secondary', fontSize: '16px' }}
           >
-            Add links to the project
+            Add links to the scope
           </Typography>
         ) : (
           <Box>
@@ -320,13 +319,14 @@ const linkFieldWrapper = theme => ({
 const selectionToolSx = theme => ({
   display: 'flex',
   alignItems: 'center',
-  mb: '21px',
+  mb: '22px',
   gap: '10px',
   justifyContent: 'center',
   '& p': {
     fontSize: '18px',
   },
   [theme.breakpoints.down('md')]: {
+    mb: '19px',
     '& p': {
       fontSize: '16px',
       textAlign: 'center',
@@ -336,6 +336,9 @@ const selectionToolSx = theme => ({
     '& p': {
       fontSize: '14px',
     },
+  },
+  [theme.breakpoints.down('sm')]: {
+    mb: '15px',
   },
   [theme.breakpoints.down('xs')]: {
     marginBottom: '17px',
