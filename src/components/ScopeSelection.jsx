@@ -95,17 +95,18 @@ const ScopeSelection = ({
         <Box sx={{ display: 'flex' }}>
           <Button
             onClick={() => {
-              handleChangeScopeType(SCOPE_LINKS, setFieldValue);
-              setTypeScope(SCOPE_LINKS);
+              if (typeScope === SCOPE_GIT_BLOCK) {
+                handleChangeScopeType(SCOPE_LINKS, setFieldValue);
+                setTypeScope(SCOPE_LINKS);
+              }
             }}
-            disabled={typeScope === SCOPE_LINKS}
             sx={[
               githubBtnSx,
               {
                 borderRadius: '10px 0 0 10px',
               },
             ]}
-            variant={'contained'}
+            variant={typeScope === SCOPE_LINKS ? 'contained' : 'outlined'}
           >
             <LinkIcon />
           </Button>
@@ -122,13 +123,16 @@ const ScopeSelection = ({
               <Button
                 onClick={() => {
                   if (typeScope === SCOPE_LINKS) {
-                    handleChangeScopeType(SCOPE_GIT_BLOCK, setFieldValue);
-                    setTypeScope(SCOPE_GIT_BLOCK);
+                    if (typeScope === SCOPE_LINKS) {
+                      handleChangeScopeType(SCOPE_GIT_BLOCK, setFieldValue);
+                      setTypeScope(SCOPE_GIT_BLOCK);
+                    }
+                    setIsGithubSelectionOpen(true);
                   }
-                  setIsGithubSelectionOpen(true);
                 }}
-                variant="contained"
-                disabled={typeScope === SCOPE_GIT_BLOCK}
+                variant={
+                  typeScope === SCOPE_GIT_BLOCK ? 'contained' : 'outlined'
+                }
                 sx={[
                   githubBtnSx,
                   { borderRadius: '0 10px 10px 0', ml: '-1px' },
