@@ -16,11 +16,14 @@ const ScopeSelection = ({
   setFieldValue,
   setFieldTouched,
   onBlur,
+  projectId,
   sx = {},
 }) => {
   const matchSm = useMediaQuery(theme.breakpoints.down('sm'));
   const [isGithubSelectionOpen, setIsGithubSelectionOpen] = useState(false);
-  const [typeScope, setTypeScope] = useState(scope.type || SCOPE_GIT_BLOCK);
+  const [typeScope, setTypeScope] = useState(
+    projectId ? scope.type : SCOPE_GIT_BLOCK,
+  );
   const { sha, repoOwner } = useSelector(state => state.github);
   const [clear, setClear] = useState(false);
 

@@ -404,6 +404,7 @@ const CreateProjectCard = ({ projectInfo }) => {
                       </Box>
                       <Box sx={[fieldWrapper, { gap: '7px' }]}>
                         <ScopeSelection
+                          projectId={values.id}
                           scope={values.scope}
                           project={projectInfo}
                           setFieldValue={setFieldValue}
