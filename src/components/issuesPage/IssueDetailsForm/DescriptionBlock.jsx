@@ -275,7 +275,12 @@ const DescriptionBlock = ({
         </Box>
       )}
       {(values.feedback || isEditFeedback || (isPublic && editMode)) && (
-        <Box sx={[feedbackWrapper, editMode && !showFull ? { mt: 0 } : {}]}>
+        <Box
+          sx={[
+            feedbackWrapper(theme, isPublic, showFull),
+            editMode && !showFull ? { mt: 0 } : {},
+          ]}
+        >
           {!isEditFeedback && (
             <Box sx={feedbackHeader}>
               {isPublic ? 'Customer feedback' : 'Feedback'}
@@ -434,7 +439,7 @@ const linkFieldSx = {
   position: 'relative',
   '& > div': { borderRadius: 0 },
   '& fieldset': { borderColor: '#b9b9b9' },
-  '&::before': eventLine(10),
+  '&::before': eventLine(20),
 };
 
 const customerLinksList = {
@@ -476,7 +481,7 @@ const markdownSx = matchXs => ({
   borderRight: 'none',
 });
 
-const feedbackWrapper = {
+const feedbackWrapper = (theme, isPublic, showFull) => ({
   position: 'relative',
   mt: '20px',
   '& .rc-md-navigation.visible': {
@@ -484,6 +489,7 @@ const feedbackWrapper = {
   },
   '& .rc-md-editor': {
     height: '100%!important',
+    minHeight: '40px',
   },
   '& .sec-html': {
     borderRight: '1px solid #e0e0e0!important',
@@ -491,8 +497,8 @@ const feedbackWrapper = {
   '& .section': {
     borderColor: '#e0e0e0 !important',
   },
-  '&::before': eventLine(20),
-};
+  '&::before': eventLine(isPublic ? (showFull ? 57 : 37) : 20),
+});
 
 const feedbackHeader = {
   border: '1px solid #e0e0e0',
