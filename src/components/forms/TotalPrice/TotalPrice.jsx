@@ -34,7 +34,7 @@ const TotalPrice = () => {
         Total cost
       </Box>
       <SalarySlider
-        max={isTotalCost ? 2000 : 100}
+        max={isTotalCost ? 500000 : 1000}
         name={isTotalCost ? 'total_cost' : 'price'}
       />
     </>
