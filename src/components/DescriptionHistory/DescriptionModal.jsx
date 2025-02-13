@@ -5,6 +5,7 @@ import {
   Button,
   Chip,
   ClickAwayListener,
+  Collapse,
   Divider,
   Modal,
   Popover,
@@ -25,6 +26,7 @@ import {
 } from '../../redux/actions/auditAction.js';
 import Badge from '@mui/material/Badge';
 import { CUSTOMER } from '../../redux/actions/types.js';
+import ExpandLessOutlinedIcon from '@mui/icons-material/ExpandLessOutlined';
 
 const DescriptionModal = ({
   item,
@@ -46,6 +48,9 @@ const DescriptionModal = ({
   const [anchorEl, setAnchorEl] = useState(null);
   const mediaSx = useMediaQuery(theme => theme.breakpoints.down('xs'));
   const auditRequestHistory = useSelector(s => s.audits.auditRequestHistory);
+  const issuesReducer = useSelector(s => s.issues.issues);
+  const [checkIssuesDiff, setCheckIssuesDiff] = useState(false);
+  const machXxs = useMediaQuery(theme => theme.breakpoints.down(570));
 
   useEffect(() => {
     if (openDiff) {
@@ -84,6 +89,14 @@ const DescriptionModal = ({
     }
   }, [mainAudit, compare]);
 
+  const checkIssue = useMemo(() => {
+    if (compare) {
+      return compare.issues;
+    } else {
+      return oldValue?.issues;
+    }
+  }, [oldValue, compare]);
+
   const handleApprove = () => {
     if (openDiff) {
       if (!request) {
@@ -118,7 +131,20 @@ const DescriptionModal = ({
       }
     }
   };
-  console.log(item.comment);
+
+  useEffect(() => {
+    setCheckIssuesDiff(
+      issuesReducer.some(issue => {
+        const issueData = item?.issues[issue.id];
+        const compareIssue = checkIssue[issue.id]
+          ? JSON.parse(checkIssue[issue.id])
+          : null;
+        const convertedIssue = issueData ? JSON.parse(issueData) : null;
+        return compareIssue?.feedback === convertedIssue?.feedback;
+      }),
+    );
+  }, [issuesReducer, item, checkIssue]);
+
   return (
     <Box sx={{ margin: '8px 0', paddingLeft: '12px' }}>
       <Box sx={itemWrapperSx}>
@@ -150,10 +176,48 @@ const DescriptionModal = ({
             />
           )}
           <Box sx={titleWrapper}>
-            <Typography sx={[titleSx, { mr: '7px' }]} variant={'h5'}>
-              {item.author.name}
-            </Typography>
-            {!mediaSx && (
+            <Box>
+              <Typography sx={[titleSx, { mr: '7px' }]} variant={'h5'}>
+                {item.author.name}
+              </Typography>
+              {machXxs &&
+                (!!isApprovedByMe.length || !!isApprovedByOther.length) && (
+                  <Box sx={aproovesSx}>
+                    <Typography sx={{ fontWeight: 600 }}>Approve</Typography>
+
+                    {approvedChange && isApproved ? (
+                      <Chip size={'small'} label={'Approved'} color="success" />
+                    ) : (
+                      <>
+                        {!!isApprovedByMe.length && (
+                          <Chip
+                            size={'small'}
+                            label={
+                              user?.current_role?.toLowerCase() ===
+                              CUSTOMER?.toLowerCase()
+                                ? 'Customer'
+                                : 'Auditor'
+                            }
+                            color="warning"
+                          />
+                        )}
+                        {!!isApprovedByOther.length && (
+                          <Chip
+                            label={
+                              user.current_role !== CUSTOMER
+                                ? 'Customer'
+                                : 'Auditor'
+                            }
+                            size={'small'}
+                            color="secondary"
+                          />
+                        )}
+                      </>
+                    )}
+                  </Box>
+                )}
+            </Box>
+            {!machXxs && (
               <Box sx={chipSx}>
                 {approvedChange && isApproved ? (
                   <Chip size={'small'} label={'Approved'} color="success" />
@@ -188,45 +252,49 @@ const DescriptionModal = ({
             )}
           </Box>
         </Box>
-        {mediaSx && (!!isApprovedByMe.length || !!isApprovedByOther.length) && (
-          <Box sx={{ display: 'flex', gap: '8px' }}>
-            <Typography sx={{ fontWeight: 600 }}>Approve</Typography>
-            {!!isApprovedByMe.length && (
-              <Chip
-                size={'small'}
-                label={
-                  user?.current_role?.toLowerCase() === CUSTOMER?.toLowerCase()
-                    ? 'Customer'
-                    : 'Auditor'
-                }
-                color="info"
-              />
-            )}
-            {!!isApprovedByOther.length && (
-              <Chip
-                label={user.current_role !== CUSTOMER ? 'Customer' : 'Auditor'}
-                size={'small'}
-                color="error"
-              />
-            )}
+        {!mediaSx ? (
+          <>
+            <Button
+              variant={'contained'}
+              onClick={e => {
+                e.stopPropagation();
+                setAnchorEl(e.currentTarget);
+              }}
+              sx={compareSx}
+              disabled={
+                !(request ? auditRequestHistory : auditHistory).filter(
+                  el => el.id !== item.id,
+                ).length
+              }
+            >
+              Compare with
+            </Button>
+            <Typography variant={'h6'} sx={dateSx}>
+              {dayjs(item.date / 1000).format('MM.DD.YYYY HH:mm')}
+            </Typography>
+          </>
+        ) : (
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: '7px' }}>
+            <Button
+              variant={'contained'}
+              onClick={e => {
+                e.stopPropagation();
+                setAnchorEl(e.currentTarget);
+              }}
+              sx={compareSx}
+              disabled={
+                !(request ? auditRequestHistory : auditHistory).filter(
+                  el => el.id !== item.id,
+                ).length
+              }
+            >
+              Compare with
+            </Button>
+            <Typography variant={'h6'} sx={dateSx}>
+              {dayjs(item.date / 1000).format('MM.DD.YYYY HH:mm')}
+            </Typography>
           </Box>
         )}
-        <Button
-          variant={'contained'}
-          onClick={e => {
-            e.stopPropagation();
-            setAnchorEl(e.currentTarget);
-          }}
-          sx={compareSx}
-          disabled={
-            !(request ? auditRequestHistory : auditHistory).filter(
-              el => el.id !== item.id,
-            ).length
-          }
-        >
-          Compare with
-        </Button>
-
         <Popover
           open={Boolean(anchorEl)}
           anchorEl={anchorEl}
@@ -268,10 +336,6 @@ const DescriptionModal = ({
             </Box>
           </ClickAwayListener>
         </Popover>
-
-        <Typography variant={'h6'} sx={dateSx}>
-          {dayjs(item.date / 1000).format('MM.DD.YYYY HH:mm')}
-        </Typography>
       </Box>
       <Modal
         open={isOpenDiff}
@@ -340,6 +404,12 @@ const DescriptionModal = ({
                 </Box>
               )}
             </Box>
+            <Typography
+              variant={'h5'}
+              sx={{ fontWeight: 500, color: '#8e8e8e', mt: '7px' }}
+            >
+              Audit
+            </Typography>
             {data.price && (
               <>
                 <Typography variant={'h6'} sx={{ fontWeight: 500 }}>
@@ -419,9 +489,84 @@ const DescriptionModal = ({
                 />
               </>
             )}
+
+            {!!Object.keys(item.issues).length && (
+              <>
+                <Divider sx={{ my: '7px', borderColor: '#c9c9c9' }} />
+                <Box
+                  sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '20px',
+                    my: '5px',
+                  }}
+                >
+                  <Typography
+                    onClick={() => setCheckIssuesDiff(!checkIssuesDiff)}
+                    variant={'h5'}
+                    sx={{
+                      fontWeight: 500,
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '7px',
+                      color: '#8e8e8e',
+                    }}
+                  >
+                    Issues{' '}
+                    <ExpandLessOutlinedIcon
+                      sx={[
+                        checkIssuesDiff ? {} : { transform: 'rotate(180deg)' },
+                        {
+                          transition: '0.2s',
+                          width: '20px',
+                          height: '20px',
+                        },
+                      ]}
+                    />
+                  </Typography>
+                </Box>
+                <Collapse sx={{ width: '100%' }} in={checkIssuesDiff}>
+                  {issuesReducer.map(issue => {
+                    const issueData = item?.issues[issue.id];
+                    const compareIssue = checkIssue[issue.id]
+                      ? JSON.parse(checkIssue[issue.id])
+                      : null;
+                    const convertedIssue = issueData
+                      ? JSON.parse(issueData)
+                      : null;
+                    if (convertedIssue?.feedback) {
+                      return (
+                        <React.Fragment key={issue.id}>
+                          <Typography
+                            variant={'h6'}
+                            sx={{ fontWeight: 500, fontSize: '20px' }}
+                          >
+                            {convertedIssue.issue_name} feedback
+                          </Typography>
+                          <ReactDiffViewer
+                            oldValue={JSON.stringify(
+                              compareIssue?.feedback || '',
+                              null,
+                              2,
+                            )}
+                            newValue={JSON.stringify(
+                              convertedIssue?.feedback || '',
+                              null,
+                              2,
+                            )}
+                            splitView={!mediaSx}
+                            compareMethod={DiffMethod.WORDS}
+                          />
+                        </React.Fragment>
+                      );
+                    }
+                  })}
+                </Collapse>
+              </>
+            )}
             {item.comment && (
               <>
-                <Divider sx={{ mt: '20px' }} />
+                <Divider sx={{ mt: '7px', borderColor: '#c9c9c9' }} />
                 <Typography variant={'h6'} sx={{ fontWeight: 500 }}>
                   Comment
                 </Typography>
@@ -433,7 +578,6 @@ const DescriptionModal = ({
             <Box
               sx={[
                 openDiff ? { display: 'flex', justifyContent: 'center' } : {},
-                { mt: '20px' },
               ]}
             >
               <Button
@@ -472,6 +616,32 @@ const DescriptionModal = ({
 
 export default DescriptionModal;
 
+const readAllButton = theme => ({
+  p: '3px',
+  paddingX: '8px',
+  minWidth: 'unset',
+  textTransform: 'unset',
+  boxShadow: 'unset',
+  fontWeight: 600,
+  borderRadius: '8px',
+  width: '280px',
+  display: 'flex',
+  alignItems: 'center',
+  gap: '7px',
+  [theme.breakpoints.down('xs')]: {
+    fontSize: '16px',
+  },
+});
+
+const aproovesSx = theme => ({
+  display: 'flex',
+  gap: '8px',
+  mt: '7px',
+  [theme.breakpoints.down('xs')]: {
+    alignSelf: 'center',
+  },
+});
+
 const titleWrapper = theme => ({
   display: 'flex',
   justifyContent: 'space-between',
@@ -487,6 +657,9 @@ const chipSx = theme => ({
   [theme.breakpoints.down('sm')]: {
     width: '85px',
   },
+  [theme.breakpoints.down('xs')]: {
+    alignSelf: 'center',
+  },
 });
 
 const dateSx = theme => ({
@@ -496,6 +669,9 @@ const dateSx = theme => ({
   [theme.breakpoints.down('sm')]: {
     fontSize: '14px',
     width: '122px',
+  },
+  [theme.breakpoints.down('xs')]: {
+    alignSelf: 'flex-end',
   },
 });
 
@@ -554,10 +730,12 @@ const itemWrapperSx = theme => ({
   justifyContent: 'space-between',
   cursor: 'pointer',
   [theme.breakpoints.down('xs')]: {
-    flexDirection: 'column',
     gap: '8px',
     padding: '10px 0',
     alignItems: 'flex-start',
+  },
+  [theme.breakpoints.down(460)]: {
+    flexDirection: 'column',
   },
 });
 
@@ -569,6 +747,8 @@ const compareSx = theme => ({
   },
   [theme.breakpoints.down('xs')]: {
     order: 1,
+    alignSelf: 'flex-end',
+    width: '122px',
   },
 });
 
@@ -599,7 +779,11 @@ const modalSx = theme => ({
   height: '90%',
   overflowY: 'auto',
   paddingTop: '7px',
+  '&::-webkit-scrollbar': {
+    width: '2px',
+  },
   [theme.breakpoints.down('xs')]: {
     padding: 2,
+    paddingRight: '8px',
   },
 });

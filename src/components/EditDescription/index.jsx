@@ -19,7 +19,7 @@ import { addTestsLabel } from '../../lib/helper.js';
 import AddLinkIcon from '@mui/icons-material/AddLink.js';
 import { TextField } from 'formik-mui';
 import { AUDIT_PARENT_ENTITY } from '../../services/file_constants.js';
-import { SCOPE_GIT_BLOCK } from '../../services/constants.js';
+import { SCOPE_GIT_BLOCK, SCOPE_LINKS } from '../../services/constants.js';
 
 const EditDescription = ({ audit, auditRequest, hideChange, isPublic }) => {
   const dispatch = useDispatch();
@@ -144,7 +144,8 @@ const EditDescription = ({ audit, auditRequest, hideChange, isPublic }) => {
                               textTransform: 'unset',
                             }}
                             color={
-                              user?.current_role?.toLowerCase() === CUSTOMER.toLowerCase()
+                              user?.current_role?.toLowerCase() ===
+                              CUSTOMER.toLowerCase()
                                 ? 'primary'
                                 : 'secondary'
                             }
@@ -240,13 +241,17 @@ const EditDescription = ({ audit, auditRequest, hideChange, isPublic }) => {
                               )
                             : values.scope?.content
                           )?.map((link, idx) => (
-                            <CustomLink link={link} key={idx} />
+                            <CustomLink
+                              isGithub={values.scope?.type === SCOPE_GIT_BLOCK}
+                              link={link}
+                              key={idx}
+                            />
                           ))}
                         </Box>
                       )
                     ) : (
                       <Box sx={customerLinksList}>
-                        {values.scope?.map((link, idx) => (
+                        {values.scope?.content.map((link, idx) => (
                           <CustomLink link={link} key={idx} />
                         ))}
                       </Box>

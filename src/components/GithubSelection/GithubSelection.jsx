@@ -29,7 +29,13 @@ import {
 } from '../../redux/actions/types.js';
 import { SCOPE_GIT_BLOCK, SCOPE_LINKS } from '../../services/constants.js';
 
-const GithubSelection = ({ project, noPrivate, isOpen, setIsOpen }) => {
+const GithubSelection = ({
+  project,
+  noPrivate,
+  isOpen,
+  setIsOpen,
+  clearRepo,
+}) => {
   const dispatch = useDispatch();
   const [field, _, fieldHelper] = useField('scope');
   const [urlRepo, setUrlRepo] = useState('');
@@ -169,6 +175,12 @@ const GithubSelection = ({ project, noPrivate, isOpen, setIsOpen }) => {
     dispatch({ type: SWITCH_REPO });
     dispatch({ type: CLEAR_NOT_FOUND_ERROR });
   };
+
+  useEffect(() => {
+    if (clearRepo === 'clear') {
+      handleReset();
+    }
+  }, [clearRepo]);
 
   useEffect(() => {
     const handleStorageChange = event => {
