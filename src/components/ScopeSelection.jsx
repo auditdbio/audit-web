@@ -94,26 +94,9 @@ const ScopeSelection = ({
       {/*  </Box>*/}
       {/*) : (*/}
       <Box sx={selectionToolSx}>
-        <Typography>Add links to the scope</Typography>
+        <Typography>Select scope from Github</Typography>
         <Box sx={{ display: 'flex' }}>
-          <Button
-            onClick={() => {
-              if (typeScope === SCOPE_GIT_BLOCK) {
-                handleChangeScopeType(SCOPE_LINKS, setFieldValue);
-                setTypeScope(SCOPE_LINKS);
-              }
-            }}
-            sx={[
-              githubBtnSx,
-              {
-                borderRadius: '10px 0 0 10px',
-              },
-            ]}
-            variant={typeScope === SCOPE_LINKS ? 'contained' : 'outlined'}
-          >
-            <LinkIcon />
-          </Button>
-          <Tooltip
+        <Tooltip
             title={
               scope?.content?.length
                 ? 'Selection via GitHub is not available if there are links added manually'
@@ -121,32 +104,50 @@ const ScopeSelection = ({
             }
             arrow={true}
             placement="top"
-          >
-            <span>
-              <Button
-                onClick={() => {
-                  if (typeScope === SCOPE_LINKS) {
-                    if (typeScope === SCOPE_LINKS) {
-                      handleChangeScopeType(SCOPE_GIT_BLOCK, setFieldValue);
-                      setTypeScope(SCOPE_GIT_BLOCK);
-                    }
-                  }
-                }}
-                variant={
-                  typeScope === SCOPE_GIT_BLOCK ? 'contained' : 'outlined'
+        >
+          <span>
+            <Button
+            onClick={() => {
+              if (typeScope === SCOPE_LINKS) {
+                if (typeScope === SCOPE_LINKS) {
+                  handleChangeScopeType(SCOPE_GIT_BLOCK, setFieldValue);
+                  setTypeScope(SCOPE_GIT_BLOCK);
                 }
-                sx={[
-                  githubBtnSx,
-                  { borderRadius: '0 10px 10px 0', ml: '-1px' },
-                ]}
-                className="github-btn"
-              >
-                <GitHubIcon />
-              </Button>
-            </span>
-          </Tooltip>
+              }
+            }}
+            variant={
+              typeScope === SCOPE_GIT_BLOCK ? 'contained' : 'outlined'
+            }
+              sx={[
+                githubBtnSx,
+                {
+                  borderRadius: '10px 0 0 10px',
+                },
+              ]}
+            >
+              <GitHubIcon />
+            </Button>
+          </span>
+        </Tooltip>
+          <Button
+            onClick={() => {
+              if (typeScope === SCOPE_GIT_BLOCK) {
+                handleChangeScopeType(SCOPE_LINKS, setFieldValue);
+                setTypeScope(SCOPE_LINKS);
+              }
+            }}
+            variant={typeScope === SCOPE_LINKS ? 'contained' : 'outlined'}
+            sx={[
+              githubBtnSx,
+              { borderRadius: '0 10px 10px 0', ml: '-1px' },
+            ]}
+            className="github-btn"
+          >
+                        <LinkIcon />
+
+          </Button>   
         </Box>
-        <Typography>Select scope from Github</Typography>
+        <Typography>Add links to the scope</Typography>
       </Box>
       <Box sx={[linkFieldWrapper, sx]}>
         <Box
