@@ -189,7 +189,7 @@ const CommitModal = ({
   };
 
   const checkDiff = useMemo(() => {
-    if (selected.length !== field.value.content.files.length) {
+    if (selected.length !== field.value.content?.files?.length) {
       return false;
     }
     return !!selected.every(file =>
