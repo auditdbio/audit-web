@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Box, Tooltip, Typography, Link, useMediaQuery } from '@mui/material';
+import { Box, Link, Tooltip, Typography, useMediaQuery } from '@mui/material';
 import GitHubIcon from '@mui/icons-material/GitHub.js';
 import LinkIcon from '@mui/icons-material/Link';
 import theme from '../../styles/themes.js';
@@ -20,7 +20,13 @@ export const linkShortener = (link, shortLinkLength) => {
   return shortLink;
 };
 
-const CustomLink = ({ link, showIcon = true, sx = {}, shortLength = null }) => {
+const CustomLink = ({
+  link,
+  showIcon = true,
+  sx = {},
+  shortLength = null,
+  isGithub,
+}) => {
   const linkBoxRef = useRef();
   const matchSm = useMediaQuery(theme.breakpoints.down('sm'));
   const [shortLinkLength, setShortLinkLength] = useState(shortLength);
@@ -43,6 +49,10 @@ const CustomLink = ({ link, showIcon = true, sx = {}, shortLength = null }) => {
     const sha = parts.slice(parts.indexOf('blob') + 1)[0];
     const path = parts.slice(parts.indexOf(sha) + 1, parts.length).join('/');
     return `${repo}/${sha?.slice(0, 7)}.../${path}`;
+  };
+  const mySlice = url => {
+    const regex = /\/blob\/([0-9a-f]{40})\//;
+    return url.split(regex)[2];
   };
 
   return (
@@ -73,7 +83,9 @@ const CustomLink = ({ link, showIcon = true, sx = {}, shortLength = null }) => {
         >
           <Tooltip sx={{ width: 'unset' }} title={link} arrow placement="top">
             <span style={{ fontSize: '14px' }}>
-              {link?.includes('blob')
+              {isGithub
+                ? mySlice(link)
+                : link?.includes('blob')
                 ? shortenLink(link)
                 : linkShortener(link, shortLinkLength)}
             </span>
@@ -94,8 +106,8 @@ const linkBoxSx = {
 const linkSx = {
   fontFamily: 'monospace',
   fontWeight: 400,
-  color: '#152BEA',
-  textDecoration: 'none',
+  color: '#333333',
+  textDecoration: 'none!important',
   display: 'flex',
   width: '100%',
   overflow: 'hidden',
