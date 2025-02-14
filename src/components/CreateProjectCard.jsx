@@ -391,13 +391,14 @@ const CreateProjectCard = ({ projectInfo }) => {
                           setFieldTouched={setFieldTouched}
                         />
                         {!!values?.tags?.length && <TagsArray name="tags" />}
+                        {!matchMd && 
                         <Box>
                           <TotalPrice />
-                        </Box>
+                        </Box>}
                         {!matchMd && (
                           <PriceCalculation
                             price={values.price}
-                            scope={values.scope}
+                            scope={values.scope}Ï
                             totalPrice={values.total_cost}
                           />
                         )}
@@ -416,6 +417,10 @@ const CreateProjectCard = ({ projectInfo }) => {
                         )}
                       </Box>
                     </Box>
+                    {matchMd &&
+                      <Box>
+                          <TotalPrice />
+                        </Box>}
                     {matchMd && (
                       <PriceCalculation
                         price={values.price}
