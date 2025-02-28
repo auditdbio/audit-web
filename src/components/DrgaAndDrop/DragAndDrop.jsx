@@ -1,19 +1,16 @@
 import React, { useState } from 'react';
 import { Box } from '@mui/system';
 import { useDispatch, useSelector } from 'react-redux';
+import { VERIFY_AUDIT_REPORT } from '../../redux/actions/types.js';
 import { handleGetHash } from '../../redux/actions/auditAction.js';
 
 const DragAndDropInput = ({
-  auditId,
-  customerId,
-  auditReportName,
-  auditorId,
+  setVerifyAudit,
+  sha,
 }) => {
   const [dragActive, setDragActive] = useState(false);
-  const dispatch = useDispatch();
-  const formData = new FormData();
-  const user = useSelector(state => state.user.user);
   const [error, setError] = useState(null);
+  const dispatch = useDispatch();
 
   const handleDrag = event => {
     event.preventDefault();
@@ -30,15 +27,20 @@ const DragAndDropInput = ({
     if (fileSize > 10000000) {
       return setError('File size is too large');
     } else {
-      formData.append('file', file);
-      formData.append('path', user.id + user.current_role + file.name);
-      formData.append('original_name', file.name);
-      formData.append('private', 'true');
-      formData.append('audit', auditId);
-      formData.append('auditorId', auditorId);
-      formData.append('customerId', customerId);
-      formData.append('report_name', file.name);
-      dispatch(handleGetHash(auditId, formData));
+      const reader = new FileReader();
+      reader.onload = async (e) => {
+        const arrayBuffer = e.target.result;
+        const hashBuffer = await crypto.subtle.digest('SHA-256', arrayBuffer);
+        const hashArray = Array.from(new Uint8Array(hashBuffer));
+        const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+        setVerifyAudit(hashHex);
+        if (hashHex === sha) {
+          dispatch({type: VERIFY_AUDIT_REPORT, payload: {verified: true}})
+        } else {
+          dispatch({type: VERIFY_AUDIT_REPORT, payload: {verified: false}})
+        }
+      };
+      reader.readAsArrayBuffer(file);
     }
   };
 
