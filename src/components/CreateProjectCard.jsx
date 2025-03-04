@@ -152,8 +152,15 @@ const CreateProjectCard = ({ projectInfo }) => {
     // },
     // TODO: replace to git block
     scope: {
-      type: projectInfo?.scope?.type || SCOPE_LINKS,
-      content: projectInfo?.scope?.content || [],
+      type: projectInfo?.scope?.type || SCOPE_GIT_BLOCK,
+      content: projectInfo?.scope?.content || {
+        repository: {
+          clone_url: null,
+          display_url: null,
+        },
+        commit: null,
+        files: [],
+      },
     },
   };
 
