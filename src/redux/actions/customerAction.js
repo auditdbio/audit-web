@@ -11,6 +11,7 @@ import {
 } from './types.js';
 import { history } from '../../services/history.js';
 import createSearchValues from '../../lib/createSearchValues.js';
+import createSearchValuesV2 from '../../lib/createSearchValuesV2.js';
 import { isAuth } from '../../lib/helper.js';
 
 const API_URL = import.meta.env.VITE_API_BASE_URL;
@@ -150,5 +151,24 @@ export const searchCustomers = values => {
       .catch(({ response }) => {
         console.error(response, 'res');
       });
+  };
+};
+
+export const searchCustomersV2 = (values) => {
+  const queryString = createSearchValuesV2(values, 'customer');
+
+  return dispatch => {
+    const token = Cookies.get('token');
+    axios
+      .get(
+        `${API_URL}/v2/search?${queryString}`,
+        isAuth() ? { headers: { Authorization: `Bearer ${token}` } } : {},
+      )
+      .then(({ data }) => {
+        dispatch({ type: GET_CUSTOMERS, payload: data });
+      })
+      .catch(({ response }) => {
+        console.error(response, 'res');
+      })
   };
 };

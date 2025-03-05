@@ -12,7 +12,7 @@ import {
 import SearchIcon from '@mui/icons-material/Search';
 import AuditorCard from './AuditorCard';
 import theme from '../../../styles/themes';
-import { getAuditors } from '../../../redux/actions/auditorAction.js';
+import { getAuditors, searchAuditorV2 } from '../../../redux/actions/auditorAction.js';
 import { addTestsLabel } from '../../../lib/helper.js';
 import { sliceCards } from './AuditorsProjectsSection.jsx';
 import { Link } from 'react-router-dom';
@@ -30,9 +30,9 @@ const AuditorSection = () => {
 
   useEffect(() => {
     if (searchInput) {
-      dispatch(getAuditors(searchInput, 4));
+      dispatch(searchAuditorV2({search: searchInput}, true, 4));
     } else {
-      dispatch(getAuditors('', 4));
+      dispatch(searchAuditorV2({search: searchInput}, true, 4));
     }
   }, [searchInput]);
 

@@ -8,6 +8,7 @@ import Filter from '../components/forms/filter/index.jsx';
 import ProjectListCard from '../components/Project-list-card.jsx';
 import { PROJECTS } from '../redux/actions/types.js';
 import { searchProjects } from '../redux/actions/projectAction.js';
+import { searchProjectsV2 } from '../redux/actions/projectAction.js';
 import { clearMessage } from '../redux/actions/auditAction.js';
 import CustomPagination from '../components/custom/CustomPagination.jsx';
 import { addTestsLabel } from '../lib/helper.js';
@@ -45,7 +46,7 @@ const ProjectPage = () => {
         readyToWait: filter.readyToWait || '',
       };
     });
-    dispatch(searchProjects(filter));
+    dispatch(searchProjectsV2(filter));
   };
 
   const initialFilter = {
@@ -85,7 +86,7 @@ const ProjectPage = () => {
   }, [query]);
 
   useEffect(() => {
-    dispatch(searchProjects(initialFilter));
+    dispatch(searchProjectsV2(initialFilter));
   }, [searchParams.toString()]);
 
   useEffect(() => {

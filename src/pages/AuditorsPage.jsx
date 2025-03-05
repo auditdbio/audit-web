@@ -6,7 +6,7 @@ import Filter from '../components/forms/filter/index.jsx';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useSearchParams } from 'react-router-dom/dist';
 import AuditorListCard from '../components/AuditorListCard.jsx';
-import { searchAuditor } from '../redux/actions/auditorAction.js';
+import { searchAuditor, searchAuditorV2 } from '../redux/actions/auditorAction.js';
 import theme from '../styles/themes.js';
 import CustomPagination from '../components/custom/CustomPagination.jsx';
 import { addTestsLabel } from '../lib/helper.js';
@@ -46,7 +46,8 @@ const AuditorsPage = () => {
         readyToWait: filter.readyToWait || '',
       };
     });
-    dispatch(searchAuditor(filter));
+    // dispatch(searchAuditor(filter));
+    dispatch(searchAuditorV2(filter));
   };
 
   const initialFilter = {
@@ -59,6 +60,10 @@ const AuditorsPage = () => {
     sort_by: searchParams.get('sort_by') || 'rating',
     readyToWait: searchParams.get('readyToWait') || '',
     price: {
+      from: searchParams.get('from') || 0,
+      to: searchParams.get('to') || 0,
+    },
+    rating: {
       from: searchParams.get('from') || 0,
       to: searchParams.get('to') || 0,
     },
@@ -83,7 +88,8 @@ const AuditorsPage = () => {
   }, [query]);
 
   useEffect(() => {
-    dispatch(searchAuditor(initialFilter));
+    // dispatch(searchAuditor(initialFilter));
+    dispatch(searchAuditorV2(initialFilter));
   }, [searchParams.toString()]);
 
   useEffect(() => {

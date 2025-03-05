@@ -13,7 +13,8 @@ import { addTestsLabel } from '../../lib/helper.js';
 import ChatListItem from './ChatListItem.jsx';
 import { AUDITOR, CUSTOMER } from '../../redux/actions/types.js';
 import { searchAuditor } from '../../redux/actions/auditorAction.js';
-import { searchCustomers } from '../../redux/actions/customerAction.js';
+import { searchAuditorV2 } from '../../redux/actions/auditorAction.js';
+import { searchCustomersV2 } from '../../redux/actions/customerAction.js';
 
 const ChatList = ({ chatList, chatListIsOpen, setChatListIsOpen }) => {
   const dispatch = useDispatch();
@@ -31,8 +32,8 @@ const ChatList = ({ chatList, chatListIsOpen, setChatListIsOpen }) => {
   useEffect(() => {
     startTransition(() => {
       if (search.trim()) {
-        dispatch(searchAuditor({ search, perPage: 20 }, false));
-        dispatch(searchCustomers({ search, perPage: 20 }));
+        dispatch(searchAuditorV2({ search, perPage: 20 }, false));
+        dispatch(searchCustomersV2({ search, perPage: 20 }));
       }
     });
   }, [search]);

@@ -16,6 +16,7 @@ import { getAllProjects } from '../../../redux/actions/projectAction.js';
 import { clearMessage } from '../../../redux/actions/auditAction.js';
 import { addTestsLabel } from '../../../lib/helper.js';
 import { sliceCards } from './AuditorsProjectsSection.jsx';
+import { getAllProjectsV2 } from '../../../redux/actions/projectAction.js';
 
 const ProjectSection = () => {
   const dispatch = useDispatch();
@@ -29,9 +30,9 @@ const ProjectSection = () => {
 
   useEffect(() => {
     if (searchInput) {
-      dispatch(getAllProjects(searchInput, 4));
+      dispatch(getAllProjectsV2({search: searchInput}, 4));
     } else {
-      dispatch(getAllProjects('', 4));
+      dispatch(getAllProjectsV2({search: searchInput}, 4));
     }
   }, [searchInput]);
 
