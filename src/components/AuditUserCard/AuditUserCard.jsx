@@ -86,9 +86,9 @@ const AuditUserCard = ({
             </Box>
           </Box>
           {showPrice && (
-            <Box sx={infoWrapper}>
-              <span className={'data-title'}>Telegram:</span>
-              <EditPrice
+              <Box sx={infoWrapper}>
+                <span className={'data-title'}>Price:</span>
+                <EditPrice
                 hideIcon={true}
                 audit={audit}
                 user={user}
