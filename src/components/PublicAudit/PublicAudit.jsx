@@ -53,7 +53,8 @@ const PublicAudit = ({
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
-  const { successMessage, error, verifyAudit } = useSelector(s => s.audits);
+  const { successMessage, error } = useSelector(s => s.audits);
+  const [verifyAudit, setVerifyAudit] = useState(null);
   const { user } = useSelector(s => s.user);
   const { chatList } = useSelector(s => s.chat);
   const [showFull, setShowFull] = useState(false);
@@ -100,6 +101,7 @@ const PublicAudit = ({
     dispatch(sendAuditFeedback(feedback));
     setIsFeedbackModalOpen(false);
   };
+
 
   return (
     <>
@@ -374,10 +376,8 @@ const PublicAudit = ({
           {audit?.report_sha && (
             <>
               <DragAndDropInput
-                auditReportName={audit.name}
-                auditor_id={audit.auditor_id}
-                auditId={audit.id}
-                customerId={audit.customer_id}
+                setVerifyAudit={setVerifyAudit}
+                sha={audit?.report_sha}
               />
               <Typography
                 sx={{ display: 'flex', alignItems: 'center', width: '130px' }}
@@ -394,7 +394,7 @@ const PublicAudit = ({
                   }}
                 >
                   {verifyAudit &&
-                    (verifyAudit.verified ? (
+                    (verifyAudit === audit?.report_sha ? (
                       <TaskAltIcon color={'success'} />
                     ) : (
                       <HighlightOffIcon color={'error'} />

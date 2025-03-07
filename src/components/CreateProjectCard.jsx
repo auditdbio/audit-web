@@ -152,8 +152,15 @@ const CreateProjectCard = ({ projectInfo }) => {
     // },
     // TODO: replace to git block
     scope: {
-      type: projectInfo?.scope?.type || SCOPE_LINKS,
-      content: projectInfo?.scope?.content || [],
+      type: projectInfo?.scope?.type || SCOPE_GIT_BLOCK,
+      content: projectInfo?.scope?.content || {
+        repository: {
+          clone_url: null,
+          display_url: null,
+        },
+        commit: null,
+        files: [],
+      },
     },
   };
 
@@ -390,29 +397,37 @@ const CreateProjectCard = ({ projectInfo }) => {
                           label="Tags"
                           setFieldTouched={setFieldTouched}
                         />
-                        <TagsArray name="tags" />
+                        {!!values?.tags?.length && <TagsArray name="tags" />}
+                        {!matchMd && 
+                        <Box>
+                          <TotalPrice />
+                        </Box>}
+                        {!matchMd && (
+                          <PriceCalculation
+                            price={values.price}
+                            scope={values.scope}Ï
+                            totalPrice={values.total_cost}
+                          />
+                        )}
                       </Box>
-                      <Box sx={fieldWrapper}>
+                      <Box sx={[fieldWrapper, { gap: '7px' }]}>
                         <ScopeSelection
+                          projectId={values.id}
                           scope={values.scope}
                           project={projectInfo}
                           setFieldValue={setFieldValue}
                           setFieldTouched={setFieldTouched}
                         />
-
-                        <ProjectLinksList name="scope" />
-                        <Box>
-                          <TotalPrice />
-                        </Box>
-                        {!matchMd && (
-                          <PriceCalculation
-                            price={values.price}
-                            scope={values.scope}
-                            totalPrice={values.total_cost}
-                          />
+                        {(!!values?.scope?.content?.files?.length ||
+                          !!values?.scope?.content?.length) && (
+                          <ProjectLinksList name="scope" />
                         )}
                       </Box>
                     </Box>
+                    {matchMd &&
+                      <Box>
+                          <TotalPrice />
+                        </Box>}
                     {matchMd && (
                       <PriceCalculation
                         price={values.price}

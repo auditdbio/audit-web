@@ -43,7 +43,7 @@ const SalarySlider = ({ min = 0, max = 100, name }) => {
         InputProps={{
           startAdornment: (
             <InputAdornment
-              sx={{ '& p': { fontSize: '16px!important' } }}
+              sx={adornmentSx}
               position="start"
             >
               $
@@ -57,10 +57,23 @@ const SalarySlider = ({ min = 0, max = 100, name }) => {
 
 export default SalarySlider;
 
+const adornmentSx = theme => ({
+  '& p': { fontSize: '16px!important' },
+  [theme.breakpoints.down('xs')]: {
+    '& p': { fontSize: '14px!important' },
+  },
+});
+
 export const sliderWrapper = theme => ({
   display: 'flex',
   alignItems: 'center',
-  gap: '34px',
+  gap: '15px',
+  '& input': {
+    paddingRight: '5px!important',
+  },
+  '& .MuiInputBase-root': {
+    paddingLeft: '8px!important',
+  },
   [theme.breakpoints.down('xs')]: {
     gap: '15px',
   },
@@ -75,7 +88,7 @@ const sliderSx = {
 };
 
 const infoWrapper = theme => ({
-  width: '140px',
+  width: '160px',
   '& .MuiOutlinedInput-input': {
     fontSize: '16px',
     textAlign: 'center',
@@ -86,5 +99,8 @@ const infoWrapper = theme => ({
   },
   [theme.breakpoints.down('xs')]: {
     width: '130px',
+    '& .MuiOutlinedInput-input': {
+      fontSize: '14px',
+    }
   },
 });

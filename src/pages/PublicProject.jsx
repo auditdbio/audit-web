@@ -276,7 +276,14 @@ const PublicProject = () => {
             ? project.scope.content.files?.map(file => file.display_url)
             : project.scope?.content
           ).map((link, idx) => {
-            return <CustomLink link={link} key={idx} sx={linkSx} />;
+            return (
+              <CustomLink
+                isGithub={project?.scope.type === SCOPE_GIT_BLOCK}
+                link={link}
+                key={idx}
+                sx={linkSx}
+              />
+            );
           })}
         </Box>
 
