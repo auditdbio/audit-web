@@ -3,6 +3,7 @@ import { Avatar, Box, Button, Tooltip, Typography } from '@mui/material';
 import { ASSET_URL } from '../../services/urls.js';
 import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom/dist';
+import EditPrice from '../EditDescription/EditPrice.jsx';
 
 const AuditUserCard = ({
   avatar,
@@ -12,6 +13,9 @@ const AuditUserCard = ({
   telegram,
   id,
   customer,
+  audit,
+  user,
+  showPrice,
 }) => {
   return (
     <Box sx={wrapper}>
@@ -27,7 +31,7 @@ const AuditUserCard = ({
         </Box>
         <Box sx={userInfoWrapper}>
           <Box sx={infoWrapper}>
-            <span>Name:</span>
+            <span className={'data-title'}>Name:</span>
             <Box sx={{ display: 'grid' }}>
               <Link
                 to={!customer ? `/a/${id}` : `/c/${id}`}
@@ -50,7 +54,7 @@ const AuditUserCard = ({
             </Box>
           </Box>
           <Box sx={infoWrapper}>
-            <span>E-mail:</span>
+            <span className={'data-title'}>E-mail:</span>
             <Box sx={{ display: 'grid' }}>
               {!!email ? (
                 <Tooltip title={email} arrow placement="top">
@@ -66,7 +70,7 @@ const AuditUserCard = ({
             </Box>
           </Box>
           <Box sx={infoWrapper}>
-            <span>Telegram:</span>
+            <span className={'data-title'}>Telegram:</span>
             <Box sx={{ display: 'grid' }}>
               {telegram ? (
                 <Tooltip title={telegram} arrow placement="top">
@@ -81,6 +85,17 @@ const AuditUserCard = ({
               )}
             </Box>
           </Box>
+          {showPrice && (
+              <Box sx={infoWrapper}>
+                <span className={'data-title'}>Price:</span>
+                <EditPrice
+                hideIcon={true}
+                audit={audit}
+                user={user}
+                role={role}
+              />
+            </Box>
+          )}
         </Box>
       </Box>
     </Box>
@@ -169,28 +184,31 @@ const infoWrapper = theme => ({
   fontWeight: 500,
   color: '#434242',
   '& p': {
-    fontSize: 'inherit',
     maxWidth: '200px',
+    color: '#434242',
+    fontWeight: 'unset',
+    fontSize: '15px',
   },
-  '& span': {
+  '& .data-title': {
     width: '85px',
     marginRight: '30px',
     color: '#B2B3B3',
   },
   fontSize: '15px',
   [theme.breakpoints.down('md')]: {
-    '& span': {
+    '& .data-title': {
       marginRight: '20px',
     },
   },
   [theme.breakpoints.down('sm')]: {
     '& p': {
       maxWidth: '300px',
+      fontSize: '12px',
     },
   },
   [theme.breakpoints.down('xs')]: {
     fontSize: '12px',
-    '& span': {
+    '& .data-title': {
       width: '50px',
       marginRight: '20px',
     },

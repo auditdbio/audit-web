@@ -44,7 +44,7 @@ const MainText = () => {
           </Box>
         )}
 
-        <Box sx={textWrapper}>
+        <Box sx={textWrapper(isMobile)}>
           <Typography sx={headingStyle} theme={theme} variant="h1">
             {headingText}
           </Typography>
@@ -53,14 +53,14 @@ const MainText = () => {
           </Typography>
           <Box sx={buttonsStyle(isMobile)}>
             <CustomButton
-              sx={auditorButton}
+              sx={[customButtonSx, auditorButton]}
               onClick={isAuth() ? handleBecomeAuditor : handleSignUp}
               {...addTestsLabel('hero_become-auditor-button')}
             >
               Become auditor
             </CustomButton>
             <CustomButton
-              sx={projectButton}
+              sx={[customButtonSx, projectButton]}
               onClick={isAuth() ? handleShowProject : handleSignUp}
               {...addTestsLabel('hero_show-project-button')}
             >
@@ -69,10 +69,13 @@ const MainText = () => {
           </Box>
           <Box sx={buttonsStyle(isMobile)}>
             <CustomButton
-              sx={[gitCoinSx, { color: '#fff' }]}
-              onClick={() => navigate(`/audit-builder/${auditId}`)}
+              sx={[customButtonSx, savantButtonSx]}
+              component="a"
+              href="https://savant.chat/"
+              target="_blank"
+              rel="noopener noreferrer"
             >
-              Try audit builder
+              Try AI Auditor Agent Tool Savant.Chat
             </CustomButton>
           </Box>
         </Box>
@@ -131,39 +134,57 @@ const paragraphStyle = {
   },
 };
 
-const auditorButton = {
-  backgroundColor: '#52176D',
+const customButtonSx = theme => ({
   color: 'white',
   ':hover': {
-    backgroundColor: '#52176D',
     color: 'white',
+  },
+  [theme.breakpoints.down('md')]: {
+    fontSize: '16px',
+  },
+  [theme.breakpoints.down('sm')]: {
+    fontSize: '14px',
+  },
+})
+
+const auditorButton = {
+  backgroundColor: '#52176D',
+  ':hover': {
+    backgroundColor: '#3b1050',
   },
 };
 
 const projectButton = {
   backgroundColor: 'orange',
-  color: 'white',
   ':hover': {
-    backgroundColor: 'orange',
-    color: 'white',
+    backgroundColor: '#cc8400',
   },
 };
 
-const textWrapper = {
+const savantButtonSx = {
+  backgroundColor: '#44944A',
+  textAlign: 'center',
+  px: '8px',
+  '&:hover': {
+    backgroundColor: '#326e34!important',
+  },
+};
+
+const textWrapper = isMobile => ({
   display: 'flex',
   flexDirection: 'column',
   justifyContent: 'space-between',
   flexGrow: 1,
   paddingX: '2rem',
   marginY: 'auto',
-  gap: '3rem',
-};
+  gap: isMobile ? '2rem' : '3rem',
+});
 
 const imageStyle = isMobile => ({
   display: isMobile ? 'none' : 'inline',
   minWidth: '25%',
 });
-//
+
 const buttonsStyle = isMobile => ({
   flexGrow: 0,
   display: 'flex',
@@ -203,14 +224,6 @@ const personBitcoinStyle = {
   backgroundPosition: 'center',
   backgroundRepeat: 'no-repeat',
   margin: '0 auto',
-};
-
-const gitCoinSx = {
-  backgroundColor: '#44944A',
-  paddingX: 0,
-  '&:hover': {
-    backgroundColor: '#326e34!important',
-  },
 };
 
 const headingText = 'Start your project right now or audit like expert';

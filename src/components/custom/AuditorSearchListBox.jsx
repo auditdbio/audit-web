@@ -1,12 +1,14 @@
 import React from 'react';
-import { Box, Typography } from '@mui/material';
+import { Avatar, Box, Typography } from '@mui/material';
 import CircleIcon from '@mui/icons-material/Circle';
 import theme from '../../styles/themes.js';
+import { ASSET_URL } from '../../services/urls.js';
 
 const AuditorSearchListBox = ({ auditor, handleSelectOption }) => {
   return (
     <Box sx={mainContainer} onClick={handleSelectOption}>
-      <Box>
+      <Box sx={{ display: 'flex', gap: '7px', alignItems: 'center' }}>
+        <Avatar src={auditor.avatar && `${ASSET_URL}/id/${auditor.avatar}`} />
         <Typography sx={nameStyle(theme)}>
           {auditor.first_name} {auditor.last_name}
         </Typography>
@@ -32,10 +34,13 @@ const mainContainer = {
   fontWeight: '600',
   borderBottom: '1px solid #434242',
   [theme.breakpoints.down('sm')]: {
-    height: '35px',
     padding: '10px',
     gap: '10px',
     width: '100%',
+    '& .MuiAvatar-root': {
+      width: '30px',
+      height: '30px',
+    },
   },
 };
 

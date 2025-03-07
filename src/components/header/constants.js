@@ -98,6 +98,18 @@ export const authorizedPages = [
         itemName: 'Price calculator',
         link: `/price-calculation`,
       },
+      {
+        id: 335,
+        role: CUSTOMER,
+        itemName: 'Savant.Chat',
+        link: 'https://savant.chat/',
+      },
+      {
+        id: 336,
+        role: AUDITOR,
+        itemName: 'Savant.Chat',
+        link: 'https://savant.chat/',
+      },
     ],
   },
 ];
@@ -132,6 +144,11 @@ export const pages = [
         id: 31,
         itemName: 'Audit builder',
         link: `/audit-builder/${auditId}`,
+      },
+      {
+        id: 32,
+        itemName: 'Savant.Chat',
+        link: 'https://savant.chat/',
       },
     ],
   },

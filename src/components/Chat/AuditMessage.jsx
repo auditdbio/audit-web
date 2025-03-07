@@ -355,20 +355,23 @@ const AuditMessage = ({ message, handleError }) => {
           </Box>
         )}
       <>
-        {user.current_role === AUDITOR && data.status === 'Started' && (
-          <Box sx={{ display: 'flex', gap: '20px' }}>
-            <Button
-              sx={{ textTransform: 'unset', width: '100%' }}
-              variant="contained"
-              color="secondary"
-              onClick={handleView}
-            >
-              Proceed
-            </Button>
-          </Box>
-        )}
+        {user.current_role === AUDITOR &&
+          (data.status === 'Started' ||
+            data.status?.toLowerCase() === RESOLVED.toLowerCase()) && (
+            <Box sx={{ display: 'flex', gap: '20px' }}>
+              <Button
+                sx={{ textTransform: 'unset', width: '100%' }}
+                variant="contained"
+                color="secondary"
+                onClick={handleView}
+              >
+                Proceed
+              </Button>
+            </Box>
+          )}
         {user?.current_role?.toLowerCase() === CUSTOMER?.toLowerCase() &&
-          data.status === 'Started' && (
+          (data.status === 'Started' ||
+            data.status?.toLowerCase() === RESOLVED.toLowerCase()) && (
             <Box sx={{ display: 'flex', gap: '20px' }}>
               <Button
                 sx={{ textTransform: 'unset', width: '100%' }}
