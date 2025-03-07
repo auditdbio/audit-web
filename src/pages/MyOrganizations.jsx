@@ -22,6 +22,7 @@ import Loader from '../components/Loader.jsx';
 import { CustomCard } from '../components/custom/Card.jsx';
 import OrganizationCard from '../components/OrganizationCard.jsx';
 import Badge from '@mui/material/Badge';
+import { CLEAR_NOT_FOUND_ERROR } from '../redux/actions/types.js';
 
 const MyOrganization = () => {
   const role = useSelector(s => s.user.user.current_role);
@@ -33,7 +34,7 @@ const MyOrganization = () => {
   const organizations = useSelector(s => s.organization.includeMe);
   const invites = useSelector(s => s.organization.invites);
   const loading = useSelector(s => s.organization.loading);
-
+  const errorRequest = useSelector(s => s.organization.errorRequest);
   const {
     customer,
     error: customerError,
@@ -45,6 +46,14 @@ const MyOrganization = () => {
     success: auditorSuccess,
   } = useSelector(s => s.auditor);
   const { user, error } = useSelector(s => s.user);
+
+  useEffect(() => {
+    return () => {
+      if (errorRequest) {
+        dispatch({type: CLEAR_NOT_FOUND_ERROR});
+      }
+    }
+  }, [errorRequest]);
 
   return (
     <Layout>
@@ -62,7 +71,7 @@ const MyOrganization = () => {
         </Button>
         <Box sx={innerWrapper}>
           <Box sx={contentWrapper}>
-            {!organizations.length && !own.length ? (
+            {!organizations.length && !own.length && !errorRequest ? (
               <Box>
                 <Loader />
               </Box>

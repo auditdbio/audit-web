@@ -12,6 +12,8 @@ import {
   GET_ORGANIZATIONS,
   ORGANIZATION_INVITE,
   CLEAR_SEARCH,
+  ERROR_GET_MY_ORGANIZATIONS,
+  CLEAR_NOT_FOUND_ERROR
 } from '../actions/types.js';
 
 const initialState = {
@@ -24,6 +26,7 @@ const initialState = {
   notFound: false,
   successMessage: '',
   loading: true,
+  errorRequest: false,
 };
 
 export const organizationReducer = (state = initialState, action) => {
@@ -36,6 +39,16 @@ export const organizationReducer = (state = initialState, action) => {
         includeMe: action.payload.member,
         invites: action.payload.invites,
         loading: false,
+      };
+    case ERROR_GET_MY_ORGANIZATIONS:
+      return {
+        ...state,
+        errorRequest: true,
+      };
+    case CLEAR_NOT_FOUND_ERROR:
+      return {
+        ...state,
+        errorRequest: false,
       };
     case ADD_MEMBER_IN_ORGANIZATION:
       return {

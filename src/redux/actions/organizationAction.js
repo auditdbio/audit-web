@@ -13,6 +13,7 @@ import {
   GET_ORGANIZATIONS,
   NOT_FOUND_ORGANIZATION,
   UPDATE_ORGANIZATION,
+  ERROR_GET_MY_ORGANIZATIONS,
 } from './types.js';
 import { history } from '../../services/history.js';
 import createSearchValues from '../../lib/createSearchValues.js';
@@ -81,6 +82,7 @@ export const getMyOrganizations = () => {
         dispatch({ type: GET_MY_ORGANIZATION, payload: data });
       })
       .catch(({ response }) => {
+        dispatch({ type: ERROR_GET_MY_ORGANIZATIONS });
         console.log(response, 'res');
       });
   };
