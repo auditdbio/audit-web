@@ -82,6 +82,7 @@ const EditProfileForm = ({ role, newLinkId }) => {
   };
 
   const sendAvatar = async (withSave = false) => {
+    
     if (formData.get('file')) {
       try {
         const { data } = await axios.post(ASSET_URL, formData, {

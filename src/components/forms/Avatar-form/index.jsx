@@ -24,6 +24,21 @@ const AvatarForm = ({
   const [avatarField, , fieldHelper] = useField(name);
 
   const [avatarPreview, setAvatarPreview] = useState(null);
+  const [avatarFile, setAvatarFile] = useState(null);
+
+  useEffect(() => {
+    Array.from(formData.keys()).forEach(key => {
+      formData.delete(key);
+    });
+
+    if (avatarFile) {
+      formData.set('file', avatarFile);
+      formData.set('private', 'false');
+      formData.set('file_entity', AVATAR_ENTITY);
+      formData.set('parent_entity_id', user.id);
+      formData.set('parent_entity_source', user.current_role);
+    }
+  }, [avatarFile, formData, user.id, user.current_role]);
 
   const handleUpdateAvatar = e => {
     const file = e.target.files[0];
@@ -32,11 +47,7 @@ const AvatarForm = ({
       if (fileSize > 10_000_000) {
         return setError('File size is too big');
       } else {
-        formData.set('file', file);
-        formData.set('private', 'false');
-        formData.set('file_entity', AVATAR_ENTITY);
-        formData.set('parent_entity_id', user.id);
-        formData.set('parent_entity_source', user.current_role);
+        setAvatarFile(file);
 
         const reader = new FileReader();
         reader.onloadend = () => {
@@ -49,6 +60,17 @@ const AvatarForm = ({
     }
   };
 
+  const deletePhoto = () => {
+    if (avatarField?.value) {
+      setDeletedAvatar(avatarField.value);
+    }
+    if (avatarPreview) {
+      setAvatarFile(null);
+      setAvatarPreview(null);
+    }
+    fieldHelper.setValue('');
+  };
+
   useEffect(() => {
     if (user.is_new && !avatarField.value) {
       const avatarLink = user?.linked_accounts?.[0]?.avatar;
@@ -57,33 +79,13 @@ const AvatarForm = ({
       if (isThirdPartyImage) {
         axios.get(avatarLink, { responseType: 'blob' }).then(({ data }) => {
           const filename = user.id + data.type.replace(/image\//, '.');
-          formData.append('file', data);
-          formData.append('private', 'false');
+          setAvatarFile(data);
           formData.append('original_name', filename);
-          formData.append('file_entity', AVATAR_ENTITY);
-          formData.append('parent_entity_id', user.id);
-          formData.append('parent_entity_source', user.current_role);
           sendAvatar(true);
         });
       }
     }
   }, [user]);
-
-  const deletePhoto = () => {
-    if (avatarField?.value) {
-      setDeletedAvatar(avatarField.value);
-    }
-    if (avatarPreview) {
-      formData.delete('file');
-      formData.delete('private');
-      formData.delete('original_name');
-      formData.delete('file_entity');
-      formData.delete('parent_entity_id');
-      formData.delete('parent_entity_source');
-      setAvatarPreview(null);
-    }
-    fieldHelper.setValue('');
-  };
 
   return (
     <>
@@ -131,7 +133,6 @@ const AvatarForm = ({
 };
 
 export default AvatarForm;
-
 const avatarSx = theme => ({
   mb: '20px',
   [theme.breakpoints.down('sm')]: {

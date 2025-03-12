@@ -32,6 +32,9 @@ import {
   changeRoleCreateOrganization,
   changeRolePublicAuditorNoRedirect,
 } from '../../../redux/actions/userAction.js';
+import axios from 'axios';
+import Cookies from 'js-cookie';
+import { ASSET_URL } from '../../../services/urls.js';
 
 const GoBack = ({ role, newLinkId }) => {
   const navigate = useNavigate();
@@ -63,6 +66,42 @@ const CreateEditOrganizationForm = ({
   const { auditor } = useSelector(s => s.auditor);
   const navigate = useNavigate();
   const [isDirty, setIsDirty] = useState(false);
+  const [deletedAvatar, setDeletedAvatar] = useState(null);
+  const formData = new FormData();
+
+  const sendAvatar = async (withSave = false) => {
+    if (formData.get('file')) {
+
+      try {
+
+        const { data } = await axios.post(ASSET_URL, formData, {
+          headers: { Authorization: 'Bearer ' + Cookies.get('token') },
+        });
+
+        const avatar = data.id;
+        if (withSave) {
+          if (role === AUDITOR) {
+            dispatch(updateAuditor({ avatar }, false));
+          } else {
+            dispatch(updateCustomer({ avatar }, false));
+          }
+        }
+        return avatar;
+      } catch (err) {
+        setError('Error while uploading file');
+        console.error(err);
+        console.log(err, 'err');
+      } finally {
+        formData.delete('file');
+        formData.delete('private');
+        formData.delete('original_name');
+        formData.delete('file_entity');
+        formData.delete('parent_entity_id');
+        formData.delete('parent_entity_source');
+      }
+    }
+    return null;
+  };
 
   if (!organization.id && needLoad) {
     return (
@@ -93,9 +132,24 @@ const CreateEditOrganizationForm = ({
         validateOnBlur={false}
         validateOnChange={false}
         enableReinitialize={true}
-        onSubmit={(values, { resetForm, setSubmitting }) => {
+        onSubmit={async (values, { resetForm, setSubmitting }) => {
+          const avatar = await sendAvatar();
+
           setSubmitting(true);
           setIsDirty(false);
+
+          if (deletedAvatar) {
+            try {
+              await axios.delete(`${ASSET_URL}/id/${deletedAvatar}`, {
+                headers: { Authorization: 'Bearer ' + Cookies.get('token') },
+              });
+            } catch (e) {}
+          }
+
+          if (avatar) {
+            values.avatar = avatar;
+          }
+
           if (!values.id) {
             if (
               values.organization_type?.toLowerCase() !==
@@ -178,6 +232,8 @@ const CreateEditOrganizationForm = ({
                       value={values.name}
                       name="avatar"
                       role={role}
+                      formData={formData}
+                      setDeletedAvatar={setDeletedAvatar}
                     />
                   </Box>
                   {matchSm && (

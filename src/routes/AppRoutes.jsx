@@ -14,7 +14,7 @@ import { getCustomer } from '../redux/actions/customerAction.js';
 import ProjectPage from '../pages/Project-page.jsx';
 import AuditRequestPage from '../pages/Audit-Request-Page.jsx';
 import { getProjects } from '../redux/actions/projectAction.js';
-import { getAudits, getAuditsRequest } from '../redux/actions/auditAction.js';
+import { getAudits, getAuditsRequest, getOrganizationAudits } from '../redux/actions/auditAction.js';
 import EditProject from '../pages/EditProject.jsx';
 import ForCustomer from '../pages/For-customer.jsx';
 import ForAuditor from '../pages/For-auditor.jsx';
@@ -101,6 +101,7 @@ const AppRoutes = () => {
       if (currentRole) {
         dispatch(getAuditsRequest(currentRole));
         dispatch(getAudits(currentRole));
+        dispatch(getOrganizationAudits());
       }
     }
   }, [currentRole, isAuth()]);

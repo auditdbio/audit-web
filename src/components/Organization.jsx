@@ -144,7 +144,12 @@ const Organization = ({ linkId }) => {
                 setShowAddUser(false);
               }}
               setError={() => console.log('error')}
-              type={organization?.organization_type?.toLowerCase()}
+              type={
+                organization?.organization_type?.toLowerCase() ===
+                AUDITOR.toLowerCase()
+                  ? 'auditor'
+                  : 'organization'
+              }
             />
             <Box sx={innerWrapper}>
               {/*<Headings*/}
@@ -244,11 +249,14 @@ const Organization = ({ linkId }) => {
                         {organization.members.map(value => {
                           const labelId = `checkbox-list-secondary-label-${value}`;
                           return (
-                            <UserLIstItem
-                              value={value}
-                              labelId={labelId}
-                              organization={organization}
-                            />
+                            <React.Fragment key={value.id}>
+                              <UserLIstItem
+                                key={value.id}
+                                value={value}
+                                labelId={labelId}
+                                organization={organization}
+                              />
+                            </React.Fragment>
                           );
                         })}
                       </List>
@@ -466,6 +474,11 @@ const infoInnerStyle = theme => ({
 
 const userListSx = theme => ({
   width: '100%',
+  [theme.breakpoints.down('sm')]: {
+    '& li': {
+      marginLeft: '0px!important',
+    },
+  },
 });
 
 const infoStyle = theme => ({

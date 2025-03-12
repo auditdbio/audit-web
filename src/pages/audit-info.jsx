@@ -74,7 +74,11 @@ const AuditInfo = ({
   const [isFeedbackModalOpen, setIsFeedbackModalOpen] = useState(false);
 
   const handleConfirm = () => {
-    dispatch(confirmAudit(audit, true));
+    if (audit?.auditor_organization) {
+      dispatch(confirmAudit({ ...audit, auditor_organization: audit?.auditor_organization.id }, true));
+    } else {
+      dispatch(confirmAudit(audit, true));
+    }
   };
 
   const handleDecline = () => {
@@ -263,6 +267,22 @@ const AuditInfo = ({
                 isPublic ? { alignItems: 'flex-start' } : {},
               ]}
             >
+              {
+                audit?.auditor_organization ? 
+                <AuditUserCard
+                avatar={audit?.auditor_organization?.avatar}
+                name={
+                  audit?.auditor_organization?.name
+                }
+                id={audit?.auditor_organization?.id}
+                email={audit?.auditor_organization?.contacts?.email}
+                telegram={audit?.auditor_organization?.contacts?.telegram}
+                role={'Organization'}
+                audit={audit}
+                user={user}
+                showPrice={true}
+              />
+              : 
               <AuditUserCard
                 avatar={audit?.avatar}
                 name={
@@ -276,6 +296,7 @@ const AuditInfo = ({
                 user={user}
                 showPrice={true}
               />
+              }
               {!!audit?.time?.from && !isPublic && (
                 <Box sx={projectWrapper}>
                   <Typography>Time for project:</Typography>

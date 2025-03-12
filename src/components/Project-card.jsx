@@ -232,6 +232,22 @@ const ProjectCard = ({ type, project, currentRole, isPublic }) => {
               label="Publish"
             />
           )}
+          {!isPublic && project?.auditor_organization?.id &&
+            project?.status.toLowerCase() !== RESOLVED.toLowerCase() &&
+          <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            gap: '7px',
+          }}
+        >
+          <Typography sx={priceTextStyle}>Organization</Typography>
+          <Typography sx={auditNameStyle}>
+            {project?.auditor_organization?.name}
+          </Typography>
+        </Box>
+          }
         {type !== AUDITOR && (
           <Box sx={smallButtonsBox}>
             <Button
@@ -303,6 +319,31 @@ const ProjectCard = ({ type, project, currentRole, isPublic }) => {
 };
 
 export default ProjectCard;
+
+const priceTextStyle = {
+  fontWeight: '500',
+  fontSize: '14px!important',
+  [theme.breakpoints.down('sm')]: {
+    fontSize: '11.5px!important',
+  },
+};
+
+const auditNameStyle = {
+  height: '55px',
+  overflow: 'hidden',
+  wordBreak: 'break-word',
+  '-webkit-line-clamp': '2',
+  '-webkit-box-orient': 'vertical',
+  'text-overflow': 'ellipsis',
+  display: '-webkit-box',
+  fontWeight: '500',
+  fontSize: '18px!important',
+  [theme.breakpoints.down('sm')]: {
+    fontSize: '14px!important',
+    height: '45px',
+    textAlign: 'center',
+  },
+};
 
 export const userButtonSx = {
   textTransform: 'unset',

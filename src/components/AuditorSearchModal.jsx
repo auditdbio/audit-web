@@ -82,6 +82,14 @@ export default function AuditorSearchModal({
   const [searchValue, setSearchValue] = useState('');
   const scrollTimeout = useRef(null);
   const listInnerRef = useRef();
+  const [auditorPagination, setAuditorPagination] = useState({
+    hasMore: true,
+    total: 0,
+  });
+  const [organizationPagination, setOrganizationPagination] = useState({
+    hasMore: true,
+    total: 0,
+  });
 
   useEffect(() => {
     dispatch(getAuditors(query, 15));
@@ -175,7 +183,7 @@ export default function AuditorSearchModal({
   };
 
   useEffect(() => {
-    const fetchAuditors = async () => {
+    const fetchResults = async () => {
       try {
         setIsLoading(true);
         setPage(1);
@@ -186,87 +194,184 @@ export default function AuditorSearchModal({
           setScrollPosition(listInnerRef.current.scrollTop);
         }
 
-        const response = await axios.get(
-          `${API_URL}/search?query=${query}&sort_by=rating&tags=&sort_order=-1&page=1&per_page=15&kind=${type} badge`,
-          { headers: { Authorization: `Bearer ${token}` } },
+        const requests = [
+          axios.get(
+            `${API_URL}/search?query=${query}&sort_by=rating&tags=&sort_order=-1&page=1&per_page=15&kind=auditor badge`,
+            { headers: { Authorization: `Bearer ${token}` } },
+          ),
+          axios.get(
+            `${API_URL}/search?query=${query}&sort_by=rating&tags=&sort_order=-1&page=1&per_page=15&kind=organization`,
+            { headers: { Authorization: `Bearer ${token}` } },
+          ),
+        ];
+
+        const [auditorsResponse, organizationsResponse] = await Promise.all(
+          requests,
         );
 
-        setAuditors(response.data.result);
+        // Update pagination info for both types
+        setAuditorPagination({
+          hasMore:
+            auditorsResponse.data.result.length > 0 &&
+            auditorsResponse.data.result.length <
+              auditorsResponse.data.totalDocuments,
+          total: auditorsResponse.data.totalDocuments,
+        });
+
+        setOrganizationPagination({
+          hasMore:
+            organizationsResponse.data.result.length > 0 &&
+            organizationsResponse.data.result.length <
+              organizationsResponse.data.totalDocuments,
+          total: organizationsResponse.data.totalDocuments,
+        });
+
+        const combinedResults = [
+          ...auditorsResponse.data.result,
+          ...organizationsResponse.data.result,
+        ];
+
+        setAuditors(combinedResults);
       } catch (error) {
-        console.error('Error fetching auditors:', error);
+        console.error('Error fetching results:', error);
       } finally {
         setIsLoading(false);
       }
     };
 
     if (query) {
-      fetchAuditors();
+      fetchResults();
     }
   }, [query]);
 
   useEffect(() => {
-    if (!isLoading && listInnerRef.current && scrollPosition > 0) {
-      requestAnimationFrame(() => {
-        listInnerRef.current.scrollTop = scrollPosition;
-      });
-    }
-  }, [isLoading, auditors]);
-
-  useEffect(() => {
-    const fetchMoreAuditors = async () => {
-      if (isLoading || lastList) return;
+    const fetchMoreResults = async () => {
+      if (
+        isLoading ||
+        (!auditorPagination.hasMore && !organizationPagination.hasMore)
+      )
+        return;
 
       try {
         setIsLoading(true);
         const token = Cookies.get('token');
-        const response = await axios.get(
-          `${API_URL}/search?query=${query}&sort_by=rating&tags=&sort_order=-1&page=${page}&per_page=15&kind=${type} badge`,
-          { headers: { Authorization: `Bearer ${token}` } },
-        );
 
-        if (response.data.result.length === 0) {
+        const requests = [];
+
+        // Only fetch auditors if there are more to fetch
+        if (auditorPagination.hasMore) {
+          requests.push(
+            axios.get(
+              `${API_URL}/search?query=${query}&sort_by=rating&tags=&sort_order=-1&page=${page}&per_page=15&kind=auditor badge`,
+              { headers: { Authorization: `Bearer ${token}` } },
+            ),
+          );
+        }
+
+        // Only fetch organizations if there are more to fetch
+        if (organizationPagination.hasMore) {
+          requests.push(
+            axios.get(
+              `${API_URL}/search?query=${query}&sort_by=rating&tags=&sort_order=-1&page=${page}&per_page=15&kind=organization`,
+              { headers: { Authorization: `Bearer ${token}` } },
+            ),
+          );
+        }
+
+        if (requests.length === 0) {
+          setLastList(true);
+          return;
+        }
+
+        const responses = await Promise.all(requests);
+        let newResults = [];
+
+        responses.forEach((response, index) => {
+          const isAuditorResponse = auditorPagination.hasMore && index === 0;
+          const isOrgResponse =
+            organizationPagination.hasMore &&
+            index === (auditorPagination.hasMore ? 1 : 0);
+
+          if (isAuditorResponse) {
+            setAuditorPagination(prev => ({
+              ...prev,
+              hasMore:
+                response.data.result.length > 0 &&
+                page * 15 < response.data.totalDocuments,
+            }));
+          }
+
+          if (isOrgResponse) {
+            setOrganizationPagination(prev => ({
+              ...prev,
+              hasMore:
+                response.data.result.length > 0 &&
+                page * 15 < response.data.totalDocuments,
+            }));
+          }
+
+          newResults = [...newResults, ...response.data.result];
+        });
+
+        if (newResults.length === 0) {
           setLastList(true);
           return;
         }
 
         setAuditors(prev => {
-          const newAuditors = response.data.result;
-          const uniqueAuditors = [...prev];
+          const uniqueResults = [...prev];
 
-          newAuditors.forEach(newAuditor => {
+          newResults.forEach(newItem => {
             if (
-              !uniqueAuditors.some(
-                existing => existing.user_id === newAuditor.user_id,
+              !uniqueResults.some(
+                existing =>
+                  existing.user_id === newItem.user_id ||
+                  existing.id === newItem.id,
               )
             ) {
-              uniqueAuditors.push(newAuditor);
+              uniqueResults.push(newItem);
             }
           });
 
-          return uniqueAuditors;
+          return uniqueResults;
         });
       } catch (error) {
-        console.error('Error fetching more auditors:', error);
+        console.error('Error fetching more results:', error);
       } finally {
         setIsLoading(false);
       }
     };
 
     if (page > 1) {
-      fetchMoreAuditors();
+      fetchMoreResults();
     }
-  }, [page, query, lastList]);
+  }, [
+    page,
+    query,
+    lastList,
+    auditorPagination.hasMore,
+    organizationPagination.hasMore,
+  ]);
 
   const handleScroll = useCallback(
     _.throttle(e => {
-      if (!isLoading && !lastList) {
+      if (
+        !isLoading &&
+        !lastList &&
+        (auditorPagination.hasMore || organizationPagination.hasMore)
+      ) {
         const { scrollTop, scrollHeight, clientHeight } = e.target;
         if (scrollHeight - scrollTop <= clientHeight * 1.2) {
           setPage(prev => prev + 1);
         }
       }
     }, 300),
-    [isLoading, lastList, page],
+    [
+      isLoading,
+      lastList,
+      auditorPagination.hasMore,
+      organizationPagination.hasMore,
+    ],
   );
 
   const handleSearchInput = e => {
@@ -283,6 +388,42 @@ export default function AuditorSearchModal({
       setQuery(value);
     }, 300);
   };
+
+  // const renderSearchResult = item => {
+  //   const isOrganization = type === 'organization';
+  //   return (
+  //     <Box
+  //       key={item.user_id || item.id}
+  //       sx={{
+  //         display: 'flex',
+  //         alignItems: 'center',
+  //         padding: '8px',
+  //         cursor: 'pointer',
+  //         '&:hover': {
+  //           backgroundColor: 'rgba(0, 0, 0, 0.04)',
+  //         },
+  //       }}
+  //       onClick={() => handleOptionChange(item)}
+  //     >
+  //       <Avatar
+  //         src={item.avatar ? `${ASSET_URL}/id/${item.avatar}` : null}
+  //         sx={{ marginRight: '12px' }}
+  //       />
+  //       <Box>
+  //         <Typography variant="subtitle1">
+  //           {isOrganization
+  //             ? item.name
+  //             : `${item.first_name} ${item.last_name}`}
+  //         </Typography>
+  //         {item.description && (
+  //           <Typography variant="body2" color="text.secondary">
+  //             {item.description}
+  //           </Typography>
+  //         )}
+  //       </Box>
+  //     </Box>
+  //   );
+  // };
 
   return (
     <Dialog
@@ -393,7 +534,7 @@ export default function AuditorSearchModal({
               if (handleSubmit) {
                 await handleSubmit();
               }
-              const newValue = {
+              let newValue = {
                 ...values,
                 total_cost: parseInt(values.total_cost),
                 price: parseInt(values.price),
@@ -402,6 +543,12 @@ export default function AuditorSearchModal({
                   to: parseInt(values.price),
                 },
               };
+
+              if (selectedAuditor.owner) {
+                newValue.auditor_id = null;
+                newValue.auditor_organization = selectedAuditor.id;
+              }
+
               if (projectReducer.recentProject) {
                 if (values.auditor_id !== values.customer_id) {
                   dispatch(createRequest(newValue));

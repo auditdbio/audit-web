@@ -74,7 +74,7 @@ const AuditRequestInfo = ({
   const organizations = useSelector(state => state.organization.organizations);
   const { auditor } = useSelector(s => s.auditor);
   const [auditorData, setAuditorData] = useState({});
-  const { auditRequest, auditRequests, successMessage } = useSelector(
+  const { auditRequest, auditRequests, successMessage, organizationAuditRequests } = useSelector(
     s => s.audits,
   );
   const { user } = useSelector(s => s.user);
@@ -109,7 +109,11 @@ const AuditRequestInfo = ({
         setAuditorData(auditor);
         setOpen(true);
       } else {
-        handleClick(event);
+        if (auditRequest?.auditor_organization) {
+          handleChose(auditRequest?.auditor_organization);
+        } else {
+          handleClick(event);
+        }
       }
     } else if (
       user.current_role !== AUDITOR &&
@@ -189,11 +193,19 @@ const AuditRequestInfo = ({
   };
 
   const handleAccept = () => {
+
+    
     const isRequestFound = auditRequests?.find(
+      req => req.id === auditRequest.id,
+    ) || organizationAuditRequests?.find(
       req => req.id === auditRequest.id,
     );
     if (isRequestFound) {
-      dispatch(confirmAudit(auditRequest, true, `/audit/${auditRequest.id}`));
+      if (isRequestFound?.auditor_organization) {
+        dispatch(confirmAudit({ ...isRequestFound, auditor_organization: isRequestFound?.auditor_organization.id }, true, `/audit/${isRequestFound.id}`));
+      } else {
+        dispatch(confirmAudit(isRequestFound, true, `/audit/${isRequestFound.id}`));
+      }
     }
   };
 

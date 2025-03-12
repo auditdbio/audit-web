@@ -177,9 +177,9 @@ export const getAuditorRating = (id, getDetails = false) => {
 
     axios.get(url).then(({ data }) => {
       dispatch({ type: GET_AUDITOR_RATING_DETAILS, payload: data });
-    });
-  };
-};
+    })
+  }
+}
 
 export const searchAuditor = (values, badges = true) => {
   const kind = badges ? 'auditor badge' : 'auditor';
@@ -196,10 +196,10 @@ export const searchAuditor = (values, badges = true) => {
         dispatch({ type: GET_AUDITORS, payload: data });
       })
       .catch(({ response }) => {
-        console.error(response, 'res');
-      });
-  };
-};
+        console.error(response, 'res')
+      })
+  }
+}
 
 export const deleteBadgeProfile = id => {
   return dispatch => {

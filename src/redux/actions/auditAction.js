@@ -21,6 +21,7 @@ import {
   GET_AUDITS_OF_AUDITOR,
   GET_PUBLIC_AUDIT,
   GET_PUBLIC_REPORT,
+  GET_ORGANIZATION_AUDITS,
   GET_REQUEST,
   IN_PROGRESS,
   NOT_FOUND,
@@ -33,6 +34,7 @@ import {
   SET_CURRENT_AUDIT_PARTNER,
   UPDATE_AUDIT,
   VERIFY_AUDIT_REPORT,
+  GET_ORG_AUDIT_REQUEST,
 } from './types.js';
 import { history } from '../../services/history.js';
 import { ASSET_URL } from '../../services/urls.js';
@@ -69,6 +71,23 @@ export const createRequest = (values, redirect, navigateTo, stay) => {
       });
   };
 };
+
+export const getOrganizationAuditRequests = (org_id) => {
+  return dispatch => {
+    const token = Cookies.get('token');
+    axios.get(`${API_URL}/audit_request/organization/id/${org_id}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then(({ data }) => {
+        dispatch({ type: GET_ORG_AUDIT_REQUEST, payload: data });
+      })
+      .catch(({ response }) => {
+        console.log(response, 'res');
+        dispatch({ type: REQUEST_ERROR });
+      });
+  };
+};
+
 
 export const createRequestModal = values => {
   return dispatch => {
@@ -147,6 +166,17 @@ export const getAudits = role => {
   };
 };
 
+export const getOrganizationAudits = () => {
+  return dispatch => {
+    const token = Cookies.get('token');
+    axios.get(`${API_URL}/audit/organization/all`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then(({ data }) => {
+        dispatch({ type: GET_ORGANIZATION_AUDITS, payload: data });
+      });
+  };
+};
 export const getPublicAudit = (id, code) => {
   return dispatch => {
     const token = Cookies.get('token');

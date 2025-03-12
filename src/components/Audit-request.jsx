@@ -1,10 +1,12 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Box, Button, Grid } from '@mui/material';
 import AuditRequestCard from './Audit-request-card';
 import { useSelector } from 'react-redux';
 import { addTestsLabel } from '../lib/helper.js';
 import { useNavigate } from 'react-router-dom/dist';
 import Headings from '../router/Headings.jsx';
+import { useDispatch } from 'react-redux';
+import { getOrganizationAuditRequests } from '../redux/actions/auditAction.js';
 
 const AuditRequest = () => {
   const auditRequests = useSelector(s => s.audits.auditRequests);

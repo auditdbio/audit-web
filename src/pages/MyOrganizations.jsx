@@ -71,7 +71,7 @@ const MyOrganization = () => {
         </Button>
         <Box sx={innerWrapper}>
           <Box sx={contentWrapper}>
-            {!organizations.length && !own.length && !errorRequest ? (
+            {!organizations.length && !own.length && loading && !errorRequest ? (
               <Box>
                 <Loader />
               </Box>
@@ -88,7 +88,7 @@ const MyOrganization = () => {
                     >
                       {invites?.map(org => {
                         return (
-                          <Grid sx={gridItemSx} item>
+                          <Grid key={org.id} sx={gridItemSx} item>
                             <Badge
                               badgeContent={'Invite'}
                               color={
@@ -120,7 +120,7 @@ const MyOrganization = () => {
                     >
                       {own?.map(org => {
                         return (
-                          <Grid sx={gridItemSx} item>
+                          <Grid key={org.id} sx={gridItemSx} item>
                             <OrganizationCard org={org} />
                           </Grid>
                         );

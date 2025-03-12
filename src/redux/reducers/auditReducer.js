@@ -37,6 +37,8 @@ import {
   UPDATE_AUDIT,
   CREATE_AUDIT_ISSUE,
   GET_ORGANIZATION_AUDIT_REQUESTS,
+  GET_ORG_AUDIT_REQUEST,
+  GET_ORGANIZATION_AUDITS
 } from '../actions/types.js';
 
 const initialState = {
@@ -54,6 +56,7 @@ const initialState = {
   unreadHistory: null,
   auditRequestHistory: [],
   organizationAuditRequests: [],
+  organizationAudits: [],
   verifyAudit: null,
 };
 
@@ -65,6 +68,16 @@ export const auditReducer = (state = initialState, action) => {
         auditRequests: [...state.auditRequests, action.payload],
         successMessage: 'Audit request created successfully',
         auditRequest: action.payload,
+      };
+    case GET_ORG_AUDIT_REQUEST:
+      return {
+        ...state,
+        organizationAuditRequests: [...state.organizationAuditRequests, ...action.payload],
+      };
+    case GET_ORGANIZATION_AUDITS:
+      return {
+        ...state,
+        organizationAudits: [...state.organizationAudits, ...action.payload],
       };
     case GET_AUDIT_REQUEST:
       return { ...state, auditRequests: action.payload };
