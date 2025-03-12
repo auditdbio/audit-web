@@ -1,19 +1,34 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
-import { Box, Button, IconButton, useMediaQuery } from '@mui/material';
+import {
+  Avatar,
+  Box,
+  Button,
+  Collapse,
+  Divider,
+  IconButton,
+  Tooltip,
+  useMediaQuery,
+} from '@mui/material';
 import Layout from '../styles/Layout.jsx';
 import { CustomCard } from '../components/custom/Card';
 import ChatList from '../components/Chat/ChatList.jsx';
 import CurrentChat from '../components/Chat/CurrentChat.jsx';
-import { chatSetError, setCurrentChat } from '../redux/actions/chatActions.js';
+import {
+  chatSetError,
+  getChatListByOrg,
+  setCurrentChat,
+} from '../redux/actions/chatActions.js';
 import theme from '../styles/themes.js';
 import MenuIcon from '@mui/icons-material/Menu.js';
-import { useNavigate } from 'react-router-dom/dist';
+import { useNavigate, useSearchParams } from 'react-router-dom/dist';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack.js';
 import { AUDITOR, CUSTOMER } from '../redux/actions/types.js';
 import Headings from '../router/Headings.jsx';
 import CustomSnackbar from '../components/custom/CustomSnackbar.jsx';
+import { ASSET_URL } from '../services/urls.js';
+import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrowLeft';
 
 const ChatPage = () => {
   const dispatch = useDispatch();
@@ -22,12 +37,15 @@ const ChatPage = () => {
   const { id } = useParams();
   const matchXs = useMediaQuery(theme.breakpoints.down('xs'));
   const [chatListIsOpen, setChatListIsOpen] = useState(matchXs && !id);
-  const { chatList, chatMessages, currentChat, error } = useSelector(
-    s => s.chat,
-  );
+  const { chatList, chatMessages, currentChat, error, orgChatList } =
+    useSelector(s => s.chat);
   const { user } = useSelector(s => s.user);
   const { auditor } = useSelector(s => s.auditor);
   const { customer } = useSelector(s => s.customer);
+  const { organizations } = useSelector(s => s.organization);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const orgId = searchParams.get('org');
+  const xsMatch = useMediaQuery(theme.breakpoints.down('xs'));
 
   useEffect(() => {
     if (
@@ -46,21 +64,44 @@ const ChatPage = () => {
     }
   }, [user, auditor, customer]);
 
+  const profile = useMemo(() => {
+    if (user.current_role.toLowerCase() === AUDITOR.toLowerCase()) {
+      return auditor;
+    } else {
+      return customer;
+    }
+  }, [user.current_role, auditor, customer]);
+
   useEffect(() => {
     if (id && !currentChat?.isNew) {
       const chat = chatList.find(chat => chat.id === id);
+      const chatOrg = orgChatList?.find(chat => chat.id === id);
       const members = chat?.members.map(member => member.id);
+      const orgMembers = chatOrg?.members.map(member => member.id);
       const role = chat?.members.find(member => member.id !== user.id)?.role;
-
-      if (chat) {
-        dispatch(
-          setCurrentChat(chat?.id, {
-            name: chat?.name,
-            avatar: chat?.avatar,
-            role,
-            members,
-          }),
-        );
+      const orgRole = chatOrg?.members.find(
+        member => member.id !== user.id,
+      )?.role;
+      if (chat || chatOrg) {
+        if (orgId) {
+          dispatch(
+            setCurrentChat(chatOrg?.id, {
+              name: chatOrg?.name,
+              avatar: chatOrg?.avatar,
+              orgRole,
+              orgMembers,
+            }),
+          );
+        } else {
+          dispatch(
+            setCurrentChat(chat?.id, {
+              name: chat?.name,
+              avatar: chat?.avatar,
+              role,
+              members,
+            }),
+          );
+        }
       }
     }
   }, [id, chatList.length]);
@@ -73,6 +114,31 @@ const ChatPage = () => {
       navigate(-1);
     }
   };
+
+  const handleChoose = org => {
+    const newSearchParams = new URLSearchParams(searchParams);
+
+    if (org) {
+      newSearchParams.set('org', org.id);
+      navigate('/chat' + `?org=${org.id}`);
+      if (xsMatch) {
+        setChatListIsOpen(true);
+      }
+    } else {
+      newSearchParams.delete('org');
+    }
+
+    if (newSearchParams.get('org') === 'undefined') {
+      newSearchParams.delete('org');
+      setSearchParams(newSearchParams);
+    }
+  };
+
+  useEffect(() => {
+    if (searchParams.get('org')) {
+      dispatch(getChatListByOrg('Organization', searchParams.get('org')));
+    }
+  }, [searchParams.get('org')]);
 
   return (
     <Layout sx={layoutSx}>
@@ -101,38 +167,97 @@ const ChatPage = () => {
         >
           <ArrowBackIcon />
         </Button>
-
-        <Box sx={chatWrapper}>
-          <ChatList
-            chatList={chatList}
-            chatListIsOpen={chatListIsOpen}
-            setChatListIsOpen={setChatListIsOpen}
-          />
-          {id ? (
-            <CurrentChat
-              chatMessages={chatMessages}
-              currentChat={currentChat}
-              chatList={chatList}
-              setChatListIsOpen={setChatListIsOpen}
-            />
-          ) : (
-            <Box sx={selectLabelWrapper}>
-              <IconButton
-                aria-label="Chat list"
-                aria-controls="menu-appbar"
-                aria-haspopup="true"
-                onClick={() => setChatListIsOpen(prev => !prev)}
-                color="inherit"
-                sx={menuButtonSx}
+        <Box sx={chatInnerWrapper}>
+          <Box sx={orgListSx}>
+            <>
+              <Box
+                sx={[
+                  orgListItemSx,
+                  !searchParams.get('org')
+                    ? selectedTab(
+                        theme,
+                        user.current_role.toLowerCase() ===
+                          AUDITOR.toLowerCase(),
+                      )
+                    : {},
+                ]}
+                onClick={handleChoose}
               >
-                <MenuIcon fontSize="large" />
-              </IconButton>
-
-              <Box sx={selectChatLabel}>
-                Please select a chat to start messaging...
+                <Tooltip title={'Personal'} arrow placement={'top'}>
+                  <Avatar
+                    sx={orgAvatarSx}
+                    src={
+                      profile?.avatar
+                        ? `${ASSET_URL}/id/${profile?.avatar}`
+                        : ''
+                    }
+                  />
+                </Tooltip>
               </Box>
+            </>
+            {organizations.map(org => (
+              <Box
+                key={org.id}
+                sx={[
+                  orgListItemSx,
+                  searchParams.get('org') === org.id
+                    ? selectedTab(
+                        theme,
+                        user.current_role.toLowerCase() ===
+                          AUDITOR.toLowerCase(),
+                      )
+                    : {},
+                ]}
+                onClick={() => handleChoose(org)}
+              >
+                <Tooltip title={org.name} arrow placement={'top'}>
+                  <Avatar
+                    sx={orgAvatarSx}
+                    src={org?.avatar ? `${ASSET_URL}/id/${org.avatar}` : null}
+                  />
+                </Tooltip>
+              </Box>
+            ))}
+          </Box>
+          <Box sx={chatWrapper}>
+            <Box sx={[leftSideSx, chatListIsOpen && mobileChatListOpen]}>
+              <ChatList
+                orgId={searchParams.get('org')}
+                chatList={!searchParams.get('org') ? chatList : orgChatList}
+                chatListIsOpen={chatListIsOpen}
+                setChatListIsOpen={setChatListIsOpen}
+              />
             </Box>
-          )}
+            <Box
+              sx={chatListIsOpen ? mobileChatListOpenBackground : {}}
+              onClick={() => setChatListIsOpen(false)}
+            />
+            {id ? (
+              <CurrentChat
+                chatMessages={chatMessages}
+                currentChat={currentChat}
+                chatList={chatList}
+                setChatListIsOpen={setChatListIsOpen}
+              />
+            ) : (
+              <Box sx={selectLabelWrapper}>
+                <IconButton
+                  aria-label="Chat list"
+                  aria-controls="menu-appbar"
+                  aria-haspopup="true"
+                  onClick={() => setChatListIsOpen(prev => !prev)}
+                  color="inherit"
+                  sx={menuButtonSx}
+                >
+                  <MenuIcon fontSize="large" />
+                </IconButton>
+
+                <Box sx={selectChatLabel}>
+                  Please select a chat to start messaging...
+                </Box>
+              </Box>
+            )}
+          </Box>
         </Box>
       </CustomCard>
     </Layout>
@@ -141,11 +266,101 @@ const ChatPage = () => {
 
 export default ChatPage;
 
+const orgListItemSx = theme => ({
+  padding: '5px',
+  borderRadius: '8px',
+  cursor: 'pointer',
+  width: '70px',
+  [theme.breakpoints.down('sm')]: {
+    width: '50px',
+  },
+});
+
 const layoutSx = theme => ({
   paddingY: '10px !important',
-  [theme.breakpoints.down('xs')]: {
+  [theme.breakpoints.down('md')]: {
     paddingY: '10px !important',
   },
+});
+
+const mobileChatListOpenBackground = theme => ({
+  display: 'none',
+  [theme.breakpoints.down('xs')]: {
+    display: 'block',
+    width: '30%',
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    bottom: '-1px',
+    zIndex: 20,
+    background: 'rgba(0, 0, 0, .1)',
+  },
+  [theme.breakpoints.down(500)]: {
+    display: 'none',
+  },
+});
+
+const orgListSx = theme => ({
+  display: 'flex',
+  flexDirection: 'column',
+  minWidth: '72px',
+  border: '2px solid #e5e5e5',
+  borderRight: 'unset',
+  padding: '0 0 5px',
+  overflowY: 'auto',
+  overflowX: 'hidden',
+  height: '100%',
+  '::-webkit-scrollbar': {
+    width: '0px',
+  },
+  [theme.breakpoints.down('sm')]: {
+    minWidth: '52px',
+  },
+});
+
+const leftSideSx = theme => ({
+  width: '30%',
+  display: 'flex',
+  justifyContent: 'end',
+  [theme.breakpoints.down('xs')]: {
+    display: 'none',
+  },
+});
+
+const mobileChatListOpen = theme => ({
+  overflowY: 'auto',
+  '::-webkit-scrollbar': {
+    width: '4px',
+  },
+  [theme.breakpoints.down('xs')]: {
+    background: '#fcfaf6',
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    bottom: 0,
+    zIndex: 20,
+    display: 'block',
+    width: '70%',
+  },
+  [theme.breakpoints.down(500)]: {
+    width: '100%',
+  },
+});
+
+const orgAvatarSx = theme => ({
+  width: '60px',
+  height: '60px',
+  [theme.breakpoints.down('sm')]: {
+    width: '40px',
+    height: '40px',
+  },
+  // backgroundColor: '#fff',
+});
+
+const selectedTab = (theme, primary) => ({
+  backgroundColor: primary
+    ? theme.palette.secondary.main
+    : theme.palette.primary.main,
 });
 
 const wrapper = theme => ({
@@ -153,6 +368,7 @@ const wrapper = theme => ({
   padding: '0px 20px 20px',
   position: 'relative',
   display: 'flex',
+  maxWidth: 'unset',
   flexDirection: 'column',
   alignItems: 'flex-start',
   [theme.breakpoints.down('sm')]: {
@@ -161,11 +377,25 @@ const wrapper = theme => ({
   [theme.breakpoints.down(780)]: {
     paddingX: '10px',
     borderRadius: '0',
+    // [theme.breakpoints.down('xs')]: {
+    //   // padding: '20px 40px 50px',
+    //   minHeight: '300px',
+    //   gap: '8px',
+    //   padding: '10px 10px 30px',
+  },
+});
+
+const chatInnerWrapper = theme => ({
+  display: 'flex',
+  flexDirection: 'row',
+  width: '100%',
+  height: 'calc(100vh - 160px)',
+  [theme.breakpoints.down('sm')]: {
+    height: 'calc(100vh - 130px)',
   },
 });
 
 const chatWrapper = {
-  height: 'calc(100vh - 126px)',
   width: '100%',
   display: 'flex',
   border: '2px solid #e5e5e5',
@@ -175,6 +405,9 @@ const chatWrapper = {
 const selectLabelWrapper = {
   position: 'relative',
   width: '70%',
+  // [theme.breakpoints.down(1760)]: {
+  //   width: '65%',
+  // },
   [theme.breakpoints.down('sm')]: {
     width: '100%',
   },

@@ -7,6 +7,7 @@ import {
   GET_NEW_REQUEST,
   IN_PROGRESS,
   NEED_UPDATE,
+  ORGANIZATION_INVITE,
   REQUEST_DECLINE,
   UPDATE_AUDIT_ISSUE_WS,
   WEBSOCKET_CONNECT,
@@ -92,7 +93,7 @@ const websocketMiddleware = () => {
             } else if (message.kind.toLowerCase() === 'chatmessage') {
               const sameRole =
                 store.getState().user.user.current_role.toLowerCase() ===
-                message.user_role.toLowerCase();
+                message?.user_role?.toLowerCase();
               store.dispatch(
                 receiveNewChatMessage(message.payload.ChatMessage, sameRole),
               );
@@ -136,6 +137,11 @@ const websocketMiddleware = () => {
                   payload: { issue: payload.issue, auditId: payload.audit },
                 });
               }
+            } else if (message.kind.toLowerCase() === 'organizationinvite') {
+              store.dispatch({
+                type: ORGANIZATION_INVITE,
+                payload: message.payload.OrganizationInvite,
+              });
             }
           };
 

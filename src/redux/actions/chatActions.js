@@ -16,6 +16,7 @@ import {
   CHAT_SET_ERROR,
   CHAT_DELETE_MESSAGE,
   RECEIVE_NEW_CHAT,
+  CHAT_GET_LIST_ORG,
 } from './types.js';
 
 export const getChatList = role => {
@@ -26,6 +27,19 @@ export const getChatList = role => {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then(({ data }) => dispatch({ type: CHAT_GET_LIST, payload: data }));
+  };
+};
+
+export const getChatListByOrg = (role, id) => {
+  const token = Cookies.get('token');
+  return dispatch => {
+    axios
+      .get(`${API_URL}/chat/preview/${role}?org_id=${id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .then(({ data }) => {
+        dispatch({ type: CHAT_GET_LIST_ORG, payload: data });
+      });
   };
 };
 
@@ -69,7 +83,6 @@ export const setCurrentChat = (
 
     const previousChatId = chat?.currentChat?.chatId;
     if (previousChatId === chatId) return;
-
     if (previousChatId) {
       const token = Cookies.get('token');
       axios.patch(
@@ -104,7 +117,14 @@ export const setCurrentChat = (
   };
 };
 
-export const chatSendMessage = (text, to, fromRole, isFirst, kind = 'Text') => {
+export const chatSendMessage = (
+  text,
+  to,
+  fromRole,
+  isFirst,
+  kind = 'Text',
+  from_org_id,
+) => {
   const token = Cookies.get('token');
   const user = JSON.parse(localStorage.getItem('user'));
 
@@ -123,6 +143,7 @@ export const chatSendMessage = (text, to, fromRole, isFirst, kind = 'Text') => {
         role: fromRole,
         text,
         kind,
+        from_org_id: from_org_id,
       };
     } else {
       values = {
@@ -130,6 +151,7 @@ export const chatSendMessage = (text, to, fromRole, isFirst, kind = 'Text') => {
         role: fromRole,
         text,
         kind,
+        from_org_id: from_org_id,
       };
     }
 

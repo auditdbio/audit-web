@@ -14,11 +14,14 @@ import ChatListItem from './ChatListItem.jsx';
 import { AUDITOR, CUSTOMER } from '../../redux/actions/types.js';
 import { searchAuditor } from '../../redux/actions/auditorAction.js';
 import { searchCustomers } from '../../redux/actions/customerAction.js';
+import { searchOrganization } from '../../redux/actions/organizationAction.js';
+import theme from '../../styles/themes.js';
 
-const ChatList = ({ chatList, chatListIsOpen, setChatListIsOpen }) => {
+const ChatList = ({ chatList, chatListIsOpen, setChatListIsOpen, orgId }) => {
   const dispatch = useDispatch();
   const { auditors } = useSelector(s => s.auditor);
   const { customers } = useSelector(s => s.customer);
+  const { searchOrganizations } = useSelector(s => s.organization);
   const { user } = useSelector(s => s.user);
 
   const [, startTransition] = useTransition();
@@ -33,87 +36,92 @@ const ChatList = ({ chatList, chatListIsOpen, setChatListIsOpen }) => {
       if (search.trim()) {
         dispatch(searchAuditor({ search, perPage: 20 }, false));
         dispatch(searchCustomers({ search, perPage: 20 }));
+        dispatch(searchOrganization({ search, perPage: 20 }));
       }
     });
   }, [search]);
 
   return (
-    <>
-      <Box sx={[wrapper, chatListIsOpen && mobileChatListOpen]}>
-        <Box sx={listHeader}>
-          <Box sx={{ display: 'flex', alignItems: 'flex-start' }}>
-            <TextField
-              autoComplete="off"
-              variant="outlined"
-              size="small"
-              color={user.current_role === AUDITOR ? 'secondary' : 'primary'}
-              sx={searchFieldSx}
-              value={search}
-              onChange={handleSearch}
-              inputProps={{
-                style: searchInputStyle,
-                ...addTestsLabel('search-input'),
-              }}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <SearchOutlinedIcon />
-                  </InputAdornment>
-                ),
-              }}
-            />
-            <IconButton
-              aria-label="Close"
-              aria-controls="menu-appbar"
-              aria-haspopup="true"
-              onClick={() => setChatListIsOpen(false)}
-              color="inherit"
-              sx={closeButtonSx}
-            >
-              <CloseIcon />
-            </IconButton>
-          </Box>
-          {/*<Typography variant="span" sx={chatsLabel}>*/}
-          {/*  Chats*/}
-          {/*</Typography>*/}
+    <Box sx={[wrapper]}>
+      <Box sx={listHeader}>
+        <Box sx={{ display: 'flex', alignItems: 'flex-start' }}>
+          <TextField
+            autoComplete="off"
+            variant="outlined"
+            size="small"
+            color={user.current_role === AUDITOR ? 'secondary' : 'primary'}
+            sx={searchFieldSx}
+            value={search}
+            onChange={handleSearch}
+            inputProps={{
+              style: searchInputStyle,
+              ...addTestsLabel('search-input'),
+            }}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchOutlinedIcon />
+                </InputAdornment>
+              ),
+            }}
+          />
+          <IconButton
+            aria-label="Close"
+            aria-controls="menu-appbar"
+            aria-haspopup="true"
+            onClick={() => setChatListIsOpen(false)}
+            color="inherit"
+            sx={closeButtonSx}
+          >
+            <CloseIcon />
+          </IconButton>
         </Box>
+        {/*<Typography variant="span" sx={chatsLabel}>*/}
+        {/*  Chats*/}
+        {/*</Typography>*/}
+      </Box>
 
-        <Box sx={chatListSx}>
-          {chatList.length > 0
-            ? chatList
-                ?.filter(chat =>
-                  chat.name
-                    ?.toLowerCase()
-                    .includes(search.toLowerCase().trim()),
-                )
-                .reverse()
-                .map(chat => (
+      <Box sx={chatListSx}>
+        {chatList.length > 0
+          ? chatList
+              ?.filter(chat =>
+                chat.name?.toLowerCase().includes(search.toLowerCase().trim()),
+              )
+              .reverse()
+              .map(chat => {
+                // const org = chat?.members.find(org => org.org_user_id);
+                //
+                return (
                   <ChatListItem
+                    orgId={orgId}
                     key={chat.id}
                     chat={chat}
                     user={user}
                     setListIsOpen={setChatListIsOpen}
                     setSearch={setSearch}
                   />
-                ))
-            : !search && (
-                <Box sx={emptyListLabel}>You haven't written to anyone yet</Box>
-              )}
+                );
+              })
+          : !search && (
+              <Box sx={emptyListLabel}>You haven't written to anyone yet</Box>
+            )}
 
-          {search &&
-            auditors
-              .filter(
-                auditor =>
-                  !chatList.some(chat =>
-                    chat.members.some(
-                      member =>
-                        member.id === auditor.user_id &&
-                        member.role?.toLowerCase() === AUDITOR,
-                    ),
-                  ) && auditor.user_id !== user.id,
-              )
-              .map(auditor => (
+        {search &&
+          auditors
+            .filter(
+              auditor =>
+                !chatList.some(chat =>
+                  chat.members.some(
+                    member =>
+                      member.id === auditor.user_id &&
+                      member.role?.toLowerCase() === AUDITOR,
+                  ),
+                ) && auditor.user_id !== user.id,
+            )
+            .map(auditor => {
+              return (
                 <ChatListItem
+                  orgId={orgId}
                   key={auditor.user_id}
                   user={user}
                   setListIsOpen={setChatListIsOpen}
@@ -127,63 +135,98 @@ const ChatList = ({ chatList, chatListIsOpen, setChatListIsOpen }) => {
                     members: [{ id: auditor.user_id }, { id: user.id }],
                   }}
                 />
-              ))}
+              );
+            })}
 
-          {search &&
-            customers
-              .filter(
-                customer =>
-                  !chatList.some(chat =>
-                    chat.members.some(
-                      member =>
-                        member.id === customer.user_id &&
-                        member.role?.toLowerCase() === CUSTOMER,
-                    ),
-                  ) && customer.user_id !== user.id,
-              )
-              .map(customer => (
+        {search &&
+          customers
+            .filter(
+              customer =>
+                !chatList.some(chat =>
+                  chat.members.some(
+                    member =>
+                      member.id === customer.user_id &&
+                      member.role?.toLowerCase() === CUSTOMER,
+                  ),
+                ) && customer.user_id !== user.id,
+            )
+            .map(customer => (
+              <ChatListItem
+                orgId={orgId}
+                key={customer.user_id}
+                user={user}
+                setListIsOpen={setChatListIsOpen}
+                setSearch={setSearch}
+                isNew={true}
+                role={CUSTOMER}
+                chat={{
+                  id: customer.user_id,
+                  name: `${customer.first_name} ${customer.last_name}`,
+                  avatar: customer.avatar,
+                  members: [{ id: customer.user_id }, { id: user.id }],
+                }}
+              />
+            ))}
+
+        {search &&
+          searchOrganizations
+            .filter(
+              organization =>
+                !chatList.some(chat =>
+                  chat.members.some(
+                    member =>
+                      member.id === organization.user_id &&
+                      member.role?.toLowerCase() === CUSTOMER,
+                  ),
+                ) && organization.user_id !== user.id,
+            )
+            .map(organization => {
+              return (
                 <ChatListItem
-                  key={customer.user_id}
+                  orgId={orgId}
+                  key={organization.id}
                   user={user}
                   setListIsOpen={setChatListIsOpen}
                   setSearch={setSearch}
                   isNew={true}
                   role={CUSTOMER}
                   chat={{
-                    id: customer.user_id,
-                    name: `${customer.first_name} ${customer.last_name}`,
-                    avatar: customer.avatar,
-                    members: [{ id: customer.user_id }, { id: user.id }],
+                    id: organization.id,
+                    name: `${organization.name}`,
+                    avatar: organization.avatar,
+                    members: [{ id: organization.id }, { id: user.id }],
+                    role: 'Organization',
                   }}
                 />
-              ))}
+              );
+            })}
 
-          {chatList.length > 0 &&
-            !customers.length &&
-            !auditors.length &&
-            !chatList.find(chat =>
-              chat.name?.toLowerCase().includes(search.toLowerCase().trim()),
-            ) && <Box sx={emptyListLabel}>No search results</Box>}
-        </Box>
+        {chatList.length > 0 &&
+          !customers.length &&
+          !auditors.length &&
+          !chatList.find(chat =>
+            chat.name?.toLowerCase().includes(search.toLowerCase().trim()),
+          ) && <Box sx={emptyListLabel}>No search results</Box>}
       </Box>
-      <Box
-        sx={chatListIsOpen ? mobileChatListOpenBackground : {}}
-        onClick={() => setChatListIsOpen(false)}
-      />
-    </>
+    </Box>
   );
 };
 
 export default ChatList;
 
-const wrapper = theme => ({
-  width: '30%',
+const wrapper = (theme, openOrgList) => ({
   borderRight: '2px solid #e5e5e5',
   display: 'flex',
   flexDirection: 'column',
-  [theme.breakpoints.down('xs')]: {
-    display: 'none',
-  },
+  width: '100%',
+  // width: `calc(100% - ${!openOrgList ? '70px' : '0px'} )`,
+  // width: `30%`,
+  // [theme.breakpoints.down('md')]: {
+  //   width: `calc(100% - ${!openOrgList ? '73px' : '0px'})`,
+  // },
+  // [theme.breakpoints.down('xs')]: {
+  //   display: 'none',
+  // },
 });
 
 const mobileChatListOpen = theme => ({

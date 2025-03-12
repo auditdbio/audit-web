@@ -9,8 +9,19 @@ import { AUDITOR, CUSTOMER } from '../../redux/actions/types.js';
 import ImageMessage from './ImageMessage.jsx';
 import AuditMessage from './AuditMessage.jsx';
 import theme from '../../styles/themes.js';
+import { Link, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom/dist';
 
-const Message = ({ message, user, currentChat, isRead, previousMessage }) => {
+const Message = ({
+  message,
+  user,
+  currentChat,
+  isRead,
+  type,
+  orgId,
+  chatRole,
+  previousMessage
+}) => {
   const { customer } = useSelector(state => state.customer);
   const { auditor } = useSelector(state => state.auditor);
 
@@ -25,6 +36,8 @@ const Message = ({ message, user, currentChat, isRead, previousMessage }) => {
     fileMessage = {};
   }
 
+  const location = useLocation();
+  const navigate = useNavigate();
   const userAvatar = useMemo(() => {
     if (user.current_role === AUDITOR && !!auditor?.avatar) {
       return auditor.avatar;
@@ -38,12 +51,20 @@ const Message = ({ message, user, currentChat, isRead, previousMessage }) => {
     }
   }, [user.current_role, customer?.avatar, auditor?.avatar]);
 
+  const isOwn = () => {
+    return message.from.role.toLowerCase() === 'organization'
+      ? { isOwn: message.from?.org_user?.id === user.id }
+      : { isOwn: message.from?.id === user.id };
+  };
+
   const getMessageAvatar = () => {
+    const avatar = isOwn() ? userAvatar : currentChat?.avatar;
     if (message?.from?.id === user?.id) {
       return userAvatar ? `${ASSET_URL}/id/${userAvatar}` : null;
     }
     return currentChat?.avatar ? `${ASSET_URL}/id/${currentChat.avatar}` : null;
   };
+  // }
 
   const downloadFile = () => {
     const token = Cookies.get('token');
@@ -66,8 +87,17 @@ const Message = ({ message, user, currentChat, isRead, previousMessage }) => {
   const shouldShowAvatar =
     !previousMessage || previousMessage.from?.id !== message.from?.id;
 
+  const handleGoProfile = () => {
+    localStorage.setItem('prev', location.pathname);
+    navigate(
+      `/${message.from?.org_user?.role[0].toLowerCase()}/${
+        message.from?.org_user?.id
+      }`,
+    );
+  };
+
   return (
-    <Box sx={[messageSx({ isOwn: message.from?.id === user.id })]}>
+    <Box sx={messageSx(isOwn())}>
       {shouldShowAvatar ? (
         <Box
           sx={{
@@ -112,23 +142,30 @@ const Message = ({ message, user, currentChat, isRead, previousMessage }) => {
       <Box
         sx={[
           message.kind === 'Audit'
-            ? requestTextSx(
-                { isOwn: message.from?.id === user.id },
-                !shouldShowAvatar,
-              )
-            : messageTextSx(
-                { isOwn: message.from?.id === user.id },
-                !shouldShowAvatar,
-              ),
+            ? requestTextSx(isOwn(), !shouldShowAvatar,)
+            : messageTextSx(isOwn(), !shouldShowAvatar,),
           shouldShowAvatar
             ? {
-                '& p': {
-                  paddingBottom: '20px',
-                },
-              }
+              '& p': {
+                paddingBottom: '20px',
+              },
+            }
             : {},
         ]}
       >
+        {message.from?.org_user?.id && (
+          <Typography
+            onClick={handleGoProfile}
+            sx={orgNameSx(
+              theme,
+              message.from?.org_user.role.toLowerCase() === AUDITOR
+                ? theme.palette.secondary.main
+                : theme.palette.primary.main,
+            )}
+          >
+            {message.from?.org_user.name}
+          </Typography>
+        )}
         {message.kind === 'Image' ? (
           <ImageMessage message={message} />
         ) : message.kind === 'Audit' ? (
@@ -193,6 +230,16 @@ const messageSx = ({ isOwn }) => ({
   '&:hover .avatar-plug': {
     opacity: 1,
   },
+  '& a': {
+    textDecoration: 'unset',
+  },
+});
+
+const orgNameSx = (theme, color) => ({
+  padding: '5px!important',
+  paddingLeft: '18px!important',
+  color: `${color}!important`,
+  cursor: 'pointer',
 });
 
 const avatarPlugSx = theme => ({

@@ -13,6 +13,12 @@ import {
   Modal,
   Tooltip,
   Collapse,
+  Popover,
+  Avatar,
+  ListItemAvatar,
+  ListItem,
+  ListItemText,
+  List,
 } from '@mui/material';
 import { CustomCard } from './custom/Card.jsx';
 import theme from '../styles/themes.js';
@@ -39,6 +45,11 @@ import EditTags from './EditDescription/EditTags.jsx';
 import EditPrice from './EditDescription/EditPrice.jsx';
 import ExpandLessOutlinedIcon from '@mui/icons-material/ExpandLessOutlined.js';
 import EditIcon from '@mui/icons-material/Edit.js';
+import Star from './icons/Star.jsx';
+import Currency from './icons/Currency.jsx';
+import { ASSET_URL } from '../services/urls.js';
+import ListItemButton from '@mui/material/ListItemButton';
+import TypeChat from './Chat/TypeChat.jsx';
 
 const AuditRequestInfo = ({
   project = null,
@@ -55,20 +66,55 @@ const AuditRequestInfo = ({
   const navigate = useNavigate();
 
   const [open, setOpen] = useState(false);
+  const [anchorEl, setAnchorEl] = useState(null);
   const [confirmDeclineOpen, setConfirmDeclineOpen] = useState(false);
   const [showAcceptButton, setShowAcceptButton] = useState(true);
   const [showFullHeader, setShowFullHeader] = useState(false);
+  const [visible, setVisible] = useState(false);
+  const organizations = useSelector(state => state.organization.organizations);
   const { auditor } = useSelector(s => s.auditor);
-  const { auditRequest, auditRequests, successMessage } = useSelector(
+  const [auditorData, setAuditorData] = useState({});
+  const { auditRequest, auditRequests, successMessage, organizationAuditRequests } = useSelector(
     s => s.audits,
   );
   const { user } = useSelector(s => s.user);
   const { chatList } = useSelector(s => s.chat);
   const [showFull, setShowFull] = useState(false);
 
-  const handleOpen = () => {
+  const handleClick = event => {
+    setAnchorEl(event.currentTarget);
+    setVisible(true);
+  };
+
+  const handleCloseAnchor = () => {
+    setAnchorEl(null);
+  };
+
+  const anchorOrigin = {
+    vertical: visible ? 'bottom' : 'top',
+    horizontal: 'left',
+  };
+
+  const transformOrigin = {
+    vertical: visible ? 'top' : 'bottom',
+    horizontal: 'left',
+  };
+
+  const openAnchor = Boolean(anchorEl);
+  const id = openAnchor ? 'simple-popover' : undefined;
+
+  const handleOpen = event => {
     if (user.current_role === AUDITOR && isAuth() && auditor?.first_name) {
-      setOpen(true);
+      if (!organizations.length) {
+        setAuditorData(auditor);
+        setOpen(true);
+      } else {
+        if (auditRequest?.auditor_organization) {
+          handleChose(auditRequest?.auditor_organization);
+        } else {
+          handleClick(event);
+        }
+      }
     } else if (
       user.current_role !== AUDITOR &&
       isAuth() &&
@@ -76,6 +122,7 @@ const AuditRequestInfo = ({
     ) {
       dispatch(changeRolePublicAuditorNoRedirect(AUDITOR, user.id, auditor));
       handleError();
+      setAuditorData(auditor);
       setOpen(true);
     } else if (
       !auditor?.first_name &&
@@ -90,12 +137,18 @@ const AuditRequestInfo = ({
     ) {
       dispatch(changeRolePublicAuditor(AUDITOR, user.id, auditor));
       handleError();
+      setAuditorData(auditor);
       setOpen(true);
     } else {
       navigate('/sign-in');
     }
   };
 
+  const handleChose = auditor => {
+    setAuditorData(auditor);
+    setOpen(true);
+  };
+  //
   const handleClose = () => {
     setOpen(false);
   };
@@ -140,11 +193,19 @@ const AuditRequestInfo = ({
   };
 
   const handleAccept = () => {
+
+    
     const isRequestFound = auditRequests?.find(
+      req => req.id === auditRequest.id,
+    ) || organizationAuditRequests?.find(
       req => req.id === auditRequest.id,
     );
     if (isRequestFound) {
-      dispatch(confirmAudit(auditRequest, true, `/audit/${auditRequest.id}`));
+      if (isRequestFound?.auditor_organization) {
+        dispatch(confirmAudit({ ...isRequestFound, auditor_organization: isRequestFound?.auditor_organization.id }, true, `/audit/${isRequestFound.id}`));
+      } else {
+        dispatch(confirmAudit(isRequestFound, true, `/audit/${isRequestFound.id}`));
+      }
     }
   };
 
@@ -445,6 +506,66 @@ const AuditRequestInfo = ({
           >
             Make offer
           </Button>
+          <Popover
+            id={id}
+            open={openAnchor}
+            anchorEl={anchorEl}
+            onClose={handleCloseAnchor}
+            anchorOrigin={anchorOrigin}
+            transformOrigin={transformOrigin}
+          >
+            <List
+              dense
+              sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}
+            >
+              <ListItem disablePadding onClick={() => handleChose(auditor)}>
+                <ListItemButton>
+                  <ListItemAvatar>
+                    <Avatar
+                      alt={user.name}
+                      // src={org.avatar && `${ASSET_URL}/${org.avatar}`}
+                    />
+                  </ListItemAvatar>
+                  <ListItemText id={user.name} primary={user.name} />
+                </ListItemButton>
+              </ListItem>
+              {organizations.map(org => {
+                const member = org.members.find(
+                  member => member.user_id === user.id,
+                );
+                const hasEditorAccess =
+                  member.access_level === 'Editor' ||
+                  member.access_level === 'Owner';
+
+                return (
+                  <ListItem
+                    key={org.id}
+                    disablePadding
+                    disabled={!hasEditorAccess}
+                    onClick={() => {
+                      if (hasEditorAccess) {
+                        handleChose(org);
+                      }
+                    }}
+                  >
+                    <ListItemButton>
+                      <ListItemAvatar>
+                        <Avatar
+                          alt={org.name}
+                          src={
+                            org.avatar
+                              ? `${ASSET_URL}/${org.avatar}`
+                              : undefined
+                          }
+                        />
+                      </ListItemAvatar>
+                      <ListItemText id={org.id} primary={org.name} />
+                    </ListItemButton>
+                  </ListItem>
+                );
+              })}
+            </List>
+          </Popover>
           {showAcceptButton &&
             auditRequest &&
             !isModal &&
@@ -469,7 +590,7 @@ const AuditRequestInfo = ({
         disableScrollLock
       >
         <OfferModal
-          auditor={auditor}
+          auditor={auditorData}
           project={project}
           user={user}
           redirect={redirect}

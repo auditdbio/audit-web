@@ -14,7 +14,7 @@ import { getCustomer } from '../redux/actions/customerAction.js';
 import ProjectPage from '../pages/Project-page.jsx';
 import AuditRequestPage from '../pages/Audit-Request-Page.jsx';
 import { getProjects } from '../redux/actions/projectAction.js';
-import { getAudits, getAuditsRequest } from '../redux/actions/auditAction.js';
+import { getAudits, getAuditsRequest, getOrganizationAudits } from '../redux/actions/auditAction.js';
 import EditProject from '../pages/EditProject.jsx';
 import ForCustomer from '../pages/For-customer.jsx';
 import ForAuditor from '../pages/For-auditor.jsx';
@@ -53,6 +53,14 @@ import UserProjects from '../pages/UserProjects.jsx';
 import PriceCalculationPage from '../pages/PriceCalculationPage.jsx';
 import { refreshToken } from '../redux/actions/userAction.js';
 import Audit from '../pages/Audit.jsx';
+import Organization from '../components/Organization.jsx';
+import CreateEditOrganization from '../pages/CreateEditOrganization.jsx';
+import {
+  getAuditRequests,
+  getMyOrganizations,
+} from '../redux/actions/organizationAction.js';
+import MyOrganization from '../pages/MyOrganizations.jsx';
+import CustomersPage from '../pages/CustomersPage.jsx';
 
 const AppRoutes = () => {
   const currentRole = useSelector(s => s.user.user.current_role);
@@ -61,6 +69,7 @@ const AppRoutes = () => {
   const dispatch = useDispatch();
   const { reconnect, connected, needUpdate } = useSelector(s => s.websocket);
   const [isOpen, setIsOpen] = React.useState(false);
+  const organizations = useSelector(s => s.organization.organizations);
 
   useEffect(() => {
     const refreshInterval = setInterval(() => {
@@ -76,10 +85,23 @@ const AppRoutes = () => {
 
   useEffect(() => {
     if (isAuth()) {
+      dispatch(getMyOrganizations());
+    }
+  }, [isAuth(), currentRole]);
+
+  useEffect(() => {
+    if (organizations?.length) {
+      dispatch(getAuditRequests());
+    }
+  }, [organizations]);
+
+  useEffect(() => {
+    if (isAuth()) {
       dispatch(getProjects());
       if (currentRole) {
         dispatch(getAuditsRequest(currentRole));
         dispatch(getAudits(currentRole));
+        dispatch(getOrganizationAudits());
       }
     }
   }, [currentRole, isAuth()]);
@@ -116,7 +138,7 @@ const AppRoutes = () => {
       dispatch(getChatList(currentRole));
       dispatch(getUnreadForDifferentRole());
     }
-  }, [currentRole]);
+  }, [currentRole, isAuth()]);
 
   useEffect(() => {
     return () => {
@@ -158,6 +180,7 @@ const AppRoutes = () => {
         <Route path="/for-customers" element={<ForCustomer />} />
         <Route path="/for-auditors" element={<ForAuditor />} />
         <Route path="/auditors" element={<AuditorsPage />} />
+        <Route path="/customers" element={<CustomersPage />} />
         <Route path="/audit-db" element={<AuditDb />} />
         <Route path="/FAQ" element={<Faq />} />
         <Route path="/contact-us" element={<ContactUs />} />
@@ -314,6 +337,33 @@ const AppRoutes = () => {
           element={
             <PrivateRoute auth={{ isAuthenticated: isAuth() }}>
               <PriceCalculationPage />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/create-organization"
+          element={
+            <PrivateRoute auth={{ isAuthenticated: isAuth() }}>
+              <CreateEditOrganization />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/edit-organization/:id"
+          element={
+            <PrivateRoute auth={{ isAuthenticated: isAuth() }}>
+              <CreateEditOrganization />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/my-organizations"
+          element={
+            <PrivateRoute auth={{ isAuthenticated: isAuth() }}>
+              <MyOrganization />
             </PrivateRoute>
           }
         />

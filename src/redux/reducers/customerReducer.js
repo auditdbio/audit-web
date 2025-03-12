@@ -1,6 +1,7 @@
 import {
   CLEAR_CURRENT_AUDITOR_CUSTOMER,
   CLEAR_MESSAGES,
+  CLEAR_SEARCH,
   CUSTOMER_SET_ERROR,
   GET_CURRENT_CUSTOMER,
   GET_CUSTOMER,
@@ -48,6 +49,12 @@ export const customerReducer = (state = initialState, action) => {
       return {
         ...state,
         error: action.payload,
+      };
+    case CLEAR_SEARCH:
+      return {
+        ...state,
+        searchCustomers: null,
+        searchTotalCustomers: 0,
       };
     case CLEAR_MESSAGES:
       return {

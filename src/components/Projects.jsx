@@ -17,9 +17,11 @@ const Projects = ({ role }) => {
   const customer = useSelector(state => state.customer.customer);
   const dispatch = useDispatch();
   const [error, setError] = useState(null);
+  const organizationAudits = useSelector(state => state.audits.organizationAudits);
+
   const projectReducer = useMemo(() => {
     if (role === AUDITOR) {
-      return projects;
+      return [...projects, ...organizationAudits];
     } else {
       return (
         myProjects &&

@@ -4,13 +4,12 @@ import {
   Box,
   Button,
   Typography,
-  Link,
   useMediaQuery,
   Tooltip,
 } from '@mui/material';
 import GitHubIcon from '@mui/icons-material/GitHub.js';
 import theme from '../styles/themes.js';
-import { useNavigate, useSearchParams } from 'react-router-dom/dist';
+import { useNavigate, Link, useSearchParams } from 'react-router-dom/dist';
 import { useDispatch, useSelector } from 'react-redux';
 import Loader from './Loader.jsx';
 import { AUDITOR, CUSTOMER } from '../redux/actions/types.js';
@@ -26,18 +25,21 @@ import WalletConnectIcon from './icons/WalletConnectIcon.jsx';
 import { clearUserMessages } from '../redux/actions/userAction.js';
 import CustomSnackbar from './custom/CustomSnackbar.jsx';
 import Headings from '../router/Headings.jsx';
+import OrganizationList from './OrganizationList/OrganizationList.jsx';
 import Star from './icons/Star.jsx';
 import { getAuditorRating } from '../redux/actions/auditorAction.js';
 import RatingDetails from './RatingDetails.jsx';
 import UserFeedbacks from './UserFeedbacks.jsx';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack.js';
+import { useLocation } from 'react-router-dom';
 
 const UserInfo = ({ role, linkId }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
   const matchXs = useMediaQuery(theme.breakpoints.down('xs'));
-  const matchXxs = useMediaQuery(theme.breakpoints.down(590));
+  const matchXxs = useMediaQuery(theme.breakpoints.down(850));
+  const organizations = useSelector(s => s.organization.organizations);
+  const invites = useSelector(s => s.organization.invites);
 
   const [searchParams, setSearchParams] = useSearchParams();
   const [isDetailsOpen, setIsDetailsOpen] = useState(
@@ -158,6 +160,37 @@ const UserInfo = ({ role, linkId }) => {
                     : Math.trunc(data.rating || 0)}
                 </Typography>
               </Button>
+            )}
+            {(!!organizations.length || !!invites.length) && (
+              <Box
+                sx={{
+                  flexDirection: 'column',
+                  gap: '10px',
+                  display: 'flex',
+                  maxWidth: '200px',
+                  width: '100%',
+                  alignItems: 'center',
+                  flexWrap: 'wrap',
+                  '& span': {
+                    color: '#B2B3B3',
+                  },
+                }}
+              >
+                {!!invites.length && (
+                  <>
+                    <span>Invites</span>
+                    <OrganizationList organizations={invites} />
+                  </>
+                )}
+                {!!organizations.length && (
+                  <>
+                    <Link to={'/my-organizations'}>
+                      <span>Organization</span>
+                    </Link>
+                    <OrganizationList organizations={organizations} />
+                  </>
+                )}
+              </Box>
             )}
           </Box>
 
@@ -327,6 +360,13 @@ const UserInfo = ({ role, linkId }) => {
               Edit
             </Button>
             <IdentitySetting />
+            <Button
+              onClick={() => navigate('/create-organization')}
+              sx={buttonSx}
+              variant={'contained'}
+            >
+              Create organization
+            </Button>
           </Box>
         </Box>
       </Box>
@@ -448,7 +488,8 @@ const buttonSx = theme => ({
   textTransform: 'capitalize',
   fontWeight: 600,
   fontSize: '18px',
-  width: '214px',
+  // padding: '9px 50px',
+  width: '234px',
   borderRadius: '10px',
   [theme.breakpoints.down('xs')]: {
     padding: '9px 10px',
@@ -504,6 +545,14 @@ const infoWrapper = theme => ({
     },
   },
 });
+
+const accountLink = {
+  height: '30px',
+  display: 'flex',
+  alignItems: 'center',
+  color: 'black',
+  textDecoration: 'none',
+};
 
 const ratingButton = {
   color: 'black',

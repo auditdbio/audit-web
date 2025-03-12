@@ -8,7 +8,15 @@ import { Box } from '@mui/system';
 import InputAdornment from '@mui/material/InputAdornment';
 import SearchIcon from '@mui/icons-material/Search';
 import { useEffect, useRef, useState, useCallback } from 'react';
-import { Paper, Typography } from '@mui/material';
+import Autocomplete from '@mui/material/Autocomplete';
+import {
+  Avatar,
+  Checkbox,
+  FormControlLabel,
+  Paper,
+  Slider,
+  Typography,
+} from '@mui/material';
 import AuditorSearchListBox from './custom/AuditorSearchListBox.jsx';
 import IconButton from '@mui/material/IconButton';
 import { ArrowBack } from '@mui/icons-material';
@@ -18,17 +26,25 @@ import dayjs from 'dayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers';
-import { useNavigate } from 'react-router-dom/dist';
+import { useNavigate, useSearchParams } from 'react-router-dom/dist';
 import { Field, Formik, Form } from 'formik';
 import * as Yup from 'yup';
-import { useParams } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
 import { addTestsLabel } from '../lib/helper.js';
+import CustomSnackbar from './custom/CustomSnackbar.jsx';
+import PriceCalculation from './PriceCalculation.jsx';
+import { ASSET_URL } from '../services/urls.js';
 import TotalPrice from './forms/TotalPrice/TotalPrice.jsx';
-import { CLEAR_SEARCHED_AUDITOR } from '../redux/actions/types.js';
 import Cookies from 'js-cookie';
 import axios from 'axios';
 import { API_URL } from '../services/urls.js';
 import _ from 'lodash';
+import { CLEAR_SEARCHED_AUDITOR, CUSTOMER } from '../redux/actions/types.js';
+import { addUserInOrganization } from '../redux/actions/organizationAction.js';
+import { AUDITOR, CLEAR_SEARCH } from '../redux/actions/types.js';
+import { searchCustomers } from '../redux/actions/customerAction.js';
+import Radio from '@mui/material/Radio';
+import { getAuditors } from '../redux/actions/auditorAction.js';
 
 export default function AuditorSearchModal({
   open,
@@ -37,16 +53,26 @@ export default function AuditorSearchModal({
   setState,
   setError,
   projectInfo,
+  invite,
+  modeType,
+  customer,
+  type = 'auditor',
 }) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { id } = useParams();
-
+  const auditorReducer = useSelector(state => state.auditor.auditors);
+  const customersReducer = useSelector(state => state.customer.customers);
   const projectReducer = useSelector(state => state.project);
   const customerReducer = useSelector(state => state.customer);
 
   const [selectedAuditor, setSelectedAuditor] = useState({});
-  const [mode, setMode] = useState('search');
+  const organization = useSelector(s => s.organization.organization);
+  const [rulesOfMember, setRulesOfMember] = useState('Representative');
+  const user = useSelector(s => s.user.user);
+  const [openDrop, setOpenDrop] = useState(false);
+  const [mode, setMode] = useState(modeType || 'search');
+  const [inputValue, setInputValue] = useState('');
   const [query, setQuery] = useState('');
   const [page, setPage] = useState(1);
   const [auditors, setAuditors] = useState([]);
@@ -56,10 +82,66 @@ export default function AuditorSearchModal({
   const [searchValue, setSearchValue] = useState('');
   const scrollTimeout = useRef(null);
   const listInnerRef = useRef();
+  const [auditorPagination, setAuditorPagination] = useState({
+    hasMore: true,
+    total: 0,
+  });
+  const [organizationPagination, setOrganizationPagination] = useState({
+    hasMore: true,
+    total: 0,
+  });
+
+  useEffect(() => {
+    dispatch(getAuditors(query, 15));
+  }, [query]);
+
+  useEffect(() => {
+    if (!modeType) {
+      if (organization.id) {
+        if (
+          organization.organization_type.toLowerCase() === AUDITOR.toLowerCase()
+        ) {
+          dispatch(getAuditors(query, 15));
+        } else {
+          dispatch(searchCustomers({ search: query, perPage: 15 }));
+        }
+      } else {
+        dispatch(getAuditors(query, 15));
+      }
+    }
+    return () => {
+      if (!modeType) {
+        dispatch({ type: CLEAR_SEARCH });
+      }
+    };
+  }, [query, organization.id]);
+
+  const handleInputChange = event => {
+    setQuery(event.target.value);
+  };
 
   const handleOptionChange = option => {
     setSelectedAuditor(option);
-    setMode('offer');
+    if (invite) {
+      setMode('invite');
+    } else {
+      setMode('offer');
+    }
+  };
+
+  const handleInviteUser = () => {
+    const data = [
+      {
+        user_id: customer?.user_id ? customer.user_id : selectedAuditor.user_id,
+        access_level: rulesOfMember,
+      },
+    ];
+    dispatch(
+      addUserInOrganization(organization.link_id, data, organization.id),
+    );
+    setMode(modeType || 'search');
+    setQuery('');
+    handleClose();
   };
 
   const handleSearch = async () => {
@@ -69,10 +151,39 @@ export default function AuditorSearchModal({
     await navigate(
       `/auditors?search=${query}&projectIdToInvite=${id || projectInfo.id}`,
     );
+    // if (setState) {
+    //   await setState(true);
+    // }
+    // if (handleSubmit) {
+    //   handleSubmit();
+    // }
+    // if (organization.id) {
+    //   if (
+    //     organization.organization_type.toLowerCase() === AUDITOR.toLowerCase()
+    //   ) {
+    //     await navigate(
+    //       `/auditors?search=${query}&organization=${organization.link_id}`,
+    //       {
+    //         state: { from: location.pathname },
+    //       },
+    //     );
+    //   } else {
+    //     await navigate(
+    //       `/customers?search=${query}&organization=${organization.link_id}`,
+    //       {
+    //         state: { from: location.pathname },
+    //       },
+    //     );
+    //   }
+    // } else {
+    //   await navigate(`/auditors?search=${query}&projectIdToInvite=${id}`, {
+    //     state: { from: location.pathname },
+    //   });
+    // }
   };
 
   useEffect(() => {
-    const fetchAuditors = async () => {
+    const fetchResults = async () => {
       try {
         setIsLoading(true);
         setPage(1);
@@ -83,87 +194,184 @@ export default function AuditorSearchModal({
           setScrollPosition(listInnerRef.current.scrollTop);
         }
 
-        const response = await axios.get(
-          `${API_URL}/search?query=${query}&sort_by=rating&tags=&sort_order=-1&page=1&per_page=15&kind=auditor badge`,
-          { headers: { Authorization: `Bearer ${token}` } },
+        const requests = [
+          axios.get(
+            `${API_URL}/search?query=${query}&sort_by=rating&tags=&sort_order=-1&page=1&per_page=15&kind=auditor badge`,
+            { headers: { Authorization: `Bearer ${token}` } },
+          ),
+          axios.get(
+            `${API_URL}/search?query=${query}&sort_by=rating&tags=&sort_order=-1&page=1&per_page=15&kind=organization`,
+            { headers: { Authorization: `Bearer ${token}` } },
+          ),
+        ];
+
+        const [auditorsResponse, organizationsResponse] = await Promise.all(
+          requests,
         );
 
-        setAuditors(response.data.result);
+        // Update pagination info for both types
+        setAuditorPagination({
+          hasMore:
+            auditorsResponse.data.result.length > 0 &&
+            auditorsResponse.data.result.length <
+              auditorsResponse.data.totalDocuments,
+          total: auditorsResponse.data.totalDocuments,
+        });
+
+        setOrganizationPagination({
+          hasMore:
+            organizationsResponse.data.result.length > 0 &&
+            organizationsResponse.data.result.length <
+              organizationsResponse.data.totalDocuments,
+          total: organizationsResponse.data.totalDocuments,
+        });
+
+        const combinedResults = [
+          ...auditorsResponse.data.result,
+          ...organizationsResponse.data.result,
+        ];
+
+        setAuditors(combinedResults);
       } catch (error) {
-        console.error('Error fetching auditors:', error);
+        console.error('Error fetching results:', error);
       } finally {
         setIsLoading(false);
       }
     };
 
     if (query) {
-      fetchAuditors();
+      fetchResults();
     }
   }, [query]);
 
   useEffect(() => {
-    if (!isLoading && listInnerRef.current && scrollPosition > 0) {
-      requestAnimationFrame(() => {
-        listInnerRef.current.scrollTop = scrollPosition;
-      });
-    }
-  }, [isLoading, auditors]);
-
-  useEffect(() => {
-    const fetchMoreAuditors = async () => {
-      if (isLoading || lastList) return;
+    const fetchMoreResults = async () => {
+      if (
+        isLoading ||
+        (!auditorPagination.hasMore && !organizationPagination.hasMore)
+      )
+        return;
 
       try {
         setIsLoading(true);
         const token = Cookies.get('token');
-        const response = await axios.get(
-          `${API_URL}/search?query=${query}&sort_by=rating&tags=&sort_order=-1&page=${page}&per_page=15&kind=auditor badge`,
-          { headers: { Authorization: `Bearer ${token}` } },
-        );
 
-        if (response.data.result.length === 0) {
+        const requests = [];
+
+        // Only fetch auditors if there are more to fetch
+        if (auditorPagination.hasMore) {
+          requests.push(
+            axios.get(
+              `${API_URL}/search?query=${query}&sort_by=rating&tags=&sort_order=-1&page=${page}&per_page=15&kind=auditor badge`,
+              { headers: { Authorization: `Bearer ${token}` } },
+            ),
+          );
+        }
+
+        // Only fetch organizations if there are more to fetch
+        if (organizationPagination.hasMore) {
+          requests.push(
+            axios.get(
+              `${API_URL}/search?query=${query}&sort_by=rating&tags=&sort_order=-1&page=${page}&per_page=15&kind=organization`,
+              { headers: { Authorization: `Bearer ${token}` } },
+            ),
+          );
+        }
+
+        if (requests.length === 0) {
+          setLastList(true);
+          return;
+        }
+
+        const responses = await Promise.all(requests);
+        let newResults = [];
+
+        responses.forEach((response, index) => {
+          const isAuditorResponse = auditorPagination.hasMore && index === 0;
+          const isOrgResponse =
+            organizationPagination.hasMore &&
+            index === (auditorPagination.hasMore ? 1 : 0);
+
+          if (isAuditorResponse) {
+            setAuditorPagination(prev => ({
+              ...prev,
+              hasMore:
+                response.data.result.length > 0 &&
+                page * 15 < response.data.totalDocuments,
+            }));
+          }
+
+          if (isOrgResponse) {
+            setOrganizationPagination(prev => ({
+              ...prev,
+              hasMore:
+                response.data.result.length > 0 &&
+                page * 15 < response.data.totalDocuments,
+            }));
+          }
+
+          newResults = [...newResults, ...response.data.result];
+        });
+
+        if (newResults.length === 0) {
           setLastList(true);
           return;
         }
 
         setAuditors(prev => {
-          const newAuditors = response.data.result;
-          const uniqueAuditors = [...prev];
+          const uniqueResults = [...prev];
 
-          newAuditors.forEach(newAuditor => {
+          newResults.forEach(newItem => {
             if (
-              !uniqueAuditors.some(
-                existing => existing.user_id === newAuditor.user_id,
+              !uniqueResults.some(
+                existing =>
+                  existing.user_id === newItem.user_id ||
+                  existing.id === newItem.id,
               )
             ) {
-              uniqueAuditors.push(newAuditor);
+              uniqueResults.push(newItem);
             }
           });
 
-          return uniqueAuditors;
+          return uniqueResults;
         });
       } catch (error) {
-        console.error('Error fetching more auditors:', error);
+        console.error('Error fetching more results:', error);
       } finally {
         setIsLoading(false);
       }
     };
 
     if (page > 1) {
-      fetchMoreAuditors();
+      fetchMoreResults();
     }
-  }, [page, query, lastList]);
+  }, [
+    page,
+    query,
+    lastList,
+    auditorPagination.hasMore,
+    organizationPagination.hasMore,
+  ]);
 
   const handleScroll = useCallback(
     _.throttle(e => {
-      if (!isLoading && !lastList) {
+      if (
+        !isLoading &&
+        !lastList &&
+        (auditorPagination.hasMore || organizationPagination.hasMore)
+      ) {
         const { scrollTop, scrollHeight, clientHeight } = e.target;
         if (scrollHeight - scrollTop <= clientHeight * 1.2) {
           setPage(prev => prev + 1);
         }
       }
     }, 300),
-    [isLoading, lastList, page],
+    [
+      isLoading,
+      lastList,
+      auditorPagination.hasMore,
+      organizationPagination.hasMore,
+    ],
   );
 
   const handleSearchInput = e => {
@@ -181,6 +389,42 @@ export default function AuditorSearchModal({
     }, 300);
   };
 
+  // const renderSearchResult = item => {
+  //   const isOrganization = type === 'organization';
+  //   return (
+  //     <Box
+  //       key={item.user_id || item.id}
+  //       sx={{
+  //         display: 'flex',
+  //         alignItems: 'center',
+  //         padding: '8px',
+  //         cursor: 'pointer',
+  //         '&:hover': {
+  //           backgroundColor: 'rgba(0, 0, 0, 0.04)',
+  //         },
+  //       }}
+  //       onClick={() => handleOptionChange(item)}
+  //     >
+  //       <Avatar
+  //         src={item.avatar ? `${ASSET_URL}/id/${item.avatar}` : null}
+  //         sx={{ marginRight: '12px' }}
+  //       />
+  //       <Box>
+  //         <Typography variant="subtitle1">
+  //           {isOrganization
+  //             ? item.name
+  //             : `${item.first_name} ${item.last_name}`}
+  //         </Typography>
+  //         {item.description && (
+  //           <Typography variant="body2" color="text.secondary">
+  //             {item.description}
+  //           </Typography>
+  //         )}
+  //       </Box>
+  //     </Box>
+  //   );
+  // };
+
   return (
     <Dialog
       open={open}
@@ -196,48 +440,58 @@ export default function AuditorSearchModal({
       {mode === 'search' && (
         <DialogContent sx={modalWindow}>
           <Box sx={fieldButtonContainer}>
-            <Box sx={{ position: 'relative', width: '100%' }}>
-              <TextField
-                value={searchValue}
-                onChange={handleSearchInput}
-                variant="outlined"
-                sx={searchField}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <SearchIcon sx={searchIcon} />
-                    </InputAdornment>
-                  ),
-                }}
-              />
-              {searchValue && auditors.length > 0 && (
-                <Box ref={listInnerRef} sx={userListSx} onScroll={handleScroll}>
-                  {auditors.map(option => (
-                    <Box
-                      key={option.user_id}
-                      onClick={() => handleOptionChange(option)}
-                      sx={{
-                        padding: '8px',
-                        cursor: 'pointer',
-                        '&:hover': {
-                          backgroundColor: '#f5f5f5',
-                        },
-                      }}
-                    >
-                      <AuditorSearchListBox
-                        auditor={option}
-                        handleSelectOption={() => handleOptionChange(option)}
-                      />
-                    </Box>
-                  ))}
-                  {isLoading && (
-                    <Box sx={{ textAlign: 'center', padding: '8px' }}>
-                      Loading...
-                    </Box>
-                  )}
-                </Box>
-              )}
-            </Box>
+            {auditorReducer && (
+              <Box sx={{ position: 'relative', width: '100%' }}>
+                <TextField
+                  value={searchValue}
+                  onChange={handleSearchInput}
+                  variant="outlined"
+                  sx={searchField}
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <SearchIcon sx={searchIcon} />
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+                {searchValue && auditors.length > 0 && (
+                  <Box
+                    ref={listInnerRef}
+                    sx={userListSx}
+                    onScroll={handleScroll}
+                  >
+                    {(!!auditors.length ? auditors : customersReducer).map(
+                      option => (
+                        <Box
+                          key={option.user_id}
+                          onClick={() => handleOptionChange(option)}
+                          sx={{
+                            padding: '8px',
+                            cursor: 'pointer',
+                            '&:hover': {
+                              backgroundColor: '#f5f5f5',
+                            },
+                          }}
+                        >
+                          <AuditorSearchListBox
+                            auditor={option}
+                            handleSelectOption={() =>
+                              handleOptionChange(option)
+                            }
+                          />
+                        </Box>
+                      ),
+                    )}
+                    {isLoading && (
+                      <Box sx={{ textAlign: 'center', padding: '8px' }}>
+                        Loading...
+                      </Box>
+                    )}
+                  </Box>
+                )}
+              </Box>
+            )}
             <Button
               sx={findButton}
               onClick={handleSearch}
@@ -277,8 +531,10 @@ export default function AuditorSearchModal({
             validateOnBlur={false}
             validateOnChange={false}
             onSubmit={async values => {
-              await handleSubmit();
-              const newValue = {
+              if (handleSubmit) {
+                await handleSubmit();
+              }
+              let newValue = {
                 ...values,
                 total_cost: parseInt(values.total_cost),
                 price: parseInt(values.price),
@@ -287,11 +543,21 @@ export default function AuditorSearchModal({
                   to: parseInt(values.price),
                 },
               };
+
+              if (selectedAuditor.owner) {
+                newValue.auditor_id = null;
+                newValue.auditor_organization = selectedAuditor.id;
+              }
+
               if (projectReducer.recentProject) {
                 if (values.auditor_id !== values.customer_id) {
                   dispatch(createRequest(newValue));
                 } else {
-                  setError('You cannot create an audit request with yourself');
+                  if (setError) {
+                    setError(
+                      'You cannot create an audit request with yourself',
+                    );
+                  }
                 }
                 setMode('search');
                 dispatch({ type: CLEAR_SEARCHED_AUDITOR });
@@ -378,6 +644,139 @@ export default function AuditorSearchModal({
           </Formik>
         </DialogContent>
       )}
+      {mode === 'invite' && (
+        <DialogContent sx={offerDialogStyle}>
+          <Box>
+            <IconButton
+              onClick={() => {
+                setMode('search');
+              }}
+              {...addTestsLabel('go-back-button')}
+            >
+              <ArrowBack style={{ color: 'orange' }} />
+            </IconButton>
+          </Box>
+          <Box sx={{ p: '15px' }}>
+            <Typography variant={'h4'} sx={{ fontWeight: 500 }}>
+              Current organization
+            </Typography>
+            <Box
+              sx={{
+                display: 'flex',
+                gap: '10px',
+                alignItems: 'center',
+                marginY: '15px',
+              }}
+            >
+              <Avatar src={`${ASSET_URL}/${organization.avatar}`} />
+              <Typography variant={'h5'}>{organization.name}</Typography>
+            </Box>
+            <Typography variant={'h5'} sx={{ fontWeight: 500 }}>
+              {`Rules for ${selectedAuditor.first_name} in the organization`}
+            </Typography>
+
+            <Box
+              sx={{
+                mt: '10px',
+                display: 'flex',
+                gap: '20px',
+                flexDirection: 'column',
+                alignItems: 'flex-start',
+              }}
+            >
+              <Box>
+                <FormControlLabel
+                  value="Owner"
+                  control={
+                    <Radio
+                      checked={rulesOfMember === 'Owner'}
+                      color={
+                        user?.current_role?.toLowerCase() ===
+                        CUSTOMER?.toLowerCase()
+                          ? 'primary'
+                          : 'secondary'
+                      }
+                      onChange={() => setRulesOfMember('Owner')}
+                    />
+                  }
+                  sx={{ marginX: '0' }}
+                  label="Owner"
+                  labelPlacement="right"
+                  disabled
+                />
+                <Typography sx={roleDescriptionTitle}>
+                  Has full control over organization management.
+                </Typography>
+              </Box>
+              <Box>
+                <FormControlLabel
+                  value="Editor"
+                  control={
+                    <Radio
+                      checked={rulesOfMember === 'Editor'}
+                      color={
+                        user?.current_role?.toLowerCase() ===
+                        CUSTOMER?.toLowerCase()
+                          ? 'primary'
+                          : 'secondary'
+                      }
+                      onChange={() => setRulesOfMember('Editor')}
+                    />
+                  }
+                  label="Editor"
+                  sx={{ marginX: '0' }}
+                  labelPlacement="right"
+                />
+                <Typography sx={roleDescriptionTitle}>
+                  Can manage audits and communicate on behalf of the
+                  organization.
+                </Typography>
+              </Box>
+              <Box>
+                <FormControlLabel
+                  value="Representative"
+                  control={
+                    <Radio
+                      checked={rulesOfMember === 'Representative'}
+                      color={
+                        user?.current_role?.toLowerCase() ===
+                        CUSTOMER?.toLowerCase()
+                          ? 'primary'
+                          : 'secondary'
+                      }
+                      onChange={() => setRulesOfMember('Representative')}
+                    />
+                  }
+                  label="Representative"
+                  sx={{ marginX: '0' }}
+                  labelPlacement="right"
+                />
+                <Typography sx={roleDescriptionTitle}>
+                  Can communicate on behalf of the organization but cannot
+                  manage audits.
+                </Typography>
+              </Box>
+            </Box>
+            <Button
+              variant={'contained'}
+              sx={{
+                textTransform: 'unset',
+                display: 'block',
+                marginX: 'auto',
+                marginTop: '20px',
+              }}
+              color={
+                user?.current_role?.toLowerCase() === CUSTOMER?.toLowerCase()
+                  ? 'primary'
+                  : 'secondary'
+              }
+              onClick={handleInviteUser}
+            >
+              Invite
+            </Button>
+          </Box>
+        </DialogContent>
+      )}
     </Dialog>
   );
 }
@@ -394,6 +793,18 @@ const MakeOfferSchema = Yup.object().shape({
     from: Yup.date(),
     to: Yup.date().required().min(Yup.ref('from')),
   }),
+});
+
+const roleDescriptionTitle = theme => ({
+  fontSize: '16px',
+  color: '#9f9f9f',
+  marginLeft: '42px',
+  [theme.breakpoints.down('md')]: {
+    fontSize: '12px',
+  },
+  [theme.breakpoints.down('xs')]: {
+    fontSize: '10px',
+  },
 });
 
 const userListSx = theme => ({

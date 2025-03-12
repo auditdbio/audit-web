@@ -31,6 +31,7 @@ import { setCurrentChat } from '../redux/actions/chatActions.js';
 import ChatIcon from './icons/ChatIcon.jsx';
 import { getAuditorRating } from '../redux/actions/auditorAction.js';
 import Star from './icons/Star.jsx';
+import TypeChat from './Chat/TypeChat.jsx';
 import { SCOPE_GIT_BLOCK, SCOPE_LINKS } from '../services/constants.js';
 
 export default function AuditorModal({
@@ -52,10 +53,12 @@ export default function AuditorModal({
   const { auditorRating } = useSelector(s => s.auditor);
   const { chatList } = useSelector(s => s.chat);
   const myProjects = useSelector(state => state.project.myProjects);
+  const [isOpenType, setIsOpenType] = useState(false);
 
   const [mode, setMode] = useState('info');
   const [message, setMessage] = useState('');
   const [scope, setScope] = useState([]);
+  const { organizations, own } = useSelector(s => s.organization);
 
   const handleInvite = () => {
     if (
@@ -94,29 +97,34 @@ export default function AuditorModal({
   };
 
   const handleSendMessage = () => {
-    window.scrollTo(0, 0);
+    // TODO add check for pm or org chat
+    if (organizations.length || own.length) {
+      setIsOpenType(true);
+    } else {
+      window.scrollTo(0, 0);
 
-    const existingChat = chatList.find(chat =>
-      chat.members?.find(
-        member =>
-          member.id === auditor?.user_id &&
-          member.role?.toLowerCase() === AUDITOR,
-      ),
-    );
-    const chatId = existingChat ? existingChat.id : auditor?.user_id;
-    const members = [auditor?.user_id, user.id];
+      const existingChat = chatList.find(chat =>
+        chat.members?.find(
+          member =>
+            member.id === auditor?.user_id &&
+            member.role?.toLowerCase() === AUDITOR,
+        ),
+      );
+      const chatId = existingChat ? existingChat.id : auditor?.user_id;
+      const members = [auditor?.user_id, user.id];
 
-    dispatch(
-      setCurrentChat(chatId, {
-        name: auditor.first_name,
-        avatar: auditor.avatar,
-        role: AUDITOR,
-        isNew: !existingChat,
-        members,
-      }),
-    );
-    localStorage.setItem('path', window.location.pathname);
-    navigate(`/chat/${existingChat ? existingChat.id : auditor?.user_id}`);
+      dispatch(
+        setCurrentChat(chatId, {
+          name: auditor.first_name,
+          avatar: auditor.avatar,
+          role: AUDITOR,
+          isNew: !existingChat,
+          members,
+        }),
+      );
+      localStorage.setItem('path', window.location.pathname);
+      navigate(`/chat/${existingChat ? existingChat.id : auditor?.user_id}`);
+    }
   };
 
   useEffect(() => {
@@ -306,14 +314,17 @@ export default function AuditorModal({
                   Invite to project
                 </Button>
                 {!budge && (
-                  <Button
-                    variant="text"
-                    onClick={handleSendMessage}
-                    disabled={auditor?.user_id === user.id}
-                    {...addTestsLabel('message-button')}
-                  >
-                    <ChatIcon />
-                  </Button>
+                  // <Button
+                  //   variant="text"
+                  //   // sx={[findButton, messageButton]}
+                  //   onClick={handleSendMessage}
+                  //   disabled={auditor?.user_id === user.id}
+                  //   {...addTestsLabel('message-button')}
+                  // >
+                  //   <ChatIcon />
+                  //   {isOpenType && <TypeChat />}
+                  // </Button>
+                  <TypeChat auditor={auditor} />
                 )}
               </Box>
             </Box>
@@ -678,6 +689,7 @@ const dateWrapper = {
     },
   },
 };
+
 const dateStyle = {
   width: '150px',
   height: '40px',

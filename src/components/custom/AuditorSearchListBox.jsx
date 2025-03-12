@@ -9,9 +9,16 @@ const AuditorSearchListBox = ({ auditor, handleSelectOption }) => {
     <Box sx={mainContainer} onClick={handleSelectOption}>
       <Box sx={{ display: 'flex', gap: '7px', alignItems: 'center' }}>
         <Avatar src={auditor.avatar && `${ASSET_URL}/id/${auditor.avatar}`} />
+        <Box>
         <Typography sx={nameStyle(theme)}>
-          {auditor.first_name} {auditor.last_name}
-        </Typography>
+          {auditor.first_name || auditor.name} {auditor.last_name || ''}
+          </Typography>
+          {auditor.owner && (
+            <Typography sx={organizationStyle(theme)}>
+              Organization
+            </Typography>
+          )}
+        </Box>
       </Box>
 
       <Box sx={statusContainer}>
@@ -68,6 +75,13 @@ const nameStyle = theme => ({
     md: '14px',
     lg: '14px',
   },
+});
+
+const organizationStyle = theme => ({
+  fontWeight: '500',
+  color: '#434242',
+  fontSize: '12px!important',
+  marginTop: '2px',
 });
 
 const statusStyle = theme => ({

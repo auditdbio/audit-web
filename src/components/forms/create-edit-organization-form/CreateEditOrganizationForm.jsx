@@ -2,8 +2,6 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Field, Form, Formik } from 'formik';
 import * as Yup from 'yup';
-import axios from 'axios';
-import Cookies from 'js-cookie';
 import {
   Box,
   Button,
@@ -12,27 +10,31 @@ import {
   useMediaQuery,
 } from '@mui/material';
 import SimpleField from '../fields/simple-field.jsx';
-import TagsArray from '../../tagsArray/index.jsx';
 import theme from '../../../styles/themes.js';
 import Loader from '../../Loader.jsx';
 import { AUDITOR, CUSTOMER } from '../../../redux/actions/types.js';
-import TagsField from '../tags-field/tags-field.jsx';
 import AvatarForm from '../Avatar-form/index.jsx';
 import { SliderRange } from '../salary-slider/slider-range.jsx';
 import { addTestsLabel } from '../../../lib/helper.js';
-import {
-  createCustomer,
-  updateCustomer,
-} from '../../../redux/actions/customerAction.js';
-import {
-  createAuditor,
-  updateAuditor,
-} from '../../../redux/actions/auditorAction.js';
 import { useNavigate } from 'react-router-dom/dist';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { history } from '../../../services/history.js';
+import {
+  createOrganization,
+  updateOrganization,
+} from '../../../redux/actions/organizationAction.js';
+import Radio from '@mui/material/Radio';
+import RadioGroup from '@mui/material/RadioGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import FormControl from '@mui/material/FormControl';
+import FormLabel from '@mui/material/FormLabel';
+import {
+  changeRoleCreateOrganization,
+  changeRolePublicAuditorNoRedirect,
+} from '../../../redux/actions/userAction.js';
+import axios from 'axios';
+import Cookies from 'js-cookie';
 import { ASSET_URL } from '../../../services/urls.js';
-import CustomSnackbar from '../../custom/CustomSnackbar.jsx';
 
 const GoBack = ({ role, newLinkId }) => {
   const navigate = useNavigate();
@@ -50,44 +52,32 @@ const GoBack = ({ role, newLinkId }) => {
   );
 };
 
-const EditProfileForm = ({ role, newLinkId }) => {
+const CreateEditOrganizationForm = ({
+  role,
+  needLoad,
+  organization,
+  newLinkId,
+}) => {
   const matchSm = useMediaQuery(theme.breakpoints.down('sm'));
   const matchXs = useMediaQuery(theme.breakpoints.down('xs'));
   const dispatch = useDispatch();
-  const navigate = useNavigate();
-
   const { user } = useSelector(s => s.user);
   const { customer } = useSelector(s => s.customer);
   const { auditor } = useSelector(s => s.auditor);
-
-  const formData = new FormData();
-
-  const [error, setError] = useState(null);
+  const navigate = useNavigate();
   const [isDirty, setIsDirty] = useState(false);
   const [deletedAvatar, setDeletedAvatar] = useState(null);
-
-  const data = useMemo(() => {
-    if (role === AUDITOR) {
-      return auditor;
-    } else {
-      return customer;
-    }
-  }, [role, customer, auditor]);
-
-  const getPrefilledLastName = () => {
-    const usernameParts = user?.name?.split(' ');
-    return user.is_new && usernameParts?.length > 1
-      ? usernameParts[usernameParts.length - 1]
-      : '';
-  };
+  const formData = new FormData();
 
   const sendAvatar = async (withSave = false) => {
-    
     if (formData.get('file')) {
+
       try {
+
         const { data } = await axios.post(ASSET_URL, formData, {
           headers: { Authorization: 'Bearer ' + Cookies.get('token') },
         });
+
         const avatar = data.id;
         if (withSave) {
           if (role === AUDITOR) {
@@ -96,11 +86,11 @@ const EditProfileForm = ({ role, newLinkId }) => {
             dispatch(updateCustomer({ avatar }, false));
           }
         }
-
         return avatar;
       } catch (err) {
         setError('Error while uploading file');
         console.error(err);
+        console.log(err, 'err');
       } finally {
         formData.delete('file');
         formData.delete('private');
@@ -113,65 +103,83 @@ const EditProfileForm = ({ role, newLinkId }) => {
     return null;
   };
 
-  const submitChanges = async values => {
-    const avatar = await sendAvatar();
-
-    setIsDirty(false);
-    if (deletedAvatar) {
-      try {
-        await axios.delete(`${ASSET_URL}/id/${deletedAvatar}`, {
-          headers: { Authorization: 'Bearer ' + Cookies.get('token') },
-        });
-      } catch (e) {}
-    }
-
-    if (avatar) {
-      values.avatar = avatar;
-    }
-
-    if (role !== AUDITOR) {
-      if (!data.first_name && !data.last_name) {
-        dispatch(createCustomer(values));
-      } else {
-        dispatch(updateCustomer(values));
-      }
-    } else {
-      if (!data.first_name && !data.last_name) {
-        dispatch(createAuditor(values));
-      } else {
-        dispatch(updateAuditor(values));
-      }
-    }
-  };
-
-  if (!data) {
-    return <Loader />;
+  if (!organization.id && needLoad) {
+    return (
+      <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+        <Loader />
+      </Box>
+    );
   } else {
     return (
       <Formik
         initialValues={{
-          userId: data.user_id || '',
-          avatar: data.avatar || '',
-          free_at: '',
-          first_name: data?.first_name || user?.name?.split(' ')[0] || '',
-          last_name: data?.last_name || getPrefilledLastName(),
+          id: organization.id || '',
+          avatar: organization.avatar || '',
           contacts: {
-            telegram: data?.contacts?.telegram || '',
-            email: data?.contacts?.email || user?.email || '',
-            public_contacts: data.contacts?.public_contacts || false,
+            telegram: organization?.contacts?.telegram || '',
+            email: organization?.contacts?.email || '',
+            public_contacts: organization.contacts?.public_contacts || false,
           },
-          about: data?.about || '',
-          company: data?.company || '',
-          price_range: {
-            from: data?.price_range?.from || 0,
-            to: data?.price_range?.to || 0,
-          },
-          tags: data?.tags || [],
+          name: organization.name || '',
+          // about: organization?.about || '',
+          company: organization?.company || '',
+          organization_type:
+            organization.organization_type ||
+            user.current_role.slice(0, 1).toUpperCase() +
+              user.current_role.slice(1),
         }}
-        validationSchema={EditProfileSchema}
+        validationSchema={EditOrganizationSchema}
         validateOnBlur={false}
         validateOnChange={false}
-        onSubmit={submitChanges}
+        enableReinitialize={true}
+        onSubmit={async (values, { resetForm, setSubmitting }) => {
+          const avatar = await sendAvatar();
+
+          setSubmitting(true);
+          setIsDirty(false);
+
+          if (deletedAvatar) {
+            try {
+              await axios.delete(`${ASSET_URL}/id/${deletedAvatar}`, {
+                headers: { Authorization: 'Bearer ' + Cookies.get('token') },
+              });
+            } catch (e) {}
+          }
+
+          if (avatar) {
+            values.avatar = avatar;
+          }
+
+          if (!values.id) {
+            if (
+              values.organization_type?.toLowerCase() !==
+              user.current_role?.toLowerCase()
+            ) {
+              dispatch(
+                changeRoleCreateOrganization(
+                  user.current_role?.toLowerCase() !== AUDITOR.toLowerCase()
+                    ? AUDITOR
+                    : CUSTOMER,
+                  user.id,
+                  values,
+                  `/${user.current_role[0]}/${user.id}`,
+                ),
+              );
+            } else {
+              dispatch(
+                createOrganization(
+                  values,
+                  `/${user.current_role[0]}/${user.id}`,
+                ),
+              );
+            }
+          } else {
+            dispatch(
+              updateOrganization(values, `/${user.current_role[0]}/${user.id}`),
+            );
+          }
+          resetForm();
+        }}
       >
         {({ handleSubmit, values, setFieldValue, dirty }) => {
           useEffect(() => {
@@ -206,17 +214,11 @@ const EditProfileForm = ({ role, newLinkId }) => {
               unblock();
             };
           }, [history, isDirty]);
+
           return (
             <Form onSubmit={handleSubmit}>
               <Box sx={wrapper}>
                 <GoBack role={role} newLinkId={newLinkId} />
-                <CustomSnackbar
-                  autoHideDuration={10000}
-                  open={!!error}
-                  onClose={() => setError(null)}
-                  severity="error"
-                  text={error}
-                />
                 <Box sx={avatarWrapper}>
                   <Box
                     sx={{
@@ -226,25 +228,19 @@ const EditProfileForm = ({ role, newLinkId }) => {
                     }}
                   >
                     <AvatarForm
+                      size={500}
+                      value={values.name}
                       name="avatar"
                       role={role}
                       formData={formData}
                       setDeletedAvatar={setDeletedAvatar}
-                      setError={setError}
-                      sendAvatar={sendAvatar}
                     />
                   </Box>
                   {matchSm && (
                     <Box sx={[fieldWrapper, { width: '100%' }]}>
                       <SimpleField
-                        name="first_name"
-                        label="First Name"
-                        size={matchXs ? 'small' : 'medium'}
-                        emptyPH
-                      />
-                      <SimpleField
-                        name="last_name"
-                        label="Last name"
+                        name="name"
+                        label="Name"
                         size={matchXs ? 'small' : 'medium'}
                         emptyPH
                       />
@@ -255,11 +251,7 @@ const EditProfileForm = ({ role, newLinkId }) => {
                   <Box sx={fieldWrapper}>
                     {!matchSm && (
                       <>
-                        <SimpleField
-                          name="first_name"
-                          label="First Name"
-                          emptyPH
-                        />
+                        <SimpleField name="name" label="Name" emptyPH />
                         {/*<SimpleField name={'last_name'} label={'Last name'}/>*/}
                       </>
                     )}
@@ -313,58 +305,72 @@ const EditProfileForm = ({ role, newLinkId }) => {
                         </label>
                       </Box>
                     </Box>
-                    {!matchSm && <TagsField name="tags" label="Tags" />}
                   </Box>
                   <Box sx={fieldWrapper}>
-                    {!matchSm && (
-                      <SimpleField name="last_name" label="Last name" emptyPH />
-                    )}
-                    {role === CUSTOMER && (
-                      <SimpleField
-                        name="company"
-                        label="Company"
-                        size={matchXs ? 'small' : 'medium'}
-                        emptyPH
-                      />
-                    )}
-                    <SimpleField
-                      name="about"
-                      label="About"
-                      size={matchXs ? 'small' : 'medium'}
-                      emptyPH
-                      multiline
-                      rows={3}
-                    />
-                    {role !== CUSTOMER && (
-                      <Box>
-                        <Typography sx={rateLabel}>
-                          Price per line of code
-                        </Typography>
-                        <Field
-                          name="price_range"
-                          value={values.price_range}
-                          component={SliderRange}
-                          sx={{ color: theme.palette.secondary.main }}
-                          min={0}
-                          max={200}
-                          onChange={(e, newValue) => {
-                            const value = Array.isArray(newValue)
-                              ? newValue
-                              : [newValue, newValue];
-                            setFieldValue('price_range.from', value[0]);
-                            setFieldValue('price_range.to', value[1]);
-                          }}
+                    {/*<SimpleField*/}
+                    {/*  name="about"*/}
+                    {/*  label="About"*/}
+                    {/*  size={matchXs ? 'small' : 'medium'}*/}
+                    {/*  emptyPH*/}
+                    {/*  multiline*/}
+                    {/*  rows={3}*/}
+                    {/*/>*/}
+                    <FormControl
+                      onChange={e =>
+                        setFieldValue('organization_type', e.target.value)
+                      }
+                      disabled={!!organization?.id}
+                    >
+                      <FormLabel
+                        color={
+                          user.current_role === CUSTOMER
+                            ? 'primary'
+                            : 'secondary'
+                        }
+                      >
+                        Organization type
+                      </FormLabel>
+                      <RadioGroup
+                        defaultValue={values.organization_type}
+                        name="radio-buttons-group"
+                      >
+                        <FormControlLabel
+                          value={'Customer'}
+                          control={
+                            <Radio
+                              color={
+                                user.current_role === CUSTOMER
+                                  ? 'primary'
+                                  : 'secondary'
+                              }
+                            />
+                          }
+                          label="Customer"
                         />
-                      </Box>
-                    )}
-                    {matchSm && (
-                      <TagsField
-                        name="tags"
-                        label="Tags"
-                        size={matchXs ? 'small' : 'medium'}
-                      />
-                    )}
-                    <TagsArray name="tags" />
+                        <FormControlLabel
+                          value={'Auditor'}
+                          control={
+                            <Radio
+                              color={
+                                user.current_role === CUSTOMER
+                                  ? 'primary'
+                                  : 'secondary'
+                              }
+                            />
+                          }
+                          label="Auditor"
+                        />
+                        {user.current_role.slice(0, 1).toUpperCase() +
+                          user.current_role.slice(1) !==
+                          values.organization_type && (
+                          <Typography sx={alertDescSx}>
+                            The role you've assigned to the organization is
+                            different from yours. As a result, your role will be
+                            changed when the creation process is finished.
+                          </Typography>
+                        )}
+                      </RadioGroup>
+                    </FormControl>
                   </Box>
                 </Box>
               </Box>
@@ -385,17 +391,21 @@ const EditProfileForm = ({ role, newLinkId }) => {
   }
 };
 
-export default EditProfileForm;
+export default CreateEditOrganizationForm;
 
-const EditProfileSchema = Yup.object().shape({
-  first_name: Yup.string().required('Required'),
-  last_name: Yup.string(),
-  contacts: Yup.object().shape({
-    email: Yup.string().email('Invalid email').required('required'),
-    telegram: Yup.string(),
-  }),
-  about: Yup.string(),
-  tags: Yup.array(),
+const EditOrganizationSchema = Yup.object().shape({
+  name: Yup.string().required('required'),
+  // contacts: Yup.object().shape({
+  //   email: Yup.string().email('Invalid email').required('required'),
+  //   telegram: Yup.string(),
+  // }),
+});
+
+const alertDescSx = theme => ({
+  fontSize: '16px',
+  [theme.breakpoints.down('md')]: {
+    fontSize: '12px',
+  },
 });
 
 const backBtnSx = theme => ({
