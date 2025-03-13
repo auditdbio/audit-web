@@ -167,8 +167,29 @@ const Filter = ({ target, submit, initial }) => {
                           </LocalizationProvider>
                         </Box>
                       </Box>
+                      {target === 'auditor' && (
+                        <Box sx={[{ '& .slider-info': { display: 'none' } }]}>
+                          <Field
+                            name="rating"
+                            value={values.rating}
+                            label="Rating"
+                            component={SliderRange}
+                            sx={priceSlider(target)}
+                            valueLabelDisplay="auto"
+                            min={0}
+                            max={100}
+                            onChange={(e, newValue) => {
+                              const value = Array.isArray(newValue)
+                                ? newValue
+                                : [newValue, newValue];
+                              setFieldValue('rating.from', value[0]);
+                              setFieldValue('rating.to', value[1]);
+                            }}
+                          />
+                        </Box>
+                      )}
                       <Box sx={sortWrapper}>
-                        <FormGroup>
+                        {/* <FormGroup>
                           <FormControlLabel
                             control={
                               <Checkbox
@@ -183,7 +204,7 @@ const Filter = ({ target, submit, initial }) => {
                             }
                             label="Ready to wait"
                           />
-                        </FormGroup>
+                        </FormGroup> */}
                       </Box>
                       {target === 'auditor' && (
                         <Box sx={sortWrapper}>
@@ -203,12 +224,12 @@ const Filter = ({ target, submit, initial }) => {
                               }}
                               onClick={e => {
                                 if (values.sort_by === 'price') {
-                                  if (values.sort === '1') {
-                                    setFieldValue('sort', '-1');
-                                    setUpToDown({ ...upToDown, sort: '-1' });
+                                  if (values.sort === 'price_asc') {
+                                    setFieldValue('sort', 'price_desc');
+                                    setUpToDown({ ...upToDown, sort: 'price_desc' });
                                   } else {
-                                    setFieldValue('sort', '1');
-                                    setUpToDown({ ...upToDown, sort: '1' });
+                                    setFieldValue('sort', 'price_asc');
+                                    setUpToDown({ ...upToDown, sort: 'price_asc' });
                                   }
                                 } else {
                                   setFieldValue('sort_by', 'price');
@@ -257,7 +278,7 @@ const Filter = ({ target, submit, initial }) => {
                                   Price
                                 </Typography>
                                 {upToDown.sort_by === 'price' &&
-                                  (upToDown.sort === '1' ? (
+                                  (upToDown.sort === 'price_asc' ? (
                                     <ArrowUpwardIcon
                                       sx={{
                                         color: 'black',
@@ -290,12 +311,12 @@ const Filter = ({ target, submit, initial }) => {
                               }}
                               onClick={e => {
                                 if (values.sort_by === 'rating') {
-                                  if (values.sort === '1') {
-                                    setFieldValue('sort', '-1');
-                                    setUpToDown({ ...upToDown, sort: '-1' });
+                                  if (values.sort === 'rating_asc') {
+                                    setFieldValue('sort', 'rating_desc');
+                                    setUpToDown({ ...upToDown, sort: 'rating_desc' });
                                   } else {
-                                    setFieldValue('sort', '1');
-                                    setUpToDown({ ...upToDown, sort: '1' });
+                                    setFieldValue('sort', 'rating_asc');
+                                    setUpToDown({ ...upToDown, sort: 'rating_asc' });
                                   }
                                 } else {
                                   setFieldValue('sort_by', 'rating');
@@ -344,7 +365,7 @@ const Filter = ({ target, submit, initial }) => {
                                   Rating
                                 </Typography>
                                 {upToDown.sort_by === 'rating' &&
-                                  (upToDown.sort === '1' ? (
+                                  (upToDown.sort === 'rating_asc' ? (
                                     <ArrowUpwardIcon
                                       sx={{
                                         color: 'black',

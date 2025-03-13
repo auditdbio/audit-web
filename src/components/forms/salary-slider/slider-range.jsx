@@ -1,7 +1,7 @@
 import { Box, Slider, Typography } from '@mui/material';
 import React from 'react';
 
-export const SliderRange = ({ min, max, value, onChange, label, sx }) => {
+export const SliderRange = ({ min, max, value, onChange, label, sx, valueLabelDisplay }) => {
   return (
     <Box>
       <Typography variant={'body2'} sx={formLabelSx}>
@@ -13,13 +13,14 @@ export const SliderRange = ({ min, max, value, onChange, label, sx }) => {
           min={min}
           max={max}
           value={[value?.from, value?.to]}
+          valueLabelDisplay={valueLabelDisplay}
           onChange={onChange}
           sx={{
             ...sliderSx,
             ...sx,
           }}
         />
-        <Box sx={infoWrapper}>
+        <Box sx={infoWrapper} className={'slider-info'}>
           {value.from}-{value.to} $
         </Box>
       </Box>

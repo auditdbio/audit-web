@@ -19,6 +19,7 @@ import axios from 'axios';
 import Cookies from 'js-cookie';
 import { history } from '../../services/history.js';
 import createSearchValues from '../../lib/createSearchValues.js';
+import createSearchValuesV2 from '../../lib/createSearchValuesV2.js';
 import { isAuth } from '../../lib/helper.js';
 
 const API_URL = import.meta.env.VITE_API_BASE_URL;
@@ -185,6 +186,26 @@ export const getAllProjects = (values = '', amount) => {
   };
 };
 
+export const getAllProjectsV2 = (values, perPage = 10) => {
+  const kind = 'project';
+  const queryString = createSearchValuesV2({...values, perPage}, kind);
+
+  return dispatch => {
+    const token = Cookies.get('token');
+    axios
+      .get(
+        `${API_URL}/v2/search?${queryString}`,
+        isAuth() ? { headers: { Authorization: `Bearer ${token}` } } : {},
+      )
+      .then(({ data }) => {
+        dispatch({ type: GET_PROJECTS, payload: data });
+      })
+      .catch(({ response }) => {
+        console.error(response, 'res');
+      })
+  };
+};
+
 export const getProjects = () => {
   const token = Cookies.get('token');
   return dispatch => {
@@ -250,6 +271,27 @@ export const searchProjects = values => {
       });
   };
 };
+
+export const searchProjectsV2 = (values, badges = true) => {
+  const kind = 'project';
+  const queryString = createSearchValuesV2(values, kind);
+
+  return dispatch => {
+    const token = Cookies.get('token');
+    axios
+      .get(
+        `${API_URL}/v2/search?${queryString}`,
+        isAuth() ? { headers: { Authorization: `Bearer ${token}` } } : {},
+      )
+      .then(({ data }) => {
+        dispatch({ type: SEARCH_PROJECTS, payload: data });
+      })
+      .catch(({ response }) => {
+        console.error(response, 'res');
+      })
+  };
+};
+
 
 export const getCloc = links => {
   const token = Cookies.get('token');
