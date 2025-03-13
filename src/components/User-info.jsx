@@ -31,6 +31,7 @@ import { getAuditorRating } from '../redux/actions/auditorAction.js';
 import RatingDetails from './RatingDetails.jsx';
 import UserFeedbacks from './UserFeedbacks.jsx';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack.js';
+import dayjs from 'dayjs';
 
 const UserInfo = ({ role, linkId }) => {
   const dispatch = useDispatch();
@@ -209,6 +210,14 @@ const UserInfo = ({ role, linkId }) => {
                   <span>E-mail</span>
                   <Typography noWrap={true}>{data.contacts?.email}</Typography>
                 </Box>
+                {data.free_at && role === AUDITOR && (
+                  <Box sx={infoWrapper}>
+                    <span>Free at</span>
+                    <Typography noWrap={true}>
+                      {data.free_at ? dayjs(data.free_at).format('MM.DD.YYYY') : ''}
+                    </Typography>
+                  </Box>
+                )}
               </Box>
               <Box sx={[infoWrapper, aboutWrapper]}>
                 <span>About</span>

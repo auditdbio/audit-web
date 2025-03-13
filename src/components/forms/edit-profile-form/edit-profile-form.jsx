@@ -33,6 +33,10 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { history } from '../../../services/history.js';
 import { ASSET_URL } from '../../../services/urls.js';
 import CustomSnackbar from '../../custom/CustomSnackbar.jsx';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { LocalizationProvider } from '@mui/x-date-pickers';
+import dayjs from 'dayjs';
 
 const GoBack = ({ role, newLinkId }) => {
   const navigate = useNavigate();
@@ -151,7 +155,7 @@ const EditProfileForm = ({ role, newLinkId }) => {
         initialValues={{
           userId: data.user_id || '',
           avatar: data.avatar || '',
-          free_at: '',
+          free_at: data?.free_at || dayjs(),
           first_name: data?.first_name || user?.name?.split(' ')[0] || '',
           last_name: data?.last_name || getPrefilledLastName(),
           contacts: {
@@ -356,9 +360,29 @@ const EditProfileForm = ({ role, newLinkId }) => {
                         />
                       </Box>
                     )}
+                    {role === AUDITOR && (
+                      <Box>
+                        <Typography sx={rateLabel}>Free at</Typography>
+                        <LocalizationProvider dateAdapter={AdapterDayjs}>
+                        <Field
+                              component={DatePicker}
+                              name="free_at"
+                              defaultValue={new Date()}
+                              value={dayjs(values.free_at)}
+                              sx={{ width: '100%' }}
+                              inputFormat="DD-MM-YYYY"
+                              onChange={e => {
+                                const value = new Date(e);
+                                setFieldValue('free_at', value.toString());
+                              }}
+                              disablePast
+                            />
+                        </LocalizationProvider>
+                      </Box>
+                    )}
                     {matchSm && (
                       <TagsField
-                        name="tags"
+                        name="tags" 
                         label="Tags"
                         size={matchXs ? 'small' : 'medium'}
                       />
