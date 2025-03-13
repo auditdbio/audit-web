@@ -48,6 +48,7 @@ import UserFeedbacks from '../components/UserFeedbacks.jsx';
 import WalletConnectIcon from '../components/icons/WalletConnectIcon.jsx';
 import { getPublicAuditsAuditor } from '../redux/actions/auditAction.js';
 import ProjectCardList from '../components/Project-card-list.jsx';
+import dayjs from 'dayjs';
 
 const PublicProfile = ({ notFoundRedirect = true }) => {
   const navigate = useNavigate();
@@ -210,6 +211,7 @@ const PublicProfile = ({ notFoundRedirect = true }) => {
       dispatch(getAuditorRating(data.user_id, true));
     }
   }, [data, user]);
+
 
   if (!data) {
     return (
@@ -384,6 +386,14 @@ const PublicProfile = ({ notFoundRedirect = true }) => {
                             : 'Hidden'}
                         </Typography>
                       </Box>
+                      {data.free_at && data?.kind?.toLowerCase() === AUDITOR?.toLowerCase() && (
+                        <Box sx={infoWrapper}>
+                          <span>Free at</span>
+                          <Typography noWrap={true}>
+                      {data.free_at ? dayjs(data.free_at).format('MM.DD.YYYY') : ''}
+                    </Typography>
+                  </Box>
+                )}
                     </Box>
                   </Box>
 
